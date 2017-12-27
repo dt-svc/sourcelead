@@ -165,7 +165,12 @@ public class ClientReportDaoImpl implements ClientReportDao {
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 			userRoleCondition = "";
 		}else{
-			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.ownerUserId.id =:userId OR contracts.createdBy =:userCode) ";
+			userRoleCondition = " and (contracts.approverUser.id =:userId OR contracts.ownerUserId.id =:userId OR contracts.createdBy =:userCode) ";
+		}
+		
+		String spocCondition = "";
+		if(contractReportsDTO.getContactUser() != 0){
+			spocCondition = " and contracts.contactUser.id = "+contractReportsDTO.getContactUser()+" ";
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -182,7 +187,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
 					+ "left join fetch contracts.candidate "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' and contracts.templateSubmissionStatus = 'FINALIZED' "+userRoleCondition+subQuery ;
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' and contracts.templateSubmissionStatus = 'FINALIZED' "+userRoleCondition+subQuery+spocCondition ;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 			}else{
@@ -197,48 +202,72 @@ public class ClientReportDaoImpl implements ClientReportDao {
 
 	@Override
 	@Transactional
-	public List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationId, Long orgLocationId, Long userId)
+	public List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationId, Long orgLocationId, Long userId,Date[] freqDates)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		
+		String subQuery = "";
+		subQuery += " and ( spoc.createdDate >= :startDate and spoc.createdDate <= :endDate )";
+		
 		List<OrgSpoc> spocList = null;
 		if (isadmin) {
-			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId");
-			spocList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId "+subQuery);
+			spocList = query.setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 		}else{
-			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId");
-			spocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+			Query query= session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId "+subQuery);
+			spocList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 		}
 		return spocList;
 	}
 
 	@Override
 	@Transactional
-	public List<Requirement> getClientJobsByOrgRelationId(Long orgRelationId, Long orgLocationId, Long userId)
+	public List<Requirement> getClientJobsByOrgRelationId(Long orgRelationId, Long orgLocationId, Long userId, Date[] freqDates,Long spocId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 //		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		
+		String subQuery = "";
+		subQuery += " and ( requirement.createdDate >= :startDate and requirement.createdDate <= :endDate )";
+		
+		String subQuery1 = "";
+		if(spocId != null){
+			subQuery1 = " and requirement.spocId =:spocId ";
+		}
+		
 		List<Requirement> reqList = null;
-		Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.parentRequirement IS NOT NULL and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId");
-		reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(spocId != null){
+			Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.parentRequirement IS NOT NULL and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId "+subQuery+subQuery1);
+			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setLong("spocId", spocId).setCacheable(true).list();	
+		}else{
+			Query query= session.createQuery("from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.parentRequirement IS NOT NULL and requirement.isClientJob ='Y' and requirement.orgLocationId.id =:orgLocationId "+subQuery);
+			reqList = query.setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+		}
+		
 		return reqList;
 	}
 
 	@Override
 	@Transactional
-	public Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId)
+	public Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId, Date[] freqDates)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Integer> subCount = new HashMap<>();
 //		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		
+		String subQuery = "";
+		subQuery += " and ( reqSub.createdDate >= :startDate and reqSub.createdDate <= :endDate )";
+		
 		List<RequirementSubmission> reqSubList = null;
-		Query query= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId");
-		reqSubList = query.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		Query query= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId "+subQuery);
+		reqSubList = query.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+		if(reqSubList != null)	
 			subCount.put("submissionCount", reqSubList.size());
 		
 		List<RequirementSubmission> hiredList = null;
-		Query hiredQuery= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = 'OFFERACCEPTED'");
-		hiredList = hiredQuery.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		Query hiredQuery= session.createQuery("from RequirementSubmission reqSub left join fetch reqSub.requirement req where reqSub.orgLocations.id =:orgLocationId and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = 'OFFERACCEPTED' "+subQuery);
+		hiredList = hiredQuery.setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 		if(hiredList != null)
 			subCount.put("hiredCount", hiredList.size());
 		

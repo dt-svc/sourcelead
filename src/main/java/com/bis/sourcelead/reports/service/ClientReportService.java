@@ -22,10 +22,10 @@ public interface ClientReportService {
 
 	Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user, String userRoleName,ContractReportsDTO contractReportsDTO);
 
-	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId);
+	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId, Date[] freqDates);
 
-	List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId);
+	List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId, Date[] freqDates, Long spocId);
 
-	Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long locationId, Long userId);
+	Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long locationId, Long userId, Date[] freqDates);
 
 }
