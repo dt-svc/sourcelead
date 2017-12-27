@@ -1844,19 +1844,19 @@ public class RequirementListRestController {
    }
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobId", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("skills", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("requirementStatus", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("client", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("priority", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 //				Float expYears = Float.valueOf(matcher.group());
