@@ -22,7 +22,7 @@ public interface DataMigrationService {
 	 */
 	Map<String, String> getfileData(String filePath) throws Exception;
 	
-	Map<String, String> validateImportedFormData(DataMigrationDTO dataMigrationDTO, HttpServletRequest request, HttpServletResponse response) throws Exception;
+	String validateImportedFormData(DataMigrationDTO dataMigrationDTO, HttpServletRequest request) throws Exception;
 	
-	List<SourceleadFormFields> getfieldsBySectionIdAndImportStatus(Long sectionId, int importStatus) throws Exception;
+	List<SourceleadFormFields> getfieldsByActionIdAndImportStatus(Long actionId, int importStatus) throws Exception;
 }

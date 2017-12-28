@@ -1,14 +1,19 @@
 package com.bis.sourcelead.entity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
@@ -47,7 +52,12 @@ public class DataMigrationReadDataFromExcel {
 		Cell cell = cellIterator.next();
 		
 		
-        // Create a sheet using createSheet method of workbook
+		
+		
+		
+		
+		
+       /* // Create a sheet using createSheet method of workbook
         Sheet sheet = workbook.createSheet("Sheet one");
         // Create a row and put some cells in it.
         Row row = sheet.createRow(0);
@@ -62,7 +72,7 @@ public class DataMigrationReadDataFromExcel {
         // Write the FileOutputStream to workbook object.
         workbook.write(outputStream);
         // Finally close the FileOutputStream.
-        outputStream.close();
+        outputStream.close();*/
 		
 		
 		

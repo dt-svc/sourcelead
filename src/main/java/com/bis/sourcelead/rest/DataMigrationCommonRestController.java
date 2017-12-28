@@ -55,7 +55,7 @@ public class DataMigrationCommonRestController {
 		commonUtil.highLightMenu(Constants.JOBS, request);
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+filePath);
-		List<SourceleadFormFields> formFields = dataMigrationService.getfieldsBySectionIdAndImportStatus(3l, 1);
+		List<SourceleadFormFields> formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);
 		model.setViewName("upload/importJobs");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
@@ -66,11 +66,22 @@ public class DataMigrationCommonRestController {
 	
 	
 	@RequestMapping(value = {"/getDataByMatchedFields","/rest/getDataByMatchedFields"}, method = RequestMethod.POST)
-	public ModelAndView getDataByMatchedFields(DataMigrationDTO dataMigrationDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ModelAndView getDataByMatchedFields(DataMigrationDTO dataMigrationDTO, HttpServletRequest request) throws Exception
 	{
-		dataMigrationService.validateImportedFormData(dataMigrationDTO, request, response);
+		ModelAndView model = new ModelAndView();
+		String importStatus = dataMigrationService.validateImportedFormData(dataMigrationDTO, request);
 		
-		return null;
+		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
+		commonUtil.highLightMenu(Constants.JOBS, request);
+		Map<String, String> dataWithCellId = new TreeMap<String, String>();
+		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/"));
+		List<SourceleadFormFields> formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);
+		model.addObject("dataWithCellId", dataWithCellId);
+		model.addObject("fields", formFields);
+		model.setViewName("upload/importJobs");
+		model.addObject("importStatus", importStatus);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
 	}
 	
 }

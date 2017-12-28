@@ -64,6 +64,8 @@ public class DataMigrationDTO extends CommonDTO {
 
 	private String clientRate;
 	
+	private String clientSubmissionForm;
+	
 	private String approver;
 
 	private String manager;
@@ -308,6 +310,16 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setClientRate(String clientRate) {
 		this.clientRate = clientRate;
+	}
+
+	public String getClientSubmissionForm()
+	{
+		return clientSubmissionForm;
+	}
+
+	public void setClientSubmissionForm(String clientSubmissionForm)
+	{
+		this.clientSubmissionForm = clientSubmissionForm;
 	}
 
 	public String getApprover() {

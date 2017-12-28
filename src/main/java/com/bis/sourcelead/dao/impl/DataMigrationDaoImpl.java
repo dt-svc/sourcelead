@@ -23,12 +23,12 @@ public class DataMigrationDaoImpl implements DataMigrationDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<SourceleadFormFields> getfieldsBySectionIdAndImportStatus(Long sectionId, int importStatus) throws Exception
+	public List<SourceleadFormFields> getfieldsByActionIdAndImportStatus(Long actionId, int importStatus) throws Exception
 	{
 		logger.debug("In DataMigrationDaoImpl class getfieldsBySectionIdAndImportStatus method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String QUERY = "from SourceleadFormFields SFF where SFF.sourceleadFormSections.id =:sectionId and SFF.isImportField = '1' ";
-		List<SourceleadFormFields> formfieldsList = session.createQuery(QUERY).setLong("sectionId", sectionId).list();
+		String QUERY = "FROM SourceleadFormFields SFF WHERE SFF.sourceleadFormSections.id IN(SELECT SFS.id FROM SourceleadFormSections SFS WHERE SFS.sourceleadActions = :actionId) AND SFF.isImportField = '1' ";
+		List<SourceleadFormFields> formfieldsList = session.createQuery(QUERY).setLong("actionId", actionId).list();
 		return formfieldsList;
 	}
 

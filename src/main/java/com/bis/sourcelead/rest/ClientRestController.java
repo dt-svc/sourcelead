@@ -777,7 +777,7 @@ public class ClientRestController {
 	
 	
 	@RequestMapping(value = "/isInvitedClientOrVendorOrgValid", method = RequestMethod.GET)
-	@ResponseBody String isInvitedClientOrVendorOrgValid(
+	public @ResponseBody String isInvitedClientOrVendorOrgValid(
 			@RequestParam(value = "orgName", required = false) String orgName,HttpServletRequest request) throws Exception {
 		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

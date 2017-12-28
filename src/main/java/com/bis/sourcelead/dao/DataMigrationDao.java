@@ -6,5 +6,5 @@ import com.bis.sourcelead.entity.SourceleadFormFields;
 
 public interface DataMigrationDao {
 
-	List<SourceleadFormFields> getfieldsBySectionIdAndImportStatus(Long sectionId, int importStatus) throws Exception;
+	List<SourceleadFormFields> getfieldsByActionIdAndImportStatus(Long actionId, int importStatus) throws Exception;
 }
