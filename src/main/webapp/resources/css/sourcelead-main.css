@@ -7665,6 +7665,15 @@ padding: 5px 10px;
 .chosen-disabled {
   opacity: 0.95 !important;
 }
+.text-danger {
+    color: #a94442 !important;
+}
+.text-success {
+    color: #3c763d !important;
+}
+.text-primary {
+    color: #337ab7 !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
