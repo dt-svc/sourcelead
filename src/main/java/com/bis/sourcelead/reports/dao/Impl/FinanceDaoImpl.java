@@ -196,9 +196,41 @@ public class FinanceDaoImpl implements FinanceDao{
 		try {
 			List<Invoice> invoiceList = null;
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue'";
-			String countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue'";
-			
+			String query = "";
+			String countQuery = "";
+			java.sql.Date startDate = null;
+			java.sql.Date endDate = null;
+			if(StringUtils.isNotBlank(apAgingDTO.getFilterType())) {
+				if("last_7days".equalsIgnoreCase(apAgingDTO.getFilterType())) {
+					Date[] dates = reportsUtil.last7Days();
+					startDate = new java.sql.Date(dates[0].getTime());
+					endDate = new java.sql.Date(dates[1].getTime());
+				}else if("last_15days".equalsIgnoreCase(apAgingDTO.getFilterType())) {
+					Date[] dates = reportsUtil.last15DaysDates();
+					startDate = new java.sql.Date(dates[0].getTime());
+					endDate = new java.sql.Date(dates[1].getTime());
+				}else if("1month".equalsIgnoreCase(apAgingDTO.getFilterType())) {
+					Date[] dates =  reportsUtil.last1MonthDates();
+					startDate = new java.sql.Date(dates[0].getTime());
+					endDate = new java.sql.Date(dates[1].getTime());
+				}else if("3months".equalsIgnoreCase(apAgingDTO.getFilterType())) {
+					Date[] dates = reportsUtil.last3MonthDates();
+					startDate = new java.sql.Date(dates[0].getTime());
+					endDate = new java.sql.Date(dates[1].getTime());
+				}else if("last_years".equalsIgnoreCase(apAgingDTO.getFilterType())) {
+					Date[] dates = reportsUtil.lastYearDates();
+					startDate = new java.sql.Date(dates[0].getTime());
+					endDate = new java.sql.Date(dates[1].getTime());
+				}else {
+//					reportsUtil.getCustomDates();
+				}
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue'";
+			}else {
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue'";
+					
+			}
 			
 			StringBuilder searchQuery = new StringBuilder("");
 			 if(apAgingDTO.getSearchValue() !=null && !"".equalsIgnoreCase(apAgingDTO.getSearchValue())) {
@@ -232,19 +264,33 @@ public class FinanceDaoImpl implements FinanceDao{
 				queryObj.setFirstResult(apAgingDTO.getStart());
 				queryObj.setMaxResults(apAgingDTO.getLength());
 			}
-			invoiceList = queryObj.setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();
+			if(StringUtils.isNotBlank(apAgingDTO.getFilterType())) {
+				invoiceList = queryObj.setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+			}else {
+				invoiceList = queryObj.setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();
+			}
+			
 			response.setData(invoiceList);
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType())
-					.list();
+			List<Long> countlist = null;
+			if(StringUtils.isNotBlank(apAgingDTO.getFilterType())) {
+			countlist = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+			}else {
+				countlist = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();	
+			}
 			if (countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
 			response.setRecordsTotal(count);
 
 			if (apAgingDTO != null) {
-				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();
+				List<Long> filteredCountlist = null;
+				if(StringUtils.isNotBlank(apAgingDTO.getFilterType())) {
+					filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+				}else {
+					filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();
+				}
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}

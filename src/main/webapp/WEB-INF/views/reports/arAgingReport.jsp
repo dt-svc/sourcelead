@@ -52,7 +52,7 @@ $(document).ready(function(){
                     </select>
                 </div>
         	 <div class="col-md-2 dropdown-select positionRelatives mt5" id="customDatesDropdown" style="display: none">
-        <select class="form-control" id="custom-dates" id="filterDateType" name="filterDateType">
+        <select class="form-control" id="custom-dates"  name="filterDateType">
           <option>Select Date</option>
           <option selected>Last 7 days</option>
           <option>Last 15 days</option>

@@ -78,7 +78,7 @@ $(document).ready(function(){
              <div class="col-md-2 dropdown-select positionRelatives mt5" style="display: none" id="customDatesDropdown">
         <select class="form-control" id="custom-dates"  name="filterDateType" onchange="vendorapagingBill();">
           <option value="">Select Date</option>
-          <option value="last_7days">Last 7 days</option>
+          <option value="last_7days">Last 7 days</option> 
           <option value="last_15days">Last 15 days</option>
           <option value="1month">1 month</option>
           <option value="3months">3 months</option>
@@ -345,11 +345,16 @@ function vendorapagingBill(){
 	   $("#dataTableBillSearch").show();
 	     var apagingType = 'Payables';
 		var sourceleadUrl ='${sourceleadUrl}';
+		var filterType = $("#custom-dates").val(); 
+		alert(filterType);
 		var searchValue = $("#dataTableBillSearch").val();
 		var filterDateType = $("#filterDateType").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterDateType="+filterDateType;
-		prepareApagingBillList(url);
+		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterType="+filterType;
+		if(filterType != 'custom'){
+			prepareApagingBillList(url);
+		}
+		
 }
 </script>
 <script>
@@ -466,7 +471,6 @@ function apagingBill(url){
 	
 }
 </script>
- 
  <script>
 $(function() {
         $('#apagingType').change(function(){
@@ -474,11 +478,11 @@ $(function() {
 			if(optval === "Payables") {
 				$("#byInvoice").show();
 				$("#byCustomer").hide();
-				$("#customDatesDropdown").show();
+				$("#customDatesDropdown").hide();
 			}else if(optval === "bill"){
 				$("#byCustomer").show();
 				$("#byInvoice").hide();
-				$("#customDatesDropdown").hide();
+				$("#customDatesDropdown").show();
 			}
         });
     });
