@@ -23,7 +23,8 @@
 				<li><a href="${appPath}/clientReports">Client Report</a></li>
 				<li><a href="#">New Customer</a></li>
 				<li><a href="#">Applicant Backout</a></li>
-				<li><a href="#">Applicant Decline</a></li>
+				<li><a href="${appPath}/applicantDeclineReports">Applicant Decline</a></li>
+				<li><a href="#">Jobs Pipeline</a></li>
 				<li><a href="${appPath}/jobPipelineReports">Jobs Pipeline</a></li>
 				<li><a href="${appPath}/applicantBySource">Applicant Source</a></li>
 				<li><a href="${appPath}/timeToFill">Time to Fill</a></li>
@@ -55,8 +56,8 @@
 				<li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li>
 				<li><a href="${appPath}/expensesReportsList">Expenses Report</a></li>
-				<li><a href="#">A/R Aging</a></li>
-				<li><a href="#">A/P Aging</a></li>
+				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
+				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
 				<li><a href="#">Profit &amp; Loss</a></li>
 				<li><a href="#">Balance Sheet</a></li>
 				<li><a href="#">Client Balance</a></li>
