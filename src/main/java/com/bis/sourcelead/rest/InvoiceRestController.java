@@ -347,7 +347,7 @@ public class InvoiceRestController {
 		ResponseList<BillingDTO> responseList = new ResponseList<>();
 		
 		
-		// TODO do not delete until sorting  work @Rajashekar
+		// TODO do not delete until sorting  work pending @Rajashekar
 	/*	String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order

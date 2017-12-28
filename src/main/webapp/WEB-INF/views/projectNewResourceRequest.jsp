@@ -237,7 +237,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectNewAssociate(\''+opt.requestUUID+'\',\''+opt.roleName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
 				    		
 				    		if(opt.resourceStatus == 'Waiting For Approval'){
-				    			result = result + '&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="onholdNewAssociateRequest(\''+opt.requestUUID+'\',\''+opt.requestedUser+'\',\''+requestType+'\');"><i class="fa fa-clock-o" alt="On hold" title="On hold"></i></a>';
+				    			result = result + '&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="onholdNewAssociateRequest(\''+opt.requestUUID+'\',\''+opt.requestedUser+'\',\''+requestType+'\');"><i class="fa fa-clock-o text-primary" alt="On hold" title="On hold"></i></a>';
 				    		}
 				    		
 			    		}else{
