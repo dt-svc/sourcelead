@@ -84,7 +84,7 @@
 
             <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
-                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
+                <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onblur="validateEmail();getSpocUserDetails();">
 
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
