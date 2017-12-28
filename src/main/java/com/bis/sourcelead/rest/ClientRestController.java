@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,12 +46,16 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
@@ -61,11 +66,14 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -82,6 +90,8 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -175,6 +185,16 @@ public class ClientRestController {
 	
 	@Autowired
 	VendorOnboardService vendorOnboardService;
+	
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
+	@Autowired
+	private ClientCustomFieldDataService clientCustomFieldDataService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
 	
 	/**
 	 * Handles to get Orgs
@@ -948,13 +968,43 @@ public class ClientRestController {
 		
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
+		SourceleadActions action = null;
 		if(msg != null && msg != ""){
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editClient");
+			 action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
 		}else{
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editVendor");
+			action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editVendor");
+		}
+		
+		if(action != null && action.getId()!= null){
+		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
+		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+		 if(sections != null && !sections.isEmpty()) {
+			 for(SourceleadSectionDTO sec:sections) {
+				 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+					 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+					 custom.setCustomFormFieldId(customFields.getId());
+					 formFieldId.add(custom);
+				 }
+			 }
+			 if(formFieldId != null && !formFieldId.isEmpty() && orgLocationId != null) {
+				OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+			 List<ClientCustomFieldData> clientData = clientCustomFieldDataService.getClientCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId);
+			 Map<String,String> dataMap = new HashMap<>();
+			 if(clientData!= null && !clientData.isEmpty()) {
+				 for(ClientCustomFieldData clientCustomData:clientData) {
+					 String labelName = clientCustomData.getOrglocationsFormFields().getLabelName();
+					 String labelData = clientCustomData.getCustomFormFieldData();
+					 dataMap.put(labelName, labelData);
+					 clientVendorDTO.setClientCustomFieldlabelNameAndValue(dataMap);
+				 	}
+			 	}
+			 }
+		 }
 		}
 		
 		/*String resultJson;
@@ -1717,10 +1767,10 @@ public class ClientRestController {
 		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("responderCountry", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("initiatorCountry", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
 			
@@ -1883,12 +1933,16 @@ public class ClientRestController {
 							BoolQueryBuilder contactNameBoolQueryBuilder = QueryBuilders.boolQuery();
 							for(String keywd : contactNameArray){
 								 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-									 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
-									 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+									    /*contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
+									    contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));*/
+									    
+									    contactNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("vendorUserName", keywd));
 									  }
 									 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
-										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));  
+										 /*contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
+										 contactNameBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));*/  
+										 
+										 contactNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientUserName", keywd));
 									  }
 							}
 							boolQueryBuilder.must(contactNameBoolQueryBuilder);
@@ -1946,12 +2000,16 @@ public class ClientRestController {
 							BoolQueryBuilder ownerAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 							for(String keywd : ownerAdvancedNameArray){
 								 if("Vendor".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
-									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));
+									/* ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserFirstName" , keywd));
+									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("clientUserLastName", keywd));*/
+									 
+									 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientUserName", keywd));
 									  }
 									 if("Client".equalsIgnoreCase(clientVendorDTO.getResponderType())){
-										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
-										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+										/* ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserFirstName" , keywd));
+										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchQuery("vendorUserLastName", keywd));*/
+										 
+										 ownerAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("vendorUserName", keywd));
 									  }
 							}
 							boolQueryBuilder.must(ownerAdvancedBoolQueryBuilder);
@@ -2126,13 +2184,16 @@ public class ClientRestController {
 		    }
 		   
 		    
-		    //owner Name
+		 /*   //owner Name
 		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserFirstName", keywd));
 		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserLastName", keywd));
 		    
 		    //spock Name
 		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserFirstName", keywd));
-		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserLastName", keywd));*/
+		    
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserName", keywd));
+		    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserName", keywd));
 		    
 		    
 		    if("Client".equalsIgnoreCase(responderType)){

@@ -575,20 +575,20 @@ function cancelOrgImg(){
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" onclick="closeWhiteListIp();" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Add IP</h4>
         </div>
         <div class="modal-body">
         <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
         <input type="hidden" name="id" id="whiteListId"/>
          <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
-           <label class="col-md-3">From IP</label>
+           <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
            		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
            </div>
            <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
-           <label class="col-md-3">To IP</label>
+           <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
            		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
@@ -634,22 +634,37 @@ function switchLoginSecurity(){
 </script>
 
 <script>
+function closeWhiteListIp(){
+	$("#fromIpAddress").val("");
+	 $("#toIpAddress").val("");
+	 $("#whiteListId").val("");
+}
+
 function saveWhiteListIps(){
+	 $("#saveWhiteListbtn").attr("disabled", "disabled");
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
 	var whiteListId = $("#whiteListId").val();
 	if(fromIpAddress != null && fromIpAddress != '' && fromIpAddress !='undefined' && toIpAddress != null && toIpAddress != '' && toIpAddress !='undefined'){
 		$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 		$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+		var url = "";
+		if(whiteListId != '' && whiteListId != null && whiteListId != 'undefined'){
+	    	  url += sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId;  
+	      }else{
+	    	  url += sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress;
+	      }
 			$.ajax({
 			      type : "GET",
-			       url: sourceleadUrl+"/saveWhiteListIps?fromIpAddress="+fromIpAddress+"&toIpAddress="+toIpAddress+"&id="+whiteListId,        
+			      url : url,
+			               
 			       success :function(data) {
 			       if(data == "Success"){
 			    	   $("#fromIpAddress").val("");
 			    	   $("#toIpAddress").val("");
 			    	   $(".modal.addipPopup-modal").fadeOut();
 			    	   $(".comMask").fadeOut();
+			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
 			      },
@@ -735,6 +750,7 @@ function WhiteListIpTablePagination(){
 
 <script>
 function editWhiteListIp(id){
+	$("#saveWhiteListbtn").removeAttr("disabled");
 	$.ajax({
 	    type: "GET",
         url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
@@ -2810,6 +2826,7 @@ function addOrgRefreshGoogleApiLocation(){
 
 <script>
 function addipPopup(){
+	$("#saveWhiteListbtn").removeAttr("disabled");
 	$('#fromIpAddressDiv').val("");
 	$('#toIpAddressDiv').val("");
 	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.rest.ContractRestController;
@@ -50,6 +52,8 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -68,6 +72,9 @@ public class ContractController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -113,6 +120,12 @@ public class ContractController {
 	
 	@Autowired
 	ContractRestController contractRestController;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
 	/**
 	 * display contract template list page
@@ -292,6 +305,7 @@ public class ContractController {
 				}
 				model.addObject("orgSpocList", orgSpocList);
 				}
+				
 				model.addObject("docList",contractRequestDocumentsList);
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
@@ -344,6 +358,13 @@ public class ContractController {
 //			model.addObject("orgRelationId", orgRelationId);
 //			model.addObject("contractType", Constants.Vendor_SOW);
 //		}
+		
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_NEW_CONTRACT);
+	     model.addObject("actionId",action.getId());
+		
+	    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
+	    model.addObject("sourceleadSectionList",sections); 
+		
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("orgLocation", orgLocation);
@@ -560,6 +581,13 @@ public class ContractController {
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
+		
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_NEW_CONTRACT);
+	     model.addObject("actionId",action.getId());
+		
+	    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
+	    model.addObject("sourceleadSectionList",sections); 
+		
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("docList",contractRequestDocumentsList);
 		model.addObject("documentsList", documentsList);
@@ -645,6 +673,7 @@ public class ContractController {
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		model.addObject("contract", contract);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("sourceleadLoginUrl", sourceleadLoginUrl);
 		model.setViewName("contracts/upload");
 		return model;
 	}

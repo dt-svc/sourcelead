@@ -439,8 +439,8 @@ public class InvoiceRestController {
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());	
 			}
 			
-			if(invoice.getOrgRelationID() != null){
-			billingDto.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
+			if(orgRelations != null){
+			billingDto.setOrgRelationUUID(orgRelations.getUUID());
 			}
 			StringBuilder contactName = new StringBuilder();
 			if(null != invoice.getContactUser()){

@@ -32,9 +32,9 @@ max-height: inherit !important;
 	<section class="content-wraper">
 		<section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>User Summary</h2>
+				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -205,7 +205,7 @@ $(document).ready(function(){
 				    '</sec:authorize>';
 				    
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit User</a>';
+				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit Associate</a>';
 				    '</sec:authorize>';
 				      
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
@@ -391,8 +391,20 @@ $(document).ready(function(){
 					result = result + '				 <strong>Department Name:</strong><span class="fix" title="'+json.departmentName+'">'+json.departmentName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				} 
+				 
+				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
+						for (var key in json.userCustomFieldlabelNameAndValue) {
+							  if (json.userCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
+								result = result + '	<div class="project_details_cta">';
+								var value = json.userCustomFieldlabelNameAndValue[key];  
+								var valueArray = value.toString().split(",");
+							    result = result + '	<strong>'+valueArray[0]+':</strong><span class="fix">'+valueArray[1]+'</span><div class="clearfix"></div>';
+							    result = result + '	</div>';
+							  }
+							}
+					}
+				 
 				result = result + '	   </div>';				
-				/* result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>'; */
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	   </div>';
 				result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>';
@@ -1264,6 +1276,11 @@ $("#editRoleDetailsList").empty();
 				var selected7 = '';
 				var selected8 = '';
 				
+				<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+				  var sectionId = '${section.id}';
+				  getCustomDependentField(sectionId);
+				</c:forEach>
+				
 				if(json.ratePer == 'Hourly'){
 						selected1 = 'selected';
 					} 
@@ -1449,7 +1466,7 @@ $("#editRoleDetailsList").empty();
 					    result = result + '<span class="" id="hideVendor" style="display:none">'; 
 						result = result + '<div class="user_summary_edit_cta" id="vendor">';
 						result = result + ' <label>Vendor</label>';
-						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactsList();">';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+json.vendorName+'">';
 						result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'">';
@@ -1520,6 +1537,14 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
+					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		           		if("${sectionOrder.index == 0}"){
+		           		 	 var sectionID = '${section.id}';
+		           		 	 result = result + ' <div class="clearfix"></div>';
+		           			 result = result + ' <div id="customDiv'+sectionID+'" class="col-md-4"></div>';
+		           			 result = result + ' <div class="clearfix"></div>';
+		           			}
+		        	</c:forEach>
 					
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta pull-right">';
@@ -1529,7 +1554,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' </form>';
 				result = result + ' </div>';
-			  
+				
 				$(".user_summary_edit").slideToggle(100);
 				$("#remove_user_id").slideUp(100);
 				$(".edit_role_pop").slideUp(100);
@@ -1568,6 +1593,18 @@ $("#editRoleDetailsList").empty();
 }
 </script>
 
+<script>
+function getCustomDependentField(sectionId){
+	$.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
 function updateUserDesignationOtherType(){
@@ -1593,7 +1630,7 @@ function updateUserDesignationOtherType(){
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	//$('#vendors').empty();
+		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
@@ -1605,7 +1642,7 @@ function updateUserDesignationOtherType(){
 		            	  
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            getVendorContactList();
+		            getVendorContactsList();
 		            
 		        }
 		 });
@@ -1613,7 +1650,7 @@ function updateUserDesignationOtherType(){
  </script>
 
 <script>
- function getVendorContactList(){
+ function getVendorContactsList(){
 	 $('#vendorcontact').val('').trigger("chosen:updated");
 	 var orgRelationID = $('#vendors').val();
 	 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){

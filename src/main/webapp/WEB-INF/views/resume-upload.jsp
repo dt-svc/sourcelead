@@ -24,9 +24,23 @@ body {
     input, select, textarea, label {
         font-family: Arial, Helvetica, sans-serif;
         }
+        .links {
+        	display: none;
+        }
+        .links li {
+    float: left;
+    list-style: none;
+    padding: 10px;
+    width: 33%;
+    color: #337ab7;
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: center;
+}
     header {
         width: 100%; background-color: #368ee0; height: 54px; box-shadow: 0px 0px 2px rgba(0,0,0,0.4);
     }
+    .plupload_header {display: none !important;}
     .text_logo {
     font-size: 18px;
 font-weight: bold;
@@ -74,8 +88,9 @@ margin: 0px auto;
         width: 650px; background-color: #fff; margin: 0px 0px; display: block; padding: 8px 12px 12px;
         box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 2px; float: left;
     }
+    h2 {font-size: 16px; padding: 0px 20px;}
     .browseWrap {
-        width: 92%; border: 1px solid #dedede; border-radius: 4px; box-sizing:  border-box; position: relative;
+        border: 1px solid #dedede; border-radius: 4px; box-sizing:  border-box; position: relative;
         margin: 4px 0px;
     }    
     .browseInn {
@@ -171,21 +186,21 @@ padding: 2px
 	<header>
 		<div class="logo">
 		<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
-  <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
+  <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead"></a>
   </c:if>
   
    <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-   <a href="${appPath}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead">
+   <a href="${appPath}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead"></a>
    </c:if>
   
   
   
   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-  <a href="${appPath}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">
+  <a href="${appPath}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
   </c:if>
   
   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-  <a href="${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">
+  <a href="${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
   </c:if>
 		 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -210,218 +225,50 @@ padding: 2px
 		</div>
 		<div class="clear"></div>
 	</header>
-	<section>
-		<div class="browseOut">
-		<div class="clearfix mb">
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/candidatesList'/>">Candidate List</a> &raquo; Bulk Import </div>
-			</div>
-			<div class="browseProgress">
+		<h2><b>Candidate (Resume) Bulk Import</b></h2>
+<div class="browseProgress">
             <div class="browseProgressInn">
-            <div class="labText" id='progressText'>Text here...</div>
+            <div class="labText" id='progressText'>Please wait while uploading the file(s)</div>
                 <div class="progress progress-striped active">
                     <div class="progress-bar progress-bar-success" id='progressBar'>0%</div>
                 </div>
             </div>                
             </div>
-			<div class="browse">
-				<h2>Candidate (Resume) Bulk Import</h2>
-				
-				<div class="browseScroll">
-					<div class="browseWrap">
-						<div class="browseInn">
-							<input type="file" class="btnHide" id='uploadFile' multiple="multiple"> <a
-								href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
-						</div>
-						<span class="filename">Upload File</span>
-						<div class="clear"></div>
-						<div class="addFilBtn">
-							<i class="fa fa-plus"></i>
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<div class="browseBtns">
-				<button id='upload'>
-					<i class="fa fa-upload"></i> Upload
-				</button>
-				<button class="cleBtn" id='clear'>Clear</button>
-			</div>
-			<div class="clear"></div>
-		</div>
-		<div class="editor">
-			<span>
-<!-- 				<div class='copy btn' data-clipboard-target='#log'><i class="fa fa-copy"></i></div> -->
-				<h3>Imported log</h3>
-				<div class="editText" id='log'></div>
-			</span>
-		</div>
-	</section>
-
+<div id="uploader">
+    <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+</div>
+<div class='links'>
+	<ul>
+		<li id='exportLog'>Download Upload Log</li>
+		 <li id='exportFailed'>Download Failed Resumes</li>
+		<li id='exportDuplicate'>Download Existed Resumes</li> 
+	</ul>
+</div>
 	<footer>
 		<div class="copyright">
 			&copy; 2017 SourceLead <sup>&reg;</sup> , All Rights Reserved
 		</div>
 	</footer>
-	<div style='display:none' id='browserBar'>
-	
-		<div class="browseWrap">
-			<div class="browseInn">
-				<input type="file" id='abc' class="btnHide" multiple="multiple">
-				<a href="javascript:void(0)"><i class="fa fa-file-text-o"></i>Browse</a>
-			</div>
-			<span class="filename">Upload File</span>
-			<div class="clear"></div>
-			<div class="abcdef"><i class="fa fa-trash-o"></i></div>
-		</div>	
-	</div>
 </body>
 
 <script src="/resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
 <!-- <script src="resources/js/clipboard.min.js" type="text/javascript"></script> -->
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
-var count = 1;
-	$(document).ready(function() {
-		$(".browseInn input:file").change(function() {
-			updateInputField($(this));
-		});
-		$(".addFilBtn").click(function() {
-			$(".browseScroll").append($("#browserBar").html().replace("abc", "uploadFile"+(count ++)).replace("abcdef", "removeFilBtn"));
-			$(".removeFilBtn").click(function() {
-				$(this).parent(".browseWrap").remove();
-			});
-			$(".browseInn input:file").change(function() {
-				updateInputField($(this));
-			});
-		});
-		$("#clear").click(function() {
-			count = 1;
-			$(".removeFilBtn").each(function(i) {  $(this).click(); });
-			$("input[type=file]").val('');
-			$('.filename').html("Choose File(s)");
-		});
-		$("#upload").click(function() {
-			var data1 = new FormData();
-			var j = 0;
-			var validFiles = [];
-			var k = 0;
-			$("input[type=file]").each(function(i) {
-				var files = document.getElementById($(this).attr('id')).files;
-				for(var i=0;i<files.length;i++) {
-					var validFlag = isValidFile(files[i].name);
-					if(!validFlag)
-						validFiles[k++] = files[i].name;
-					data1.append("inputFile"+(j++), files[i]);
-				}
-			});
-			if(validFiles.length > 0) {
-				var text = "<span class='c'>Unbale to process your request as you have selected unsupported formatted files</span><br/><br/>Unsupported Files:";
-				var rarflag = false;
-				for(var i=0;i<validFiles.length;i++) {
-					text += "<br/>"+validFiles[i];
-					if(validFiles[i].toLowerCase().endsWith(".rar"))
-						rarflag = true;
-				}
-				text += "<br/><br/><span class='a'>To upload candidates using Excel (.xls | .xlsx) file</span> ";
-				text += "<a href='uploadCandidateForm' target='_blank'>Click Here</a>";
-				if(rarflag)
-					text += "<br/><br/><span class='b'>Uploading candidates using rar files will be provided in next release.</span> ";
-				
-				$(".editText").html(text);
-				return;
-			}
-			if(j == 0) {
-				alert("Please select resume(s)");
-				return;
-			}
-			//var sourceleadUrl ='${sourceleadUrl}';
-			$.post("check-session", {}, function(data) {
-				if(data === "YES") {
-					uploadid = new Date().getTime();
-					getUploadStatus();
-					data1.append("uploadid", uploadid);
-					$(".browseProgress").show();
-					$("#progressBar").html('0%');
-					$(".progress div").css("width", "0%");
-					$(".editText").html("");
-					$.ajax({
-						  xhr: function() {
-						    var xhr = new window.XMLHttpRequest();
-							$("#progressText").html('Please wait while uploading files...');
-						    xhr.upload.addEventListener("progress", function(evt) {
-						      if (evt.lengthComputable) {
-						        var percentComplete = evt.loaded / evt.total;
-						        percentComplete = parseInt(percentComplete * 100);
-						        $("#progressBar").html(percentComplete+'%');
-						        $(".progress div").css("color", "#fff").css("width", percentComplete + "%");
-						        if (percentComplete === 100) {
-						        		$("#progressText").html('Please wait while parsing the uploaded files...');
-						        		$(".progress div").css("width",  "0%");
-						        		$("#progressBar").html('0%');
-						        }
 
-						      }
-						    }, false);
-
-						    return xhr;
-						  },
-						  url: 'upload-resumes',
-						  type: "POST",
-						  processData: false,
-						  contentType: false,
-						  data: data1,
-						  success: function(result) {
-						    console.log(result);
-						  },
-						  error: function(request) {
-							  uploadid = 0;
-							  alert(request.responseText.indexOf("Maximum upload size of") != -1 ? "Maximum allowed size is 2GB" : "Operation failed, please try agian");
-						  }
-						});
-				} else {
-					alert("No Session found");
-					location.href='/app/login';
-				}
-			});
-			
-		});
-		
-	});
-	
-	function updateInputField(ele) {
-		var count = document.getElementById($(ele).attr('id')).files.length;
-		var fileName = $(ele).val();
-		if(count > 1)
-			$(ele).parent().parent().find('.filename').html(count+" file(s) selected | "+ (fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1)));
-		else 
- 			$(ele).parent().parent().find('.filename').html(fileName.substring(fileName.lastIndexOf("/")+1).substring(fileName.lastIndexOf("\\")+1));
-	
-	}
-
-	function isValidFile(fileName) {
-		var fileName = fileName.toLowerCase();
-		if(fileName.endsWith(".doc") 
-			|| fileName.endsWith(".docx") 
-			|| fileName.endsWith(".pdf") 
-			|| fileName.endsWith(".odt")
-			|| fileName.endsWith(".zip"))
-			return true;
-		return false;
-	}
-	
 	var uploadid = 0;
+	var win1, win2;
 	function getUploadStatus() {
 		if(uploadid > 0) {
 			$.post("bulk-resume-import-log", {uploadid: uploadid}, function(data) {
 				$(".editText").append(data);
-				if(data.indexOf('Completed!') === -1) {
-					window.setTimeout('getUploadStatus()', 1000);
-					window.setTimeout('getUploadFileStatus()', 1000);
-				} else {
-					$(".browseProgress").hide();
-					$("#clear").click();
-				}
+// 				if(data.indexOf('Completed!') === -1) {
+					win1 = window.setTimeout('getUploadStatus()', 1000);
+					win2 = window.setTimeout('getUploadFileStatus()', 1000);
+// 				} else {
+// 					$(".browseProgress").hide();
+// 					$("#clear").click();
+// 				}
 			});
 		}
 	}
@@ -430,26 +277,134 @@ var count = 1;
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-counts", {uploadid: uploadid}, function(data) {
-			if(data !== "" && data.indexOf('Completed!') === -1) {
+			if(data !== "") { // && data.indexOf('Completed!') === -1
 				var i = data.split(" ")[0];
 				var count = data.split(" of ")[1].split(" ")[0];
 				percentComplete = parseInt(i)/parseInt(count);
 				$(".progress div").css("width", parseInt(percentComplete*100) + "%");
 				$("#progressBar").html(parseInt(percentComplete*100)+'%');
 				$("#progressText").html(data);
-			} else if(data !== "")
-				$("#progressText").html(data);
+			}
+// 			} else if(data !== "")
+// 				$("#progressText").html(data);
 		});
 	}
 	
-	function exportLog() {
+</script>
+<input type='file' style='display:none' multiple="multiple" id='filesSelected'/>
+<script type="text/javascript" src="/resources/pluploadjs/plupload.full.min.js"></script>
+
+<script type="text/javascript" src="/resources/pluploadjs/jquery.plupload.queue.min.js" charset="UTF-8"></script>
+<link type="text/css" rel="stylesheet" href="/resources/pluploadjs/jquery.plupload.queue.css" media="screen" />
+
+<script type="text/javascript">
+$(function() {
+    // Setup html5 version
+    $("#uploader").pluploadQueue({
+        // General settings
+        
+        runtimes : 'html5,flash,silverlight,html4',
+        url : 'upload-resumes',
+        chunk_size : '1mb',
+        rename : false,
+        dragdrop: true,
+         
+        filters : {
+            // Maximum file size
+            max_file_size : '1000mb',
+            // Specify what files to browse for
+            mime_types: [
+                {title : "Resume files", extensions : "doc,docx,pdf,rtf"},
+                {title : "Zip files", extensions : "zip"}
+            ]
+        },
+ 
+        // Resize images on clientside if we can
+        resize: {
+            width : 200,
+            height : 200,
+            quality : 90,
+            crop: true // crop to exact dimensions
+        },
+ 
+ 
+        // Flash settings
+        flash_swf_url : '/resources/pluploadjs/Moxie.swf',
+     
+        // Silverlight settings
+        silverlight_xap_url : '/resources/pluploadjs/Moxie.xap',
+        init: {
+        	
+    		PostInit: function(up) {
+    			$(".plupload_button.plupload_start").unbind('click');
+    			$(".plupload_button.plupload_start").click(function() {
+    				$.post("check-session", {}, function(data) {
+    					if(data === "YES") {
+    						uploadid = new Date().getTime();
+    						up.settings.url = 'upload-resumes?uploadid='+uploadid;
+    						up.start();
+    						$(".browseProgress").show();
+    						$("#progressBar").html('0%');
+    						$(".progress div").css("width", "0%");
+//     						$(".editText").html("");
+    						getUploadStatus();
+    					} else {
+    						alert("No Session found");
+    						location.href='/login';
+    					}
+    				});
+    				return false;
+    			});
+    		},
+    		
+    		UploadComplete: function(up, files) {
+                $(".links").show();
+                $(".browseProgress").hide();
+				$("#clear").click();
+				clearTimeout(win1);
+				clearTimeout(win2);
+            },
+        }
+    });
+    
+    $(".plupload_header").hide();
+});
+
+$(function() {
+	$("#exportLog").click(function() {
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-export-log", {uploadid: uploadid}, function(data) {
 			if(data !== "")
-				$("#progressText").html(data);
+				location.href = '/app/downloadFile.html?file='+data;
+			else
+				alert("Unable to locate logs for this upload");
 		});
-	}
+	});
+	
+	$("#exportFailed").click(function() {
+		if(uploadid == 0)
+			return;
+		$.post("bulk-resume-import-export-failed", {uploadid: uploadid}, function(data) {
+			if(data !== "")
+				location.href = '/app/downloadFile.html?file='+data;
+			else
+				alert("Unable to locate logs for this upload");
+		});
+	});
+	
+	$("#exportDuplicate").click(function() {
+		if(uploadid == 0)
+			return;
+		$.post("bulk-resume-import-export-duplicate", {uploadid: uploadid}, function(data) {
+			if(data !== "" && data.indexOf("files found") === -1)
+				location.href = '/app/downloadFile.html?file='+data;
+			else if(data !== "" && data.indexOf("files found") !== -1)
+				alert(data);
+			else
+				alert("Unable to locate logs for this upload");
+		});
+	});
+});
 </script>
-
 </html>

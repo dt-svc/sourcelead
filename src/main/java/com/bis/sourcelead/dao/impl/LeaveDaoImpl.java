@@ -444,7 +444,7 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public List<Leave> getAllSelfLeavesCounts(Long orgLocationId, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId";
+		String query = "from Leave leave1 where leave1.orgLocations.id = :orgLocationId and leave1.user.id = :userId";
 		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
 		return leavesList;
 	}

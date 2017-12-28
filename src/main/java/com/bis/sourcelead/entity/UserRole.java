@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
 
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -281,6 +281,10 @@ public class UserRole implements Serializable {
 	@Transient
 	private String employeMentType; 
 
+	@Transient
+	@JsonProperty
+	private Map<String,String> userCustomFieldlabelNameAndValue;
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -878,4 +882,14 @@ public class UserRole implements Serializable {
 		this.userCode = userCode;
 	}
 
+	public Map<String, String> getUserCustomFieldlabelNameAndValue() {
+		return userCustomFieldlabelNameAndValue;
+	}
+
+	public void setUserCustomFieldlabelNameAndValue(Map<String, String> userCustomFieldlabelNameAndValue) {
+		this.userCustomFieldlabelNameAndValue = userCustomFieldlabelNameAndValue;
+	}
+
+	
+	
 }

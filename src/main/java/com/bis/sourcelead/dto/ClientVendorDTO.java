@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 /**
  * DTO foe client and Vendor
  * Date :16-08-1989
@@ -79,6 +80,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String searchValue;
 	
 	private String orgType;
+	
+	private Map<String,String> clientCustomFieldlabelNameAndValue;
 	
 	public String getVendorCreateduserName()
 	{
@@ -604,4 +607,14 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		this.orgType = orgType;
 	}
 
+	public Map<String, String> getClientCustomFieldlabelNameAndValue() {
+		return clientCustomFieldlabelNameAndValue;
+	}
+
+	public void setClientCustomFieldlabelNameAndValue(Map<String, String> clientCustomFieldlabelNameAndValue) {
+		this.clientCustomFieldlabelNameAndValue = clientCustomFieldlabelNameAndValue;
+	}
+
+	
+	
 }
