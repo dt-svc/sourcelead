@@ -582,13 +582,13 @@ function cancelOrgImg(){
         <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
         <input type="hidden" name="id" id="whiteListId"/>
          <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
-           <label class="col-md-3">From IP</label>
+           <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
            		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
            </div>
            <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
-           <label class="col-md-3">To IP</label>
+           <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
            		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
            </div>
@@ -641,6 +641,7 @@ function closeWhiteListIp(){
 }
 
 function saveWhiteListIps(){
+	 $("#saveWhiteListbtn").attr("disabled", "disabled");
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
 	var whiteListId = $("#whiteListId").val();
@@ -663,6 +664,7 @@ function saveWhiteListIps(){
 			    	   $("#toIpAddress").val("");
 			    	   $(".modal.addipPopup-modal").fadeOut();
 			    	   $(".comMask").fadeOut();
+			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
 			      },
@@ -748,6 +750,7 @@ function WhiteListIpTablePagination(){
 
 <script>
 function editWhiteListIp(id){
+	$("#saveWhiteListbtn").removeAttr("disabled");
 	$.ajax({
 	    type: "GET",
         url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
@@ -2042,7 +2045,7 @@ function getLocationStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationState').empty();
@@ -2078,7 +2081,7 @@ function getLocationCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationCity').empty();
@@ -2823,6 +2826,7 @@ function addOrgRefreshGoogleApiLocation(){
 
 <script>
 function addipPopup(){
+	$("#saveWhiteListbtn").removeAttr("disabled");
 	$('#fromIpAddressDiv').val("");
 	$('#toIpAddressDiv').val("");
 	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();

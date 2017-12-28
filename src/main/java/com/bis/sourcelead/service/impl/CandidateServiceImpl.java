@@ -1207,6 +1207,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setVisaType(null);
 			}
 			
+			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDTO, orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEducation(candidateEducationList);
+			
+			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDTO,orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEmployers(candidateEmployersList);
 			
 			/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);

@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -110,7 +111,8 @@ public class TimeApprovalRedefinedRestController {
 	@Autowired
 	private UserService userService;
 	
-	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 		 
 		@RequestMapping(value = "/rest/timesheetApprovalDetails", method = RequestMethod.POST ) 
 		public TimesheetApprovalDTO timesheetApprovalDetailsMobile(@RequestBody TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
@@ -549,16 +551,18 @@ public class TimeApprovalRedefinedRestController {
 			 ts.setProject(projectMember.getProjects().getProjectName());
 		    
 		    if(null != projectMember.getProjectClientsId().getOrgRelationId()){
+		    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
 		   	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-						if(projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() != null){
-							ts.setClientName(projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getOrgLocationName());
+						if(orgRelations.getResponderLocationId() != null){
+							ts.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
 						}
 					}
 					if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-						if(projectMember.getProjectClientsId().getOrgRelationId().getLocationId() != null){
-							ts.setClientName(projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getOrgLocationName());
+						if(orgRelations.getLocationId() != null){
+							ts.setClientName(orgRelations.getLocationId().getOrgLocationName());
 						}
 					}
+					ts.setOrgRelationUUID(orgRelations.getUUID());
 		    }else{
 		   	 ts.setClientName("--");
 			}

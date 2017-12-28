@@ -1834,6 +1834,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
 		
+		if(StringUtils.equalsIgnoreCase(decision, "accept")){
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+	           requirementSubmissionHistory.setFromStage("request_sent");
+	           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+		}
+		
 		return requirementSubmission;
 	}
 	

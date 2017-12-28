@@ -198,7 +198,7 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
 						
-						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 						 if (json.client != null && json.client != '' && json.client != 'undefined') {
 							 result = result + '<span><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span>';
 						 }else{
@@ -206,7 +206,7 @@
 						 }
 						 '</sec:authorize>';
 						
-						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 						 result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
 						'</sec:authorize>';
 						
@@ -283,11 +283,20 @@
 						
 						result = result + '<div class="project_details_cta project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
-						
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
-						
 						result = result + '</div>';
 						
+						
+						 if(json.projectCustomFieldlabelNameAndValue != null && json.projectCustomFieldlabelNameAndValue != "" && json.projectCustomFieldlabelNameAndValue != 'undefined'){
+								for (var key in json.projectCustomFieldlabelNameAndValue) {
+									  if (json.projectCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
+										result = result + '<div class="project_details_cta project_details_cta_100">';
+										result = result	+ '<strong>'+key+':</strong>';
+										result = result + '<div class="descriptionStyle">'+json.projectCustomFieldlabelNameAndValue[key]+' </div>';
+										result = result + '</div>';
+									  }
+									}
+							}
 						}
 						
 						result = result + '<div class="clearfix"></div>';

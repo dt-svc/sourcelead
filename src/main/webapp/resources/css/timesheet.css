@@ -1332,7 +1332,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
           
 .modal-backdrop { z-index:10400;}
  
-.modal { z-index:105000 !important;}
+.modal { z-index:105000;}
        
        
        
@@ -2228,7 +2228,6 @@ margin-bottom:15px !important;
 .timeNewSe.timeNewSe_a {
     width:240px;
 }
-
 .timeNewSe .chosen-container-single .chosen-single span {
     font-size: 14px; line-height: 29px;
 }
@@ -2716,9 +2715,7 @@ margin: 6px 0px 0px 0px;
 .Refer {
     font-size: 13px; font-weight: 500; color: #666;
 }
-     
-     
-     
+  
 .totalWrap {
     float: right;
 }
@@ -5451,6 +5448,12 @@ border: 1px solid #333;
 	color: #fff; background-color: #358ede; border: 1px solid #288eea;
 	background-image: linear-gradient(to bottom, #358ede 0px, #288eea 100%);
 }
+.reqListBtn a {
+	display: inline-block; margin: 0px 4px 0px 0px;
+}
+.reqListBtn a.rAct {
+	color: #fff; background-color: #358ede; border: 1px solid #288eea;
+}
 .LisView {
 	display: none;
 }
@@ -6009,9 +6012,6 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 .popMask {
     position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; z-index:999999; display:none;
 }
-.popMaskCustom{
-	 position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.4); top:0px; left:0px; display:none; z-index: 9999;
-}
 .popUpOut {
 	position: absolute; width: 500px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
@@ -6040,6 +6040,9 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 }
 .popupMid {
 	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed; min-height: 150px; overflow-y: auto;
+}
+.popupMidHeight {
+	min-height: inherit;
 }
 .popupMidOver {
 	overflow: inherit;
@@ -6356,7 +6359,7 @@ text-shadow: 0 1px 0 #fff;
 	display: inline-block; padding: 0px 0px 0px 15px;
 }
 .immigraTabSerach {
-	border: 1px solid #dedede; height: 30px; border-radius: 3px; padding: 0px 35px 0px 10px; width: 200px;
+	border: 1px solid #dedede; height: 32px; border-radius: 3px; padding: 0px 35px 0px 10px; width: 200px;
 	background-image: url(../images/search-icon.png); background-position: 95% center; background-repeat:no-repeat;
 	background-size: 16px; font-size: 14px; font-weight: 500; color: #333;
 }
@@ -6703,24 +6706,7 @@ text-shadow: 0 1px 0 #fff;
 .removeNote i {
 	padding: 5px; cursor: pointer; font-size: 16px; display: inline-block;
 }
-.cusFieldHeadFixed {
-	position: fixed; width: 100%; left: 0px; right: 0px; z-index: 20; top: 51px; box-sizing: border-box; padding: 15px 20px 15px 210px !important;
-}
-.cusFieldHeadFixedAct {
-	padding: 15px 20px 15px 70px !important;
-}
-.immigraTabsWrapFixed {
-	margin: 50px 0px 0px 0px !important;
-}
-.timeNewStatus {
-	float: right; width: 240px;
-}
-.timeNewStatus b {
-	width: 45%;
-}
-.timesheetApproved-status {
-    float: right; width: 320px !important;
-}
+
 .noRecordFound {
 	border-top: 1px solid #ededed; background-color: #fff; text-align: center; padding: 45px 0px;
 }
@@ -6782,4 +6768,236 @@ text-shadow: 0 1px 0 #fff;
 .aLink {
     color: #368ee0 !important; background: none !important; padding:  0px 2px !important;    
 }
+ .refreshBtn {
+    width: 40px !important; height: 34px !important;
+}
+.chooErrorMessage p {
+position: absolute !important; left: 0px !important;
+}
+.selectField {
+font-size:13px; padding:0px 26px 0px 5px; border:1px solid #ccc; color:#666; border-radius:3px; appearance:none;
+-webkit-appearance:none; -moz-appearance:none; -ms-appearance:none; -o-appearance:none; font-weight:400; height:31px; cursor:pointer; width:155px; box-sizing:border-box;
+background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-repeat !important; background-position:97% center !important; background-size:10px !important;
+}
+.chooOverFlow .chosen-single span {
+    width: 290px;
+}
+
+
+/*    Reports Wrap   */
+
+.repNewHead {
+    margin:0px 0px; padding:0px 5px; background-color: #f9f9f9; border-radius: 2px;
+	box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+    }
+.repNewHead li {
+    float:left; background-color:#f9f9f9; list-style-type:none; border-bottom:2px solid #f9f9f9;
+    }
+.repNewHead li.current {
+    position:relative; background-color:#f9f9f9; z-index:5; border-bottom:2px solid #368ee0;
+    }
+.repNewHead li a {
+    padding:11px 26px; text-decoration:none; font-size:15px; color:#666; display:block; font-weight: 400;
+    }
+.repNewHead .current a{
+    color:#1d6cb5;
+    }
+
+.repNewContent {
+	background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); min-height: 150px;
+	margin: 1px 0px 0px 0px;
+	}
+.repNewContentHead {
+	background-color: #f5f5f5; padding: 8px 0px;
+	}
+.repNewChartWrap {
+	padding: 15px 20px;
+	}
+.repNewChartWrap h2 {
+	padding: 2px 0px 20px; margin: 0px 0px; font-size: 16px; word-break: break-all; color: #454545; font-weight: 400;
+	}
+.overdueChart {
+	width: 100%; height: 300px; margin-bottom: 20px;
+	}
+.repNewContent .immigraPagi {
+	border-top: 1px solid #ddd;
+	}
+.repNewContent .immigraTabsHead h2 {
+	margin: 0px 0px; padding: 6px 0px 0px; display: inline-block; font-size: 16px; color: #454545; font-weight: 400;
+	float: left;
+	}
+.reportsSerach {
+	border: 1px solid #dedede; height: 30px; border-radius: 3px; padding: 0px 35px 0px 10px; width: 100%;
+	background-image: url(../images/search-icon.png); background-position: 95% center; background-repeat:no-repeat;
+	background-size: 16px; font-size: 14px; font-weight: 500; color: #333;
+	}
+
+.ReqRepHead .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+	height: 31px; line-height: 31px;
+	}
+.butLink {
+	display: inline-block; color: #368ee0;
+	}
+.butLink i {
+	display: inline-block; padding: 0px 8px 0px 0px;
+	}
+.butLink:hover {
+	color: #333;
+	}
+
+.repDashWrap {
+	padding: 20px 0px 15px 0px;
+	}
+.repDashCta {
+	width: 24.5%; margin: 0px 0.25% 10px; float: left; background-color: #fff; padding:15px 0px; border-radius: 2px;
+	border-top: 2px solid #9690e8; position: relative; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+	}
+.repDashCta span {
+	display: block; position: absolute; width: 49px; top: 20px; left: 0px;
+	}
+.repDashCta i {
+	display: inline-block; padding: 0px 0px 0px 12px; font-size: 26px; color: #9690e8;
+	}
+.repDashCtaWrap {
+	width: auto; padding: 0px 10px 0px 50px;
+	}
+.repDashCtaWrap h2 {
+	font-size: 16px; font-weight: 500; color: #666; padding: 0px 0px; margin: 0px 0px;
+	}
+.repDashCtaWrap p {
+	font-size: 13px; font-weight: 400; color: #666; padding: 6px 0px; margin: 0px 0px;
+	}
+.repDashCtaWrap a {
+	color: #9690e8;
+	}
+.repDashCta.colTwo {
+	border-top: 2px solid #3a8cd7; 
+}
+.repDashCta.colTwo i, .repDashCta.colTwo a {
+	color: #3a8cd7;
+}
+.repDashCta.colThree {
+	border-top: 2px solid #fd8373; 
+}
+.repDashCta.colThree i, .repDashCta.colThree a {
+	color: #fd8373;
+}
+.repDashCta.colFour {
+	border-top: 2px solid #7dc33e; 
+}
+.repDashCta.colFour i, .repDashCta.colFour a {
+	color: #7dc33e;
+}
+
+
+.subMenuView {
+	display: none; background-color: #2970B1;
+	}
+.setting-area .subMenuView a {
+	display: block !important; padding: 1px 10px 1px 15px !important; border-top: 1px solid #307dc3; margin: 0px;
+	}
+.subMenuView a i {
+	display: inline-block; padding: 0px 10px 0px 0px !important;
+	}
+.arrRight {
+	float: right; padding: 9px 0px 0px !important;
+	}
+.setting-area .subMenuView a:hover {
+	background-color: #307dc3 !important;
+	}
+
+.conneWrap {}
+.conneWrapHead {
+	background-color: #fff; padding: 6px 15px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px;
+}
+.conneWrapHead span {
+	float: right;
+}
+.conneWrapInn {
+	width: auto; padding: 10px 0px ;
+}
+.connCta {
+	width: 20%; float: left;
+}
+.connCtaInn {
+	width: auto; box-shadow: 0px 0px 2px rgba(0,0,0,0.1); height: 230px; margin: 1px; padding: 20px 15px 10px;
+	border-radius: 2px; text-align: center; position: relative;
+	background: #ffffff;
+	background: -moz-linear-gradient(top,  #f3f3f3 25%, #ffffff 25%); 
+	background: -webkit-linear-gradient(top,  #f3f3f3 25%,#ffffff 25%); 
+	background: linear-gradient(to bottom,  #f3f3f3 25%,#ffffff 25%); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3f3f3', endColorstr='#ffffff',GradientType=0 );	
+}
+.connCtaInn span {
+	display: block; width: 88px; height: 88px; background-color: #fff; border-radius: 50%; margin: 0px auto;
+	border:2px solid #fff;
+}
+.connCtaInn span img {
+	width: 100%; border-radius: 50%; max-width: 85px; max-height: 85px;
+}
+.connCtaInn h2 {
+	margin: 0px 0px; padding: 15px 0px 8px; font-size: 16px; font-weight: 500; color: #666;
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;
+}
+.connCtaInn p {
+	margin: 0px 0px; padding: 0px 0px 10px; font-size: 14px; font-weight: 400; color: #454545;
+}
+.connlink {
+	display: inline-block; border:1px solid #368ee0; padding: 4px 15px; font-size: 13px; border-radius: 2px;
+	color: #368ee0;
+}
+.connlink.conAct {
+	background-color: #368ee0; color: #fff;
+}
+.connCtaRemove {
+	position: absolute; right: 12px; top: 12px;
+}
+.connCtaRemove b {
+	position: relative; padding: 3px; display: block;
+}
+.connCtaRemove b .fa-ellipsis-v {
+	font-size: 16px; padding: 2px; cursor: pointer; color: #666;
+}
+.connRem {
+	position: absolute; right: 20px; top: -2px; visibility: hidden; opacity: 0;
+}
+.connRem a {
+	position: relative; width: 82px; display: block; font-size: 13px; font-weight: 400; background-color: #fff;
+	padding: 5px; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); color: #454545;
+}
+.connRem a i {
+	display: inline-block; padding: 0px 3px 0px 0px;
+}
+.connRem a:after {
+	left: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0;	position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-left-color: #ccc; border-width: 7px; margin-top: -7px;
+}
+.connRem a:hover {
+	color: #DF5757;
+}
+.connCtaRemove b:hover .connRem {
+	visibility: visible; opacity: 1;
+}
+.reFreBtn{
+	height: 34px; padding: 8px 12px; border-radius: 2px !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

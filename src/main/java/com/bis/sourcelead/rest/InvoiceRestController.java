@@ -347,7 +347,7 @@ public class InvoiceRestController {
 		ResponseList<BillingDTO> responseList = new ResponseList<>();
 		
 		
-		// TODO do not delete until sorting  work @Rajashekar
+		// TODO do not delete until sorting  work pending @Rajashekar
 	/*	String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order
@@ -427,18 +427,20 @@ public class InvoiceRestController {
 			BillingDTO billingDto = new BillingDTO();
 			boolean isInvoiceDueDate = false;
 			
-			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				billingDto.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
+			
+			if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
 			}
-			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				billingDto.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				billingDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
 			}
 			if(null != invoice.getProjectID()){
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());	
 			}
 			
-			if(invoice.getOrgRelationID() != null){
-			billingDto.setOrgRelationUUID(invoice.getOrgRelationID().getUUID());
+			if(orgRelations != null){
+			billingDto.setOrgRelationUUID(orgRelations.getUUID());
 			}
 			StringBuilder contactName = new StringBuilder();
 			if(null != invoice.getContactUser()){

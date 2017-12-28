@@ -174,7 +174,7 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/app/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
+	@RequestMapping(value = {"/displayOrgImageInMail/{orgCode}" ,"/app/displayOrgImageInMail/{orgCode}"} , method = RequestMethod.GET)
 	public void displayOrgImageInMail(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
