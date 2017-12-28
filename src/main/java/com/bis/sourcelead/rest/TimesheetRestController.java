@@ -43,6 +43,7 @@ import com.bis.sourcelead.dto.TimeSheetSubmissionDTO;
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
+import com.bis.sourcelead.dto.TimesheetProjectTaskDTO;
 import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.dto.WeekDaysDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
@@ -54,9 +55,9 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
-import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
@@ -1938,6 +1939,29 @@ public class TimesheetRestController {
 				actualStartDate = CalendarUtil.getNextDate(actualStartDate);
 			}
 		}
+    
+       @RequestMapping(value = "/addTimeSheetDayEntries")
+       public TimeSheetDayEntries addTimeSheetDayEntries(TimesheetProjectTaskDTO timesheetProjectTaskDTO,HttpServletRequest request) {
+    	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	 return null;
+       }
+       
+      /* private void addTimesheetDayEntriesByProjectIdAndProjectMemberId(Long projectId,Long projectMemberId,Long projectTaskId,Date timesheetDate) throws Exception{
+    	   Projects projects = projectsService.getProjectById(projectId);
+    	   Date actualStartDate = null;
+    	   Date actualEndDate =  null;
+    	   if(projects != null && projects.getInvoiceFrequency().equalsIgnoreCase("Monthly")){
+    		   
+    	   }else if(projects != null && projects.getInvoiceFrequency().equalsIgnoreCase("Semi-Monthly")){
+    		   
+    	   }else if(projects != null && projects.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly")){
+    		  actualStartDate = timesheetFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(projects,timesheetDate);
+    		  actualEndDate =  timesheetFrequencyGeneratorUtil.getBiweeklyEndSunDayDateByUsingProjectStartDateAndEmployeeEndDate(projects, timesheetDate);
+    	   }else{
+	   
+           }
+       }*/
         
 		public static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
