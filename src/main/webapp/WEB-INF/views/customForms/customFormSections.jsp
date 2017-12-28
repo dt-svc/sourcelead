@@ -90,7 +90,7 @@
 			</div>
 			<div class="col-md-6 noPad">
 				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();">
-				  <option value ="textfield" value="">--Select Field Type--</option>
+				  <option value="">--Select Field Type--</option>
 				  <option value ="textfield" ${customFormPopDetails.fieldType =='textfield' ? 'selected':''} selected>Text field</option>
 				  <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
 				  <option value ="selectfield" ${customFormPopDetails.fieldType =='selectfield' ? 'selected':''} >Select field</option>
@@ -109,7 +109,7 @@
 			  
 			  <div class="col-sm-12 noPad mt clearfix">
 				  	  <div class="col-md-3 noPad labHeight">Is Required? <span class="text-danger paddingLeft">*</span></div>
-					  <div class="col-md-6"><input name="isRequired" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" type="checkbox"></div>
+					  <div class="col-md-6"><input name="isRequired" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" type="checkbox" data-validation="required"></div>
 				</div>
 			  
 				<div class="clearfix"></div>
@@ -150,9 +150,9 @@
 			</div>
 			
 			<div class="col-sm-12 noPad mt clearfix">
-			  <div class="col-md-3 noPad labHeight">Status</div>
+			  <div class="col-md-3 noPad labHeight">Status<span class="text-danger paddingLeft">*</span></div>
 			  <div class="col-md-6 dropdown-select">
-			  <select name="status" class="field-label form-control input-sm" id="statusId">
+			  <select name="status" class="field-label form-control input-sm" id="statusId" field-name="Status" data-validation="required">
 			  	<option value="" selected>--Select Status--</option>
 			  	<option ${customFormPopDetails.status == 1 ? 'selected':''} value="1">Active</option>
 			  	<option ${customFormPopDetails.status == 0 ? 'selected':''} value="0">In-Active</option>
@@ -348,7 +348,6 @@ function getSelectedFieldDetails(){
  
  <script>
  function saveAddFormField(){
-	 alert("hi");
 	 if ($('#saveAddForm_form').validate(false, validationSettings)){
 	    var formData = getFormData1("saveAddForm_form");
 	    var selectedSectionID = $("#addFieldSection").val();
@@ -388,6 +387,11 @@ function flushPopupData(){
 	$("#maxDate").val('');
 	$("#labelinfo").val('');
 	$('#saveAddForm_form').find('p.jquery_form_error_message').remove();
+	$('#fieldsDropDown').val('textfield');
+	$('#fieldsDropDown').trigger('chosen:updated');
+	getSelectedFieldDetails();
+	
+	
 }
 </script>
 
@@ -432,6 +436,27 @@ var validationSettings = {
  }
  </script>
  
+ 
+ <script>
+ $(function(){
+	    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	    $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		 $("#addFieldSection").chosen();
+	    $("#fieldsDropDown").chosen();
+	    $("#fieldsDropDown").trigger("chosen:updated");
+	    $("#addFieldSection").trigger("chosen:updated");
+	    
+	}); 
+ </script>
  <!--  script for show or less -->
  <script>
 (function() {

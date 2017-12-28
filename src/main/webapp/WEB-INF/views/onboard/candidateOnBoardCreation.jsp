@@ -864,7 +864,7 @@ function validateUploadFile(id)
 			    	 } 
 			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
 			    		 $("#startDate").val(json['dateOfJoiningStr']);
-			    		 var dt = $(this).datepicker("#startDate");
+			    		 var dt = getJSDate(json['dateOfJoiningStr'],'${SourceLeadWeb_orgLocations.dateFormat}');
 			 			 dt.setDate(dt.getDate() + 1);
 			 			 $("#endDate").datepicker("option", "minDate", dt);
 			    	 }
@@ -2222,7 +2222,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="emailDiv">';
 	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">';
+	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" readonly="readonly" data-validation-optional="true"   data-validation="validate_Space validate_length length2-100 validate_email">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
@@ -2301,6 +2301,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" onchange="getEmploymentType();" name="employmentType">';
 	 result = result +'<option value=""  selected="selected">Select Employment Type</option>';
+	 result = result +'<option value="C2C">C2C</option>';
 	 result = result +'<option value="W-2">W-2</option>';
 	 result = result +'<option value="C2H">C2H</option>';
 	 result = result +'<option value="Part Time">Part Time</option>';
@@ -2440,7 +2441,6 @@ function addCandidateDetailsForOnboarding(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  	  
 	  	   onSelect : function(selected) {
 	  		var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);

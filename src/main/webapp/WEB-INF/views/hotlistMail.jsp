@@ -12,13 +12,14 @@
 .modal-backdrop{
 display: none;
 }
-
 .nicEdit-main {
 	overflow: auto !important;
 }
-
 .mt40{
  margin-top: 50px !important;
+}
+.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+	height: 35px; line-height: 35px; width: 500px !important;
 }
 </style>
 

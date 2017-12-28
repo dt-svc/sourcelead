@@ -244,7 +244,8 @@
 		            		<span class="tbldata-dotdot-big">
 		            			<c:choose>
 								    <c:when test="${!empty requirement.spocName}">
-					                	<a href="<c:url value="${appPath}/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${requirement.spocName}</a>
+					                	<%-- <a href="<c:url value="${appPath}/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${requirement.spocName}</a> --%>
+						          	${requirement.spocName}
 						          	</c:when>
 								    <c:otherwise>
 								    	' -- '
@@ -254,7 +255,7 @@
 			            	<div class="clearfix"></div> 
 		                </div>
 		              
-		               <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+		               <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 			                <div class="require_wrap_details_cta"> <b>Client Name:</b>
 				                <span class="tbldata-dotdot-big">
 				                <c:choose>
@@ -270,7 +271,7 @@
 				            </div>  
 			            </sec:authorize>
 			            
-			             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+			             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 			                <div class="require_wrap_details_cta"> <b>Client Name:</b>
 			                	<span class="tbldata-dotdot-big">
 			                		<c:choose>

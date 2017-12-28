@@ -354,7 +354,7 @@ function closeCertificatePopup(){
 		               if ((datestr = $(this).val()).length > 0) {
 		                   year = datestr.substring(datestr.length-4, datestr.length);
 		                   month = jQuery.inArray(datestr.substring(0, datestr.length-5), $(this).datepicker('option', 'monthNames'));
-		                   //$(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
+		                   $(this).datepicker('option', 'defaultDate', new Date(year, month, 1));
 		                   $(this).datepicker('setDate', new Date(year, month, 1));    
 		               }
 		               var other = this.id == "startYear" ? "#endYearEdit" : "#startYear";

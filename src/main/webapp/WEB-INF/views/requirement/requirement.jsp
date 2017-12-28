@@ -896,7 +896,7 @@ $(document).ready(function () {
 	                  <div id="customDiv${section.id}"></div>
 	               </c:if>
 	            </c:forEach>
-	   </c:if>
+	   	</c:if>
         
       </div>
       <div class="clearfix mt">
@@ -1321,8 +1321,8 @@ $(document).ready(function () {
               <c:if test="${empty requirement.id}"> 
               	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList('');">Assigned Members</a> <button type="button" class="btn btn-default btn-sm ml10 btnShowlist" id="showGrid" disabled><span id="sl">Show List</span><span class="badge ml10 showGrid">0</span></button>
               </c:if>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" >
-                  	<i onclick="flushStoreTeam();getTeamOwners();" class="fa fa-plus paddingRight"></i>Add Team
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();">
+                  	<i class="fa fa-plus paddingRight"></i>Add Team
                   </span>
                   </div>
               </div>
@@ -1674,14 +1674,23 @@ function storeTeam(){
          };
 	   if ($('#team_form').validate(false, validationSettings)){ 
 		   
-		   var formData = getFormData("team_form");
+		   var formData = getFormData1("team_form");
 			
-			$("#add_team").attr("disabled", "disabled"); 
-	       
-			$.post(sourceleadUrl+"/storeTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-	        	$('#addTeam').hide();
-				$('.modal-backdrop').hide();
-	        });
+			$("#add_team").attr("disabled", "disabled");
+			
+			$.ajax({
+				 type : "POST",
+				 data: formData,
+ 	    	     contentType : 'application/json; charset=utf-8',
+ 		         processData: false,
+ 		         contentType:false, 
+				url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
+				success : function(result) {
+					$('#addTeam').hide();
+					$('.modal-backdrop').hide();
+
+				},
+			});
 	        
 			return true; 
 	   }else{ 
@@ -1978,10 +1987,13 @@ function setTemplateValues(){
 					}
 			    	
 			    	//$("textarea#description").val(json.description);
-			    	
+			    	if(json.description != null && json.description != '' && json.description != 'undefined'){
 			    	$('#txtEditor').text(json.description);
 			    	$('.Editor-editor').text(json.description);
-			    	
+			    	}else{
+			    	$('#txtEditor').text('');	
+			    	$('.Editor-editor').text('');
+			    	}
 			    	$("#rate").val(json.rate);
 			    	$("#maxRate").val(json.maxRate);
 			    	

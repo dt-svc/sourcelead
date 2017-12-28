@@ -32,9 +32,9 @@ max-height: inherit !important;
 	<section class="content-wraper">
 		<section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>User Summary</h2>
+				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -205,7 +205,7 @@ $(document).ready(function(){
 				    '</sec:authorize>';
 				    
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
-				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit User</a>';
+				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit Associate</a>';
 				    '</sec:authorize>';
 				      
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
@@ -1466,7 +1466,7 @@ $("#editRoleDetailsList").empty();
 					    result = result + '<span class="" id="hideVendor" style="display:none">'; 
 						result = result + '<div class="user_summary_edit_cta" id="vendor">';
 						result = result + ' <label>Vendor</label>';
-						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactsList();">';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+json.vendorName+'">';
 						result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'">';
@@ -1630,7 +1630,7 @@ function updateUserDesignationOtherType(){
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	//$('#vendors').empty();
+		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
@@ -1642,7 +1642,7 @@ function updateUserDesignationOtherType(){
 		            	  
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            getVendorContactList();
+		            getVendorContactsList();
 		            
 		        }
 		 });
@@ -1650,7 +1650,7 @@ function updateUserDesignationOtherType(){
  </script>
 
 <script>
- function getVendorContactList(){
+ function getVendorContactsList(){
 	 $('#vendorcontact').val('').trigger("chosen:updated");
 	 var orgRelationID = $('#vendors').val();
 	 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){

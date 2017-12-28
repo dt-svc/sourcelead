@@ -31,7 +31,12 @@ window.onload = function () {
 		document.getElementById("client_form").reset();
 		
 		var orgRelationId = '${orgRelationId}';
-	
+		
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		</c:forEach>
+		
 		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
 			
 			var orgRelationUUID = '${orgRelationUUID}';
@@ -235,6 +240,7 @@ function getVendorDetails(){
 
 <!-- Content Area -->
 <section class="content-wraper">
+<input type="hidden" id="actionId" value="${actionId}">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>Create Vendor</h2>
@@ -465,7 +471,14 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
-
+					
+					<div class="clearfix mb"></div>	
+					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 0}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
+						
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<h3>Contact Details</h3>
@@ -551,6 +564,14 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
+						
+						<div class="clearfix"></div>	
+					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 1}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
+						
 					</div>
 					<div class="clearfix mb"></div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -612,6 +633,19 @@ function getVendorDetails(){
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
 
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 
 <script type="text/javascript">

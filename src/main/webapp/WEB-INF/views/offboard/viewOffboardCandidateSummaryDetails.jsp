@@ -434,7 +434,7 @@ padding-left: 25px;
 	 				{
 	 	        		var report = json.resignationDocumentsList[i];
 	 	        		result = result +'    <div class="col-md-2 text-center mb10">';
-						result = result +'      <a href=\"'+sourceleadUrl+'/downloadOffboardDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+						result = result +'      <a href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
 						result = result +'    </div></a>';
 						result = result +'    </div>';  
@@ -463,7 +463,7 @@ padding-left: 25px;
 		 				{
 		 	        		var report = json.offboardPackDocumentsList[i];
 		 	        		result = result +'    <div class="col-md-2 text-center mb10">';
-							result = result +'      <a href=\"'+sourceleadUrl+'/downloadOffboardDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+		 	        		result = result +'      <a href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
 							result = result +'    </div></a>';
 							result = result +'    </div>';  
