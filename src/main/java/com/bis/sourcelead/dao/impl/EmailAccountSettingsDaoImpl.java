@@ -13,11 +13,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.EmailAccountSettingsDao;
+import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
 @Repository
 public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
@@ -82,6 +84,20 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 			emailAccount = (EmailAccountSettings) emailAccountList.iterator().next();
 		}
 		return emailAccount;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteEmailAccount(Long id, Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		try{
+		EmailAccountSettings emailAccountSettings = (EmailAccountSettings) session.get(EmailAccountSettings.class, id);
+		session.delete(emailAccountSettings);
+		}catch(Exception exception){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"email"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
+		}
 	}
 
 }

@@ -370,13 +370,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 		projects =  projectsDao.getProjectById(Long.parseLong(projectsDTO.getProjectId()));
 	 	}else{
 	 		projects =  new Projects();
-	 		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
 	 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	 		projects.setIsDefaultProject(Constants.NO);
 	 	}
     	
     	projects.setProjectName(projectsDTO.getProjectName().trim());
-    	
+    	projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
     	
     	if(!isNullOrEmpty(projectsDTO.getProjectDescription())){
     	projects.setDescription(projectsDTO.getProjectDescription());

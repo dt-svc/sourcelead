@@ -85,6 +85,7 @@ function getRequestedAssociatesList(){
 				result = result +' </div>';    
 				result = result +'</div>';
 				
+ 
 				result = result +'</div>';
 				result = result +'</div> ';  
 				
