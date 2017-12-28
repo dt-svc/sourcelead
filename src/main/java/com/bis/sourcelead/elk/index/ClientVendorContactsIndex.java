@@ -29,6 +29,8 @@ public class ClientVendorContactsIndex implements Serializable {
 	
 	private Long ownerUserId;
 	
+	private String  clientUserName;
+	
 	private String  clientUserFirstName;
 	
 	private String  clientUserLastName;
@@ -38,6 +40,8 @@ public class ClientVendorContactsIndex implements Serializable {
 	private Long  clientUserId;
 	
 	private String  clientUserPhNo;
+	
+	private String  vendorUserName;
 	
 	private String  vendorUserFirstName;
 	
@@ -414,6 +418,22 @@ public class ClientVendorContactsIndex implements Serializable {
 	public void setCheckbox(String checkbox)
 	{
 		this.checkbox = checkbox;
+	}
+
+	public String getClientUserName() {
+		return clientUserName;
+	}
+
+	public void setClientUserName(String clientUserName) {
+		this.clientUserName = clientUserName;
+	}
+
+	public String getVendorUserName() {
+		return vendorUserName;
+	}
+
+	public void setVendorUserName(String vendorUserName) {
+		this.vendorUserName = vendorUserName;
 	}
 
 	

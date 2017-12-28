@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+import bsh.StringUtil;
 
 
 @Controller
@@ -135,8 +138,8 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_USER', 'ROLE_VIEW_EDIT_USER', 'ROLE_VIEW_DELETE_USER', 'ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE','ROLE_VIEW_ASSOCIATE')")
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
-			@RequestParam(value = "userCode", required = false) String userCode) throws Exception {
-		ModelAndView model = new ModelAndView();
+			@RequestParam(value = "userCode", required = false) String userCode,@RequestParam(value = "userId", required = false) String userId) throws Exception {
+			ModelAndView model = new ModelAndView();
 		
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String isTimeSheetEnrolled = (String) SourceLeadSessionManager.getSessionAttribute(request,"timesheet");
@@ -151,7 +154,10 @@ public class UserController {
 		   
 			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		    model.addObject("documentsList", documentsList);
-		    
+		    if(userId != null && StringUtils.isNoneEmpty(userId)) {
+		    	User user = userService.getUserById(Long.parseLong(userId));
+		    	userCode = user.getUserCode();
+		    }
 			User user = userService.getUserByUserCodeAndOrgLocationsId(userCode, orgLocations.getId());
 			if(user != null){
 				// to get a project list by userId
@@ -176,7 +182,7 @@ public class UserController {
 			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
 			     model.addObject("sourceleadSectionList",sections); 
 				
-				request.setAttribute("candidateId", candidate.getConsultantUser().getId());
+				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
 			}else{

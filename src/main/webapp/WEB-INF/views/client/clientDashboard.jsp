@@ -392,8 +392,7 @@ window.onload = function () {
 	
 
 	if('${spocId}' != null && '${spocId}' != '' && '${spocId}' != 'undefined'){
-		clientSpocSideBar("${spocId}","${ownerId}","${spocUserId}","","","","","${tempOwnerId}");
-		
+		clientSpocSideBar("${spocId}","${ownerId}","${spocUserId}","${spocName}","${spocLocationId}","${orgRelationId}","${userId}","${tempOwnerId}");
 	}
 	
  };
