@@ -6975,6 +6975,7 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .connRem a:hover {
 	color: #DF5757;
 }
+
 .connCtaRemove b:hover .connRem {
 	visibility: visible; opacity: 1;
 }
