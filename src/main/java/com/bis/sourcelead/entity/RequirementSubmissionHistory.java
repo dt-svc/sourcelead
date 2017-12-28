@@ -20,6 +20,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmissionHistory")
@@ -76,6 +78,10 @@ public class RequirementSubmissionHistory implements Serializable{
     
     @Transient
     private Long offerResumeid;
+    
+    @JsonProperty
+    @Transient
+    private String offerResumeUrl;
     
     @Transient
     private String loginUserName;
@@ -361,5 +367,13 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setCoolingOffPeriodEndDateStr(String coolingOffPeriodEndDateStr) {
 		this.coolingOffPeriodEndDateStr = coolingOffPeriodEndDateStr;
+	}
+
+	public String getOfferResumeUrl() {
+		return offerResumeUrl;
+	}
+
+	public void setOfferResumeUrl(String offerResumeUrl) {
+		this.offerResumeUrl = offerResumeUrl;
 	}
 }

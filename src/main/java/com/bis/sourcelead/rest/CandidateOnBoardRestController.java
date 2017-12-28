@@ -634,6 +634,10 @@ public class CandidateOnBoardRestController {
 					candidateOnBoardingDTO.setUserEmail(candidateOnBoarding.getOnboardingUser().getEmail());
 				}
 				
+				if(null != candidateOnBoarding.getRejectedReason()){
+					candidateOnBoardingDTO.setRejectedReason(candidateOnBoarding.getRejectedReason());
+				}
+				
 				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
 				candidateOnBoardingDTO.setDocumentsCount(documentsCount);
 				Integer acceptedDocumentsCount = onBoardingTemplateDocumentsService.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoarding.getId());

@@ -148,14 +148,14 @@ right: 15px;
 						<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Routing Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="routingNumber" id="routingNumber" field-name="Routing Number" value='${SourceLeadWeb_bankingDetails.routingNumber}' data-validation="required validate_space validate_length length9-9" maxlength="9" >
+								 <input class=" form-control" type="text" name="routingNumber" id="routingNumber" placeholder="Routing Number" field-name="Routing Number" value='${SourceLeadWeb_bankingDetails.routingNumber}' data-validation="required validate_space validate_length length9-9" maxlength="9" >
 								</div>
 						</div>
 						
 						<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Account Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="accountNumber" id="accountNumber" field-name="Account Number" value='${SourceLeadWeb_bankingDetails.accountNumber}' data-validation="required validate_space validate_length length9-15"  >
+								 <input class=" form-control" type="text" name="accountNumber" id="accountNumber" placeholder="Account Number" field-name="Account Number" value='${SourceLeadWeb_bankingDetails.accountNumber}' data-validation="required validate_space validate_length length9-15"  >
 								</div>
 						</div>
 						

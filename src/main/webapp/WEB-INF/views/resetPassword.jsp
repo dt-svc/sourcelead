@@ -179,7 +179,7 @@ var validationSettings = {
               	      data:JSON.stringify(form),
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                    	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
+                    	  url: "/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
                       	success: function(json) {
                       		if(json.resetResponse == 'Invalid'){
   	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();

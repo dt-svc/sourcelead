@@ -123,8 +123,7 @@ display: none;
               <div class="pull-right mr">
                   <button type="button" value="add" id="add_email_account"
 							onclick="addEmailAccount();" class="btn btn-sm btn-primary">Add</button>
-					
-                  <button type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/mailBox/mails'/>'" class="btn btn-sm btn-default ml">Cancel</button>
+                  <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
               </div>
           </footer>
             </form:form>
