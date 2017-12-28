@@ -3,18 +3,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<!-- <script src="/resources/js/amcharts.js"></script>
-<script src="/resources/js/serial.js"></script>
-<script src="/resources/js/light.js"></script>
-<script src="/resources/js/pie.js"></script> -->
-
-
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
 <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
 
+<script>
 $(window).load(function() {
 	getDeclineApplicants();
 });
@@ -25,7 +20,8 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant Decline</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Applicant Decline</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) by source </div>
+   
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix"> 
@@ -33,8 +29,8 @@ $(window).load(function() {
     <div class="ReqRepHead clearfix">
     	
     	<div class="col-md-2 pull-left reqListBtn">
-        <a href="javascript:void(0)" title="Graphical View" id="graphicView" onClick="getDeclineApplicants();" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="javascript:void(0)" onClick="getDeclineApplicantList();" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
+        <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+          <a href="${appPath}/applicantDeclineList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
     
 		<div class="col-md-4">
@@ -76,15 +72,6 @@ $(window).load(function() {
           <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getDeclineApplicants();">Run</button>
 		</div>
-          <div class="col-md-1">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
-          </div>
-        </div>
         </div>
         
         
@@ -298,79 +285,6 @@ $(function() {
     });
   }); 
     
-</script>
-
-<script type="text/javascript">
-
-function getDeclineApplicantList(){
-	
-	$("#applicantDeclineGraphList").show();
-	$("#applicantDeclineGraph").hide();
-	$("#applicantDeclineList").show();
-	var jobIds = $("#jobIds").val();
-	  if(jobIds == null){
-		  jobIds = '';
-	  }
-	  var dateSelection = $("#dateSelection").val(); 
-	  $.ajax({ 
-		   	type: "GET",
-		   	url: sourceleadUrl+"/getDeclinedApplicantsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
-		    success: function(data) {
-		    	$("#applicantDeclineList").empty();
-           	 var result = "";
-             result  = result + '    <table class="table table-bordered" id="applicantDeclinePagenationId">     ';
-			 result  = result + '     <thead>                                 ';
-			 result  = result + '       <tr>                                  ';
-			 result  = result + '         <th>Jobs</th>                       ';
-			 result  = result + '         <th>Skills</th>                     ';
-			 result  = result + '         <th>Over Qualified</th>             ';
-			 result  = result + '         <th>Bad Fit</th>                    ';
-			 result  = result + '         <th>Interview</th>                  ';
-			 result  = result + '         <th>Salary</th>                     ';
-			 result  = result + '         <th>Other</th>                      ';
-			 result  = result + '         <th>Total</th>                      ';
-			 result  = result + '       </tr>                                 ';
-			 result  = result + '       </thead>                              ';
-			 result  = result + '       <tbody>                               ';
-			 for (var i = 0; i < data.length; i++) { 
-				 var report = data[i];
-				 result  = result + '       <tr>                                  ';
-				 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
-				 result  = result + '         <td><div>'+report.skillsCount+'</div></td>               ';
-				 result  = result + '         <td><div>'+report.unsuitableCount+'</div></td>               ';
-				 result  = result + '         <td><div>'+report.badfitCount+'</div></td>               ';
-				 result  = result + '         <td><div>'+report.interviewCount+'</div></td>               ';
-				 result  = result + '         <td><div>'+report.salaryCount+'</div></td>               ';
-				 result  = result + '         <td><div>'+report.otherCount+'</div></td>               ';
-				 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
-				 //result  = result + '         <td><div>31</div></td>              ';
-				 result  = result + '         </tr>                               ';
-			 }
-			
-			 
-			 result  = result + '     </tbody>                                ';
-			 result  = result + '   </table>                                  ';
-			 
-			 $("#applicantDeclineListDiv").empty();
-			 $("#applicantDeclineListDiv").append(result);
-			 applicantDeclineListPagination();
-		    	
-		    }
-		 });
-}
-function applicantDeclineListPagination(){
-	$('#applicantDeclinePagenationId').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
-}
 </script>
 
 <script>
