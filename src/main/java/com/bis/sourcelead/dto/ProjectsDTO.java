@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.bis.sourcelead.entity.User;
-
 public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -164,6 +162,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private String orgRelationUUID;
 	
 	private String orgRelationId;
+	
+	private Map<String,String> projectCustomFieldlabelNameAndValue;
+	
+	private List<CustomFormFieldDTO> customFormData;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -786,6 +788,23 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	{
 		this.orgRelationId = orgRelationId;
 	}
+
+	public Map<String, String> getProjectCustomFieldlabelNameAndValue() {
+		return projectCustomFieldlabelNameAndValue;
+	}
+
+	public void setProjectCustomFieldlabelNameAndValue(Map<String, String> projectCustomFieldlabelNameAndValue) {
+		this.projectCustomFieldlabelNameAndValue = projectCustomFieldlabelNameAndValue;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+
 	
 	
 	

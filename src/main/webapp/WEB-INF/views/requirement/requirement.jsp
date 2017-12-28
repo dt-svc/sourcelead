@@ -896,7 +896,7 @@ $(document).ready(function () {
 	                  <div id="customDiv${section.id}"></div>
 	               </c:if>
 	            </c:forEach>
-	   </c:if>
+	   	</c:if>
         
       </div>
       <div class="clearfix mt">

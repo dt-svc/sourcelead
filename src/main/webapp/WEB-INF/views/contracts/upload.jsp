@@ -103,7 +103,9 @@ padding: 0;
 
  <div id="backShadow"></div>
   <div id="popup"></div>
+  
 <section class="content-wraper container">
+
 <section class="content-header clearfix">
     <div class="text-center clearfix">
       <h2>Create Signature</h2>
@@ -112,9 +114,6 @@ padding: 0;
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts List</a>&raquo;Create Signature</div>
   </c:if>
   </section>
-
-           
-            
             <div id="addSign">
                 <div class="cancelSign">
                     <button type="button" onclick="Signer.hideSignModal()" class="close" aria-hidden="true">&times;</button>
@@ -220,7 +219,8 @@ padding: 0;
                     </div>
                 </div>
             </div>
-            </section>
+</section>
+
             
  <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
  <jsp:include page="../masterFooter.jsp" />
