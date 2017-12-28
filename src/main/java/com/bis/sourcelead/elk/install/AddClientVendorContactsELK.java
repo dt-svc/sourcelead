@@ -174,6 +174,13 @@ public class AddClientVendorContactsELK {
 									if(null != rs3.getString("MOBILE_PHONE")){
 										clientVendorContactsIndex.setVendorUserPhNo(rs3.getString("MOBILE_PHONE"));
 									}
+									
+									if(!isNullOrEmpty(rs3.getString("LAST_NAME"))){
+										clientVendorContactsIndex.setVendorUserName(rs3.getString("FIRST_NAME")+" "+rs3.getString("LAST_NAME"));
+									}else {
+										clientVendorContactsIndex.setVendorUserName(rs3.getString("FIRST_NAME"));
+									}
+									
 									clientVendorContactsIndex.setVendorUserId(rs3.getLong("ID"));
 									clientVendorContactsIndex.setVendorUserEmail(rs3.getString("EMAIL"));
 							        }
@@ -189,6 +196,13 @@ public class AddClientVendorContactsELK {
 									if(null != rs4.getString("LAST_NAME")){
 										clientVendorContactsIndex.setClientUserLastName(rs4.getString("LAST_NAME"));
 									}
+									
+									if(!isNullOrEmpty(rs4.getString("LAST_NAME"))){
+										clientVendorContactsIndex.setClientUserName(rs4.getString("FIRST_NAME")+" "+rs4.getString("LAST_NAME"));
+									}else {
+										clientVendorContactsIndex.setClientUserName(rs4.getString("FIRST_NAME"));
+									}
+									
 									if(null != rs4.getString("MOBILE_PHONE")){
 										clientVendorContactsIndex.setClientUserPhNo(rs4.getString("MOBILE_PHONE"));
 									}

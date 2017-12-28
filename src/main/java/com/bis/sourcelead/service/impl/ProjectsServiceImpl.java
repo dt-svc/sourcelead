@@ -36,6 +36,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dto.ClientProjectDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -51,9 +52,11 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectCustomFieldData;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -72,11 +75,12 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectDocumentFolderService;
-import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -189,6 +193,13 @@ public class ProjectsServiceImpl implements ProjectsService{
      
 	 @Autowired
 	 ProjectDocumentFolderService projectDocumentFolderService;
+	 
+	 
+	 @Autowired
+	 private OrglocationFormFieldsService orglocationFormFieldsService;
+	 
+	 @Autowired
+	 private ProjectCustomFieldDataService projectCustomFieldDataService;
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -513,6 +524,24 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projects.setIsProjectMembersFilled(Constants.NO);
 		projects.setIsProjectAdditionalDetailsFilled(Constants.NO);
 		Projects updatedProjects = saveProject(projects);
+		
+		
+		
+		if(projectsDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:projectsDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				ProjectCustomFieldData projectCustomFields = new ProjectCustomFieldData();
+				projectCustomFields.setProjects(updatedProjects);
+				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				 projectCustomFields.setOrglocationsFormFields(orgFormField);
+				 projectCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				 projectCustomFieldDataService.saveProjectCustomFieldData(projectCustomFields);
+				}
+				
+			}	
+		}
+		
+		
 		
 		/*
 		 * Saving Project DB data as ElasticSearch Documents

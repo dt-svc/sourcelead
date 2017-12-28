@@ -283,11 +283,20 @@
 						
 						result = result + '<div class="project_details_cta project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
-						
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
-						
 						result = result + '</div>';
 						
+						
+						 if(json.projectCustomFieldlabelNameAndValue != null && json.projectCustomFieldlabelNameAndValue != "" && json.projectCustomFieldlabelNameAndValue != 'undefined'){
+								for (var key in json.projectCustomFieldlabelNameAndValue) {
+									  if (json.projectCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
+										result = result + '<div class="project_details_cta project_details_cta_100">';
+										result = result	+ '<strong>'+key+':</strong>';
+										result = result + '<div class="descriptionStyle">'+json.projectCustomFieldlabelNameAndValue[key]+' </div>';
+										result = result + '</div>';
+									  }
+									}
+							}
 						}
 						
 						result = result + '<div class="clearfix"></div>';

@@ -396,7 +396,8 @@ $('body').on('submit', '#signatory_form', function(e){
 		    	 url: sourceleadUrl+"/saveOrgLocationSignatory?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
 		        success: function(data) {
 		        	if(data == 'success'){
-		        		location.replace(sourceleadUrl+"/orgSettings");
+		        		validateLegalSigner();
+// 		        		location.replace(sourceleadUrl+"/orgSettings");
 		        		$("#loading").removeAttr("style");
 		        	}
 		        },
