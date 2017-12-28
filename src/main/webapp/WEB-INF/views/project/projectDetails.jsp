@@ -198,7 +198,7 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
 						
-						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 						 if (json.client != null && json.client != '' && json.client != 'undefined') {
 							 result = result + '<span><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span>';
 						 }else{
@@ -206,7 +206,7 @@
 						 }
 						 '</sec:authorize>';
 						
-						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+						'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 						 result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
 						'</sec:authorize>';
 						
