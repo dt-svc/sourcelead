@@ -1,22 +1,14 @@
+
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="/resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
 
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
 
 <script>
 $(window).load(function() {
@@ -35,19 +27,19 @@ $(window).load(function() {
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-3 pull-left reqListBtn">
-          <a href="#" id="graphicView" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list" onclick = "getJobViseCount();"></i></a>
+       		 <a href="${appPath}/applicantsBackoutReport" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+              <a href="${appPath}/applicantBackoutReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-4">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name = "selectJob" id = "reportJobList">
-          <c:forEach var = "requirementReport"  items="${requirementDTOList}">
-         	 <option  value= "${requirementReport.requirementId }">${requirementReport.jobTitle}</option>
-          </c:forEach>
+          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
+            <c:forEach var="option" items="${requirementsList}">
+				<option value="${option.requirementId}">${option.jobTitle}</option>
+			</c:forEach>
           </select>
         </div>
         
         <div class="col-md-2 dropdown-select positionRelative">
-            <select class="form-control" name="dateSelection" id="dateSelection">
+            <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
@@ -58,82 +50,52 @@ $(window).load(function() {
             <option value="custom">Custom</option>
           </select>
           <!-- Top Leave Takers Custom Date -->
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves cusTomShow" style="display: none; width: 346px;">
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
             <div class="pull-left">
               <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+                <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
               </div>
+              
               <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+                <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBackoutReportCount();"><i class="fa fa-search"></i></button>
             </div>
           </div>
           <!-- Top Leave Takers Custom Date --> 
           
         </div>
         <div class="col-md-1 noPad">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick = "getApplicantBackoutReportCount();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getApplicantBackoutReportCount();">Customize</button>
         </div>
-          <div class="col-md-2 text-right">
-          <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
-            <ul class="dropdown-menu clearfix  dropdown-menu-right">
-              <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            </ul>
-          </div>        
-		</div> 
       </div>
       <!-- Decline Reasons -->
+      <div class="row" id="applicantBackoutGraph" style="display:block">
       <div class="row">
         <div class="col-md-12 mt25">
           <div class="clients_wrap_table dashboard-widget">
             <h4 class="pull-left">Backout Reasons</h4>
-            <div id="backoutReason" style="width:100%; height: 250px; margin-bottom: 25px;" class="amchartAnchor-Hide"></div>
+            <div id="backoutReason" style="width:100%; height: 250px; margin-bottom: 25px;" ></div>
           </div>
         </div>
       </div>
+      </div>
       <!-- Decline Reasons -->
       
-    <!--   <!-- Best recruiters  -->
-      <<!-- div class="content-dashboard clearfix hidden"> 
-        Assigned Requirements
-        <div class="clearfix dashboard-widget mt25 col-md-12">
+      <!-- Best recruiters  -->
+    <div class="clearfix dashboard-widget mt col-md-12" id="applicantBackoutGraphList" style="display:none">
           <div class="clearfix">
-          <h4 class="pull-left">Applicant Backout Lists</h4>
-          	<div class="remove_search pull-right">
-                  <input placeholder="Search" type="text">
-                </div>
+          <h4 class="pull-left"></h4>
           </div>
-          <div class="clearfix require_wrap_table dashboard-data">
-            <table class="tableBor">
-              <thead>
-                <tr>
-                  <th>Jobs</th>
-                  <th>Current Company</th>
-                  <th>Compensation</th>
-                  <th>Better Offer</th>
-                  <th>Cold Feet</th>
-                  <th>Personal</th>
-                  <th>Other</th>
-                  <th>Total</th>
-                </tr>
-                <tr>
-				  <td><div>Jobs</div></td>
-                  <td><div>Current Company</div></td>
-                  <td><div>Compensation</div></td>
-                  <td><div>Better Offer</div></td>
-                  <td><div>Cold Feet</div></td>
-                  <td><div>Personal</div></td>
-                  <td><div>Other</div></td>
-                  <td><div>200</div></td> 
-                  </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table> -->
-         <!--    Pagenation -->
+          <div class="clearfix tableStyles mt datatable_filter">
+          <div id="applicantBackoutListDiv"></div>
+             
+            
+          </div>
+        </div>
+      
             <nav class="clearfix">
               <ul id="paging" class="pagination pull-right">
                 <li><a href="#">Previous</a></li>
@@ -145,44 +107,66 @@ $(window).load(function() {
                 <li data-page="last"><a href="#">Next</a></li>
               </ul>
             </nav>
+            
+            
           </div>
-        </div> 
-   <!--      Pagenation Ends  -->
-     <!--  </div> --> -->
-      <!-- Best recruiters Ends  --> 
-      
-   <!--  </div> -->
+  
   </section>
   
   <script>
   function getApplicantBackoutReportCount(){
-	var jobIds = $("#reportJobList").val();
-	  if(jobIds == null){
-		  jobIds = '';
-	  }
-	  var dateSelection = $("#dateSelection").val(); 
-	  $.ajax({ 
-		   	type: "GET",
-		   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
-		    success: function(json) {
-        		 loadApplicantBackoutChart(json);
-        		 
-        		 
-	  	 var listView = document.getElementById("listView");
-    	 listView.addEventListener("click", function() {
-			 getListView(json);
-		  });
-    	 
-    	 var graphicView = document.getElementById("graphicView");
-    	 graphicView.addEventListener("click", function() {
-    		 loadApplicantBackoutChart(json);
-		  });
-	
-},
-error: function(e){
-}
-		 });
-}
+	  
+	  document.getElementById("applicantBackoutGraphList").style.display="none";
+		document.getElementById("applicantBackoutGraph").style.display="block";
+	  
+	  
+		var flag = true;
+		  var jobIds = $("#jobIds").val();
+		  if(jobIds == null){
+			  jobIds = '';
+		  }
+		  var dateSelection = $("#dateSelection").val(); 
+		  var fromDate = '';
+		  var toDate = '';
+		  if(dateSelection == 'custom'){
+			   fromDate = $("#fromDate").val();
+			   toDate = $("#toDate").val();
+			  
+			  if(fromDate == '' || toDate == ''){
+				  flag = false;
+				  if(fromDate == ''){
+					  document.getElementById("fromDateDiv").style.display="block";
+				  }else{
+					  document.getElementById("fromDateDiv").style.display="none";
+				  }
+				  if(toDate == ''){
+					  document.getElementById("toDateDiv").style.display="block";
+				  }else{
+					  document.getElementById("toDateDiv").style.display="none";
+				  }
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+			  
+		  }
+		  
+		  if(flag){
+			  
+			  $.ajax({ 
+				   	type: "GET",
+				   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
+				    success: function(json) {
+		        		 loadApplicantBackoutChart(json);
+		        		 
+				},
+		error: function(e){
+		}
+				 });
+		}
+			  
+		  }
+	  
   </script>
   
   <script type="text/javascript">
@@ -219,44 +203,76 @@ $(document).ready(function() {
     });
 });
 </script> 
+
+<script>
+function getCustomDates(){
+	
+	 var dateSelection = $("#dateSelection").val(); 
+	 if(dateSelection == 'custom'){
+		 document.getElementById("customSearch").style.display="block";
+		 $("#customize_btn").attr("disabled", "disabled");
+		 
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 $("#customize_btn").removeAttr("disabled");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+		 document.getElementById("fromDateDiv").style.display="none";
+		  document.getElementById("toDateDiv").style.display="none";
+	 }
+}
+
+</script>
   
   
   <script type="text/javascript">
   function loadApplicantBackoutChart(json){
 	  
-	   var mainChartData = [
-		   {
+	  var mainChar = [];
+	  
+	  if(json.currentCompany>0){
+		  mainChar.push({
 				"category": "Current Company",
 				"column-1": json.currentCompany,
 				"color": "#9FA8DA"
-			},
-			{
-				"category": "Compensation",
+			});
+	  }
+	  if(json.compensation>0){
+		  mainChar.push({
+			  "category": "Compensation",
 				"color": "#90CAF9",
-				"column-1": json.compensation,
-			},
-			{
-				"category": "Better Offer",
+				"column-1": json.compensation
+			});
+	  }
+	  if(json.betterOffer>0){
+		  mainChar.push( {
+			  "category": "Better Offer",
 				"column-1": json.betterOffer,
 				"color": "#FFAB91"
-			},
-			{
-				"category": "Cold Feet",
+			} );
+	  }
+	  if(json.coldFeet>0){
+		  mainChar.push( {
+			  "category": "Cold Feet",
 				"column-1": json.coldFeet,
 				"color": "#A5D6A7"
-			},
-			{
-				"category": "Personal",
+			} );
+	  }
+	  if(json.personal>0){
+		  mainChar.push( {
+			  "category": "Cold Feet",
 				"column-1": json.personal,
-				"color": "#FFE0B2"
-			},
-			{
-				"category": "Other",
+				"color": "#A5D6A7"
+			} );
+	  }
+	  if(json.other>0){
+		  mainChar.push( {
+			  "category": "Cold Feet",
 				"column-1": json.other,
-				"color": "#BCAAA4"
-			}
-		];
-	   
+				"color": "#A5D6A7"
+			} );
+	  }
+	  
 	  AmCharts.makeChart("backoutReason",
 				{
 					"type": "serial",
@@ -267,6 +283,9 @@ $(document).ready(function() {
 					"marginRight": 50,
 					"marginTop": 10,
 					"startDuration": 1,
+					"export": {
+						"enabled": true
+					},
 					"export": {
 						"enabled": true
 					},
@@ -301,94 +320,60 @@ $(document).ready(function() {
 					"allLabels": [],
 					"balloon": {},
 					"titles": [],
-					"dataProvider":  mainChartData
+					"dataProvider":  mainChar
 				}
 			);
 	  $("#paging").empty();
   }
 		</script>
-		 <script>
- function getListView(json){
-		 var result = "";
-		 result = result +"<div class='clearfix tableStyles mt'>"; 
-		 result = result +"<table class='table table-bordered mt10'>"; 
-         result = result +"<thead>"; 
-         result = result +"  <tr>"; 
-         result = result +"  <th>Jobs</th>";
-         result = result +"  <th>Current Company</th>";
-         result = result +"  <th>Compensation</th>"; 
-         result = result +"  <th>Better Offer</th>"; 
-         result = result +"  <th>Cold Feet</th>"; 
-         result = result +"  <th>Personal</th>"; 
-         result = result +"  <th>Other</th>"; 
-         result = result +"  <th>Totle</th>"; 
-         result = result +"  </tr>"; 
-         result = result +"</thead>";
-         result = result +"<tbody>"; 
-        
-				 result = result +"<tr>"; 
-				
-				 result = result +"<td>"; 
-				 result = result +"<div class='tblminwidth-50'>"+   +"</div>"; 
-				 result = result +"</td>";
-				 
-				 result = result +"<td>"; 
-				 result = result +"<div class='tbldata-dotdot'>"+json.currentCompany+"</div>"; 
-				 result = result +"</td>"; 
-				 
-				 result = result +"<td>"; 
-				 result = result +"<div class='tblminwidth-50'>"+json.compensation  +"</div>"; 
-				 result = result +"</td>"; 
-				 
-				 result = result +"<td>"; 
-				 result = result +"<div class='tblminwidth-50'>"+json.betterOffer  +"</div>"; 
-				 result = result +"</td>"; 
-				 
-				 result = result +"<td>"; 
-				 result = result +"<div class='tblminwidth-50'>"+json.coldFeet  +"</div>"; 
-				 result = result +"</td>"; 
-				 
-				 result = result +"<td>"; 
-				 result = result +"<div class='tblminwidth-50'>"+json.personal  +"</div>"; 
-				 result = result +"</td>";
-				 
-				 result = result +"<td>"; 
-				 result = result +"<div class='tblminwidth-50'>"+json.others  +"</div>"; 
-				 result = result +"</td>";
-				 
-				 result = result +"</tr>"; 
-			 
-			 result = result +" </tbody>";
-             result = result +"</table>";
-             $("#backoutReason").empty();
-             $("#backoutReason").append(result);
-            
-             
- }
- </script>
  
- <script>
- 
- function getJobViseCount(){
-	 alert("hi");
-	 var jobIds = $("#reportJobList").val();
-	 alert("id is "+jobIds);
-	  if(jobIds == null){
-		  jobIds = '';
-	  }
-	  var dateSelection = $("#dateSelection").val(); 
-		 alert("id is "+dateSelection);
-	  $.ajax({ 
-		   	type: "GET",
-		   	url: sourceleadUrl+"/getApplicantBackoutReportForInduvidualJob?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection,
-		    success: function(json) {
-	 
-	 
- }
-	  })
- }
- 
- </script>
+
+<script>
+  $( function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+    
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+				removeErrMsg();
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+				removeErrMsgTo();
+			}
+		});
+  } );
+  function removeErrMsg(){
+	  document.getElementById("fromDateDiv").style.display="none";
+  }
+  function removeErrMsgTo(){
+	  document.getElementById("toDateDiv").style.display="none";
+	  
+  }
+  </script>
  
  <script>
 $(function() {

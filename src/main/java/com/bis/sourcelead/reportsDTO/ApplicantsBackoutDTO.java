@@ -4,18 +4,22 @@ public class ApplicantsBackoutDTO {
 
 	private String counts;
 	
-    private Integer currentCompany;
+    private int currentCompany;
 	
-	private Integer compensation;
+	private int compensation;
 	
-	private Integer betterOffer;
+	private int betterOffer;
 	
-	private Integer coldFeet;
+	private int coldFeet;
 	
-	private Integer personal;
+	private int personal;
 	
-	private Integer other;
+	private int other;
 	
+	private int totalCount;
+	
+	private String jobName;
+
 	public String getCounts() {
 		return counts;
 	}
@@ -24,55 +28,69 @@ public class ApplicantsBackoutDTO {
 		this.counts = counts;
 	}
 
-	public Integer getCurrentCompany() {
+	public int getCurrentCompany() {
 		return currentCompany;
 	}
 
-	public void setCurrentCompany(Integer currentCompany) {
+	public void setCurrentCompany(int currentCompany) {
 		this.currentCompany = currentCompany;
 	}
 
-	public Integer getCompensation() {
+	public int getCompensation() {
 		return compensation;
 	}
 
-	public void setCompensation(Integer compensation) {
+	public void setCompensation(int compensation) {
 		this.compensation = compensation;
 	}
 
-	public Integer getBetterOffer() {
+	public int getBetterOffer() {
 		return betterOffer;
 	}
 
-	public void setBetterOffer(Integer betterOffer) {
+	public void setBetterOffer(int betterOffer) {
 		this.betterOffer = betterOffer;
 	}
 
-	public Integer getColdFeet() {
+	public int getColdFeet() {
 		return coldFeet;
 	}
 
-	public void setColdFeet(Integer coldFeet) {
+	public void setColdFeet(int coldFeet) {
 		this.coldFeet = coldFeet;
 	}
 
-	public Integer getPersonal() {
+	public int getPersonal() {
 		return personal;
 	}
 
-	public void setPersonal(Integer personal) {
+	public void setPersonal(int personal) {
 		this.personal = personal;
 	}
 
-	public Integer getOther() {
+	public int getOther() {
 		return other;
 	}
 
-	public void setOther(Integer other) {
+	public void setOther(int other) {
 		this.other = other;
 	}
 
-	
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public String getJobName() {
+		return jobName;
+	}
+
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
 	
 	
 }

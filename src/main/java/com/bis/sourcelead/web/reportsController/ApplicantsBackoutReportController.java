@@ -25,18 +25,38 @@ public class ApplicantsBackoutReportController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
 	@RequestMapping(value = "/applicantsBackoutReport")
 	public ModelAndView applicantBackout(HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+	  	 
 		 ModelAndView model = new ModelAndView();
-		 List<RequirementDTO> requirementDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocations.getId(), user, userRole, request);
-		 model.addObject("requirementDTOList",requirementDTOList);
+		 model.addObject("requirementsList",requirementsList);
 		 model.setViewName("reports/applicantsBackoutReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
 	}
+	
+	@RequestMapping(value = "/applicantBackoutReportsList")
+	public ModelAndView applicantBackoutReports(HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+	  	 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("requirementsList",requirementsList);
+		 model.setViewName("reports/applicantsBackoutReportList");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
 
 }
