@@ -1428,7 +1428,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = " from ProjectMembers pm  left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.masterCandidateId mc  left join fetch pm.projectMemberCandidteId pmc left join fetch pmc.consultantUser consultantUser left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user "
 				+ " where  "
 				+ " (projects.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )) and consultantUser IS NOT NULL  " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
