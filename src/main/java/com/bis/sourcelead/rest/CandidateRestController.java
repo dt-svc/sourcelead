@@ -547,6 +547,7 @@ public class CandidateRestController {
 			RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			if (null != ros) {
 				rsh.setOfferResumeid(ros.getId());
+				
 			}
 			if (null != rsh.getSubmissionId().getCandidateResumes()) {
 				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getFileURL());
