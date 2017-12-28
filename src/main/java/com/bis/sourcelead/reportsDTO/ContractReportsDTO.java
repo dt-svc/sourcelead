@@ -11,6 +11,7 @@ public class ContractReportsDTO {
 	private int sowCount;
 	private int nsaCount;
 	private int ndaCount;
+	private long contactUser;
 	public String getClientName()
 	{
 		return clientName;
@@ -82,5 +83,13 @@ public class ContractReportsDTO {
 	public void setNdaCount(int ndaCount)
 	{
 		this.ndaCount = ndaCount;
+	}
+	public long getContactUser()
+	{
+		return contactUser;
+	}
+	public void setContactUser(long contactUser)
+	{
+		this.contactUser = contactUser;
 	}
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.reports.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,10 +25,10 @@ public interface ClientReportDao {
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType);
 
-	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId);
+	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId, Date[] freqDates);
 
-	List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId);
+	List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId, Date[] freqDates, Long spocId);
 
-	Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId);
+	Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId, Date[] freqDates);
 
 }

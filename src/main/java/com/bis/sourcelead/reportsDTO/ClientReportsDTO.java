@@ -3,6 +3,7 @@ package com.bis.sourcelead.reportsDTO;
 public class ClientReportsDTO {
 
 	private String clientName;
+	private String clientContactName;
 	private int contractsCount;
 	private String frequency;
 	private String fromDate;
@@ -14,6 +15,8 @@ public class ClientReportsDTO {
 	private int avgTTF;
 	private int totalContracts;
 	private int totalBillingAmount;
+	private long orgRelationId;
+	private long orgSpocId;
 	public String getClientName()
 	{
 		return clientName;
@@ -21,6 +24,14 @@ public class ClientReportsDTO {
 	public void setClientName(String clientName)
 	{
 		this.clientName = clientName;
+	}
+	public String getClientContactName()
+	{
+		return clientContactName;
+	}
+	public void setClientContactName(String clientContactName)
+	{
+		this.clientContactName = clientContactName;
 	}
 	public int getContractsCount()
 	{
@@ -110,5 +121,20 @@ public class ClientReportsDTO {
 	{
 		this.totalBillingAmount = totalBillingAmount;
 	}
-	
+	public long getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+	public void setOrgRelationId(long orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+	public long getOrgSpocId()
+	{
+		return orgSpocId;
+	}
+	public void setOrgSpocId(long orgSpocId)
+	{
+		this.orgSpocId = orgSpocId;
+	}
 }

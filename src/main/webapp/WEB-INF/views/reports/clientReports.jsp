@@ -194,67 +194,27 @@ $(document).ready(function(){
 	  </div>
         <div class="clearfix mt row">
           <div class="col-md-12">
+          <div id="topClientloadingDiv"></div>
             <div class="projectDashboad clearfix positionRelative">
               <div class="row">
                 <h4 class="col-md-8" id="vr">Top 10 Clients Report</h4>
                 <h4 class="col-md-8" style="display: none;" id="cr">Contact Report</h4>
                 <div class="select-fild col-md-2">
-                  <select id="vendorContact">
-                    <option value="byVendor">By Client</option>
-                    <option value="byContract">By Contact</option>
+                  <select id="topClientList" onchange="changeTopTenList();">
+                    <option value="byClient">By Client</option>
+                    <option value="byClientContact">By Contact</option>
                   </select>
                 </div>
-                <div class="col-md-2" id="sv">
-                  <select class="chosen-select" data-placeholder="Select Client">
-                    <option>Select Client</option>
-                    <option>Client-1</option>
-                    <option>Client-2</option>
-                    <option>Client-3</option>
-                    <option>Client-4</option>
-                    <option>Client-5</option>
-                  </select>
+                <div class="col-md-2" id="clientSelectDiv">
+                  <select class="chosen-select" data-placeholder="Select Client" id="topTenClientSelect"></select>
                 </div>
-                <div class="col-md-2" id="sc" style="display: none;">
-                  <select class="chosen-select" data-placeholder="Select Contractor">
-                    <option>Select Contact</option>
-                    <option>Contact-1</option>
-                    <option>Contact-2</option>
-                    <option>Contact-3</option>
-                    <option>Contact-4</option>
-                    <option>Contact-5</option>
-                  </select>
+                <div class="col-md-2" id="clientContactSelectDiv" style="display: none;">
+                  <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect"></select>
                 </div>
               </div>
               <div class="require_wrap_table" id="topTenClientList"></div>
+              <div class="require_wrap_table" id="topTenClientContactList"></div>
               
-              <div class="require_wrap_table" id="byContract" style="display: none;">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Contract Name</th>
-                      <th>Company Name</th>
-                      <th>Release Jobs</th>
-                      <th>Submission</th>
-                      <th>Hired</th>
-                      <th>Avg.TTF</th>
-                      <th>Total Contracts</th>
-                      <th>Billing</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><div class="tbldata-dotdot-vsm"><a href="contract-report.html">Tataconsultancy Services Pvt. Ltd.</a></div></td>
-                      <td><div class="tbldata-dotdot-vsm">Rajkumar Santoshi</div></td>
-                      <td><div class="tblminwidth-30">100</div></td>
-                      <td><div class="tblminwidth-30"> <strong class="">200</strong> <small class="text-danger">20%<i class="fa fa-sort-desc"></i></small> </div></td>
-                      <td><div class="tblminwidth-30"> <strong class="">100</strong> <small class="text-danger">8%<i class="fa fa-sort-asc"></i></small> </div></td>
-                      <td><div class="tblminwidth-30">10 days</div></td>
-                      <td><div class="tbldata-dotdot-vsm">200</div></td>
-                      <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -330,7 +290,17 @@ $(document).ready(function(){
       </div>
     </div>
   </section>
-  
+
+<script>
+function changeTopTenList(){
+	var selectedList = $("#topClientList").val();
+	if(selectedList == "byClient"){
+		topTenClientReports();
+	}else if(selectedList == "byClientContact"){
+		topTenClientContactReports();
+	}
+}
+</script>
   
   <!-- Top5 Vendor Expenses Report AmChart --> 
 <script>
@@ -423,6 +393,7 @@ function refreshWithNewFreq(){
 	getTopFiveConracts();
 	getTopFiveReceivsblesReports();
 	getTimeToFillReports();
+	topTenClientReports();
 }
 </script>
 
@@ -668,52 +639,76 @@ function getAmchartData(data){
 
 <script>
 function topTenClientReports(){
-	alert("asds")
 	var frequency = $("#dateFrequency").val();
-	$.ajax({
-		type : "GET",
-		url : sourceleadUrl+"/getTopTenClientReports?&frequency="+frequency,
-	    success: function(data) {
-	    	if(data.length > 0){
-	    		var result = "";
-		    	
-		    	result += '<table>';
-	            result += '<thead>';
-	            result += '  <tr>';
-	            result += '    <th>Company Name</th>';
-	            result += '    <th>No. of Contacts</th>';
-	            result += '    <th>Total Jobs Released</th>';
-	            result += '    <th>Submission</th>';
-	            result += '    <th>Hired</th>';
-	            result += '    <th>Avg.TTF</th>';
-	            result += '    <th>Total Contracts</th>';
-	            result += '    <th>Billing</th>';
-	            result += '  </tr>';
-	            result += '</thead>';
-	            result += '<tbody>';
-	            
-	            for(i=0; i<data.length; i++){
-	            	var opt = data[i];
-	            	result += '  <tr>';
-		            result += '    <td><div class="tbldata-dotdot"><a href="#">'+opt.clientName+'</a> </div></td>';
-		            result += '    <td><div class="tblminwidth-30">'+opt.noOfContacts+'</div></td>';
-		            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
-		            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
-		            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
-		            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
-		            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
-		            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+	var fromDate = $("#custFromDate").val();
+	var toDate = $("#custToDate").val();
+	if(frequency != "Custom" || ((fromDate != null && fromDate != '' && fromDate != 'undefined')) && (toDate != null && toDate != '' && toDate != 'undefined')){
+		$("#topClientloadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/getTopTenClientReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate,
+		    success: function(data) {
+		    	if(data.length > 0){
+		    		var result = "";
+			    	
+			    	result += '<table>';
+		            result += '<thead>';
+		            result += '  <tr>';
+		            result += '    <th>Client Name</th>';
+		            result += '    <th>No. of Contacts</th>';
+		            result += '    <th>Total Jobs Released</th>';
+		            result += '    <th>Submission</th>';
+		            result += '    <th>Hired</th>';
+		            result += '    <th>Avg.TTF</th>';
+		            result += '    <th>Total Contracts</th>';
+		            result += '    <th>Billing</th>';
 		            result += '  </tr>';
-	            }
-	            
-	            result += '</tbody>';
-	           	result += '</table>';
-	           	
-	           	$("#topTenClientList").empty();
-	           	$("#topTenClientList").append(result);
-	    	}
- 	    }
-	});
+		            result += '</thead>';
+		            result += '<tbody>';
+		            var listLength;
+		            if(data.length > 10){
+		            	listLength = 10;
+		            }else{
+		            	listLength = data.length;
+		            }
+		            for(i=0; i<listLength; i++){
+		            	var opt = data[i];
+		            	result += '  <tr>';
+			            result += '    <td><div class="tbldata-dotdot"><a href="#">'+opt.clientName+'</a> </div></td>';
+			            result += '    <td><div class="tblminwidth-30">'+opt.noOfContacts+'</div></td>';
+			            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
+			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
+			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
+			            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+			            result += '  </tr>';
+		            }
+		            
+		            result += '</tbody>';
+		           	result += '</table>';
+		           	
+		           	var opt = "";
+		           	opt += '<option >Select Client</option>';
+		           	for(i=0; i<data.length; i++){
+		           		report = data[i];
+		           		opt += '<option value='+report.orgRelationId+'>'+report.clientName+'</option>';
+		           	}
+		           	
+		           	$("#topTenClientList").empty();
+		           	$("#topTenClientList").show();
+		           	$("#topTenClientContactList").hide();
+		           	$("#topClientloadingDiv").removeAttr('style');
+		           	$("#topTenClientList").append(result);
+		        	$("#topTenClientSelect").append(opt);
+		        	$("#clientSelectDiv").show();
+		        	$("#clientContactSelectDiv").hide();
+		        	$("#topTenClientSelect").trigger("chosen:updated");
+		    	}
+	 	    }
+		});
+	}
+	
 }
 </script>
 
@@ -893,4 +888,77 @@ function getSuccessPercentageAmchartData(data){
 }
 </script>
 
+<script>
+function topTenClientContactReports(){
+	var frequency = $("#dateFrequency").val();
+	var fromDate = $("#custFromDate").val();
+	var toDate = $("#custToDate").val();
+	if(frequency != "Custom" || ((fromDate != null && fromDate != '' && fromDate != 'undefined')) && (toDate != null && toDate != '' && toDate != 'undefined')){
+		$("#topClientloadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/getTopTenClientContactReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate,
+		    success: function(data) {
+		    	if(data.length > 0){
+		    		var result = "";
+			    	
+			    	result += '<table>';
+		            result += '<thead>';
+		            result += '  <tr>';
+		            result += '    <th>Contact Name</th>';
+		            result += '    <th>Client Name</th>';
+		            result += '    <th>Total Jobs Released</th>';
+		            result += '    <th>Submission</th>';
+		            result += '    <th>Hired</th>';
+		            result += '    <th>Avg.TTF</th>';
+		            result += '    <th>Total Contracts</th>';
+		            result += '    <th>Billing</th>';
+		            result += '  </tr>';
+		            result += '</thead>';
+		            result += '<tbody>';
+		            var listLength;
+		            if(data.length > 10){
+		            	listLength = 10;
+		            }else{
+		            	listLength = data.length;
+		            }
+		            for(i=0; i<listLength; i++){
+		            	var opt = data[i];
+		            	result += '  <tr>';
+			            result += '    <td><div class="tbldata-dotdot"><a href="#">'+opt.clientContactName+'</a> </div></td>';
+			            result += '    <td><div class="tblminwidth-30">'+opt.clientName+'</div></td>';
+			            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
+			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
+			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
+			            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+			            result += '  </tr>';
+		            }
+		            
+		            result += '</tbody>';
+		           	result += '</table>';
+		           	
+		           	var opt = "";
+		           	opt += '<option >Select Client Contact</option>';
+		           	for(i=0; i<data.length; i++){
+		           		repo = data[i];
+		           		opt += '<option value='+repo.orgSpocId+'>'+repo.clientContactName+'</option>';
+		           	}
+		           	
+		           	$("#topTenClientContactList").empty();
+		           	$("#topTenClientContactList").show();
+		           	$("#topTenClientList").hide();
+		           	$("#topClientloadingDiv").removeAttr('style');
+		           	$("#topTenClientContactList").append(result);
+		           	$("#topTenClientContactSelect").append(opt);
+		           	$("#clientSelectDiv").hide();
+		        	$("#clientContactSelectDiv").show();
+		           	$("#topTenClientContactSelect").trigger("chosen:updated");
+		    	}
+	 	    }
+		});
+	}
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />

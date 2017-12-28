@@ -225,21 +225,22 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	return invoiceDto;
 	}
 	
-	public List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId)
+	@Override
+	public List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId,Date[] freqDates)
 	{
-		return clientReportDao.getClientSpocListByOrgRelationid(orgRelationid, locationId, userId);
+		return clientReportDao.getClientSpocListByOrgRelationid(orgRelationid, locationId, userId,freqDates);
 	}
 
 	@Override
-	public List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId)
+	public List<Requirement> getClientJobsByOrgRelationId(Long orgRelationid, Long locationId, Long userId, Date[] freqDates,Long spocId)
 	{
-		return clientReportDao.getClientJobsByOrgRelationId(orgRelationid,locationId,userId);
+		return clientReportDao.getClientJobsByOrgRelationId(orgRelationid,locationId,userId,freqDates,spocId);
 	}
 
 	@Override
-	public Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId)
+	public Map<String, Integer> getSubmissionListByRequirementId(Long requirementId, Long orgLocationId, Long userId, Date[] freqDates)
 	{
-		return clientReportDao.getSubmissionListByRequirementId(requirementId,orgLocationId,userId);
+		return clientReportDao.getSubmissionListByRequirementId(requirementId,orgLocationId,userId,freqDates);
 	}
 
 }
