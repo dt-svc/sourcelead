@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 	<td class="sorting_1">
 		<div class="time_appr_user">
@@ -20,10 +20,13 @@
 			<span><b title="${timesheetSubmission.project}">${timesheetSubmission.project}</b></span>
 		</div></td>
 		
+	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">	
 	<td><div title="${timesheetSubmission.clientName}"><a class="aLink" href="/app/clientDashboard?orgRelationUUID=${timesheetSubmission.orgRelationUUID}">${timesheetSubmission.clientName}</a></div></td>
+	</sec:authorize>
 	
-	
-	
+	<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">	
+	<td><div title="${timesheetSubmission.clientName}">${timesheetSubmission.clientName}</div></td>
+	</sec:authorize>
 	
 	
     <c:if test="${!empty timesheetSubmission.tableFor && timesheetSubmission.tableFor == 'approver'}">
