@@ -1954,7 +1954,7 @@ function clientSideBar(candidateId,recScore){
 			             result = result+'<li><a href="#tab-17" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
 						 result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
 			             
-			             result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
+			             //result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
 			             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
