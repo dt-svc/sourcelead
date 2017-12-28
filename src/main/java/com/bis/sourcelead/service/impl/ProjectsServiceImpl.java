@@ -2013,7 +2013,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 
 				 }
 				 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
-					 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
+					 UserRole userRole = null;
+					 if(pm.getProjects().getOrgLocationsId().getId().compareTo(loginOrgLocation.getId()) != 1) {
+						 userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
+					 }else {
+						 userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), loginOrgLocation.getId());
+					 }
+					 
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
 						 pm.setUserRoleId(userRole.getId());
