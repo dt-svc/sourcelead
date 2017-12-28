@@ -106,7 +106,8 @@ function statusvalidating(id){
 	<section class="content-header clearfix">
 		<c:if test="${!empty msg}">
 			<div class="success_pop" id="selector2" style="display: block;">
-				<i class="fa fa-check-circle"></i><span>${msg}</span>
+				<div class="pull-left"><i class="fa fa-check-circle"></i></div>
+				<div class="pull-left" style="width:325px; padding:10px 0;"><span>${msg}</span></div>
 			</div>
 		</c:if>
 		<div class="pull-left">
@@ -759,7 +760,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -794,7 +795,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

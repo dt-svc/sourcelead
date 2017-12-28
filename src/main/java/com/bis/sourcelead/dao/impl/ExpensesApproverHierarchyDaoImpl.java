@@ -137,6 +137,6 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 				query.setParameter(str, (long) params.get(str));
 			}
         }
-		return query.setCacheable(true).list();
+		return query.list();
 	}
 }

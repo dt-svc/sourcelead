@@ -303,17 +303,15 @@ function interviewTemplateForm(){
 }
 </script>
 
+
 <script>
 function saveInterviewTemplate(){
 	if ($('#interviewTemplate_form').validate(false, validationSettings)){ 
-	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 	      var templateId = '${templateId}';
 	  	  var requirementInterviewid = '${requirementInterviewid}';
 	      var sourceleadUrl ='${sourceleadUrl}';
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
-	      var con1 = JSON.stringify(frm);
-	      con1= con1.replace(/[{}]/g, "");
-	      var jsonData = encodeURIComponent(con1);
+	      var jsonData = JSON.stringify(frm);
 	      var form = $('#interviewTemplate_form')[0];
 	      var formData = new FormData(form); 
 	      //Loop through fields and save field data to array
@@ -365,19 +363,15 @@ function saveInterviewTemplate(){
 	            });
 	       });
 	      var con = JSON.stringify(fields);
-	      con = encodeURIComponent(con);
-	      
+	      formData.append("jsonStringData",con);
+	      formData.append("jsonData",jsonData); 
 	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	      
 	  	     $.ajax({
-		    	type: "GET",
+		    	type: "POST",
 		    	data: formData,
-	 	        contentType : 'application/json; charset=utf-8',
-	 	        enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
+		    	  processData: false,
+	    	        contentType:false,
+	 	    	url : sourceleadUrl+"/ws/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 		        success: function(result) {
 		        	$("#interviewTemplateFormDiv").hide();
 		        	viewTemplate(sourceleadUrl,templateId)

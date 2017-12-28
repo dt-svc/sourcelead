@@ -547,10 +547,13 @@ public class CandidateRestController {
 			RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			if (null != ros) {
 				rsh.setOfferResumeid(ros.getId());
+				
 			}
 			if (null != rsh.getSubmissionId().getCandidateResumes()) {
-				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
+				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getFileURL());
 				rsh.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
+				rsh.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+				rsh.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
 			}
 			if (!"".equalsIgnoreCase(rsh.getSubmissionId().getOrgLocations().getOrg().toString())
 					&& null != rsh.getSubmissionId().getOrgLocations().getOrg()) {

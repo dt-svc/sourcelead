@@ -9,7 +9,7 @@
 			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
-	       		//pagination();
+	       		pagination();
 	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
@@ -146,7 +146,7 @@ margin-top: 3px;
 		        		<input type='text' placeholder='search' value="" id='dataTableSearchExpenses'/>
 		         </div>
 				
-				<div class="timesheet_appr_table datatable_filter overflow_inherint">
+				<div class="timesheet_appr_table datatable_filter">
 					<div id="approverDataExpensesDiv"></div>
 				</div>
 				
@@ -571,8 +571,7 @@ $(document).ready(function() {
 });	
 </script>   
 
-    
-<!--  <script>
+    <script>
 function pagination(){ 
     $('#example').DataTable({ 
     	"scrollCollapse": false,
@@ -588,7 +587,7 @@ function pagination(){
     });
     $("#example").wrap("<div class='overflow_Auto'></div>");
 }
-</script> -->
+</script> 
 <script>
 function exportToPdf(type){
 	var temp = $("#temp").val();

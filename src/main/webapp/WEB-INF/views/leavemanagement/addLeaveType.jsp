@@ -28,7 +28,7 @@
 			noUsers();
 		}
 		var leaveEffective = '${leaveType.leaveEffective}';
-		if (leaveEffective == 'AllEmployees') {
+		if (leaveEffective == 'AllEmployees' || leaveEffective == '') {
 			hideExperienced();
 		/* 	$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
 			$('#experiencedDiv').find('p.jquery_form_error_message').remove();
@@ -87,12 +87,22 @@
 		<div class="pull-left">
 			<h2>Leave Type</h2>
 		</div>
+		<c:if test="${empty leaveType.id}">
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
 				href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a>
 			&raquo;<a href="<c:url value='${appPath}/viewLeaveTypes'/>">Leave type List</a>
 			&raquo; Add Leave Type
 		</div>
+		</c:if>
+		<c:if test="${!empty leaveType.id}">
+		<div class="pull-right brud-crum">
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a>
+			&raquo;<a href="<c:url value='${appPath}/viewLeaveTypes'/>">Leave type List</a>
+			&raquo; Edit/Update Leave Type
+		</div>
+		</c:if>
 	</section>
 	<div class="content-area content-new clearfix">
 		<form:form id="addLeaveType_form" name="addLeaveType_form"

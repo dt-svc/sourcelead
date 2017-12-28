@@ -106,7 +106,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Email</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="email1" name="email" readonly="readonly">
+                    <input type="text" class="form-control input-sm" id="email" name="email" readonly="readonly">
                   </div>
                 </div>
                 
@@ -656,7 +656,7 @@ function validate_fileupload(fileName)
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
 			    	 $("#mobileNumber").val(json['mobilePhone']);
-			    	 $("#email1").val(json['email']);
+			    	 $("#email").val(json['email']);
 			    	 $("#mobilePhone").val(json['mobilePhone']);
 			    	 $("#dateOfJoin").val(json['dateOfJoin']);
 			    	 $("#role").val(json['role']);

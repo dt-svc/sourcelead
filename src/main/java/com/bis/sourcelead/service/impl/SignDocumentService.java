@@ -134,21 +134,23 @@ public class SignDocumentService {
 			return dirPath+"/signed.pdf";
 		}
 		
-	private Image getSignedImage(PdfDocument pdfDoc, Image img, Coordinates coordinate) {
-		float x = coordinate.getX();
-		float y = coordinate.getY();
-		int pageNumber = coordinate.getPageNumber();
-		float pageheight = pdfDoc.getFirstPage().getPageSize().getHeight();
-		
-		float width = img.getImageScaledWidth();
-		float height = img.getImageScaledHeight();
-		float negY = y*-1;
-		PdfFormXObject template = new PdfFormXObject(new Rectangle(x, negY, width, height));
-		PdfCanvas pdfCanvas = new PdfCanvas(pdfDoc,pageNumber);
-		new Canvas(pdfCanvas, pdfDoc,new Rectangle(x, pageheight-y -(height)+(height/10), width, height)).
-		add(img);
-		
-		return new Image(template);
-	}
+		private Image getSignedImage(PdfDocument pdfDoc, Image img, Coordinates coordinate) {
+			float x = coordinate.getX();
+			float y = coordinate.getY();
+			int pageNumber = coordinate.getPageNumber();
+			if(pageNumber == -1) {
+				pageNumber =+1;
+			}
+			float pageheight = pdfDoc.getFirstPage().getPageSize().getHeight();
+			float width = img.getImageScaledWidth();
+			float height = img.getImageScaledHeight();
+			float negY = y*-1;
+			PdfFormXObject template = new PdfFormXObject(new Rectangle(x, negY, width, height));
+			PdfCanvas pdfCanvas = new PdfCanvas(pdfDoc,pageNumber);
+			new Canvas(pdfCanvas, pdfDoc,new Rectangle(x, pageheight-y -(height)+(height/10), width, height)).
+			add(img);
+
+			return new Image(template);
+		}
 	
 }

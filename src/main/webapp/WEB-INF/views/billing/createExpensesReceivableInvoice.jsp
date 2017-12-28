@@ -1743,7 +1743,7 @@ function getDueDateByFrequency(){
 <script>
 function flushValues(){
 	$("#invoiceId").val('');
-	$("#invoiceDate").val('');
+	//$("#invoiceDate").val('');
 	$("#dueDate").val('');
 	$("#paymentFrequency").val('');
 	$("#frequency").val('').trigger("chosen:updated");

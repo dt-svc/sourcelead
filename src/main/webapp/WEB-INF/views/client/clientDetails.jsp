@@ -155,6 +155,17 @@
 						}
 						result = result + '</div>';
 						
+						for (var key in json.clientCustomFieldlabelNameAndValue) {
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>'+key+' :</strong>';
+							if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue !='' && json.clientCustomFieldlabelNameAndValue !='undefined'){
+								result = result + '<span>'+json.clientCustomFieldlabelNameAndValue[key]+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+						}
+						
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
 						result = result + '</div>';
@@ -639,7 +650,7 @@ function getAllStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -685,7 +696,7 @@ function getAllCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

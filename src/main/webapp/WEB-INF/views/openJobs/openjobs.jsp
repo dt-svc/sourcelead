@@ -2769,7 +2769,7 @@ function getAllCountriesJObalert(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: "/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
@@ -2812,7 +2812,7 @@ function getStatesjobalert(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: "/app/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#statejobalert').empty();
@@ -2869,7 +2869,7 @@ function getCitiesjobalert(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: "/app/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#cityjobalert').empty();
