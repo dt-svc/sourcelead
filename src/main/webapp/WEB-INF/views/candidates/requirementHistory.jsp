@@ -205,9 +205,9 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 		        		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		        		if(report.toStage == "SUBMISSION"){
 			        		 result = result  +'<span>Added by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			 result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a href="javascript:void(0)" class="fa fa-eye ml10" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.contentType+'\');"></a><div class="clearfix"></div>';
-		        			 result = result  +'<a href=\"'+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
-
+		        			 result = result  +'<a href=\"'+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a href="javascript:void(0)" class="fa fa-eye ml10" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.contentType+'\');"></a><div class="clearfix"></div>';
+		        			/*  result = result  +'<a href=\"'+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
+ */
 		        		}else if(report.toStage == "OFFERMADE"){
 		        			result = result  +'<span>Issued offer by '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
 		        			result = result  +'<a  href=\"'+report.offerResumeUrl+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';

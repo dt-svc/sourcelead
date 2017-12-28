@@ -66,7 +66,7 @@ public class RequirementSubmissionHistory implements Serializable{
 	
     @Transient
     private String fileName;
-    
+    @JsonProperty
     @Transient
     private String fileUrl;
     
@@ -85,10 +85,7 @@ public class RequirementSubmissionHistory implements Serializable{
     @Transient
     private Long offerResumeid;
     
-    @JsonProperty
-    @Transient
-    private String offerResumeUrl;
-    
+      
     @Transient
     private String loginUserName;
     
@@ -397,12 +394,5 @@ public class RequirementSubmissionHistory implements Serializable{
 	}
 	
 
-	public String getOfferResumeUrl() {
-		return offerResumeUrl;
-	}
-
-	public void setOfferResumeUrl(String offerResumeUrl) {
-		this.offerResumeUrl = offerResumeUrl;
-	}
-
+	
 }
