@@ -1,0 +1,133 @@
+package com.bis.sourcelead.rest.reportsRestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.reports.service.ApplicantDeclineService;
+import com.bis.sourcelead.reports.service.ApplicantsBySourceService;
+import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+@RestController
+//@RequestMapping("/app")
+public class ApplicantDeclineRestController {
+
+	@Autowired
+	ReportsUtil reportsUtil;
+
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	ApplicantDeclineService applicantDeclineService;
+
+	@Autowired
+	RequirementService requirementService;
+
+
+	@RequestMapping(value = "/app/getDeclinedApplicantsCount", method = RequestMethod.GET)
+	public ApplicantDeclineDTO getDeclinedApplicantsCount(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
+
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		List<ApplicantDeclineDTO> applicantDeclineList = new ArrayList<>();
+		ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
+		List<Long> jobIdList = new ArrayList<>();
+
+		if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
+			String[] jobIds = jobFilterDTO.getJobIds().split(",");
+			for(int i=0; i<jobIds.length; i++) {
+				jobIdList.add(Long.valueOf(jobIds[i]));
+			}
+		}else {
+			jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+		}
+
+		Date[] searchDates = null;
+
+		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
+			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			}else {
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
+		}
+
+		applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobIdList, searchDates,orgLocation); 
+
+		return applicantDeclineDTO;
+	}
+
+	@RequestMapping(value = "/app/getDeclinedApplicantsList", method = RequestMethod.GET)
+	public List<ApplicantDeclineDTO> getDeclinedApplicantsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
+
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		List<ApplicantDeclineDTO> applicantDeclineList = new ArrayList<>();
+		ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
+		List<Long> jobIdList = new CopyOnWriteArrayList<>();
+
+		Date[] searchDates = null;
+
+		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
+			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			}else {
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
+		}
+
+		if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
+			String[] jobIds = jobFilterDTO.getJobIds().split(",");
+			for(int i=0; i<jobIds.length; i++) {
+				jobIdList.add(Long.valueOf(jobIds[i]));
+			}
+		}else {
+			jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+		}
+		
+
+		 for (Long jobId : jobIdList) {
+			if(jobId!=null){
+			Requirement requirement = requirementService.getRequirementByRequirementId(jobId);
+			List<Long> jobids = new ArrayList<>();
+			jobids.add(jobId);
+			applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobids, searchDates,orgLocation);
+			applicantDeclineDTO.setJobName(requirement.getJobTitle());
+			applicantDeclineList.add(applicantDeclineDTO);
+			}
+			
+		}
+
+
+		return applicantDeclineList;
+	}
+
+
+}

@@ -12,7 +12,7 @@ public class EmailAccountSettingsDTO {
 	private String recieveEmail;
 	private String recieveSSL;
 	private String sendServerType;
-	private String SendServerName;
+	private String sendServerName;
 	private String sendPort;
 	private String sendEmail;
 	private String sendSSL;
@@ -85,10 +85,10 @@ public class EmailAccountSettingsDTO {
 		this.sendServerType = sendServerType;
 	}
 	public String getSendServerName() {
-		return SendServerName;
+		return sendServerName;
 	}
 	public void setSendServerName(String sendServerName) {
-		SendServerName = sendServerName;
+		this.sendServerName = sendServerName;
 	}
 	public String getSendPort() {
 		return sendPort;
