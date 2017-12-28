@@ -36,6 +36,13 @@ width: 100% !important;
 right: 15px;
 }
 
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+	display:none;
+}
+
 </style>
 
 <script>
@@ -627,10 +634,19 @@ function editOrgLocationAuto(orgLocationId,orgCountry,orgStateId,orgCityId,orgZi
 	editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId);
 }
 function editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId) {
-   	autocomplete = new google.maps.places.Autocomplete((document.getElementById(orgLocationId)), {
+   /* 	autocomplete = new google.maps.places.Autocomplete((document.getElementById(orgLocationId)), {
    	 types: ['geocode']
      
-       });
+       }); */
+       
+  	 var input = (document.getElementById(orgLocationId));
+	    var options = {
+	    		types: ['geocode'],
+	        componentRestrictions: {
+	        	country: ["IN","US","AU","SG","GB","FR"]
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
   
  google.maps.event.addListener(autocomplete, 'place_changed', function() {
  place = autocomplete.getPlace();
