@@ -32,22 +32,22 @@ public class ApplicantDeclineServiceImpl implements ApplicantDeclineService {
 	        Map.Entry rejectValue = (Map.Entry)rejectedCount.next();
 	        System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());
 	        if(rejectValue.getKey().equals("Wrong Skill Sets")){
-	        	applicantDeclineDTO.setSkillsCount((Integer)rejectValue.getValue());
+	        	applicantDeclineDTO.setSkillsCount((int)rejectValue.getValue());
 	        }
 	        if(rejectValue.getKey().equals("Unsuitable Personality")){
-	        	applicantDeclineDTO.setUnsuitableCount((Integer)rejectValue.getValue());
+	        	applicantDeclineDTO.setUnsuitableCount((int)rejectValue.getValue());
 	        }
 	        if(rejectValue.getKey().equals("Bad Fit")){
-	        	applicantDeclineDTO.setBadfitCount((Integer)rejectValue.getValue());
+	        	applicantDeclineDTO.setBadfitCount((int)rejectValue.getValue());
 	        }
 	        if(rejectValue.getKey().equals("Interview Rejection")){
-	        	applicantDeclineDTO.setInterviewCount((Integer)rejectValue.getValue());
+	        	applicantDeclineDTO.setInterviewCount((int)rejectValue.getValue());
 	        }
 	        if(rejectValue.getKey().equals("Salary")){
-	        	applicantDeclineDTO.setSalaryCount((Integer)rejectValue.getValue());
+	        	applicantDeclineDTO.setSalaryCount((int)rejectValue.getValue());
 	        }
 	        if(rejectValue.getKey().equals("Other")){
-	        	applicantDeclineDTO.setOtherCount((Integer)rejectValue.getValue());
+	        	applicantDeclineDTO.setOtherCount((int)rejectValue.getValue());
 	        }
 	       }
            applicantDeclineDTO.setTotalCount(applicantDeclineDTO.getSkillsCount() + applicantDeclineDTO.getBadfitCount() + applicantDeclineDTO.getUnsuitableCount() + applicantDeclineDTO.getInterviewCount() + applicantDeclineDTO.getSalaryCount() + applicantDeclineDTO.getOtherCount());

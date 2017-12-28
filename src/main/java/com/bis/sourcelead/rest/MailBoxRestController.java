@@ -836,7 +836,7 @@ public class MailBoxRestController {
 		  return "success";
 			
 		}
-	 @RequestMapping(value = "/app/emailAccountRead" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/emailAccountRead" , method = RequestMethod.POST)
 		public @ResponseBody List<String> emailAccountRead(Long id, HttpServletRequest request)
 				throws Exception {
 		 
