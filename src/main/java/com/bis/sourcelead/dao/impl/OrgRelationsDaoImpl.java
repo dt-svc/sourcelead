@@ -180,7 +180,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		List<OrgRelations> vandorsList = null;
 		Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
 		
-		vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		vandorsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).list();
 		return vandorsList;
 	}
 
