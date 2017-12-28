@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
+import com.bis.sourcelead.dto.ReadMailDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -47,6 +49,7 @@ import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
+import com.bis.sourcelead.entity.EmailAccountSettings;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -798,7 +801,7 @@ public class MailBoxRestController {
     	}
         
         
-    	@RequestMapping(value = "/getAllJobCampaignsList", method = RequestMethod.GET)
+    	@RequestMapping(value = "/app/getAllJobCampaignsList", method = RequestMethod.GET)
      	public List<RequirementDTO> getAllJobCampaignsList(@RequestParam(value="jobCampaignUUID", required=false) String jobCampaignUUID) throws Exception {
     		   
     		List<Long> requirementIds = new ArrayList<>();
@@ -823,7 +826,7 @@ public class MailBoxRestController {
 	        });
 	        return xstream.toXML(obj);
 	    }
-	 @RequestMapping(value = "/addEmailAccount" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/addEmailAccount" , method = RequestMethod.POST)
 		public String addEmailAccount(EmailAccountSettingsDTO emailAccountSettingsDTO, HttpServletRequest request)
 				throws Exception {
 		 
@@ -833,16 +836,49 @@ public class MailBoxRestController {
 		  return "success";
 			
 		}
-	 @RequestMapping(value = "/emailAccountRead" , method = RequestMethod.POST)
-		public boolean emailAccountRead(Long id, HttpServletRequest request)
+	 @RequestMapping(value = "/app/emailAccountRead" , method = RequestMethod.POST)
+		public @ResponseBody List<String> emailAccountRead(Long id, HttpServletRequest request)
 				throws Exception {
 		 
 		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		  Long userId=user.getId();
-		 boolean successval= emailAccountSettingsService.emailAccountRead(id,userId);
-		  return successval;
+		  List<String> folders= emailAccountSettingsService.emailAccountRead(id,userId);
+		  return folders;
 			
 		}
+	 @RequestMapping(value = "/app/emailFolderRead" , method = RequestMethod.POST)
+		public @ResponseBody List<ReadMailDTO> emailFolderRead(Long id,String  folderName, HttpServletRequest request)
+				throws Exception {
+		 
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Long userId=user.getId();
+		  List<ReadMailDTO> readMailList=new ArrayList<>();
+		   readMailList=  emailAccountSettingsService.emailFolderRead(id,folderName,userId);
+		  return readMailList;
+			
+		}
+	 @RequestMapping(value = "/app/deleteEmailAccount" , method = RequestMethod.POST)
+		public @ResponseBody String deleteEmailAccount(Long id, HttpServletRequest request)
+				throws Exception {
+		 
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Long userId=user.getId();
+		    emailAccountSettingsService.deleteEmailAccount(id, userId);
+		  return "success";
+			
+		}
+	 
+	 @RequestMapping(value = "/app/editEmailAccount" , method = RequestMethod.POST)
+		public @ResponseBody EmailAccountSettingsDTO editEmailAccount(Long id, HttpServletRequest request)
+				throws Exception {
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Long userId=user.getId();
+		 
+		  EmailAccountSettingsDTO emailAccountSettingsDTO= emailAccountSettingsService.getEmailAccount(id,userId);
+		  return emailAccountSettingsDTO;
+			
+		}
+				
 	 
 	 
 }
