@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ApplicantsBySourceDao;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -252,6 +254,62 @@ public class ReportsUtil {
 		dates[1] = endDate;
 		return dates;
 	}
+
+	public  static Date[] tenDays(int days) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date[] dates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		dates[1] = sdf.parse(sdf.format(cal.getTime()));
+		cal.add(Calendar.DATE, -days);
+		dates[0] = sdf.parse(sdf.format(cal.getTime()));
+		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
+		return dates;
+	}
+
+	public static Date[] apAgingPeriodDays(int sDays, int days) throws ParseException {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date[] dates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -sDays);
+		dates[1] = sdf.parse(sdf.format(cal.getTime()));
+		Calendar currentCal = Calendar.getInstance();
+		currentCal.add(Calendar.DATE, -days);
+		dates[0] = sdf.parse(sdf.format(currentCal.getTime()));
+		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
+		return dates;
+	}
+
+	/*public void getCustomDates() {
+		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+		DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+		Date fromDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+		Date toDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+		String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+		String customEndTimeStr = TZ_DF_CED.format(toDate);
+		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+		String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+		fromDate = TZ_DF_TS.parse(startDateString);
+		toDate = TZ_DF_TS.parse(endDateString);
+
+		searchDates = new Date[2];
+		searchDates[0] = fromDate;
+		searchDates[1] = toDate;
+
+		
+	}*/
+
+	
+//	public static void main(String[] args) throws ParseException {
+//		apAgingDays(11,15);
+// 	    apAgingDays(16,30);
+//		apAgingPeriodDays(31,60);
+// 	   apAgingDays(61,90);
+// 	   apAgingDays(91,180);
+// 	   apAgingDays(181,360);
+//	}
 	
 	
 }
