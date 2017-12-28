@@ -56,8 +56,8 @@
 				<li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li>
 				<li><a href="${appPath}/expensesReportsList">Expenses Report</a></li>
-				<li><a href="#">A/R Aging</a></li>
-				<li><a href="#">A/P Aging</a></li>
+				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
+				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
 				<li><a href="#">Profit &amp; Loss</a></li>
 				<li><a href="#">Balance Sheet</a></li>
 				<li><a href="#">Client Balance</a></li>
