@@ -31,6 +31,14 @@
 }
 </style>
 
+<script>
+	$(document).ready(function() {
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
+	});
+</script>
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
@@ -135,6 +143,7 @@ function validateShortCode(){
 		<div class="project_tabs">
 		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
 			<form:form id="project_form" name="project_form" method="post">
+			<input type="hidden" id="actionId" value="${actionId}">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
@@ -324,6 +333,14 @@ function validateShortCode(){
 
 							</div>
 						</div>
+						
+						<div class="clearfix mb"></div>
+			            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			               <c:if test="${sectionOrder.index == 0}">
+			                  <div id="customDiv${section.id}"></div>
+			               </c:if>
+			            </c:forEach>
+						
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
@@ -360,12 +377,8 @@ function validateShortCode(){
 							</div>
 						</div>
 					</div>
-
-
-
-
-
 				</div>
+				
 				<!--  div row end -->
 <!-- dont remove the code because next implement code Laxman -->
 				<!--  div row start -->
@@ -388,7 +401,7 @@ function validateShortCode(){
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
 								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control"
-									data-validation-optional="true" class="form-control" onblur="">
+									data-validation="validate_Space validate_float validate_length length1-15" class="form-control" onblur="">
 							</div>
 						</div>
 
@@ -425,7 +438,7 @@ function validateShortCode(){
 					                </select>
 					                </div>
 									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
-										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" >
+										data-validation="validate_Space validate_float validate_length length1-15" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
 						</div>
@@ -473,6 +486,11 @@ function validateShortCode(){
 						<span><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
 					</div> -->
 					
+		            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 1}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
 
 				</div>
 
@@ -1178,8 +1196,26 @@ function getBudgetApprover(approverUserId){
 		$("#txtEditor").Editor().trim();
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
 	});
- </script>
+</script>
+ 
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
+ 
 <!--  <script>
  function clearStartDate(){
 	$("#startDate").val("");

@@ -641,6 +641,7 @@ function closeWhiteListIp(){
 }
 
 function saveWhiteListIps(){
+	 $("#saveWhiteListbtn").attr("disabled", "disabled");
 	var fromIpAddress = $("#fromIpAddress").val();
 	var toIpAddress = $("#toIpAddress").val();
 	var whiteListId = $("#whiteListId").val();
@@ -663,6 +664,7 @@ function saveWhiteListIps(){
 			    	   $("#toIpAddress").val("");
 			    	   $(".modal.addipPopup-modal").fadeOut();
 			    	   $(".comMask").fadeOut();
+			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
 			      },
@@ -748,6 +750,7 @@ function WhiteListIpTablePagination(){
 
 <script>
 function editWhiteListIp(id){
+	$("#saveWhiteListbtn").removeAttr("disabled");
 	$.ajax({
 	    type: "GET",
         url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
@@ -2823,6 +2826,7 @@ function addOrgRefreshGoogleApiLocation(){
 
 <script>
 function addipPopup(){
+	$("#saveWhiteListbtn").removeAttr("disabled");
 	$('#fromIpAddressDiv').val("");
 	$('#toIpAddressDiv').val("");
 	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();

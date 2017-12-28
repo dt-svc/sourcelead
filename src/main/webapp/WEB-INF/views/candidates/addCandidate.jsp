@@ -14,11 +14,14 @@
 		 };
 	</script>
 
-<script>
+	<script>
 		$(document).ready(function() {
 			$(".clearUpload").hide();
 			document.getElementById("addcandidate_form").reset();
-			
+			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
 		});
 	</script>
 
@@ -48,6 +51,7 @@
 	<div class="content-area content-new clearfix">
 		<div id="loading"></div>
 		<form:form id="addcandidate_form" name="addcandidate_form">
+		<input type="hidden" id="actionId" value="${actionId}">
 			<div class="row form-horizontal mt myForm">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -525,6 +529,13 @@
 					</div>
 
 					<div class="clearfix"></div>
+					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 0}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
+					
+					<div class="clearfix"></div>
 					<div class="form-group">
 						<label class="col-md-3"></label>
 						<div class="col-md-9">
@@ -572,6 +583,19 @@
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <%-- 
      @author : prasad k.

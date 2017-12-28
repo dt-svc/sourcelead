@@ -60,6 +60,8 @@ public class ContractsDTO {
 	
 	private String spocUUID;
 	
+	private List<CustomFormFieldDTO> customFormData;
+	
 	public String getStaticPath()
 	{
 		return staticPath;
@@ -532,6 +534,14 @@ public class ContractsDTO {
 	public void setSpocUUID(String spocUUID)
 	{
 		this.spocUUID = spocUUID;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
 	}
 	
 	

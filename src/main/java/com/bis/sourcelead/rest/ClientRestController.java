@@ -968,17 +968,19 @@ public class ClientRestController {
 		
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
+		SourceleadActions action = null;
 		if(msg != null && msg != ""){
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editClient");
+			 action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
 		}else{
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editVendor");
+			action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editVendor");
 		}
 		
-		
-		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+		if(action != null && action.getId()!= null){
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 		 if(sections != null && !sections.isEmpty()) {
@@ -1003,7 +1005,7 @@ public class ClientRestController {
 			 	}
 			 }
 		 }
-		
+		}
 		
 		/*String resultJson;
 		resultJson = commonUtil.toJSON(orgRelation);*/
