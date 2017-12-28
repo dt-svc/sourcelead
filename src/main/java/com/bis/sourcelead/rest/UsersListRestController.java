@@ -1847,16 +1847,18 @@ public class UsersListRestController {
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			User updatedUser = userService.addUser(user);
 			
-			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				UserCustomFieldData userCustomFields = new UserCustomFieldData();
-				userCustomFields.setUser(updatedUser);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				 userCustomFields.setOrglocationsFormFields(orgFormField);
-				 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+			if(addUserDTO.getCustomFormData() != null){
+				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
+					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					UserCustomFieldData userCustomFields = new UserCustomFieldData();
+					userCustomFields.setUser(updatedUser);
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 userCustomFields.setOrglocationsFormFields(orgFormField);
+					 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+					}
+					
 				}
-				
 			}
 			
 			userRoleService.addUserRole(userRole);
