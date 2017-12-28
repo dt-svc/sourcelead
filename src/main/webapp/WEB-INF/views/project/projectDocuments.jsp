@@ -60,7 +60,7 @@
 								result = result + '	 					<i class="fa fa-gear text-muted cursorPointer"></i>           ';
 								result = result + '	 					</span>                                                       ';
 								result = result + '	 					<ul class="dropdown-menu dropdown-menu-right fmdropdown-menu">         ';
-								result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
+								result = result + '	 						<li><a href="#" data-toggle="modal" data-target="#reNameCreateFolder" onclick="folederReName('+report.id+',\''+report.foderName+'\');"><i class="fa fa-pencil mr10"></i>Rename</a></li>   ';
 								result = result + '	 						<li><a href="#"  onclick="deleteFolderPopUp('+report.id+');"><i class="fa fa-trash-o mr10" ></i>Delete</a></li>  ';
 								result = result + '	 						<li><a href="#" onclick="permissionPopUp('+report.id+');"><i class="fa fa-key mr10"></i>Permission</a></li>  ';
 								result = result + '	 					</ul>                                                                  ';
@@ -402,7 +402,7 @@
  				}
  		 });
  	}
-	function folederReName(folderId){
+	function folederReName(folderId,folderName){
 	    var result = "";
 	    result = result  +'<form role="form"  id="reNameFolder_form" name="reNameFolder_form" method="post" > ';
 		result = result +'<div class="modal-content">';
@@ -414,7 +414,7 @@
 		result = result +'     <div class="row">';
 		result = result +'     	<label class="col-md-3">Rename Folder</label>';
 		result = result +'     	<div class="col-md-9" id="rmoveErrMsgEditCF">';
-		result = result +'     		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderReName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateRenameFolderName('+folderId+');">';
+		result = result +'     		<input type="text" class="form-control input-sm" placeholder="Create Folder" value="'+folderName+'" id="folderReName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateRenameFolderName('+folderId+');">';
 		result = result +'     	</div>';
 		result = result +'     </div>';
 		result = result +'   </div>';
@@ -439,7 +439,7 @@ function saveReNameFolder(folderId){
 			type : "POST",
 				url : sourceleadUrl+"/projectDocumentFolderRename?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&folderName="+folderName,
 			success : function(data) {
-				$("#reNameFolder_form").modal("hide");
+				$("#reNameCreateFolder").modal("hide");
 				projectDocuments(projectId);
 			}
 	 }); 
