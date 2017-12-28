@@ -23,10 +23,11 @@
 				<li><a href="${appPath}/clientReports">Client Report</a></li>
 				<li><a href="#">New Customer</a></li>
 				<li><a href="#">Applicant Backout</a></li>
-				<li><a href="#">Applicant Decline</a></li>
+				<li><a href="${appPath}/applicantDeclineReports">Applicant Decline</a></li>
 				<li><a href="#">Jobs Pipeline</a></li>
+				<li><a href="${appPath}/jobPipelineReports">Jobs Pipeline</a></li>
 				<li><a href="${appPath}/applicantBySource">Applicant Source</a></li>
-				<li><a href="#">Time to Fill</a></li>
+				<li><a href="${appPath}/timeToFill">Time to Fill</a></li>
 				<li><a href="#">Retention Rate</a></li>
 				<li><a href="#">Applicant Received</a></li>
 				<li><a href="#">Sales Performance</a></li>

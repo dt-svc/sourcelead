@@ -1,5 +1,6 @@
 package com.bis.sourcelead.elk.index.helper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +48,16 @@ public class ClientVendorContactsIndexHelper {
 				
 				clientVendorContactsIndex.setVendorUserFirstName(ownerUser.getFirstName());
 				clientVendorContactsIndex.setVendorUserLastName(ownerUser.getLastName());
+				
+				if(StringUtils.isNoneBlank(ownerUser.getLastName())) {
+					StringBuilder fullName = new StringBuilder();
+					fullName = fullName.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName());
+					clientVendorContactsIndex.setVendorUserName(fullName.toString());
+				}else {
+					clientVendorContactsIndex.setVendorUserName(ownerUser.getFirstName());
+				}
+				
+				
 				clientVendorContactsIndex.setVendorUserId(orgSpoc.getVendorUser().getId());
 				clientVendorContactsIndex.setVendorUserEmail(ownerUser.getEmail());
 				clientVendorContactsIndex.setVendorUserPhNo(ownerUser.getMobilePhone());
@@ -64,6 +75,15 @@ public class ClientVendorContactsIndexHelper {
 			User spockUser = userService.getUserById(orgSpoc.getClientUser().getId());
 			
             if(null != spockUser){
+            	
+            	
+            	if(StringUtils.isNoneBlank(spockUser.getLastName())) {
+					StringBuilder fullName = new StringBuilder();
+					fullName = fullName.append(spockUser.getFirstName()).append(" ").append(spockUser.getLastName());
+					clientVendorContactsIndex.setClientUserName(fullName.toString());
+				}else {
+					clientVendorContactsIndex.setClientUserName(spockUser.getFirstName());
+				}
             	
             	clientVendorContactsIndex.setClientUserFirstName(spockUser.getFirstName());
     			clientVendorContactsIndex.setClientUserLastName(spockUser.getLastName());

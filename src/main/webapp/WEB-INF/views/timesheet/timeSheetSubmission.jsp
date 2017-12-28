@@ -458,7 +458,7 @@
 										        <input name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired" value="N" type="hidden">
 										  </c:if>
 										  <c:if test="${empty timesheetSubmissionDTO.fileInfo && timesheetSubmissionDTO.attachmentRequired}"> 
-										     <input name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired" value="N" type="hidden">
+										     <input name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired" value="Y" type="hidden">
 										   </c:if>
 										   <c:forEach var="finfo" items="${timesheetSubmissionDTO.fileInfo}">
 										         <strong id='${finfo.fileDbId}document'>

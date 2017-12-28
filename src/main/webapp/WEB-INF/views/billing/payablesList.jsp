@@ -828,7 +828,7 @@ function payablePagination(url){
             						if(report.paymentStatus == "Paid"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "Rejected"){
             							result = result +'           <div class="text-primary successBtn primary pull-left bg-red">Rejected</div>   ';	
             						}
@@ -849,7 +849,7 @@ function payablePagination(url){
             						if(report.paymentStatus == "Paid"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
             						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+            							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
             						}else if(report.invoiceStatus == "SENT"){
             							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Sent</span> </td>          ';
             						}else if(report.invoiceStatus == "Rejected"){

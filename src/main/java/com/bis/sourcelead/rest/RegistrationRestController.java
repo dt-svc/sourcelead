@@ -635,7 +635,7 @@ public class RegistrationRestController {
 	}
 	
 
-	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/verifyResetPassword" , method = RequestMethod.POST)
 	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
 		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());

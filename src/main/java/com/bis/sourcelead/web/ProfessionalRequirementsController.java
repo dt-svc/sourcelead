@@ -60,6 +60,9 @@ public class ProfessionalRequirementsController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	RequirementService requirementService;
 	
@@ -109,7 +112,7 @@ public class ProfessionalRequirementsController {
 	}
 	
 	
-	 @RequestMapping(value = "/app/register")
+	 @RequestMapping(value = "/register")
 	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
 	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 	 			@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
@@ -403,6 +406,7 @@ public class ProfessionalRequirementsController {
 		 ModelAndView model = new ModelAndView();
 		 model.setViewName("professional/requirementDetailsSummary");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("sourceleadLoginUrl", sourceleadLoginUrl);
 		 model.addObject("contactUUID", contactUUID);
 		 model.addObject("requirementUUID", requirementUUID);
 		 model.addObject("referUUID", referUUID);
