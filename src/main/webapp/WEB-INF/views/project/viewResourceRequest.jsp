@@ -117,7 +117,16 @@ function getRequestedAssociatesList(){
 				
 				 for(var i=0; i<json.resourceRequestList.length; i++){
 					 var opt = json.resourceRequestList[i];
-					 
+					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != "undefined"){
+						 startDateStr = opt.startDateStr;
+					 }else{
+						 startDateStr = "--";
+					 }
+					 if(opt.endDateStr != null && opt.endDateStr != "" && opt.endDateStr != "undefined"){
+						 endDateStr = opt.endDateStr;
+					 }else{
+						 endDateStr = "--";
+					 }
 					 result = result +'<tr>';
 					    
 					    result = result +'<td>';
@@ -137,11 +146,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.startDateStr+'">'+opt.startDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDateStr+'">'+startDateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.endDateStr+'">'+opt.endDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDateStr+'">'+endDateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -160,7 +169,7 @@ function getRequestedAssociatesList(){
 						if(opt.resourceStatus == null){
 							result = result +'<div class="tbldata-dotdot_vsm text-warning">Sent For Approval</div>';
 						}else{
-							result = result +'<div class="tbldata-dotdot_80 text-success" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'<strong></div>';
+							result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'<strong></div>';
 						}
 					 	
 						result = result +'</td>';

@@ -85,13 +85,6 @@ function getRequestedAssociatesList(){
 				result = result +' </div>';    
 				result = result +'</div>';
 				
-				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Status :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
 				result = result +'</div>';
 				result = result +'</div> ';  
 				
@@ -108,6 +101,7 @@ function getRequestedAssociatesList(){
 				result = result +'                     <th>Consulting</th>';
 				result = result +'                     <th>Est Hours</th>';
 				result = result +'                     <th>Est Budget</th>';
+				result = result +'                     <th>Status</th>';
 				result = result +'                 </tr>';
 				result = result +'             </thead>';
 				result = result +'             <tbody>';
@@ -158,12 +152,12 @@ function getRequestedAssociatesList(){
 						 estimatedBudget = '--';
 					 }
 					 if(opt.minExperience != null && opt.minExperience != '' && opt.minExperience != 'undefined'){
-						 minExperience = opt.minExperience;
+						 minExperience = "Min Exp."+opt.minExperience;
 					 }else{
 						 minExperience = '--';
 					 }
 					if(opt.maxExperience != null && opt.maxExperience != '' && opt.maxExperience !='undefined'){
-						maxExperience = opt.maxExperience;
+						maxExperience = "Max Exp."+opt.maxExperience;
 					}else{
 						maxExperience = '--';
 					}
@@ -230,6 +224,10 @@ function getRequestedAssociatesList(){
 
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
+						result = result +'</td>';
+						
+						result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</div>';
 						result = result +'</td>';
 						
 					 result = result +'</tr>';
