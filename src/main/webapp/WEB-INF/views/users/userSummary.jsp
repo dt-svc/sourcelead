@@ -34,7 +34,7 @@ max-height: inherit !important;
 			<div class="pull-left">
 				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -194,21 +194,21 @@ $(document).ready(function(){
 			    	userName = json.user.firstName
 			    }
 			   
-			   
+			    
 				result = result + '<div class="project_tabs_inn_table">';
 				
 				result = result + '  <div class="project_details">';
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 				    result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');removeErrorMsg();" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
 				    '</sec:authorize>';
 				    
-				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_USER\')">'
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 				        result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit Associate</a>';
 				    '</sec:authorize>';
 				      
-				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
+				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
 						result = result + ' <div id="remove_user_id" class="remove_user_pop terminate-popup" >';
@@ -240,7 +240,7 @@ $(document).ready(function(){
 				}
 				
 				else{
-					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\',\'ROLE_CREATE_USER\')">'
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CREATE_ASSOCIATE\')">'
                          result = result + '<i class="glyphicon glyphicon-user"></i><a id="edit-user" href="javascript:reActiveUser('+userId+');">&nbsp;Re-Active</a>';
                     '</sec:authorize>';	 
 				}

@@ -758,14 +758,14 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 </script>
 
 <script type="text/javascript">
-function validateEmail(orgRelationID){
+function validateEmail(orgRelationId){
 	 //getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=vendor",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
