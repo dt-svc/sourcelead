@@ -113,9 +113,15 @@ function getSendersList(){
 			         }else{
 			        	 result += '  <td><div><i class="glyphicon glyphicon-ok"></i></div></td>';
 			         } */
-			         result += ' <td><div><i class="glyphicon glyphicon-pencil" onclick="campaignSender(this,'+report.id+');"></i><i class="glyphicon glyphicon-trash ml10" onclick="deleteIdentity('+report.id+');"></i></div></td>';
-			         result += '  </tr>';
-		    	 } 
+			         result = result +'  <td>';                                                                                                                  
+			           result = result +'    <div class="tblminwidth-50 text-center">';
+			           result = result +'          <div title="Edit" class="paddingRight pull-left ml"><i class="fa fa-pencil text-primary cursorPointer" onclick="campaignSender(this,'+report.id+');"></i></div>';       
+			           result = result +'          <div title="Delete" class="paddingLeft pull-left"><i onclick= "deleteIdentity(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></div>';  
+			           result = result +'    </div>';                                                                                                              
+			           result = result +'  </td>';
+			           result = result +'</tr>';                                                                                                                                                                                                                                        
+			      
+			   } 
 	         }
 	    	
 	         result += '  </tbody>';
@@ -160,9 +166,11 @@ function deleteIdentity(senderId){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"	<p>Are you sure you want to Delete ?</p>";
+	result = result +"		<textarea id='reason' class='form-control' field-name='Delete Identity'  readonly data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Are you sure you want to delete ?' rows='2'></textarea>";
 	result = result + ' <div id="deleteIdentityDiv"/>';
-	result = result +"	</div>";
-	$("#popUp").append(result);
+	result = result + "<b href='javascript:void(0)'><input id='confirm-id1' type='button' value='Delete' onclick='deleteSenderIdentity(\""+senderId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDeleteIdentity();'></b>";
+    result = result +"	</div>";
+ 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
@@ -172,8 +180,8 @@ function deleteIdentity(senderId){
  <script>
  function deleteSenderIdentity(senderId){
 	 $("#deleteIdentityDiv").empty();
-	 $.get( sourceleadUrl+ "/deleteSenderIdentity?"+tokenParamName+"="+tokenValue+"&senderId="+senderId, function(json) {
-			if(json == true) {
+	 $.get( sourceleadUrl+ "/deleteSenderIdentity?"+tokenParamName+"="+tokenValue+"&senderId="+senderId, function(data) {
+			if(data == true) {
 				 $("#selector1").removeAttr("style");
 	  			 $("#selector1").css({ display: "block" });
 	  			 $("#msgDiv").html("Successfullyy deleted sender identity");
