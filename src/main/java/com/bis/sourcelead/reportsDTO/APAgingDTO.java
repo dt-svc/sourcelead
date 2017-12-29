@@ -1,5 +1,8 @@
 package com.bis.sourcelead.reportsDTO;
 
+import java.util.Date;
+import java.util.List;
+
 import com.bis.sourcelead.dto.SearchDTO;
 
 public class APAgingDTO extends SearchDTO {
@@ -11,7 +14,8 @@ public class APAgingDTO extends SearchDTO {
 	private double nintyDays;
 	private double oneeightyDays;
 	private double threeSixtyFiveDays;
-	private double above365Days;
+	private double abovethreeSixtyFiveDays;
+	private double previousYearsTotal;
 	private String apagingType;
 	private String orgName;
 	private double total;
@@ -30,7 +34,21 @@ public class APAgingDTO extends SearchDTO {
 	private double above365DaysTotal;
 	private String orgIds;
 	private String filterType;
+	private String fromDate;
+	private String toDate;
+	private  int recordsTotal;
+	private  int recordsFiltered; 
+	List<APAgingDTO> apaAgingList;
+	List<AparagingDate> above365Dates;
 	
+
+	public double getPreviousYearsTotal() {
+		return previousYearsTotal;
+	}
+
+	public void setPreviousYearsTotal(double previousYearsTotal) {
+		this.previousYearsTotal = previousYearsTotal;
+	}
 
 	public double getTenDays() {
 		return tenDays;
@@ -88,12 +106,14 @@ public class APAgingDTO extends SearchDTO {
 		this.threeSixtyFiveDays = threeSixtyFiveDays;
 	}
 
-	public double getAbove365Days() {
-		return above365Days;
+	
+
+	public double getAbovethreeSixtyFiveDays() {
+		return abovethreeSixtyFiveDays;
 	}
 
-	public void setAbove365Days(double above365Days) {
-		this.above365Days = above365Days;
+	public void setAbovethreeSixtyFiveDays(double abovethreeSixtyFiveDays) {
+		this.abovethreeSixtyFiveDays = abovethreeSixtyFiveDays;
 	}
 
 	public String getApagingType() {
@@ -238,6 +258,54 @@ public class APAgingDTO extends SearchDTO {
 
 	public void setFilterType(String filterType) {
 		this.filterType = filterType;
+	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public int getRecordsTotal() {
+		return recordsTotal;
+	}
+
+	public void setRecordsTotal(int recordsTotal) {
+		this.recordsTotal = recordsTotal;
+	}
+
+	public int getRecordsFiltered() {
+		return recordsFiltered;
+	}
+
+	public void setRecordsFiltered(int recordsFiltered) {
+		this.recordsFiltered = recordsFiltered;
+	}
+
+	public List<APAgingDTO> getApaAgingList() {
+		return apaAgingList;
+	}
+
+	public void setApaAgingList(List<APAgingDTO> apaAgingList) {
+		this.apaAgingList = apaAgingList;
+	}
+
+	public List<AparagingDate> getAbove365Dates() {
+		return above365Dates;
+	}
+
+	public void setAbove365Dates(List<AparagingDate> above365Dates) {
+		this.above365Dates = above365Dates;
 	}
 
 	
