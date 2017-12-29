@@ -1,7 +1,11 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,11 +23,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
+import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -39,6 +46,9 @@ public class FinanceReportRestController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	/**
 	 * Returns A/P Aging list JSP
@@ -132,8 +142,12 @@ public class FinanceReportRestController {
 	@RequestMapping(value = {"/vendorapAging","/rest/vendorapAging"}, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<APAgingDTO> vendorapAging(APAgingDTO aPAgingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		ResponseList<APAgingDTO> responseList = new ResponseList<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<APAgingDTO> responseList = financeService.getApAgingListByLocation(orgLocation,aPAgingDTO);
+		APAgingDTO apagingdto = financeService.getApAgingListByLocation(orgLocation,aPAgingDTO);
+		responseList.setData(apagingdto.getApaAgingList());
+		responseList.setRecordsTotal(apagingdto.getRecordsTotal());
+		responseList.setRecordsFiltered(apagingdto.getRecordsFiltered());
 		return responseList;
 	}
 
@@ -164,12 +178,15 @@ public class FinanceReportRestController {
 	@RequestMapping(value = {"/vendorapAgingBillGraph","/rest/vendorapAgingBillGraph"}, method = RequestMethod.POST)
 	public @ResponseBody APAgingDTO vendorapAgingBillGraph(APAgingDTO aPAgingDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		ResponseList<APAgingDTO> responseList = new ResponseList<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<APAgingDTO> responseList = financeService.getApAgingListByLocation(orgLocation,aPAgingDTO);
-		
+		APAgingDTO  apagingdto= financeService.getApAgingListByLocation(orgLocation,aPAgingDTO);
+		responseList.setData(apagingdto.getApaAgingList());
+		responseList.setRecordsTotal(apagingdto.getRecordsTotal());
+		responseList.setRecordsFiltered(apagingdto.getRecordsFiltered());
 		
 		APAgingDTO apagingDto = new APAgingDTO();
-		
+		List<AparagingDate> aparagingDate = new ArrayList<>();
 		List<APAgingDTO> apagingDtoList = responseList.getData(); 
 		 double tenDaysToatl = 0;
 		 double fifteenDaysTotal = 0;
@@ -179,7 +196,7 @@ public class FinanceReportRestController {
 		 double oneeightyDaysTotal = 0;
 		 double threeSixtyFiveDaysTotal = 0;
 		 double above365DaysTotal = 0;
-		
+		 double total = 0;
 		for(APAgingDTO ap : apagingDtoList) {
 			tenDaysToatl = tenDaysToatl + ap.getTenDays();
 			fifteenDaysTotal = fifteenDaysTotal + ap.getFifteenDays();
@@ -188,8 +205,35 @@ public class FinanceReportRestController {
 			nintyDaysTotal = nintyDaysTotal + ap.getNintyDays();
 			oneeightyDaysTotal = oneeightyDaysTotal + ap.getOneeightyDays();
 			threeSixtyFiveDaysTotal = threeSixtyFiveDaysTotal + ap.getThreeSixtyFiveDays();
-			above365DaysTotal = above365DaysTotal + ap.getAbove365Days();
+			above365DaysTotal = above365DaysTotal + ap.getAbovethreeSixtyFiveDays();
 		}
+		total = tenDaysToatl + fifteenDaysTotal + thirtyDaysTotal + sixtyDaysTotal + nintyDaysTotal + oneeightyDaysTotal + threeSixtyFiveDaysTotal + above365DaysTotal; 
+		if(apagingdto.getAbove365Dates() !=null && apagingdto.getAbove365Dates().size() >0) {
+			 Map<Integer,List<Double>> map = new HashMap<>();
+			 for(AparagingDate aparagingdate : apagingdto.getAbove365Dates()) {
+				 Calendar cal = Calendar.getInstance(); 
+				 cal.setTime(aparagingdate.getDate());
+				 int year = cal.get(Calendar.YEAR);
+	    	   if(map.containsKey(year)) {
+	    	   List<Double> amountList = map.get(year);
+	    	   amountList.add(aparagingdate.getAmount());
+	    	   map.put(year, amountList);
+	    	   }else {
+	    	   List<Double> amountList = new ArrayList<>();
+	    	   amountList.add(aparagingdate.getAmount());
+	    	   map.put(year, amountList);
+	    	   }
+	       }
+			 for (Map.Entry<Integer,List<Double>> entry : map.entrySet()) {
+				 AparagingDate apar = new AparagingDate();
+				 apar.setYear(entry.getKey());
+				 double amount = entry.getValue().stream().mapToDouble(am->am.doubleValue()).sum();
+				 apar.setAmount(amount);
+				 aparagingDate.add(apar);
+				}
+		}
+		
+		
 		apagingDto.setTenDaysToatl(tenDaysToatl);
 		apagingDto.setFifteenDaysTotal(fifteenDaysTotal);
 		apagingDto.setThirtyDaysTotal(thirtyDaysTotal);
@@ -198,7 +242,8 @@ public class FinanceReportRestController {
 		apagingDto.setOneeightyDaysTotal(oneeightyDaysTotal);
 		apagingDto.setThreeSixtyFiveDays(threeSixtyFiveDaysTotal);
 		apagingDto.setAbove365DaysTotal(above365DaysTotal);
-		
+		apagingDto.setAbove365Dates(aparagingDate);
+		apagingDto.setTotal(total);
 		return apagingDto;
 	}
 }
