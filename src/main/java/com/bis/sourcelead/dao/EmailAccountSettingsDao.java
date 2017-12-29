@@ -12,5 +12,7 @@ public interface EmailAccountSettingsDao {
 	List<EmailAccountSettings> emailAccountSettingsList(Long loginUserId)throws Exception;
 	
 	EmailAccountSettings getEmailAccount(Long id,Long userId);
+	
+	public void deleteEmailAccount(Long id, Long userId)throws Exception;
 
 }

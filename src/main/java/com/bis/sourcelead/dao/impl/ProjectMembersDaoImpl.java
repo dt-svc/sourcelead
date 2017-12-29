@@ -30,10 +30,8 @@ import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
@@ -382,6 +380,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String statusQuery = "";
 		String fillingOptionQuery = "";
 		String sortingOrder = "";
+		String biweeklyDateFilter = "";
 		
 		String fillingOptionCountQuery = "";
 		String dateCountQuery = "";
@@ -403,6 +402,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		sortingOrder = "order by pm.id desc";
+		
+		if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
+			biweeklyDateFilter = " and DATEDIFF(pm.projects.weekStartDate,:startDate)%14=0";
+		}
 		
 		if(startDate != null && endDate != null){
 			   dateQuery =  " and pm.id IN ( "
@@ -475,6 +478,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				    +clientQuery
 				    + dateQuery
 					+ userQuery
+					+biweeklyDateFilter
 					+searchQuery
 					+sortingOrder;
 		Query query = session.createQuery(queryStr.toString());
@@ -486,6 +490,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				+ clientCountQuery
 				+ dateCountQuery
 				+ userCountQuery
+				+biweeklyDateFilter
 				+searchCountQuery;
 		
 		

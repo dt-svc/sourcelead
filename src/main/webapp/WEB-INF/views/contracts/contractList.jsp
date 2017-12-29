@@ -1378,7 +1378,7 @@ function preparedContractListWTS(json){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
+		         result = result + '<div class="tblminwidth-150">'+report.startDateStr+'';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
 		        	 result = result +' | '+ report.endDateStr+'</div>';
 		         }
@@ -1472,7 +1472,7 @@ function preparedContractListWTS(json){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
+	         opt = opt + '<div class="tblminwidth-150">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
 	        	 opt = opt +' | '+output.endDateStr+'</div>';
 	         }
@@ -1819,7 +1819,7 @@ function preparedContractListWTV(json){
 		         result = result + '</td>'; */
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
+		         result = result + '<div class="tblminwidth-150">'+report.startDateStr+'';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
 		        	 result = result +' | '+ report.endDateStr+'</div>';
 		         }
@@ -1922,7 +1922,7 @@ function preparedContractListWTV(json){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
+	         opt = opt + '<div class="tblminwidth-150">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
 	        	 opt = opt +' | '+output.endDateStr+'</div>';
 	         }
