@@ -148,7 +148,7 @@ function arAgingInvoiceGraph(){
 	    	 $("#total").html(json.total) 
 	    	for(var i=0; i< year.length; i++){
 	    		var data = year[i];
-	    		result = result + "<li><label class='tblminwidth-50'>"+data.year+":</label><span>"+data.amount.toFixed(2)+"<b class='paddingLeft'>(50%)</b></span></li>";
+	    		result = result + "<li><label class='tblminwidth-50'>"+data.year+":</label><span>"+data.amount.toFixed(2)+"<b class='paddingLeft'></b></span></li>";
 	    	}
 	    	result = result + "</ul>";
 	    	$("#ulDiv").empty();
