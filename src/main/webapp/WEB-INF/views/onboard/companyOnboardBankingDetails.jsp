@@ -112,7 +112,9 @@ right: 15px;
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
+						  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
+						  </c:if>
 						  <li class="hoverLi">Banking details</li>
 						  <li>Documents</li>
 						  <li>Signatory</li>
@@ -148,21 +150,28 @@ right: 15px;
 						<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Routing Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="routingNumber" id="routingNumber" field-name="Routing Number" value='${SourceLeadWeb_bankingDetails.routingNumber}' data-validation="required validate_space validate_length length9-9" maxlength="9" >
+								 <input class=" form-control" type="text" name="routingNumber" id="routingNumber" placeholder="Routing Number" field-name="Routing Number" value='${SourceLeadWeb_bankingDetails.routingNumber}' data-validation="required validate_space validate_length length9-9" maxlength="9" >
 								</div>
 						</div>
 						
 						<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Account Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="accountNumber" id="accountNumber" field-name="Account Number" value='${SourceLeadWeb_bankingDetails.accountNumber}' data-validation="required validate_space validate_length length9-15"  >
+								 <input class=" form-control" type="text" name="accountNumber" id="accountNumber" placeholder="Account Number" field-name="Account Number" value='${SourceLeadWeb_bankingDetails.accountNumber}' data-validation="required validate_space validate_length length9-15"  >
 								</div>
 						</div>
 						
 				  	</div>
 				  </div>
 					<div class="welBtns welBtnsA">
+						<c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
 						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
+						</c:if>
+						
+						<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardLocations'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
+						</c:if>
+						
 						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"></a>
 						<div class="clearfix"></div>
 					</div>

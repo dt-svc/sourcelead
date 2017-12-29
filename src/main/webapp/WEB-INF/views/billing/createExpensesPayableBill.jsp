@@ -60,7 +60,7 @@ function checkBox(){
       <div class="pull-left">
         <h2>Create Bill</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo; Project Based Bill</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo; Create Bill</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -1165,7 +1165,7 @@ function getDueDateByFrequency(){
 <script>
 function flushValues(){
 	$("#invoiceId").val('');
-	$("#invoiceDate").val('');
+	//$("#invoiceDate").val('');
 	$("#dueDate").val('');
 	$("#paymentFrequency").val('');
 	$("#frequency").val('').trigger("chosen:updated");

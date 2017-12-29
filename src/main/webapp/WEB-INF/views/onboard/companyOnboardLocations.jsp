@@ -36,6 +36,13 @@ width: 100% !important;
 right: 15px;
 }
 
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+	display:none;
+}
+
 </style>
 
 <script>
@@ -120,7 +127,9 @@ $(function(){
 					   <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="hoverLi">Locations</li>
+						  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
 						  <li>Federal & state taxes</li>
+						  </c:if>
 						  <li>Banking details</li>
 						  <li>Documents</li>
 						  <li>Signatory</li>
@@ -147,7 +156,12 @@ $(function(){
                			<div id="registeredOrgs"></div>
     			<div class="welBtns welBtnsA">
 					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/dashboard'/>'"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
+					<c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
 					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
+					</c:if>
+					<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardBankingDetails'/>'"></a>
+					</c:if>
 					<div class="clearfix"></div>
 				</div>
        			</form:form>
@@ -365,11 +379,13 @@ function createOrg(){
 	result = result +'</div>';
 	
 	
-	result = result +'<div class="form-group clearfix" id="generatedUserIdDiv">';
+	result = result +'<div class="form-group clearfix" >';
 	result = result +'<label class="col-md-4 noPad">Org Short Code<span class="text-danger">*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
+	result = result +'<div id="generatedUserIdDiv">';
 	result = result +'<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" />';
     result = result +'<span class="hidden">Short Code</span>';
+	result = result +'</div>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
@@ -620,10 +636,19 @@ function editOrgLocationAuto(orgLocationId,orgCountry,orgStateId,orgCityId,orgZi
 	editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId);
 }
 function editOrgInitialize(orgLocationId,orgCountry,orgStateId,orgCityId,orgZipCodeId) {
-   	autocomplete = new google.maps.places.Autocomplete((document.getElementById(orgLocationId)), {
+   /* 	autocomplete = new google.maps.places.Autocomplete((document.getElementById(orgLocationId)), {
    	 types: ['geocode']
      
-       });
+       }); */
+       
+  	 var input = (document.getElementById(orgLocationId));
+	    var options = {
+	    		types: ['geocode'],
+	        componentRestrictions: {
+	        	country: ["IN","US","AU","SG","GB","FR"]
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
   
  google.maps.event.addListener(autocomplete, 'place_changed', function() {
  place = autocomplete.getPlace();

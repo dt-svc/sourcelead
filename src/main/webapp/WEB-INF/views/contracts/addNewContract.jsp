@@ -13,6 +13,15 @@
 </style>
 
 <script>
+		$(document).ready(function() {
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
+		});
+</script> 
+
+<script>
  window.onload = function() {
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
@@ -66,6 +75,7 @@
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
      <form:form id="newcontract_form" name="newcontract_form" method="post">
+     <input type="hidden" id="actionId" value="${actionId}">
       <div class="clearfix form-horizontal">
        
         <div class="row newContrWrap">
@@ -461,6 +471,14 @@
               </div>
             </div>         
             
+             <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 0}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	   		</c:if>
+            
         </div>
       </div>
       
@@ -633,6 +651,15 @@
                         </div>
                       </div>
                     </div>
+                    
+                <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	   			</c:if>
+                    
             </div>
         </div>
         <!-- billing end -->
@@ -705,6 +732,20 @@
     </form:form>
   </section>
 
+
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script type="text/javascript">
 			var config = {

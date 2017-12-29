@@ -97,6 +97,14 @@ public class ClientController {
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Clients);
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 			SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
 		     model.addObject("actionId",action.getId());
 		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
@@ -237,6 +245,10 @@ public class ClientController {
 				model.addObject("ownerId", orgSpoc.getVendorUser().getId());
 				model.addObject("spocUserId", orgSpoc.getClientUser().getId());
 				model.addObject("tempOwnerId", orgSpoc.getVendorUser().getId());
+				model.addObject("spocName", orgSpoc.getClientUser().getFullName());
+				model.addObject("spocLocationId", orgSpoc.getClientLocationId().getId());
+				model.addObject("orgRelationId", orgSpoc.getOrgRelations().getId());
+				model.addObject("userId", orgSpoc.getVendorUser().getId());
 			 }
 			}
 			

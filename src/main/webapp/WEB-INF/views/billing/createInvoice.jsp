@@ -1068,7 +1068,7 @@ function cancelDelDoc(){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();$(this).blur();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="this.disabled=true;addInvoice();$(this).blur();" >Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#associatesListDiv").empty(); 
 	                     $("#associatesListDiv").append(result); 
@@ -1484,7 +1484,7 @@ function calculateDiscount(){
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val("00.00");
-			$("#grandTotal").val(subTotal);
+// 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
@@ -1652,12 +1652,11 @@ function calculateDiscount(){
        //=======================================
         conversion();
 		
-		/* var r = document.getElementById('addTaxTbl').rows[rowId];
-		var count = 2 * (r.cells.length);
+		var r = document.getElementById('addTaxTbl').rows[rowId+1];
+		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
-		} */
-		
+		}
 	}
 </script>
 
@@ -2182,7 +2181,6 @@ function createInvoiceEmptyClientContact(){
  <script>
 	 function selectedClient(){
 		 var cid = $("#clientOrgRelationId").val();
-		 alert(cid)
 		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 </script>
