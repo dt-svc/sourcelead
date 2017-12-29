@@ -21,7 +21,7 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant(s) Backout</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) by source </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) Backout </div>
    
     </section>
     <!-- hiring Process  -->
@@ -69,7 +69,7 @@ $(window).load(function() {
           
         </div>
         <div class="col-md-1 noPad">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getBackoutApplicantList();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getBackoutApplicantList();">Run</button>
         </div>
       </div>
       
