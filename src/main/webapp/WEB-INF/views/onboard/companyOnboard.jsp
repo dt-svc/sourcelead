@@ -124,7 +124,9 @@ right: 15px;
 			  <ul>
 				  <li class="hoverLi">Organization details</li>
 				  <li>Locations</li>
+				  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
 				  <li>Federal & state taxes</li>
+				  </c:if>
 				  <li>Banking details</li>
 				  <li>Documents</li>
 				  <li>Signatory</li>
@@ -337,6 +339,20 @@ right: 15px;
 			<label class="col-md-3 noPad">Other Business Type</label>
 			<div class="col-md-9 padding_right">
 			<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+			<label class="col-md-3 noPad">Email regarding Po</label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+			<label class="col-md-3 noPad">Email for Remittance</label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
 			</div>
 		</div>
 			
