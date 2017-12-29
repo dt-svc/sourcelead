@@ -731,6 +731,7 @@ function getTimezonesList(){
 
 <script>
 	function refreshOrgEditGoogleApiLocation(){
+		$("#orgSetLocation").val('');
 		$("#orgSetCountry").val('');
 		$("#orgSetState").val('');
 		$("#orgSetCity").val('');
