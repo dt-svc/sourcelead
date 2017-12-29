@@ -454,7 +454,7 @@ public class TimeApprovalRedefinedRestController {
 				 }
 			}
 	        
-	        if(projectMembers != null && !projectMembers.getData().isEmpty()){
+	       /* if(projectMembers != null && !projectMembers.getData().isEmpty()){
 	        	if(StringUtils.isNotEmpty(timesheetApprovalDTO.getTimesheetFrequency()) && timesheetApprovalDTO.getTimesheetFrequency().equalsIgnoreCase("Bi-Weekly")){
 		        	for(ProjectMembers pm :projectMembers.getData()){
 		        		 Date biweeklyStrDate = null;
@@ -467,8 +467,8 @@ public class TimeApprovalRedefinedRestController {
 	        	 else{
 			        	freshProjectMembers = new HashSet<>(projectMembers.getData());
 			        }
-	         }
-	        if(freshProjectMembers != null && !freshProjectMembers.isEmpty()){
+	         }*/
+	        if(projectMembers.getData() != null && !projectMembers.getData().isEmpty()){
 	        	int tdSpanLength = 6;
 	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
 	         for (ProjectMembers projectMember : projectMembers.getData()){

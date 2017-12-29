@@ -1073,7 +1073,7 @@ function removeSkillById(candidateId, skillId){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
 					success : function(json) {
 						if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-								$("#employeeSubmissionDetailsList").empty();
+								$("#employeeSubmissionProfile").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
 								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
@@ -1119,6 +1119,7 @@ function removeSkillById(candidateId, skillId){
 								result = result +'            </div>';
 								result = result +'          </div>';
 								result = result +'        </div>';
+								$("#employeeSubmissionProfile").empty();
 								$("#employeeSubmissionProfile").append(result);
 						}
 					},
@@ -1201,6 +1202,7 @@ function educationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
+						 $("#educationSubmissionProfile").empty();
 	                     $("#educationSubmissionProfile").append(result); 
         	  }
         },
@@ -1259,7 +1261,7 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
-							
+							$("#certificationSubmissionProfile").empty();
 							$("#certificationSubmissionProfile").append(result); 
         	  }
         },

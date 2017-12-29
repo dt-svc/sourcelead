@@ -580,7 +580,7 @@ public class UsersListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
@@ -680,7 +680,7 @@ public class UsersListRestController {
 		return resultJson;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsByIdForTermination", method = RequestMethod.POST)
 	public @ResponseBody String getUserDetailsByIdForTermination(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
@@ -866,8 +866,8 @@ public class UsersListRestController {
 		resultJson = toJSON(userRole);
 		return resultJson;
 	}
-
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/getRolesExpectSelectedRole", method = RequestMethod.POST)
 	public @ResponseBody String getRolesExpectSelectedRole(
 			@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request)
@@ -881,8 +881,8 @@ public class UsersListRestController {
 		resultJson = toJSON(rolesList);
 		return resultJson;
 	}
-
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/getUserPermissionByRole", method = RequestMethod.POST)
 	public @ResponseBody String getUserPermissionByRole(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,
@@ -916,7 +916,8 @@ public class UsersListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 	public @ResponseBody String terminateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
 			 HttpServletRequest request) throws Exception {
@@ -1798,7 +1799,8 @@ public class UsersListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
 	String updateUser(AddUserDTO addUserDTO,

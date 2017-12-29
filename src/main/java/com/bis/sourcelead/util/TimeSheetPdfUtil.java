@@ -243,6 +243,9 @@ public class TimeSheetPdfUtil {
 												timesheetHours.setMonDayHours(timesheetDayEntries.getTotalHours());
 												monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	monHours =  monHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+monHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
 											}
 						            	  
 						              }
@@ -251,6 +254,9 @@ public class TimeSheetPdfUtil {
 												timesheetHours.setTueDayHours(timesheetDayEntries.getTotalHours());
 												tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	tueHours = tueHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+tueHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
 											}
 						            	  
 						              }
@@ -259,6 +265,9 @@ public class TimeSheetPdfUtil {
 												timesheetHours.setWedDayHours(timesheetDayEntries.getTotalHours());
 												wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								                wedHours = wedHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								                weekTotHours = timesheetHours.getWeekTotalHours()+wedHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
 											}
 						            	  
 						              }
@@ -267,6 +276,9 @@ public class TimeSheetPdfUtil {
 												timesheetHours.setThuDayHours(timesheetDayEntries.getTotalHours());
 												thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	thuHours = thuHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+thuHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
 											}
 						            	  
 						              }
@@ -275,6 +287,9 @@ public class TimeSheetPdfUtil {
 												timesheetHours.setFriDayHours(timesheetDayEntries.getTotalHours());
 												friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	friHours = friHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+friHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
 											}
 						            	  
 						              }
@@ -283,6 +298,9 @@ public class TimeSheetPdfUtil {
 												timesheetHours.setSatDayHours(timesheetDayEntries.getTotalHours());
 												satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	satHours = satHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+satHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
 											}
 						            	  
 						              } 
@@ -291,11 +309,14 @@ public class TimeSheetPdfUtil {
 												timesheetHours.setSunDayHours(timesheetDayEntries.getTotalHours());
 												sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	sunHours = sunHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+sunHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
 											}
 						            	  
 						              } 
-					            	  weekTotHours = monHours + tueHours + wedHours + thuHours + friHours + satHours + sunHours;
-					            	  timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+					            	  //weekTotHours = monHours + tueHours + wedHours + thuHours + friHours + satHours + sunHours;
+					            	  
 						              
 						       }
 						  map.put(projectMember.getProjects().getProjectName(), hoursList);
