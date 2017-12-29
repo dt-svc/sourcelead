@@ -290,7 +290,7 @@ right: 15px;
 			<div class="col-md-9 padding_right">
 			
 			<div id="generatedUserIdDiv">
-			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-3"  onkeyup="validateOrgShortCode();" maxlength="3" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 			</div>
 			
 			</div>

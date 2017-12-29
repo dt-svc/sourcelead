@@ -228,12 +228,12 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			
         }
 		
-		List<ExpensesApproverHierarchy> tslist = query.setCacheable(true).setFirstResult(start).setMaxResults(length).list();
+		List<ExpensesApproverHierarchy> tslist = query.setFirstResult(start).setMaxResults(length).list();
 		response.setData(tslist); 
 		
 		List<Long> countList  = null;
 		if(countQuery != null) {
-			countList  = countQuery.setCacheable(true).list();
+			countList  = countQuery.list();
 		}
 		int recordsTotal=0;
 		if(countList != null && !countList.isEmpty()) {
