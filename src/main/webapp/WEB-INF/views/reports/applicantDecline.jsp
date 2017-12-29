@@ -175,101 +175,118 @@ function getCustomDates(){
 
 </script>
 
-<script>
-function getAplicantDeclineAmChart(data){
-	 var mainChar = [];
-	 if(data.skillsCount>0){
-		 mainChar.push( {
-			    "category": "Skills",
-				"column-1": data.skillsCount,
-				"color": "#9FA8DA"
-		    } );
-		 }
-	 if(data.unsuitableCount>0){
-		 mainChar.push( {
-			    "category": "Over Qualified",
-				"color": "#90CAF9",
-				"column-1": data.unsuitableCount
-		    } );
-		 }
-	 if(data.badfitCount>0){
-		 mainChar.push( {
-			 "category": "Bad Fit",
-				"column-1": data.badfitCount,
-				"color": "#FFAB91"
-		    } );
-		 }
-	 if(data.interviewCount>0){
-		 mainChar.push( {
-			    "category": "Interview",
-				"column-1": data.interviewCount,
-				"color": "#A5D6A7"
-		    } );
-		 }
-	 if(data.salaryCount>0){
-		 mainChar.push( {
-			    "category": "Salary",
-				"column-1": data.salaryCount,
-				"color": "#FFE0B2"
-		    } );
-		 }
-	 if(data.otherCount>0){
-		 mainChar.push( {
-				"category": "Other",
-				"column-1": data.otherCount,
-				"color": "#BCAAA4"
-		    } );
-		 }
-	
-	AmCharts.makeChart("applicantDecline",
-			{
-				"type": "serial",
-				"categoryField": "category",
-				"rotate": true,
-				"marginBottom": 0,
-				"marginLeft": 0,
-				"marginTop": 10,
-				"startDuration": 1,
-				"categoryAxis": {
-					"gridPosition": "start",
-					"position": "left",
-					"title": ""
-				},
-				"export": {
-					"enabled": true
-				},
-				"trendLines": [],
-				"graphs": [
-					{
-						"balloonText": "[[value]]%",
-						"colorField": "color",
-						"fillAlphas": 1,
-						"id": "AmGraph-1",
-						"lineColorField": "color",
-						"title": "graph 1",
-						"type": "column",
-						"valueField": "column-1"
-					}
-				],
-				"guides": [],
-				"valueAxes": [
-					{
-						"axisFrequency": 0,
-						"id": "ValueAxis-1",
-						"totalText": "",
-						"unit": "",
-						"title": ""
-					}
-				],
-				"allLabels": [],
-				"balloon": {},
-				"titles": [],
-				"dataProvider": mainChar
-			}
-		);
-}
-
-</script>  
+<script type="text/javascript">
+  function getAplicantDeclineAmChart(data){
+	  
+	  var total=data.skillsCount + data.unsuitableCount + data.badfitCount + data.interviewCount + data.salaryCount + data.otherCount;
+	  var mainChar = [];
+		 if(data.skillsCount>0){
+			 mainChar.push( {
+				    "category": "Skills",
+					"column-1": data.skillsCount,
+					"color": "#9FA8DA",
+					"count": data.skillsCount,
+		            "percentage":(((data.skillsCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.unsuitableCount>0){
+			 mainChar.push( {
+				    "category": "Over Qualified",
+					"color": "#90CAF9",
+					"column-1": data.unsuitableCount,
+					"count": data.unsuitableCount,
+		            "percentage": (((data.unsuitableCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.badfitCount>0){
+			 mainChar.push( {
+				 "category": "Bad Fit",
+					"column-1": data.badfitCount,
+					"color": "#FFAB91",
+					"count": data.badfitCount,
+		            "percentage": (((data.badfitCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.interviewCount>0){
+			 mainChar.push( {
+				    "category": "Interview",
+					"column-1": data.interviewCount,
+					"color": "#A5D6A7",
+					"count": data.interviewCount,
+		            "percentage": (((data.interviewCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.salaryCount>0){
+			 mainChar.push( {
+				    "category": "Salary",
+					"column-1": data.salaryCount,
+					"color": "#FFE0B2",
+					"count": data.salaryCount,
+		            "percentage": (((data.salaryCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.otherCount>0){
+			 mainChar.push( {
+					"category": "Other",
+					"column-1": data.otherCount,
+					"color": "#BCAAA4",
+					"count": data.otherCount,
+		            "percentage": (((data.otherCount)/total)*100).toFixed(2)
+			    } );
+			 }
+      AmCharts.makeChart("applicantDecline",
+                {
+          "type": "serial",
+            "categoryField": "category",
+            "rotate": true,
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "marginTop": 10,
+            "startDuration": 1,
+            "categoryAxis": {
+                "gridPosition": "start",
+                "position": "left",
+                "axisThickness": 0,
+                "gridThickness": 0,
+                "title": ""
+            },
+            "trendLines": [],
+            "graphs": [
+                {
+                    "balloonText": "",
+                    "colorField": "color",
+                    "fillAlphas": 1,
+                    "id": "AmGraph-1",
+                    "labelText": "[[count]] <br>[[percentage]]%",
+                    "legendValueText": "",
+                    "lineColorField": "color",
+                    "title": "graph 1",
+                    "type": "column",
+                    "valueField": "column-1"
+                }
+            ],
+            "guides": [],
+            "valueAxes": [
+                {
+                    "axisFrequency": 0,
+                    "id": "ValueAxis-1",
+                    "totalText": "",
+                    "unit": "",
+                    "axisThickness": 0,
+                    "gridThickness": 0,
+                    "labelsEnabled": false,
+                    "title": ""
+                }
+            ],
+            "allLabels": [],
+            "balloon": {},
+            "titles": [],
+            "dataProvider":  mainChar
+                }
+            );
+      $("#paging").empty();
+  }
+        </script> 
   
   <script>
  $(document).ready(function(){
