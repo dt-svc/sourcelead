@@ -62,6 +62,9 @@ public class Projects implements Serializable{
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
     private String description;
  
+    @Column(name = "WEEK_START_DATE")
+    private Date weekStartDate;
+    
     @Column(name = "START_DATE")
     private Date startDate;
     
@@ -1017,4 +1020,13 @@ public class Projects implements Serializable{
 	public void setProjectDocumentFolder(Set<ProjectDocumentFolder> projectDocumentFolder) {
 		ProjectDocumentFolder = projectDocumentFolder;
 	}
+
+	public Date getWeekStartDate() {
+		return weekStartDate;
+	}
+
+	public void setWeekStartDate(Date weekStartDate) {
+		this.weekStartDate = weekStartDate;
+	}
+	
 }

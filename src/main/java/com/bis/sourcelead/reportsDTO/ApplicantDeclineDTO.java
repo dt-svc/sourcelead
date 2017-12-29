@@ -4,28 +4,19 @@ public class ApplicantDeclineDTO {
 	
 	private String jobName;
 
-	private Integer skillsCount;
+	private int skillsCount;
 	
-	private Integer unsuitableCount;
+	private int unsuitableCount;
 	
-	private Integer badfitCount;
+	private int badfitCount;
 	
-	private Integer interviewCount;
+	private int interviewCount;
 	
-	private Integer salaryCount;
+	private int salaryCount;
 	
-	private Integer otherCount;
+	private int otherCount;
 	
 	private int totalCount;
-	
-
-	public int getTotalCount() {
-		return totalCount;
-	}
-
-	public void setTotalCount(int totalCount) {
-		this.totalCount = totalCount;
-	}
 
 	public String getJobName() {
 		return jobName;
@@ -35,57 +26,61 @@ public class ApplicantDeclineDTO {
 		this.jobName = jobName;
 	}
 
-	public Integer getSkillsCount() {
+	public int getSkillsCount() {
 		return skillsCount;
 	}
 
-	public void setSkillsCount(Integer skillsCount) {
+	public void setSkillsCount(int skillsCount) {
 		this.skillsCount = skillsCount;
 	}
 
-	public Integer getUnsuitableCount() {
+	public int getUnsuitableCount() {
 		return unsuitableCount;
 	}
 
-	public void setUnsuitableCount(Integer unsuitableCount) {
+	public void setUnsuitableCount(int unsuitableCount) {
 		this.unsuitableCount = unsuitableCount;
 	}
 
-	public Integer getBadfitCount() {
+	public int getBadfitCount() {
 		return badfitCount;
 	}
 
-	public void setBadfitCount(Integer badfitCount) {
+	public void setBadfitCount(int badfitCount) {
 		this.badfitCount = badfitCount;
 	}
 
-	public Integer getInterviewCount() {
+	public int getInterviewCount() {
 		return interviewCount;
 	}
 
-	public void setInterviewCount(Integer interviewCount) {
+	public void setInterviewCount(int interviewCount) {
 		this.interviewCount = interviewCount;
 	}
 
-	public Integer getSalaryCount() {
+	public int getSalaryCount() {
 		return salaryCount;
 	}
 
-	public void setSalaryCount(Integer salaryCount) {
+	public void setSalaryCount(int salaryCount) {
 		this.salaryCount = salaryCount;
 	}
 
-	public Integer getOtherCount() {
+	public int getOtherCount() {
 		return otherCount;
 	}
 
-	public void setOtherCount(Integer otherCount) {
+	public void setOtherCount(int otherCount) {
 		this.otherCount = otherCount;
 	}
-	
-	
-	
-	
 
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+	
 		
 }
