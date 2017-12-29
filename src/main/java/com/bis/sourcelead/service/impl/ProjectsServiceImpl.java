@@ -575,7 +575,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		ProjectBudget projectBudget = null;
 		 HashSet<ProjectBudget> projectBudgetList = new HashSet<ProjectBudget>(); 
 		if(projects.getId() != null) {
-			 projectBudget = projectBudgetService.getProjectBudgetsById(projects.getId());
+			 projectBudget = projectBudgetService.getProjectBudgetsByProjectId(projects.getId());
 			 projectBudget.setUpdatedDate(new Date());
 			 projectBudget.setUpdateUserId(user);
 		}else {
@@ -1569,13 +1569,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 				    	     }
 						 }
 			    		 else{
-			    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level2HierarchyId);
-				    	     if(sahList != null && !sahList.isEmpty()){
-				    	    	 for(SubmissionApproverHierarchy sah :sahList){
-				    	    		 sah.setStatus("0");
-									 saHierarchyList.add(sah);
-				    	    	 }
-				    	     }
+			    			if(level2HierarchyId != null) {
+			    				 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level2HierarchyId);
+					    	     if(sahList != null && !sahList.isEmpty()){
+					    	    	 for(SubmissionApproverHierarchy sah :sahList){
+					    	    		 sah.setStatus("0");
+										 saHierarchyList.add(sah);
+					    	    	 }
+					    	     }
+			    			}
+			    		
 			    		 }
 			    		 if(saHierarchyList != null && !saHierarchyList.isEmpty()){
 			    			 for(SubmissionApproverHierarchy sah : saHierarchyList){

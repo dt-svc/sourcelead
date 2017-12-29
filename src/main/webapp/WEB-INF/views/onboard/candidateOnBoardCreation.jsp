@@ -748,7 +748,6 @@ function validateUploadFile(id)
 	  var candidateId = candidate[0];
 	  
 	  
-	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
 		  $.ajax({
@@ -759,7 +758,14 @@ function validateUploadFile(id)
 		        	
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
-			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	 
+			    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+			        		$("#mobileNumber").val(json['mobilePhone']);
+			        		$("#mobileNumber").attr("readonly","readonly");
+			        	}else{
+			        		$("#mobileNumber").remveAttr("readonly");
+			        	}
+			    	 
 			    	 $("#personalEmail").val(json['email']);
 			    	 $("#offBoardLocation").val(json['location']);
 			    	 $("#country").val(json['country']);
@@ -803,7 +809,15 @@ function validateUploadFile(id)
 		        	
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
-			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	
+			    	 
+			    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+			        		$("#mobileNumber").val(json['mobilePhone']);
+			        		$("#mobileNumber").attr("readonly","readonly");
+			        	}else{
+			        		$("#mobileNumber").remveAttr("readonly");
+			        	}
+			    	 
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
@@ -1235,7 +1249,14 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	        	}
 	        	
 	        	
-	        	$("#mobileNumber").val(json['mobileNumber']);
+	        	if(json['mobileNumber'] != null && json['mobileNumber'] != "" && json['mobileNumber'] !="undefined"){
+	        		$("#mobileNumber").val(json['mobileNumber']);
+	        		$("#mobileNumber").attr("readonly","readonly");
+	        	}else{
+	        		$("#mobileNumber").remveAttr("readonly");
+	        	}
+	        	
+	        	
 		    	$("#personalEmail").val(json['personalEmail']);
 		    	
 		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
@@ -2207,7 +2228,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" readonly="readonly" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
+	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2222,7 +2243,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="emailDiv">';
 	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" readonly="readonly" data-validation-optional="true"   data-validation="validate_Space validate_length length2-100 validate_email">';
+	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail"  data-validation-optional="true"   data-validation="validate_Space validate_length length2-100 validate_email">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
