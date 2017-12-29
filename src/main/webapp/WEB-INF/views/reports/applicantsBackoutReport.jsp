@@ -27,11 +27,11 @@ $(window).load(function() {
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
-        <div class="col-md-3 pull-left reqListBtn">
+        <div class="col-md-2 pull-left reqListBtn">
        		 <a href="${appPath}/applicantsBackoutReport" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
               <a href="${appPath}/applicantBackoutReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
 				<option value="${option.requirementId}">${option.jobTitle}</option>
@@ -42,10 +42,9 @@ $(window).load(function() {
         <div class="col-md-2 dropdown-select positionRelative">
             <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
-             <option value='1_month'selected>1 month</option>
-            <option value='Last_7_days' >Last 7 days</option>
+            <option value='Last_7_days' selected >Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
-           
+            <option value='1_month'>1 month</option>
             <option value='3_months'>3 months</option>
             <option value='YTD'>YTD</option>
             <option value='Last_Year'>Last Year</option>
@@ -229,6 +228,7 @@ function getCustomDates(){
   
   <script type="text/javascript">
   function loadApplicantBackoutChart(json){
+	  var total = (json.currentCompany + json.compensation + json.betterOffer + json.coldFeet +json.personal + json.other);
 	  var mainChar = [];
 	  if(json.currentCompany>0){
 		  mainChar.push({
@@ -236,8 +236,7 @@ function getCustomDates(){
 				"column-1": json.currentCompany,
 				"color": "#9FA8DA",
 				"count": json.currentCompany,
-				"backout": 100,
-				"percentage": 71
+				"percentage": (((json.currentCompany/total)*100)).toFixed(2)
 			});
 	  }
 	  if(json.compensation>0){
@@ -246,8 +245,7 @@ function getCustomDates(){
 				"color": "#90CAF9",
 				"column-1": json.compensation,
 				"count": json.compensation,
-				"backout": 100,
-				"percentage": 71
+				"percentage": (((json.compensation/total)*100)).toFixed(2)
 			});
 	  }
 	  if(json.betterOffer>0){
@@ -256,8 +254,7 @@ function getCustomDates(){
 				"column-1": json.betterOffer,
 				"color": "#FFAB91",
 				"count": json.betterOffer,
-				"backout": 100,
-				"percentage": 71
+				"percentage": (((json.betterOffer/total)*100)).toFixed(2)
 			} );
 	  }
 	  if(json.coldFeet>0){
@@ -266,8 +263,7 @@ function getCustomDates(){
 				"column-1": json.coldFeet,
 				"color": "#A5D6A7",
 				"count": json.coldFeet,
-				"backout": 100,
-				"percentage": 71
+				"percentage": (((json.coldFeet/total)*100)).toFixed(2)
 			} );
 	  }
 	  if(json.personal>0){
@@ -276,8 +272,7 @@ function getCustomDates(){
 				"column-1": json.personal,
 				"color": "#FFE0B2",
 				"count": json.personal,
-				"backout": 100,
-				"percentage": 71
+				"percentage": (((json.personal/total)*100)).toFixed(2)
 			} );
 	  }
 	  if(json.other>0){
@@ -286,8 +281,7 @@ function getCustomDates(){
 				"column-1": json.other,
 				"color": "#BCAAA4",
 				"count": json.other,
-				"backout": 100,
-				"percentage": 71
+				"percentage": (((json.other/total)*100)).toFixed(2)
 			} );
 	  }
 	  
@@ -314,7 +308,7 @@ function getCustomDates(){
 					"colorField": "color",
 					"fillAlphas": 1,
 					"id": "AmGraph-1",
-					"labelText": "[[count]] <br>Backout  [[backout]]<br>[[percentage]]%",
+					"labelText": "[[count]]<br>[[percentage]]%",
 					"legendValueText": "",
 					"lineColorField": "color",
 					"title": "graph 1",

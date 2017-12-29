@@ -27,11 +27,11 @@ $(window).load(function() {
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
-        <div class="col-md-3 pull-left reqListBtn">
+        <div class="col-md-2 pull-left reqListBtn">
        		 <a href="${appPath}/applicantsBackoutReport" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
           <a href="${appPath}/applicantBackoutReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
 				<option value="${option.requirementId}">${option.jobTitle}</option>
