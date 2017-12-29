@@ -287,7 +287,7 @@ function cancelOrgImg(){
 							<div class="form-group mt">
 							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-3"  onkeyup="validateOrgShortCode();" maxlength="3" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
 						</div>
 						
@@ -2045,7 +2045,7 @@ function getLocationStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationState').empty();
@@ -2081,7 +2081,7 @@ function getLocationCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#locationCity').empty();

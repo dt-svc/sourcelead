@@ -32,10 +32,10 @@ z-index: 1040 !important;
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right clearfix">
-              		<div class="col-md-5">
+              		<div class="col-md-6 padding_left">
               			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList();" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
               		</div>
-              		<div class="col-md-5">
+              		<div class="col-md-6">
               			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList();"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
               		</div>              		
 				</div>
