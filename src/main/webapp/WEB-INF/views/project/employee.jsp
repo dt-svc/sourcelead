@@ -68,9 +68,11 @@ left: 115px !important;
 	/* Dont delete this commented code. Functionality is in progress '+projectBudgetCount+' */
 	 result = result + '<li class="current"><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
 	
-	result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
-	result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
-	result = result + '</a></li>';
+	 if(postedOrgLocationId == loginOrgLocationId){
+		result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
+		result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
+		result = result + '</a></li>';
+	 }
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</ul>';
 	

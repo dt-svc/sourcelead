@@ -102,7 +102,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		//Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where orgrelation.locationId = :orgLocationId");
 		
 		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
-		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).list();
 		return clientsList;
 	}
 
@@ -215,7 +215,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 	   	 String query = ("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId responder left join fetch responder.org  "
 	   	 		+ " left join fetch orgrelation.locationId orgLoc left join fetch orgLoc.org where orgrelation.id = :id ");
-	      List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+	      List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("id", id).list();
 	      OrgRelations orgRelation = null;
 			if(orgRelations != null && !orgRelations.isEmpty())
 			{
@@ -817,13 +817,13 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 
 	@Override
 	@Transactional
-	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long locationId, Long responderLocationId)
 			throws Exception {
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.locationId  left join fetch orgrelation.responderLocationId "
-	      		+ " where (orgrelation.locationId = :locationId and orgrelation.responderLocationId = :responderLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :locationId and orgrelation.locationId = :responderLocationId and orgrelation.responderType = 'Client' )");
+	      		+ " where (orgrelation.locationId = :locationId and orgrelation.responderLocationId = :responderLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :locationId and orgrelation.locationId = :responderLocationId and orgrelation.responderType = 'Client' )");
 		  
 	       List<OrgRelations> orgRelationsList = session.createQuery(query.toString()).setLong("locationId", locationId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
 	       

@@ -954,7 +954,7 @@ public class RequirementRestController {
 		} 
 	    
 
-	    @RequestMapping(value = "/refreshRequirementClientList", method = RequestMethod.POST)
+	/*    @RequestMapping(value = "/refreshRequirementClientList", method = RequestMethod.POST)
 		public @ResponseBody Collection<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
 	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
@@ -964,9 +964,7 @@ public class RequirementRestController {
 			 }
 			return orgClientList;
 		   
-		    
-		   
-		} 
+		} */
 	    
 
 	    
