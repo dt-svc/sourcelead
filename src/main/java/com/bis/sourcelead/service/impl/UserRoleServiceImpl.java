@@ -27,6 +27,9 @@ import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -622,6 +625,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserRoleByVerficationUUID(String uuid)
 	{
 		return userRoleDao.getUserRoleByVerficationUUID(uuid);
+	}
+
+	@Override
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
+		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,roleId, locationId, userState, userId, loginUserRole, userCode);
 	}
 
 }

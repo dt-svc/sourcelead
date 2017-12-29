@@ -7674,6 +7674,15 @@ padding: 5px 10px;
 .text-primary {
     color: #337ab7 !important;
 }
+.section-action-btns.section-action-btns-associates {
+	background: none !important; border: none;
+}
+.section-action-btns.section-action-btns-associates ul li:hover{
+	background: none
+}
+.section-action-btns.section-action-btns-associates .remove_search {
+	top:0 !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
