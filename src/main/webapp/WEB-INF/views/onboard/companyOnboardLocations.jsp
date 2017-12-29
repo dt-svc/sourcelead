@@ -379,11 +379,13 @@ function createOrg(){
 	result = result +'</div>';
 	
 	
-	result = result +'<div class="form-group clearfix" id="generatedUserIdDiv">';
+	result = result +'<div class="form-group clearfix" >';
 	result = result +'<label class="col-md-4 noPad">Org Short Code<span class="text-danger">*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
+	result = result +'<div id="generatedUserIdDiv">';
 	result = result +'<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" />';
     result = result +'<span class="hidden">Short Code</span>';
+	result = result +'</div>';
 	result = result +'</div>';
 	result = result +'</div>';
 	

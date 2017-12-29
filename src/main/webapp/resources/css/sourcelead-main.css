@@ -6739,7 +6739,7 @@ hr {
     padding: 5px !important;
 }
 #Re-AssignProject {
-z-index: 99999 !important;
+z-index: 99999;
 }
 .terms-conditions.modal .modal-body {
   min-height: 150px; max-height: 500px; overflow:auto; z-index: 9999999;
@@ -7232,9 +7232,7 @@ position:relative;
 }
 .jobpipline-count ul li {
 	padding: 10px; text-align: center; width: 19.5%; border-radius: 3px;
-
-	background-color: #fff; border: 1px solid #c3c3c3;
-	box-shadow: 1px 1px 2px #d8d8d8;
+	background-color: #fff; box-shadow: 1px 1px 2px #d8d8d8; border: 1px solid #c3c3c3;
 }
 .jobpipline-count ul li a  {
 	width: 100%; padding: 0px; display: inline-block; clear: both; margin-bottom: 5px;
@@ -7587,11 +7585,7 @@ background-color: #f5f5f5; padding:5px 15px;
 /* Card Model UI Styles */
 .cardModel-widget {
  background: #fff; padding: 15px; box-shadow: 1px 1px 2px #d8d8d8; border-radius: 3px; color: #444;
-<<<<<<< HEAD
- border: 1px solid #c3c3c3;
-=======
 border: 1px solid #c3c3c3;
->>>>>>> b444d58f5e7de5029b0b3725533236f5941b8d78
 }
 .cardModel-widget h4 {
 	margin: 0; padding-bottom:10px; font-size: 15px; text-align: left;
@@ -7670,6 +7664,15 @@ padding: 5px 10px;
 }
 .chosen-disabled {
   opacity: 0.95 !important;
+}
+.text-danger {
+    color: #a94442 !important;
+}
+.text-success {
+    color: #3c763d !important;
+}
+.text-primary {
+    color: #337ab7 !important;
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -116,7 +116,7 @@ public class ExpensesApprovalRestController {
 	
 	
 	
-	@RequestMapping(value = "/getExpensesApprovalListForExports")
+	@RequestMapping(value = "/app/getExpensesApprovalListForExports")
 	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="type", required=false) String type,@RequestParam(value="expenseStatus", required=false) String expenseStatus,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="endDate", required=false) String endDate) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

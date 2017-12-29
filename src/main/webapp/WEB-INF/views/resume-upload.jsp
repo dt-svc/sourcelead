@@ -305,7 +305,7 @@ $(function() {
         
         runtimes : 'html5,flash,silverlight,html4',
         url : 'upload-resumes',
-        chunk_size : '1mb',
+        chunk_size : '250kb',
         rename : false,
         dragdrop: true,
          

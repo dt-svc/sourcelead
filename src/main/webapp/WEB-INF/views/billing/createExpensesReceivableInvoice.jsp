@@ -379,10 +379,11 @@ function populateExpensesDetailsGrid(data){
             result = result +' </thead>';
             result = result +' <tbody>';
             if(data !=null && data !=''){
+            	var subTotal = 0;
             	 for(var i=0;i < data.length;i++){
                  	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
-                 	  subTotal = opt.amount;
+                 	 var  subTotal = subTotal + opt.amount;
                  	  result = result +'   <tr>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">'+i+'</div>';
@@ -1742,7 +1743,7 @@ function getDueDateByFrequency(){
 <script>
 function flushValues(){
 	$("#invoiceId").val('');
-	$("#invoiceDate").val('');
+	//$("#invoiceDate").val('');
 	$("#dueDate").val('');
 	$("#paymentFrequency").val('');
 	$("#frequency").val('').trigger("chosen:updated");

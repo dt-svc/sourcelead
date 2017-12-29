@@ -66,6 +66,12 @@ public class RequirementSubmissionHistory implements Serializable{
 	
     @Transient
     private String fileName;
+    @JsonProperty
+    @Transient
+    private String fileUrl;
+    
+    @Transient
+    private String contentType;
 	 
     @Transient
     private String resumeid;
@@ -79,10 +85,7 @@ public class RequirementSubmissionHistory implements Serializable{
     @Transient
     private Long offerResumeid;
     
-    @JsonProperty
-    @Transient
-    private String offerResumeUrl;
-    
+      
     @Transient
     private String loginUserName;
     
@@ -369,11 +372,27 @@ public class RequirementSubmissionHistory implements Serializable{
 		this.coolingOffPeriodEndDateStr = coolingOffPeriodEndDateStr;
 	}
 
-	public String getOfferResumeUrl() {
-		return offerResumeUrl;
+
+	public String getFileUrl()
+	{
+		return fileUrl;
 	}
 
-	public void setOfferResumeUrl(String offerResumeUrl) {
-		this.offerResumeUrl = offerResumeUrl;
+	public void setFileUrl(String fileUrl)
+	{
+		this.fileUrl = fileUrl;
 	}
+
+	public String getContentType()
+	{
+		return contentType;
+	}
+
+	public void setContentType(String contentType)
+	{
+		this.contentType = contentType;
+	}
+	
+
+	
 }
