@@ -400,7 +400,7 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
-								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control"
+								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control" data-validation-optional="true"
 									data-validation="validate_Space validate_float validate_length length1-15" class="form-control" onblur="">
 							</div>
 						</div>

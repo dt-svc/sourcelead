@@ -21,17 +21,17 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant(s) Backout</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) by source </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) Backout </div>
    
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
-        <div class="col-md-3 pull-left reqListBtn">
+        <div class="col-md-2 pull-left reqListBtn">
        		 <a href="${appPath}/applicantsBackoutReport" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
           <a href="${appPath}/applicantBackoutReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
 				<option value="${option.requirementId}">${option.jobTitle}</option>
@@ -69,7 +69,7 @@ $(window).load(function() {
           
         </div>
         <div class="col-md-1 noPad">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getBackoutApplicantList();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getBackoutApplicantList();">Run</button>
         </div>
       </div>
       

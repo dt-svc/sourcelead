@@ -21,17 +21,17 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant(s) Backout</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) by source </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) backOut </div>
    
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
-        <div class="col-md-3 pull-left reqListBtn">
+        <div class="col-md-2 pull-left reqListBtn">
        		 <a href="${appPath}/applicantsBackoutReport" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
               <a href="${appPath}/applicantBackoutReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
 				<option value="${option.requirementId}">${option.jobTitle}</option>
@@ -42,7 +42,7 @@ $(window).load(function() {
         <div class="col-md-2 dropdown-select positionRelative">
             <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
-            <option value='Last_7_days' selected>Last 7 days</option>
+            <option value='Last_7_days' selected >Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month'>1 month</option>
             <option value='3_months'>3 months</option>
@@ -69,7 +69,7 @@ $(window).load(function() {
           
         </div>
         <div class="col-md-1 noPad">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getApplicantBackoutReportCount();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getApplicantBackoutReportCount();">Run</button>
         </div>
       </div>
       <!-- Decline Reasons -->
@@ -228,106 +228,117 @@ function getCustomDates(){
   
   <script type="text/javascript">
   function loadApplicantBackoutChart(json){
-	  
+	  var total = (json.currentCompany + json.compensation + json.betterOffer + json.coldFeet +json.personal + json.other);
 	  var mainChar = [];
-	  
 	  if(json.currentCompany>0){
 		  mainChar.push({
 				"category": "Current Company",
 				"column-1": json.currentCompany,
-				"color": "#9FA8DA"
+				"color": "#9FA8DA",
+				"count": json.currentCompany,
+				"percentage": (((json.currentCompany/total)*100)).toFixed(2)
 			});
 	  }
 	  if(json.compensation>0){
 		  mainChar.push({
 			  "category": "Compensation",
 				"color": "#90CAF9",
-				"column-1": json.compensation
+				"column-1": json.compensation,
+				"count": json.compensation,
+				"percentage": (((json.compensation/total)*100)).toFixed(2)
 			});
 	  }
 	  if(json.betterOffer>0){
 		  mainChar.push( {
 			  "category": "Better Offer",
 				"column-1": json.betterOffer,
-				"color": "#FFAB91"
+				"color": "#FFAB91",
+				"count": json.betterOffer,
+				"percentage": (((json.betterOffer/total)*100)).toFixed(2)
 			} );
 	  }
 	  if(json.coldFeet>0){
 		  mainChar.push( {
 			  "category": "Cold Feet",
 				"column-1": json.coldFeet,
-				"color": "#A5D6A7"
+				"color": "#A5D6A7",
+				"count": json.coldFeet,
+				"percentage": (((json.coldFeet/total)*100)).toFixed(2)
 			} );
 	  }
 	  if(json.personal>0){
 		  mainChar.push( {
-			  "category": "Cold Feet",
+			  "category": "Personal",
 				"column-1": json.personal,
-				"color": "#A5D6A7"
+				"color": "#FFE0B2",
+				"count": json.personal,
+				"percentage": (((json.personal/total)*100)).toFixed(2)
 			} );
 	  }
 	  if(json.other>0){
 		  mainChar.push( {
-			  "category": "Cold Feet",
+			  "category": "Other",
 				"column-1": json.other,
-				"color": "#A5D6A7"
+				"color": "#BCAAA4",
+				"count": json.other,
+				"percentage": (((json.other/total)*100)).toFixed(2)
 			} );
 	  }
 	  
 	  AmCharts.makeChart("backoutReason",
 				{
-					"type": "serial",
-					"categoryField": "category",
-					"rotate": true,
-					"marginBottom": 10,
-					"marginLeft": 10,
-					"marginRight": 50,
-					"marginTop": 10,
-					"startDuration": 1,
-					"export": {
-						"enabled": true
-					},
-					"export": {
-						"enabled": true
-					},
-					"categoryAxis": {
-						"gridPosition": "start",
-						"position": "left",
-						"title": ""
-					},
-					"trendLines": [],
-					"graphs": [
-						{
-							"balloonText": "[[value]]%",
-							"colorField": "color",
-							"fillAlphas": 1,
-							"id": "AmGraph-1",
-							"lineColorField": "color",
-							"title": "graph 1",
-							"type": "column",
-							"valueField": "column-1"
-						}
-					],
-					"guides": [],
-					"valueAxes": [
-						{
-							"axisFrequency": 0,
-							"id": "ValueAxis-1",
-							"totalText": "",
-							"unit": "",
-							"title": ""
-						}
-					],
-					"allLabels": [],
-					"balloon": {},
-					"titles": [],
-					"dataProvider":  mainChar
+		  "type": "serial",
+			"categoryField": "category",
+			"rotate": true,
+			"marginBottom": 0,
+			"marginLeft": 0,
+			"marginTop": 10,
+			"startDuration": 1,
+			"categoryAxis": {
+				"gridPosition": "start",
+				"position": "left",
+				"axisThickness": 0,
+				"gridThickness": 0,
+				"title": ""
+			},
+			"trendLines": [],
+			"graphs": [
+				{
+					"balloonText": "[[value]]%",
+					"colorField": "color",
+					"fillAlphas": 1,
+					"id": "AmGraph-1",
+					"labelText": "[[count]]<br>[[percentage]]%",
+					"legendValueText": "",
+					"lineColorField": "color",
+					"title": "graph 1",
+					"type": "column",
+					"valueField": "column-1"
+				}
+			],
+			"guides": [],
+			"valueAxes": [
+				{
+					"axisFrequency": 0,
+					"id": "ValueAxis-1",
+					"totalText": "",
+					"unit": "",
+					"axisThickness": 0,
+					"gridThickness": 0,
+					"labelsEnabled": false,
+					"title": ""
+				}
+			],
+			"allLabels": [],
+			"balloon": {},
+			"titles": [],
+			"dataProvider":  mainChar
 				}
 			);
 	  $("#paging").empty();
   }
 		</script>
- 
+		
 
 <script>
   $( function() {
