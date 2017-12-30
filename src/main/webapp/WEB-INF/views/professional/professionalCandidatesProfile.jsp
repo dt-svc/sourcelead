@@ -318,7 +318,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							
 							result = result + '<select  class="input-sm form-control input-sm" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
-							result = result + '<option value="">Select Year</option>';
+							result = result + '<option value="">Select Years</option>';
 							
 							<c:forEach var="i" begin="0" end="24" >
 								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
@@ -1073,7 +1073,7 @@ function removeSkillById(candidateId, skillId){
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
 					success : function(json) {
 						if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-								$("#employeeSubmissionDetailsList").empty();
+								$("#employeeSubmissionProfile").empty();
 								var result = "";
 								result = result +'        <div class="clearfix design-view">';
 								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
@@ -1119,6 +1119,7 @@ function removeSkillById(candidateId, skillId){
 								result = result +'            </div>';
 								result = result +'          </div>';
 								result = result +'        </div>';
+								$("#employeeSubmissionProfile").empty();
 								$("#employeeSubmissionProfile").append(result);
 						}
 					},
@@ -1201,6 +1202,7 @@ function educationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
+						 $("#educationSubmissionProfile").empty();
 	                     $("#educationSubmissionProfile").append(result); 
         	  }
         },
@@ -1259,7 +1261,7 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
-							
+							$("#certificationSubmissionProfile").empty();
 							$("#certificationSubmissionProfile").append(result); 
         	  }
         },

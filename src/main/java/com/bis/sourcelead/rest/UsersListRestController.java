@@ -44,9 +44,15 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
@@ -228,6 +234,69 @@ public class UsersListRestController {
 	 * @return
 	 */
 
+
+	/* this method is used to display the users list onload */
+	@RequestMapping(value = "/detDynamicUserList", method = RequestMethod.POST)
+	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,HttpServletRequest request) throws Exception {
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<UserRoleDTO> response = new ResponseList<UserRoleDTO>();
+		List<UserRoleDTO> userRolesList = new ArrayList<>();
+			Long userRoleType ;
+			if(!"".equalsIgnoreCase(userDTO.getUserRole())){
+				 userRoleType = Long.parseLong(userDTO.getUserRole());
+			}else{
+				 userRoleType = null;
+			}
+			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+				for(UserRole role : rolesList.getData()){
+					UserRoleDTO userRoleDto = new UserRoleDTO();
+					StringBuilder userName = new StringBuilder();
+					
+					userRoleDto.setUserRoleName(role.getRoles().getDisplayName());
+					userRoleDto.setIsMailSent(role.getIsMailSent().toString());
+					if(!isNullOrEmpty(role.getUser().getLastName())){
+						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
+						userRoleDto.setUserName(userName.toString());
+						
+					}else{
+						userRoleDto.setUserName(role.getUser().getFirstName());
+					}
+					userRoleDto.setUserEmail(role.getUser().getEmail());
+					userRoleDto.setUserId(role.getUser().getId());
+					userRoleDto.setUserCode(role.getUser().getUserCode());
+					userRoleDto.setUserState(role.getUserState().toString());
+					if(role.getUser() != null) {
+						if(role.getUser().getFileUrl() != null) {
+							userRoleDto.setFileUrl(role.getUser().getFileUrl());
+						}
+					}
+					userRoleDto.setMobilePhone(role.getUser().getMobilePhone());
+					if(role.getReportingManager() !=null){
+						StringBuilder reportingManagerName = new StringBuilder();
+						if(role.getReportingManager().getLastName() !=null && !"".equalsIgnoreCase(role.getReportingManager().getLastName())){
+							reportingManagerName.append(role.getReportingManager().getFirstName()).append(" ").append(role.getReportingManager().getLastName());
+						}else{
+							reportingManagerName.append(role.getReportingManager().getFirstName());
+						}
+						userRoleDto.setReportingManagerName(reportingManagerName.toString());
+					}
+					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(role.getUser().getId(),orgLocations.getId());
+					if(emp !=null){
+						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
+							userRoleDto.setEmployeMentType(emp.getUserEmploymentType());
+						}
+					}
+					userRolesList.add(userRoleDto);
+				}
+				response.setRecordsFiltered(rolesList.getRecordsFiltered());
+				response.setRecordsTotal(rolesList.getRecordsTotal());
+				response.setData(userRolesList);
+		 return response;
+
+	}
+	
 	/* this method is used to display the users list onload */
 	@RequestMapping(value = "/getUsersList")
 	@JsonInclude(value = JsonInclude.Include.NON_NULL)
@@ -580,7 +649,7 @@ public class UsersListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
@@ -680,7 +749,7 @@ public class UsersListRestController {
 		return resultJson;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_USER','ROLE_VIEW_USER','ROLE_VIEW_DELETE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsByIdForTermination", method = RequestMethod.POST)
 	public @ResponseBody String getUserDetailsByIdForTermination(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
@@ -866,8 +935,8 @@ public class UsersListRestController {
 		resultJson = toJSON(userRole);
 		return resultJson;
 	}
-
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/getRolesExpectSelectedRole", method = RequestMethod.POST)
 	public @ResponseBody String getRolesExpectSelectedRole(
 			@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request)
@@ -881,8 +950,8 @@ public class UsersListRestController {
 		resultJson = toJSON(rolesList);
 		return resultJson;
 	}
-
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/getUserPermissionByRole", method = RequestMethod.POST)
 	public @ResponseBody String getUserPermissionByRole(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,
@@ -916,7 +985,8 @@ public class UsersListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 	public @ResponseBody String terminateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
 			 HttpServletRequest request) throws Exception {
@@ -1798,7 +1868,8 @@ public class UsersListRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
 	String updateUser(AddUserDTO addUserDTO,
@@ -1847,16 +1918,18 @@ public class UsersListRestController {
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			User updatedUser = userService.addUser(user);
 			
-			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				UserCustomFieldData userCustomFields = new UserCustomFieldData();
-				userCustomFields.setUser(updatedUser);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				 userCustomFields.setOrglocationsFormFields(orgFormField);
-				 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+			if(addUserDTO.getCustomFormData() != null){
+				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
+					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					UserCustomFieldData userCustomFields = new UserCustomFieldData();
+					userCustomFields.setUser(updatedUser);
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 userCustomFields.setOrglocationsFormFields(orgFormField);
+					 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+					}
+					
 				}
-				
 			}
 			
 			userRoleService.addUserRole(userRole);
@@ -1919,6 +1992,44 @@ public class UsersListRestController {
 			employees.setUpdatedDate(commonUtil.currentDate());
 			employeesService.updateEmployee(employees);
 		}
+		
+		Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		if(candidate != null) {
+
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationType())){
+				candidate.setDesignationType(addUserDTO.getDesignationType());
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
+				candidate.setDesignationOtherType(addUserDTO.getDesignationOtherType());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
+				CandidateDTO candidateDTO = new CandidateDTO();
+				candidateDTO.setEmail(candidate.getEmail());
+				candidateDTO.setFirstName(candidate.getFirstName());
+				candidateDTO.setLastName(candidate.getLastName());
+				candidateDTO.setCountry(candidate.getCountry());
+				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				candidate.setParentCandidateId(vendorCandidate);
+				candidate.setOrgRelationId(orgRelation);
+			}else{
+				candidate.setOrgRelationId(null);
+				candidate.setParentCandidateId(null);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getVendorcontact())){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
+				candidate.setSpocId(orgspoc);
+			}else{
+				candidate.setSpocId(null);
+			}
+			
+			candidateService.saveOrUpdateCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		}
+		
+		
 		/*
 		 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
 		 */

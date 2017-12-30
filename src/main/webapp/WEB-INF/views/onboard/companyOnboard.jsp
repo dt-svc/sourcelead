@@ -124,7 +124,9 @@ right: 15px;
 			  <ul>
 				  <li class="hoverLi">Organization details</li>
 				  <li>Locations</li>
+				  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
 				  <li>Federal & state taxes</li>
+				  </c:if>
 				  <li>Banking details</li>
 				  <li>Documents</li>
 				  <li>Signatory</li>
@@ -290,7 +292,7 @@ right: 15px;
 			<div class="col-md-9 padding_right">
 			
 			<div id="generatedUserIdDiv">
-			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-3"  onkeyup="validateOrgShortCode();" maxlength="3" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 			</div>
 			
 			</div>
@@ -337,6 +339,20 @@ right: 15px;
 			<label class="col-md-3 noPad">Other Business Type</label>
 			<div class="col-md-9 padding_right">
 			<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+			<label class="col-md-3 noPad">Email regarding Po</label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+			</div>
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+			<label class="col-md-3 noPad">Email for Remittance</label>
+			<div class="col-md-9 padding_right">
+			<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
 			</div>
 		</div>
 			

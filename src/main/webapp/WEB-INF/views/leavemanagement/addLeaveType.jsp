@@ -100,7 +100,7 @@
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
 				href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a>
 			&raquo;<a href="<c:url value='${appPath}/viewLeaveTypes'/>">Leave type List</a>
-			&raquo; Edit/Update Leave Type
+			&raquo; Update Leave Type
 		</div>
 		</c:if>
 	</section>

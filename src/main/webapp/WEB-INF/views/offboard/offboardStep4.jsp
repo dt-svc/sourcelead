@@ -106,7 +106,7 @@
 				<c:if test="${resignationDocumentsListSize > 0}">
 				<c:forEach var="teminationDocs" items="${resignationDocumentsList}">
 				<div class="step3">
-					<span><a href="${teminationDocs.fileURL}"  class="fa fa-file-text"></a></span>
+					<span><a href="${teminationDocs.fileURL}" target="_blank" class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${teminationDocs.fileName}</p>
 					</strong>
@@ -114,6 +114,10 @@
 				</div>
 				</c:forEach>
 				</c:if>
+				
+				<c:if test="${resignationDocumentsListSize == 0}">
+					    <ul><li>No Document Found</li></ul>
+					</c:if>
 				
 				<div class="clearfix"></div>			
 			</div>	
@@ -125,7 +129,7 @@
 				<c:if test="${offboardPackDocumentsListSize > 0}">
 				<c:forEach var="offboardPackDocs" items="${offboardPackDocumentsList}">
 				<div class="step3">
-					<span><a href="${offboardPackDocs.fileURL}"   class="fa fa-file-text"></a></span>
+					<span><a href="${offboardPackDocs.fileURL}" target="_blank" class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${offboardPackDocs.fileName}</p>
 					</strong>
@@ -133,7 +137,9 @@
 				</div>
 				</c:forEach>
 				</c:if>
-				
+				<c:if test="${offboardPackDocumentsListSize == 0}">
+					    <ul><li>No Document Found</li></ul>
+					</c:if>
 				<div class="clearfix"></div>			
 			</div>	
 									

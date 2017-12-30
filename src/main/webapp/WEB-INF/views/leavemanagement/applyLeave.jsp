@@ -36,10 +36,10 @@ window.onload = function() {
               </div>
           </sec:authorize> 
                <div class="form-group" style="display: none" id="onbehalf">
-              <label class="col-md-3">Select Employee</label>
+              <label class="col-md-3">Select Employee<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control chosen-select" id="user" name="user" onchange="getPieChartBasedOnUser('onbehalf'); getApproversList();">
-                   <option value=" ">--Select Employee--</option>
+                <select class="form-control chosen-select" id="user" name="user" field-name="Employee" data-validation="required" onchange="getPieChartBasedOnUser('onbehalf'); getApproversList();">
+                   <option value="">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
                 	</c:forEach>
@@ -103,7 +103,7 @@ window.onload = function() {
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
-                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment" onchange="uploadButton(0);">
+                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);" data-validation="required">
                       <a id="Button0value=">
                       <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
