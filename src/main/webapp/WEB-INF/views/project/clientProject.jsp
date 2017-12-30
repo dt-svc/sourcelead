@@ -301,7 +301,7 @@ function saveClientProject(){
   	    	    data : formData,
 				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
 				success : function(project) {
-					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=projectMembers");
+					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
 					 $("#loading").removeAttr("style");
 				},
 			}); 
@@ -348,30 +348,6 @@ function saveClientProject(){
 </script>
 <script>
 function refreshClientList(){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 var selectedOrgId = '${contract.orgRelations.id}';
-		 $.ajax({
-	      type : "POST",
-	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
-		        		}
-				}
-	        	$("#clientOrgLocId").empty();
-		        $("#clientOrgLocId").append(output);
-		        $('#clientOrgLocId').trigger("chosen:updated");
-	        }
-		 });
-		 
-	
-	
+	location.reload();	
 }
 </script>
