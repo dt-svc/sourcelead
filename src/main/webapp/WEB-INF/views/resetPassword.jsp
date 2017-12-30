@@ -179,7 +179,7 @@ var validationSettings = {
               	      data:JSON.stringify(form),
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                    	  url: "/app/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
+                    	  url:"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
                       	success: function(json) {
                       		if(json.resetResponse == 'Invalid'){
   	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -191,7 +191,7 @@ var validationSettings = {
   			    				 $("#submit_button").removeAttr("disabled")
   			    				 $("#loading").removeAttr("style");
       			        	}else{
-      			        		location.replace(sourceleadUrl+"/login"); 
+      			        		location.replace("/login"); 
       			        	}
   			        },  
                   });

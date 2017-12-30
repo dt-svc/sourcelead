@@ -219,12 +219,13 @@ function candidateQuickViewProfile(candidateId){
 
 <script>
 	function qvemployeeSubmission(candidateId) {
-				$.ajax({
+		$.ajax({
 					type : "GET",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
 					success : function(json) {
-						if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
-								$("#qvemployeeSubmission").empty();
+		                  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
+		
+						$("#qvemployeeSubmission").empty();
 								var result = "";
 								result = result +'            <div class="col-md-12">';
 								result = result +' 				<h4>Work Experience</h4>';
@@ -290,7 +291,16 @@ function candidateQuickViewProfile(candidateId){
 // 								result = result +'          </div>';
 								result = result +'        </div>';
 								$("#qvemployeeSubmission").append(result);
-						}
+					}else{
+			        	  var result = '';
+			        	  result = result +'            <div class="col-md-12">';
+			        	  result = result +' <h4>Work Experience</h4>';
+			        	  result = result +' <div>---</div>';
+			        	  result = result +'</div>';
+			        	  $("#qvemployeeSubmission").empty();
+			        	  $("#qvemployeeSubmission").append(result); 
+			          }
+						
 					},
 
 				});
@@ -302,9 +312,11 @@ function qveducationSubmission(candidateId){
 	 $.ajax({  
           type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
-	                	 $("#qveducationSubmission").empty();
+          
+        		  success :function(json) {
+                  if (json.data.length > 0 && json != null && json != 'undefined' && json != "" && json != '[]') {
+ 
+        			  $("#qveducationSubmission").empty();
 	                	 var result = "";
 	                	 
 							result = result +'            <div class="col-md-12">';
@@ -371,7 +383,15 @@ function qveducationSubmission(candidateId){
 							
 							result = result +'        </div>';
 	                     $("#qveducationSubmission").append(result); 
-        	  }
+          }else{
+        	  var result = '';
+        	  result = result +'            <div class="col-md-12">';
+        	  result = result +' <h4>Education</h4>';
+        	  result = result +' <div>---</div>';
+        	  result = result +'            </div>';
+        	  $("#qveducationSubmission").empty();
+        	  $("#qveducationSubmission").append(result); 
+          }
         },
           
      }); 
@@ -425,6 +445,12 @@ function qwikCertificates(candidateId){
 							result = result +'        </div>';
 							
 							$("#qvcertificationSubmission").append(result); 
+          }else{
+        	  var result = '';
+        	  result = result +' <h4>Certifications</h4>';
+        	  result = result +' <div>---</div>';
+        	  $("#qvcertificationSubmission").empty();
+        	  $("#qvcertificationSubmission").append(result); 
           }
         },
           
