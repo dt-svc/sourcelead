@@ -54,23 +54,7 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
         typeName.add("Interview Rejection");
         typeName.add("Salary");
         typeName.add("Other");
-<<<<<<< HEAD
-        for(String type:typeName) {
-		
-		if(searchDates != null) {
-			 query ="select count(*) from RequirementSubmission rs where  rs.rejectedCategoryType = '"+type+"' and rs.submissionStatus='REJECTED' and rs.requirement.id IN (:jobIds) "
-					+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate)";
-			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
-		}else {
-			 query ="select count(*) from RequirementSubmission rs where  rs.rejectedCategoryType = '"+type+"' and rs.submissionStatus='REJECTED' and rs.requirement.id IN (:jobIds) ";
-			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setCacheable(true).list();
-		}
-			if(submissionCount != null && !submissionCount.isEmpty()){
-					count = submissionCount.get(0).intValue();
-			}
-			typeCount.put(type, count);
-        }	
-=======
+
         if(jobIds.size() > 0) {
         	 for(String type:typeName) {
         			
@@ -88,8 +72,6 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
         				typeCount.put(type, count);
         	        }	
         }
-       
->>>>>>> 03a2c5548e267bcdde4551ad2631828f2b52dd78
 			return typeCount;
 	}
 
