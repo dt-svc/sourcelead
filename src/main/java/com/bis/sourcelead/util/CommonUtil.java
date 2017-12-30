@@ -199,6 +199,20 @@ public class CommonUtil {
 	}
 	
 	/**
+	 * converting Date to String
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public String dateStrFromDate(Date date)
+	{
+		String dateStr = null;
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+		dateStr = df.format(date);
+		return dateStr;
+	}
+	
+	/**
 	 * Elk date format
 	 * @param dateString
 	 * @return

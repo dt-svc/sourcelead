@@ -1942,7 +1942,7 @@ public class TimesheetRestController {
 			}
 		}
     
-       @RequestMapping(value = "/addTimeSheetDayEntries")
+       @RequestMapping(value = "/addTimeSheetDayEntries" , method = RequestMethod.POST)
        public List<TimeSheetDayEntries> addTimeSheetDayEntries(TimesheetProjectTaskDTO timesheetProjectTaskDTO,HttpServletRequest request) throws Exception {
     	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1954,7 +1954,7 @@ public class TimesheetRestController {
 	 			timeSheetDayEntriesList.add(tde);
 	 		 }
 	 	 }
-	 	 return null;
+	 	 return timeSheetDayEntriesList;
        }
        
        private TimeSheetDayEntries addTimesheetDayEntriesByProjectIdAndProjectMemberId(Long projectId,Long projectMemberId,Long projectTaskId,Date timesheetDate,String hours,User loginUser,OrgLocations loginOrgLocation) throws Exception{
