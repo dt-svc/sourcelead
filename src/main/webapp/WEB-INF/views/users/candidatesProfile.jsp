@@ -365,7 +365,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							
 							result = result + '<select  class="form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
-							result = result + '<option value="">Select Year</option>';
+							result = result + '<option value="">Select Years</option>';
 							
 							<c:forEach var="i" begin="0" end="49" >
 								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
