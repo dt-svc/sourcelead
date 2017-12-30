@@ -90,68 +90,7 @@ display: none;}
 </style>
 
 <!-- Content Area -->
-<div  id="loadTime"></div> 
-<header class="headerInpage">
-<section class="headTop headTopFix">
-	<div class="headTopInn">
-    	<ul>
-        	<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i> (214) 295-5535</a></li>
-            <li><a href="mailto:info@sourcelead.com"><i class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-            <li class="hideres"><a href="/login"><i class="fa fa-user-o"></i> Login</a></li>
-            <div class="clear"></div>
-        </ul>
-    	<div class="clear"></div>    
-    </div>
-</section>
-<div class="head_inn">
-  
-  <div class="logo"><a href="/"><img src="/resources/css/jobs/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
-  <nav>
-  	<ul class="menu">
-    	<li><a href="/"><i class="fa fa-home"></i></a></li>
-		<li><a href="javascript:redirectPage();" class="rcolor">Jobs</a></li>
-        <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
-			<ul>
-				<li><a href="crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="ats.html">ATS</a></li>
-                <li><a href="vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="timesheet.html">Time Management</a></li>
-            </ul>
-        </li>
-        <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
-        	<ul>
-            	<li><a href="demo.html">Product Videos</a></li>
-                <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
-                <li><a style="border-bottom:none;" href="faqs.html">FAQs</a></li>
-            </ul>
-        </li>
-        <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
-        	<ul>
-            	<li><a href="about-us.html">About SourceLead</a></li>
-                <li><a href="team.html">Our team</a></li>
-                <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
-                <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="contact.html">Contact</a></li>
-            </ul>        
-        </li>
-        <li><a href="blog4.html">Blogs</a></li>
-        <li><a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a></li>
-        <div class="clear"></div>
-    </ul>
-  </nav>
-  
-  <section class="responsiveMenu">
-  		<a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a>
-       <span id="resSe" class=""><i class="fa fa-search"></i></span>
-        <i id="menuIcon" class="fa fa-bars"></i>
-  </section>
-  
-  <div class="clear"></div>
-</div>
-</header>
-<section class="menuGapInpage"></section>
-
-	
+<jsp:include page="../staticHeader.jsp" />	
 <section class="asMask" onclick="adSearchClose();"></section>
 
 <div class="background slide">
@@ -358,73 +297,7 @@ display: none;}
 	</section>        
 <!-- Content Area Ends-->
 
-<footer>
-	<div class="footerInn">
-    	<div class="footerInnCta resFoot">
-        	<h3>SourceLead</h3>
-            <ul>
-            	<li><a href="about-us.html"><i class="fa fa-caret-right"></i>About us</a></li>
-                <li><a href="team.html"><i class="fa fa-caret-right"></i>Our team</a></li>
-                <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
-                <li><a href="testimonial.html"><i class="fa fa-caret-right"></i>Testimonial</a></li>
-                <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
-                <li><a href="contact.html"><i class="fa fa-caret-right"></i>Contact us</a></li>
-            </ul>
-        </div>
-    	<div class="footerInnCta resFoot">
-        	<h3>What we do</h3>
-            <ul>
-				<li><a href="crowdsourcing.html"><i class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-            	<li><a href="ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-                <li><a href="vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-                <li><a href="timesheet.html"><i class="fa fa-caret-right"></i>Time Management</a></li>
-            </ul>
-        </div> 
-    	<div class="footerInnCta">
-<div class="hBlogs">
-            	<a href="blog4.html">
-                	<span>Loyal Relationships with Recruiters</span>
-                    <b>FEB 20, 2017</b>
-                </a>            
-            	<a href="blog3.html">
-                	<span>Recruiting Through Social Media Platform</span>
-                    <b>FEB 15, 2017</b>
-                </a>            
-            	<a href="blog.html">
-                	<span>Existing Process without using any Tool</span>
-                    <b>DEC 20, 2016</b>
-                </a>
-            	<a href="blog4.html">Viwe all</a>                                                
-            </div>
-        </div>  
-    	<div class="footerInnCta">
-        	<h3>Get in touch</h3>
-            <a href="mailto:info@sourcelead.com;"><b><i class="fa fa-envelope-o"></i>info@sourcelead.com</b></a>
-			<a href="tel:(214) 295-5535"><b><i class="fa fa-phone"></i>USA : (214) 295-5535</b></a>
-			<a href="tel:(972) 559-3641"><b><i class="fa fa-fax"></i>FAX : (972) 559-3641</b></a>
-			<a href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND : +91. 40-6700-7676</b></a>   
-          <h4>Go social</h4>
-            <div class="socila">
-            	<a href="javascript:void(0)"><img src="/resources/css/jobs/images/in.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/fb.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/tw.png" alt=""/></a>
-                <a href="javascript:void(0)"><img src="/resources/css/jobs/images/gp.png" alt=""/></a>
-            </div>
-        </div>                        
-    <div class="clear"></div>
-    </div>
-    <jsp:include page="../masterFooter.jsp" />
-    <div class="copyrightOut">
-    	<div class="copyright">
-    	<b>© 2016 SourceLead. All rights reserved.</b>
-        <span>
-        	<a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms of Use</a>
-        </span><div class="clear"></div>
-        </div>
-    </div>  
-</footer> 
-
+<jsp:include page="../staticFooter.jsp" />
 
 <script> 
 $(function(){
