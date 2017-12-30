@@ -25,6 +25,8 @@ public interface OrgRelationsService {
 	
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
 	
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception;
+	
 	List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String  orgName,Long orgLocationId) throws Exception;
 	
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
