@@ -974,7 +974,7 @@ $(document).ready(function () {
               <div class="form-group ">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9 chooRadius">
-                  <div class="input-group col-md-9 pull-left">
+                  <div class="input-group col-md-10 pull-left seleOverFlow">
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -1002,7 +1002,7 @@ $(document).ready(function () {
 				</c:choose>
                     <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
                  </div>
-                  <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+                  <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
 			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			      	</sec:authorize>
