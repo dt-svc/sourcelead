@@ -65,7 +65,8 @@
 				<li><a href="#">Bad debt</a></li>
 				<li><a href="#">Cashflow projection</a></li>
 				<li><a href="#">Cashflow Requirement</a></li>
-				<li><a href="#">Missing Invoice</a></li>
+				<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice</a></li>
+				<li><a href='${appPath}/missingBillReport'>Missing Bill</a></li>
 				<li><a href="javascript:void(0)">Associate Billed vs Paid Report</a></li>
 				
 				</ul>

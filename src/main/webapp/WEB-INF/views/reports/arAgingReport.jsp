@@ -483,6 +483,7 @@ function aragingInvoiceData(url){
     $("input[type=search]").hide();
     $("#dataTableInvoiceSearch").keyup(function(e) {
     	   if(e.which === 13) {
+    		   alert("Hi");
     		   aragingInvoice();
     	   }
     	});
