@@ -44,6 +44,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -1923,6 +1924,44 @@ public class UsersListRestController {
 			employees.setUpdatedDate(commonUtil.currentDate());
 			employeesService.updateEmployee(employees);
 		}
+		
+		Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		if(candidate != null) {
+
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationType())){
+				candidate.setDesignationType(addUserDTO.getDesignationType());
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
+				candidate.setDesignationOtherType(addUserDTO.getDesignationOtherType());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
+				CandidateDTO candidateDTO = new CandidateDTO();
+				candidateDTO.setEmail(candidate.getEmail());
+				candidateDTO.setFirstName(candidate.getFirstName());
+				candidateDTO.setLastName(candidate.getLastName());
+				candidateDTO.setCountry(candidate.getCountry());
+				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				candidate.setParentCandidateId(vendorCandidate);
+				candidate.setOrgRelationId(orgRelation);
+			}else{
+				candidate.setOrgRelationId(null);
+				candidate.setParentCandidateId(null);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getVendorcontact())){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
+				candidate.setSpocId(orgspoc);
+			}else{
+				candidate.setSpocId(null);
+			}
+			
+			candidateService.saveOrUpdateCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		}
+		
+		
 		/*
 		 * update common user (single user different orgs) details in  ElasticSearch Documents (User)
 		 */
