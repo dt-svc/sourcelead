@@ -196,6 +196,12 @@ public class OrgLocations implements Serializable{
     @Column(name = "IS_COMPANY_ONBOARDED")
 	private String isCompanyOnboarded;
     
+    @Column(name="PO_EMAIL")
+	private String poEmail;
+	
+	@Column(name="PAYMENT_REMITTANCE_EMIL")
+	private String remittanceEmail;
+    
     @Transient
     private String orgName;
     
@@ -804,6 +810,22 @@ public class OrgLocations implements Serializable{
 	{
 		this.loginSecurity = loginSecurity;
 
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getRemittanceEmail() {
+		return remittanceEmail;
+	}
+
+	public void setRemittanceEmail(String remittanceEmail) {
+		this.remittanceEmail = remittanceEmail;
 	}
 	
 }

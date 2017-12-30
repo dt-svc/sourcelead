@@ -1079,7 +1079,6 @@ function editMe(local){
 		 var hours2 = hours.charAt(1);
 		 var min1 = minutes.charAt(0);
 		 var min2 = minutes.charAt(1);
-		
 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("0"+hours1+":00");
 			 setTotals();
@@ -1129,7 +1128,15 @@ function editMe(local){
 			  $("#"+id).val(hours+":"+minutes);
 			  setTotals();
 			  checkHours(); 
+		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		     $("#"+id).val("00:00");
+		     setTotals();
 		 }
+		 
+		 /* else{
+			  $("#"+id).val("00"+":"+"00");
+			 setTotals();
+		 } */
 		 
 	
 }

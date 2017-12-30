@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -14,14 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.reports.service.ApplicantDeclineService;
 import com.bis.sourcelead.reports.service.ApplicantsBySourceService;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
 import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -41,6 +46,9 @@ public class ApplicantDeclineRestController {
 
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 
 
 	@RequestMapping(value = "/app/getDeclinedApplicantsCount", method = RequestMethod.GET)
@@ -69,6 +77,18 @@ public class ApplicantDeclineRestController {
 			}else {
 				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
 	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	   
+	    	    Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+	    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+	    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+	    	    String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+	    	    String customEndTimeStr = TZ_DF_CED.format(toDate);
+	    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+	    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+	    	    fromDate = TZ_DF_TS.parse(startDateString);
+	    	    toDate = TZ_DF_TS.parse(endDateString);
+	    	    
 	    	    searchDates = new Date[2];
 	    	    searchDates[0] = fromDate;
 	    	    searchDates[1] = toDate;
@@ -97,6 +117,7 @@ public class ApplicantDeclineRestController {
 			}else {
 				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
 	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+	    	   
 	    	    searchDates = new Date[2];
 	    	    searchDates[0] = fromDate;
 	    	    searchDates[1] = toDate;

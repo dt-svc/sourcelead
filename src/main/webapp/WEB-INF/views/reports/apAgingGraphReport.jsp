@@ -2,8 +2,12 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
 <script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
+
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -56,13 +60,14 @@ $(document).ready(function(){
         </div>
       </div>
     </div>
-    <div class="clearfix amchartAnchor-Hide mt content-area"> 
+    <div class="clearfix  mt content-area"> 
       <div class="col-md-3">
 				<div class="clearfix billing_count mt25 text-center">
-                      <h4><span class="rupee_usd mt10 mb10 mr5">Total:</span>23,5000</h4>
+                     <h4><span class="rupee_usd mt10 mb10 mr5">Total:</span><span class="totValue" id="total">0.00</span></h4>
                 </div>
                 <div class="clearfix"></div>
-                <ul class="list-unstyled mt text-center ulDesing">
+                 <div id="ulDiv"></div>
+               <!--  <ul class="list-unstyled mt text-center ulDesing">
                 	<li><label class="tblminwidth-50">2017:</label><span>20,0000.00<b class="paddingLeft">(50%)</b></span></li>
                 	<li><label class="tblminwidth-50">2016:</label><span>20,0000.00<b class="paddingLeft">(50%)</b></span></li>
                 	<li><label class="tblminwidth-50">2015:</label><span>20,0000.00<b class="paddingLeft">(50%)</b></span></li>
@@ -71,7 +76,7 @@ $(document).ready(function(){
                 	<li><label class="tblminwidth-50">2012:</label><span>20,0000.00<b class="paddingLeft">(50%)</b></span></li>
                 	<li><label class="tblminwidth-50">2011:</label><span>20,0000.00<b class="paddingLeft">(50%)</b></span></li>
                 	<li><label class="tblminwidth-50">2010:</label><span>20,0000.00<b class="paddingLeft">(50%)</b></span></li>
-                </ul>
+                </ul> -->
 		</div>
            <div class="col-md-9">
                <div id="apaging" style="width: 100%; height: 350px;"></div>
@@ -106,6 +111,19 @@ function vendorapAgingBillGraph(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var orgIds = $("#orgId").val();
 	    $.post(sourceleadUrl+"/vendorapAgingBillGraph?"+tokenParamName+"="+tokenValue+"&apagingType="+apagingType+"&orgIds="+orgIds, function(json) {
+	    	
+	    	var result = "";
+	    	result = result + "<ul class='list-unstyled mt text-center ulDesing'>";
+	    	var year = json.above365Dates;
+	    	 $("#total").html(json.total.toFixed(2)) 
+	    	for(var i=0; i< year.length; i++){
+	    		var data = year[i];
+	    		result = result + "<li><label class='tblminwidth-50'>"+data.year+":</label><span>"+data.amount+"<b class='paddingLeft'></b></span></li>";
+	    	}
+	    	result = result + "</ul>";
+	    	$("#ulDiv").empty();
+	    	$("#ulDiv").append(result);
+	    	
 	    	prepareapagingGraph(json);
 		});  
 }

@@ -334,11 +334,14 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 					}else{
 						expenseArray[3] = "--";
 					}
-					if((null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType())
-							&& ((expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C") ||
-									(expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")) ))){
-						 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expenseId.getProjectMembers().getEmployee().getOrgLocations().getId(), expenseId.getProjectMembers().getEmployee().getOrgRelationId().getId());
+					
+				ProjectMembers projectMember = ex.getExpenseId().getProjectMembers();
+				if(projectMember.getProjectMemberCandidteId() != null && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+					String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+					if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
+						OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 						expenseArray[4] = orgRelation.getResponderLocationId().getOrgLocationName();
+					 }
 					}else{
 						expenseArray[4] = "--";
 					}
@@ -517,13 +520,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 						writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getEmployee().getUserEmploymentType());
 						createExcelsheet.autoSizeColumn(3);
 					}
-					if((null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType())
-							&& ((expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C") ||
-									(expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")) ))){
-						 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expenseId.getProjectMembers().getEmployee().getOrgLocations().getId(), expenseId.getProjectMembers().getEmployee().getOrgRelationId().getId());
-						 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
-						 createExcelsheet.autoSizeColumn(4);
+					
+					ProjectMembers projectMember = ex.getExpenseId().getProjectMembers();
+					if(projectMember.getProjectMemberCandidteId() != null && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+						String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+						if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
+							OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+							 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
+							 createExcelsheet.autoSizeColumn(4);
+						 }
 					}
+					
 				}
 				if(null != expenseId.getProjectMembers().getProjects()){
 					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){

@@ -166,7 +166,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 							  *
 						      *
 						    */
-					    	Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects);
+					    	Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects,commonUtil.currentDate());
 					    	Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 							cal.setLenient(false);
 							cal.setTime(biweeklyCurrentStartMonDayDate);
@@ -507,7 +507,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								  *
 							      *
 							    */
-						    	Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projectMember.getProjects());
+						    	Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projectMember.getProjects(),commonUtil.currentDate());
 						    	Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 								cal.setLenient(false);
 								cal.setTime(biweeklyCurrentStartMonDayDate);
@@ -529,6 +529,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								else{
 								       nextSunday = CalendarUtil.getDateIncrementByincrement(endSunday,(3*14));
 								}
+						
 								Date nextSundayDate = nextSunday.getTime();
 															
 								
@@ -778,7 +779,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 		return timesheetFrequencyList;
 		
 	}
-	private Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects) throws Exception{
+	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects,Date date) throws Exception{
 		Date biWeeklyStartMondayDate = null;
 		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
@@ -788,7 +789,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 		
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		cal.setLenient(false);
-		cal.setTime(commonUtil.currentDate());
+		cal.setTime(date);
 		Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
 		if(projectStartMonday.before(currentMonday)){
 			while(projectStartMonday.before(currentMonday)){
@@ -851,5 +852,21 @@ public  class TimesheetFrequencyGeneratorUtil {
 		return biWeeklyEndSundayDate;
 	}
 	 
+	
+	/*public Map<String,Date> getBiWeeklyStartDateAndEndDateByGivenDate(Projects projects,Date date) throws Exception{
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+		Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects);
+    	Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		cal.setLenient(false);
+		cal.setTime(biweeklyCurrentStartMonDayDate);
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+		
+		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+		projCal.setLenient(false);
+		projCal.setTime(projects.getStartDate());
+		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(projCal, "MON",orgLocations.getDateFormat());
+		return null;
+	}*/
 	
 }

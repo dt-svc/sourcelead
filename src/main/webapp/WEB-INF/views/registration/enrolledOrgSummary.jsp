@@ -641,7 +641,7 @@ function getUserList(){
     						}
 	                    	 
 	                    	 
-	                    	 if(null != opt.mobilePhone){
+	                    	 if(opt.mobilePhone != null && opt.mobilePhone != '' && opt.mobilePhone != 'undefined' ){
 	                    		 mobilePhone = opt.mobilePhone;
 	                    	 }else{
 	                    		 mobilePhone = '------'

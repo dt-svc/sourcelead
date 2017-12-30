@@ -129,8 +129,9 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <label>Country </label>
                   <div class="clearfix">
                     <select class="chosen-select" name="country" id="country" field-name="Country"  >
+                          <option value=" ">---select country---</option>
 						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+					                     <option value="${cntry.name}">${cntry.name}</option>
  
 				             </c:forEach>
 				     </select>
@@ -375,7 +376,7 @@ border:none; background-color: none !important; padding:0 5px !important;
    
 </div>
 
-<div class="sideMask"><div class="proj_close" onclick="refresh();"></div></div>
+<div class="side_mask"><div class="proj_close" onclick="refresh();"></div></div>
 
 <!-- Client Side Nav Div -->
 <div class="clients_side_wrap clientspagedrop">
@@ -1867,7 +1868,7 @@ function getVendorDashboardName(vendorDashboardName){
 		$("#vendorNameDiv").append(orgName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
-		$(".sideMask").fadeIn(200);
+		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
 		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
@@ -2364,12 +2365,12 @@ $(document).ready(function() {
 $(document).ready(function() {
     $(".proj_show").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
-		$(".side_mask").fadeIn(200);
+		//$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 	});
-    $(".proj_close, .sideMask").click(function(){
+    $(".proj_close, .side_mask").click(function(){
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
-		$(".sideMask").fadeOut(200);
+		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 		//update the details in list.
 		var vendorCont = document.getElementById('listOfVendors').value;

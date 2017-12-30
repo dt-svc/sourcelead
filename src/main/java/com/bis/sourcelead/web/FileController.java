@@ -87,7 +87,7 @@ public class FileController {
 			MultipartFile multiFile = request.getFile(itrator.next());
 			if (name == null)
 				name = multiFile.getOriginalFilename();
-			File file = new File(staticPath, "temp\\" + (uploadid != null ? uploadid + "-" : "") + name);
+			File file = new File(staticPath, "temp"+ System.getProperty("file.separator") + (uploadid != null ? uploadid + "-" : "") + name);
 			try (FileOutputStream fis = new FileOutputStream(file, true);) {
 				fis.write(multiFile.getBytes());
 				chunkDataFlag = true;
