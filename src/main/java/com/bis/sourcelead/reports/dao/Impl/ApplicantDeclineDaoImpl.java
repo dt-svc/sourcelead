@@ -61,8 +61,8 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
 					+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate)";
 			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
 		}else {
-			 query ="select count(*) from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.rejectedCategoryType = '"+type+"' and rs.submissionStatus='REJECTED' and rs.requirement.id IN (:jobIds) ";
-			 submissionCount =  session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocation.getId()).setParameterList("jobIds", jobIds).setCacheable(true).list();
+			 query ="select count(*) from RequirementSubmission rs where  rs.rejectedCategoryType = '"+type+"' and rs.submissionStatus='REJECTED' and rs.requirement.id IN (:jobIds) ";
+			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setCacheable(true).list();
 		}
 			if(submissionCount != null && !submissionCount.isEmpty()){
 					count = submissionCount.get(0).intValue();
