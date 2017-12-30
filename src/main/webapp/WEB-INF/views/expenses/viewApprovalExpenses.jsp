@@ -111,7 +111,7 @@
 					<div class="project_details_cta">
 						<strong>Client:</strong><span> 
 						
-						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
 						      <c:if test="${project.id == expenses.projectId}">
 						      <a href="<c:url value="${appPath}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}"/>">${project.client}</a>
@@ -119,7 +119,7 @@
 		                  </c:forEach>
 		                </sec:authorize>  
 		                
-		                <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\')">
+		                <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
 						      <c:if test="${project.id == expenses.projectId}">
 						      ${project.client}

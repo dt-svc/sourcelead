@@ -782,6 +782,7 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
              			 $("#cerMsgDiv").html("Certification deleted");
              			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
+             			qwikCertificates(candidateId);
              			cerMsgFadein();
              			setTimeout(function(){
 				 			candidateList();					 			
