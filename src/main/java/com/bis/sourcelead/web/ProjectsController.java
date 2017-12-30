@@ -442,7 +442,7 @@ public class ProjectsController {
 				 
 				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
 				 model.addObject("taskStatusList", taskStatusList);
-				 
+				 model.addObject("taskUUID", taskUUID);
 				model.addObject("projectClientUUID", projectClientUUID);
 				model.setViewName("project/projectTaskSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
