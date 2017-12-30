@@ -41,7 +41,7 @@
 					<!-- Download File button -->
 					<div class="clearfix mb row">
 						<div class="col-xs-8 col-md-8">
-							<a href="<c:url value='${appPath}/downloadJobTemplate'/>"
+							<a href="#"
 								class="btn btn-success btn-block"> <i class="fa fa-download"></i>&nbsp;&nbsp;Download
 								Job Template
 							</a>
@@ -67,7 +67,7 @@
 						<div class="file-upload clearfix text-center">
 							<div class="col-md-12" id="">
 								<label class="bg-default"> <i aria-hidden="true"
-									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
+									class="fa fa-paperclip" title="Attach file" onclick="alertDialog();"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
 									data-validation="required validate_importFile">
@@ -152,6 +152,10 @@ function cancelFileImport(){
 	$('#jobFileImportDiv').removeAttr("style");
 	$('#jobFieldsDiv').empty(); */
 	location.replace(sourceleadUrl+"/uploadJobs");
+}
+
+function alertDialog(){
+	alert('Should maintain top row as header');
 }
 </script>
 

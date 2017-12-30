@@ -405,6 +405,9 @@ function statusvalidating(id){
 						<li><a href="<c:url value='${appPath}/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<li title="Import"><a href="<c:url value='${appPath}/uploadJobs'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+					</sec:authorize>
 
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
 						<li title="Export" class="mrPOP" id="mypop"><i
@@ -417,9 +420,7 @@ function statusvalidating(id){
 								</ul>
 							</div></li>
 					</sec:authorize>
-
-					<div class="clearfix"></div>
-					<li title="Import"><a href="<c:url value='${appPath}/uploadJobs'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+					
 					<div class="clearfix"></div>
 				</ul>
 				 <div class="clearfix"></div>

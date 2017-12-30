@@ -80,6 +80,7 @@ public class DataMigrationCommonRestController {
 		model.addObject("fields", formFields);
 		model.setViewName("upload/importJobs");
 		model.addObject("importStatus", importStatus);
+		model.addObject("exportFilePath", dataMigrationDTO.getExportFilePath());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

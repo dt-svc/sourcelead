@@ -10,7 +10,7 @@ public class DataMigrationDTO extends CommonDTO {
 
 	private List<FileInfo> uploadedFileInfo;
 
-	private List<String> assignedTo;
+	private String assignedTo;
 	
 	private String exportFilePath;
 
@@ -67,6 +67,8 @@ public class DataMigrationDTO extends CommonDTO {
 	private String clientSubmissionForm;
 	
 	private String approver;
+	
+	private String parallelApprover;
 
 	private String manager;
 
@@ -96,11 +98,13 @@ public class DataMigrationDTO extends CommonDTO {
 		this.uploadedFileInfo = uploadedFileInfo;
 	}
 
-	public List<String> getAssignedTo() {
+	public String getAssignedTo()
+	{
 		return assignedTo;
 	}
 
-	public void setAssignedTo(List<String> assignedTo) {
+	public void setAssignedTo(String assignedTo)
+	{
 		this.assignedTo = assignedTo;
 	}
 
@@ -328,6 +332,16 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setApprover(String approver) {
 		this.approver = approver;
+	}
+
+	public String getParallelApprover()
+	{
+		return parallelApprover;
+	}
+
+	public void setParallelApprover(String parallelApprover)
+	{
+		this.parallelApprover = parallelApprover;
 	}
 
 	public String getManager() {
