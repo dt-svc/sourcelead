@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,7 +166,9 @@ public class OrgSettingsController {
 
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
-		model.addObject("tabType",tabType);
+		if(StringUtils.isNotBlank(tabType)) {
+			model.addObject("tabType",tabType);
+		}
 		model.setViewName("orgSettings");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
