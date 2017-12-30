@@ -229,7 +229,7 @@ function getStateTaxes(){
 	        	var result = "";
 	        	
 	        	if(json.length > 0){
-	        	 result = result +'<div class="requestdocmntTable companyOnboardStateTaxTable">';
+	        	 result = result +'<div class="companyOnboardStateTaxTable">';
         		 result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="savedStatesTaxTable" border="0">';
         		 result = result +'<tbody>';
         		
