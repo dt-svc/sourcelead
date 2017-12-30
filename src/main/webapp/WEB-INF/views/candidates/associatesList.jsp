@@ -278,7 +278,7 @@ function candidateSideBar(candidateId){
 						 result = result+'</ul>';
 						 
 			             result = result+' <ul class="list-unstyled">';
-						 result = result+'<li>'+designationType+'</li>';
+						 result = result+'<li><i class="fa fa-clock-o" title="Employment Type"></i>'+designationType+'</li>';
 						 result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
@@ -300,7 +300,7 @@ function candidateSideBar(candidateId){
 			             
              		       }else{
              		                                                	  
-             		     result = result+'<li>Notice Period ----</li>';  
+             		     result = result+'<li><i class="fa fa-calendar" title="Notice Period"></i> Notice Period ----</li>';  
              		     
              		       }
 			             result = result+'</ul>';
@@ -320,7 +320,7 @@ function candidateSideBar(candidateId){
 			             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
 			            	 result = result+'<li>Primary Skill -'+json.primarySkill+' </li>';
 			             }else{
-			            	 result = result+'<li>Primary Skill ----</li>';  
+			            	 result = result+'<li><i class="fa fa-briefcase" title="Primary Skill"> Primary Skill ----</li>';  
 			             }
 			             
 			             result = result+'</ul>';
