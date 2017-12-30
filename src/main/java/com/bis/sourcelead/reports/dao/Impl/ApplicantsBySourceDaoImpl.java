@@ -197,7 +197,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		if(searchDates != null) {
 			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
 				 query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
-							+ " and  rh.submissionId.requirement.parentRequirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+							+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
 			}else {
 				 query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
 							+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
@@ -207,7 +207,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		}else {
 			if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
 				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
-				 		+ " and rh.toStage = :stage and rh.submissionId.requirement.parentRequirement.id IN (:jobIds) ";
+				 		+ " and rh.toStage = :stage and rh.submissionId.requirement.id IN (:jobIds) ";
 			}else {
 				query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
 				 		+ " and rh.toStage = :stage and rh.submissionId.requirement.id IN (:jobIds) ";
