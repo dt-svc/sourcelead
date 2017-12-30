@@ -86,7 +86,7 @@ public class OrgSettingsController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
-	public ModelAndView orgSettings(HttpServletRequest request) throws Exception
+	public ModelAndView orgSettings(HttpServletRequest request,@RequestParam(value = "tabType", required = false) String tabType) throws Exception
 	{
 		logger.debug("Org settings");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -165,6 +165,7 @@ public class OrgSettingsController {
 
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
+		model.addObject("tabType",tabType);
 		model.setViewName("orgSettings");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

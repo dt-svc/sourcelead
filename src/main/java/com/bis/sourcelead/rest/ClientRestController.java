@@ -1630,34 +1630,32 @@ public class ClientRestController {
 				boolQueryBuilder.must(vendorNameBoolQueryBuilder);
 			}
 			
+			BoolQueryBuilder locationByBoolQueryBuilder = QueryBuilders.boolQuery();
 			//Country
-//			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
-//		    }
+			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
+				locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+		    }
+				
+			if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
+				locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", clientVendorDTO.getCountry()));
+			    }
+		
+			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
+				locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
+		    }
 			
-			/*if(StringUtils.isNotBlank(clientVendorDTO.getCountry())){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorCountry", clientVendorDTO.getCountry()));
-		    }*/
+			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
+				locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorState", clientVendorDTO.getState()));
+		    }
 			
-			
-			 //State
-//			if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
-//		    }
-//			
-			/*if(StringUtils.isNotBlank(clientVendorDTO.getState())){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("initiatorState", clientVendorDTO.getState()));
-		    }*/
-			
-			//City
-//			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-//				boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("initiatorCity", clientVendorDTO.getCity()));
-//		    }
-			
-			/*if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
-		    }*/
-			
+			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
+				locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCity", clientVendorDTO.getCity()));
+		    }
+				
+			if(StringUtils.isNotBlank(clientVendorDTO.getCity())){
+				locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCity", clientVendorDTO.getCity()));
+		    }
+			boolQueryBuilder.must(locationByBoolQueryBuilder);
 				
 			//CreatedBy
 			List<String> createdByArray = clientVendorDTO.getCreatedByAdvanced(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
@@ -1679,6 +1677,7 @@ public class ClientRestController {
 				}
 				boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
 			}
+			
 			
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
@@ -1761,18 +1760,18 @@ public class ClientRestController {
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		   
 		    //Vendor Search 
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("initiatorOrgName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 			
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("responderCountry", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("responderState", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("responderCity", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("initiatorCountry", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("initiatorState", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("initiatorCity", keywd));
 			
 			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
@@ -2176,11 +2175,11 @@ public class ClientRestController {
 		    
 		    if("Vendor".equalsIgnoreCase(responderType)){
 		    	 // Client OrgName
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorOrgName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorOrgName", keywd));
 		    }
 		    if("Client".equalsIgnoreCase(responderType)){
 		    	 // Vendor OrgName
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientOrgName", keywd));
+			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientOrgName", keywd));
 		    }
 		   
 		    
