@@ -96,7 +96,7 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Users");
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Associates");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
