@@ -7,7 +7,7 @@ import com.bis.sourcelead.reportsDTO.APAgingDTO;
 
 public interface FinanceDao {
 
-	ResponseList<APAgingDTO> getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO);
+	APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO);
 
 	ResponseList<Invoice> getApAgingBillListByLocation(OrgLocations orgLocation, APAgingDTO aPAgingDTO);
 

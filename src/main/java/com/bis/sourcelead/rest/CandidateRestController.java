@@ -271,7 +271,7 @@ public class CandidateRestController {
 		}
 		if (null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
-			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", "1"));
+			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
 		}
 		else {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
