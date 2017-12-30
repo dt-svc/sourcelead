@@ -54,6 +54,7 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
         typeName.add("Interview Rejection");
         typeName.add("Salary");
         typeName.add("Other");
+
         if(jobIds.size() > 0) {
         	 for(String type:typeName) {
         			
@@ -71,7 +72,6 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
         				typeCount.put(type, count);
         	        }	
         }
-       
 			return typeCount;
 	}
 
