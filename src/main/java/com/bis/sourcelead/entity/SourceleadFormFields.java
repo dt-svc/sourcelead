@@ -55,6 +55,9 @@ public class SourceleadFormFields implements Serializable{
 	@Column(name = "IS_FIELD_REQUIRED")
 	private int isFieldRequired;
 	
+	@Column(name = "IS_IMPORT_FIELD")
+	private int isImportField;
+	
 	@Column(name = "SL_DEPENDANT_FIELD")
 	private Long slDependantField;
 	
@@ -147,6 +150,16 @@ public class SourceleadFormFields implements Serializable{
 
 	public void setIsFieldRequired(int isFieldRequired) {
 		this.isFieldRequired = isFieldRequired;
+	}
+
+	public int getIsImportField()
+	{
+		return isImportField;
+	}
+
+	public void setIsImportField(int isImportField)
+	{
+		this.isImportField = isImportField;
 	}
 
 	public Long getSlDependantField() {

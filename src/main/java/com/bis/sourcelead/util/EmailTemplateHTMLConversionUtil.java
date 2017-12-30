@@ -66,7 +66,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		                                         tempHTML.append("</div>");
 		                                         
 		                                         if(!isNullOrEmpty(signature)){
-									                    tempHTML.append("<div style='font-size:13px; font-weight:600; color:#333333; line-height:20px; padding:25px 15px 15px 15px;'>");
+									                    tempHTML.append("<div style='font-size:13px; font-weight:600; color:#333333; line-height:20px; padding:15px 15px 15px 15px; clear:both;'>");
 														tempHTML.append(signature);
 													    tempHTML.append(" </div>");		
 												 }
