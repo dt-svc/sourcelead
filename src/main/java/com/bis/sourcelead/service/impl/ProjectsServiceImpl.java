@@ -392,14 +392,16 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
 		if(!isNullOrEmpty(projectsDTO.getInvoiceFrequency())){
 			projects.setInvoiceFrequency(projectsDTO.getInvoiceFrequency());
+			projects.setTimesheetFrequency(projectsDTO.getInvoiceFrequency());
 	    }else{
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.WEEKLY);
 	    }
 		
-		if(!isNullOrEmpty(projectsDTO.getTimeSheetFrequency())){
+		/*if(!isNullOrEmpty(projectsDTO.getTimeSheetFrequency())){
 			projects.setTimesheetFrequency(projectsDTO.getTimeSheetFrequency());
 		}
-		
+		*/
 		
 		if(!isNullOrEmpty(projectsDTO.getIsAllowFreelanceDevelopers())){
 			projects.setAllowFreeLance(BooleanUtils.toBoolean(projectsDTO.getIsAllowFreelanceDevelopers(),"Y",""));
@@ -1372,8 +1374,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}else{
 					projects.setOvertimeRateType(null);
 				}
-		    	
-		    	
+				
+					    	
 		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getProjectStatusId()));
 		    	
 		    			 //SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();

@@ -1045,7 +1045,7 @@ function preparedContractListWFA(json){
      	     		}
        			'</sec:authorize>';
        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-       			if(output.typeOfContract == "New"){
+       			if(output.typeOfContract == "New" || output.typeOfContract == "Custom"){
        				opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
        			}else{
        			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
