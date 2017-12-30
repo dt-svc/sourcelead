@@ -7683,6 +7683,18 @@ padding: 5px 10px;
 .section-action-btns.section-action-btns-associates .remove_search {
 	top:0 !important;
 }
+/* Dynamic Search */
+.dynamic_search {
+    position:relative; right:0px; top:0px;
+    }  
+.dynamic_search input {
+    margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent;
+    width: 210px;      
+    }
+.dynamic_search .fa-search {
+	font-size: 18px; position: absolute; right: 0px; top: 0px; color:#9E9E9E !important;
+}
+    /* Dynamic Search */
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

@@ -108,28 +108,19 @@ public class PdfUtil {
             int activeCount = 0; 
             int notLoggedInCount = 0; 
 	        List orderedList = new List(List.ORDERED);
-	        
-	        if("ACTIVE".equalsIgnoreCase(userState)){
-	        	activeCount = userRolesList.size();
-			 }else{
-				 if(activeList !=null){
-					 activeCount = activeList.size();
-				 }
-			 }
-	        if("INACTIVE".equalsIgnoreCase(userState)){
-	        	inActiveCount = userRolesList.size();
-			 }else{
-				 if(inactiveList !=null){
-					 inActiveCount = inactiveList.size();
-				 }
-			 }
-	        if("NOT_LOGGEDIN".equalsIgnoreCase(userState)){
-	        	notLoggedInCount = userRolesList.size(); 
-			 }else{
-				 if(notLoggedInList != null){
-					 notLoggedInCount = notLoggedInList.size();
-				 }
-			 }
+	        //userRole list developed by laxman  
+	        for(UserRole ur:userRolesList) {
+	        	if("ACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		activeCount++;
+	        	} 
+	        	if("INACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		inActiveCount++;
+	        	} 
+	        	if("NOT_LOGGEDIN".equalsIgnoreCase(ur.getUserState().toString())){
+	        		notLoggedInCount++;
+	        	} 
+	        }
+	      
 	        orderedList.add(new ListItem("Active:"+activeCount));
 	        orderedList.add(new ListItem("Inactive:"+inActiveCount));
 	        orderedList.add(new ListItem("Not Loggedin:"+notLoggedInCount));

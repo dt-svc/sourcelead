@@ -162,9 +162,10 @@ function getUsersSearchResult(searchValue){
 		   </li>
 		    </sec:authorize>
 		  <li class="positionRelative">
-			  <div class="remove_search">
-	   <input type='text' placeholder='Search' id='dynamicUserDataTableSearch'/>
-		</div>
+			  <div class="dynamic_search">
+	   			<input type='text' placeholder='Search' id='dynamicUserDataTableSearch'/>
+	   			<span class="cursorPointer" title="Search"><i class="fa fa-search" onClick="getDynamciUserList();"></i></span>
+			  </div>
 		  </li>
         </ul>
       </div>
@@ -194,13 +195,13 @@ function getUsersSearchResult(searchValue){
 function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
-	var viewType = "LISTVIEW";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
-	var searchByName = $("#dynamicUserDataTableSearch").val();
+    var searchValue = $("#dynamicUserDataTableSearch").val();
+    searchValue = searchValue ? searchValue : "";
 	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls&viewType=LISTVIEW";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -246,15 +247,13 @@ function flushAdvancedData(){
 function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
-	var viewType = "LISTVIEW";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
-// 	var searchByName = document.getElementById("dynamicUserDataTableSearch").value;
-	var searchByName = $("#dynamicUserDataTableSearch").val();
-	alert("searchByName"+searchByName);
+    var searchValue = $("#dynamicUserDataTableSearch").val();
+    searchValue = searchValue ? searchValue : "";
 	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf&viewType=LISTVIEW";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -891,6 +890,6 @@ $("#dynamicUserDataTableSearch").keydown(function(e) {
 	   }
 	});
 </script> 
-
+ 
 
     
