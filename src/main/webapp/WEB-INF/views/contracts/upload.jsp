@@ -91,8 +91,8 @@ background-color: #fff; height: 50px; padding: 5px 0; text-align: center;
 .publicpageHeader .publicpage-logo img {
 max-height: 100%;
 }
-.content-wraper {
-padding: 0;
+.side-bar .side-nav ul li span  {
+position: relative;top:8px;
 }
 </style>
 
