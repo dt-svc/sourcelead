@@ -130,29 +130,32 @@ public class RegistrationRestController {
 
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName,offset);
+			if(orgsList != null && orgsList.size() > 0) {
 			for(Org regOrg : orgsList){
-				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
-				if(null != regOrg.getUser()){
-					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
-					regOrg.setEmail(regOrg.getUser().getEmail());
-					regOrg.setIsMailSent(userRole.getIsMailSent());
-					regOrg.setUserState(regOrg.getUser().getUserState());
-					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
-					regOrg.setRegisteredUserId(regOrg.getUser().getId());
-					if(null != userRole){
-						regOrg.setUserState(userRole.getUserState());
+					OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
+					if(null != regOrg.getUser()){
+						UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
+						regOrg.setEmail(regOrg.getUser().getEmail());
+						regOrg.setIsMailSent(userRole.getIsMailSent());
+						regOrg.setUserState(regOrg.getUser().getUserState());
+						regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
+						regOrg.setRegisteredUserId(regOrg.getUser().getId());
+						if(null != userRole){
+							regOrg.setUserState(userRole.getUserState());
+						}
 					}
+					
+					if(null != orglocations){
+						regOrg.setLocation(orglocations.getCountry());
+						regOrg.setPrimaryOrgLocationId(orglocations.getId());
+					}
+					regOrgsList.add(regOrg);
 				}
-				
-				if(null != orglocations){
-					regOrg.setLocation(orglocations.getCountry());
-					regOrg.setPrimaryOrgLocationId(orglocations.getId());
-				}
-				regOrgsList.add(regOrg);
 			}
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
+		
 		resultJson = commonUtil.toJSON(regOrgsList);
 		return resultJson;
 
@@ -635,7 +638,7 @@ public class RegistrationRestController {
 	}
 	
 
-	@RequestMapping(value = "/app/verifyResetPassword" , method = RequestMethod.POST)
+	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
 	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
 		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());

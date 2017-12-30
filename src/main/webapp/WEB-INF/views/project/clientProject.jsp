@@ -51,7 +51,7 @@
 			  <div class="form-group mb10">
 					<label class="col-md-3 mt10" for="Project Manager">Select Client<span class="text-danger">*&nbsp;</span></label>
 					<div class="col-md-9 chooRadius">
-						<div class="input-group col-md-10 pull-left" id="clientsDiv">
+						<div class="input-group col-md-9 pull-left paddingRight" id="clientsDiv">
 							<select class="form-control chosen-select"
 								name="clientOrgLocId" id="clientOrgLocId" field-name="Client"
 								data-validation="required" onchange="getEndClientProjects();">
@@ -65,11 +65,11 @@
 								 </c:if>
 								</c:forEach>
 							</select> 
-                <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList(); "><i class="fa fa-refresh "></i></span>
                 </div>	
+                 <div class="col-md-1 noPad"><span class="input-group-addon cursorPointer bg-blue reFreBtn" onclick="refreshClientList(); "><i class="fa fa-refresh "></i></span></div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-              <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
-               </sec:authorize>                						
+                 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+               </sec:authorize>              						
 					</div>
 				</div>
 			</div>
@@ -104,7 +104,9 @@
 								name="level1Manager" id="level1Manager" field-name="Manager"
 								data-validation="required" onchange="getLevel2Approvers();">
 								<option value="">-- Select Level1 Manager --</option>
-							</select> <span class="btn btn-default formic1 addLevel"
+							</select>
+							
+							<span class="btn btn-default formic1 addLevel"
 								id="level2Toggle" onclick="getLevel2Approvers();">Add
 								Level-II</span>
 						</div>
@@ -299,7 +301,7 @@ function saveClientProject(){
   	    	    data : formData,
 				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
 				success : function(project) {
-					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=projectMembers");
+					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
 					 $("#loading").removeAttr("style");
 				},
 			}); 
@@ -346,30 +348,6 @@ function saveClientProject(){
 </script>
 <script>
 function refreshClientList(){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 var selectedOrgId = '${contract.orgRelations.id}';
-		 $.ajax({
-	      type : "POST",
-	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
-		        		}
-				}
-	        	$("#clientOrgLocId").empty();
-		        $("#clientOrgLocId").append(output);
-		        $('#clientOrgLocId').trigger("chosen:updated");
-	        }
-		 });
-		 
-	
-	
+	location.reload();	
 }
 </script>

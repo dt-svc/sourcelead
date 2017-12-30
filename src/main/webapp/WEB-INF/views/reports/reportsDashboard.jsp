@@ -20,11 +20,10 @@
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				<li><a href='${appPath}/recruitersReports'>Recruiters Report</a></li>
 				<li><a href="${appPath}/vendorsReports">Vendors Report</a></li>
-				<li><a href="${appPath}/clientReports">Client Report</a></li>
+				<li><a href="${appPath}/perfomanceClientReports">Client Report</a></li>
 				<li><a href="#">New Customer</a></li>
-				<li><a href="#">Applicant Backout</a></li>
 				<li><a href="${appPath}/applicantDeclineReports">Applicant Decline</a></li>
-				<li><a href="#">Jobs Pipeline</a></li>
+				<li><a href="${appPath}/applicantsBackoutReport">Applicant Backout</a></li>
 				<li><a href="${appPath}/jobPipelineReports">Jobs Pipeline</a></li>
 				<li><a href="${appPath}/applicantBySource">Applicant Source</a></li>
 				<li><a href="${appPath}/timeToFill">Time to Fill</a></li>
@@ -66,7 +65,8 @@
 				<li><a href="#">Bad debt</a></li>
 				<li><a href="#">Cashflow projection</a></li>
 				<li><a href="#">Cashflow Requirement</a></li>
-				<li><a href="#">Missing Invoice</a></li>
+				<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice</a></li>
+				<li><a href='${appPath}/missingBillReport'>Missing Bill</a></li>
 				<li><a href="javascript:void(0)">Associate Billed vs Paid Report</a></li>
 				
 				</ul>

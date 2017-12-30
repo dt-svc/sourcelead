@@ -21,7 +21,8 @@ $(document).ready(function(){
     </section>
     <div class="clearfix"></div>
     <div class="ReqRepHead clearfix">
-      <div class="col-md-3 pull-left reqListBtn"> <a href='${appPath}/arAgingGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> <a href="araging-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
+      <div class="col-md-3 pull-left reqListBtn"> <a href='${appPath}/arAgingGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+       <a href='${appPath}/arAgingReport' title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
         <div class="hidden"> <span class="rAct" title='${appPath}/arAgingReport' id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
       </div>
    
@@ -52,32 +53,33 @@ $(document).ready(function(){
                     </select>
                 </div>
         	 <div class="col-md-2 dropdown-select positionRelatives mt5" id="customDatesDropdown" style="display: none">
-        <select class="form-control" id="custom-dates"  name="filterDateType">
-          <option>Select Date</option>
-          <option selected>Last 7 days</option>
-          <option>Last 15 days</option>
-          <option>1 month</option>
-          <option>3 months</option>
-          <option>last year</option>
+        <select class="form-control" id="custom-dates"  name="filterDateType" onchange="aragingInvoice();">
+          <option value="">Select Date</option>
+          <option value="last_7days">Last 7 days</option> 
+          <option value="last_15days">Last 15 days</option>
+          <option value="1month">1 month</option>
+          <option value="3months">3 months</option>
+          <option value="last_years" >last year</option>
           <option value="custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
         <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
           <div class="pull-left">
             <div class="pull-left mr5" style="width: 125px">
-              <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+              <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text">
             </div>
             <div class="pull-left mr5" style="width: 125px">
-              <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+              <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text">
             </div>
-           <button type="button" class="btn btn-primary btn-sm pull-left">Submit</button>
+           <button type="button" class="btn btn-primary btn-sm pull-left"  onclick="customSearch();">Submit</button>
           </div>
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
-         	 <p class="col-md-2 form-control-static">
-         	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5"><strong>250</strong></span>
-         	 </p>
+         	<!--  <p class="col-md-2 form-control-static">
+         	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5" id="apagingTotal"><strong></strong></span>
+         	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5" id="apagingInvoiceTotal"><strong></strong></span>
+         	 </p> -->
          </div>
          
          <div class='remove_search'>
@@ -117,6 +119,46 @@ $(function() {
   <!-- Bill Started end -->
   
   <script>
+  $( function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+    
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+  } );
+  </script>
+
+  
+  
+  <script>
 function change(){
 	var optval = $("#apagingType").val();
 	if(optval === "Invoice") {
@@ -129,7 +171,7 @@ function change(){
 
 <script>
 function arAgingReport(){
-		    var apagingType = $("#apagingType").val();
+			var apagingType = $("#apagingType").val();
 			var sourceleadUrl ='${sourceleadUrl}';
 			var searchValue = $("#dataTableClientSearch").val();
 			searchValue = searchValue ? searchValue : "";
@@ -141,11 +183,12 @@ function arAgingReport(){
 
 <script>
 function prepareAragingList(url){
-	   $("#aragingByInvoice").empty();
+	$("#aragingByInvoice").empty();
 	   $("#aragingByClient").empty();
 	   $("#dataTableClientSearch").show();
 	   $("#dataTableInvoiceSearch").hide();
-	   
+	   $("#apagingInvoiceTotal").hide();
+	   $("#apagingTotal").show();
  	    var result = "";
  	   /*  result = result +" <div class='remove_search'>";
  	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
@@ -176,6 +219,7 @@ function prepareAragingList(url){
 <script>
 function araging(url){
 	var colIndex = 0;
+	var apagingTotal = 0;
     $('#aragingPagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -185,7 +229,7 @@ function araging(url){
             method: 'POST',
             pages: 10
         }),
-        "columns": [
+        /* "columns": [
         	{ "data": "orgName" },
             { "data": "tenDays" },
             { "data": "fifteenDays"},
@@ -196,18 +240,16 @@ function araging(url){
             { "data": "threeSixtyFiveDays" },
             { "data": "above365Days"},
             { "data": "total"}
-        ],
+        ], */
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"data": "orgName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+	    	  		result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "tenDays",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 						result = result + ' <td><div class="tblminwidth-75">'+opt.tenDays.toFixed(2)+'</div></td>';
@@ -216,19 +258,16 @@ function araging(url){
               }
 	          },{
             "targets": colIndex++,
-            "data": "fifteenDays",
             "render": function ( data, type, opt, meta ) {
             	return  '<td><div class="tblminwidth-75">'+opt.fifteenDays.toFixed(2)+'</div></td>';
             }
           }, {
               "targets": colIndex++,
-              "data": "thirtyDays",
               "render": function ( data, type, opt, meta ) {
             	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
               }
             }, {
                 "targets": colIndex++,
-                "data": "sixtyDays",
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
 							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.sixtyDays.toFixed(2)+'</div></td>';
@@ -236,7 +275,6 @@ function araging(url){
                 }
           },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "nintyDays",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 					result = result + '<td><div class="tblminwidth-50">'+opt.nintyDays.toFixed(2)+'</div></td>';
@@ -244,7 +282,6 @@ function araging(url){
 	    	  	}
 	    	  },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "oneeightyDays",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
@@ -252,20 +289,19 @@ function araging(url){
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
-                  "data": "threeSixtyFiveDays",
                   "render": function ( data, type, opt, meta ) {
                 	  return '<td><div class="tblminwidth-75">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
                   }
                 },{
                     "targets": colIndex++,
-                    "data": "above365Days",
                     "render": function ( data, type, opt, meta ) {
-                    	return '<td><div class="tblminwidth-75">'+opt.above365Days.toFixed(2)+'</div></td>';
+                    	return '<td><div class="tblminwidth-75">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
-                      "data": "total",
                       "render": function ( data, type, opt, meta ) {
+                    	  apagingTotal = parseFloat(apagingTotal)+parseFloat(opt.total);
+                    	  $("#apagingTotal").html(apagingTotal.toFixed(2));
                     	  return ' <td><div class="tblminwidth-75">'+opt.total.toFixed(2)+'</div></td>';
                       }
                     } ],
@@ -288,21 +324,40 @@ function araging(url){
     		   arAgingReport();
     	   }
     	});
-	
+    
+   
 }
 </script>
 
 
 <!-- Invoice start -->
+<script>
+function customSearch(){
+	    var fromDate = $("#fromDate").val();
+	    var toDate = $("#toDate").val();
+	    var apagingType = 'Receivable';
+		var sourceleadUrl ='${sourceleadUrl}';
+		var searchValue = $("#dataTableBillSearch").val();
+		var filterType = $("#custom-dates").val(); 
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&fromDate="+fromDate+"&toDate="+toDate;
+			prepareAragingInvoiceList(url);
+		
+}
+</script>
 
  <script>
 function aragingInvoice(){
 	   var apagingType = 'Receivable';
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableBillSearch").val();
+		var filterType = $("#custom-dates").val(); 
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType;
-		prepareAragingInvoiceList(url);
+		if(filterType != 'custom'){
+			prepareAragingInvoiceList(url);
+		}
+		
 }
 </script>
 
@@ -312,6 +367,8 @@ function prepareAragingInvoiceList(url){
 	  $("#aragingByInvoice").empty();
 	  $("#dataTableClientSearch").hide();
 	   $("#dataTableInvoiceSearch").show();
+	   $("#apagingInvoiceTotal").show();
+	   $("#apagingTotal").hide();
         var result = "";
  	    result = result +"<table id='aragingInvoicePagination' class='display' cellspacing='0' width='100%' >"; 
         result = result +"<thead>"; 
@@ -335,7 +392,8 @@ function prepareAragingInvoiceList(url){
 <script>
 function aragingInvoiceData(url){
 	var colIndex = 0;
-    $('#aragingInvoicePagination').DataTable( { 
+	var apagingInvoiceTotal = 0;
+   $('#aragingInvoicePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
         "searching": false,
@@ -395,6 +453,8 @@ function aragingInvoiceData(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 					result = result + '<td><div class="tblminwidth-50">'+opt.totalAmount.toFixed(2)+'</div></td>';
+					apagingInvoiceTotal = parseFloat(apagingInvoiceTotal)+parseFloat(opt.totalAmount);
+               	   $("#apagingInvoiceTotal").html(apagingInvoiceTotal.toFixed(2));
   	              return result;
 	    	  	}
 	    	  }],

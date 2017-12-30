@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -300,6 +301,30 @@ public class RequirementListController {
 		 model.setViewName("requirement/requirementReports");
 		 return model;
 			
-	 }	 
+	 }
+	 
+	 
+	 /*
+	  * author Venkat Kesav
+	  * redirect to jobsImport page
+	  */
+	 //@PreAuthorize("hasAnyRole('ROLE_JOBS_BULK_IMPORTS')")
+	 @RequestMapping(value = "/uploadJobs")
+		public ModelAndView uploadJobs(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			commonUtil.highLightMenu(Constants.JOBS, request);
+			model.setViewName("upload/uploadJobForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			sessionData.setNav(Constants.JOBS);
+			return model;
+
+		}
 	 
 }

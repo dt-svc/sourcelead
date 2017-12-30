@@ -38,15 +38,15 @@ public class OrglocationStateTaxServiceImpl implements OrglocationStateTaxServic
 		
 		String result = "";
 		
-		if(federalAndStateTaxDTO.getSavedStateTaxesList() != null && federalAndStateTaxDTO.getStateTaxesList().size() > 0) {
+		if(federalAndStateTaxDTO.getSavedStateTaxesList() != null && federalAndStateTaxDTO.getSavedStateTaxesList().size() > 0) {
 			try {
 				for(StateTaxesList stateTaxesList : federalAndStateTaxDTO.getSavedStateTaxesList()) {
 					if(stateTaxesList.getStateName() != null && !stateTaxesList.getStateName().isEmpty()) {
 						OrglocationStateTax orglocationStateTax = orglocationStateTaxDao.getOrglocationStateTaxByUUID(stateTaxesList.getUuid());
 						if(orglocationStateTax != null) {
 							orglocationStateTax.setState(stateTaxesList.getStateName());
-							orglocationStateTax.setStateUnemploymentTax(stateTaxesList.getStateTaxAccountNumber());
 							orglocationStateTax.setStateTaxAccountNumber(stateTaxesList.getStateTaxAccountNumber());
+							orglocationStateTax.setStateUnemploymentTax(stateTaxesList.getStateUnemploymentTax());
 							orglocationStateTax.setCreatedBy(user);
 							orglocationStateTax.setUpdatedBy(user);
 							orglocationStateTax.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
@@ -70,8 +70,8 @@ public class OrglocationStateTaxServiceImpl implements OrglocationStateTaxServic
 						OrglocationStateTax orglocationStateTax = new OrglocationStateTax();
 						orglocationStateTax.setState(stateTaxesList.getStateName());
 						orglocationStateTax.setOrgLocationId(orgLocations);
-						orglocationStateTax.setStateUnemploymentTax(stateTaxesList.getStateTaxAccountNumber());
 						orglocationStateTax.setStateTaxAccountNumber(stateTaxesList.getStateTaxAccountNumber());
+						orglocationStateTax.setStateUnemploymentTax(stateTaxesList.getStateUnemploymentTax());
 						orglocationStateTax.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 						orglocationStateTax.setStatus(Constants.RECORD_ACTIVE);
 						orglocationStateTax.setCreatedBy(user);

@@ -72,11 +72,11 @@ public class UploadController {
 		
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail(),org,roleHierarchyId);
-			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
+			if ("FailureAssociatesForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
 				model.addAttribute("errorMessage", "Please download Error file here");
                  model.addAttribute("fileName", "xlsx");
 				return "upload/uploadForm";
-			}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+			}else if("FailureAssociatesForCheck.xls".equalsIgnoreCase(isFileCreated)){
 				model.addAttribute("errorMessage", "Please download Error file here");
                 model.addAttribute("fileName", "xls");
 				return "upload/uploadForm";
@@ -86,7 +86,7 @@ public class UploadController {
 		}
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
-		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a associates");
 		return "redirect:/app/usersList";
 	}
 /**
@@ -101,9 +101,9 @@ public class UploadController {
 		
 			File file;
 			if("xlsx".equalsIgnoreCase(fileName)){
-				file = new File("FailureUsersForCheck.xlsx");
+				file = new File("FailureAssociatesForCheck.xlsx");
 			}else{
-				 file = new File("FailureUsersForCheck.xls");
+				 file = new File("FailureAssociatesForCheck.xls");
 			}
 			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());

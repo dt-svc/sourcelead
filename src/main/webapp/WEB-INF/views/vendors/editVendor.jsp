@@ -298,7 +298,9 @@ function changeCountry(){
              var formData = getFormData("editClient_form");
 		 $.post(sourceleadUrl+"/vendorDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
 			 vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
-		    	getVendorListsElk();
+		    	//getVendorListsElk();
+		    	getVendorList();
+		    	
 			});
 	     	return true;
          }else{

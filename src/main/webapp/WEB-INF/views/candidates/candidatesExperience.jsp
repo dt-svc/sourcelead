@@ -145,9 +145,8 @@ function closeCertificatePopup(){
         			$("#selector3").css({ display: "block" });
         			$("#empMsgDiv").html("Success!! New Employer added");
 					candidateEmployersList(candidateId);
-					empMsgFadein();
 					qvemployeeSubmission(candidateId);
-					
+					empMsgFadein();
 					setTimeout(function(){
 			 			candidateList();					 			
 			 		},100);
@@ -787,6 +786,7 @@ function removeEmployer(candidateemployerId, candidateId){
 								 $("#popUpDivEmp").removeClass("edit-details-active");
 								 $("#remove_user_pop_emp, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
+								 qvemployeeSubmission(candidateId);
 								 empMsgFadein();
 								 setTimeout(function(){
 							 			candidateList();					 			

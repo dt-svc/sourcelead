@@ -73,6 +73,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		List<OrgRelations> emplist= orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
 		return emplist;
 	}
+	
+	@Override
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception {
+		OrgRelations client= orgRelationsDao.getClientsByOrgLocationIdAndName(orgLocationId, name);
+		return client;
+	}
 
 	@Override
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
@@ -556,9 +562,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long locationId, Long responderLocationId)
 			throws Exception {
-		return orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(responderLocationId, locationId);
+		return orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(locationId, responderLocationId);
 	}
 
 	@Override
