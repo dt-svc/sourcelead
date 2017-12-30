@@ -20,9 +20,9 @@ margin:10px 220px 0;
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Users</h2>
+        <h2>Import Associates</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Users List</a> &raquo; Import Users </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
     </section>
     <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="${appPath}/fileUpload?${_csrf.parameterName}=${_csrf.token}">
     <div class="content-area clearfix">
@@ -81,7 +81,7 @@ margin:10px 220px 0;
 			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
 			  <span class="info-msg pull-left">
 			  <p>
-			  According to this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
+			  According to this template, the Associates need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
