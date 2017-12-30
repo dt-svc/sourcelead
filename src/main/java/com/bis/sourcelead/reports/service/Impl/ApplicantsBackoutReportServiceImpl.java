@@ -52,13 +52,13 @@ public class ApplicantsBackoutReportServiceImpl implements ApplicantsBackoutRepo
 	        if(rejectValue.getKey().equals("Compensation")){
 	        	applicantsBackoutDTO.setCompensation((int)rejectValue.getValue());
 	        }
-	        if(rejectValue.getKey().equals("ICold Feet")){
+	        if(rejectValue.getKey().equals("Cold Feet")){
 	        	applicantsBackoutDTO.setColdFeet((int)rejectValue.getValue());
 	        }
 	        if(rejectValue.getKey().equals("Personal")){
 	        	applicantsBackoutDTO.setPersonal((int)rejectValue.getValue());
 	        }
-	        if(rejectValue.getKey().equals("Other")){
+	        if(rejectValue.getKey().equals("other")){
 	        	applicantsBackoutDTO.setOther((int)rejectValue.getValue());
 	        }
 	       }

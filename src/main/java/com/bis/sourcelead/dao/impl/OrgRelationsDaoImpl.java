@@ -815,13 +815,13 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 
 	@Override
 	@Transactional
-	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long locationId, Long responderLocationId)
 			throws Exception {
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.locationId  left join fetch orgrelation.responderLocationId "
-	      		+ " where (orgrelation.locationId = :locationId and orgrelation.responderLocationId = :responderLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :locationId and orgrelation.locationId = :responderLocationId and orgrelation.responderType = 'Client' )");
+	      		+ " where (orgrelation.locationId = :locationId and orgrelation.responderLocationId = :responderLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :locationId and orgrelation.locationId = :responderLocationId and orgrelation.responderType = 'Client' )");
 		  
 	       List<OrgRelations> orgRelationsList = session.createQuery(query.toString()).setLong("locationId", locationId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
 	       

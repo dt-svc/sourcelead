@@ -45,6 +45,10 @@ public class OrgSettings {
     private String otherBusinessType;
     
     private Integer averageWorkingHours;
+    
+    private String poEmail;
+    
+    private String remittanceEmail;
 	
 
 	public Integer getId() {
@@ -211,6 +215,22 @@ public class OrgSettings {
 
 	public void setOtherBusinessType(String otherBusinessType) {
 		this.otherBusinessType = otherBusinessType;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getRemittanceEmail() {
+		return remittanceEmail;
+	}
+
+	public void setRemittanceEmail(String remittanceEmail) {
+		this.remittanceEmail = remittanceEmail;
 	}
 
 }

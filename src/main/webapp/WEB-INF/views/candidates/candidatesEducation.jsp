@@ -861,6 +861,7 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
              			 $("#popUpDiv").removeClass("edit-details-active");
              			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
+             			qveducationSubmission(candidateId);
              			eduMsgFadeinFunction();
              			 setTimeout(function(){
  				 			candidateList();					 			
