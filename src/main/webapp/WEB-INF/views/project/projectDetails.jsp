@@ -610,15 +610,15 @@
 						result = result  +'	</select>';
 						result = result + '</div>';
 						
-						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
+						/* result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Timesheet Frequency<span class="text-danger">*</span></label>';
-						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
+						result = result  +'	<select   name="timesheetFrequency" id="timesheetFrequency" class="input-sm form-control" disabled="disabled">';
 						result = result  +' <option '+(json.timeSheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
 						result = result  +'	 <option '+(json.timeSheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
 						result = result  +'	 <option '+(json.timeSheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 						result = result  +'	<option '+(json.timeSheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
-						result = result + '</div>';
+						result = result + '</div>'; */
 				 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
 						result = result + '<label>&nbsp;</label>';
