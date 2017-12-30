@@ -101,7 +101,6 @@ window.onload = function () {
 		getOpenJobsELKList();
 		
 	}
-	
 	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
 		$("#orgList").show();
 		$("#companiesListDiv").find("i").toggleClass("arrAc");
@@ -1098,6 +1097,7 @@ function getOpenJobsELKListJOBS(){
 
 <script>
 function getOpenJobsELKList(orgLocationId){
+	var sourceleadUrl ='${sourceleadUrl}';
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	
 	var search = openJobsRequirementTitle.replace(/ & /g, '-and-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-or-");
@@ -1139,7 +1139,9 @@ function getOpenJobsELKList(orgLocationId){
 	/* if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	} */
-	var url ="/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
+	
+	
+	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
 	if(openJobsRequirementTitle)
 		url+="&openJobsRequirementTitle="+openJobsRequirementTitle;
 	if(openJobsLocation)
@@ -1373,17 +1375,18 @@ function getPostedOrgJobs(id){
 
 <script>
 function getOrgsList(alphabet,type){
+	var sourceleadUrl ='${sourceleadUrl}';
 	var country = "";
 	$('input:radio[name=countryFilter]:checked').each(function() 
     {
 		country = ($(this).val());
     });
-	
+	alert("sourceleadUrl"+sourceleadUrl)
 	var companies = '${companies}';
 	var selectedCompanies = companies.split(",");
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: "/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
@@ -1472,13 +1475,14 @@ function getOpenJobsURL(requirementUUID){
 } 
 
 function getOpenJobsRequirementSummary(requirementsUUID){
+	var sourceleadUrl ='${sourceleadUrl}';
 	$("#loadMoreReq").css("display", "none");
 	$("#openJobsRequirementsSummary").show();
 	$("#openJobsRequirementsList").hide(); 
 	$("#loadMoreDiv").hide(); 
 	 $.ajax({
 		 type: "POST",
-		 url: "/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
+		 url: sourceleadUrl + "/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    		
@@ -1788,7 +1792,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : "/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl + "/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
@@ -1839,7 +1843,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/app/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
@@ -1912,11 +1916,12 @@ function openJobSearchRequirement(){
 <script>
 function getStates(){
 	var countryName = $("#country").val();
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(countryName != null && countryName !='' && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	         success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1949,12 +1954,12 @@ function getStates(){
 function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -2323,10 +2328,10 @@ function alertClose(){
 <!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
         type : "GET",
-        url: "/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
+        url: sourceleadUrl + "/ws/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
          success :function(data) {
         	 
         	 var json = JSON.parse(data);
@@ -2607,7 +2612,7 @@ function createAlert(requirementUUID){
         	    	var allSkills = $(event.target).val();
         	    	$.ajax({
         		    	type: "POST",
-        		        url: "/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+        		        url: sourceleadUrl + "/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
         		        success: function(data) {
         		        	var primarySkill = data;
         		        	      $("#primarySkill").val(primarySkill);
@@ -2682,6 +2687,7 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
    };  
+var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
         	 
@@ -2695,7 +2701,7 @@ var validationSettings = {
 							data: formData,
 			  		        processData: false,
 			  		        contentType:false, 
-        					url : "/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+        					url : sourceleadUrl + "/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
         							location.replace("/jobs");
         					},
@@ -2766,10 +2772,12 @@ var validationSettings = {
 
 <script type="text/javascript">
 function getAllCountriesJObalert(country){
+	var sourceleadUrl ='${sourceleadUrl}';
+}
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: "/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: sourceleadUrl + "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
@@ -2812,7 +2820,7 @@ function getStatesjobalert(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#statejobalert').empty();
@@ -2849,7 +2857,7 @@ function getStatesjobalert(country,state){
 
 <script>
 function getCitiesjobalert(country,state,city){
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	var countryName = '';
 	var stateName = '';
 	
@@ -2869,7 +2877,7 @@ function getCitiesjobalert(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#cityjobalert').empty();
@@ -2913,12 +2921,12 @@ function getRate(){
 <script>
 function validateAlertUserEmail(){
 	var email = document.getElementById("email").value;
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(email != null && email != ''){
 		$("#alert_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		       url: sourceleadUrl + "/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){

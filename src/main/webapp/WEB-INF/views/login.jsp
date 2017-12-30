@@ -121,7 +121,7 @@ function logout(url){
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: "/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: "app/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
