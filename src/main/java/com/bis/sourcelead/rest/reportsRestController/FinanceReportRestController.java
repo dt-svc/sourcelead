@@ -246,4 +246,64 @@ public class FinanceReportRestController {
 		apagingDto.setTotal(total);
 		return apagingDto;
 	}
+	
+	/**
+	 * returns missing invoice report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/missingInvoiceReport")
+	public ModelAndView missingInvoiceReportJsp(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/missingInvoiceReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	/**
+	 * returns missing invoice graph report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/missingInvoiceGraphReport")
+	public ModelAndView missingInvoiceGraphReportJsp(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/missingInvoiceGraphReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	/**
+	 * returns missing bill report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/missingBillReport")
+	public ModelAndView missingBillReportJsp(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/missingBillReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	/**
+	 * returns missing Bill  graph report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/missingBillGraphReport")
+	public ModelAndView missingBillGraphReport(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("reports/missingBillGraphReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
 }
