@@ -31,14 +31,14 @@
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3">Time in</label>
+       <label class="col-md-3">Time in<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
        <input type="text" class="timepicker form-control" id="datetimepicker2"
                name="timeIn" placeholder="HH:MM" value="${shift.timeIn}" field-name="Time in" onblur="checktime()" data-validation = "required">
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3">Time Out</label>
+       <label class="col-md-3">Time Out<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
        <input type="text" class="timepicker form-control" id="datetimepicker3"
                name="timeOut" placeholder="HH:MM" value="${shift.timeOut}" field-name="Time Out" onblur="checktime()" data-validation = "required">

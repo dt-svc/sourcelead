@@ -94,9 +94,9 @@ var sourceleadUrl = '${sourceleadUrl}';
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
-<!-- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
+ 	            <!-- <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
 	            <c:if test="${taskTypeName != 'SubTask'}">
-	            <li class="current"><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
+	            <li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 	            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
@@ -109,13 +109,13 @@ var sourceleadUrl = '${sourceleadUrl}';
 			<div class="project_tabs"> 
 			   <div id="tab-task1" class="project_tabs_inn" style="display: none;">
 					<div class="clearfix mt mb">
-	                    <div class="clearfix btnTimeEntry">
+	                    <div class="clearfix">
 	                    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addTimeEntry()">
 	                         Time Entry
 	                    </button>
 	                    </div>
-	                    <div class="clearfix">
-	                        <div class="col-md-3 paddingRight">
+	                     <div class="clearfix">
+	                        <!-- <div class="col-md-3 paddingRight">
 	                            <input type="text" class="form-control input-sm" placeholder="Estimated Hours">
 	                        </div>
 	                        <div class="col-md-2 paddingLeft">
@@ -125,36 +125,38 @@ var sourceleadUrl = '${sourceleadUrl}';
 	                        </div>
 	                        <div class="col-md-3 paddingRight">
 	                            <input type="text" class="form-control input-sm" placeholder="Actual Hours">
-	                        </div>
+	                        </div> -->
 	
-	                    </div>
+	                    </div> 
 					                </div>
 					<!-- TimeEntry Modal Pop -->
+					<form id="saveProjectTask" name="saveProjectTask">
 					<div class="modal-Time clearfix">
 					    <!-- Modal content-->
 					      <div class="clearfix">
+					      <input type="hidden" name="projectTaskId" value="${taskUUID}">
 					        <button type="button" class="close" onclick="closeTimeEntry()">&times;</button>
 					          <p><strong>Time Entry</strong></p>
 					      </div>
 					        <div class="row clearfix">
 					            <div class="col-md-12 mb10">
-					                <textarea class="form-control" rows="1" placeholder="Description"></textarea>
+					                <textarea class="form-control" rows="1" id="comments" name="assignedMember[0].comments" placeholder="Description"></textarea>
 					            </div>
 					          <div class="col-md-4">
 					            <div class="row">
 					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm calendar" placeholder="Date">
+					                <input type="text" class="form-control input-sm calendar" name="assignedMember[0].timesheetDate" id="timesheetDate" placeholder="Date">
 					              </div>
 					            </div>
 					          </div>
 					          <div class="col-md-4">
 					            <div class="row">
 					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm timeicon" placeholder="Time">
+					                <input type="text" class="form-control input-sm timeicon" id="hours" name="assignedMember[0].hours" placeholder="Time">
 					              </div>
 					            </div>
 					          </div>
-					          <div class="col-md-4">
+					          <!-- <div class="col-md-4">
 					            <div class="row">
 					              <div class="col-md-12 dropdown-select">
 					                <select class="form-control">
@@ -164,15 +166,16 @@ var sourceleadUrl = '${sourceleadUrl}';
 					              </select>
 					            </div>
 					                </div>
-					          </div>
+					          </div> -->
 					        </div>
 					      <div class="modalFooter mt5">
 					      <div class="pull-right">
-					        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Save</button>
+					        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveTaskDetails();">Save</button>
 					        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="closeTimeEntry()">Cancel</button>
 					       </div>
 					      </div>
 					</div>
+					</form>
 					                <!-- TimeEntry Modal Pop Ends -->
 					 <div class="clearfix project_wrap_table">
 			                    <table>
@@ -374,6 +377,38 @@ var sourceleadUrl = '${sourceleadUrl}';
       </div>
   </section>
 
+<script>
+	var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+     }; 
+</script>
+<script>
+function saveTaskDetails(){
+	/* if ($('#saveProjectTask').validate(false, validationSettings)){  */  
+  		var formData = getFormData("saveProjectTask");
+  		var assignedMemberIds = $('select#assignedUsers').val();
+  		for(var i=0 ; i< assignedMemberIds.length ; i++){	
+  			formData['assignedMember['+i+'].projectMemberId']=assignedMemberIds[i];
+  		}
+	         $.ajax({
+				 type : "POST",
+				 data: formData,
+  		         processData: false,
+  		         contentType:false, 
+				 url : sourceleadUrl+"/addTimeSheetDayEntries",
+				  		success : function(data) {
+				  					alert("hi"+data);
+				},
+			});
+			/* return true; */
+	  /*  }else{ 
+			return false;
+	 }   */ 
+}
+</script>
 
 <script>
 $('.chosen-select').chosen().on('change', function() {
@@ -1800,6 +1835,26 @@ function commentTableList(){
 	});
 }
 </script>
+
+<script>
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var jsDateFormat= '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  jsDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  jsDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  jsDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  jsDateFormat = 'yy-dd-mm'; 
+	  }
+	  $('#timesheetDate').datepicker({
+	      dateFormat: jsDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true,
+	  });
+</script>
+
 
 <!-- ============================ Comments related Script End's ========================================== -->
 

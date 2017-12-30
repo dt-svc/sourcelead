@@ -291,9 +291,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 							            	  if(timesheetDayEntries.getProjectTask() != null){
 							     				 writeRow.createCell(0).setCellValue(timesheetDayEntries.getProjectTask().getTaskName()); 
 							            	  }
-								              Cell cell2 = null;
 								              if(weekMondayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
-								            	  cell2 = writeRow.createCell(1);
+								            	  Cell cell2 = writeRow.createCell(1);
 								            	  cell2.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
 								            	  monHours =  monHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());

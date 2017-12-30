@@ -158,7 +158,9 @@ function cancelOrgImg(){
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
         </c:if>
+        <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
         <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
+        </c:if>
         <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
         <li><a data-toggle="tab" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
@@ -244,6 +246,20 @@ function cancelOrgImg(){
 								</div>
 							</div>
 							
+						<div class="form-group">
+							<label class="col-md-3">Email regarding Po</label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3">Email for Remittance</label>
+							<div class="col-md-9">
+							<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
+							</div>
+						</div>
+							
 							<div class="form-group">
 							<label class="col-md-3">Address</label>
 							<div class="col-md-9">
@@ -287,7 +303,7 @@ function cancelOrgImg(){
 							<div class="form-group mt">
 							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-3"  onkeyup="validateOrgShortCode();" maxlength="3" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
 						</div>
 						
@@ -381,6 +397,7 @@ function cancelOrgImg(){
 							<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 							</div>
 						</div>
+						
 						
 						<div class="form-group comp-textarea mt">
 						  <label class="col-md-3">About</label>
