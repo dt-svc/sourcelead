@@ -228,7 +228,7 @@ function araging(url){
             method: 'POST',
             pages: 10
         }),
-        "columns": [
+        /* "columns": [
         	{ "data": "orgName" },
             { "data": "tenDays" },
             { "data": "fifteenDays"},
@@ -239,18 +239,16 @@ function araging(url){
             { "data": "threeSixtyFiveDays" },
             { "data": "above365Days"},
             { "data": "total"}
-        ],
+        ], */
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"data": "orgName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+	    	  		result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "tenDays",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 						result = result + ' <td><div class="tblminwidth-75">'+opt.tenDays.toFixed(2)+'</div></td>';
@@ -259,19 +257,16 @@ function araging(url){
               }
 	          },{
             "targets": colIndex++,
-            "data": "fifteenDays",
             "render": function ( data, type, opt, meta ) {
             	return  '<td><div class="tblminwidth-75">'+opt.fifteenDays.toFixed(2)+'</div></td>';
             }
           }, {
               "targets": colIndex++,
-              "data": "thirtyDays",
               "render": function ( data, type, opt, meta ) {
             	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
               }
             }, {
                 "targets": colIndex++,
-                "data": "sixtyDays",
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
 							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.sixtyDays.toFixed(2)+'</div></td>';
@@ -279,7 +274,6 @@ function araging(url){
                 }
           },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "nintyDays",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 					result = result + '<td><div class="tblminwidth-50">'+opt.nintyDays.toFixed(2)+'</div></td>';
@@ -287,7 +281,6 @@ function araging(url){
 	    	  	}
 	    	  },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "oneeightyDays",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
@@ -295,19 +288,16 @@ function araging(url){
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
-                  "data": "threeSixtyFiveDays",
                   "render": function ( data, type, opt, meta ) {
                 	  return '<td><div class="tblminwidth-75">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
                   }
                 },{
                     "targets": colIndex++,
-                    "data": "above365Days",
                     "render": function ( data, type, opt, meta ) {
                     	return '<td><div class="tblminwidth-75">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
-                      "data": "total",
                       "render": function ( data, type, opt, meta ) {
                     	  apagingTotal = parseFloat(apagingTotal)+parseFloat(opt.total);
                     	  $("#apagingTotal").html(apagingTotal.toFixed(2));
@@ -400,6 +390,7 @@ function prepareAragingInvoiceList(url){
 
 <script>
 function aragingInvoiceData(url){
+alert("Hi");
 	var colIndex = 0;
 	var apagingInvoiceTotal = 0;
    $('#aragingInvoicePagination').DataTable( { 
@@ -483,7 +474,6 @@ function aragingInvoiceData(url){
     $("input[type=search]").hide();
     $("#dataTableInvoiceSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   alert("Hi");
     		   aragingInvoice();
     	   }
     	});
