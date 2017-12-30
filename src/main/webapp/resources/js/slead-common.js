@@ -182,6 +182,9 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		contentType: false, 
 		success: function (data) {
 			if(data && data.length > 0) {
+				if(type === "dataMigration"){
+					$("#dataFilePath").val(data[0].fileURL);
+				}
 				applyData(data, formId, name, id);
 				$(".file_mask").hide();
 			}
