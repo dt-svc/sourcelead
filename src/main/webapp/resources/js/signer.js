@@ -18,8 +18,8 @@ var Signer = (function() {
     	let sourceleadUrl = '';
     	if(publicUrl == 'public')
     		{
-    		 sourceleadUrl = $("#publicSourceUrl").val();
-    		 sourceleadUrl = sourceleadUrl.replace('/login', '');
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		 sourceleadUrl = sourceleadUrl.replace('/app', '');
     		}
     	else
     		{
@@ -36,13 +36,13 @@ var Signer = (function() {
                             localStorage.setItem('userId', userId);
                         	let pages = jsonObj.pageCount;
                         	localStorage.setItem('pages', pages);
-                	    	uploadDone(pages, userId);
+                	    	uploadDone(pages, userId,sourceleadUrl);
                     }
     	      },
     	  });
     }
     
-    let uploadDone = function(pages, userId){
+    let uploadDone = function(pages, userId,sourceleadUrl){
     	initializeDrager();
         $('#signerType').show();
         $('.signContainer,.signActions').show();
@@ -50,7 +50,7 @@ var Signer = (function() {
         $('#btnAddSignature,#btnAddInitial,#btnSendToRecip').show();
         
         window.setTimeout(function() {
-        loadPages(pages, userId);
+        loadPages(pages, userId,sourceleadUrl);
         }, 10000);
     }
     
@@ -190,6 +190,7 @@ var Signer = (function() {
     //Save coordinates
     let saveCoordinates = function() {
     	let sourceleadUrl = $("#sourceUrl").val();
+    	alert(sourceleadUrl)
     	 $.ajax({
    	        type : "POST",
    	        url: sourceleadUrl+"/saveSignatureCoordinates",
@@ -214,6 +215,7 @@ var Signer = (function() {
     //Create signature preview
     let createSignaturePreview = function(type) {
     	let sourceleadUrl = $("#sourceUrl").val();
+    	alert(sourceleadUrl)
         let userId = localStorage.getItem('userId');
         var userSign = userId.replace('/unsigned.pdf', '');
         let sigText = $('#txtsignname').val();
@@ -402,12 +404,12 @@ var Signer = (function() {
     }
 
     //Load all pdf pages on screen
-    let loadPages = function(pages, userId) {
+    let loadPages = function(pages, userId,sourceleadUrl) {
         if (pages) {
             pages = parseInt(pages, 10);
             let pageHtml = '';
             for (let i = 0; i < pages; i++) {
-                pageHtml += '<div class="pdf-page"><img src="../' + userId + '-' + (i + 1) + '.png?burst=' + (genran()) + '"><div class="pdf-page-number">' + (i + 1) + '</div></div>'
+                pageHtml += '<div class="pdf-page"><img src="'+sourceleadUrl+'' + userId + '-' + (i + 1) + '.png?burst=' + (genran()) + '"><div class="pdf-page-number">' + (i + 1) + '</div></div>'
             }
             if ($('#pdf-preview').length === 0) {
                 $(".sign-container").append('<div id="pdf-preview"></div>');
@@ -467,6 +469,7 @@ var Signer = (function() {
 
         //Make api call
         let sourceleadUrl = $("#sourceUrl").val();
+        alert(sourceleadUrl)
     	let contractId = $("#contractId").val();
     	 $.ajax({
     	      type : "POST",
