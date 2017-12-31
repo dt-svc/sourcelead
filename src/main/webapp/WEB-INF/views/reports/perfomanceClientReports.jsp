@@ -3,7 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-
+		<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+		<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script>
+				<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+		<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -579,6 +582,11 @@ function getAmchartData(data){
 	var mainAmcahrt = [];
 	for(var k in data.newAmountList) {
 		mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
+	}
+	if(data.othersAmountList != null && data.othersAmountList != '' && data.othersAmountList != 'undefined'){
+		for(var k in data.othersAmountList) {
+			mainAmcahrt[i] = {"category": k, "column-1": data.othersAmountList[k].toFixed(2), "color": colors[i++] };
+		}
 	}
 	
 	AmCharts.makeChart("top5receivables",
