@@ -677,4 +677,27 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 				return orgSpoc;
 		}
 
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional
+		public Integer getNumberOfContactCount(Long orgRelationId, Long userId, Long orgLocationId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
+			List<Long> spocsList = null;
+			if (isadmin) {
+				   Query query= session.createQuery(" select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ");
+	              spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			}else {
+				 Query query= session.createQuery(" select count(*) from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId  and spoc.clientUser.id =:userId and spoc.status = '1'");
+	              spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+			
+			}
+			
+			Integer count = 0;
+    		if(null != spocsList  && !spocsList.isEmpty()){
+    				count = spocsList.get(0).intValue();
+    		}
+    		return count;
+		}
+
 }

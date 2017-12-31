@@ -1704,11 +1704,19 @@ public class ClientRestController {
 					 Integer releaseJobsCount = clientService.getReleasedJobsCountByOrgRelationId(clientVendor.getOrgRelationId(),loginOrgLocation,userRole,loginUser);
 					 clientVendor.setReleasedJobsCount(String.valueOf(releaseJobsCount));
 				 }
-				 if(clientVendor.getNoContacts() !=null) {
-					 clientVendor.setNoContacts(clientVendor.getNoContacts());
+				 
+				int pointOfCount = orgSpocService.getNumberOfContactCount(clientVendor.getOrgRelationId(), loginUser.getId(), loginOrgLocation.getId());
+				 if(pointOfCount > 0) {
+					 clientVendor.setNoContacts(Long.valueOf(pointOfCount));
 				 }else {
 					 clientVendor.setNoContacts(0L);
 				 }
+				 
+				 /*if(clientVendor.getNoContacts() !=null) {
+					 clientVendor.setNoContacts(clientVendor.getNoContacts());
+				 }else {
+					 clientVendor.setNoContacts(0L);
+				 }*/
 				
 				if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 					
