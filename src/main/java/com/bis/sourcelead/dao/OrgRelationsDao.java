@@ -26,6 +26,8 @@ public interface OrgRelationsDao {
 	
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
 	
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception;
+	
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public Long getNumberOfProjectsPerClient(Long orgLocationId) throws Exception;

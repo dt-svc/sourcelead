@@ -406,11 +406,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 				if (count >= 0) {
 					FileOutputStream fos = null;
 					if(!fileName.endsWith("xlsx")){
-						fos = new FileOutputStream("FailureUsersForCheck.xls");
-						isFileCreated = "FailureUsersForCheck.xls";
+						fos = new FileOutputStream("FailureAssociatesForCheck.xls");
+						isFileCreated = "FailureAssociatesForCheck.xls";
 					}else{
-						 fos = new FileOutputStream("FailureUsersForCheck.xlsx");
-						 isFileCreated = "FailureUsersForCheck.xlsx";
+						 fos = new FileOutputStream("FailureAssociatesForCheck.xlsx");
+						 isFileCreated = "FailureAssociatesForCheck.xlsx";
 					}
 					
 					createExcelworkbook.write(fos);
@@ -1282,7 +1282,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			e1.printStackTrace();
 		}
 		Workbook wb = (Workbook) new HSSFWorkbook();
-		Sheet sheet = wb.createSheet("createuser");
+		Sheet sheet = wb.createSheet("createAssociates");
 		sheet = setTemplateHeaders(sheet,orglocation);
 		sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,7,"xls"));
 		
@@ -1356,7 +1356,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		 wb.setSheetHidden(2, true);
 		 sheet.addValidationData(validation);
 		 
-		File file = new File("createuser.xls");
+		File file = new File("createAssociates.xls");
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
 			wb.write(fos);

@@ -41,13 +41,16 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmission>  subList  = null;
 		String query = null;
-		if(searchDates != null) {
-			 query =" from RequirementSubmission rs left join fetch rs.requirement    where rs.requirement.id IN (:jobIds) and (rs.createdDate BETWEEN :startDate and :endDate)";
-			 subList = session.createQuery(query).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
-		}else {
-			 query =" from RequirementSubmission rs left join fetch rs.requirement    where rs.requirement.id IN (:jobIds)";
-			 subList = session.createQuery(query).setParameterList("jobIds", jobIds).setCacheable(true).list();
+		if(jobIds.size() > 0) {
+			if(searchDates != null) {
+				 query =" from RequirementSubmission rs left join fetch rs.requirement    where rs.requirement.id IN (:jobIds) and (rs.createdDate BETWEEN :startDate and :endDate)";
+				 subList = session.createQuery(query).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+			}else {
+				 query =" from RequirementSubmission rs left join fetch rs.requirement    where rs.requirement.id IN (:jobIds)";
+				 subList = session.createQuery(query).setParameterList("jobIds", jobIds).setCacheable(true).list();
+			}	
 		}
+		
 	    return subList;
 	}
 
@@ -68,14 +71,17 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "";
 		List<Long> requiremnetCount = null;
-		if(searchDates != null){
-			query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus =:JobStage  and (requirement.createdDate BETWEEN :startDate and :endDate)";
-			requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setString("JobStage", JobStage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
-		}else {
-			query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds)";
-			requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setCacheable(true).list();
-		
+		if(jobIds.size() > 0) {
+			if(searchDates != null){
+				query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus =:JobStage  and (requirement.createdDate BETWEEN :startDate and :endDate)";
+				requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setString("JobStage", JobStage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+			}else {
+				query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds)";
+				requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setCacheable(true).list();
+			
+			}
 		}
+		
 		Integer count = 0;
 		if(requiremnetCount != null && !requiremnetCount.isEmpty()){
 			count = requiremnetCount.get(0).intValue();

@@ -494,6 +494,7 @@ function openLeaveTypeSummary(typeId){
 			result +='              </div>';
 			}
 			
+			if(report.policyName != null && report.policyName != '' && report.policyName != 'undefined'){
 			result +='              <div class="clearfix"></div>';
 			result +='             <div class="col-md-12 mb">';
 			result +='                  <h4>Leave Policies</h4>';
@@ -502,11 +503,8 @@ function openLeaveTypeSummary(typeId){
 			result +='             <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b>Policy Name:</b></label>';
 			result +='                  <div class="col-md-8">';
-			if(report.policyName != null && report.policyName != '' && report.policyName != 'undefined'){
 				result +='                      <span>'+report.policyName+'</span>';
-			}else{
-				result +='                      <span>---</span>';
-			}
+				
 			result +='                  </div>';
 			result +='              </div>';
 			result +='              <div class="col-md-12 mb">';
@@ -519,16 +517,17 @@ function openLeaveTypeSummary(typeId){
 			}
 			result +='                  </div>';
 			result +='              </div>';
+			if(report.visibilityToAllUsers != null && report.visibilityToAllUsers != '' && report.visibilityToAllUsers != 'undefined' && report.visibilityToAllUsers == 'Y'){
 			result +='              <div class="col-md-12 mb">';
 			result +='                 <label class="col-md-2 control-label">&nbsp;&nbsp;</label>';
 			result +='                 <div class="checkBox col-md-8">';
-			if(report.visibilityToAllUsers != null && report.visibilityToAllUsers != '' && report.visibilityToAllUsers != 'undefined' && report.visibilityToAllUsers == 'Y'){
+			
 				result +='                  <input type="checkbox" Checked disabled="true" value="" name="visible">Visible to all users';
-			}else{
-				result +='                  <input type="checkbox" disabled="true" value="" name="visible">Visible to all users';
-			}
+			
 			result +='                 </div>';
 			result +='              </div>';
+			}
+	    }
 			result +='              <div class="col-md-12 mb mt40">';
 			result +='                  <label class="col-md-2 control-label"><b>Crated By:</b></label>';
 			result +='                  <div class="col-md-8">';

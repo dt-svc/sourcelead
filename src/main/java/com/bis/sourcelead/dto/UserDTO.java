@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class UserDTO implements Serializable {
+public class UserDTO extends SearchDTO implements Serializable {
 	private long id;
 	private String name;
 	private String designation;
@@ -13,6 +13,10 @@ public class UserDTO implements Serializable {
 	private String lastName;
 	private String mobilePhone;
 	private String userRole;
+	private String searchByName;
+	private String userState;
+	private String loginUserRole;
+	private String roleId;
 	
 	public long getId()
 	{
@@ -102,5 +106,37 @@ public class UserDTO implements Serializable {
 
 	public void setUserRole(String userRole) {
 		this.userRole = userRole;
+	}
+
+	public String getSearchByName() {
+		return searchByName;
+	}
+
+	public String getUserState() {
+		return userState;
+	}
+
+	public String getLoginUserRole() {
+		return loginUserRole;
+	}
+
+	public void setSearchByName(String searchByName) {
+		this.searchByName = searchByName;
+	}
+
+	public void setUserState(String userState) {
+		this.userState = userState;
+	}
+
+	public void setLoginUserRole(String loginUserRole) {
+		this.loginUserRole = loginUserRole;
+	}
+
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 }
