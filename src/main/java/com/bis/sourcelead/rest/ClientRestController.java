@@ -1705,12 +1705,8 @@ public class ClientRestController {
 					 clientVendor.setReleasedJobsCount(String.valueOf(releaseJobsCount));
 				 }
 				 
-				int pointOfCount = orgSpocService.getNumberOfContactCount(clientVendor.getOrgRelationId(), loginUser.getId(), loginOrgLocation.getId());
-				 if(pointOfCount > 0) {
-					 clientVendor.setNoContacts(Long.valueOf(pointOfCount));
-				 }else {
-					 clientVendor.setNoContacts(0L);
-				 }
+				int pointOfCount = orgSpocService.getNumberOfContactCount(clientVendor.getOrgRelationId(), loginUser.getId(), loginOrgLocation.getId(),clientVendorDTO.getResponderType());
+				clientVendor.setNoContacts(Long.valueOf(pointOfCount));
 				 
 				 /*if(clientVendor.getNoContacts() !=null) {
 					 clientVendor.setNoContacts(clientVendor.getNoContacts());

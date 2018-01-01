@@ -118,7 +118,7 @@ public interface OrgSpocDao {
 	
 	OrgSpoc getOrgSpocByUUID(String UUID) throws Exception;
 	
-	Integer getNumberOfContactCount(Long orgRelationId,Long userId,Long orgLocationId) throws Exception;
+	Integer getNumberOfContactCount(Long orgRelationId,Long userId,List<Long> userIds,Long orgLocationId,String responderType) throws Exception;
 
 	
 }
