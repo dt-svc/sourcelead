@@ -113,7 +113,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="jobFieldsDiv" style="display: none">
+	<div id="dataFieldsDiv" style="display: none">
 	</div>
 	<%-- <jsp:include page="importJobs.jsp"></jsp:include> --%>
 	
@@ -130,14 +130,15 @@ document.getElementById("uploadBtn").onchange = function () {
 <script type="text/javascript">
 function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
+	var uploadType = "timesheetUpload";
 	if(fileUrl != "" && fileUrl != null && fileUrl != 'undefined'){
 		$.ajax({
 			type: "POST",
-		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl, 
+		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType, 
 		    success: function(data) {
 		    	$("#jobFileImportDiv").attr("style","display:none");
-		    	$('#jobFieldsDiv').removeAttr("style");
-		    	$('#jobFieldsDiv').append(data);
+		    	$('#dataFieldsDiv').removeAttr("style");
+		    	$('#dataFieldsDiv').append(data);
 		    },
 		});
 	}else{
@@ -149,10 +150,7 @@ function fetchFieldsWithMatchedColumn(){
 
 <script type="text/javascript">
 function cancelFileImport(){
-	/* $("#jobFieldsDiv").attr("style","display:none");
-	$('#jobFileImportDiv').removeAttr("style");
-	$('#jobFieldsDiv').empty(); */
-	location.replace(sourceleadUrl+"/uploadJobs");
+	location.replace(sourceleadUrl+"/uploadTimesheet");
 }
 
 function alertDialog(){

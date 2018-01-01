@@ -303,28 +303,4 @@ public class RequirementListController {
 			
 	 }
 	 
-	 
-	 /*
-	  * author Venkat Kesav
-	  * redirect to jobsImport page
-	  */
-	 //@PreAuthorize("hasAnyRole('ROLE_JOBS_BULK_IMPORTS')")
-	 @RequestMapping(value = "/uploadJobs")
-		public ModelAndView uploadJobs(HttpServletRequest request) {
-		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.Users);
-			request.getSession().setAttribute("sessionData",sessionData);
-			ModelAndView model = new ModelAndView();
-			commonUtil.highLightMenu(Constants.JOBS, request);
-			model.setViewName("upload/uploadJobForm");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			sessionData.setNav(Constants.JOBS);
-			return model;
-
-		}
-	 
 }
