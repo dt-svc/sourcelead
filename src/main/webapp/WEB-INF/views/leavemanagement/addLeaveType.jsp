@@ -100,7 +100,7 @@
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
 				href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a>
 			&raquo;<a href="<c:url value='${appPath}/viewLeaveTypes'/>">Leave type List</a>
-			&raquo; Edit/Update Leave Type
+			&raquo; Update Leave Type
 		</div>
 		</c:if>
 	</section>
@@ -310,7 +310,7 @@
 							<c:if test="${!empty leaveType.leaveEffective}">
 										<c:if test="${leaveType.leaveEffective == 'AllEmployees'}">
 											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
-												<input type="radio" checked="true" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+												<input type="radio" checked="true" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
 											<label class="paddingLeft" onClick="showExperienced();">
 											 <input type="radio" value="Experienced" name="leaveEffective">
@@ -319,7 +319,7 @@
 
 										<c:if test="${leaveType.leaveEffective == 'Experienced'}">
 											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
-												<input type="radio" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+												<input type="radio" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
 											<label class="paddingLeft" onClick="showExperienced();">
 											 <input type="radio" value="Experienced" checked="true" name="leaveEffective">
@@ -329,7 +329,7 @@
 
 									<c:if test="${empty leaveType.leaveEffective}">
 										<label class="paddingLeft paddingRight" onClick="hideExperienced();">
-												<input type="radio" checked="true" value="AllEmployees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
+												<input type="radio" checked="true" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
 											<label class="paddingLeft" onClick="showExperienced();">
 											 <input type="radio" value="Experienced" name="leaveEffective">

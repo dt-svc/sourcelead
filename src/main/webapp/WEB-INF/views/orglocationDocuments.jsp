@@ -264,9 +264,8 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 						 data: formData,
 						 url: sourceleadUrl+"/saveOrgLocationDocuments",
 								success : function(result) {
-									
 									if(result == 'success'){
-										$("#loading").removeAttr("style");
+										 location.replace(sourceleadUrl+"/orgSettings?&tabType=documents");
 						        	}else{
 						        		$("#loading").removeAttr("style"); 
 						        	}
@@ -311,7 +310,7 @@ function deleteDoc(uuid){
 	    	 url: sourceleadUrl+"/deleteOnboardDocument?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
 	        success: function(data) {
 	        	if(data == 'success'){
-	        		location.replace(sourceleadUrl+"/orgSettings"); 
+	        		location.replace(sourceleadUrl+"/orgSettings?&tabType=documents");
 	        	}
 	        },
 	    });

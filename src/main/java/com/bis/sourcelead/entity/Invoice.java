@@ -20,6 +20,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -40,7 +42,8 @@ public class Invoice {
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
-    @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )
+	@Fetch(FetchMode.JOIN)
 	private OrgRelations orgRelationID;
 	
 	@NotFound(action=NotFoundAction.IGNORE)

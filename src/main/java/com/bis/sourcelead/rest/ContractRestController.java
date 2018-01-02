@@ -231,11 +231,13 @@ public class ContractRestController {
 
 		if((Constants.CUSTOM_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
 		//if(Constants.CUSTOM_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
-			  pdfBytes = CommonUtil.readBytesFromFile(staticPath+contract.getFileURL());
+			String path = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			  pdfBytes = CommonUtil.readBytesFromFile(path+contract.getFileURL());
 		}
 		
 		if(Constants.EXISTING_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
-			  pdfBytes = CommonUtil.readBytesFromFile(staticPath+contract.getFileURL());
+			String path = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			  pdfBytes = CommonUtil.readBytesFromFile(path+contract.getFileURL());
 		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
