@@ -9,7 +9,8 @@
 			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
-	       		pagination();
+	       		preparePagination(1);
+	       		/* pagination(); */
 	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
@@ -23,8 +24,11 @@
 	       			$(":checkbox[value=REJECTED]").prop("checked",true);
 	       		}
 	       		$("#temp").val("temp");
+	       		$("#appro-pop").hide();
 			}else{
-				expensesApprovalList('${sourceleadUrl}');
+				//expensesApprovalList('${sourceleadUrl}');
+				getExpensesApprovalDataList();
+				$("#appro-pop").show();
 			}
 		 };
 		 
@@ -33,9 +37,6 @@
 
 
 <style type="text/css">
-
-
-
 .glyphicon-none:before {
     content: "\2122";
     color: transparent !important;
@@ -102,16 +103,16 @@ margin-top: 3px;
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="expensesApprovalList('${sourceleadUrl}');" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
 					</div>
 
 					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="expensesApprovalList('${sourceleadUrl}');"><label >All</label></li>
-								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="expensesApprovalList('${sourceleadUrl}');"><label >Sub for Approval</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="expensesApprovalList('${sourceleadUrl}');"><label >Approved</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="expensesApprovalList('${sourceleadUrl}');"><label >Rejected</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>
+								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList();"><label >Sub for Approval</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList();"><label >Approved</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList();"><label >Rejected</label></li>
 								<!-- <li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li> -->
 	                        </ul>
 	                    </div>                	
@@ -133,28 +134,21 @@ margin-top: 3px;
 		   		<div class="clearfix"></div>
 		   		<input type="hidden" id="temp"/>
 		   		</ul>
-							
-					
-		
-					<!-- <div class="remove_search">
-						<input placeholder="search" type="text">
-					</div> -->
 					<div class="clearfix"></div>
 				</div>
 				
 				 <div class='remove_search'>
-		        		<input type='text' placeholder='Search' value="" id='dataTableSearchExpenses'/>
+
+		        		<input type='text' placeholder="Search" value="" id='dataTableSearchExpenses'/>
+
 		         </div>
 				
-				<div class="timesheet_appr_table datatable_filter">
-					<div id="approverDataExpensesDiv"></div>
+				<div class="overflow_inherint">
+				<!-- <div class="timesheet_appr_table datatable_filter overflow_inherint"> -->
+					<div id="approverDataExpensesDiv">
+						<jsp:include page="expensesApprovalListDataTable.jsp"></jsp:include>
+					</div>
 				</div>
-				
-				<!-- <div class="require_wrap_table datatable_filter">
-				<div id="expensesApprovalListTable"></div>
-			</div> -->
-				
-				
 			</div>
 		</div>
 		<!-- Project -->
@@ -164,158 +158,46 @@ margin-top: 3px;
 <div class="side_mask"><div class="proj_close" onclick="activeTabExpenseApproval();"></div></div>
 
 <div class="time_appr_side_wrap noPad">
-<div id="expensesApprovalViewDiv"></div>
+	<div id="expensesApprovalViewDiv"></div>
 </div>
 
 
 
-
-
-
-<!-- <script type="text/javascript">
+<script type="text/javascript">
 function getExpensesApprovalDataList(){
 var startDate = $("#filterStartDate").val();
 var endDate = $("#filterEndDate").val();
-var expenseStatus = [];
-$('input:checkbox[name=expenseStatus]:checked').each(function() 
-{
-	expenseStatus.push($(this).val());
-});
-
-
+var searchData = $('#SearchExpensesData').val();
+var expenseStatus = $('#expenseStatusDivId').val();
+if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
+	expenseStatus = expenseStatus
+}else{
+	var expenseStatus = [];
+	$('input:checkbox[name=expenseStatus]:checked').each(function() 
+	{
+		expenseStatus.push($(this).val());
+	});	
+}
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
  var expensesApprvListDate = getJSDateFormat(locationList);
+ 
+var searchvalue = '';
+if(searchData != null && searchData !='' && searchData!='undefined'){
+	searchValue = searchData;
+}else{
+	searchValue = '';
+ }
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
-     success :function(json) {
-    var result = "";
-    
-	result = result+' <table id="example">';
-	result = result+' <thead>';
-	result = result+' <tr>';
-	result = result+' <th>Employee</th>';
-	result = result+' <th>EmploymentType</th>';
-	result = result+' <th>Project</th>';
-	result = result+' <th>Purpose</th>';
-	result = result+' <th>Start Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
-	result = result+' <th>End Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
-	result = result+' <th>No of Items</th>';
-	result = result+' <th>Amount</th>';
-	result = result+' <th>Status</th>';
-	result = result+' <th>Action</th>';
-	result = result+' </tr>';
-	result = result+' </thead>';
-	result = result+' <tbody>';
-	//var json = JSON.parse(data);
-	 for (var i = 0; i < json.length; i++) { 
-	 var data = json[i];
-	result = result+' <tr id = "row'+data.expenseId.id+'">';
-	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+data.userFileUrl+'" alt="Profile Image" class="img-circle img-responsive">';
-	result = result+' <span>';
-	result = result+' <b title="'+data.expenseEmpUserFirstNameLastName+'">'+data.expenseEmpUserFirstNameLastName+'</b>';
-	result = result+' <b title="'+data.expenseEmpUserEmail+'">'+data.expenseEmpUserEmail+'</b>';
-	result = result+' </span></div>';
-	result = result+' </td>';
-	if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
-		result = result+' <td><div><span title="'+data.expenseEmpUserType+'">'+data.expenseEmpUserType+'</span><br><span title="'+data.userTypeVendorName+'">'+data.userTypeVendorName+'</span></div></td>';	
-	}else{
-		result = result+' <td><div><span title="'+data.expenseEmpUserType+'">'+data.expenseEmpUserType+'</span></div></td>';	
-	}
-	
-	if(data.expenseId.clientName != null && data.expenseId.clientName != '' && data.expenseId.clientName !='undefined'){
-		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span><br><span title="'+data.expenseId.clientName+'">'+data.expenseId.clientName+'</span></div></td>';	
-	}else{
-		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span></div></td>';	
-	}
-	
-	if(data.expensesApproverHierarchyPurpose != null && data.expensesApproverHierarchyPurpose != '' && data.expensesApproverHierarchyPurpose !='undefined'){
-		result = result+' <td><div><span title="'+data.expensesApproverHierarchyPurpose+'">'+data.expensesApproverHierarchyPurpose+'</span></div></td>';	
-	}else{
-		result = result+' <td><div class="sm" title="--">--</div></td>';	
-	}
-	
-	result = result+' <td><div class="sm" title="'+data.expenseStartDateString+'">'+data.expenseStartDateString+'</div></td>';
-	
-	if(data.expenseEndDateString != null && data.expenseEndDateString != '' && data.expenseEndDateString !='undefined'){
-		result = result+' <td><div class="sm" title="'+data.expenseEndDateString+'">'+data.expenseEndDateString+'</div></td>';	
-	}else{
-		result = result+' <td><div class="sm" title="--">--</div></td>';
-	}
-	
-
-	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
-
-	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount.toFixed(2)+'">';
-	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
-	'</sec:authorize>';
-	 var  numb = data.expenseId.totalAmount.toFixed(2);
-	result = result+numb;
-	
-	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	result = result+'</a>';
-	'</sec:authorize>';
-	result = result+'</div></td>';
-	result = result+' <td><div id="status'+data.expenseId.id+'" title="'+data.expenseStatus+'">'+data.expenseStatus+'</div></td>';
-	
-	result = result+' <td>';
-	var tdSpanLength = 9;
-	 if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus == 'NEW'){
-		 result = result+'<div class="sm text-center">--</div>';
-     }
-     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus == 'SUBMITTEDFORAPPROVAL'){
-        result = result+"<div class='sm text-center'id='action"+data.expenseId.id+"'>"
-        '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_EMPLOYEE_EXPENSES\')">' 
-        result = result+ " <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
-        result = result+ "|<i class='fa fa-times' title='Reject'  alt='Rejected' onclick='rejectExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
-        '</sec:authorize>';
-        result = result+"</div>"; 
- 	                    
-    }
-    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REJECTED'){
-    	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
-    	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
-    	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
-	 	 result = result+" </i><br><p title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</p>";
-	 	 result = result+" </div>";
-    }
-    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
-    	
-    	if(data.reopenRejectedReason != null && data.reopenRejectedReason != '' && data.reopenRejectedReason !='undefined'){
-    		 result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
-    		 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
-    		 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.reopenRejectedReason+"</div>";
-    	}
-    	else{
-    		result = result+" <div class='sm text-center' title='"+data.actionPerformedBy+"'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
-    	}
-         
-        
-         
-    }
-    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){
-    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
-    	'</sec:authorize>'; 
-   }
-
-     result = result+' </td>'; 
-/* 	 result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';       */        
-	 result = result+' </tr>';
-	 }
-	 $("#temp").val("temp");
-	result = result+' </tbody>';
-	result = result+' </table>';
-	
-	$("#approverDataExpensesDiv").empty();
-	$("#approverDataExpensesDiv").append(result);
-	pagination();
-	
+     url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
+     success :function(data) {
+    	$("#approverDataExpensesDiv").empty();
+		$("#approverDataExpensesDiv").append(data);
+		preparePagination(1);
   }
 });
 }
-</script> -->
+</script> 
 
 <script>
 function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
@@ -590,26 +472,23 @@ function pagination(){
 </script> 
 <script>
 function exportToPdf(type){
-	var temp = $("#temp").val();
-	if(temp != null && temp != ''){
-		var expenseStatus = [];
-		$('input:checkbox[name=expenseStatus]:checked').each(function() 
-		{
-			expenseStatus.push($(this).val());
-		});
+	var temp = $("#tempVar").val();
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	 if(temp != null && temp != ''){ 
+		 var expenseStatus = $('#expenseStatusDivId').val();
+		 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
+				expenseStatus = expenseStatus
+			}else{
+				var expenseStatus = [];
+				$('input:checkbox[name=expenseStatus]:checked').each(function() 
+				{
+					expenseStatus.push($(this).val());
+				});	
+			}
 		var startDate = $("#filterStartDate").val();
 		var endDate = $("#filterEndDate").val();
 		window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
-	}else{
-		
-		/* var sourceleadUrl = '${sourceleadUrl}';
-		var expenseStatus = [];
-		$('input:checkbox[name=expenseStatus]:checked').each(function() 
-		{
-			expenseStatus.push($(this).val());
-		});
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus; */
-		
+	 }else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
@@ -620,7 +499,7 @@ function exportToPdf(type){
 		$("#expensesListDiv").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 	
-	}
+	} 
 	
 }
 </script>
@@ -695,5 +574,5 @@ function expensesCancel(){
 		
 	});
 </script>
-<jsp:include page="expensesApproverTable.jsp" />
+<%-- <jsp:include page="expensesApproverTable.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

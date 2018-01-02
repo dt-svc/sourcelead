@@ -919,6 +919,10 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					candidateOffBoardingDTO.setSavedoffboardId(candidateOffBoarding.getId().toString());
 				}
 				
+				if(candidateOffBoarding.getRating() != null) {
+					candidateOffBoardingDTO.setRating(candidateOffBoarding.getRating());
+				}
+				
 				
 			}
 			

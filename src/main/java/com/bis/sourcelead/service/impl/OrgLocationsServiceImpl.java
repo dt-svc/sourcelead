@@ -119,7 +119,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         
         
         if(StringUtils.isNotBlank(orgSettings.getGeneratedUserId())){
-        	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId());
+        	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId().toUpperCase());
         }
         
         if(StringUtils.isNotBlank(orgSettings.getPoEmail())){
