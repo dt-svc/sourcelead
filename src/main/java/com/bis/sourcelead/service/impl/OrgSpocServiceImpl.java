@@ -586,5 +586,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	{
 		return orgSpocDao.getOrgSpocByUUID(UUID);
 	}
+
+	@Override
+	public Integer getNumberOfContactCount(Long orgRelationId, Long userId, Long orgLocationId,String responderType) throws Exception {
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(userId);
+		return orgSpocDao.getNumberOfContactCount(orgRelationId, userId, userIds, orgLocationId,responderType);
+	}
 	
 }

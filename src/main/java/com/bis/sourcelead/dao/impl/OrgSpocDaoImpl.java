@@ -677,4 +677,43 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 				return orgSpoc;
 		}
 
+
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional
+		public Integer getNumberOfContactCount(Long orgRelationId, Long userId, List<Long> ids, Long orgLocationId,String type) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> spocsList;
+			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
+			
+			if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
+				if (isadmin) {
+					Query query= session.createQuery(" select count(*) from OrgSpoc spoc  where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
+					spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+				}else if(ids != null && !ids.isEmpty()){
+					Query query= session.createQuery(" select count(*) from OrgSpoc spoc  where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.vendorUser.id = :userId OR spoc.vendorUser IN (:ids))");
+					spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
+				}else{
+					Query query= session.createQuery(" select count(*) from OrgSpoc spoc  where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '0' ");
+					spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+				}
+			}else{
+				if (isadmin) {
+					Query query= session.createQuery(" select count(*) from OrgSpoc spoc  where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
+					spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+				}else if(ids != null && !ids.isEmpty()){
+					Query query= session.createQuery(" select count(*) from OrgSpoc spoc  where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.clientUser.id = :userId OR spoc.clientUser IN (:ids))");
+					spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).setCacheable(true).list();
+				}else{
+					Query query= session.createQuery(" select count(*) from OrgSpoc spoc  where spoc.orgRelations.id = :orgRelationId and spoc.clientUser.id = :userId and spoc.status <> '0' ");
+					spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setCacheable(true).list();
+				}
+			}
+			Integer count = 0;
+    		if(null != spocsList  && !spocsList.isEmpty()){
+    				count = spocsList.get(0).intValue();
+    		}
+    		return count;
+		}
+	 
 }
