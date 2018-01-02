@@ -7,7 +7,7 @@ public class TimesheetProjectMemberDTO {
 	
 	private Long projectMemberId;
 	
-	private Date timesheetDate;
+	private String timesheetDate;
 	
 	private String hours;
 	
@@ -47,12 +47,14 @@ public class TimesheetProjectMemberDTO {
 		this.fileInfoList = fileInfoList;
 	}
 
-	public Date getTimesheetDate() {
+	public String getTimesheetDate() {
 		return timesheetDate;
 	}
 
-	public void setTimesheetDate(Date timesheetDate) {
+	public void setTimesheetDate(String timesheetDate) {
 		this.timesheetDate = timesheetDate;
 	}
+
+	
 	
 }
