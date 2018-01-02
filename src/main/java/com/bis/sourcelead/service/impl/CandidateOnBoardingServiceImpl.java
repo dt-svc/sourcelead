@@ -51,6 +51,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -117,6 +118,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	RegistrationService registrationService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -357,6 +361,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		if(onboardingUser == null){
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
+		    if("Newly Registered".equalsIgnoreCase(onboardingUser.getRegistrationType()))
+		    	registrationService.sendActivationEmail(onboardingUser);
 		}
 		
 		
@@ -554,6 +560,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(loginUser.getUserCode());
 		user.setCreatedDate(commonUtil.currentDate());
+		user.setRegistrationType("Newly Registered");
 		return user;
 	}
 	
