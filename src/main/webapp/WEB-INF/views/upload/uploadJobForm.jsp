@@ -129,10 +129,11 @@ document.getElementById("uploadBtn").onchange = function () {
 <script type="text/javascript">
 function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
+	var uploadType = "jobUpload";
 	if(fileUrl != "" && fileUrl != null && fileUrl != 'undefined'){
 		$.ajax({
 			type: "POST",
-		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl, 
+		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType, 
 		    success: function(data) {
 		    	$("#jobFileImportDiv").attr("style","display:none");
 		    	$('#jobFieldsDiv').removeAttr("style");

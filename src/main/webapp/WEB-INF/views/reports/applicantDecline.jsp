@@ -20,7 +20,7 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant Decline</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) by source </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants Decline </div>
    
     </section>
     <!-- hiring Process  -->
@@ -29,18 +29,18 @@ $(window).load(function() {
     <div class="ReqRepHead clearfix">
     	
     	<div class="col-md-2 pull-left reqListBtn">
-        <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-          <a href="${appPath}/applicantDeclineList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
+        <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+          <a href="${appPath}/applicantDeclineList" title="List View" id="LView" class="btn btn-default" ><i class="fa fa-list"></i></a>
         </div>
     
-		<div class="col-md-4">
+		<div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
 				<option value="${option.requirementId}">${option.jobTitle}</option>
 			</c:forEach>
           </select>
         </div>
-	<div class="col-md-3 dropdown-select positionRelative">
+	<div class="col-md-2 dropdown-select positionRelative">
           <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
             <option value='Last_7_days'>Last 7 days</option>
@@ -79,10 +79,10 @@ $(window).load(function() {
      <div class="row" id="applicantDeclineGraph" style="display:block">
         <div class="col-md-12 mt">
         <div class="clients_wrap_table dashboard-widget">
-        <div id="applicantDecline" style="width: 100%; height: 250px; overflow: hidden; text-align: left;"></div>
+ <div id="applicantDecline" style="width: 100%; height: 250px; overflow: hidden; text-align: left;"></div>
+        </div>
+        </div>
 			 </div>
-      </div>
-      </div>
       </
       <!-- Decline Reasons -->
      
@@ -143,7 +143,17 @@ function getDeclineApplicants(){
 			   	type: "GET",
 			   	url: sourceleadUrl+"/getDeclinedApplicantsCount?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 			    success: function(data) {
+			    	var total=data.skillsCount + data.unsuitableCount + data.badfitCount + data.interviewCount + data.salaryCount + data.otherCount;
+			    	if(total>0){
 			    	getAplicantDeclineAmChart(data);
+			    }
+			   	else{
+			   		var result = '';
+	 	   			result = result+"<div class='dataTables_empty'>"; 
+	 	   			result = result+"</div> ";
+	 	   	        $("#applicantDecline").empty();
+	                $("#applicantDecline").append(result);
+			   	}
 			    	
 			    }
 		        	 
@@ -174,101 +184,121 @@ function getCustomDates(){
 
 </script>
 
-<script>
-function getAplicantDeclineAmChart(data){
-	 var mainChar = [];
-	 if(data.skillsCount>0){
-		 mainChar.push( {
-			    "category": "Skills",
-				"column-1": data.skillsCount,
-				"color": "#9FA8DA"
-		    } );
-		 }
-	 if(data.unsuitableCount>0){
-		 mainChar.push( {
-			    "category": "Over Qualified",
-				"color": "#90CAF9",
-				"column-1": data.unsuitableCount
-		    } );
-		 }
-	 if(data.badfitCount>0){
-		 mainChar.push( {
-			 "category": "Bad Fit",
-				"column-1": data.badfitCount,
-				"color": "#FFAB91"
-		    } );
-		 }
-	 if(data.interviewCount>0){
-		 mainChar.push( {
-			    "category": "Interview",
-				"column-1": data.interviewCount,
-				"color": "#A5D6A7"
-		    } );
-		 }
-	 if(data.salaryCount>0){
-		 mainChar.push( {
-			    "category": "Salary",
-				"column-1": data.salaryCount,
-				"color": "#FFE0B2"
-		    } );
-		 }
-	 if(data.otherCount>0){
-		 mainChar.push( {
-				"category": "Other",
-				"column-1": data.otherCount,
-				"color": "#BCAAA4"
-		    } );
-		 }
-	
-	AmCharts.makeChart("applicantDecline",
-			{
-				"type": "serial",
-				"categoryField": "category",
-				"rotate": true,
-				"marginBottom": 0,
-				"marginLeft": 0,
-				"marginTop": 10,
-				"startDuration": 1,
-				"categoryAxis": {
-					"gridPosition": "start",
-					"position": "left",
-					"title": ""
-				},
-				"export": {
-					"enabled": true
-				},
-				"trendLines": [],
-				"graphs": [
-					{
-						"balloonText": "[[value]]%",
-						"colorField": "color",
-						"fillAlphas": 1,
-						"id": "AmGraph-1",
-						"lineColorField": "color",
-						"title": "graph 1",
-						"type": "column",
-						"valueField": "column-1"
-					}
-				],
-				"guides": [],
-				"valueAxes": [
-					{
-						"axisFrequency": 0,
-						"id": "ValueAxis-1",
-						"totalText": "",
-						"unit": "",
-						"title": ""
-					}
-				],
-				"allLabels": [],
-				"balloon": {},
-				"titles": [],
-				"dataProvider": mainChar
-			}
-		);
-}
-
-</script>  
+<script type="text/javascript">
+  function getAplicantDeclineAmChart(data){
+	  
+	  var total=data.skillsCount + data.unsuitableCount + data.badfitCount + data.interviewCount + data.salaryCount + data.otherCount;
+	  var mainChar = [];
+		 if(data.skillsCount>0){
+			 mainChar.push( {
+				    "category": "Skills",
+					"column-1": data.skillsCount,
+					"color": "#9FA8DA",
+					"count": data.skillsCount,
+		            "percentage":(((data.skillsCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.unsuitableCount>0){
+			 mainChar.push( {
+				    "category": "Over Qualified",
+					"color": "#90CAF9",
+					"column-1": data.unsuitableCount,
+					"count": data.unsuitableCount,
+		            "percentage": (((data.unsuitableCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.badfitCount>0){
+			 mainChar.push( {
+				 "category": "Bad Fit",
+					"column-1": data.badfitCount,
+					"color": "#FFAB91",
+					"count": data.badfitCount,
+		            "percentage": (((data.badfitCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.interviewCount>0){
+			 mainChar.push( {
+				    "category": "Interview",
+					"column-1": data.interviewCount,
+					"color": "#A5D6A7",
+					"count": data.interviewCount,
+		            "percentage": (((data.interviewCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.salaryCount>0){
+			 mainChar.push( {
+				    "category": "Salary",
+					"column-1": data.salaryCount,
+					"color": "#FFE0B2",
+					"count": data.salaryCount,
+		            "percentage": (((data.salaryCount)/total)*100).toFixed(2)
+			    } );
+			 }
+		 if(data.otherCount>0){
+			 mainChar.push( {
+					"category": "Other",
+					"column-1": data.otherCount,
+					"color": "#BCAAA4",
+					"count": data.otherCount,
+		            "percentage": (((data.otherCount)/total)*100).toFixed(2)
+			    } );
+			 }
+      AmCharts.makeChart("applicantDecline",
+                {
+          "type": "serial",
+            "categoryField": "category",
+            "rotate": true,
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "marginTop": 10,
+            "startDuration": 1,
+            "categoryAxis": {
+                "gridPosition": "start",
+                "position": "left",
+                "axisThickness": 0,
+                "gridThickness": 0,
+                "title": ""
+            },
+            "export": {
+            	"enabled": true
+            	},
+            "trendLines": [],
+            "graphs": [
+                {
+                    "balloonText": "",
+                    "colorField": "color",
+                    "fillAlphas": 1,
+                    "id": "AmGraph-1",
+                    "labelText": "[[count]] <br>[[percentage]]%",
+                    "legendValueText": "",
+                    "lineColorField": "color",
+                    "title": "graph 1",
+                    "type": "column",
+                    "valueField": "column-1"
+                }
+            ],
+            "guides": [],
+            "valueAxes": [
+                {
+                    "axisFrequency": 0,
+                    "id": "ValueAxis-1",
+                    "totalText": "",
+                    "unit": "",
+                    "axisThickness": 0,
+                    "gridThickness": 0,
+                    "labelsEnabled": false,
+                    "title": ""
+                }
+            ],
+            "allLabels": [],
+            "balloon": {},
+            "titles": [],
+            "dataProvider":  mainChar
+                }
+            );
+      $("#paging").empty();
+  }
+        </script> 
   
   <script>
  $(document).ready(function(){
