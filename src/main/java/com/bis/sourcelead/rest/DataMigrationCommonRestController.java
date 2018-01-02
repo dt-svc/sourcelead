@@ -48,19 +48,25 @@ public class DataMigrationCommonRestController {
 	DataMigrationService dataMigrationService;
 	
 	@RequestMapping(value = {"/dataMigrationCommon","/rest/dataMigrationCommon"}, method = RequestMethod.POST)
-	public ModelAndView dataMigrationCommon(@RequestParam(value = "filePath", required = false) String filePath, HttpServletRequest request) throws Exception
+	public ModelAndView dataMigrationCommon(@RequestParam(value = "filePath", required = false) String filePath, @RequestParam(value = "uploadType", required = false) String uploadType, HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		commonUtil.highLightMenu(Constants.JOBS, request);
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+filePath);
-		List<SourceleadFormFields> formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);
-		model.setViewName("upload/importJobs");
+		List<SourceleadFormFields> formFields = null;
+		
+		switch(uploadType){  
+	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;  
+	    case "timesheetUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(1l, 1);break;  
+	    }
+		
+		model.setViewName("upload/dataImport");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
 		model.addObject("exportFilePath", filePath);
+		model.addObject("uploadType", uploadType);
 		return model;
 	}
 	
@@ -72,15 +78,19 @@ public class DataMigrationCommonRestController {
 		String importStatus = dataMigrationService.validateImportedFormData(dataMigrationDTO, request);
 		
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		commonUtil.highLightMenu(Constants.JOBS, request);
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/"));
-		List<SourceleadFormFields> formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);
+		List<SourceleadFormFields> formFields = null;
+		switch(dataMigrationDTO.getUploadType()){  
+	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;  
+	    case "timesheetUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(1l, 1);break;  
+	    }
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
-		model.setViewName("upload/importJobs");
+		model.setViewName("upload/dataImport");
 		model.addObject("importStatus", importStatus);
 		model.addObject("exportFilePath", dataMigrationDTO.getExportFilePath());
+		model.addObject("uploadType", dataMigrationDTO.getUploadType());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

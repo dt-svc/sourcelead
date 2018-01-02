@@ -113,7 +113,5 @@ public interface ProjectMembersDao {
 	
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 
-	public ResponseList<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(Date startDate,Date endDate, Long locationsId, Long approverUserId, String searchValue, int start, int length);
-	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
 }
