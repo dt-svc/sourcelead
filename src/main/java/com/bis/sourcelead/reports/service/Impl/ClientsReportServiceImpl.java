@@ -123,7 +123,6 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency) {
 
 		Map<String,Float> amountList = new LinkedHashMap<>();
-		Map<String,Float> newAmountList = null;
 		List<Entry<String, Float>> newList = null;
 		List<OrgRelations> clientsList = getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
 		
@@ -202,21 +201,23 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	            }
 	        } );
 	        
-	        newAmountList =  new LinkedHashMap<>();
+	        Map<String,Float> newAmountList =  new LinkedHashMap<>();
+	        Map<String,Float> othersAmountList =  new LinkedHashMap<>();
 	        if(list.size() > 5) {
 	        	 newList =   list.subList(0, 5);
-	        	 
-	        	List<Entry<String, Float>> othersList =   list.subList(5,list.size());
-	 	        Float otherAmt = 0f;
-	 	        for (Entry<String, Float> entry : othersList) {
-	 	        	Float calcOtherAmt = entry.getValue();
-	 	        	otherAmt = otherAmt + calcOtherAmt;
-	 	        	newAmountList.put("Others", otherAmt);
-	 	        	invoiceDto.setNewAmountList(newAmountList);
-	 			}
+	        	    List<Entry<String, Float>> othersList =   list.subList(5,list.size());
+	    	        Float otherAmt = 0f;
+	     	        for (Entry<String, Float> entry : othersList) {
+	     	        	Float calcOtherAmt = entry.getValue();
+	     	        	otherAmt = otherAmt + calcOtherAmt;
+	     	        	othersAmountList.put("Others", otherAmt);
+	     	        	invoiceDto.setOthersAmountList(othersAmountList);
+	     			}
 	        }else {
 	        	 newList =   list;
 	        }
+	        
+	        
 	        for(Map.Entry<String, Float> entry:newList){
 //	            System.out.println(entry.getKey()+" ==== "+entry.getValue());
 	            newAmountList.put(entry.getKey(), entry.getValue());
