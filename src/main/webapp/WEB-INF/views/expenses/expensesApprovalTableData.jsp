@@ -18,7 +18,9 @@
  <td><div><span title="${expApproverHierarchy.expenseEmpUserType}">${expApproverHierarchy.expenseEmpUserType}</span><br><span title="${expApproverHierarchy.userTypeVendorName}">${expApproverHierarchy.userTypeVendorName}</span></div></td>
  	
 <c:if test="${not empty expApproverHierarchy.clientName}">
-		 <td><div><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br><span title="${expApproverHierarchy.clientName}">${expApproverHierarchy.clientName}</span></div></td>	
+	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
+			 <td><div><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br><span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}"> ${expApproverHierarchy.clientName}</a></span></div></td>	
+	</sec:authorize>
 </c:if>
 <c:if test="${empty expApproverHierarchy.clientName}">
 	 	<td><div><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span></div></td>	

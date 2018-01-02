@@ -283,16 +283,12 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		expensesApproverHierarchyDto.setNoOfExpenses(expensesApproverHierarchy.getExpenseId().getNoOfExpenses());
 		expensesApproverHierarchyDto.setExpId(expensesApproverHierarchy.getExpenseId().getId());
 		expensesApproverHierarchyDto.setProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
+		
+		if(expensesApproverHierarchy.getExpenseId() != null && expensesApproverHierarchy.getExpenseId().getProjectMembers() != null && expensesApproverHierarchy.getExpenseId().getProjectMembers().getOrgRelationUUID() != null) {
+			expensesApproverHierarchyDto.setOrgRelationUUID(expensesApproverHierarchy.getExpenseId().getProjectMembers().getOrgRelationUUID());
+		}
 		return expensesApproverHierarchyDto;
 	}
-
-
-
-
-
-
-
-
 
 	@Override
 	public ExpensesApproverHierarchy updateSubmissionApproverHierarchy(

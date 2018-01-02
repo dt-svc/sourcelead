@@ -15,6 +15,7 @@ private String actionPerformedBy;
 private String noOfExpenses;
 private Long expId;
 private Long projectMemberId;
+private String orgRelationUUID;
 
 public String getExpenseId() {
 	return expenseId;
@@ -153,6 +154,12 @@ public Long getProjectMemberId() {
 }
 public void setProjectMemberId(Long projectMemberId) {
 	this.projectMemberId = projectMemberId;
+}
+public String getOrgRelationUUID() {
+	return orgRelationUUID;
+}
+public void setOrgRelationUUID(String orgRelationUUID) {
+	this.orgRelationUUID = orgRelationUUID;
 }
 
 }
