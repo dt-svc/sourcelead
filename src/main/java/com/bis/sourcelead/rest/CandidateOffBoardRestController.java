@@ -226,14 +226,14 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 	 if(StringUtils.isNotBlank(offBoardingTemplateDTO.getTemplateId())){
 	 		offBoardingTemplate = offBoardingTemplateService.getOffBoardingTemplateById(Long.valueOf(offBoardingTemplateDTO.getTemplateId()));
 	 		offBoardingTemplate.setTemplateName(offBoardingTemplateDTO.getTemplateName());
-	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription());
+	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription().trim());
 	 		offBoardingTemplate.setUpdatedBy(user.getUserCode());
 	 		offBoardingTemplate.setUpdatedDate(new Date());
 	 	 
 	 	 }else{
 	 		offBoardingTemplate = new OffBoardingTemplate();
 	 		offBoardingTemplate.setTemplateName(offBoardingTemplateDTO.getTemplateName());
-	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription());
+	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription().trim());
 	 		offBoardingTemplate.setOrgLocationId(orgLocations);
 		 	
 		 	 StringBuilder userName = new StringBuilder();

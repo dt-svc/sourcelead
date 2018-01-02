@@ -1445,8 +1445,8 @@ $("#editRoleDetailsList").empty();
 
 						
 					   result = result + '<div class="user_summary_edit_cta">';
- 					   result = result + ' <label>Employment type</label>';
-						result = result + '<select class="form-control" id="designationType" name="designationType"  onchange="getEmployeementType();updateUserDesignationOtherType();" field-name="Employment type">';
+ 					   result = result + ' <label>Employment type <span class="text-danger">*</span></label>';
+						result = result + '<select class="form-control" id="designationType" name="designationType"  onchange="getEmployeementType();updateUserDesignationOtherType();" field-name="Employment type" data-validation="required">';
 						result = result + '<option value="">--Select Employment Type--</option>';
 						result = result + ' <option '+(json.userEmploymentType == "C2C" ? "selected" : '') +'>C2C</option>';
 						result = result + ' <option '+(json.userEmploymentType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
@@ -2935,11 +2935,11 @@ function profileDetails(candidateId){
 			             result = result+'                       </ul>';
 
 			             result = result+' <ul class="list-unstyled mrng0">';
-						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
+						 result = result+'<li title="'+designation+'" class="tbldata-dotdot"><i class="fa fa-magnet" title="Designation"></i>'+designation+'</li>';
 						 result = result+'</ul>';
 						 
 			             result = result+' <ul class="list-unstyled">';
-						 result = result+'<li>'+designationType+'</li>';
+						 result = result+'<li><i class="fa fa-clock-o" title="Employment Type"></i>'+designationType+'</li>';
 						 result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
@@ -2949,7 +2949,7 @@ function profileDetails(candidateId){
 			             
               		       }else{
               		                                                	  
-              		     result = result+'<li>Experience ----</li>';  
+              		     result = result+'<li><i class="fa fa-briefcase" title="Experience"></i> Experience ----</li>';  
               		     
               		       }
 			             result = result+'</ul>';
@@ -2961,8 +2961,8 @@ function profileDetails(candidateId){
 			             
              		       }else{
              		                                                	  
-             		     result = result+'<li>Notice Period ----</li>';  
-             		     
+             		     result = result+'<li><i class="fa fa-calendar" title="Notice Period"></i> Notice Period ----';
+             		     result = result+'</li>';
              		       }
 			             result = result+'</ul>';
 			             
@@ -2981,7 +2981,7 @@ function profileDetails(candidateId){
 			             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
 			            	 result = result+'<li>Primary Skill -'+json.primarySkill+' </li>';
 			             }else{
-			            	 result = result+'<li>Primary Skill ----</li>';  
+			            	 result = result+'<li><i class="fa fa-briefcase" title="Primary Skill"></i> Primary Skill ----</li>';  
 			             }
 			             
 			             result = result+'</ul>';
@@ -3020,7 +3020,7 @@ function profileDetails(candidateId){
 			             
 			             result = result+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money" title= "Expected Rate"></i><b>Expected Rate:</b>';
+			             result = result+'<li><i class="fa fa-money" title= "Expected Rate"></i><b> Expected Rate:</b>';
 			             
 			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
 			             

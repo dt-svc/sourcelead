@@ -783,7 +783,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3" >Start date<span <span class="text-danger">*</span></label>';
    result = result +'<div class="col-lg-9 positionRelative" id="empDatePicker">';
    
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="reStartDate" name="reStartDate" field-name="Start Date" data-validation="required">';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="Enter StartDate" id="reStartDate" name="reStartDate" field-name="Start Date" data-validation="required">';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -792,7 +792,7 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
    result = result +'<label class="col-lg-3">End date</label>';
    result = result +'<div class="col-lg-9 positionRelative">';
 
-   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="DD-MM-YYYY" id="reEndDate" name="reEndDate"  field-name="End Date" />';
+   result = result +'<input type="text" class="form-control calendar" readonly="readonly" placeholder="Enter EndDate" id="reEndDate" name="reEndDate"  field-name="End Date" />';
 
    result = result +'</div>';
    result = result +'</div>';
@@ -819,8 +819,8 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 		  finalDateFormatRecomondedCandCertSave = 'yy-dd-mm'; 
 	  }
 
- var reStatertDate = $('#reStartDate').val()
-  if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
+ var reStatertDate = $('#reStartDate').val();
+  if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined' && projectEndDateStr !="null"){
 	  $('#reStartDate').datepicker({
 	      dateFormat: finalDateFormatRecomondedCandCertSave,
 	      changeMonth: true,
@@ -833,9 +833,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           onClose: function (selected) {
         	   if(selected != null && selected != '' && selected != 'undefined'){
         		    removevalidation();
-	   	            var dt = toDate('#reStartDate');
-	   	            dt.setDate(dt.getDate() + 1);
-	   	            $("#reEndDate").datepicker("option", "minDate", dt);
+        		    var dt = $(this).datepicker('getDate', '+1d');
+    				dt.setDate(dt.getDate() + 1);
+    				$("#reEndDate").datepicker("option", "minDate", dt);
 	   	            var event = arguments.callee.caller.caller.arguments[0];
                    // If "Clear" gets clicked, then really clear it
                    if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -858,9 +858,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           closeText: 'Clear',
           onClose: function (selected) {
         	  if(selected != null && selected != '' && selected != 'undefined'){
-	            var dt = toDate('#reEndDate');
-	            dt.setDate(dt.getDate() - 1);
-	            $("#reStartDate").datepicker("option", "maxDate", dt);
+        	    var dt = $(this).datepicker('getDate', '-1d');
+  				dt.setDate(dt.getDate() - 1);
+  				$("#reStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -879,9 +879,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#reStartDate');
-	            dt.setDate(dt.getDate() + 1);
-	            $("#reEndDate").datepicker("option", "minDate", dt);
+        	    var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate() + 1);
+				$("#reEndDate").datepicker("option", "minDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -903,9 +903,9 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
           showButtonPanel: true,
           closeText: 'Clear',
           onClose: function (selected) {
-	            var dt = toDate('#reEndDate');
-	            dt.setDate(dt.getDate() - 1);
-	            $("#reStartDate").datepicker("option", "maxDate", dt);
+	            var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate() - 1);
+				$("#reStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
