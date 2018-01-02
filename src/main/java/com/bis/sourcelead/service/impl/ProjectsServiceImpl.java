@@ -392,14 +392,16 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
 		if(!isNullOrEmpty(projectsDTO.getInvoiceFrequency())){
 			projects.setInvoiceFrequency(projectsDTO.getInvoiceFrequency());
+			projects.setTimesheetFrequency(projectsDTO.getInvoiceFrequency());
 	    }else{
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.WEEKLY);
 	    }
 		
-		if(!isNullOrEmpty(projectsDTO.getTimeSheetFrequency())){
+		/*if(!isNullOrEmpty(projectsDTO.getTimeSheetFrequency())){
 			projects.setTimesheetFrequency(projectsDTO.getTimeSheetFrequency());
 		}
-		
+		*/
 		
 		if(!isNullOrEmpty(projectsDTO.getIsAllowFreelanceDevelopers())){
 			projects.setAllowFreeLance(BooleanUtils.toBoolean(projectsDTO.getIsAllowFreelanceDevelopers(),"Y",""));
@@ -1372,8 +1374,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}else{
 					projects.setOvertimeRateType(null);
 				}
-		    	
-		    	
+				
+					    	
 		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getProjectStatusId()));
 		    	
 		    			 //SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
@@ -2039,14 +2041,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pm.getProjects().getEndDate()));
+	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getConsultantUser() != null && pm.getProjectMemberCandidteId().getConsultantUser().getId() != null){
 	          		pm.setUserId(pm.getProjectMemberCandidteId().getConsultantUser().getId().toString());

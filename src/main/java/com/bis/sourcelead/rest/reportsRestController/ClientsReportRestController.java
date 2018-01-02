@@ -67,7 +67,7 @@ public class ClientsReportRestController {
 	OrgSpocService orgSpocService;
 	
 	
-	@RequestMapping(value = "/clientReports")
+	@RequestMapping(value = "/perfomanceClientReports")
 	public ModelAndView clientReports(HttpServletRequest request) throws Exception
 	{
 		OrgLocations location = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -84,7 +84,7 @@ public class ClientsReportRestController {
 		model.addObject("activeSpocCount", totalSpocCount.get("totalactiveCount"));
 		model.addObject("inActiveSpocCount", totalSpocCount.get("totalInactiveCount"));
 		model.addObject("totalSpocCount", totalSpocCount.get("totalSpocCount"));
-		model.setViewName("reports/clientReports");
+		model.setViewName("reports/perfomanceClientReports");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

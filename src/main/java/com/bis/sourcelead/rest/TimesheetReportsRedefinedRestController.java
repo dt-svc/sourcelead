@@ -227,8 +227,9 @@ public class TimesheetReportsRedefinedRestController {
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		
-		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate, endDate, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),start,length);
+		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),start,length);
 		if(projRespList.getData() != null){
+			
 		List<ProjectMembers> projectMembers = projRespList.getData();
 		
 		
