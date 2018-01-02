@@ -253,13 +253,16 @@ public class TimesheetReportsRedefinedRestController {
         TimeReportsSubmissionDetailsDTO details = new TimeReportsSubmissionDetailsDTO();
 		/* ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());*/
 		  User consultantUser = null;
-			 if(projectMember != null && projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
-				consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser(); 
-				details.setFileUrl(consultantUser.getFileUrl());
+			 if(projectMember != null && projectMember.getProjectMemberCandidteId() != null) {
+				 if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+					 consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser();
+					 details.setFileUrl(consultantUser.getFileUrl());
+				 }
+				details.setFullName(projectMember.getProjectMemberCandidteId().getFullName());
+			 	details.setEmail(projectMember.getProjectMemberCandidteId().getEmail());
 			 }
 			 	details.setProjectMemberId(projectMember.getId());
-			 	details.setFullName(projectMember.getProjectMemberCandidteId().getFullName());
-			 	details.setEmail(projectMember.getProjectMemberCandidteId().getEmail());
+			 
              if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
             	 details.setDesignationType(projectMember.getProjectMemberCandidteId().getDesignationType());
              }
