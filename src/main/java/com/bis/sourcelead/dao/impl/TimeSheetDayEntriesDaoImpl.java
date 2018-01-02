@@ -155,6 +155,24 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		return flag;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public TimeSheetDayEntries getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(Long submissionId,
+			Long taskId, Date timesheetDate) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlDate = null;
+		if(timesheetDate != null){
+			sqlDate = new java.sql.Date(timesheetDate.getTime());
+		}
+		String query = "from TimeSheetDayEntries tde left join fetch tde.timesheetSubmissions left join fetch tde.projectTask  where tde.timesheetDate =:timesheetDate and tde.timesheetSubmissions.Id =:submissionId and tde.projectTask.Id =:taskId ";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setParameter("timesheetDate", sqlDate).setLong("submissionId", submissionId).setLong("taskId", taskId).list();
+		TimeSheetDayEntries tde = null;
+		if(timesheetEntriesList !=null && !timesheetEntriesList.isEmpty()){
+             tde = timesheetEntriesList.iterator().next();
+		}
+		return tde;
+	}
+
 	
 
 	

@@ -8,7 +8,7 @@ public class TimesheetProjectTaskDTO {
 	
 	private String locationCode;
 	
-	private Long projectTaskId;
+	private String taskUUID;
 	
 	private Long projectId;
 	
@@ -30,13 +30,12 @@ public class TimesheetProjectTaskDTO {
 	public void setLocationCode(String locationCode) {
 		this.locationCode = locationCode;
 	}
-
-	public Long getProjectTaskId() {
-		return projectTaskId;
+	public String getTaskUUID() {
+		return taskUUID;
 	}
 
-	public void setProjectTaskId(Long projectTaskId) {
-		this.projectTaskId = projectTaskId;
+	public void setTaskUUID(String taskUUID) {
+		this.taskUUID = taskUUID;
 	}
 
 	public Long getProjectId() {

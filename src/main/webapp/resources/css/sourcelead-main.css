@@ -7745,6 +7745,9 @@ top:0 !important;
 	font-size: 18px; position: absolute; right: 0px; top: 0px; color:#9E9E9E !important;
 }
     /* Dynamic Search */
+.minHeight75 textarea {
+   	border:0; background: transparent !important; width: 100%; position: relative; top:10px;
+   }
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

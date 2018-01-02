@@ -337,7 +337,7 @@ function customSearch(){
 	    var toDate = $("#toDate").val();
 	    var apagingType = 'Receivable';
 		var sourceleadUrl ='${sourceleadUrl}';
-		var searchValue = $("#dataTableBillSearch").val();
+		var searchValue = $("#dataTableInvoiceSearch").val();
 		var filterType = $("#custom-dates").val(); 
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&fromDate="+fromDate+"&toDate="+toDate;
@@ -350,10 +350,10 @@ function customSearch(){
 function aragingInvoice(){
 	   var apagingType = 'Receivable';
 		var sourceleadUrl ='${sourceleadUrl}';
-		var searchValue = $("#dataTableBillSearch").val();
+		var searchValue = $("#dataTableInvoiceSearch").val();
 		var filterType = $("#custom-dates").val(); 
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType;
+		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterType="+filterType;
 		if(filterType != 'custom'){
 			prepareAragingInvoiceList(url);
 		}
