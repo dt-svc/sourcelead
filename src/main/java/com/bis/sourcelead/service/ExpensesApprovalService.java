@@ -2,8 +2,11 @@ package com.bis.sourcelead.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ExpensesApproverDTO;
+import com.bis.sourcelead.dto.ExpensesApproverHierarchyDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -12,7 +15,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalService {
 
-	ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc, String expenseStatus, String startDate, String endDate, String searchValue,int start,int length) throws Exception;
+	ExpensesApproverDTO getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc,ExpensesApproverDTO expensesApproverDTO) throws Exception;
 	
 	ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId,Long locationsId) throws Exception;
 	
@@ -36,9 +39,9 @@ public interface ExpensesApprovalService {
 	
 	void updateExpenseStatusByExpenseId(Long expenseId,String status);
 
-	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc, User loginUser) throws IOException, Exception;
+	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, OrgLocations orgLoc, User loginUser) throws IOException, Exception;
 
-	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchy> expApperoverHierarchy,OrgLocations orgLoc, User loginUser)throws IOException, Exception;
+	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy,OrgLocations orgLoc, User loginUser)throws IOException, Exception;
 	
 	public void sendReopenExpenseAcceptOrRejectMail(Expenses expense,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser, String projectName) throws Exception;
 

@@ -490,10 +490,8 @@ function removeWhiteSpacesAdd(rowCount){
 <script>
 function addExpenseRow(from){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){
-		
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateExpenseEntrie= getJSDateFormat(locationDate);
-		
+		   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		   var finalDateExpenseEntrie= getJSDateFormat(locationDate);
 		   var maxRecCount = $("#maxRecCount").val();
 		   for(var i = 2; i < maxRecCount; i=i+2){
 			   if($("#divEntityTsRow"+i).is(':visible'))
@@ -766,10 +764,12 @@ if('${type}' !='view'){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
 	var projectEndDate =   $('#projectEndDateExpensesId').val();
+	 var locationDateFormat ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 var jsDateFormat= getJSDateFormat(locationDateFormat);
 	if((projectStartDate != null && projectStartDate != '' && projectStartDate != 'undefined') || 
 		(projectEndDate != null && projectEndDate != '' && projectEndDate != 'undefined')){
 			$('#categoryDate'+entityId).datepicker({
-				dateFormat : 'dd-mm-yy',
+				dateFormat : jsDateFormat,
 				changeMonth : true,
 				changeYear : true,
 				minDate : projectStartDate,
