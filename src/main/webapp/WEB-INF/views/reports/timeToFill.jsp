@@ -123,7 +123,6 @@ function reload(){
 
 <script>
 function getTimeToFillChart(){
-	
 	 var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
@@ -132,31 +131,7 @@ function getTimeToFillChart(){
 	  
 	  var year = $("#year").val(); 
 
-	  /*var dateSelection = $("#dateSelection").val(); 
-	  var fromDate = '';
-	  var toDate = '';
-	  if(dateSelection == 'custom'){
-		   fromDate = $("#fromDate").val();
-		   toDate = $("#toDate").val();
-		  
-		  if(fromDate == '' || toDate == ''){
-			  flag = false;
-			  if(fromDate == ''){
-				  document.getElementById("fromDateDiv").style.display="block";
-			  }else{
-				  document.getElementById("fromDateDiv").style.display="none";
-			  }
-			  if(toDate == ''){
-				  document.getElementById("toDateDiv").style.display="block";
-			  }else{
-				  document.getElementById("toDateDiv").style.display="none";
-			  }
-		  }else{
-			  document.getElementById("fromDateDiv").style.display="none";
-			  document.getElementById("toDateDiv").style.display="none";
-		  }
-		  
-	  } */
+	
 	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({ 
 			  type: "GET",
