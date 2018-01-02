@@ -451,8 +451,8 @@ function preventTabkey(e){
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		       <c:if test="${userTabs.tabName == 'Users'}">
-	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
+		       <c:if test="${userTabs.tabName == 'Associates'}">
+	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
