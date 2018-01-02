@@ -6087,11 +6087,11 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	background-color: #fff;
 }
 .comLogHead ul {
-    margin: 0px; padding: 0px;
+    margin: 0px; padding: 0px; border-top: 1px solid #dedede;
 }
 .comLogHead ul li {
 	float:left; list-style-type: none; text-align: center; width: 16.5%; z-index: 100; cursor: default;
-	display:block; background-color: #fff; margin: 0px auto; position: relative; border-top: 1px solid #dedede;
+	display:block; background-color: #fff; margin: 0px auto; position: relative;
 	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
 	border-right: 1px solid #fff;	
 }

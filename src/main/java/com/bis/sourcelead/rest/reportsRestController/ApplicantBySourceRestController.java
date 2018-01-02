@@ -104,6 +104,9 @@ public class ApplicantBySourceRestController {
 		crowdsourcingOfferedCount = crowdsourcingOfferedCount+crowdsourcingClientOfferedCount;
 		
 		Integer crowdsourcingOfferAcceptedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED");
+		Integer crowdsourcingClientOfferAcceptedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED");
+		crowdsourcingOfferAcceptedCount = crowdsourcingOfferAcceptedCount+crowdsourcingClientOfferAcceptedCount;
+		
 		Integer crowdsourcingOfferRejectedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED");
 		Integer crowdsourcingOfferBackoutCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
 		crowdSourcingApplicantsDTO.setCategory("Crowd Sourcing");
@@ -136,6 +139,9 @@ public class ApplicantBySourceRestController {
 		vendorSourcingOfferedCount = vendorSourcingOfferedCount+vendorSourcingClientOfferedCount;
 		
 		Integer vendorSourcingOfferAcceptedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED");
+		Integer vendorSourcingClientOfferAcceptedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED");
+		vendorSourcingOfferAcceptedCount = vendorSourcingOfferAcceptedCount+vendorSourcingClientOfferAcceptedCount;
+		
 		Integer vendorSourcingOfferRejectedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERREJECTED");
 		Integer vendorSourcingOfferBackoutCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
 		
@@ -168,6 +174,9 @@ public class ApplicantBySourceRestController {
 		recruiterrSourcingOfferedCount = recruiterrSourcingOfferedCount+recruiterrSourcingClientOfferedCount;
 		
 		Integer recruiterSourcingOfferAcceptedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED");
+		Integer recruiterSourcingClientOfferAcceptedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED");
+		recruiterSourcingOfferAcceptedCount = recruiterSourcingOfferAcceptedCount+recruiterSourcingClientOfferAcceptedCount;
+		
 		Integer recruiterSourcingOfferRejectedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED");
 		Integer recruiterSourcingOfferBackoutCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
 		
@@ -199,6 +208,9 @@ public class ApplicantBySourceRestController {
 		internalSourcingOfferedCount = internalSourcingOfferedCount+internalSourcingClientOfferedCount;
 		
 		Integer internalSourcingOfferAcceptedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED",orgLocation.getId());
+		Integer internalSourcingClientOfferAcceptedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED",orgLocation.getId());
+		internalSourcingOfferAcceptedCount = internalSourcingOfferAcceptedCount+internalSourcingClientOfferAcceptedCount;
+		
 		Integer internalSourcingOfferRejectedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED",orgLocation.getId());
 		Integer internalSourcingBackoutCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT",orgLocation.getId());
 		
