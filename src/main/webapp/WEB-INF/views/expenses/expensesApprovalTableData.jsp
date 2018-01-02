@@ -19,7 +19,7 @@
  	
 <c:if test="${not empty expApproverHierarchy.clientName}">
 	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
-			 <td><div><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br><span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}"> ${expApproverHierarchy.clientName}</a></span></div></td>	
+			 <td><div><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br><span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span></div></td>	
 	</sec:authorize>
 </c:if>
 <c:if test="${empty expApproverHierarchy.clientName}">
