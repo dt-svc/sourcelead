@@ -1,6 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -55,8 +55,14 @@
 				<li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li>
 				<li><a href="${appPath}/expensesReportsList">Expenses Report</a></li>
+				<c:if test="${SourceLeadWeb_ats == 'Y'}">
 				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
+				</c:if>
+				
+				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
+				</c:if>
+				
 				<li><a href="#">Profit &amp; Loss</a></li>
 				<li><a href="#">Balance Sheet</a></li>
 				<li><a href="#">Client Balance</a></li>
