@@ -63,6 +63,8 @@ public class CandidateOffBoardingDTO implements Serializable {
 	
 	private String offboardSubmitted;
 	
+	private Integer rating;
+	
 	public String getOffboardSubmitted() {
 		return offboardSubmitted;
 	}
@@ -277,6 +279,14 @@ public class CandidateOffBoardingDTO implements Serializable {
 
 	public void setOffboardingTemplate(String offboardingTemplate) {
 		this.offboardingTemplate = offboardingTemplate;
+	}
+
+	public Integer getRating() {
+		return rating;
+	}
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
 	}
 	
 	
