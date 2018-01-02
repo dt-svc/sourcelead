@@ -974,8 +974,9 @@ $(document).ready(function () {
               <div class="form-group ">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9 chooRadius">
-                  <div class="input-group col-md-10 pull-left seleOverFlow">
+                  <div class="input-group col-md-10 pull-left seleOverFlow clearfix">
                   <c:set var="val" value="${requirement.isClientJob}"/>
+                  <div class="col-md-10 noPad">
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" disabled="disabled" data-validation-optional="true" field-name = "Client Contact" >
@@ -1000,7 +1001,10 @@ $(document).ready(function () {
                     	</select>
 				    </c:otherwise>
 				</c:choose>
+				</div>
+				<div class="col-md-2 noPad">
                     <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
+                 </div>
                  </div>
                   <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
 			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
@@ -1608,7 +1612,7 @@ function validate_fileupload(fileName)
 		 }
 		 var existingValue = document.getElementById('isClientJob').value;
 		 if(existingValue == 'Y'){
- 		 var clientRateType = document.getElementById("clientRateType").value; 
+ 		/*  var clientRateType = document.getElementById("clientRateType").value; 
  		 if(clientRateType != null && clientRateType != ""){
  			 $('#clientRate').removeAttr('data-validation-optional');
  			 $('#clientRate').attr("data-validation","required"); 
@@ -1626,7 +1630,7 @@ function validate_fileupload(fileName)
  		 }else{
  			 $('#clientRateType').removeAttr('data-validation');
  			 $('#clientRateType').attr("data-validation-optional","true"); 
- 		 }
+ 		 } */
 		 }
 		   if ($('#requirement_form').validate(false, validationSettings)){   
       		var formData = getFormData1("requirement_form");
