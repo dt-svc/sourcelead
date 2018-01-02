@@ -1707,12 +1707,6 @@ public class ClientRestController {
 				 
 				int pointOfCount = orgSpocService.getNumberOfContactCount(clientVendor.getOrgRelationId(), loginUser.getId(), loginOrgLocation.getId(),clientVendorDTO.getResponderType());
 				clientVendor.setNoContacts(Long.valueOf(pointOfCount));
-				 
-				 /*if(clientVendor.getNoContacts() !=null) {
-					 clientVendor.setNoContacts(clientVendor.getNoContacts());
-				 }else {
-					 clientVendor.setNoContacts(0L);
-				 }*/
 				
 				if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 					
