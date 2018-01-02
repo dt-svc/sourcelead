@@ -138,7 +138,9 @@ margin-top: 3px;
 				</div>
 				
 				 <div class='remove_search'>
-		        		<input type='text' placeholder='search' value="" id='SearchExpensesData'/>
+
+		        		<input type='text' placeholder="Search" value="" id='dataTableSearchExpenses'/>
+
 		         </div>
 				
 				<div class="overflow_inherint">
