@@ -185,12 +185,14 @@ if(searchData != null && searchData !='' && searchData!='undefined'){
 }else{
 	searchValue = '';
  }
+$("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
      success :function(data) {
     	$("#approverDataExpensesDiv").empty();
 		$("#approverDataExpensesDiv").append(data);
+		$("#loadingId").removeAttr('style');
 		preparePagination(1);
   }
 });
