@@ -789,7 +789,7 @@ function preventTabkey(e){
   </div>
   
   <!--  Alert message for Switching Locaction -->
-  <div class="location-alert alert alert-danger alert-dismissable">
+  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
     <strong>Alert !</strong> Your are not allowded to access this Location.
   </div>
