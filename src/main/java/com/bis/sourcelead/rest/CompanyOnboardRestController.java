@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -21,11 +22,13 @@ import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrglocationOnboardDocumentsDTO;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
@@ -60,6 +63,9 @@ public class CompanyOnboardRestController {
 	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	private CandidateService candidateService;
 	
 	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
@@ -192,9 +198,24 @@ public class CompanyOnboardRestController {
 	public @ResponseBody String skipAndSaveOrglocationSignatory(HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
 		orgLocationService.updateOrgLocations(loginOrgLocation);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
+		Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), loginOrgLocation.getId());
+		if(candidate!= null){
+			String generatedid = candidate.getGeneratedId().trim();
+			if(generatedid != null && StringUtils.isNotBlank(generatedid)){
+				if(generatedid.substring(0,4).equalsIgnoreCase("null")){
+					StringBuilder generatedIDBuild = new StringBuilder();
+					candidate.setGeneratedId(generatedIDBuild.append(loginOrgLocation.getGeneratedUserId()).append(generatedid.substring(4,generatedid.length())).toString());
+					candidateService.saveOrUpdateCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					
+				}
+			}
+		}
+		
 		return "success";
 	}
 	
