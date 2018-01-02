@@ -255,27 +255,27 @@ public class ReportsUtil {
 		return dates;
 	}
 
-	public   Date[] tenDays(int days) throws ParseException {
+	public    Date[] tenDays(int days) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date[] dates = new Date[2];
 		Calendar cal = Calendar.getInstance();
-		dates[1] = sdf.parse(sdf.format(cal.getTime()));
-		cal.add(Calendar.DATE, -days);
 		dates[0] = sdf.parse(sdf.format(cal.getTime()));
+		cal.add(Calendar.DATE, +days);
+		dates[1] = sdf.parse(sdf.format(cal.getTime()));
 		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
 		return dates;
 	}
 
-	public  Date[] apAgingPeriodDays(int sDays, int days) throws ParseException {
+	public   Date[] apAgingPeriodDays(int sDays, int days) throws ParseException {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date[] dates = new Date[2];
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -sDays);
-		dates[1] = sdf.parse(sdf.format(cal.getTime()));
+		cal.add(Calendar.DATE, +sDays);
+		dates[0] = sdf.parse(sdf.format(cal.getTime()));
 		Calendar currentCal = Calendar.getInstance();
-		currentCal.add(Calendar.DATE, -days);
-		dates[0] = sdf.parse(sdf.format(currentCal.getTime()));
+		currentCal.add(Calendar.DATE, +days);
+		dates[1] = sdf.parse(sdf.format(currentCal.getTime()));
 		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
 		return dates;
 	}
@@ -298,5 +298,6 @@ public class ReportsUtil {
 		return dates;
 	}
 
+	
 	
 }

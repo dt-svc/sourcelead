@@ -18,10 +18,10 @@ function campaignSender(ele,senderId) {
 								location.replace(sourceleadUrl+ "/campaignSendersList");
 								 $("#selector1").removeAttr("style");
 					  			 $("#selector1").css({ display: "block" });
-					  			 $("#msgDiv").html("Successfullyy Created sender identity");
+					  			 $("#msgDiv").html("Successfully Created sender identity");
 					  			 $("#popUp").empty();
 					 			 $(".project_inn_mask").fadeOut(200);
-					             msgFadein();	
+					             msgFadein(500);	
 							}
 						});
 						return true;
