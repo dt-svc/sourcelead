@@ -326,12 +326,12 @@ public class TimeApprovalRedefinedRestController {
 	 		 clientMap.put(null, "All");
 	                if(projectClientList != null && !projectClientList.isEmpty()){
 	                	    projectClientList.forEach(projectClient ->{
-	               	        	if( null != projectClient.getOrgRelationId().getLocationId() && projectClient.getOrgRelationId().getLocationId().getId() != null && projectClient.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+	               	        	if(projectClient.getOrgRelationId() != null && projectClient.getOrgRelationId().getLocationId() != null && projectClient.getOrgRelationId().getLocationId().getId() != null && projectClient.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 	        						if(projectClient.getOrgRelationId().getResponderLocationId() != null){
 	        							clientMap.put(projectClient.getOrgRelationId().getId(),projectClient.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 	        						}
 	        					}
-	        					if( null != projectClient.getOrgRelationId().getResponderLocationId() && null != projectClient.getOrgRelationId().getResponderLocationId().getId() && projectClient.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+	        					if( projectClient.getOrgRelationId() != null && null != projectClient.getOrgRelationId().getResponderLocationId() && null != projectClient.getOrgRelationId().getResponderLocationId().getId() && projectClient.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 	        						if(projectClient.getOrgRelationId().getLocationId() != null){
 	        							clientMap.put(projectClient.getOrgRelationId().getId(),projectClient.getOrgRelationId().getLocationId().getOrgLocationName());
 	        						}
