@@ -22,8 +22,14 @@
 
 <script>
 	$(document).ready(function() {
-		var publicUrl = 'public';
-		Signer.uploadDoc(publicUrl);
+		var url = '${SourceLeadWeb_sourceleadUrl}';
+		if(url != null && url != '' && url != 'undefined'){
+			Signer.uploadDoc();
+		}else{
+			var publicUrl = 'public';
+			Signer.uploadDoc(publicUrl);
+		}
+		
 		var firstName = '${SourceLeadWeb_user.firstName}';
 		var lastName = '${SourceLeadWeb_user.lastName}';
 		$("#txtsignname").val(firstName);
@@ -85,8 +91,8 @@ background-color: #fff; height: 50px; padding: 5px 0; text-align: center;
 .publicpageHeader .publicpage-logo img {
 max-height: 100%;
 }
-.content-wraper {
-padding: 0;
+.side-bar .side-nav ul li span  {
+position: relative;top:8px;
 }
 </style>
 
@@ -193,7 +199,6 @@ padding: 0;
                             </div>
                         </div>
                         <input type="hidden" id="sourceUrl" value="${sourceleadUrl}">
-                        <input type="hidden" id="publicSourceUrl" value="${sourceleadLoginUrl}">
                         <input id="contractOrgLocationId" value="${contract.contractOrgLocationId.id}" type="hidden">
                         <input type="hidden" id="contractId" value="${contract.id}">
                     </div>

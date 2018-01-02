@@ -1687,7 +1687,8 @@ function storeTeam(){
 				url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
 				success : function(result) {
 					$('#addTeam').hide();
-					$('.modal-backdrop').hide();
+					//$('.modal-backdrop').hide();
+					$("#addTeam").modal('hide');
 
 				},
 			});

@@ -21,7 +21,8 @@ $(document).ready(function(){
     </section>
     <div class="clearfix"></div>
     <div class="ReqRepHead clearfix">
-      <div class="col-md-3 pull-left reqListBtn"> <a href='${appPath}/arAgingGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> <a href="araging-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
+      <div class="col-md-3 pull-left reqListBtn"> <a href='${appPath}/arAgingGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+       <a href='${appPath}/arAgingReport' title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
         <div class="hidden"> <span class="rAct" title='${appPath}/arAgingReport' id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
       </div>
    
@@ -52,7 +53,7 @@ $(document).ready(function(){
                     </select>
                 </div>
         	 <div class="col-md-2 dropdown-select positionRelatives mt5" id="customDatesDropdown" style="display: none">
-        <select class="form-control" id="custom-dates"  name="filterDateType" onchange="aragingInvoice();">
+        <select class="form-control" id="custom-dates"  name="filterType" onchange="aragingInvoice();">
           <option value="">Select Date</option>
           <option value="last_7days">Last 7 days</option> 
           <option value="last_15days">Last 15 days</option>
@@ -228,7 +229,7 @@ function araging(url){
             method: 'POST',
             pages: 10
         }),
-        "columns": [
+        /* "columns": [
         	{ "data": "orgName" },
             { "data": "tenDays" },
             { "data": "fifteenDays"},
@@ -239,18 +240,16 @@ function araging(url){
             { "data": "threeSixtyFiveDays" },
             { "data": "above365Days"},
             { "data": "total"}
-        ],
+        ], */
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"data": "orgName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+	    	  		result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "tenDays",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 						result = result + ' <td><div class="tblminwidth-75">'+opt.tenDays.toFixed(2)+'</div></td>';
@@ -259,19 +258,16 @@ function araging(url){
               }
 	          },{
             "targets": colIndex++,
-            "data": "fifteenDays",
             "render": function ( data, type, opt, meta ) {
             	return  '<td><div class="tblminwidth-75">'+opt.fifteenDays.toFixed(2)+'</div></td>';
             }
           }, {
               "targets": colIndex++,
-              "data": "thirtyDays",
               "render": function ( data, type, opt, meta ) {
             	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
               }
             }, {
                 "targets": colIndex++,
-                "data": "sixtyDays",
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
 							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.sixtyDays.toFixed(2)+'</div></td>';
@@ -279,7 +275,6 @@ function araging(url){
                 }
           },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "nintyDays",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 					result = result + '<td><div class="tblminwidth-50">'+opt.nintyDays.toFixed(2)+'</div></td>';
@@ -287,7 +282,6 @@ function araging(url){
 	    	  	}
 	    	  },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "oneeightyDays",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
@@ -295,19 +289,16 @@ function araging(url){
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
-                  "data": "threeSixtyFiveDays",
                   "render": function ( data, type, opt, meta ) {
                 	  return '<td><div class="tblminwidth-75">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
                   }
                 },{
                     "targets": colIndex++,
-                    "data": "above365Days",
                     "render": function ( data, type, opt, meta ) {
                     	return '<td><div class="tblminwidth-75">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
-                      "data": "total",
                       "render": function ( data, type, opt, meta ) {
                     	  apagingTotal = parseFloat(apagingTotal)+parseFloat(opt.total);
                     	  $("#apagingTotal").html(apagingTotal.toFixed(2));
@@ -346,7 +337,7 @@ function customSearch(){
 	    var toDate = $("#toDate").val();
 	    var apagingType = 'Receivable';
 		var sourceleadUrl ='${sourceleadUrl}';
-		var searchValue = $("#dataTableBillSearch").val();
+		var searchValue = $("#dataTableInvoiceSearch").val();
 		var filterType = $("#custom-dates").val(); 
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&fromDate="+fromDate+"&toDate="+toDate;
@@ -359,10 +350,10 @@ function customSearch(){
 function aragingInvoice(){
 	   var apagingType = 'Receivable';
 		var sourceleadUrl ='${sourceleadUrl}';
-		var searchValue = $("#dataTableBillSearch").val();
+		var searchValue = $("#dataTableInvoiceSearch").val();
 		var filterType = $("#custom-dates").val(); 
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType;
+		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterType="+filterType;
 		if(filterType != 'custom'){
 			prepareAragingInvoiceList(url);
 		}
