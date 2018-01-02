@@ -300,6 +300,7 @@ public class CandidateServiceImpl implements CandidateService {
 				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDto, user);
 			}
 			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
 		if(orgLocations != null){
@@ -542,7 +543,6 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * System Generated Id For Candidate
 		 */
-		candidate.setGeneratedId(getCandidateId(orgLocations));
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
