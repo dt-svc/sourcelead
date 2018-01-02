@@ -717,11 +717,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate,endDate,locationsId,approverUserId);
 	}
 	
-	@Override
-	public ResponseList<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(Date startDate, Date endDate,
-			Long locationsId, Long approverUserId, String searchValue,int start,int length) {
-		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate,endDate,locationsId,approverUserId,searchValue,start,length);
-	}
 	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId) {
