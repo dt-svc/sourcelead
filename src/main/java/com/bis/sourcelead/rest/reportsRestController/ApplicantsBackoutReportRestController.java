@@ -95,7 +95,7 @@ public class ApplicantsBackoutReportRestController {
 		if ( jobIdList != null && !jobIdList.isEmpty()) {
 			ApplicantsBackoutCount =  applicantsBackoutReportService.getApplicantBackoutReport(jobIdList, searchDates);
 			for (Entry<String, Integer> entry : ApplicantsBackoutCount.entrySet()){
-				if(entry.getKey().equalsIgnoreCase("betterOffer")) {
+				if(entry.getKey().equalsIgnoreCase("Better Offer")) {
 					applicantsBackoutDTO.setBetterOffer(entry.getValue());
 				}
 				if(entry.getKey().equalsIgnoreCase("Current Company")) {
