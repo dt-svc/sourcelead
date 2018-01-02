@@ -21,7 +21,8 @@ $(document).ready(function(){
     </section>
     <div class="clearfix"></div>
     <div class="ReqRepHead clearfix">
-      <div class="col-md-3 pull-left reqListBtn"> <a href='${appPath}/arAgingGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> <a href="araging-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
+      <div class="col-md-3 pull-left reqListBtn"> <a href='${appPath}/arAgingGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+       <a href='${appPath}/arAgingReport' title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
         <div class="hidden"> <span class="rAct" title='${appPath}/arAgingReport' id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
       </div>
    
@@ -52,7 +53,7 @@ $(document).ready(function(){
                     </select>
                 </div>
         	 <div class="col-md-2 dropdown-select positionRelatives mt5" id="customDatesDropdown" style="display: none">
-        <select class="form-control" id="custom-dates"  name="filterDateType" onchange="aragingInvoice();">
+        <select class="form-control" id="custom-dates"  name="filterType" onchange="aragingInvoice();">
           <option value="">Select Date</option>
           <option value="last_7days">Last 7 days</option> 
           <option value="last_15days">Last 15 days</option>
@@ -390,7 +391,6 @@ function prepareAragingInvoiceList(url){
 
 <script>
 function aragingInvoiceData(url){
-alert("Hi");
 	var colIndex = 0;
 	var apagingInvoiceTotal = 0;
    $('#aragingInvoicePagination').DataTable( { 
