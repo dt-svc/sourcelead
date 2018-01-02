@@ -101,7 +101,7 @@
 				<li><a href="${appPath}/timeSheetReports">Timesheet Report</a></li>
 				<li><a href="#">Associate Onboard</a></li>
 				<li><a href="#">Associate Offboard</a></li>
-				<li><a href="#">Expenses</a></li>
+				<li><a href="${appPath}/expensesReportsList">Expenses</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
