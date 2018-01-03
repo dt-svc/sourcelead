@@ -44,7 +44,6 @@ import com.bis.sourcelead.dto.TimeSheetSubmissionDTO;
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
-import com.bis.sourcelead.dto.TimesheetProjectMemberDTO;
 import com.bis.sourcelead.dto.TimesheetProjectTaskDTO;
 import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.dto.WeekDaysDTO;
@@ -1950,13 +1949,7 @@ public class TimesheetRestController {
     	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
-	 	 List<TimesheetProjectMemberDTO> assignedMember = timesheetProjectTaskDTO.getAssignedMember();
-	 	 if(assignedMember != null && !assignedMember.isEmpty()){
-	 		 for(TimesheetProjectMemberDTO memberDTO : assignedMember){
-	 			TimeSheetDayEntries tde = addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), memberDTO.getProjectMemberId(), timesheetProjectTaskDTO.getTaskUUID(), memberDTO.getTimesheetDate(), memberDTO.getHours(),memberDTO.getComments(),loginUser, loginOrgLocation);
-	 			timeSheetDayEntriesList.add(tde);
-	 		 }
-	 	 }
+		 TimeSheetDayEntries tde = addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation);
 	 	 return timeSheetDayEntriesList;
        }
        

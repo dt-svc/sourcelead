@@ -1527,5 +1527,6 @@ public class ProjectMembers implements Serializable {
 
 	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
 		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
-	} 
+	}
+
 }
