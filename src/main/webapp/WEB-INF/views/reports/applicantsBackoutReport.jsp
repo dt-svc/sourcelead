@@ -302,6 +302,7 @@ function getCustomDates(){
 				"title": ""
 			},
 			"export": {
+
             	"enabled": true
             	},
 			"trendLines": [],

@@ -115,8 +115,8 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType) {
-		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType);
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId) {
+		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType,contactUserId);
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		
 		if(clientsList != null && clientsList.size() > 0) {
 		for(OrgRelations orgRelation : clientsList) {
-			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type);
+			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type,null);
 			String clientName = null;
 			if(invoiceList != null && invoiceList.size() > 0) {
 				for (Invoice invoice : invoiceList) {

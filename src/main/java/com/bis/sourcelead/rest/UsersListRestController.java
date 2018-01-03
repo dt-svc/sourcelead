@@ -1571,7 +1571,7 @@ public class UsersListRestController {
 	
 	
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/editUserRole", method = RequestMethod.POST)
 	public @ResponseBody String editUserRole(AddUserDTO addUserDTO, @RequestParam(value = "userId", required = false) Long userId,
 			 HttpServletRequest request) throws Exception {
