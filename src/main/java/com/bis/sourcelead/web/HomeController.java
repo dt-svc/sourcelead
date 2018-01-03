@@ -139,7 +139,7 @@ public class HomeController {
 		return model;
 	}
 
-	@RequestMapping(value = "/resetPassword")
+	@RequestMapping(value = {"/resetPassword", "/app/resetPassword"})
 	public ModelAndView resetPassword(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("resetPassword");

@@ -84,7 +84,7 @@ $(document).ready(function(){
     	<div class="clearfix"></div>
    	 	<!-- Applicant source Graph 2017 -->
     	 	<div class="dashboard-widget clearfix mt">
-    	 	<div id="applicantSource" class="" style="height: 350px; width: 100%;"></div>
+    	 	<div id="applicantSource" class="" style="height: 425px; width: 100%;"></div>
     	 	</div>
     	<div class="clearfix"></div>
     </div>
@@ -163,10 +163,11 @@ function getCustomDates(){
 				        		    var chartData = [];
 									for(var i=0; i < json.length ; i++){
 				        			 var applicantSource = json[i];
+				        			 
 				        			    chartData.push( {
 				        			    	category: applicantSource.category,
 				        					column2: applicantSource.applicantsAvgCount,
-				        					column3: applicantSource.shortlisteAvgdCount,
+				        					column3: applicantSource.shortlistedAvgCount,
 				        					column4: applicantSource.submitToClientAvgCount,
 				        					column5: applicantSource.interviewsAvgCount,
 				        					column6: applicantSource.rejectedAvgCount,
@@ -177,7 +178,7 @@ function getCustomDates(){
 				        					
 				        					
 				        					applicantsCount: applicantSource.applicantsCount,
-				        					shortlistedCount: applicantSource.shortlisteCount,
+				        					shortlistedCount: applicantSource.shortlistedCount,
 				        					submitToClientCount: applicantSource.submitToClientCount,
 				        					interviewsCount: applicantSource.interviewsCount,
 				        					rejectedCount: applicantSource.rejectedCount,
@@ -422,6 +423,7 @@ function getCustomDates(){
          result = result +"    <th>Source</th>";
          result = result +"    <th>Applicants</th>"; 
          result = result +"    <th>Shortlisted</th>"; 
+         result = result +"    <th>Submit To Client</th>"; 
          result = result +"    <th>Rejected</th>"; 
          result = result +"    <th>Interviews</th>"; 
          result = result +"    <th>Offered</th>"; 
@@ -447,6 +449,10 @@ function getCustomDates(){
 				 
 				 result = result +"<td>"; 
 				 result = result +"<div class='tblminwidth-50'>"+applicantSource.shortlistedCount+"</div>"; 
+				 result = result +"</td>"; 
+				 
+				 result = result +"<td>"; 
+				 result = result +"<div class='tblminwidth-50'>"+applicantSource.submitToClientCount+"</div>"; 
 				 result = result +"</td>"; 
 				 
 				 result = result +"<td>"; 

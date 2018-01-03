@@ -777,7 +777,7 @@ public class ClientRestController {
 	
 	
 	@RequestMapping(value = "/isInvitedClientOrVendorOrgValid", method = RequestMethod.GET)
-	@ResponseBody String isInvitedClientOrVendorOrgValid(
+	public @ResponseBody String isInvitedClientOrVendorOrgValid(
 			@RequestParam(value = "orgName", required = false) String orgName,HttpServletRequest request) throws Exception {
 		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -1704,11 +1704,9 @@ public class ClientRestController {
 					 Integer releaseJobsCount = clientService.getReleasedJobsCountByOrgRelationId(clientVendor.getOrgRelationId(),loginOrgLocation,userRole,loginUser);
 					 clientVendor.setReleasedJobsCount(String.valueOf(releaseJobsCount));
 				 }
-				 if(clientVendor.getNoContacts() !=null) {
-					 clientVendor.setNoContacts(clientVendor.getNoContacts());
-				 }else {
-					 clientVendor.setNoContacts(0L);
-				 }
+				 
+				int pointOfCount = orgSpocService.getNumberOfContactCount(clientVendor.getOrgRelationId(), loginUser.getId(), loginOrgLocation.getId(),clientVendorDTO.getResponderType());
+				clientVendor.setNoContacts(Long.valueOf(pointOfCount));
 				
 				if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 					

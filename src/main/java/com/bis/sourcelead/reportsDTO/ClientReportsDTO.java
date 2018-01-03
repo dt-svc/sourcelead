@@ -50,6 +50,7 @@ public class ClientReportsDTO {
 	private int totalPostedCount;
 	
 	private String orgRelationUUID;
+	private String orgSpocUUID;
 	
 	public String getClientName()
 	{
@@ -338,6 +339,12 @@ public class ClientReportsDTO {
 	}
 	public void setOrgRelationUUID(String orgRelationUUID) {
 		this.orgRelationUUID = orgRelationUUID;
+	}
+	public String getOrgSpocUUID() {
+		return orgSpocUUID;
+	}
+	public void setOrgSpocUUID(String orgSpocUUID) {
+		this.orgSpocUUID = orgSpocUUID;
 	}
 	
 }

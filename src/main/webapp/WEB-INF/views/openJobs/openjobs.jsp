@@ -239,7 +239,7 @@ a.alertBtn {
 
 
 <!-- Content Area -->
-<jsp:include page="../staticHeader.jsp" />
+<<jsp:include page="../staticHeader.jsp" />
 <div class="innerPageSearch"> 
 	<section class="searchWrap" id="orgProfile" style="display:block">
 		<span><i class="fa fa-search"></i><input type="text"
