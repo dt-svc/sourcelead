@@ -456,7 +456,7 @@
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Project name<span	class="text-danger">*</span></label>';
-						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-250" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
+						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" onblur="validateProjectName(\''+json.projectUUID+'\');" data-validation="required validate_Space validate_length length2-250" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
@@ -610,15 +610,15 @@
 						result = result  +'	</select>';
 						result = result + '</div>';
 						
-						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
+						/* result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Timesheet Frequency<span class="text-danger">*</span></label>';
-						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
+						result = result  +'	<select   name="timesheetFrequency" id="timesheetFrequency" class="input-sm form-control" disabled="disabled">';
 						result = result  +' <option '+(json.timeSheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
 						result = result  +'	 <option '+(json.timeSheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
 						result = result  +'	 <option '+(json.timeSheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 						result = result  +'	<option '+(json.timeSheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
 						result = result  +'	</select>';
-						result = result + '</div>';
+						result = result + '</div>'; */
 				 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
 						result = result + '<label>&nbsp;</label>';
@@ -690,7 +690,7 @@
 						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta pull-right">';
 						
-						result = result	+ '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+ ');"type="button"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+ projectId + ');" type="button">';
+						result = result	+ '	<input class="us-btn" value="Save" id="save_project" onclick = "updateProjectDetails('+projectId+ ');"type="button"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+ projectId + ');" type="button">';
 						result = result + '</div>		';
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>';
@@ -744,6 +744,35 @@
 
 	}
 </script>
+
+
+
+<script>
+function validateProjectName(projectUUID){
+	var projectName = document.getElementById("projectName").value;
+	
+	 $.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/validateOrgLocationProjectName?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectName="+projectName,
+		success : function(data) {
+			if (data == true) {
+				$("input#projectName").after("<p class='jquery_form_error_message'>"+ projectName+ " is Already Existed</span>");
+				document.getElementById("projectName").setAttribute('record-exist', 'yes');
+				document.getElementById("projectName").setAttribute('record-exist-errorMsg',projectName+ ' is Already Existed');
+				$('input#projectName').removeAttr( "record-exist record-exist-errorMsg");
+				$("#save_project").attr("disabled", "disabled");
+			} else {
+				$('input#projectName').removeAttr("record-exist record-exist-errormsg");
+				$("#save_project").removeAttr("disabled");
+			}
+		},
+	}); 
+
+	
+}
+</script>
+
+
 <script>
 function getEditProjectDesc(projectId){
 	var sourceleadUrl = '${sourceleadUrl}';

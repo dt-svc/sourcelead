@@ -36,11 +36,13 @@ window.onload = function () {
 
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
-	if(searchResult == 'searchresult'){
+	getDynamciUserList();
+	/* if(searchResult == 'searchresult'){
+		alert("hello")
 		getUsersSearchResult(searchValue);
 	}else{
 		getDynamciUserList();
-	}
+	} */
 }
 </script>
 

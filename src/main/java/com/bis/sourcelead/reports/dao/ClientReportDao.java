@@ -24,7 +24,7 @@ public interface ClientReportDao {
 
 	List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user, Long relationId, String userRoleName,ContractReportsDTO contractReportsDTO);
 
-	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType);
+	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType, Long contactUserId);
 
 	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId, Date[] freqDates);
 

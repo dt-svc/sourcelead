@@ -3,8 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getTopFiveConracts();
@@ -83,9 +81,6 @@ $(document).ready(function(){
       </div>
     </div>
     <div class="ReqRepHead clearfix">
-      <div class="col-md-5 pull-left reqListBtn"> <a href="clients-report.html" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> <a href="clientsreport-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
-        <div class="hidden"> <span class="rAct" title="Graphical View" id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
-      </div>
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-4">
         <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
           <option>Select Date</option>
@@ -209,7 +204,7 @@ $(document).ready(function(){
                   <select class="chosen-select" data-placeholder="Select Client" id="topTenClientSelect" onchange="clientSummary()"></select>
                 </div>
                 <div class="col-md-2" id="clientContactSelectDiv" style="display: none;">
-                  <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect"></select>
+                  <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect" onchange="clientSummary()"></select>
                 </div>
               </div>
               <div class="require_wrap_table" id="topTenClientList"></div>
@@ -580,6 +575,11 @@ function getAmchartData(data){
 	for(var k in data.newAmountList) {
 		mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
 	}
+	if(data.othersAmountList != null && data.othersAmountList != '' && data.othersAmountList != 'undefined'){
+		for(var k in data.othersAmountList) {
+			mainAmcahrt[i] = {"category": k, "column-1": data.othersAmountList[k].toFixed(2), "color": colors[i++] };
+		}
+	}
 	
 	AmCharts.makeChart("top5receivables",
 			{
@@ -681,7 +681,7 @@ function topTenClientReports(){
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
 			            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
 			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
-			            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalPaidAmount+'</div></td>';
 			            result += '  </tr>';
 		            }
 		            
@@ -935,7 +935,7 @@ function topTenClientContactReports(){
 		            for(i=0; i<listLength; i++){
 		            	var opt = data[i];
 		            	result += '  <tr>';
-			            result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgRelationUUID='+opt.orgRelationUUID+'&invoiceType=Receivable&type=byContact">'+opt.clientContactName+'</a> </div></td>';
+			            result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgSpocUUID='+opt.orgSpocUUID+'&invoiceType=Receivable&type=byContact">'+opt.clientContactName+'</a> </div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.clientName+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
@@ -953,7 +953,7 @@ function topTenClientContactReports(){
 		           	opt += '<option >Select Client Contact</option>';
 		           	for(i=0; i<data.length; i++){
 		           		repo = data[i];
-		           		opt += '<option value='+repo.orgSpocId+'>'+repo.clientContactName+'</option>';
+		           		opt += '<option value='+repo.orgSpocUUID+'>'+repo.clientContactName+'</option>';
 		           	}
 		           	
 		           	$("#topTenClientContactList").empty();
@@ -974,9 +974,12 @@ function topTenClientContactReports(){
 <script>
 function clientSummary(){
 	var orgRelationUUID = $("#topTenClientSelect").val();
+	var spocUUID = $("#topTenClientContactSelect").val();
 	if(orgRelationUUID != null && orgRelationUUID != '' && orgRelationUUID != 'undefined'){
 	 location.replace(sourceleadUrl+"/clientReportSummary?orgRelationUUID="+orgRelationUUID+"&invoiceType=Receivable&type=byClient");
-}
+	}else if(spocUUID != null && spocUUID != '' && spocUUID != 'undefined'){
+	 location.replace(sourceleadUrl+"/clientReportSummary?orgSpocUUID="+spocUUID+"&invoiceType=Receivable&type=byContact");
+	}
 }
 </script>
 

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -23,7 +22,6 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reports.dao.ClientReportDao;
-import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
@@ -216,7 +214,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 
 	@Override
 	@Transactional
-	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType) {
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId) {
 		String subQuery = "";
 		if(invoiceType.equalsIgnoreCase("payables")){
 			subQuery = " and invoice.invoiceType = 'Payables' ";
@@ -224,9 +222,15 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			subQuery = " and invoice.invoiceType = 'Receivable' ";
 		}
 		
+		List<Invoice> clientInvoiceList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
-		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		if(contactUserId != null) {
+			String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.contactUser.id = :contactUserId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
+			clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).setCacheable(true).list();
+		}else {
+			String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
+			clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		}
 		return clientInvoiceList;
 	}
 	

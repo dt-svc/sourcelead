@@ -192,7 +192,7 @@ function validateShortCode(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-frequency">
@@ -207,16 +207,32 @@ function validateShortCode(){
 									<option value="Monthly">Monthly</option>
 								</select>
 							</div>
+						</div> -->
+						
+						<div class="form-group">
+							<label class="col-md-3">Invoice Frequency <span
+								class="text-danger">*</span></label>
+							<div class="col-md-9" id="chosen-InvoiceFrequency">
+								<select class="form-control chosen-select" id="invoiceFrequency"
+									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
+									field-name="Invoice Frequency" data-validation="required">
+									<option value="">-Invoice Frequency-</option>
+									<option value="Weekly">Weekly</option>
+									<option value="Bi-Weekly">Bi-Weekly</option>
+									<option value="Semi-Monthly">Semi-Monthly</option>
+									<option value="Monthly">Monthly</option>
+								</select>
+							</div>
 						</div>
 
-						<div class="form-group">
+						 <div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y" name="isAllowFreelanceDevelopers" id="isAllowFreelanceDevelopers" > Allow Freelance Developers </label>
 								</div>
 							</div>
-						</div>
+						</div> 
 
 						<div class="form-group">
 							<label class="col-md-3"></label>
@@ -270,7 +286,7 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" data-validation="required validate_Space validate_length length2-250"
+								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" onblur="validateProjectName();" data-validation="required validate_Space validate_length length2-250"
 									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden" >Enter Project Id</span>
 
 							</div>
@@ -307,22 +323,6 @@ function validateShortCode(){
 							</div>
 						</c:if>
 						
-						<div class="form-group">
-							<label class="col-md-3">Invoice Frequency <span
-								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-InvoiceFrequency">
-								<select class="form-control chosen-select" id="invoiceFrequency"
-									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
-									field-name="Invoice Frequency" data-validation="required">
-									<option value="">-Invoice Frequency-</option>
-									<option value="Weekly">Weekly</option>
-									<option value="Bi-Weekly">Bi-Weekly</option>
-									<option value="Semi-Monthly">Semi-Monthly</option>
-									<option value="Monthly">Monthly</option>
-								</select>
-							</div>
-						</div>
-
 						<div class="form-group" id="shortCodeDivId">
 							<label class="col-md-3"> Project Short Code <span
 								class="text-danger">*</span>
@@ -764,7 +764,7 @@ function getProjectDetails(){
 	           
         	   $("select[name=status]").val(projectStatus);
         	   
-        	   $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
+        	 //  $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
         	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
         	   
         	   if(json.allowFreeLance == 1){
@@ -1213,6 +1213,30 @@ function getCustomDependentField(sectionId){
 		        	$('#customDiv'+sectionId).append(data);
 				 }
 		  });
+}
+</script>
+
+<script>
+function validateProjectName(){
+	var projectUUID = document.getElementById("projectUUID").value;
+	var projectName = document.getElementById("projectName").value;
+	
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/validateOrgLocationProjectName?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectName="+projectName,
+		success : function(data) {
+			if (data == true) {
+				$("input#projectName").after("<p class='jquery_form_error_message'>"+ projectName+ " is Already Existed</span>");
+				document.getElementById("projectName").setAttribute('record-exist', 'yes');
+				document.getElementById("projectName").setAttribute('record-exist-errorMsg',projectName+ ' is Already Existed');
+				$('input#projectName').removeAttr( "record-exist record-exist-errorMsg");
+				$("#save_project").attr("disabled", "disabled");
+			} else {
+				$('input#projectName').removeAttr("record-exist record-exist-errormsg");
+				$("#save_project").removeAttr("disabled");
+			}
+		},
+	});
 }
 </script>
  

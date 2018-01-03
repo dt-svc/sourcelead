@@ -5,6 +5,8 @@ import java.util.List;
 public class DataMigrationDTO extends CommonDTO {
 
 	private String staticPath;
+	
+	private String uploadType;
 
 	private List<FileInfo> fileInfo;
 
@@ -80,6 +82,14 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
+	}
+
+	public String getUploadType() {
+		return uploadType;
+	}
+
+	public void setUploadType(String uploadType) {
+		this.uploadType = uploadType;
 	}
 
 	public List<FileInfo> getFileInfo() {

@@ -9,6 +9,7 @@ public class InvoiceReportDTO {
 	private Float paidInvoiceTotal;
 	private Float overDueInvoicetotal;
 	private Map<String,Float> newAmountList;
+	private Map<String,Float> othersAmountList;
 	
 	public Float getDraftInvoiceTotal() {
 		return draftInvoiceTotal;
@@ -40,6 +41,11 @@ public class InvoiceReportDTO {
 	public void setNewAmountList(Map<String, Float> newAmountList) {
 		this.newAmountList = newAmountList;
 	}
-	
+	public Map<String, Float> getOthersAmountList() {
+		return othersAmountList;
+	}
+	public void setOthersAmountList(Map<String, Float> othersAmountList) {
+		this.othersAmountList = othersAmountList;
+	}
 	
 }
