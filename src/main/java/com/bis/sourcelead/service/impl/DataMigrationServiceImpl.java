@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -139,9 +140,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int rowId = 0;
+		int colCount = 0;
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
 			if (rowId == 0) {
+				Iterator<Cell> cellIterator = nextRow.cellIterator();
+				while (cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					colCount++;
+				}
 				rowId = rowId + 1;
 				continue;
 			}
@@ -149,7 +156,24 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
 			DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
 			JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
-			dataMigrationDTOJson.keys().forEachRemaining(k -> {
+			
+			Iterator<?> keys = dataMigrationDTOJson.keys();
+
+			while( keys.hasNext() ) {
+			    String k = (String)keys.next();
+			    	Iterator<Cell> cellIterator = nextRow.cellIterator();
+					while (cellIterator.hasNext()) {
+						Cell cell = cellIterator.next();
+						if (dataMigrationDTOJson.get((String) k) != null) {
+							if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+								dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+								//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+							}
+						}
+					}
+			}
+			
+			/*dataMigrationDTOJson.keys().forEachRemaining(k -> {
 				try {
 					Iterator<Cell> cellIterator = nextRow.cellIterator();
 					while (cellIterator.hasNext()) {
@@ -164,7 +188,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			});
+			});*/
 			
 			switch(dataMigrationDTO.getUploadType()){  
 		    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
@@ -174,6 +198,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 			if(errorSet.isEmpty()){
 				mapToEntities(dataMigrationDTOJsonCopy.toString(), user, orgLocation, dataMigrationDTO.getUploadType());
+				importStatus = "success";
 			}else{
 				int errorCount = 0;
 				StringBuilder errorSB = new StringBuilder();
@@ -184,11 +209,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 					CellStyle style = workbook.createCellStyle();
 			        Font font = workbook.createFont();
+			        style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
 			        font.setColor(HSSFColor.RED.index);
 			        style.setFont(font);
 			        style.setWrapText(true);
-				 	nextRow.createCell(0).setCellValue(errorSB.toString());
-				 	nextRow.getCell(0).setCellStyle(style);
+				 	nextRow.createCell(colCount+5).setCellValue(errorSB.toString());
+				 	nextRow.getCell(colCount+5).setCellStyle(style);
 
 			        FileOutputStream outputStream = new FileOutputStream(new File(ac + dataMigrationDTO.getExportFilePath()));
 			        workbook.write(outputStream);

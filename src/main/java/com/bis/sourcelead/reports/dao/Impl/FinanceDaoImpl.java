@@ -254,9 +254,9 @@ public class FinanceDaoImpl implements FinanceDao{
 					endDate = new java.sql.Date(dates[1].getTime());
 				}
 				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
 			}else {
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
 				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
 					
 			}

@@ -1812,7 +1812,9 @@ public class RequirementListRestController {
 	            			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
 	            			requirement.setSpocUUID(orgSpoc.getUUID());
 	            		}
-	            		
+	            		if(StringUtils.isEmpty(requirement.getReqCoolingOffPeriod())){
+            				requirement.setReqCoolingOffPeriod(orgLocation.getCoolingOffPeriod());
+            			}
 	            		
 	            		reqList.add(requirement);
 	            	}
