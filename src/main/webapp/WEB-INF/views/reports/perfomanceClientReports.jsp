@@ -942,7 +942,7 @@ function topTenClientContactReports(){
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
 			            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
 			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
-			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalPaidAmount+'</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
 			            result += '  </tr>';
 		            }
 		            

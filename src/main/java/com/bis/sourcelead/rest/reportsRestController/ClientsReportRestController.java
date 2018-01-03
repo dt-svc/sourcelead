@@ -296,36 +296,11 @@ public class ClientsReportRestController {
 					}else{
 						clientDto.setTotalContracts(0);
 					}
-					
-					List<Invoice> invoiceList = clientReportService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), Constants.RECEIVABLE);
-					if(invoiceList != null && invoiceList.size() > 0) {
-						float paidTotalAmount = 0f;
-						for (Invoice invoice : invoiceList) {
-							if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
-									!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
-								Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
-								paidTotalAmount = paidTotalAmount + paidAmount;
-								clientDto.setTotalPaidAmount(paidTotalAmount);
-							}
-						}
-					}
-					
 				}
 				
 				clientDtoList.add(clientDto);
 			}
 		}
-		
-		clientDtoList.sort(new Comparator<ClientReportsDTO>() {
-			@Override
-			public int compare(ClientReportsDTO o1, ClientReportsDTO o2) {
-				if(o1 != null && (Float)o1.getTotalPaidAmount() != null) {
-					return ((Float)o2.getTotalPaidAmount()).compareTo((Float)o1.getTotalPaidAmount());
-				}
-				return 0;
-			}
-		});
-		
 		return clientDtoList;
 	}
 	
