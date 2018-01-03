@@ -432,13 +432,13 @@ result = result  +'    <div class="billingArea"> ';
 					
 					if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+							result = result +'           <span class="successBtn primary pull-left" title="Paid">Paid</span> </td>          ';	
 						}else{
 							if(report.invoiceStatus == "Accepted"){
-								result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+								result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
 							}else{
 								if(report.invoiceStatus == "Rejected"){
-									result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
+									result = result +'           <span class="text-danger successBtn primary pull-left">Rejected</span> </td>          ';	
 								}else{
 									result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 								}
@@ -448,9 +448,9 @@ result = result  +'    <div class="billingArea"> ';
 						
 					}else{
 						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 						}else{
-							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
 						}
 						
 						

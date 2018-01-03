@@ -63,4 +63,6 @@ public interface LeaveService {
 	
 	public void deleteAllHolidayOrRestrictDayById(String id,String type);
 
+	List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status);
+
 }

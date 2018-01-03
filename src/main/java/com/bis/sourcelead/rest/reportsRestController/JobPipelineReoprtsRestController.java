@@ -75,7 +75,7 @@ public class JobPipelineReoprtsRestController {
 		Date[] searchDates = null;
 		
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection(),orgLocation);
 		}else {
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -373,12 +373,12 @@ public class JobPipelineReoprtsRestController {
 		    	
 		    	
 		    	//Moveforward percentage
-		    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum))*100);
-		    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum))*100);
-		    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum))*100);
-		    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum))*100);
-		    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum))*100);
-		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum))*100);
+		    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum)*100));
+		    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum)*100));
+		    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum)*100));
+		    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum)*100));
+		    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum)*100));
+		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum)*100));
 		    	
 		    	Double rejectedMove = 0d;
 		    	if(rejectedFromSubmissionCount > 0 && applicantsSum >0) {

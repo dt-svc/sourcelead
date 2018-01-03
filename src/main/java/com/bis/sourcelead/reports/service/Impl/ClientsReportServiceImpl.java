@@ -74,10 +74,10 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user,String userRoleName,ContractReportsDTO contractReportsDTO)
+	public Map<String, Integer> getContractsListOFAllClients(OrgLocations orgLocation, User user,String userRoleName,ContractReportsDTO contractReportsDTO)  throws Exception
 	{
 		Map<String, Integer> conCount = new HashMap<>();
-		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocationId, user.getId());
+		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
 		List<Contracts> contractList = new ArrayList<>();
 		int totalMsaCount = 0;
 		int totalSowCount = 0;
@@ -85,10 +85,10 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		int totalNsaCount = 0;
 		if(orgRelationsList != null) {
 			for(OrgRelations orgRelation : orgRelationsList){
-				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,contractReportsDTO);
+				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
 //				contractList.add(conList.size());
 				if(conList != null && conList.size() > 0){
-					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
+					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
 						conCount.put(orgRelation.getResponderLocationId().getOrgLocationName(), conList.size());
 					}else{
 						conCount.put(orgRelation.getLocationId().getOrgLocationName(), conList.size());
@@ -115,8 +115,8 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType) {
-		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType);
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId) {
+		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType,contactUserId);
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		
 		if(clientsList != null && clientsList.size() > 0) {
 		for(OrgRelations orgRelation : clientsList) {
-			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type);
+			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type,null);
 			String clientName = null;
 			if(invoiceList != null && invoiceList.size() > 0) {
 				for (Invoice invoice : invoiceList) {
@@ -249,8 +249,8 @@ public class ClientsReportServiceImpl implements ClientReportService{
 
 	@Override
 	public List<Contracts> getClientBasedContractsLists(OrgLocations orgLocation, User user, String userRoleName,
-			Long orgRelationId, ContractReportsDTO contractReportsDTO) {
-		return clientReportDao.getContractsListOFAllClients(orgLocation.getId(), user, orgRelationId, userRoleName, contractReportsDTO);
+			Long orgRelationId, ContractReportsDTO contractReportsDTO) throws Exception  {
+		return clientReportDao.getContractsListOFAllClients(orgLocation, user, orgRelationId, userRoleName, contractReportsDTO);
 	}
 
 }
