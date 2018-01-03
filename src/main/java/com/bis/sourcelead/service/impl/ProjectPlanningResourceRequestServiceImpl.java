@@ -244,15 +244,21 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         
         EmailScenario  emailScenario = null;
         EmailScenario  notificationScenario  = null;
-        if(projectPlanningRequest.getRejectedReason() != null){
-        	   globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-        	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-              notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-        }else{
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-            
-        }
+        if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Approved")){
+       	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+        }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("On hold")){
+       	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
+       	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+       }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Rejected")){
+       	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
+     	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+  		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+       }
         
         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
         notificationScenario.setBody(notificationbody);

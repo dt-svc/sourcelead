@@ -261,8 +261,9 @@ a.alertBtn {
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="logo">
+
 			<a href="/"><img src="/resources/css/jobs/images/logo.png"
-				alt="SourceLead" title="SourceLead" /></a>
+</a>
 		</div>
 		<nav>
 			<ul class="menu">

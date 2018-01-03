@@ -645,8 +645,10 @@ function getNotifyToOtersValInterview(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var requirementId = '${requirementId}';
+        var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+        var rowNum = maxRowNum - 1;
+        var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
         
-        var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
         
         
         if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
