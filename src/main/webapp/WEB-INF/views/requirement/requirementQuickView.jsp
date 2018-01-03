@@ -329,32 +329,32 @@
 				          	</c:when>
 						    <c:otherwise>
 						    	<c:choose>
-						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.rate}">
+						    		<c:when test="${requirement.clientCurrencyCode == 'INR' && !empty requirement.clientRate}">
 						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
-						    		<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.rate}">
+						    		<c:when test="${requirement.clientCurrencyCode == 'EUR' && !empty requirement.clientRate}">
 						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-eur"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
-						    		<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.rate}">
+						    		<c:when test="${requirement.clientCurrencyCode == 'GBP' && !empty requirement.clientRate}">
 						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-gbp"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
-						    		<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.rate}">
+						    		<c:when test="${requirement.clientCurrencyCode == 'USD' && !empty requirement.clientRate}">
 						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate} - ${requirement.clientMaxRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
-						    		<c:when test="${requirement.clientCurrencyCode == 'AUD' && !empty requirement.rate}">
+						    		<c:when test="${requirement.clientCurrencyCode == 'AUD' && !empty requirement.clientRate}">
 						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>
 						    		</c:when>
-						    		<c:when test="${requirement.clientCurrencyCode == 'SGD' && !empty requirement.rate}">
+						    		<c:when test="${requirement.clientCurrencyCode == 'SGD' && !empty requirement.clientRate}">
 						    			<div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-dollar"></i> ${requirement.clientRate}  ${requirement.clientRateType}</span>
 							    			<div class="clearfix"></div> 
 							            </div>

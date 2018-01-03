@@ -148,6 +148,8 @@ public class CompanyOnboardController {
 				if(bankingDetails != null) {
 					model.addObject("uuid", bankingDetails.getUuid());
 					SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+				}else {
+					SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
 				}
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				model.setViewName("onboard/companyOnboardBankingDetails");

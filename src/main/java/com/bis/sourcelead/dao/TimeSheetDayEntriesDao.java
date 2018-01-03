@@ -15,6 +15,8 @@ public interface TimeSheetDayEntriesDao {
 	 
 	 public TimeSheetDayEntries getTimesheetDayEntriesById(Long id) throws Exception;
 	 
+	 public TimeSheetDayEntries getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(Long submissionId,Long taskId,Date timesheetDate) throws Exception;
+	 
 	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception;
 	 
 	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(Long submissionId,Date startDate,Date endDate) throws Exception;
