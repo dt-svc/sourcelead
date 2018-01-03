@@ -292,9 +292,13 @@ function jpagination(url,sourceleadUrl){
 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
 	            	    }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
-	            	    }else{
+	            	    }else if(opt.country!=null && opt.country !='' && opt.country !='undefined'){
 	            	           result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-	            	    }
+	            	    }else if(opt.location!=null && opt.location !='' && opt.location !='undefined'){
+	            	    		result = result +"<td><div><span title='"+opt.location+"'>"+opt.location+"</span></div></td>";
+	            	    }else{
+	            	   		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
+	            	   	 }
 		                return result;
 	             }
 		    },

@@ -150,7 +150,7 @@ public class FinanceDaoImpl implements FinanceDao{
 			    		   AparagingDate aparagingdate = new AparagingDate();
 			    		   Date dueDate = sdf.parse(sdf.format(invoice.getDueDate()));
 			    		   if(dueDate.after(tenDays[0]) && dueDate.before(tenDays[1])) {
-			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getDueAmount());
+			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getTotal());
 			    		   }
 			    		   if(dueDate.after(fifteenDays[0]) && dueDate.before(fifteenDays[1])) {
 			    			   fifteenDaysTotal = fifteenDaysTotal + Double.parseDouble(invoice.getDueAmount());
@@ -254,9 +254,9 @@ public class FinanceDaoImpl implements FinanceDao{
 					endDate = new java.sql.Date(dates[1].getTime());
 				}
 				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
 			}else {
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' ";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
 				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
 					
 			}

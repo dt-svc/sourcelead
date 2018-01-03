@@ -667,15 +667,15 @@ public  class CalendarUtil {
 	public static boolean isGivenDateBetweenDateRange(String weekStartDate,String weekEndDate,String date,String dateFormat) {
 		Boolean flag = false;
 		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
-			DateFormat format = new SimpleDateFormat(dateFormat);
+			DateFormat format = new SimpleDateFormat(dateFormat.replaceAll("-", "/"));
 			Date startDate = null;
 			Date endDate = null;
 			Date currentDate = null;
 			try {
 				currentDate = format.parse(date.replaceAll("-", "/"));
 				if(dateFormat.contains("-")){
-					startDate = format.parse(weekStartDate);
-					endDate = format.parse(weekEndDate);
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
 				}
 				else{
 					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
@@ -684,6 +684,7 @@ public  class CalendarUtil {
 				
 				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
 			} catch (ParseException e) {}
+			
 			
 		}
 		return flag;

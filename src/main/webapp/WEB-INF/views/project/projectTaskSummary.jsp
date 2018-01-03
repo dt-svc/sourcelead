@@ -94,7 +94,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
- 	            <!-- <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
+ 	           <!--  <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
 	            <c:if test="${taskTypeName != 'SubTask'}">
 	            <li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 	            </c:if>
@@ -130,43 +130,33 @@ var sourceleadUrl = '${sourceleadUrl}';
 	                    </div> 
 					                </div>
 					<!-- TimeEntry Modal Pop -->
-					<form id="saveProjectTask" name="saveProjectTask">
+					<form id="time_entry_form" name="time_entry_form">
 					<div class="modal-Time clearfix">
 					    <!-- Modal content-->
 					      <div class="clearfix">
-					      <input type="hidden" name="projectTaskId" value="${taskUUID}">
+					      <input type="hidden" name="taskUUID" value="${taskUUID}">
+					      <input type="hidden" name="projectId" value="${projectId}">
 					        <button type="button" class="close" onclick="closeTimeEntry()">&times;</button>
 					          <p><strong>Time Entry</strong></p>
 					      </div>
 					        <div class="row clearfix">
 					            <div class="col-md-12 mb10">
-					                <textarea class="form-control" rows="1" id="comments" name="assignedMember[0].comments" placeholder="Description"></textarea>
+					                <textarea class="form-control" rows="1" id="entryComment"  placeholder="Description"></textarea>
 					            </div>
 					          <div class="col-md-4">
 					            <div class="row">
 					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm calendar" name="assignedMember[0].timesheetDate" id="timesheetDate" placeholder="Date">
+					                <input type="text" class="form-control input-sm calendar"  id="timesheetDate" placeholder="Date">
 					              </div>
 					            </div>
 					          </div>
 					          <div class="col-md-4">
 					            <div class="row">
 					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm timeicon" id="hours" name="assignedMember[0].hours" placeholder="Time">
+					                <input type="text" class="form-control input-sm timeicon" id="timesheetHours"  placeholder="Time">
 					              </div>
 					            </div>
 					          </div>
-					          <!-- <div class="col-md-4">
-					            <div class="row">
-					              <div class="col-md-12 dropdown-select">
-					                <select class="form-control">
-					                <option selected="">---SubTask--</option>
-					                <option>SubTask-1</option>
-					                <option>SubTask-2</option>
-					              </select>
-					            </div>
-					                </div>
-					          </div> -->
 					        </div>
 					      <div class="modalFooter mt5">
 					      <div class="pull-right">
@@ -388,11 +378,20 @@ var sourceleadUrl = '${sourceleadUrl}';
 <script>
 function saveTaskDetails(){
 	/* if ($('#saveProjectTask').validate(false, validationSettings)){  */  
-  		var formData = getFormData("saveProjectTask");
+  		/* var formData = getFormData("time_entry_form"); */
+  		var form = $('#time_entry_form')[0];
+   	    var formData = new FormData(form); 
   		var assignedMemberIds = $('select#assignedUsers').val();
+  		var timesheetDate = $('#timesheetDate').val();
+  		var timesheetHours = $('#timesheetHours').val();
+  		var entryComment = $('#entryComment').val();
   		for(var i=0 ; i< assignedMemberIds.length ; i++){	
-  			formData['assignedMember['+i+'].projectMemberId']=assignedMemberIds[i];
+  			formData.append('assignedMember['+i+'].projectMemberId',assignedMemberIds[i]);
+  			formData.append('assignedMember['+i+'].timesheetDate',timesheetDate);
+  			formData.append('assignedMember['+i+'].hours',timesheetHours);
+  			formData.append('assignedMember['+i+'].comments',entryComment);
   		}
+  		alert(sourceleadUrl);
 	         $.ajax({
 				 type : "POST",
 				 data: formData,

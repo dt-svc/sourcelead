@@ -359,6 +359,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			candidate.setCreatedBy(user.getUserCode());
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setCreatedDate(commonUtil.currentDate());
+			String generatedId = candidateService.getCandidateId(orgLocations);
+			candidate.setGeneratedId(generatedId);
 		}else{
 			candidate.setConsultantUser(user);
 			candidate.setMasterCandidateId(masterCandidate);
