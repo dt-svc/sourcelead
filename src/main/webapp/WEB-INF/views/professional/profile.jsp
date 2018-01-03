@@ -66,7 +66,7 @@ function getProfessionalInfo(){
 		    	 if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod !='undefined'){
 		    		 noticePeriod = json.noticePeriod;
 		    	 }else{
-		    		 noticePeriod = "";
+		    		 noticePeriod = "---";
 		    	 }
 		    	 
 		    	 if(json.designation != null && json.designation != '' && json.designation !='undefined'){
@@ -77,7 +77,7 @@ function getProfessionalInfo(){
 		    	 if(json.designationType != null && json.designationType != '' && json.designationType !='undefined'){
 		    		 designationType = json.designationType;
 		    	 }else{
-		    		 designationType = "";
+		    		 designationType = "---";
 		    	 }
 		    	 
 		    	 if(json.designationOtherType != null && json.designationOtherType != '' && json.designationOtherType !='undefined'){
@@ -130,7 +130,7 @@ function getProfessionalInfo(){
 		    	 if(json.experienceYears != null  && json.experienceYears != '' && json.experienceYears != 'undefiend'){
 		    		 experienceYears = json.experienceYears +' Years';
 		    	 }else{
-		    		 experienceYears = "";
+		    		 experienceYears = "---";
 		    	 }
 		    	 
 		    	 if(json.experienceMonths != null  && json.experienceMonths != '' && json.experienceMonths != 'undefiend'){
@@ -204,10 +204,10 @@ function getProfessionalInfo(){
 				result = result+' </div> ';
 				
 				 result = result +'	        <ul class="list-unstyled professional-details">';
-				 result = result +'	            <li><i class="fa fa-magnet" title="Designation"></i><strong>'+designation+'</strong></li>';
-				 result = result +'	            <li><i class="fa fa-clock-o" title="Employment Type"></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
-				 result = result +'	            <li><i class="fa fa-briefcase" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
-				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
+				 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+designation+'> '+designation+'</span></li>';
+				 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+designationType+'</span></li>';
+            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+experienceYears+' '+experienceMonths+'</span></li>';
+	             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+noticePeriod+'</span></li>';
 				 
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';

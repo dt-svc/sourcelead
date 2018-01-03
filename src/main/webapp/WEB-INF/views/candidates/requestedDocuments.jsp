@@ -102,14 +102,12 @@ var sourceleadUrl ='${sourceleadUrl}';
 					   				</c:if>
 					   				</td>
 								    <td class="text-center">
-								    <div class="width300px mt5">
+								    <div class="width300px mt5" id="attachmentDiv${docs.id}">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">
-								            <%-- <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc();"> --%>
 								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
-								           <%--  <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc();"> --%>
 								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								     </div>
@@ -190,8 +188,8 @@ function tagItBykeyForEmails(e){
 </script>
 <script>
 function uploadFileReqDoc(id){
-	
 	fileUpload("uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
+	$('#attachmentDiv'+id).find('p.jquery_form_error_message').remove();
 }
 </script> 
   

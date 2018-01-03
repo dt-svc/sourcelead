@@ -212,6 +212,7 @@ function getCustomDates(){
 						 result  = result + '       <tbody>                               ';
 						 for (var i = 0; i < data.length; i++) { 
 							 var report = data[i];
+							 if(report.totalCount != 0){
 							 result  = result + '       <tr>                                  ';
 							 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
 							 result  = result + '         <td><div>'+report.currentCompany+'</div></td>               ';
@@ -222,7 +223,8 @@ function getCustomDates(){
 							 result  = result + '         <td><div>'+report.other+'</div></td>               ';
 							 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
 							 //result  = result + '         <td><div>31</div></td>              ';
-							 result  = result + '         </tr>                               ';
+							 result  = result + '         </tr>     ';
+							 }
 						 }
 						
 						 

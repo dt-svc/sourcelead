@@ -6090,13 +6090,13 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	background-color: #fff;
 }
 .comLogHead ul {
-    margin: 0px; padding: 0px;
+    margin: 0px; padding: 0px; border-top: 1px solid #dedede;
 }
 .comLogHead ul li {
 	float:left; list-style-type: none; text-align: center; width: 16.5%; z-index: 100; cursor: default;
-	display:block; background-color: #fff; margin: 0px auto; position: relative; border-top: 1px solid #dedede;
+	display:block; background-color: #fff; margin: 0px auto; position: relative; 
 	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
-	border-right: 1px solid #fff;	
+	border-right: 1px solid #fff;
 }
 .comLogHead ul li.hoverLi {
     background-color: #f6f6f6; color: #368ee0; border-bottom: 1px solid #368ee0; border-top: 1px solid #368ee0;
@@ -6969,6 +6969,12 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .connCtaInn p b {
 	font-weight: 400;
 }
+.connCtaInn p a {
+	color: #666;
+}
+.connCtaInn p a:hover {
+	text-decoration: underline;
+}
 .connCtaBtn {
 	text-align: center; border-top: 1px solid #ededed;
 }
@@ -7010,11 +7016,41 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	color:#fff !important;
 }
 
-
-
-
-
-
+.comProHead {
+	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px; padding: 60px 0px 0px;
+	background-image: url(../images/company-bg.jpg); margin: 0px 0px 10px 0px;
+}
+.comProHeadInn {
+	background-color: #fff; padding: 0px; border-radius: 0px 0px 3px 3px; position: relative; min-height: 100px;
+}
+.comProTabs {
+	background-color: #fff; border-radius: 3px;
+}
+.comProTabs ul {
+    margin:0px 0px; padding:0px 0px 0px 10px;
+    }
+.comProTabs ul li {
+    float:left; background-color:#fff; list-style-type:none; border-bottom:2px solid #fff;
+    }
+.comProTabs ul li.current {
+    position:relative; background-color:#fff; z-index:5; border-bottom:2px solid #368ee0;
+    }
+.comProTabs ul li a {
+    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:block; height: 42px;
+    }
+.comProTabs ul li.current a{
+    color:#1d6cb5;
+    }
+.comProfile {
+	width: 110px; height: 110px; position: absolute; background-color: #f1f1f1; left: 15px; top: -40px;
+	border-radius: 2px; padding: 3px;
+}
+.comProfile img {
+	width: 100%; border-radius: 3px;
+}
+.comProfileDetails {
+	float: left; min-height: 75px;
+}
 
 
 

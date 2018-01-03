@@ -178,7 +178,7 @@ function getCustomDates(){
 				        					
 				        					
 				        					applicantsCount: applicantSource.applicantsCount,
-				        					shortlistedCount: applicantSource.shortlisteCount,
+				        					shortlistedCount: applicantSource.shortlistedCount,
 				        					submitToClientCount: applicantSource.submitToClientCount,
 				        					interviewsCount: applicantSource.interviewsCount,
 				        					rejectedCount: applicantSource.rejectedCount,
