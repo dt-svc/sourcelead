@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.mchange.v1.util.StringTokenizerUtils;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -866,6 +867,57 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			response.setData(userRoleList);
 			return response;
 			
+	}
+
+	@Override
+	@Transactional
+	public List<UserRoleDTO> getUserListForConnections(String searchByName, Integer offset,Long userId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		String searchByValue = searchByName.trim();
+		StringBuilder subQuery = new StringBuilder("");
+		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
+			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
+			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
+			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
+		}
+		
+		
+		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
+				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+"  ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		
+		if(userRoleList.size() >= offset){
+			if(userRoleList.size() > offset + 20){
+				userRoleList = userRoleList.subList(offset, (offset+20));
+			}else{
+				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
+			}
+			
+			if(userRoleList != null && userRoleList.size() > 0) {
+				for(UserRole userRole : userRoleList) {
+					UserRoleDTO userRoleDTO = new UserRoleDTO();
+					StringBuilder userName = new StringBuilder();
+					if(userRole.getUser().getLastName() != null) {
+						userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+					}else {
+						userName = userName.append(userRole.getUser().getFirstName());
+					}
+					userRoleDTO.setUserName(userName.toString());
+					userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
+					userRoleDTO.setOrgName(userRole.getOrgLocations().getOrgLocationName());
+					userRoleDTO.setUserId(userRole.getUser().getId());
+					userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+					userRoleDTOList.add(userRoleDTO);
+				}
+			}
+			return  userRoleDTOList;
+		}else{
+			return  null;
+		}
+		
 	}
 	
 	/*
