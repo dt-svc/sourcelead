@@ -86,13 +86,14 @@ function candReferencesList(candidateId){
              			/*  var json = JSON.parse(data);  */
 	                	 $("#candidateReferencesList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='candidateReferencesPagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='candidateReferencesPaginationId' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result + '<th>Name </th>';
 	                 	 result  = result + '<th>Email</th>';
 	                 	 result  = result + '<th>Phone</th>';
 	                 	 result  = result + '<th>Relation </th>';
+	                 	result = result + '<th>Designation </th>';
 	                 	 result  = result + '<th>Comment </th>';
 	                 	 result  = result + '<th>Action </th>';
 	                     result = result +"  </tr>"; 
@@ -125,6 +126,11 @@ function candReferencesList(candidateId){
 		                    	 }else{
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
+	                    	 if (opt.designation != null && opt.designation != ''&& opt.designation != 'undefined') {
+	 							result = result	+ ' <td><div><span title="'+opt.designation+'">'+ opt.designation + '</span></div></td>';
+	 						   } else {
+	 							result = result	+ ' <td><div><span>----</span></div></td>';
+	 						   }
 	                    	 
 	                    	 if(opt.comment != null && opt.comment != '' && opt.comment != 'undefined'){
 		                    	 result  = result + ' <td><div><span title="'+opt.comment+'">'+opt.comment+'</span></div></td>';
@@ -175,17 +181,19 @@ function candidateReferencesList(candidateId){
 
 <script>
 function candidateReferencesPagination(){  
-    $('#candidateReferencesPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
+	
+	$('#candidateReferencesPaginationId').DataTable({
+		"scrollCollapse" : false,
+		"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+		"bLengthChange" : true,
+		"bDestroy" : true,
+		"ordering" : true,
+		"oLanguage" : {
+			"sSearch" : "",
+			"sZeroRecords" : "",
+			"sEmptyTable" : ""
+		}
+	});
 }
 </script>
 
@@ -318,41 +326,28 @@ function addReference(candidateId) {
 					scrollToTopOnError : true,
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
-			 if ($('#canReference_form').validate(false, validationSettings)){
-				var frm = $('#canReference_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				
-				var form = $('#canReference_form')[0];
-	      		var formData = new FormData(form); 
-			  	formData.append("json",con);
-			  	formData.append("candidateId",candidateId);
-			  	formData.append("userId",'${SourceLeadWeb_user.id}');
-			  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
-				$("#save_ref").attr("disabled", "disabled");
-         		$("#save_ref" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"",
-						success : function(result) {
-								closePopup();
-								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector10").removeAttr("style");
-		            			$("#selector10").css({ display: "block" });
-	            				$("#refMsgDiv").html("Success!! New Candidate References added");
-		             			candReferencesList(candidateId);
-						 		refMsgFadein();
-		            		 
-						},
-					});
-					return true;
-			 }else{ 
+		
+			 if ($('#canReference_form').validate(false, validationSettings)) {
+					
+				    var formData = getFormData("canReference_form");
+				    var userId = '${SourceLeadWeb_user.id}';
+				    var locationCode = '${SourceLeadWeb_locationCode}';
+					
+					 $("#save_ref").attr("disabled", "disabled");
+					$("#save_ref").addClass('button').val('Processing..'); 
+			        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
+			        	closePopup();
+						$("#popUpDiv").removeClass("edit-details-active");
+            			$("#selector10").removeAttr("style");
+            			$("#selector10").css({ display: "block" });
+        				$("#refMsgDiv").html("Success!! New Candidate References added");
+             			candReferencesList(candidateId);
+				 		refMsgFadein();
+			        });
+			        
+				return true;
+			}
+			 else{ 
 					return false;
 			 } 
 		}
@@ -446,38 +441,24 @@ function deleteReference(candidateId,refId){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#canReferenceEdit_form').validate(false,
-				validationSettings)) {
+		if ($('#canReferenceEdit_form').validate(false,	validationSettings)) {
 
-			var frm = $('#canReferenceEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
+			var formData = getFormData("canReferenceEdit_form");
+		    var userId = '${SourceLeadWeb_user.id}';
+		    var locationCode = '${SourceLeadWeb_locationCode}';
 			
-			var form = $('#canReference_form')[0];
-      		var formData = new FormData(form); 
-      		formData.append("json",con);
-      		formData.append("candidateId",candidateId);
-      		formData.append("refId",refId);
-      		formData.append("userId",'${SourceLeadWeb_user.id}');
-		  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
-			//It will escape all the special characters
-			$.ajax({
-						type : "POST",
-					     data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"",
-						success : function(data) {
-	            			$("#selector10").removeAttr("style");
-	            			$("#selector10").css({ display: "block" });
-	            			$("#refMsgDiv").html("Reference details updated");
-	            			closePopup();
-	            			candReferencesList(candidateId);
-							refMsgFadein();
-						},
-					});
+			 $("#save_ref").attr("disabled", "disabled");
+			$("#save_ref").addClass('button').val('Processing..'); 
+	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(data) {
+	        	
+	        	$("#selector10").removeAttr("style");
+				$("#selector10").css({display : "block"});
+				$("#refMsgDiv").html("Reference details updated");
+				closePopup();
+				candReferencesList(candidateId);
+				refMsgFadein();
+	        });
+	        
 			return true;
 		} else {
 			return false;
@@ -628,6 +609,9 @@ function deleteReference(candidateId,refId){
 										result = result + '</div>';
 										result = result + '</form>';
 										$("#popUpDiv").empty();
+										if(json.relation == "Work Related"){
+											$("#dvDesignationEdit").show();
+									      }
 										$("#popUpDiv").append(result);
 
 										$(".edit-details").toggleClass(
@@ -660,7 +644,7 @@ function deleteReference(candidateId,refId){
 							},
 
 						}).done(function() {
-					editRelation(this);
+					 editRelation(this); 
 				});
 
 	}
@@ -692,13 +676,14 @@ function deleteReference(candidateId,refId){
 
 <script>
 	function editRelation(e) {
-		if (e.value == 'Work Related') {
+		var type  = $("#relation").val();
+		if (type == 'Work Related') {
 			document.getElementById("dvDesignationEdit").style.display = "block";
 			$("#designationValEdit").removeAttr("data-validation-optional");
 			$('#designationValEdit').attr("data-validation",
 					"required validate_Space validate_length length2-100"); 
 			$("#designationValEdit").show();
-		} else if (e.value == 'Family Related') {
+		} else if (type == 'Family Related') {
 			document.getElementById("dvDesignationEdit").style.display = "none";
 
 			$("#designationValEdit").val('');

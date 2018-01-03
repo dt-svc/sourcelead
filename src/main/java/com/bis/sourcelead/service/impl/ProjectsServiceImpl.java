@@ -1143,6 +1143,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectsDTO.setOrgLocationId(projects.getOrgLocationsId().getId());
 		projectsDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
 		projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
+		projectsDTO.setProjectUUID(projects.getProjectUUID());
 		if(projects.getFlatPercent() != null) {
 			projectsDTO.setFlatPercent(projects.getFlatPercent().toString());
 		}
@@ -2457,6 +2458,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			@Override
 			public Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId, String userCode) throws Exception {
 				return projectsDao.getProjectCountByOrgLocationIdAndUserCode(orgLocationId, userCode);
+			}
+
+			@Override
+			public Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception {
+				return projectsDao.getProjectByOrgLocationsIdAndProjectName(orgLocationsId,projectName);
 			}
 
 

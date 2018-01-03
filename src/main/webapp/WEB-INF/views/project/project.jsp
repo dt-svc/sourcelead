@@ -286,7 +286,7 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" data-validation="required validate_Space validate_length length2-250"
+								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" onblur="validateProjectName();" data-validation="required validate_Space validate_length length2-250"
 									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden" >Enter Project Id</span>
 
 							</div>
@@ -1213,6 +1213,30 @@ function getCustomDependentField(sectionId){
 		        	$('#customDiv'+sectionId).append(data);
 				 }
 		  });
+}
+</script>
+
+<script>
+function validateProjectName(){
+	var projectUUID = document.getElementById("projectUUID").value;
+	var projectName = document.getElementById("projectName").value;
+	
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/validateOrgLocationProjectName?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectName="+projectName,
+		success : function(data) {
+			if (data == true) {
+				$("input#projectName").after("<p class='jquery_form_error_message'>"+ projectName+ " is Already Existed</span>");
+				document.getElementById("projectName").setAttribute('record-exist', 'yes');
+				document.getElementById("projectName").setAttribute('record-exist-errorMsg',projectName+ ' is Already Existed');
+				$('input#projectName').removeAttr( "record-exist record-exist-errorMsg");
+				$("#save_project").attr("disabled", "disabled");
+			} else {
+				$('input#projectName').removeAttr("record-exist record-exist-errormsg");
+				$("#save_project").removeAttr("disabled");
+			}
+		},
+	});
 }
 </script>
  

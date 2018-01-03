@@ -33,6 +33,8 @@ public interface ProjectsService {
 		List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
 		
 	    Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+	    
+	    Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception;
 		
 		Boolean deleteProjectById(Long id) throws Exception;
 		
