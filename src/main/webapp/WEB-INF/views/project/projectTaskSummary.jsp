@@ -382,8 +382,6 @@ function saveTaskDetails(){
   		var form = $('#time_entry_form')[0];
    	    var formData = new FormData(form); 
   		var assignedMemberIds = $('select#assignedUsers').val();
-  		alert(assignedMemberIds);
-  		
   		var timesheetDate = $('#timesheetDate').val();
   		var timesheetHours = $('#timesheetHours').val();
   		var entryComment = $('#entryComment').val();

@@ -91,16 +91,16 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 					+ "  sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' or sah.expenseApprovalStatus = 'APPROVED' or sah.expenseApprovalStatus = 'REJECTED' or sah.expenseApprovalStatus = 'REOPENED' ";
 		}
 		else{
-			if (Arrays.asList(expStatus).contains("SUBMITTEDFORAPPROVAL")) {
+			if (Arrays.asList(expStatus).contains("SUBMITTEDFORAPPROVAL")||Arrays.asList(expStatus).contains("submitted")) {
 				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' ";
 			}
-			if (Arrays.asList(expStatus).contains("APPROVED")) {
+			if (Arrays.asList(expStatus).contains("APPROVED")||Arrays.asList(expStatus).contains("approved")) {
 				if(StringUtils.isNotEmpty(subQuery2)){
 					subQuery2 = subQuery2 + " OR ";
 				}
 				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'APPROVED' ";
 			}
-			if (Arrays.asList(expStatus).contains("REJECTED")) {
+			if (Arrays.asList(expStatus).contains("REJECTED")||Arrays.asList(expStatus).contains("rejected")) {
 				if(StringUtils.isNotEmpty(subQuery2)){
 					subQuery2 = subQuery2 + " OR ";
 				}
@@ -136,7 +136,11 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				.append("OR (concat(sah.expenseId.projectMembers.projectMemberCandidteId.firstName,sah.expenseId.projectMembers.projectMemberCandidteId.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
 				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
 				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
+				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ");
+		   
+		   
+		   
 				if(matcher.matches() == false) {
 					query1.append("OR sah.expenseId.endDate like '%" + searchValue + "%' )");
 				}
@@ -159,7 +163,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		  }
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects"
+		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch pc.orgRelationId orgRelation left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects"
 				+ " left join fetch pm.masterCandidateId mc left join fetch pm.employee emp left join fetch emp.user user where "
 			+ " pc.orgLocationsId.id = :orgLocationId"
 			+ " and ( ("

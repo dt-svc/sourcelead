@@ -314,7 +314,7 @@ $(function() {
             max_file_size : '1000mb',
             // Specify what files to browse for
             mime_types: [
-                {title : "Resume files", extensions : "doc,docx,pdf,rtf"},
+                {title : "Resume files", extensions : "doc,docx,pdf"},
                 {title : "Zip files", extensions : "zip"}
             ]
         },

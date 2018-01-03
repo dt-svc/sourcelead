@@ -105,7 +105,7 @@
  </c:if>
 
 
-<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/clientReports"}'>
+<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
 	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
@@ -789,7 +789,7 @@ function preventTabkey(e){
   </div>
   
   <!--  Alert message for Switching Locaction -->
-  <div class="location-alert alert alert-danger alert-dismissable">
+  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
     <strong>Alert !</strong> Your are not allowded to access this Location.
   </div>
