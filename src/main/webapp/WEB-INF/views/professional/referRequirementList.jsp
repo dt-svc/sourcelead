@@ -256,6 +256,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
         }).on('hide.bs.collapse', function(){
         	$(this).parent().find(".fa").removeClass("fa-angle-up").addClass("fa-angle-down");
         });
+        
     });
 </script>
 <section class="content-wraper">
@@ -264,11 +265,17 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
     <div class="pull-left">
-      <h2>Contacts List</h2>
+      <h2><a href="#" id="contactsListId">Contacts List</a></h2>
+      </div> 
+       <div class="pull-left">
+     &nbsp;&nbsp;|&nbsp;&nbsp;
+     </div>
+     <div class="pull-left"> 
+    <h2><a href="<c:url value='${appPath}/findConnections'/>" id="connectionsId">Connections</a></h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
+    <div class="pull-right brud-crum" id="contactsListUrl"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
-  <div class="timesheet_out">
+  <div id="contactsListSheet" class="timesheet_out">
       <div class="vendor_wrap">
       <div class="timesheet_head">
           <ul>
@@ -387,6 +394,11 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
       <div id="refercontactListDiv" class="datatable_filter"></div>
       </div>
 	</div>
+	
+	<div id="connnectionsSheet" class="conneWrap">
+	
+	
+	</div>
   
 </section>
 
@@ -417,6 +429,9 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
   <!-- Create Label div html -->
 
 <script>
+
+
+
 function addContactsGroup(){
 	var result = "";
 	result = result + '<form id="contactgroup_form"  name="contactgroup_form">'; 
@@ -447,6 +462,7 @@ function addContactsGroup(){
 
 
 <script>
+
 function refercontactList(){
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
@@ -637,6 +653,8 @@ function contactsPagination(url,sourceleadUrl){
     	   }
     	});
 }
+
+
 
 </script>
 
@@ -1173,4 +1191,20 @@ function selectedContactList(){
 	 $(".movefolder-popdiv").fadeOut();
 	 $(".sideMask").fadeOut();
  });
+ 
+ $("#connectionsId").click(function(){
+	 $("#contactsListSheet").hide();
+	 $("#contactsListUrl").hide();
+	 $("#connectionsUrl").show();
+	 $("#connnectionsSheet").show();
+	 connectionsList();
+	 
+ });
+ $("#contactsListId").click(function(){
+	 $("#contactsListUrl").show();
+	 $("#connectionsUrl").hide();
+	 $("#contactsListSheet").show();
+	 $("#connnectionsSheet").hide();
+ });
+ 
  </script>

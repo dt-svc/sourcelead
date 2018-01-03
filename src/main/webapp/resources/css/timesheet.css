@@ -6908,25 +6908,43 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 
 .conneWrap {}
 .conneWrapHead {
-	background-color: #fff; padding: 6px 15px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px;
+	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px;
 }
+.conneWrapHead ul {
+    margin:0px 0px; padding:0px 5px; float: left;
+    }
+.conneWrapHead ul li {
+    float:left; background-color:#fff; list-style-type:none; border-bottom:2px solid #fff;
+    }
+.conneWrapHead ul li.current {
+    position:relative; background-color:#fff; z-index:5; border-bottom:2px solid #368ee0;
+    }
+.conneWrapHead ul li a {
+    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:block; height: 42px;
+    }
+.conneWrapHead ul li.current a{
+    color:#1d6cb5;
+    }
 .conneWrapHead span {
-	float: right;
+	float: right; padding: 6px 10px; 
 }
 .conneWrapInn {
 	width: auto; padding: 10px 0px ;
 }
 .connCta {
-	width: 20%; float: left;
+	width: 16.6666%; float: left;
 }
 .connCtaInn {
-	width: auto; box-shadow: 0px 0px 2px rgba(0,0,0,0.1); height: 230px; margin: 1px; padding: 20px 15px 10px;
+	width: auto; box-shadow: 0px 0px 2px rgba(0,0,0,0.1); height: 260px; margin: 1px; padding: 15px 10px 0px;
 	border-radius: 2px; text-align: center; position: relative;
 	background: #ffffff;
 	background: -moz-linear-gradient(top,  #f3f3f3 25%, #ffffff 25%); 
 	background: -webkit-linear-gradient(top,  #f3f3f3 25%,#ffffff 25%); 
 	background: linear-gradient(to bottom,  #f3f3f3 25%,#ffffff 25%); 
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3f3f3', endColorstr='#ffffff',GradientType=0 );	
+}
+.connCtaInnText {
+	height: 208px;
 }
 .connCtaInn span {
 	display: block; width: 88px; height: 88px; background-color: #fff; border-radius: 50%; margin: 0px auto;
@@ -6936,49 +6954,35 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	width: 100%; border-radius: 50%; max-width: 85px; max-height: 85px;
 }
 .connCtaInn h2 {
-	margin: 0px 0px; padding: 15px 0px 8px; font-size: 16px; font-weight: 500; color: #666;
+	margin: 0px 0px; padding: 12px 0px 3px; font-size: 15px; font-weight: 400; color: #454545;
 	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;
 }
 .connCtaInn p {
-	margin: 0px 0px; padding: 0px 0px 10px; font-size: 14px; font-weight: 400; color: #454545;
+	margin: 1px 0px 0px; padding: 4px 0px 0px; font-size: 13px; font-weight: 400; color: #666;
+}
+.connCtaInn p b {
+	font-weight: 400;
+}
+.connCtaBtn {
+	text-align: center; border-top: 1px solid #ededed;
 }
 .connlink {
-	display: inline-block; border:1px solid #368ee0; padding: 4px 15px; font-size: 13px; border-radius: 2px;
+	display: inline-block; padding: 8px 16px; font-size: 14px; border-radius: 2px; font-weight: 400;
 	color: #368ee0;
 }
-.connlink.conAct {
-	background-color: #368ee0; color: #fff;
+.connlink.red {
+	color: #999;
 }
-.connCtaRemove {
-	position: absolute; right: 12px; top: 12px;
+.connlink.red:hover {
+	color: #e7594e;
 }
-.connCtaRemove b {
-	position: relative; padding: 3px; display: block;
+.connlink.orange {
+	color: #e07906;
 }
-.connCtaRemove b .fa-ellipsis-v {
-	font-size: 16px; padding: 2px; cursor: pointer; color: #666;
+.conUnder {}
+.conUnder:hover {
+	text-decoration: underline; color: #999;
 }
-.connRem {
-	position: absolute; right: 20px; top: -2px; visibility: hidden; opacity: 0;
-}
-.connRem a {
-	position: relative; width: 82px; display: block; font-size: 13px; font-weight: 400; background-color: #fff;
-	padding: 5px; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); color: #454545;
-}
-.connRem a i {
-	display: inline-block; padding: 0px 3px 0px 0px;
-}
-.connRem a:after {
-	left: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0;	position: absolute;
-	border-color: rgba(136, 183, 213, 0); border-left-color: #ccc; border-width: 7px; margin-top: -7px;
-}
-.connRem a:hover {
-	color: #DF5757;
-}
-.connCtaRemove b:hover .connRem {
-	visibility: visible; opacity: 1;
-}
-
 
 
 
