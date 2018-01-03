@@ -204,7 +204,7 @@ $(document).ready(function(){
                   <select class="chosen-select" data-placeholder="Select Client" id="topTenClientSelect" onchange="clientSummary()"></select>
                 </div>
                 <div class="col-md-2" id="clientContactSelectDiv" style="display: none;">
-                  <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect" onchange="clientContactSummary()"></select>
+                  <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect" onchange="clientSummary()"></select>
                 </div>
               </div>
               <div class="require_wrap_table" id="topTenClientList"></div>
@@ -935,7 +935,7 @@ function topTenClientContactReports(){
 		            for(i=0; i<listLength; i++){
 		            	var opt = data[i];
 		            	result += '  <tr>';
-			            result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgRelationUUID='+opt.orgRelationUUID+'&invoiceType=Receivable&type=byContact">'+opt.clientContactName+'</a> </div></td>';
+			            result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgSpocUUID='+opt.orgSpocUUID+'&invoiceType=Receivable&type=byContact">'+opt.clientContactName+'</a> </div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.clientName+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30">'+opt.releasedJobs+'</div></td>';
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.submissionCount+'</strong></div></td>';
@@ -974,16 +974,12 @@ function topTenClientContactReports(){
 <script>
 function clientSummary(){
 	var orgRelationUUID = $("#topTenClientSelect").val();
+	var spocUUID = $("#topTenClientContactSelect").val();
 	if(orgRelationUUID != null && orgRelationUUID != '' && orgRelationUUID != 'undefined'){
 	 location.replace(sourceleadUrl+"/clientReportSummary?orgRelationUUID="+orgRelationUUID+"&invoiceType=Receivable&type=byClient");
-}
-}
-
-function clientContactSummary(){
-	var orgSpocUUID = $("#topTenClientContactSelect").val();
-	if(orgSpocUUID != null && orgSpocUUID != '' && orgSpocUUID != 'undefined'){
-	 location.replace(sourceleadUrl+"/clientReportSummary?orgRelationUUID="+orgSpocUUID+"&invoiceType=Receivable&type=byContact");
-}
+	}else if(spocUUID != null && spocUUID != '' && spocUUID != 'undefined'){
+	 location.replace(sourceleadUrl+"/clientReportSummary?orgSpocUUID="+spocUUID+"&invoiceType=Receivable&type=byContact");
+	}
 }
 </script>
 
