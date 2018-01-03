@@ -97,7 +97,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li>
+ 	           <!--  <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
 		            <c:if test="${taskTypeName != 'SubTask'}">
 		            	<li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 		            </c:if>
