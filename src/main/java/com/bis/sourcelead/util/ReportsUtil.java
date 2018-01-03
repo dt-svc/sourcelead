@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +15,10 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reports.dao.ApplicantsBySourceDao;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
@@ -39,6 +45,9 @@ public class ReportsUtil {
 	
 	@Autowired
 	private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	
      public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
@@ -129,13 +138,24 @@ public class ReportsUtil {
 	/**
 	 * Get from and to date of last 7 days
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 * @throws Exception 
 	 */
-	public Date[] last7Days() {
+	public Date[] last7Days(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime sevenDayZoned = zoned.minusDays(7);
+		String sevenDaysDate = outputFormatter.print(sevenDayZoned);
+		Date sevenDateUTC = TZ_DF_TS.parse(sevenDaysDate);
+		
 		Date[] dates = new Date[2];
-		Calendar cal = Calendar.getInstance();
-		dates[1] = cal.getTime();
-		cal.add(Calendar.DATE, -7);
-		dates[0] = cal.getTime();
+		dates[0] = sevenDateUTC;
+		dates[1] = startDateUTC;
 		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
 		return dates;
 	}
@@ -144,13 +164,31 @@ public class ReportsUtil {
 	 * Get from and to date of last 15 days
 	 * @return Date[]  Date[0] = start date ,Date[1] = End date
 	 */
-	public Date[] last15DaysDates() {
-		Date[] dates = new Date[2];
+	public Date[] last15DaysDates(OrgLocations orgLocations) throws Exception {
+		/*Date[] dates = new Date[2];
 		Calendar cal = Calendar.getInstance();
 		dates[1] = cal.getTime();
 		cal.add(Calendar.DATE, -15);
 		dates[0] = cal.getTime();
-		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);
+		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);*/
+		
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime fifteenDayZoned = zoned.minusDays(15);
+		String fifteenDaysDate = outputFormatter.print(fifteenDayZoned);
+		Date fifteenDateUTC = TZ_DF_TS.parse(fifteenDaysDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = fifteenDateUTC;
+		dates[1] = startDateUTC;
+		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
+		
 		return dates;
 	}
 	
@@ -159,12 +197,28 @@ public class ReportsUtil {
 	 * 
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
 	 */
-	public Date[] last1MonthDates() {
-		Date[] dates = new Date[2];
+	public Date[] last1MonthDates(OrgLocations orgLocations) throws Exception {
+		/*Date[] dates = new Date[2];
 		Calendar cal = Calendar.getInstance();
 		dates[1] = cal.getTime();
 		cal.add(Calendar.MONTH, -1);
-		dates[0] = cal.getTime();
+		dates[0] = cal.getTime();*/
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime oneMonthZoned = zoned.minusDays(30);
+		String oneMonthDate = outputFormatter.print(oneMonthZoned);
+		Date oneMonthDateUTC = TZ_DF_TS.parse(oneMonthDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = oneMonthDateUTC;
+		dates[1] = startDateUTC;
+		
 		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);
 		return dates;
 	}
@@ -173,13 +227,32 @@ public class ReportsUtil {
 	 * Get from and to date of last 3 Months
 	 * 
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 * @throws Exception 
 	 */
-	public Date[] last3MonthDates() {
-		Date[] dates = new Date[2];
+	public Date[] last3MonthDates(OrgLocations orgLocations) throws Exception {
+		/*Date[] dates = new Date[2];
 		Calendar cal = Calendar.getInstance();
 		dates[1] = cal.getTime();
 		cal.add(Calendar.MONTH, -3);
 		dates[0] = cal.getTime();
+		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);*/
+		
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime threeMonthZoned = zoned.minusDays(60);
+		String threeMonthDate = outputFormatter.print(threeMonthZoned);
+		Date threeMonthDateUTC = TZ_DF_TS.parse(threeMonthDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = threeMonthDateUTC;
+		dates[1] = startDateUTC;
+		
 		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);
 		return dates;
 	}
@@ -229,19 +302,19 @@ public class ReportsUtil {
 	
 	
 	
-	public Date[] getJobFilterDate(String dateSelection) {
+	public Date[] getJobFilterDate(String dateSelection,OrgLocations orgLocations) throws Exception {
 		Date[] dates = new Date[2];
 		Date[] searchDates = null;
 		Date startDate = null;
 		Date endDate = null;
 		if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
-			searchDates = last7Days();
+			searchDates = last7Days(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_15_DAYS)) {
-			searchDates = last15DaysDates();
+			searchDates = last15DaysDates(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_MONTH)) {
-			searchDates = last1MonthDates();
+			searchDates = last1MonthDates(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_3_MONTHS)) {
-			searchDates = last3MonthDates();
+			searchDates = last3MonthDates(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YTD)) {
 			searchDates = yearToDate();
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_YEAR)) {
