@@ -1641,7 +1641,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
 							user.setFacebook(profileUrl);
-							can.setFacebookUrl(profileUrl);
+							//can.setFacebookUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
 							user.setTwitter(profileUrl);
