@@ -415,8 +415,10 @@ public class ProjectsController {
 				 
 				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(projectTask.getId()); 
 				 for(ProjectAssignTask pat:assignedUsers) {
-					 if(pat.getProjectMemberId() != null) {
+					 if(pat.getProjectMemberId() != null && pat.getProjectMemberId().getEmployee() != null && pat.getProjectMemberId().getEmployee().getUser() != null) {
 						 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());
+					 }else{
+						 pat.setAssignedUserName(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
 					 }
 				 }
 				 model.addObject("taskTypeName", projectTask.getTaskType().getName());
@@ -442,7 +444,7 @@ public class ProjectsController {
 				 
 				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
 				 model.addObject("taskStatusList", taskStatusList);
-				 
+				 model.addObject("taskUUID", taskUUID);
 				model.addObject("projectClientUUID", projectClientUUID);
 				model.setViewName("project/projectTaskSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);

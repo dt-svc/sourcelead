@@ -262,9 +262,9 @@ $(document).ready(function () {
        
        
        <div class="form-group" id="jobIdDiv">
-            <label class="col-md-3">Id</label>
+            <label class="col-md-3">Job Id</label>
             <div class="col-md-9">
-			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
+			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
 				<input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
             </div>
           </div>
@@ -974,8 +974,9 @@ $(document).ready(function () {
               <div class="form-group ">
                 <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9 chooRadius">
-                  <div class="input-group col-md-9 pull-left">
+                  <div class="input-group col-md-10 pull-left seleOverFlow clearfix">
                   <c:set var="val" value="${requirement.isClientJob}"/>
+                  <div class="col-md-10 noPad">
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" disabled="disabled" data-validation-optional="true" field-name = "Client Contact" >
@@ -1000,9 +1001,12 @@ $(document).ready(function () {
                     	</select>
 				    </c:otherwise>
 				</c:choose>
+				</div>
+				<div class="col-md-2 noPad">
                     <span class="input-group-addon cursorPointer bg-blue refreshBtn"  onclick="refreshRequirementClientContactList();"><i class="fa fa-refresh "></i></span>
                  </div>
-                  <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+                 </div>
+                  <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
 			         <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
 			              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			      	</sec:authorize>
@@ -1321,8 +1325,8 @@ $(document).ready(function () {
               <c:if test="${empty requirement.id}"> 
               	<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getTeamsList('');">Assigned Members</a> <button type="button" class="btn btn-default btn-sm ml10 btnShowlist" id="showGrid" disabled><span id="sl">Show List</span><span class="badge ml10 showGrid">0</span></button>
               </c:if>
-                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" >
-                  	<i onclick="flushStoreTeam();getTeamOwners();" class="fa fa-plus paddingRight"></i>Add Team
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team" class="btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();">
+                  	<i class="fa fa-plus paddingRight"></i>Add Team
                   </span>
                   </div>
               </div>
@@ -1608,7 +1612,7 @@ function validate_fileupload(fileName)
 		 }
 		 var existingValue = document.getElementById('isClientJob').value;
 		 if(existingValue == 'Y'){
- 		 var clientRateType = document.getElementById("clientRateType").value; 
+ 		/*  var clientRateType = document.getElementById("clientRateType").value; 
  		 if(clientRateType != null && clientRateType != ""){
  			 $('#clientRate').removeAttr('data-validation-optional');
  			 $('#clientRate').attr("data-validation","required"); 
@@ -1626,7 +1630,7 @@ function validate_fileupload(fileName)
  		 }else{
  			 $('#clientRateType').removeAttr('data-validation');
  			 $('#clientRateType').attr("data-validation-optional","true"); 
- 		 }
+ 		 } */
 		 }
 		   if ($('#requirement_form').validate(false, validationSettings)){   
       		var formData = getFormData1("requirement_form");
@@ -1674,14 +1678,24 @@ function storeTeam(){
          };
 	   if ($('#team_form').validate(false, validationSettings)){ 
 		   
-		   var formData = getFormData("team_form");
+		   var formData = getFormData1("team_form");
 			
-			$("#add_team").attr("disabled", "disabled"); 
-	       
-			$.post(sourceleadUrl+"/storeTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-	        	$('#addTeam').hide();
-				$('.modal-backdrop').hide();
-	        });
+			$("#add_team").attr("disabled", "disabled");
+			
+			$.ajax({
+				 type : "POST",
+				 data: formData,
+ 	    	     contentType : 'application/json; charset=utf-8',
+ 		         processData: false,
+ 		         contentType:false, 
+				url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
+				success : function(result) {
+					$('#addTeam').hide();
+					//$('.modal-backdrop').hide();
+					$("#addTeam").modal('hide');
+
+				},
+			});
 	        
 			return true; 
 	   }else{ 

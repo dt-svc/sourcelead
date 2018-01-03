@@ -978,6 +978,7 @@ public class Constants {
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
+	public static final String CLIENT_REPORT = "clientReport";
 
 
 

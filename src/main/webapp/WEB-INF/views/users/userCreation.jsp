@@ -160,9 +160,9 @@
                 </div> 
                  </div> 
                 <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger"></span></label>
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" >
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select Employment type--</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>

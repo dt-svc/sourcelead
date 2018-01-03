@@ -2033,6 +2033,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 }
 function closefeedback(){
 	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
+	$("#noviewfeedbackdiv").fadeOut(200);
 }
 </script>
 <script>
@@ -2409,6 +2410,7 @@ function feedback_close() {
 	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
 	$("#mask_inner").fadeOut();
 	$('.demo').fadeOut();
+	$("#noviewfeedbackdiv").fadeOut(200);
 }
 </script>
 

@@ -25,41 +25,14 @@ $(document).ready(function(){
           <a href='${appPath}/apAgingGraphReport' title="Graph View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
           <a href='${appPath}/apAgingReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
      </div>
-      <div class="col-md-2 dropdown-select positionRelative col-md-offset-4 hidden">
-        <select class="form-control" id="custom-datedds">
-          <option>Select Date</option>
-          <option selected>Last 7 days</option>
-          <option>Last 15 days</option>
-          <option>1 month</option>
-          <option>3 months</option>
-          <option>last year</option>
-          <option value="custom">Custom</option>
-        </select>
-        <!-- Top Leave Takers Custom Date -->
-        <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selecddt" style="display: none; width: 346px;">
-          <div class="pull-left">
-            <div class="pull-left mr5" style="width: 140px">
-              <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
-            </div>
-            <div class="pull-left mr5" style="width: 140px">
-              <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
-            </div>
-            <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
-          </div>
-        </div>
-        <!-- Top Leave Takers Custom Date --> 
-      </div>
+      
       <div class="col-md-1 col-md-offset-8">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
           <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
           <ul class="dropdown-menu clearfix  dropdown-menu-right">
             <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            <!--
-						<li role="Print" class="mt5 cursorPointer"><i class="fa fa-print paddingRight"></i>Print</li>
-						<li role="Download" class="mt5 cursorPointer"><i class="fa fa-download paddingRight"></i>Download</li>
-						<li role="Share" class="mt5 mb5 cursorPointer"><i class="fa fa-share-alt paddingRight"></i>Share</li>
--->
+           
           </ul>
         </div>
       </div>
@@ -89,20 +62,21 @@ $(document).ready(function(){
         <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
           <div class="pull-left">
             <div class="pull-left mr5" style="width: 125px">
-              <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+              <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text">
             </div>
             <div class="pull-left mr5" style="width: 125px">
-              <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+              <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text">
             </div>
-            <button type="button" class="btn btn-primary btn-sm">Submit</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="customSearch();">Submit</button>
           </div>
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
         	 
-         	 <p class="col-md-2 form-control-static">
-         	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5"><strong>250</strong></span>
-         	 </p>
+         	 <!-- <p class="col-md-2 form-control-static">
+         	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5" id="apagingTotal"><strong></strong></span>
+         	 	<label class="mt5 text-muted">Total:</label><span class="ml mt5" id="apagingBillTotal"><strong></strong></span>
+         	 </p> -->
          </div>
          <div class="clearfix"></div>
          <div class='remove_search'>
@@ -172,11 +146,56 @@ function change(){
 }
 </script>
 
+
+
+<script>
+  $( function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+    
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+  } );
+  </script>
+
+
+
+
 <script>
 function vendorapAging(){
 	   $("#apagingVendorByBill").empty();	
 	   $("#dataTableBillSearch").hide();
 	   $("#dataTableSearch").show();
+	   $("#apagingBillTotal").hide();
+	   $("#apagingTotal").show();
 	    var apagingType = $("#apagingType").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -221,6 +240,7 @@ function prepareApagingList(url){
 <script>
 function apaging(url){
 	var colIndex = 0;
+	var apagingTotal = 0;
     $('#apagingPagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -305,13 +325,16 @@ function apaging(url){
                     "targets": colIndex++,
                     "data": "above365Days",
                     "render": function ( data, type, opt, meta ) {
-                    	return '<td><div class="tblminwidth-75">'+opt.above365Days.toFixed(2)+'</div></td>';
+                    	return '<td><div class="tblminwidth-75">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
                       "data": "total",
                       "render": function ( data, type, opt, meta ) {
+                    	    apagingTotal = parseFloat(apagingTotal)+parseFloat(opt.total);
+                      	   $("#apagingTotal").html(apagingTotal.toFixed(2));
                     	  return ' <td><div class="tblminwidth-75">'+opt.total.toFixed(2)+'</div></td>';
+                    	  
                       }
                     } ],
 	    	"scrollCollapse": false,
@@ -333,20 +356,42 @@ function apaging(url){
     		   vendorapAging();
     	   }
     	});
+    
 	
 }
 </script>
 
   <!-- Bill Started -->
   <script>
-function vendorapagingBill(){
-	$("#apagingByVendor").empty();	
+function customSearch(){
+	 var fromDate = $("#fromDate").val();
+	 var toDate = $("#toDate").val();
+	   $("#apagingByVendor").empty();	
 	   $("#dataTableSearch").hide();
 	   $("#dataTableBillSearch").show();
+	   $("#apagingBillTotal").show();
+	   $("#apagingTotal").hide();
 	     var apagingType = 'Payables';
 		var sourceleadUrl ='${sourceleadUrl}';
 		var filterType = $("#custom-dates").val(); 
-		alert(filterType);
+		var searchValue = $("#dataTableBillSearch").val();
+		var filterDateType = $("#filterDateType").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterType="+filterType+"&fromDate="+fromDate+"&toDate="+toDate;
+			prepareApagingBillList(url);
+}
+</script>
+  
+  <script>
+function vendorapagingBill(){
+	   $("#apagingByVendor").empty();	
+	   $("#dataTableSearch").hide();
+	   $("#dataTableBillSearch").show();
+	   $("#apagingBillTotal").show();
+	   $("#apagingTotal").hide();
+	    var apagingType = 'Payables';
+		var sourceleadUrl ='${sourceleadUrl}';
+		var filterType = $("#custom-dates").val(); 
 		var searchValue = $("#dataTableBillSearch").val();
 		var filterDateType = $("#filterDateType").val();
 		searchValue = searchValue ? searchValue : "";
@@ -386,6 +431,7 @@ function prepareApagingBillList(url){
 <script>
 function apagingBill(url){
 	var colIndex = 0;
+	var apagingBillTotal = 0;
     $('#apagingBillPagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -445,6 +491,8 @@ function apagingBill(url){
 	    	  	"data": "totalAmount",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
+	    	  		apagingBillTotal = parseFloat(apagingBillTotal)+parseFloat(opt.totalAmount);
+             	   $("#apagingBillTotal").html(apagingBillTotal.toFixed(2));
 					result = result + '<td><div class="tblminwidth-50">'+opt.totalAmount.toFixed(2)+'</div></td>';
   	              return result;
 	    	  	}

@@ -717,11 +717,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate,endDate,locationsId,approverUserId);
 	}
 	
-	@Override
-	public ResponseList<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(Date startDate, Date endDate,
-			Long locationsId, Long approverUserId, String searchValue,int start,int length) {
-		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate,endDate,locationsId,approverUserId,searchValue,start,length);
-	}
 	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId) {
@@ -898,13 +893,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					}else{
 						
 						ProjectClients clientProjectClients = null;
-						OrgRelations orgRelations = null;
+						
 						OrgLocations clientOrgLocation = null;
 						if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
 							clientOrgLocation = projectClients.getOrgRelationId().getLocationId();
 						}else{
 							clientOrgLocation = projectClients.getOrgRelationId().getResponderLocationId();
 						}
+						
+						OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), clientOrgLocation.getId());
 						
 						Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), clientOrgLocation.getId());
 						MasterCandidate clientMasterCandidate = null;
@@ -924,7 +921,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							clientCandidate.setIsAssociate(Constants.YES);
 							clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							
-							orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), clientOrgLocation.getId());
 							clientCandidate.setOrgRelationId(orgRelations);
 							clientCandidate.setCreatedBy(user.getUserCode());
 							clientCandidate.setCreatedDate(new Date());
@@ -1162,7 +1158,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	private ProjectMembers saveTransferProjectMembers(ProjectMembers pm,User user,ProjectClients projectClients,Projects projects,Candidate candidate,OrgLocations orgLocations) throws Exception{
 		
-		ProjectMembers projectMembers = new ProjectMembers();
+		ProjectMembers projectMembers = null;
+		projectMembers = projectMembersDao.getProjectMembersByCandidateIdAndProjectId(candidate.getId(), projects.getId());
+		if(projectMembers == null) {
+			projectMembers = new ProjectMembers();
+		}
+		
 		projectMembers.setProjects(projects);
 		projectMembers.setProjectMemberCandidteId(candidate);
 		projectMembers.setMasterCandidateId(candidate.getMasterCandidateId());

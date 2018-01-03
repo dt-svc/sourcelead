@@ -370,7 +370,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    	/*========== Universal Search list of Users ==========*/ 
 	    	else if(searchType =='Users'){
 	    		if(checkSize > 0){
-	    		result = result+'   <h4>Users</h4>';
+	    		result = result+'   <h4>Associates</h4>';
 		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 				    	result = result+'  <div class="srchresult clearfix">';
@@ -828,7 +828,9 @@ function loadRequirement(){
 function loadUsers(){
 	var searchResult = "searchresult";
 	var searchValue = "${searchValue}";
-	window.location.href = sourceleadUrl + "/usersList"/* ?&searchResult="+searchResult+"&searchValue="+searchValue */;
+	var searchType = "Associates";
+	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
+
 	//usersList
 }
 </script>

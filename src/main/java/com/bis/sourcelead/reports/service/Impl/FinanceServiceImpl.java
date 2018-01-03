@@ -30,9 +30,9 @@ public class FinanceServiceImpl implements FinanceService{
 	CommonUtil commonUtil;
 	
 	@Override
-	public ResponseList<APAgingDTO> getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
+	public APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
 
-		ResponseList<APAgingDTO> res = financeDao.getApAgingListByLocation(orgLocation, apAgingDTO);
+		APAgingDTO res = financeDao.getApAgingListByLocation(orgLocation, apAgingDTO);
 
 		return res;
 	}
@@ -59,7 +59,7 @@ public class FinanceServiceImpl implements FinanceService{
 				apagingDTO.setBillDate(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
 				apagingDTO.setTotalAmount(Double.parseDouble(invoice.getTotal()));
-				apagingDTO.setDueAmount(Double.parseDouble(invoice.getDueAmount()));
+				apagingDTO.setDueAmount(Double.parseDouble(invoice.getTotal()));
 				apagingDTO.setReferId(invoice.getInvoiceId());
 				apagingDTOList.add(apagingDTO);
 			}

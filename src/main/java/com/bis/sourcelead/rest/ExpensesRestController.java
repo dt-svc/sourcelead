@@ -173,8 +173,10 @@ public class ExpensesRestController {
                          }else if(pc.getOrgRelationId() != null && "Client".equalsIgnoreCase(pc.getOrgRelationId().getInitiatorType())){
                              expenses.setClientName(pc.getOrgRelationId().getLocationId().getOrgLocationName());
                          }
+                        if(pc.getOrgRelationId() != null && pc.getOrgRelationId().getId() != null) {
                         OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pc.getOrgRelationId().getId());
             			expenses.setOrgRelationUUID(orgRelations.getUUID());
+                        }
                     }
                 }
                 

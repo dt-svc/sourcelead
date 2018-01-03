@@ -112,7 +112,7 @@ function myExpensesListByStage(expenseStatus){
 	});	
 }
 
-function employeeExpensesListByStage(expenseStatus){
+/* function employeeExpensesListByStage(expenseStatus){
 	var userSession = '${SourceLeadWeb_user.id}';
 	var orgLocationSession = '${SourceLeadWeb_orgLocationId}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -233,8 +233,18 @@ function employeeExpensesListByStage(expenseStatus){
 	
 	
 	
-}
+} */
 
+function employeeExpensesListByStage(expenseStatus){
+$.ajax({
+	    type : "GET",
+	    url: sourceleadUrl+"/getExpensesApprovalList?expenseStatus="+expenseStatus,
+	    success :function(json) {
+	    		localStorage.setItem("empExpensesListGrid",json);
+	    		window.location.replace(sourceleadUrl+'/expensesApprovalList');
+	     }
+	});
+}
 </script>
 
 <script>

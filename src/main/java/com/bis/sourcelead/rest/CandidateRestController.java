@@ -17,6 +17,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -271,7 +272,7 @@ public class CandidateRestController {
 		}
 		if (null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
-			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", "1"));
+			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
 		}
 		else {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
@@ -448,6 +449,12 @@ public class CandidateRestController {
 		if (reqCoolingOffPeriod != null && !reqCoolingOffPeriod.isEmpty() && reqCoolingOffPeriod != "undefined") {
 			coolingOffArr = reqCoolingOffPeriod.split(" ");
 			period = coolingOffArr[1];
+		}else {
+			Requirement requirement =  requirementService.getRequirementByRequirementId(requirementId);
+			if(requirement != null && StringUtils.isNotBlank(requirement.getReqCoolingOffPeriod())) {
+				coolingOffArr = requirement.getReqCoolingOffPeriod().split(" ");
+				period = coolingOffArr[1];
+			}
 		}
 		String reqCoolingOffPeriodDays;
 		int Days;
@@ -547,7 +554,7 @@ public class CandidateRestController {
 			RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			if (null != ros) {
 				rsh.setOfferResumeid(ros.getId());
-				rsh.setOfferResumeUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+				
 			}
 			if (null != rsh.getSubmissionId().getCandidateResumes()) {
 				rsh.setResumeid(rsh.getSubmissionId().getCandidateResumes().getFileURL());

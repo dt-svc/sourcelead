@@ -5,6 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
@@ -18,6 +19,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		var projectId = "${projectId}";
 		tasksAssignList(projectId);
 		getSubTaskList();
+		maskme();
 	});
  </script>
  
@@ -33,6 +35,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		</div>
 		
 	</section>
+	<div class="time_pop" id="timeSheetErrorMsg"></div>
 	<div class="taskview_wrapinn">
 	      
 	<div class="clearfix">
@@ -94,10 +97,10 @@ var sourceleadUrl = '${sourceleadUrl}';
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
-<!-- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
-	            <c:if test="${taskTypeName != 'SubTask'}">
-	            <li class="current"><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
-	            </c:if>
+ 	           <!--  <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
+		            <c:if test="${taskTypeName != 'SubTask'}">
+		            	<li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
+		            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
                  <sec:authorize access="hasAnyRole('ROLE_ADD_TASK_COMMENTS','ROLE_VIEW_EDIT_TASK_COMMENTS')">
@@ -109,13 +112,11 @@ var sourceleadUrl = '${sourceleadUrl}';
 			<div class="project_tabs"> 
 			   <div id="tab-task1" class="project_tabs_inn" style="display: none;">
 					<div class="clearfix mt mb">
-	                    <div class="clearfix btnTimeEntry">
-	                    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="addTimeEntry()">
-	                         Time Entry
-	                    </button>
-	                    </div>
 	                    <div class="clearfix">
-	                        <div class="col-md-3 paddingRight">
+	                    <button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addTimeEntry()">Add Time Entry</button>
+	                    </div>
+	                     <div class="clearfix">
+	                        <!-- <div class="col-md-3 paddingRight">
 	                            <input type="text" class="form-control input-sm" placeholder="Estimated Hours">
 	                        </div>
 	                        <div class="col-md-2 paddingLeft">
@@ -125,54 +126,48 @@ var sourceleadUrl = '${sourceleadUrl}';
 	                        </div>
 	                        <div class="col-md-3 paddingRight">
 	                            <input type="text" class="form-control input-sm" placeholder="Actual Hours">
-	                        </div>
+	                        </div> -->
 	
-	                    </div>
+	                    </div> 
 					                </div>
 					<!-- TimeEntry Modal Pop -->
+					<form id="time_entry_form" name="time_entry_form">
 					<div class="modal-Time clearfix">
 					    <!-- Modal content-->
 					      <div class="clearfix">
-					        <button type="button" class="close" onclick="closeTimeEntry()">&times;</button>
+					      <input type="hidden" name="taskUUID" value="${taskUUID}">
+					      <input type="hidden" name="projectId" value="${projectId}">
+					          <button type="button" class="close" onclick="closeTimeEntry()">&times;</button> 
 					          <p><strong>Time Entry</strong></p>
 					      </div>
 					        <div class="row clearfix">
-					            <div class="col-md-12 mb10">
-					                <textarea class="form-control" rows="1" placeholder="Description"></textarea>
-					            </div>
 					          <div class="col-md-4">
 					            <div class="row">
 					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm calendar" placeholder="Date">
+					                <input type="text" class="form-control input-sm calendar"  id="timesheetDate" placeholder="Date">
 					              </div>
 					            </div>
 					          </div>
-					          <div class="col-md-4">
+					          <div class="col-md-2">
 					            <div class="row">
 					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm timeicon" placeholder="Time">
+					                <input type="text" class="form-control input-sm timeicon editMe" onblur="editMe(this);" id= "timesheetHours"  placeholder="HH:MM">
 					              </div>
 					            </div>
 					          </div>
-					          <div class="col-md-4">
-					            <div class="row">
-					              <div class="col-md-12 dropdown-select">
-					                <select class="form-control">
-					                <option selected="">---SubTask--</option>
-					                <option>SubTask-1</option>
-					                <option>SubTask-2</option>
-					              </select>
-					            </div>
-					                </div>
+					          <div class="clearfix mb"></div>
+					          <div class="col-md-12 mb10">
+					                <textarea class="form-control" rows="2" id="entryComment"  placeholder="Description"></textarea>
 					          </div>
 					        </div>
 					      <div class="modalFooter mt5">
 					      <div class="pull-right">
-					        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Save</button>
+					        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveTaskDetails();">Save</button>
 					        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="closeTimeEntry()">Cancel</button>
 					       </div>
 					      </div>
 					</div>
+					</form>
 					                <!-- TimeEntry Modal Pop Ends -->
 					 <div class="clearfix project_wrap_table">
 			                    <table>
@@ -374,6 +369,47 @@ var sourceleadUrl = '${sourceleadUrl}';
       </div>
   </section>
 
+<script>
+	var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+     }; 
+</script>
+<script>
+function saveTaskDetails(){
+	/* if ($('#saveProjectTask').validate(false, validationSettings)){  */  
+  		/* var formData = getFormData("time_entry_form"); */
+  		var form = $('#time_entry_form')[0];
+   	    var formData = new FormData(form); 
+  		var assignedMemberIds = $('select#assignedUsers').val();
+  		var timesheetDate = $('#timesheetDate').val();
+  		var timesheetHours = $('#timesheetHours').val();
+  		var entryComment = $('#entryComment').val();
+  		for(var i=0 ; i< assignedMemberIds.length ; i++){	
+  			formData.append('assignedMember['+i+'].projectMemberId',assignedMemberIds[i]);
+  			formData.append('assignedMember['+i+'].timesheetDate',timesheetDate);
+  			formData.append('assignedMember['+i+'].hours',timesheetHours);
+  			formData.append('assignedMember['+i+'].comments',entryComment);
+  		}
+  		alert(sourceleadUrl);
+	         $.ajax({
+				 type : "POST",
+				 data: formData,
+  		         processData: false,
+  		         contentType:false, 
+				 url : sourceleadUrl+"/addTimeSheetDayEntries",
+				  		success : function(data) {
+				  					alert("hi"+data);
+				},
+			});
+			/* return true; */
+	  /*  }else{ 
+			return false;
+	 }   */ 
+}
+</script>
 
 <script>
 $('.chosen-select').chosen().on('change', function() {
@@ -608,7 +644,7 @@ function inlineEditBillingType(taskId){
 <script> 
 //project side bar tabs
 $(document).ready(function() {
-$("#tab-task2").show();
+$("#tab-task1").show();
     $("#tab-1").show();
     $(".project-tabs-menu a").click(function(event) {
         event.preventDefault();
@@ -1801,7 +1837,157 @@ function commentTableList(){
 }
 </script>
 
+<script>
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var jsDateFormat= '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  jsDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  jsDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  jsDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  jsDateFormat = 'yy-dd-mm'; 
+	  }
+	  $('#timesheetDate').datepicker({
+	      dateFormat: jsDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true,
+	  });
+</script>
+
+
 <!-- ============================ Comments related Script End's ========================================== -->
+
+<script>
+function maskme(){
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".editMe").mask("Hh:Mm"); 
+}
+</script>
+
+<script>
+function editMe(local){
+	     var id = local.id;
+	     var inputValue =  $("#"+id).val();
+		 var split = inputValue.split(':');
+		 var hours = split[0];
+		 var minutes = split[1];
+		 var hours1 = hours.charAt(0);
+		 var hours2 = hours.charAt(1);
+		 var min1 = minutes.charAt(0);
+		 var min2 = minutes.charAt(1);
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("0"+hours1+":00");
+			 //setTotals();
+			 checkHours(); 
+		 }
+		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("0"+hours2+":00");
+			 //setTotals();
+			 checkHours(); 
+		 }
+		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val("00:"+min1+"0");
+			 //setTotals();
+			 checkHours(); 
+		 }
+		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+			 $("#"+id).val("00:0"+min2);
+			 //setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val(hours+":00");
+			 //setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+			 $("#"+id).val(hours+":"+"0"+min1);
+			 //setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+			 $("#"+id).val(hours+":"+"0"+min2);
+			 //setTotals();
+			 checkHours(); 
+		 }
+		 else if(!isNaN(hours)&& !isNaN(minutes)){
+			  var hrmin= hours * 60;
+			  var totalMin = parseInt(hrmin) + parseInt(minutes);
+			  hours = Math.floor(totalMin / 60); 
+			  minutes = totalMin % 60;
+			  if(hours<=9){
+				  hours = "0"+hours;
+			  }
+			  if(minutes<=9){
+				  minutes = "0"+minutes;
+			  }
+			  $("#"+id).val(hours+":"+minutes);
+			 // setTotals();
+			  checkHours(); 
+		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		     $("#"+id).val("00:00");
+		    // setTotals();
+		 }
+		 
+}
+
+function checkHours(){ 
+	 var result = "";		
+	 var total; 
+	 var bsum = 0;
+	 var nbsum = 0;
+	 var total = 0;
+   	 var btemp = $("#timesheetHours").val();
+     if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+    	 var hours = btemp;
+    	 var split = hours.split(':');
+    	 var first = split[0];
+    	 var second = split[1];
+		 var minute = first * 60;
+		 var minute1 = second;
+		 var finalmin = parseInt(minute) + parseInt(minute1);
+	     bsum = parseFloat(bsum) + parseInt(finalmin);
+	}
+	    var t = bsum; 
+		var hours = Math.floor(t / 60); 
+		var minutes = t % 60;
+		total = hours +":"+ minutes;
+	 	var time = total.split(':'); 
+	 	if(!isNaN(time[0])){
+	 	if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
+	 	}else{
+	    		result = result+"Day";
+	 	}
+  }
+	    if(result != "" && result != null && result != 'undefined'){   
+			var outPut = "<p>"+result+" hours should not be more than 24<b id='datePopUpError'>X</b></p>";
+			$("#timeSheetErrorMsg").removeAttr('style');
+			$("#timeSheetErrorMsg").attr('style','display:block;');
+			$("#timeSheetErrorMsg").empty();
+			$("#timeSheetErrorMsg").append(outPut);
+		 }else{
+		    $("#timeSheetErrorMsg").removeAttr('style');
+		    $("#timeSheetErrorMsg").attr('style','display:none;');
+			$("#timeSheetErrorMsg").empty();
+			$("#hideError").empty();
+		} 
+		
+		$(".time_pop b").click(function(){
+			$("#timeSheetErrorMsg").removeAttr('style');
+			$("#timeSheetErrorMsg").attr('style','display:none;');
+		    $("#timeSheetErrorMsg").empty();
+		}); 
+	
+}
+
+</script>
 
 
  <jsp:include page="../masterFooter.jsp" />	

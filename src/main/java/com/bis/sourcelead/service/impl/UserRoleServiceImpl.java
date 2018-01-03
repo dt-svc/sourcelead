@@ -27,6 +27,9 @@ import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -207,6 +210,24 @@ public class UserRoleServiceImpl implements UserRoleService{
 	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
 			List<UserRole> activeList, List<UserRole> inactiveList, List<UserRole> notLoggedInList, String userState, ArrayList<UserRole> userRolesList,OrgLocations orgLocations) {
 
+		
+		 //userRole list developed by laxman  
+		int activeCount = 0;
+		int inActiveCount = 0;
+		int notLoggedInCount = 0;
+        for(UserRole ur:userRolesList) {
+        	if("ACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+        		activeCount++;
+        	} 
+        	if("INACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+        		inActiveCount++;
+        	} 
+        	if("NOT_LOGGEDIN".equalsIgnoreCase(ur.getUserState().toString())){
+        		notLoggedInCount++;
+        	} 
+        }
+		
+		
 		CellStyle style = createExcelworkbook.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
@@ -233,6 +254,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 		 }
 		cell01.setCellStyle(style);
 		 
+		
+		
 		 writeRow = createExcelsheet.createRow(1);
 		 createExcelsheet.setColumnWidth(0, 10000);
 		 createExcelsheet.setColumnWidth(1, 10000);
@@ -243,16 +266,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		 cell1.setCellStyle(style);
 		 
 		 Cell cell2 = writeRow.createCell(1);
-		
-			 if("ACTIVE".equalsIgnoreCase(userState)){
-				 cell2.setCellValue(userRolesList.size());
-			 }else{
-				 if(activeList !=null){
-				 cell2.setCellValue(activeList.size());
-				 }else{
-					 cell2.setCellValue("--");
-				 }
-			 }
+				 cell2.setCellValue(activeCount);
 		 cell2.setCellStyle(style);
 		 
 		 writeRow = createExcelsheet.createRow(2);
@@ -264,16 +278,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		 cell3.setCellStyle(style);
 		 
 		 Cell cell4 = writeRow.createCell(1);
-		
-			 if("INACTIVE".equalsIgnoreCase(userState)){
-				 cell4.setCellValue(userRolesList.size()); 
-			 }else{
-				 if(inactiveList !=null){
-				 cell4.setCellValue(inactiveList.size()); 
-				 }else{
-					 cell4.setCellValue("--");
-				 }
-			 }
+				 cell4.setCellValue(inActiveCount); 
 		 cell4.setCellStyle(style);
 		 
 		 writeRow = createExcelsheet.createRow(3);
@@ -285,17 +290,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		 cell5.setCellStyle(style);
 		 
 		 Cell cell6 = writeRow.createCell(1);
-		
-			 if("NOT_LOGGEDIN".equalsIgnoreCase(userState)){
-				 cell6.setCellValue(userRolesList.size()); 
-			 }else{
-				 if(notLoggedInList != null){
-				 cell6.setCellValue(notLoggedInList.size());
-				 }else{
-					 cell6.setCellValue("-"); 
-				 }
-			 }
-		
+				 cell6.setCellValue(notLoggedInCount); 
 		 cell6.setCellStyle(style);
 		 String headers [] = Constants.USER_EXCEL_HEADERS;
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,7);
@@ -622,6 +617,16 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getUserRoleByVerficationUUID(String uuid)
 	{
 		return userRoleDao.getUserRoleByVerficationUUID(uuid);
+	}
+
+	@Override
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
+		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,roleId, locationId, userState, userId, loginUserRole, userCode);
+	}
+
+	@Override
+	public List<UserRoleDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception {
+		return userRoleDao.getUserListForConnections(searchByName,offSet,userId);
 	}
 
 }

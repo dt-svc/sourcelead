@@ -536,9 +536,10 @@ public class BackOfficeRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
-		StringBuilder name = new StringBuilder();
+		
 		List<AssetCategory> assetCategoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
 		for(AssetCategory assetCategory : assetCategoryList){
+			StringBuilder name = new StringBuilder();
 			User user = userService.getUserByUserCode(assetCategory.getCreatedBy());
 			assetCategory.setCreatedUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			assetCategory.setOrgLocationId(assetCategory.getOrgLocations().getId());

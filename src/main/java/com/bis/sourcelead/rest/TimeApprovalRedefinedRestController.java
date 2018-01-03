@@ -311,7 +311,12 @@ public class TimeApprovalRedefinedRestController {
 	 			    	}
 	 			    } 
 			 }	
-			 timesheetApprovalDTO.setWeekFrequency(currentTimesheetFrequency);
+			 if(!timesheetApprovalDTO.getTimesheetFrequency().equalsIgnoreCase("Monthly")) {
+				 timesheetApprovalDTO.setWeekFrequency(currentTimesheetFrequency);
+			 }
+			 else {
+				 timesheetApprovalDTO.setWeekFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("STARTDATE"))+"To"+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("ENDDATE")));
+			 }
 			 timesheetApprovalDTO.setFrequencyStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("STARTDATE")));
 			 timesheetApprovalDTO.setFrequencyEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("ENDDATE")));
 			 return timesheetApprovalDTO;
@@ -326,12 +331,12 @@ public class TimeApprovalRedefinedRestController {
 	 		 clientMap.put(null, "All");
 	                if(projectClientList != null && !projectClientList.isEmpty()){
 	                	    projectClientList.forEach(projectClient ->{
-	               	        	if( null != projectClient.getOrgRelationId().getLocationId() && projectClient.getOrgRelationId().getLocationId().getId() != null && projectClient.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+	               	        	if(projectClient.getOrgRelationId() != null && projectClient.getOrgRelationId().getLocationId() != null && projectClient.getOrgRelationId().getLocationId().getId() != null && projectClient.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 	        						if(projectClient.getOrgRelationId().getResponderLocationId() != null){
 	        							clientMap.put(projectClient.getOrgRelationId().getId(),projectClient.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 	        						}
 	        					}
-	        					if( null != projectClient.getOrgRelationId().getResponderLocationId() && null != projectClient.getOrgRelationId().getResponderLocationId().getId() && projectClient.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+	        					if( projectClient.getOrgRelationId() != null && null != projectClient.getOrgRelationId().getResponderLocationId() && null != projectClient.getOrgRelationId().getResponderLocationId().getId() && projectClient.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 	        						if(projectClient.getOrgRelationId().getLocationId() != null){
 	        							clientMap.put(projectClient.getOrgRelationId().getId(),projectClient.getOrgRelationId().getLocationId().getOrgLocationName());
 	        						}
@@ -454,7 +459,7 @@ public class TimeApprovalRedefinedRestController {
 				 }
 			}
 	        
-	        if(projectMembers != null && !projectMembers.getData().isEmpty()){
+	       /* if(projectMembers != null && !projectMembers.getData().isEmpty()){
 	        	if(StringUtils.isNotEmpty(timesheetApprovalDTO.getTimesheetFrequency()) && timesheetApprovalDTO.getTimesheetFrequency().equalsIgnoreCase("Bi-Weekly")){
 		        	for(ProjectMembers pm :projectMembers.getData()){
 		        		 Date biweeklyStrDate = null;
@@ -467,8 +472,8 @@ public class TimeApprovalRedefinedRestController {
 	        	 else{
 			        	freshProjectMembers = new HashSet<>(projectMembers.getData());
 			        }
-	         }
-	        if(freshProjectMembers != null && !freshProjectMembers.isEmpty()){
+	         }*/
+	        if(projectMembers.getData() != null && !projectMembers.getData().isEmpty()){
 	        	int tdSpanLength = 6;
 	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
 	         for (ProjectMembers projectMember : projectMembers.getData()){
@@ -590,18 +595,18 @@ public class TimeApprovalRedefinedRestController {
 				    	 }
 				    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
 				    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
-				    		  weekTotalList.add(weekTotal.toString());
+				    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
 				    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey())));
 				    	 }else{
-				    		 weekTotalList.add(weekTotal.toString());
+				    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
 				    	 }
 				    	 
 				     }
 				     ts.setWeeekTotal(weekTotalList);
-			   	 ts.setSubmissionTotal(submissionTotalList);
+				     ts.setSubmissionTotal(submissionTotalList);
 			   	 
-				    ts.setTotalHours(totalHours.toString());
-				    ts.setEstimatedHours(estimatedTotalHours.toString());
+				    ts.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
+				    ts.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours));
 				    ts.setSubmissionStatus(sah.getSubmissionApprovalStatus().getValue());
 			  	  }
 				  if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){

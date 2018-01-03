@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.reports.dao.FinanceDao;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
+import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.ReportsUtil;
 
@@ -43,60 +44,70 @@ public class FinanceDaoImpl implements FinanceDao{
 	@Autowired
 	ReportsUtil reportsUtil;
 	
-	@SuppressWarnings("static-access")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public ResponseList<APAgingDTO> getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
-		 ResponseList<APAgingDTO> response = new ResponseList<APAgingDTO>();
+	public APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
+		
+		APAgingDTO apagingdto = new APAgingDTO();
+		ResponseList<APAgingDTO> response = new ResponseList<APAgingDTO>();
 		try {
 			List<Invoice> invoiceList = null;
 			List<Long> idsList = new ArrayList<>();
 			String query = "";
-			if(!"null".equalsIgnoreCase(apAgingDTO.getOrgIds()) && StringUtils.isNotBlank(apAgingDTO.getOrgIds())) {
+			if (!"null".equalsIgnoreCase(apAgingDTO.getOrgIds()) && StringUtils.isNotBlank(apAgingDTO.getOrgIds())) {
 				String[] ids = apAgingDTO.getOrgIds().split(",");
-				for(String relationId : ids) {
+				for (String relationId : ids) {
 					idsList.add(Long.parseLong(relationId));
 				}
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue' and invoice.orgRelationID.id IN (:orgIds)";
-			}else {
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue' ";
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.orgRelationID.id IN (:orgIds)";
+			} else {
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' ";
 			}
-			
+
 			Session session = this.sessionFactory.getCurrentSession();
-			
-			 String countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue'";
+
+			String countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
 			StringBuilder searchQuery = new StringBuilder("");
-			 if(apAgingDTO.getSearchValue() !=null && !"".equalsIgnoreCase(apAgingDTO.getSearchValue())) {
-				 searchQuery.append(" and (invoice.responderLocationId.orgLocationName like '%" + apAgingDTO.getSearchValue() + "%' ")
-					.append("OR invoice.orgLocation.orgLocationName like '%" + apAgingDTO.getSearchValue() + "%' )");
+			if (apAgingDTO.getSearchValue() != null && !"".equalsIgnoreCase(apAgingDTO.getSearchValue())) {
+				searchQuery
+						.append(" and (invoice.responderLocationId.orgLocationName like '%"
+								+ apAgingDTO.getSearchValue() + "%' ")
+						.append("OR invoice.orgLocation.orgLocationName like '%" + apAgingDTO.getSearchValue()
+								+ "%' )");
+			}
+
+			Query queryObj = session.createQuery(query + searchQuery.toString());
+			if (apAgingDTO != null && apAgingDTO.getLength() > 0) {
+				queryObj.setFirstResult(apAgingDTO.getStart());
+				queryObj.setMaxResults(apAgingDTO.getLength());
+			}
+			if (!"null".equalsIgnoreCase(apAgingDTO.getOrgIds()) && StringUtils.isNotBlank(apAgingDTO.getOrgIds())) {
+				invoiceList = queryObj.setLong("orglocationId", orgLocation.getId())
+						.setString("invoiceType", apAgingDTO.getApagingType()).setParameterList("orgIds", idsList)
+						.list();
+			} else {
+				invoiceList = queryObj.setLong("orglocationId", orgLocation.getId())
+						.setString("invoiceType", apAgingDTO.getApagingType()).list();
+			}
+			int count = 0;
+			int filteredCount = 0;
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery)
+					.setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType())
+					.list();
+			if (countlist != null && !countlist.isEmpty()) {
+				count = countlist.iterator().next().intValue();
+			}
+			response.setRecordsTotal(count);
+
+			if (apAgingDTO != null) {
+				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
+						.setLong("orglocationId", orgLocation.getId())
+						.setString("invoiceType", apAgingDTO.getApagingType()).list();
+				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
-			 
-			 Query queryObj = session.createQuery(query+searchQuery.toString());
-				if (apAgingDTO != null && apAgingDTO.getLength() > 0) {
-					queryObj.setFirstResult(apAgingDTO.getStart());
-					queryObj.setMaxResults(apAgingDTO.getLength());
-				}
-				if(!"null".equalsIgnoreCase(apAgingDTO.getOrgIds()) && StringUtils.isNotBlank(apAgingDTO.getOrgIds())) {
-				   invoiceList = queryObj.setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).setParameterList("orgIds", idsList).list();
-				}else {
-					invoiceList = queryObj.setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();	
-				}
-				int count = 0;
-				int filteredCount = 0;
-				List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();
-				if(countlist != null && !countlist.isEmpty()) {
-					count = countlist.iterator().next().intValue();
-				}
-				response.setRecordsTotal(count);
-				
-				if (apAgingDTO != null) {
-					List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery).setLong("orglocationId", orgLocation.getId()).setString("invoiceType", apAgingDTO.getApagingType()).list();
-					if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
-						filteredCount = filteredCountlist.iterator().next().intValue();
-					}
-					response.setRecordsFiltered(filteredCount);
-				}
-			 
+				response.setRecordsFiltered(filteredCount);
+			}
 			 
 			 if(invoiceList !=null) {
 				 Map<Long,List<Invoice>> map = new HashMap<>();
@@ -119,7 +130,9 @@ public class FinanceDaoImpl implements FinanceDao{
 		    	   Date[] nintyDays = reportsUtil.apAgingPeriodDays(61,90);
 		    	   Date[] oneEightyDays = reportsUtil.apAgingPeriodDays(91,180);
 		    	   Date[] threeSictyDays = reportsUtil.apAgingPeriodDays(181,360);
+		    	   Date above365Days = reportsUtil.above365Days();
 				 List<APAgingDTO> apaAgingList = new ArrayList<>();
+				 List<AparagingDate> above365Dates = new ArrayList<>();
 				 for(Map.Entry<Long, List<Invoice>> entry : map.entrySet()) {
 					 APAgingDTO apagingDTO = new APAgingDTO();
 			    	   List<Invoice> invList = entry.getValue();
@@ -130,12 +143,14 @@ public class FinanceDaoImpl implements FinanceDao{
 			    	   double nintyDaysTotal = 0;
 			    	   double oneEightyDaysTotal = 0;
 			    	   double threeSixtyDaysTotal = 0;
+			    	   double abovethreeSixtyFiveDaysToatl = 0;
 			    	   double total = 0;
 			    	   for(Invoice invoice : invList) {
 			    		   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			    		   AparagingDate aparagingdate = new AparagingDate();
 			    		   Date dueDate = sdf.parse(sdf.format(invoice.getDueDate()));
 			    		   if(dueDate.after(tenDays[0]) && dueDate.before(tenDays[1])) {
-			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getDueAmount());
+			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getTotal());
 			    		   }
 			    		   if(dueDate.after(fifteenDays[0]) && dueDate.before(fifteenDays[1])) {
 			    			   fifteenDaysTotal = fifteenDaysTotal + Double.parseDouble(invoice.getDueAmount());
@@ -154,10 +169,17 @@ public class FinanceDaoImpl implements FinanceDao{
 			    		   }
 			    		   if(dueDate.after(threeSictyDays[0]) && dueDate.before(threeSictyDays[1])) {
 			    			   threeSixtyDaysTotal = threeSixtyDaysTotal + Double.parseDouble(invoice.getDueAmount());
+			    		   }if(dueDate.before(above365Days)) {
+			    			   abovethreeSixtyFiveDaysToatl = abovethreeSixtyFiveDaysToatl +  Double.parseDouble(invoice.getDueAmount());
+			    			   aparagingdate.setDate(dueDate);
+			    			   aparagingdate.setAmount(Double.parseDouble(invoice.getDueAmount()));
+			    		   }
+			    		   if(aparagingdate.getDate() !=null) {
+			    			   above365Dates.add(aparagingdate);
 			    		   }
 			    		   
 			    	   }
-			    	   total = total + tenDaysTotal + fifteenDaysTotal + thirtyDaysTotal + sixtyDaysTotal + nintyDaysTotal + oneEightyDaysTotal + threeSixtyDaysTotal;
+			    	   total = total + tenDaysTotal + fifteenDaysTotal + thirtyDaysTotal + sixtyDaysTotal + nintyDaysTotal + oneEightyDaysTotal + threeSixtyDaysTotal + abovethreeSixtyFiveDaysToatl;
 			    	   OrgRelations orgRelations = orgRelationsService.getOrgRelationById(entry.getKey());
 			    	   if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 			    		   apagingDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
@@ -172,10 +194,15 @@ public class FinanceDaoImpl implements FinanceDao{
 						   apagingDTO.setNintyDays(nintyDaysTotal);
 						   apagingDTO.setOneeightyDays(oneEightyDaysTotal);
 						   apagingDTO.setThreeSixtyFiveDays(threeSixtyDaysTotal);
+						   apagingDTO.setAbovethreeSixtyFiveDays(abovethreeSixtyFiveDaysToatl);
 						   apagingDTO.setTotal(total);
 			    	       apaAgingList.add(apagingDTO);
 			    	   }
 				 response.setRecordsTotal(map.size());
+				 apagingdto.setRecordsTotal(map.size());
+				 apagingdto.setRecordsFiltered(map.size());
+				 apagingdto.setApaAgingList(apaAgingList);
+				 apagingdto.setAbove365Dates(above365Dates);
 				 response.setRecordsFiltered(map.size());
 				 response.setData(apaAgingList);
 			 }
@@ -183,7 +210,7 @@ public class FinanceDaoImpl implements FinanceDao{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-			return response;
+			return apagingdto;
 		
 	}
 
@@ -221,14 +248,16 @@ public class FinanceDaoImpl implements FinanceDao{
 					Date[] dates = reportsUtil.lastYearDates();
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
-				}else {
-//					reportsUtil.getCustomDates();
+				}else if("custom".equalsIgnoreCase(apAgingDTO.getFilterType())){
+					Date[] dates = reportsUtil.getCustomDates(apAgingDTO.getFromDate(),apAgingDTO.getToDate());
+					startDate = new java.sql.Date(dates[0].getTime());
+					endDate = new java.sql.Date(dates[1].getTime());
 				}
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue'";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
 			}else {
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Overdue'";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
 					
 			}
 			

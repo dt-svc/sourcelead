@@ -22,10 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.mchange.v1.util.StringTokenizerUtils;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -779,4 +784,244 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return null;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<UserRole> response = new ResponseList<>();
+		List userRoleList = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		String subQuery = "";
+		String subQuery2 ="";
+		Map<String, Object> params = new HashMap<String,Object>();
+		StringBuilder query1 = new StringBuilder("");
+		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+		 query1.append("and( (userRole.user.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.user.lastName like '%" + userDTO.getSearchValue() + "' )")
+			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
+			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
+			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' ")
+			   .append("OR userRole.reportingManager.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.reportingManager.lastName like '%" + userDTO.getSearchValue() + "' ")
+			   .append("OR (concat(userRole.reportingManager.firstName,userRole.reportingManager.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%')  ")
+			   .append("OR userRole.userState like '%" + userDTO.getSearchValue() + "%' )");
+					
+		}
+//		role.getReportingManager().getFirstName()
+		if(roleId != null) {
+			 subQuery = " and userRole.roles.id = :roleId ";
+			params.put("roleId",roleId);
+		}
+		if(!"".equalsIgnoreCase(userState)){
+			subQuery2 = " and userRole.userState =:userState ";
+			params.put("userState",userState);
+		} 
+			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
+			Query query = session.createQuery(listQuery+query1);
+			if(roleId != null && !"".equalsIgnoreCase(userState)) {
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();	
+			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();	
+			}  else if(!"".equalsIgnoreCase(userState)){
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+			}else {
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+			}
+			
+			
+			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
+			Query query2 = session.createQuery(queryCount+query1);
+			if(roleId != null && !"".equalsIgnoreCase(userState)) {
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+			} else if(!"".equalsIgnoreCase(userState)){
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+			}else {
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+			}
+			  
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			filterCount = countlist.size();
+		}
+			
+		 
+		int totalCount = 0;
+			if (userDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			response.setData(userRoleList);
+			return response;
+			
+	}
+
+	@Override
+	@Transactional
+	public List<UserRoleDTO> getUserListForConnections(String searchByName, Integer offset,Long userId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		String searchByValue = searchByName.trim();
+		StringBuilder subQuery = new StringBuilder("");
+		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
+			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
+			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
+			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
+		}
+		
+		
+		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
+				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+"  ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		
+		if(userRoleList.size() >= offset){
+			if(userRoleList.size() > offset + 20){
+				userRoleList = userRoleList.subList(offset, (offset+20));
+			}else{
+				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
+			}
+			
+			if(userRoleList != null && userRoleList.size() > 0) {
+				for(UserRole userRole : userRoleList) {
+					UserRoleDTO userRoleDTO = new UserRoleDTO();
+					StringBuilder userName = new StringBuilder();
+					if(userRole.getUser().getLastName() != null) {
+						userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+					}else {
+						userName = userName.append(userRole.getUser().getFirstName());
+					}
+					userRoleDTO.setUserName(userName.toString());
+					userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
+					userRoleDTO.setOrgName(userRole.getOrgLocations().getOrgLocationName());
+					userRoleDTO.setUserId(userRole.getUser().getId());
+					userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+					userRoleDTOList.add(userRoleDTO);
+				}
+			}
+			return  userRoleDTOList;
+		}else{
+			return  null;
+		}
+		
+	}
+	
+	/*
+     @SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getUsersListByRoleAndNameAndLocationId1(Long roleId, String userName, Long locationId,
+			String userState, Long userId,String loginUserRole,String userCode,Integer offset,String viewType) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+        Map<String, Object> params = new HashMap<String,Object>();
+		
+        ArrayList<String> subquerys = new ArrayList<String>();
+       
+		String from = "from UserRole userRole where "; 
+		
+		String subQuery = "userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "
+				+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' " ;
+		params.put("locationId",locationId);
+		params.put("userId",userId);
+		subquerys.add(subQuery);
+		
+
+		String subQuery3 = "";
+		String subQuery4 = "";
+		String subQuery5 = ""; 
+		String firstWord="";
+		String lastWord="";
+		String subQuery8="";
+		
+		String s1 =userName;
+		String withoutWhitespace = s1.trim();
+		if(!"".equalsIgnoreCase(withoutWhitespace) && withoutWhitespace.contains(" "))
+		{
+			 
+			 String[] words =withoutWhitespace.split("\\s");
+				 firstWord = words[0];
+				 lastWord = words[1];
+		
+		
+		}
+		
+		if(!firstWord.equals("") && !lastWord.equals("")){
+			 subQuery8 = " and ((userRole.user.firstName LIKE '" + firstWord + "%') OR (userRole.user.firstName LIKE '" + lastWord + "%') OR  (userRole.user.lastName LIKE '"+ firstWord + "%') OR  (userRole.user.lastName LIKE '"+ lastWord + "%'))";
+			 subquerys.add(subQuery8);
+		 }
+		
+		else{
+			 subQuery8 =""; 
+		 }
+		
+		 if(!"".equalsIgnoreCase(withoutWhitespace) && !withoutWhitespace.contains(" ")){
+			 subQuery3 = " and ((userRole.user.firstName LIKE '" + withoutWhitespace + "%') OR  (userRole.user.lastName LIKE '"+ withoutWhitespace + "%') OR (userRole.user.email LIKE '" + withoutWhitespace + "'))";
+			 subquerys.add(subQuery3);
+		
+		 }else{
+			 subQuery3 =""; 
+		 }
+		 
+		if(!"".equalsIgnoreCase(userState)){
+			subQuery4 = " and userRole.userState = '" + userState + "'";
+			 subquerys.add(subQuery4);
+		}else{
+			 subQuery4 ="";
+		}
+		
+		 
+		if(roleId != null){
+			subQuery5 = " and userRole.roles.id = :roleId";
+			params.put("roleId",roleId);
+			subquerys.add(subQuery5);
+		}else{
+			 subQuery5 ="";
+		}
+		
+		StringBuilder whereCondition = new StringBuilder();
+		for (String s : subquerys){
+			whereCondition.append(s);
+	       }
+		
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY userRole.id DESC");
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("locationId") || str.equalsIgnoreCase("userId")){
+				query.setLong(str, (long) params.get( str ));
+			}else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+		List<UserRole>  list =null;
+		list = query.setCacheable(true).list();
+		if(viewType != null && viewType.equalsIgnoreCase(Constants.VIEW_TYPE)){
+			return list;
+		}else{
+			if(query.list().size() >= offset){
+				if(query.list().size() > offset + 10){
+					return   list.subList(offset, (offset+10));
+				}else{
+					return   list.subList(offset, (  offset + (query.list().size() - offset)));
+				}
+			}else{
+				return  null;
+			}
+		}
+	} */
 }

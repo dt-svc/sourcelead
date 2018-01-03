@@ -298,7 +298,6 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	        	<tbody>");
 			for (ProjectMembers projectMember : projectMembers)
 			{
-				 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 				  User consultantUser = null;
 					 String fileUrl = "";
 				 if(projectMember != null && projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
@@ -644,7 +643,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate, endDate, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
             	reportList.add(prepareTimesheetReportData(promembers,header,displayWeeksList,loginUser,startDate,endDate));
@@ -675,7 +674,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		StringBuilder nameAndId = new StringBuilder();
 			if(null != projectMember.getProjectMemberCandidteId()){
 				        nameAndId.append(projectMember.getProjectMemberCandidteId().getFullName());
-						if(projectMember.getEmployee() != null){
+						if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
 							nameAndId.append("-").append(projectMember.getEmployee().getEmployeeId()).toString();
 						}
 						timeSheetReportsArray[0] =	nameAndId.toString();	
@@ -687,7 +686,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				timeSheetReportsArray[1] = projectMember.getProjectMemberCandidteId().getEmail();
 			 }else{
 				 timeSheetReportsArray[1] = "--";
-			 }if(projectMember.getProjectMemberCandidteId().getMobilePhone() !=null){
+			 }
+			if(projectMember.getProjectMemberCandidteId().getMobilePhone() !=null && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getMobilePhone() )){
 				 timeSheetReportsArray[2] = projectMember.getProjectMemberCandidteId().getMobilePhone();
 			 }else{
 				 timeSheetReportsArray[2] = "--";
@@ -698,7 +698,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }else{
 				 timeSheetReportsArray[3] = "--";
 			 }
-			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getRate() !=null){
+			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getRate() != null && StringUtils.isNotBlank(projectMember.getEmployee().getRate())){
 				 StringBuilder rateString = new StringBuilder();
 				 timeSheetReportsArray[4] = rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString();
 			 }else{
@@ -901,7 +901,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserIdResponseList(startDate, endDate, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows());
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
@@ -944,7 +944,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow, Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
 		createExcelsheet.getDefaultRowHeight();
 		StringBuilder sbid = new StringBuilder();
-		if(null != (projectMember.getEmployee().getEmployeeId()) && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
+		if(projectMember.getEmployee()!= null) {
+		if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
 			 writeRow.createCell(0).setCellValue(sbid.append(projectMember.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 		}
@@ -956,7 +957,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(2).setCellValue(projectMember.getProjectMemberCandidteId().getEmail());
 			 createExcelsheet.autoSizeColumn(2);
 		}
-		if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
+		if( projectMember.getProjectMemberCandidteId().getMobilePhone() != null ){
 			 writeRow.createCell(3).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			 createExcelsheet.autoSizeColumn(3);
 		}
@@ -964,12 +965,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 			 createExcelsheet.autoSizeColumn(4);
 		}
-		if(null != projectMember.getEmployee().getRate()){
+		if( projectMember.getEmployee().getRate() != null){
 			StringBuilder rateString = new StringBuilder();
 			 writeRow.createCell(5).setCellValue(rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
 			 createExcelsheet.autoSizeColumn(5);
 		}
-		
+	}
 		if(null != projectMember.getProjects().getProjectName()){
 			 writeRow.createCell(6).setCellValue(projectMember.getProjects().getProjectName()); 
 			 createExcelsheet.autoSizeColumn(6);

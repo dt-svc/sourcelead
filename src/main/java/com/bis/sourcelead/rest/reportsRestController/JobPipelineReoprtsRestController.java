@@ -19,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.reports.service.JobsPipelineReportService;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
@@ -53,6 +57,9 @@ public class JobPipelineReoprtsRestController {
 	@Autowired
 	ReportsUtil reportsUtil;
 	
+	@Autowired
+	ClientReportService clientReportService;
+	
 	
 	@SuppressWarnings("unchecked")
 	@Async
@@ -61,8 +68,37 @@ public class JobPipelineReoprtsRestController {
 	JobPipelineDTO getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		List<Long> jobIdList = new ArrayList<>();
+		
+		Date[] searchDates = null;
+		
+		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+		}else {
+			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+			String customEndTimeStr = TZ_DF_CED.format(toDate);
+			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+			fromDate = TZ_DF_TS.parse(startDateString);
+			toDate = TZ_DF_TS.parse(endDateString);
+			
+    	    searchDates = new Date[2];
+    	    searchDates[0] = fromDate;
+    	    searchDates[1] = toDate;
+		}
 
-	       List<Long> jobIdList = new ArrayList<>();
+		if(jobFilterDTO.getFromtype() != null && jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
+			
+			jobIdList = getClientRequirementList(orgLocation,user,searchDates);
+		}else{
 			if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 				String[] jobIds = jobFilterDTO.getJobIds().split(",");
 				for(int i=0; i<jobIds.length; i++) {
@@ -71,29 +107,8 @@ public class JobPipelineReoprtsRestController {
 			}else {
 				jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
 			}
+		}
 			
-			Date[] searchDates = null;
-			
-			if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
-			}else {
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
-	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
-				String customStartTimeStr = TZ_DF_CSD.format(fromDate);
-				String customEndTimeStr = TZ_DF_CED.format(toDate);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-				fromDate = TZ_DF_TS.parse(startDateString);
-				toDate = TZ_DF_TS.parse(endDateString);
-				
-	    	    searchDates = new Date[2];
-	    	    searchDates[0] = fromDate;
-	    	    searchDates[1] = toDate;
-			}
 	 
 	    	int applicantsSum = 0;
 			int requestSentSum = 0;
@@ -358,12 +373,12 @@ public class JobPipelineReoprtsRestController {
 		    	
 		    	
 		    	//Moveforward percentage
-		    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum))*100);
-		    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum))*100);
-		    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum))*100);
-		    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum))*100);
-		    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum))*100);
-		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum))*100);
+		    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum)*100));
+		    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum)*100));
+		    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum)*100));
+		    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum)*100));
+		    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum)*100));
+		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum)*100));
 		    	
 		    	Double rejectedMove = 0d;
 		    	if(rejectedFromSubmissionCount > 0 && applicantsSum >0) {
@@ -400,6 +415,23 @@ public class JobPipelineReoprtsRestController {
 	    	}
 			return report;
 		 
+	}
+
+
+	private List<Long> getClientRequirementList(OrgLocations orgLocation, User user, Date[] searchDates) {
+		List<Long> jobIds = new ArrayList<>();
+		List<OrgRelations> clientList = clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
+		if(clientList != null && clientList.size() > 0) {
+			for(OrgRelations orgRelation : clientList) {
+				List<Requirement> jobsList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(), orgLocation.getId(), user.getId(), searchDates, null);
+				if(jobsList != null && jobsList.size() > 0) {
+					for(Requirement req :jobsList) {
+						jobIds.add(req.getId());
+					}
+				}
+			}
+		}
+		return jobIds;
 	}
 
 }

@@ -206,8 +206,8 @@ padding-left: 25px;
 				 if(json.explanation != null && json.explanation != '' && json.explanation != 'undefined'){
 					 result = result +'     <div class="form-group">';
 					 result = result +'       <label class="col-md-3 control-label">Explanation</label> ';
-					 result = result +'       <div class="col-md-6">';
-					 result = result +'           <label>'+json.explanation+'</label>';
+					 result = result +'       <div class="col-md-9 minHeight75">';
+					 result = result +'         <textarea readonly rows="5">'+json.explanation+'</textarea>';
 					 result = result +'       </div>';
 					 result = result +'     </div>';
 				 }
@@ -233,7 +233,11 @@ padding-left: 25px;
 						 result = result +'     <div class="form-group">';
 						 result = result +'       <label class="col-md-3 control-label">Have to work in notice period</label> ';
 						 result = result +'       <div class="col-md-6">';
-						 result = result +'           <label>'+json.haveToWorkInNoticePeriod+'</label>';
+						 if(json.haveToWorkInNoticePeriod == "Y"){
+							 result = result +'           <label>Yes</label>';
+						 }else{
+							 result = result +'           <label>No</label>';
+						 }
 						 result = result +'       </div>';
 						 result = result +'     </div>';
 					 }
@@ -259,13 +263,15 @@ padding-left: 25px;
 						 result = result +'     </div>'; 
 					 }
 					 
+					 if(json.rating != null && json.rating != "" && json.rating != "undefined"){
+						 result = result +'     <div class="form-group">';
+						 result = result +'       <label class="col-md-3 control-label">Rating</label>';
+						 result = result +'       <div class="col-md-6">';
+						 result = result +'           <label>'+json.rating+'</label>';
+						 result = result +'       </div>';
+						 result = result +'     </div>'; 
+					 }
 					 
-					 result = result +'     <div class="form-group">';
-					 result = result +'       <label class="col-md-3 control-label">Rating</label>';
-					 result = result +'       <div class="col-md-6">';
-					 result = result +'           <label>'+json.rating+'</label>';
-					 result = result +'       </div>';
-					 result = result +'     </div>'; 
 					 
 					 result = result +'</div>';
 					 result = result +'</div>'; 

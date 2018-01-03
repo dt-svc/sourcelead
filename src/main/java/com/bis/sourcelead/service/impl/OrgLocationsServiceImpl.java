@@ -119,7 +119,19 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         
         
         if(StringUtils.isNotBlank(orgSettings.getGeneratedUserId())){
-        	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId());
+        	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId().toUpperCase());
+        }
+        
+        if(StringUtils.isNotBlank(orgSettings.getPoEmail())){
+        	orgLocations.setPoEmail(orgSettings.getPoEmail()); 
+        }else {
+        	orgLocations.setPoEmail(null); 
+        }
+        
+        if(StringUtils.isNotBlank(orgSettings.getRemittanceEmail())){
+        	orgLocations.setRemittanceEmail(orgSettings.getRemittanceEmail());
+        }else {
+        	orgLocations.setRemittanceEmail(null);
         }
         
         if(orgSettings.getAverageWorkingHours() != null) {

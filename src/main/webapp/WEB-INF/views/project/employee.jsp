@@ -68,9 +68,11 @@ left: 115px !important;
 	/* Dont delete this commented code. Functionality is in progress '+projectBudgetCount+' */
 	 result = result + '<li class="current"><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; 
 	
-	result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
-	result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
-	result = result + '</a></li>';
+	 if(postedOrgLocationId == loginOrgLocationId){
+		result = result + '<li class=""><a href="#tab-c" id="budgetRequestsTab" onclick="budgetRequests();">Budget Requests ';
+		result = result + '(<b class="countClose">'+projectBudgetCount+'</b><input class="countShow" type="text" id="projectBudgetCount" readonly/>)';
+		result = result + '</a></li>';
+	 }
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</ul>';
 	
@@ -740,7 +742,7 @@ function budgetRequests(){
 	    				result = result + '  <td><div class="tbldata-dotdot-sm"> <div class="tbldata-dotdot-100 pull-left">'+report.budgetRequestedId+'</div></div></td>';
 	    			}
 					
-					result = result + '     <td><div class="tbldata-dotdot-me" title="'+budgetDescription+'">'+budgetDescription+'</div></td>';
+					result = result + '     <td><div class="tbldata-dotdot-me" title=\''+budgetDescription+'\'>'+budgetDescription+'</div></td>';
 					result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot_80">'+report.createdStr+'</div></td>';
@@ -945,7 +947,7 @@ function editBudgetrequest(budgetRequestedId){
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	    <div class="clearfix mb10">';
 					result = result + '	      <div class="col-md-12">';
-					result = result + '	        <input type="text" class="form-control" value="'+json.budgetDescription+'" id="baseLine" name="baseLine" placeholder="Descrption *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
+					result = result + '	        <input type="text" class="form-control" value=\''+json.budgetDescription+'\' id="baseLine" name="baseLine" placeholder="Descrption *" field-name="Description" data-validation="required validate_Space validate_length length1-250">';
 					result = result + '	      </div>';
 					result = result + '	    </div>    ';                        
 				 

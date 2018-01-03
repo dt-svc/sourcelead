@@ -140,7 +140,7 @@ function statusvalidating(id){
 					<div class="row">
 						<div class="clearfix">
 							<div class="col-md-4">
-								<label>Generated ID</label>
+								<label>ID</label>
 								<div class="clearfix">
 									<select class="chosen-select form-control input-sm" multiple
 										data-placeholder="Generated ID" id="generatedId" name="generatedId">
@@ -405,6 +405,9 @@ function statusvalidating(id){
 						<li><a href="<c:url value='${appPath}/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
 					</sec:authorize>
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<li title="Import"><a href="<c:url value='${appPath}/uploadJobs'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+					</sec:authorize>
 
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
 						<li title="Export" class="mrPOP" id="mypop"><i
@@ -417,7 +420,7 @@ function statusvalidating(id){
 								</ul>
 							</div></li>
 					</sec:authorize>
-
+					
 					<div class="clearfix"></div>
 				</ul>
 				 <div class="clearfix"></div>
@@ -760,7 +763,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -795,7 +798,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/ws/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();

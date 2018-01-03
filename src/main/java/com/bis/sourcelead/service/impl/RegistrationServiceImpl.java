@@ -359,6 +359,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			candidate.setCreatedBy(user.getUserCode());
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setCreatedDate(commonUtil.currentDate());
+			String generatedId = candidateService.getCandidateId(orgLocations);
+			candidate.setGeneratedId(generatedId);
 		}else{
 			candidate.setConsultantUser(user);
 			candidate.setMasterCandidateId(masterCandidate);
@@ -1040,6 +1042,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 if(userRole == null){
 		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		 }
+		 OrgLocations locations= orgLocationService.getOrgLocations(locationId);
 		 
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
@@ -1062,9 +1065,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		// globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		/* globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("administratorLastName",loginUser.getLastName());*/
+		 StringBuilder stringbuilder=new StringBuilder();
+		 if(loginUser.getFirstName() != null && loginUser.getLastName() !=""){
+			 globalVarsMap.put("loginUser",stringbuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("loginUser", user.getFirstName());	 
+		 }
 		 globalVarsMap.put("role",userRole.getUserType());
+		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());

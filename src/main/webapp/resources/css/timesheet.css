@@ -447,7 +447,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     color:#f04d4d;
     }
 .timesheet_appr_table table tr td div h3, .timesheet_appr_table ul li h3 {
-    font-weight: 400; display: inline-block; padding: 5px 2px; color: #FFF; font-size: 13px; border-radius: 3px; background-color: #30c453;
+    font-weight: 400; display: inline-block; padding: 5px 2px; color: #FFF; font-size: 13px; border-radius: 3px;
+	background-color: #30c453; text-transform: capitalize;
     margin:0px; text-align:center; width:78px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
     }
 .timesheet_appr_table table tr td div h3.reje_color{
@@ -463,7 +464,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:absolute; right:-10px; top:25px; display:none; z-index:100;
     }
 .timesheet_appr_table .glyphicon p {
-    background-color:#FFF; padding:10px 15px; width:200px; text-align:left; position:relative; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
+    background-color:#FFF; padding:10px 15px; width:200px; text-align:left; position:relative;
+	box-shadow:0px 0px 3px rgba(0,0,0,0.3);
     color:#333; font-size:13px; font-weight:500; font-family:roboto; margin:0px; min-height:100px;
     }
 .timesheet_appr_table .glyphicon p:after {
@@ -2691,12 +2693,12 @@ margin: 6px 0px 0px 0px;
 .timeNewSe b.proj_closed { background-color:#d94747;  border: 1px solid #c3762b;}
 .timeNewSe b.proj_draft { background-color:#656565; border: 1px solid  #333;}
 .app_error_mes {
-   width:300px; background-color:#d94747; border-radius:3px; position:fixed !important; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
+   width:300px; background-color:#d94747; border-radius:3px; position:fixed !important; z-index:1000; margin: 0px auto; left: 0px;
    padding:10px 15px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #d94747; top: 30%;
    transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out;
    min-height: 50px; display: none; opacity: 0; font-family: 'Roboto', Arial, Helvetica, sans-serif; font-weight:400;
-    line-height: 18px; text-align: left; color:#fff;
-   }
+    line-height: 18px; text-align: left; color:#fff; right: 0px;
+   } 
 .app_error_mes.app_error_mes_active {
      right:160px; 
     display:block;
@@ -2704,7 +2706,8 @@ margin: 6px 0px 0px 0px;
      
 .ts_app_error_mes {
     width: 300px; background-color: #FFF; border-radius: 3px;position: absolute;right: 0px; top: 15px;z-index: 1000;
-    padding: 15px 20px; box-shadow: 0px 0px 8px rgba(0,0,0,0.5);font-size: 14px; border: 1px solid #368ee0;transition: 0.3s all ease-in-out;
+    padding: 15px 20px; box-shadow: 0px 0px 8px rgba(0,0,0,0.5);font-size: 14px; border: 1px solid #368ee0;
+	transition: 0.3s all ease-in-out;
     -webkit-transition: 0.3s all ease-in-out;-moz-transition: 0.3s all ease-in-out;
     display: none; text-align: inherit; max-height: 200px;overflow-y: scroll;
 }  
@@ -2907,13 +2910,13 @@ background-color: #dddddd;
 }
      
 .dataTables_empty{
-background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat; background-position:center;
-background-size:260px;
+background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat;
+	background-position:center; background-size:260px;
 }
      
 .loadMoreDiv {
-background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat; background-position:center;
-background-size:260px; margin: 0px 15px;
+background-color: #fff; height: 200px !important; background-image:url(../images/norecords.jpg); background-repeat:no-repeat;
+	background-position:center; background-size:260px; margin: 0px 15px;
 }    
 .user-panel .image {
     min-height: 60px; max-height: 60px; background-color: #fff;
@@ -4910,7 +4913,8 @@ color: #368ee0;
 /*   Onboard Carosel CSS   */
 
 .dataTables_filter input:focus {
-padding: 3px 25px 3px 5px !important; background-color: transparent !important; border: none !important; border-bottom: 1px solid #358ddf !important;
+padding: 3px 25px 3px 5px !important; background-color: transparent !important; border: none !important; 
+	border-bottom: 1px solid #358ddf !important;
 }
 .pt5 {
 padding:5px 0px 0px 0px;
@@ -5136,7 +5140,8 @@ padding: 0px 10px 0px 25px !important;
   	display: none;
 } 
 .proRadio input[type="radio"]:checked + label:before {
-  	content: "\2022"; text-align: center; line-height: 12px; font-family: Tahoma; font-size: 32px; color: #a21e23;  text-shadow: 0 0 4px #bbb;
+  	content: "\2022"; text-align: center; line-height: 12px; font-family: Tahoma; font-size: 32px; color: #a21e23;
+	text-shadow: 0 0 4px #bbb;
 }
 .proCheck {}
 .Chec {
@@ -5260,8 +5265,8 @@ padding:8px 8px 3px 8px !important;
 	margin: 0px 1px !important;
 }
 .popOut{
-	z-index: 15005 ; position: fixed; right: 0px !important; left: 0px !important; top: 25% !important; display: block; width: 450px; margin: 0px auto;
-    padding: 20px 5px 0px;
+	z-index: 15005 ; position: fixed; right: 0px !important; left: 0px !important; top: 25% !important; display: block;
+	width: 450px; margin: 0px auto; padding: 20px 5px 0px;
 }
 .popOut:after {
 	border-bottom: 0px solid #909090; border-left: 0px solid transparent; border-right: 0px solid transparent;
@@ -5498,6 +5503,9 @@ bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 .minHeBtn {
 min-height: 34px; padding: 9px 12px 0px !important;
 }
+.minHeB {
+	min-height: 34px;
+}
 .cOrange {
     color: #f17929 !important;
 }
@@ -5551,8 +5559,9 @@ bottom:-30px !important; padding: 0px 6px 0px 6px !important;
     width: 100%; float: none; margin: 0px 0px 15px 0px; text-align: left;
 }
 .newSelect {
-   width:100% !important; height:30px !important; border: 1px solid #ccc !important; padding:6px 12px !important; border-radius:2px !important;
-   box-sizing:border-box !important; -webkit-appearance:none; appearance:none; background: url("../images/down-arrow.png") no-repeat 92% center !important;
+   width:100% !important; height:30px !important; border: 1px solid #ccc !important; padding:6px 12px !important;
+	border-radius:2px !important; box-sizing:border-box !important; -webkit-appearance:none; appearance:none;
+	background: url("../images/down-arrow.png") no-repeat 92% center !important;
    background-size: 10px !important; -moz-appearance:none; font-size: 13px !important; line-height: 1.42857143; color: #555;
    background-position: 90% !important;
 }
@@ -6083,13 +6092,13 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	background-color: #fff;
 }
 .comLogHead ul {
-    margin: 0px; padding: 0px;
+    margin: 0px; padding: 0px; border-top: 1px solid #dedede;
 }
 .comLogHead ul li {
 	float:left; list-style-type: none; text-align: center; width: 16.5%; z-index: 100; cursor: default;
-	display:block; background-color: #fff; margin: 0px auto; position: relative; border-top: 1px solid #dedede;
+	display:block; background-color: #fff; margin: 0px auto; position: relative; 
 	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
-	border-right: 1px solid #fff;	
+	border-right: 1px solid #fff;
 }
 .comLogHead ul li.hoverLi {
     background-color: #f6f6f6; color: #368ee0; border-bottom: 1px solid #368ee0; border-top: 1px solid #368ee0;
@@ -6783,7 +6792,6 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
     width: 290px;
 }
 
-
 /*    Reports Wrap   */
 
 .repNewHead {
@@ -6963,6 +6971,12 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .connCtaInn p b {
 	font-weight: 400;
 }
+.connCtaInn p a {
+	color: #666;
+}
+.connCtaInn p a:hover {
+	text-decoration: underline;
+}
 .connCtaBtn {
 	text-align: center; border-top: 1px solid #ededed;
 }
@@ -6984,22 +6998,146 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	text-decoration: underline; color: #999;
 }
 
+.reFreBtn{
+	height: 34px; padding: 8px 12px; border-radius: 2px !important;
+	}
+.tblicons_4 { width: 100px;}
+.tblicons_4 a { margin: 0px !important;}
 
+.seleOverFlow .chosen-container-single .chosen-single span {
+	width: 180px;
+}
 
+.require_wrap_table .custom-small {
+	color: #fff;
+}
+.reqPopHeight {
+	max-height: 100% !important; overflow: inherit;
+}
+.close-ratepop {
+	color:#fff !important;
+}
 
+.comProHead {
+	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px; padding: 60px 0px 0px;
+	background-image: url(../images/company-bg.jpg); margin: 0px 0px 10px 0px;
+}
+.comProHeadInn {
+	background-color: #fff; padding: 0px; border-radius: 0px 0px 3px 3px; position: relative; min-height: 100px;
+}
+.comProTabs {
+	background-color: #fff; border-radius: 3px;
+}
+.comProTabs ul {
+    margin:0px 0px; padding:0px 0px 0px 10px;
+    }
+.comProTabs ul li {
+    float:left; background-color:#fff; list-style-type:none; border-bottom:2px solid #fff;
+    }
+.comProTabs ul li.current {
+    position:relative; background-color:#fff; z-index:5; border-bottom:2px solid #368ee0;
+    }
+.comProTabs ul li a {
+    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:block; height: 42px;
+    }
+.comProTabs ul li.current a{
+    color:#1d6cb5;
+    }
+.comProfile {
+	width: 110px; height: 110px; position: absolute; background-color: #f1f1f1; left: 15px; top: -40px;
+	border-radius: 2px; padding: 3px;
+}
+.comProfile img {
+	width: 100%; border-radius: 3px;
+}
+.comProfileDetails {
+	float: left; min-height: 75px; padding: 12px 0px 0px 142px;
+}
+.comProfileDetails h2 {
+	padding: 0px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #666;
+}
+.comProfileBtn {
+	padding: 10px 0px 0px 0px;
+}
+.comProfileBtn a {
+	display: inline-block; margin: 0px 10px 0px 0px; border: 1px solid #337ab7; padding: 4px 16px;
+	color: #337ab7; border-radius: 2px; font-size: 13px;
+}
+.comProfileBtn a.adReBtn {
+	background-color: #337ab7; color: #fff;
+}
+.comProfileBtn a:hover {
+	border: 1px solid #2669a3; background-color: #2669a3; color: #fff;
+}
+.comRating {
+	position: relative; display: inline-block;
+}
+.ratingBg {
+	color: #ccc; padding: 0px 0px 0px 0px; position: absolute; width: 90px; top: -17px; right: -100px;
+}
+.ratingBg:hover {
+	color: #ccc;
+}
+.ratingCom {
+	color: #2CB359; padding: 0px 0px 0px 0px; position: absolute; width: 90px; top: -17px; right: -100px;
+}
+.ratingCom:hover {
+	color: #1F9E49;
+}
+.comProfileRight {
+	float: right; padding: 15px; text-align: right;
+}
+.comProfileRight p {
+	padding: 0px 0px 4px 0px; margin: 0px 0px;
+}
+.comProfileRight a {
+	color: #666;
+}
+.comProfileRight a:hover {
+	text-decoration: underline;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.companyDetWrap {
+	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); background-color: #fff; padding: 10px 0px 20px; border-radius: 3px;
+}
+.companyDetHead {
+	padding: 5px 0px;
+}
+.companyDetHead h2 {
+	padding: 5px 20px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #666;
+}
+.companyDetInn {
+	padding: 10px 20px 0px 20px;
+}
+.companyDetInn div {
+	width: 40%; float: left; padding: 0px 0px 10px 0px; font-size: 14px;
+}
+.companyDetInn div span {
+	float: left; width: 35%; color: #666;
+}
+.companyDetInn div p {
+	float: left; width: 60%; padding: 0px 0px; margin: 0px 0px; color: #333;
+}
+.companyDetInn div.fullDetails {
+	width: 100%; padding: 10px 0px 0px 0px;
+}
+.companyDetInn div.fullDetails p {
+	width: 100%; color: #454545; margin: 6px 0px 0px 0px; line-height: 21px; border-radius: 3px;
+}
+.compLoca {
+	padding: 10px 20px 15px; background-color: #fff; border-radius: 3px; margin: 10px 0px 0px 0px;
+}
+.compLoca h2 {
+	padding: 5px 0px 5px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #666;
+}
+.compLocaCta {
+	float: left; width: 25%; background-color: #f5f5f5; margin: 10px 10px 0px 0px; padding: 14px 15px; border-radius: 3px;
+	min-height: 140px;
+}
+.compLocaCta h3 {
+	margin: 0px 0px; padding: 0px 0px 8px; font-size: 16px; font-weight: 400; color: #454545;
+}
+.compLocaCta p {
+	padding: 0px 0px 4px; margin: 0px 0px; font-size: 14px; color: #666;
+}
 

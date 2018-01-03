@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.beans.TimesheetHours;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
@@ -232,39 +234,47 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		           }
 		    		writeRow = sheet.createRow(count);
 		    		Cell datecell0 = writeRow.createCell(0);
+		    		sheet.autoSizeColumn(0);
 		    		datecell0.setCellValue("Date"); 
 		    		datecell0.setCellStyle(style);
 		    		
 		    		Cell datecell1 = writeRow.createCell(1);
+		    		sheet.autoSizeColumn(1);
 		    		datecell1.setCellValue(weekMondayDate); 
 		    		datecell1.setCellStyle(style);
 		    		
 		    		String tuesDayDate =  CalendarUtil.getNextDate(weekMondayDate,orgLocations.getDateFormat());
 		    		Cell datecell2 = writeRow.createCell(2);
+		    		sheet.autoSizeColumn(2);
 		    		datecell2.setCellValue(tuesDayDate); 
 		    		datecell2.setCellStyle(style);
 		    		
 		    		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate,orgLocations.getDateFormat());
+		    		sheet.autoSizeColumn(3);
 		    		Cell datecell3 = writeRow.createCell(3);
 		    		datecell3.setCellValue(WednesDayDate); 
 		    		datecell3.setCellStyle(style);
 		    		
 		    		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate,orgLocations.getDateFormat());
+		    		sheet.autoSizeColumn(4);
 		    		Cell datecell4 = writeRow.createCell(4);
 		    		datecell4.setCellValue(ThursDayDate); 
 		    		datecell4.setCellStyle(style);
 		    		
 		    		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate,orgLocations.getDateFormat());
+		    		sheet.autoSizeColumn(5);
 		    		Cell datecell5 = writeRow.createCell(5);
 		    		datecell5.setCellValue(FriDayDate); 
 		    		datecell5.setCellStyle(style);
 		    		
 		    		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate,orgLocations.getDateFormat());
+		    		sheet.autoSizeColumn(6);
 		    		Cell datecell6 = writeRow.createCell(6);
 		    		datecell6.setCellValue(SaturdayDate); 
 		    		datecell6.setCellStyle(style);
 		    		
 		    		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate,orgLocations.getDateFormat());
+		    		sheet.autoSizeColumn(7);
 		    		Cell datecell7 = writeRow.createCell(7);
 		    		datecell7.setCellValue(SundayDate);
 		    		datecell7.setCellStyle(style);
@@ -276,107 +286,155 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 					if(timesheetDayEntriesList != null && !timesheetDayEntriesList.isEmpty()){
 								//Integer maxCount = timesheetDayEntriesList.size();
 								//maxCount = maxCount+1;
+						       HashMap<Long,Row> taskMap = new HashMap<>();
+						       HashMap<Long,Long> totalHoursMap = new HashMap<>();
 								for(TimeSheetDayEntries timesheetDayEntries   : timesheetDayEntriesList){
-									    Long weekTotHours = 0L;
-									    Long monHours = 0L;
+									    /*Long monHours = 0L;
 										Long tueHours = 0L;
 										Long wedHours = 0L;
 										Long thuHours = 0L;
 										Long friHours = 0L;
 										Long satHours = 0L;
-										Long sunHours = 0L;
-									    writeRow = sheet.createRow(count); 
+										Long sunHours = 0L;*/
+										
+										writeRow = taskMap.get(timesheetDayEntries.getProjectTask().getId());
+				            		    if(writeRow == null){
+				            		    	writeRow = sheet.createRow(count); 
+				            		    	taskMap.put(timesheetDayEntries.getProjectTask().getId(), writeRow);
+				            		    	count++;
+				            		    }
+				            		    
+				            		    Long weekTotHours = totalHoursMap.get(timesheetDayEntries.getProjectTask().getId());
+				            		    if(weekTotHours == null) {
+				            		    	weekTotHours = 0l;
+				            		    }
 									      //lastRow = count+timesheetEntriesList.size();
 								              
 							            	  if(timesheetDayEntries.getProjectTask() != null){
-							     				 writeRow.createCell(0).setCellValue(timesheetDayEntries.getProjectTask().getTaskName()); 
+							     				 writeRow.createCell(0).setCellValue(timesheetDayEntries.getProjectTask().getTaskName());
+							     				sheet.autoSizeColumn(0);
 							            	  }
-								              Cell cell2 = null;
 								              if(weekMondayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
-								            	  cell2 = writeRow.createCell(1);
+								            	  Cell cell2 = writeRow.createCell(1);
+								            	  sheet.autoSizeColumn(1);
 								            	  cell2.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
-								            	  monHours =  monHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  Long monHours =  getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  weekTotHours = weekTotHours+monHours;
+								            	  totalHoursMap.put(timesheetDayEntries.getProjectTask().getId(), weekTotHours);
 								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
 								            		  cell2.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
 								            	  }
 								              }
 							            	  
-								              Cell cell3 = writeRow.createCell(2);
+								             
 								              if(tuesDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  Cell cell3 = writeRow.createCell(2);
+								            	  sheet.autoSizeColumn(2);
 								            	  cell3.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
-								            	  tueHours =  tueHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  Long tueHours =   getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  weekTotHours = weekTotHours+tueHours;
+								            	  totalHoursMap.put(timesheetDayEntries.getProjectTask().getId(), weekTotHours);
 								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
 								            		  cell3.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
 								            	  }
 								              }
-								              Cell cell4 = writeRow.createCell(3);
+								              
 								              if(WednesDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  Cell cell4 = writeRow.createCell(3);
+								            	  sheet.autoSizeColumn(3);
 								            	  cell4.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
-								            	  wedHours =  wedHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  Long wedHours =   getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  weekTotHours = weekTotHours+wedHours;
+								            	  totalHoursMap.put(timesheetDayEntries.getProjectTask().getId(), weekTotHours);
 								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
 								            		  cell4.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
 								            	  }
 								              }
-								              Cell cell5 = writeRow.createCell(4);
+								             
 								              if(ThursDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  Cell cell5 = writeRow.createCell(4);
+								            	  sheet.autoSizeColumn(4);
 								            	  cell5.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
-								            	  thuHours =  thuHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  Long thuHours = getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  weekTotHours = weekTotHours+thuHours;
+								            	  totalHoursMap.put(timesheetDayEntries.getProjectTask().getId(), weekTotHours);
 								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
 								            		  cell5.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
 								            	  }
 								              }
-								              Cell cell6 = writeRow.createCell(5);
+								              
 								              if(FriDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  Cell cell6 = writeRow.createCell(5);
+								            	  sheet.autoSizeColumn(5);
 								            	  cell6.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
-								            	  friHours =  friHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  Long friHours =  getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  weekTotHours = weekTotHours+friHours;
+								            	  totalHoursMap.put(timesheetDayEntries.getProjectTask().getId(), weekTotHours);
 								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
 								            		  cell6.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
 								            	  }
 								              }
-								              Cell cell7 = writeRow.createCell(6);
+								             
 								              if(SaturdayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  Cell cell7 = writeRow.createCell(6);
+								            	  sheet.autoSizeColumn(6);
 								            	  cell7.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
-								            	  satHours =  satHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  Long satHours =   getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  weekTotHours = weekTotHours+satHours;
+								            	  totalHoursMap.put(timesheetDayEntries.getProjectTask().getId(), weekTotHours);
 								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
 								            		  cell7.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
 								            	  }
 								              }
-								              Cell cell8 = writeRow.createCell(7);
+								             
 								              if(SundayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+								            	  Cell cell8 = writeRow.createCell(7);
+								            	  sheet.autoSizeColumn(7);
 								            	  cell8.setCellValue(timesheetDayEntries.getTotalHours()); 
 								            	  sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
-								            	  sunHours =  sunHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  Long sunHours =  getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	  weekTotHours = weekTotHours+sunHours;
+								            	  totalHoursMap.put(timesheetDayEntries.getProjectTask().getId(), weekTotHours);
 								            	  if(!isNullOrEmpty(timesheetDayEntries.getComments())){
 								            		  cell8.setCellComment(getCellComment(sheet,wb,timesheetDayEntries.getComments()));
 								            	  }
 								              }
 							            	  
-							            	  weekTotHours = monHours + tueHours + wedHours + thuHours + friHours + satHours + sunHours;
 							            	  Cell cell9 = writeRow.createCell(8);
+							            	  sheet.autoSizeColumn(8);
 							            	  cell9.setCellValue(getTotalHours(weekTotHours));
 							            	  
-							            	  count++;
-								            }
+							            	  
+								          }
 								        totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
 										writeRow = sheet.createRow(count);
 										Cell cell1 = writeRow.createCell(0);
+										sheet.autoSizeColumn(0);
 										cell1.setCellValue("Total Hours");
 										CellStyle style1 =getTotalStyle(wb);
 								   	    cell1.setCellStyle(style1);
 										writeRow.createCell(1).setCellValue(getTotalHours(monTotHours));
+										sheet.autoSizeColumn(1);
 										writeRow.createCell(2).setCellValue(getTotalHours(tueTotHours));
+										sheet.autoSizeColumn(2);
 										writeRow.createCell(3).setCellValue(getTotalHours(wedTotHours));
+										sheet.autoSizeColumn(3);
 										writeRow.createCell(4).setCellValue(getTotalHours(thuTotHours));
+										sheet.autoSizeColumn(4);
 										writeRow.createCell(5).setCellValue(getTotalHours(friTotHours));
+										sheet.autoSizeColumn(5);
 										writeRow.createCell(6).setCellValue(getTotalHours(satTotHours));
+										sheet.autoSizeColumn(6);
 										writeRow.createCell(7).setCellValue(getTotalHours(sunTotHours));
+										sheet.autoSizeColumn(7);
 										Cell cell8 = writeRow.createCell(8);
+										sheet.autoSizeColumn(8);
 										cell8.setCellValue(getTotalHours(totalHours));
 										cell8.setCellStyle(style1);
 										count++;
@@ -652,7 +710,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
         	
         	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 	        	for(ProjectMembers pm :projectMembers.getData()){
-	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects(),commonUtil.currentDate());
 	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
 	        	    	freshProjectMembers.add(pm);
 	        	    }
@@ -989,7 +1047,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
         if(projectMembers != null){
        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
 	        	for(ProjectMembers pm :projectMembers.getData()){
-	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects());
+	        		Date biweeklyCurrentStartMonDayDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(pm.getProjects(),commonUtil.currentDate());
 	        	    if(CalendarUtil.getNumberOfDays(biweeklyCurrentStartMonDayDate, startDate)%14==0){
 	        	    	freshProjectMembers.add(pm);
 	        	    }

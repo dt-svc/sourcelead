@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,7 @@ public class OrgSettingsController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
-	public ModelAndView orgSettings(HttpServletRequest request) throws Exception
+	public ModelAndView orgSettings(HttpServletRequest request,@RequestParam(value = "tabType", required = false) String tabType) throws Exception
 	{
 		logger.debug("Org settings");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -165,6 +166,9 @@ public class OrgSettingsController {
 
 		model.addObject("timezoneList", timezoneList);
 		model.addObject("orgLocations", orgLocations);
+		if(StringUtils.isNotBlank(tabType)) {
+			model.addObject("tabType",tabType);
+		}
 		model.setViewName("orgSettings");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

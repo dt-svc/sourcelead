@@ -305,7 +305,7 @@ $(function() {
         
         runtimes : 'html5,flash,silverlight,html4',
         url : 'upload-resumes',
-        chunk_size : '1mb',
+        chunk_size : '250kb',
         rename : false,
         dragdrop: true,
          
@@ -314,7 +314,7 @@ $(function() {
             max_file_size : '1000mb',
             // Specify what files to browse for
             mime_types: [
-                {title : "Resume files", extensions : "doc,docx,pdf,rtf"},
+                {title : "Resume files", extensions : "doc,docx,pdf"},
                 {title : "Zip files", extensions : "zip"}
             ]
         },

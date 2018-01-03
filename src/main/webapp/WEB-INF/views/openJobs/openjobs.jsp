@@ -261,8 +261,9 @@ a.alertBtn {
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="logo">
+
 			<a href="/"><img src="/resources/css/jobs/images/logo.png"
-				alt="SourceLead" title="SourceLead" /></a>
+</a>
 		</div>
 		<nav>
 			<ul class="menu">
@@ -1598,7 +1599,12 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<p></p>'; 	
 				}
 				result = result +'	<h4>Other details:</h4>';
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label></b>';
+				if(json.location != null && json.location != '' && json.location !='undefined'){
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>&nbsp;'+json.location+'</b>';
+				}else{
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>--</b>';
+	
+				}
 				if(json.positions != null && json.positions != '' && json.positions !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions:</label>'+json.positions+'</b>';
 				}else{
@@ -1620,9 +1626,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:</label>--</b>';	
 				}
-				
 				if(json.fileURL != null && json.fileURL != '' && json.fileURL !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href='+json.fileURL+'></a></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a download class="glyphicon glyphicon-download-alt ml10" href="'+json.fileURL+'"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
@@ -2769,7 +2774,7 @@ function getAllCountriesJObalert(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: "/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
@@ -2812,7 +2817,7 @@ function getStatesjobalert(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: "/app/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#statejobalert').empty();
@@ -2869,7 +2874,7 @@ function getCitiesjobalert(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: "/app/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#cityjobalert').empty();

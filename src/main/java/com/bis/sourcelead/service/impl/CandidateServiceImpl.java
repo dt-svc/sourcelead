@@ -300,6 +300,7 @@ public class CandidateServiceImpl implements CandidateService {
 				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDto, user);
 			}
 			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
 		if(orgLocations != null){
@@ -542,7 +543,6 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * System Generated Id For Candidate
 		 */
-		candidate.setGeneratedId(getCandidateId(orgLocations));
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
@@ -1207,6 +1207,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setVisaType(null);
 			}
 			
+			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDTO, orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEducation(candidateEducationList);
+			
+			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDTO,orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEmployers(candidateEmployersList);
 			
 			/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);

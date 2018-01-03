@@ -663,6 +663,32 @@ public  class CalendarUtil {
 		return flag;
 	}
 
+	
+	public static boolean isGivenDateBetweenDateRange(String weekStartDate,String weekEndDate,String date,String dateFormat) {
+		Boolean flag = false;
+		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
+			DateFormat format = new SimpleDateFormat(dateFormat.replaceAll("-", "/"));
+			Date startDate = null;
+			Date endDate = null;
+			Date currentDate = null;
+			try {
+				currentDate = format.parse(date.replaceAll("-", "/"));
+				if(dateFormat.contains("-")){
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				else{
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				
+				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
+			} catch (ParseException e) {}
+			
+			
+		}
+		return flag;
+	}
 	public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
 		Calendar calendar = Calendar.getInstance();   
