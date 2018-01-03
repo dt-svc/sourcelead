@@ -39,7 +39,7 @@
 		<div class="col-md-2">
 			<div class="pull-right">
 				<button type="button" class="btn btn-sm btn-primary mr"
-					onclick="saveJobFields();">Import</button>
+					onclick="saveDataFields();">Import</button>
 				<button type="button" class="btn btn-sm btn-primary"
 					onclick="cancelFileImport();">Cancel</button>
 			</div>
@@ -73,6 +73,7 @@
 					</div>
 				</c:forEach>
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
+				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>
@@ -81,7 +82,7 @@
 </div>
 
 <script type="text/javascript">
-	function saveJobFields() {
+	function saveDataFields() {
 		if ($('#dataMigration_form').validate(false, validationSettings)) {
 			var formData = getFormData1("dataMigration_form");
 			$.ajax({

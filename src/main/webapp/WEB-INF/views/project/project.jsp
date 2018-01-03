@@ -192,7 +192,7 @@ function validateShortCode(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-frequency">
@@ -207,16 +207,32 @@ function validateShortCode(){
 									<option value="Monthly">Monthly</option>
 								</select>
 							</div>
+						</div> -->
+						
+						<div class="form-group">
+							<label class="col-md-3">Invoice Frequency <span
+								class="text-danger">*</span></label>
+							<div class="col-md-9" id="chosen-InvoiceFrequency">
+								<select class="form-control chosen-select" id="invoiceFrequency"
+									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
+									field-name="Invoice Frequency" data-validation="required">
+									<option value="">-Invoice Frequency-</option>
+									<option value="Weekly">Weekly</option>
+									<option value="Bi-Weekly">Bi-Weekly</option>
+									<option value="Semi-Monthly">Semi-Monthly</option>
+									<option value="Monthly">Monthly</option>
+								</select>
+							</div>
 						</div>
 
-						<div class="form-group">
+						 <div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y" name="isAllowFreelanceDevelopers" id="isAllowFreelanceDevelopers" > Allow Freelance Developers </label>
 								</div>
 							</div>
-						</div>
+						</div> 
 
 						<div class="form-group">
 							<label class="col-md-3"></label>
@@ -307,22 +323,6 @@ function validateShortCode(){
 							</div>
 						</c:if>
 						
-						<div class="form-group">
-							<label class="col-md-3">Invoice Frequency <span
-								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-InvoiceFrequency">
-								<select class="form-control chosen-select" id="invoiceFrequency"
-									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
-									field-name="Invoice Frequency" data-validation="required">
-									<option value="">-Invoice Frequency-</option>
-									<option value="Weekly">Weekly</option>
-									<option value="Bi-Weekly">Bi-Weekly</option>
-									<option value="Semi-Monthly">Semi-Monthly</option>
-									<option value="Monthly">Monthly</option>
-								</select>
-							</div>
-						</div>
-
 						<div class="form-group" id="shortCodeDivId">
 							<label class="col-md-3"> Project Short Code <span
 								class="text-danger">*</span>
@@ -764,7 +764,7 @@ function getProjectDetails(){
 	           
         	   $("select[name=status]").val(projectStatus);
         	   
-        	   $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
+        	 //  $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
         	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
         	   
         	   if(json.allowFreeLance == 1){

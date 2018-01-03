@@ -71,14 +71,14 @@ public class OnBoardingTemplateServiceImpl implements OnBoardingTemplateService{
 		 if(StringUtils.isNotBlank(onBoardingTemplateDTO.getTemplateId())){
 		 		onBoardingTemplate = getOnBoardingTemplateById(Long.valueOf(onBoardingTemplateDTO.getTemplateId()));
 		 		onBoardingTemplate.setTemplateName(onBoardingTemplateDTO.getTemplateName());
-			 	onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription());
+			 	onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription().trim());
 			 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
 			 	onBoardingTemplate.setUpdatedDate(new Date());
 		 	 
 		 	 }else{
 		 		 onBoardingTemplate = new OnBoardingTemplate();
 			 	 onBoardingTemplate.setTemplateName(onBoardingTemplateDTO.getTemplateName());
-			 	 onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription());
+			 	 onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription().trim());
 			 	 onBoardingTemplate.setOrgLocationId(orgLocations);
 			 	
 			 	 StringBuilder userName = new StringBuilder();
