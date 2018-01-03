@@ -106,19 +106,24 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         EmailScenario  emailScenario = null;
         EmailScenario  notificationScenario  = null;
         if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Approved")){
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-        }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("On hold")){
-        	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-        }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Rejected")){
-        	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-      	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-            
-        }
+          	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+   		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+           }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("On hold")){
+          	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
+          	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+   		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+          }else if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Rejected")){
+          	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
+        	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+     		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+          }
      
         
-        /*String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-        notificationScenario.setBody(notificationbody);*/
+        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        notificationScenario.setBody(notificationbody);
         
         //covert subject,body and signature
         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -136,7 +141,7 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        //emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);
 	}
 
 	@Override

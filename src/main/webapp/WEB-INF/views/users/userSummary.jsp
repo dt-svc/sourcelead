@@ -2771,7 +2771,7 @@ function profileDetails(candidateId){
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
-         			 		experienceMonths = '---';  
+         			 		experienceMonths = '';  
          			 	 }
          			 	
          			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
