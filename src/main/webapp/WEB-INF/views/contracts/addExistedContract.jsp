@@ -152,7 +152,7 @@ $(document).ready(function(){
          <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorVendor">
-               <div class="input-group col-md-10 pull-left">
+               <div class="input-group col-md-10 pull-left errorInptgroup">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
                     <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
@@ -170,7 +170,7 @@ $(document).ready(function(){
             <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorvendorContact">
-                <div class="input-group col-md-10 pull-left">
+                <div class="input-group col-md-10 pull-left errorInptgroup">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};" field-name="Vendor Contact">
@@ -203,7 +203,7 @@ $(document).ready(function(){
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorClient">
- 					 <div class="input-group col-md-10 pull-left">
+ 					 <div class="input-group col-md-10 pull-left errorInptgroup">
 	                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
 	                    <option value=''>Select Client</option>
 	                   <c:forEach var="orgrelations" items="${clientList}">
@@ -221,7 +221,7 @@ $(document).ready(function(){
             <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorClientContact">
-              		<div class="input-group col-md-10 pull-left">
+              		<div class="input-group col-md-10 pull-left errorInptgroup">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};" field-name="Client Contact">
@@ -2005,7 +2005,7 @@ function validateContractTitle(){
 		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		  $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
-						 // $("#save_template").attr("disabled", "disabled");
+						  $("#save_template").attr("disabled", "disabled");
 						 // $("#draft_template").attr("disabled", "disabled");
 		        	}
 		        	else{

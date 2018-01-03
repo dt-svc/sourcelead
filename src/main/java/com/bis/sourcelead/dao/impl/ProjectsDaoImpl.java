@@ -1077,6 +1077,21 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			}
 			return count;
 	}
+
+	@Override
+	@Transactional
+	public Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId, String projectName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectName = :projectName ";
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("projectName", projectName).setCacheable(true).list();
+
+		Projects projects = null;
+		if (projectsList != null && projectsList.size() > 0) {
+			projects = (Projects) projectsList.iterator().next();
+		}
+		return projects;
+	}
 	
 	
 	 
