@@ -38,6 +38,12 @@ window.onload = function () {
 		document.getElementById("orgSettings_form").reset();
 		zipcodeMask('${SourceLeadWeb_country}','orgEditZipCode');
 		
+		if('${tabType}' == 'documents'){
+			var documentsClick = document.getElementById("documentsClick");
+			documentsClick.click();
+		}
+		
+		
 	});
 </script>
 
@@ -162,7 +168,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
         </c:if>
         <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
-        <li><a data-toggle="tab" href="#orglocationDocuments">Documents</a></li>
+        <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="validateLegalSigner();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
@@ -1859,7 +1865,7 @@ function createOrg(){
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Phone Number </label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="mobilePhone"  id="mobilePhone"  value="${mobilePhone}" class="form-control" field-name="Phone Number" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone"  />';
+	            result = result +'<input type="text" name="mobilePhone"  id="mobilePhone"  value="${mobilePhone}" class="form-control" field-name="Phone Number" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20"  />';
 	            result = result +'<span class="hidden">Phone Number</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
@@ -2454,7 +2460,7 @@ function editPrimaryUser(orgLocationId){
         				
         		result = result + '<div class="user_summary_edit_cta" id="phoneNumberDiv">';
         		result = result + '<label>Phone Number</span></label>';
-        		result = result + '<input type="text" value="'+json['orglocationUserPhone']+'" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control">';
+        		result = result + '<input type="text" value="'+json['orglocationUserPhone']+'" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control" data-validation-optional="true">';
         		result = result + '</div>';
         				
         				 

@@ -42,7 +42,7 @@
 <style type="text/css">
 
 .actionHistory {
-margin-top: 52px; padding:10px; border: 1px solid #ddd;
+margin-top: 52px; padding:10px; border: 1px solid #ddd; background-color: #fff;
 }
 </style>
 

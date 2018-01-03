@@ -1445,8 +1445,8 @@ $("#editRoleDetailsList").empty();
 
 						
 					   result = result + '<div class="user_summary_edit_cta">';
- 					   result = result + ' <label>Employment type</label>';
-						result = result + '<select class="form-control" id="designationType" name="designationType"  onchange="getEmployeementType();updateUserDesignationOtherType();" field-name="Employment type">';
+ 					   result = result + ' <label>Employment type <span class="text-danger">*</span></label>';
+						result = result + '<select class="form-control" id="designationType" name="designationType"  onchange="getEmployeementType();updateUserDesignationOtherType();" field-name="Employment type" data-validation="required">';
 						result = result + '<option value="">--Select Employment Type--</option>';
 						result = result + ' <option '+(json.userEmploymentType == "C2C" ? "selected" : '') +'>C2C</option>';
 						result = result + ' <option '+(json.userEmploymentType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
@@ -2771,19 +2771,19 @@ function profileDetails(candidateId){
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
-         			 		experienceMonths = ' ';  
+         			 		experienceMonths = '';  
          			 	 }
          			 	
          			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
-             			 	designation = 'Designation'+'-'+json.designation;
+             			 	designation = json.designation;
              			 	}else{
-             			 		designation = '';
+             			 		designation = '---';
              			 	}
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
-         			 	designationType = 'Employment Type'+ ' - '+json.designationType;
+         			 	designationType = json.designationType;
          			 	}else{
-         			 		designationType = '';
+         			 		designationType = '---';
          			 	}
 
          			 	if(json.lastName != null && json.lastName !='' && json.lastName != 'undefined'){
@@ -2911,8 +2911,9 @@ function profileDetails(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
+						 /* result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
+						 */ 
 						 result = result+' </div>';
 						 result = result+' </div>';
 						 result = result+'</form>';
@@ -2923,7 +2924,7 @@ function profileDetails(candidateId){
 			             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
 			             result = result+'                     </div>';
 			             result = result+'                     </div>'; */
-			             result = result+'                     <div class="media-body candidate-details">';
+			             result = result+'                     <div class="media-body candidate-details candidateDetails padding_left">';
 			             
 			             result = result+'                       <h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
 			            
@@ -2934,36 +2935,40 @@ function profileDetails(candidateId){
                          
 			             result = result+'                       </ul>';
 
-			             result = result+' <ul class="list-unstyled mrng0">';
-						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
-						 result = result+'</ul>';
-						 
 			             result = result+' <ul class="list-unstyled">';
-						 result = result+'<li>'+designationType+'</li>';
-						 result = result+'</ul>';
 			             
-			             result = result+'<ul class="list-unstyled">';
+						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+designation+'> '+designation+'</span></li>';
+						 
+						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+designationType+'</span></li>';
+						 
+						 
+						 
+	         			 if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
+
+						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title='+json.vendorName+'>'+json.vendorName+'</span></li>';
+	         			 }
+	         			 
+	         			if(json.vendorContactName != null && json.vendorContactName != '' && json.vendorContactName != 'undefined'){
+
+						result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor Contact</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title = '+json.vendorContactName+'>'+json.vendorContactName+'</span></li>';
+		         		}
+			             
 			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
-			                    	 
-			             result = result+'<li>Experience -'+json.experienceYears+' Year/s '+experienceMonths+'</li>';
-			             
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+json.experienceYears+' Year(s) '+experienceMonths+'</span></li>';
               		       }else{
-              		                                                	  
-              		     result = result+'<li>Experience ----</li>';  
-              		     
+                		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
               		       }
-			             result = result+'</ul>';
 			             
-			             result = result+'<ul class="list-unstyled">';
 			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
 			                    	 
-			             result = result+'<li>Notice Period -'+json.noticePeriod+' </li>';
+			             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
 			             
              		       }else{
              		                                                	  
-             		     result = result+'<li>Notice Period ----</li>';  
+                   		   result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
              		     
              		       }
+			             result = result+'</ul>';
 			             result = result+'</ul>';
 			             
 			             result = result+'<div class="clearfix">';
@@ -2979,9 +2984,9 @@ function profileDetails(candidateId){
 			             } */
 			             
 			             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
-			            	 result = result+'<li>Primary Skill -'+json.primarySkill+' </li>';
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="padding_left padding_right">'+json.primarySkill+'</span></li>';
 			             }else{
-			            	 result = result+'<li>Primary Skill ----</li>';  
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
 			             }
 			             
 			             result = result+'</ul>';
@@ -3020,7 +3025,7 @@ function profileDetails(candidateId){
 			             
 			             result = result+'</li>';
 			             
-			             result = result+'<li><i class="fa fa-money" title= "Expected Rate"></i><b>Expected Rate:</b>';
+			             result = result+'<li><i class="fa fa-money" title= "Expected Rate"></i><b> Expected Rate:</b>';
 			             
 			             result = result+''+expectedRate+' '+rateType+''+expectedRateCurrencey+'';
 			             

@@ -507,7 +507,13 @@ public class OrgSettingsRestController {
 			orgLocations.setOrgLocationUserFirstName(orgLocations.getUser().getFirstName());
 			orgLocations.setOrgLocationUserLastName(orgLocations.getUser().getLastName());
 			orgLocations.setOrglocationUserEmail(orgLocations.getUser().getEmail());
+			if(orgLocations.getUser().getMobilePhone()!=null){
 			orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
+			}
+			else
+			{
+				orgLocations.setOrglocationUserPhone("");
+			}
 			orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
 		}
 		resultJson = toJSON(orgLocations);

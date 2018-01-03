@@ -778,24 +778,24 @@ function invoicePagination(url){
             							
             					}else{
             						if(report.invoiceStatus == "Linked"){
-            							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+            							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
             						}else{
-            							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
             						}
             					}
             				}else{
             					if(report.invoiceStatus == "Accepted"){
             						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary successBtn primary pull-left">Receive</span>   ';	
+            							result = result +'           <span class="successBtn primary pull-left">Receive</span>   ';	
             						}else{
-            							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+            							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
             						}
             						
             					}else{
             						if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="text-primary successBtn primary pull-left bg-red">Rejected</div>   ';	
+            							result = result +'           <div class="successBtn primary pull-left bg-red">Rejected</div>   ';	
             						}else if(report.invoiceStatus == "Linked"){
-            							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+            							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
             						}else{
             							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
             						}

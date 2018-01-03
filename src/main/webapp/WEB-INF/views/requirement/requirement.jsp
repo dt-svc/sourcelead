@@ -262,9 +262,9 @@ $(document).ready(function () {
        
        
        <div class="form-group" id="jobIdDiv">
-            <label class="col-md-3">Id</label>
+            <label class="col-md-3">Job Id</label>
             <div class="col-md-9">
-			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_Alphanumeric validate_length length2-100" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
+			 <input type="text" class="form-control" id="jobId" name="jobId" value="${requirement.jobId}" field-name="JobId" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onkeyup="validateJobId();" value=""> 
 				<input type="hidden" name="requirementId" id="requirementId" value="${requirement.id}"/>
             </div>
           </div>
