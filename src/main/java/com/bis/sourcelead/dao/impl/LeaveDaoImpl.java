@@ -653,4 +653,16 @@ public class LeaveDaoImpl implements LeaveDao{
     	}
 		qry.executeUpdate();
 	}
+
+
+	@Override
+	@Transactional
+	public List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Leave> list = null;
+		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status =:status";
+		list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).list();
+		return list;
+	}
 }
