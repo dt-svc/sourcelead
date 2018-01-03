@@ -198,6 +198,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 			if(errorSet.isEmpty()){
 				mapToEntities(dataMigrationDTOJsonCopy.toString(), user, orgLocation, dataMigrationDTO.getUploadType());
+				importStatus = "success";
 			}else{
 				int errorCount = 0;
 				StringBuilder errorSB = new StringBuilder();
