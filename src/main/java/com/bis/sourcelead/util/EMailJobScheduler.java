@@ -42,6 +42,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -85,6 +87,7 @@ import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -260,6 +263,12 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private CampaignUtil campaignUtil;
+	
+	@Autowired
+	private LeaveService leaveService;
+	
+	@Autowired
+	LeaveDao leaveDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2244,6 +2253,30 @@ public class EMailJobScheduler {
 		}
 		}
 		
+	}
+	
+	/**
+	 * This method is used to update the leave Status from pending to approved for expired leaves
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Async
+	public void updateLeaveStatus() throws Exception
+	{
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		for (OrgLocations orgLocation : orgLocationsList) {
+			List<Leave> leaveList = leaveService.getAllLeavesByLocationIdAndStatus(orgLocation.getId(), Constants.PENDING);
+			for (Leave leave : leaveList) {
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
+				Date date = new Date();
+				String currentTimeStr = TZ_DF_TS.format(date);
+				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+				if (leave.getToDate().before(curDate)) {
+					leave.setStatus(Constants.APPROVED);
+					leaveDao.saveLeave(leave);
+				}
+			}
+		}
 	}
 	
 }
