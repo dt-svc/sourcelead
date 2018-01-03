@@ -30,6 +30,7 @@ import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ClientsReportServiceImpl implements ClientReportService{
@@ -124,12 +125,11 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency,String fromDate, String toDate) {
+	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency,String fromDate, String toDate) throws Exception {
 
 		Map<String,Float> amountList = new LinkedHashMap<>();
 		List<Entry<String, Float>> newList = null;
 		List<OrgRelations> clientsList = getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
-		
 		
 		InvoiceReportDTO invoiceDto = new InvoiceReportDTO();
 		Date todayDate = new Date();
@@ -144,7 +144,7 @@ public class ClientsReportServiceImpl implements ClientReportService{
 			freqDates[0] = commonUtil.getDateFormat(fromDate);
 			freqDates[1] = commonUtil.getDateFormat(toDate);
 		}else{
-			freqDates = reportsUtil.getJobFilterDate(dateFrequency);
+			freqDates = reportsUtil.getJobFilterDate(dateFrequency,orgLocation);
 		}
 		
 		if(clientsList != null && clientsList.size() > 0) {

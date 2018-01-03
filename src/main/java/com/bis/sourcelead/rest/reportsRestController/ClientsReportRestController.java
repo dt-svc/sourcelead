@@ -198,7 +198,7 @@ public class ClientsReportRestController {
 					contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
 				}
 				
-				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation.getId(), user,orgRelation.getId(),userRoleName,contractReportsDTO);
+				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
 				if(conList != null && conList.size() > 0){
 					clientDto.setTotalContracts(conList.size());
 				}else{
