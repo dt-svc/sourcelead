@@ -139,7 +139,7 @@ margin-top: 3px;
 				
 				 <div class='remove_search'>
 
-		        		<input type='text' placeholder="Search" value="" id='dataTableSearchExpenses'/>
+		        		<input type='text' placeholder="Search" value="" id='SearchExpensesData'/>
 
 		         </div>
 				
