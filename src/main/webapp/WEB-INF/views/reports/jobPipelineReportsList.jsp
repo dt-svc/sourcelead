@@ -32,13 +32,13 @@ function getCustomDates(){
       <div class="pull-left">
         <h2>Jobs Pipeline List</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Jobs Pipeline List</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Jobs Pipeline List</a></div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">
       <div class="ReqRepHead clearfix">
     		      <div class="col-md-2 pull-left reqListBtn">
-          <a href="${appPath}/jobPipelineReports" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+          <a href="${appPath}/jobPipelineReports" title="Reports View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
           <a href="${appPath}/jobPipelineReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
     		      </div>
        
@@ -55,11 +55,11 @@ function getCustomDates(){
         <div class="dropdown-select positionRelative">
         <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
-            <option value='Last_7_days'>Last 7 days</option>
+            <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month'>1 month</option>
             <option value='3_months'>3 months</option>
-            <option value='YTD' selected>YTD</option>
+            <option value='YTD' >YTD</option>
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
@@ -88,7 +88,7 @@ function getCustomDates(){
          
          <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions" onclick="relaod();"><i class="fa fa-retweet"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" title="Reload" onclick="relaod();"><i class="fa fa-retweet"></i></button>
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@ function getCustomDates(){
         	<div class="col-md-4 mb">
         	<div class="cardModel-widget">
         	 <div class="clearfix row cardModelwidget-header">
-        		<h4 class="col-md-12 text-center">Applicant:
+        		<h4 class="col-md-12 text-center">Applicants:
         	 	<span class="text-right" id="applicantCount"></span>
         	 	</h4>
         	 </div>
