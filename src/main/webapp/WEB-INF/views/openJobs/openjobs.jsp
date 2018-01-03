@@ -764,8 +764,79 @@ a.alertBtn {
 	</form:form>
 </section>
 <!-- Content Area Ends-->
-
-<jsp:include page="../staticFooter.jsp" />
+<footer>
+    <div class="footerInn">
+        <div class="footerInnCta resFoot">
+            <h3>SourceLead</h3>
+            <ul>
+                <li><a href="/about-us.html"><i class="fa fa-caret-right"></i>About
+                        us</a></li>
+                <li><a href="/team.html"><i class="fa fa-caret-right"></i>Our
+                        team</a></li>
+                <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
+                <li><a href="/testimonial.html"><i
+                        class="fa fa-caret-right"></i>Testimonial</a></li>
+                <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
+                <li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact
+                        us</a></li>
+            </ul>
+        </div>
+        <div class="footerInnCta resFoot">
+            <h3>What we do</h3>
+            <ul>
+                <li><a href="/crowdsourcing.html"><i
+                        class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+                <li><a href="/ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+                <li><a href="/vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+                <li><a href="/timesheet.html"><i class="fa fa-caret-right"></i>Time
+                        Management</a></li>
+            </ul>
+        </div>
+        <div class="footerInnCta">
+            <div class="hBlogs">
+                <a href="/blog4.html"> <span>Loyal Relationships with
+                        Recruiters</span> <b>FEB 20, 2017</b>
+                </a> <a href="/blog3.html"> <span>Recruiting Through Social
+                        Media Platform</span> <b>FEB 15, 2017</b>
+                </a> <a href="/blog.html"> <span>Existing Process without
+                        using any Tool</span> <b>DEC 20, 2016</b>
+                </a> <a href="/blog4.html">Viwe all</a>
+            </div>
+        </div>
+        <div class="footerInnCta">
+            <h3>Get in touch</h3>
+            <a href="mailto:info@sourcelead.com;"><b><i
+                    class="fa fa-envelope-o"></i>info@sourcelead.com</b></a> <a
+                href="tel:(214) 295-5535"><b><i class="fa fa-phone"></i>USA
+                    : (214) 295-5535</b></a> <a href="tel:(972) 559-3641"><b><i
+                    class="fa fa-fax"></i>FAX : (972) 559-3641</b></a> <a
+                href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND :
+                    +91. 40-6700-7676</b></a>
+            <h4>Go social</h4>
+            <div class="socila">
+                <a href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/in.png" alt="" /></a> <a
+                    href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/fb.png" alt="" /></a> <a
+                    href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/tw.png" alt="" /></a> <a
+                    href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/gp.png" alt="" /></a>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <jsp:include page="../masterFooter.jsp" />
+    <div class="copyrightOut">
+        <div class="copyright">
+            <b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+                href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
+                    of Use</a>
+            </span>
+            <div class="clear"></div>
+        </div>
+    </div>
+</footer>
 
 <section class="pageLoad"></section>
 <div class="backtotop">
