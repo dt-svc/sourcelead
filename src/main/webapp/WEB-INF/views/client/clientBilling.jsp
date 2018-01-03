@@ -817,12 +817,12 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : recievePaymentPopUpDate,
+	/* 	dateFormat : recievePaymentPopUpDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
 			removeValidate();
-		}
+		} */
 	});
     
     
