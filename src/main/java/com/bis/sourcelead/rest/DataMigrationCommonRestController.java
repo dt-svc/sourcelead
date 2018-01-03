@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.service.DataMigrationService;
@@ -48,15 +49,15 @@ public class DataMigrationCommonRestController {
 	DataMigrationService dataMigrationService;
 	
 	@RequestMapping(value = {"/dataMigrationCommon","/rest/dataMigrationCommon"}, method = RequestMethod.POST)
-	public ModelAndView dataMigrationCommon(@RequestParam(value = "filePath", required = false) String filePath, @RequestParam(value = "uploadType", required = false) String uploadType, HttpServletRequest request) throws Exception
+	public ModelAndView dataMigrationCommon(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
-		dataWithCellId = dataMigrationService.getfileData(ac+filePath);
+		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationCommonDTO.getFilePath());
 		List<SourceleadFormFields> formFields = null;
 		
-		switch(uploadType){  
+		switch(dataMigrationCommonDTO.getUploadType()){  
 	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;  
 	    case "timesheetUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(1l, 1);break;  
 	    }
@@ -65,8 +66,9 @@ public class DataMigrationCommonRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
-		model.addObject("exportFilePath", filePath);
-		model.addObject("uploadType", uploadType);
+		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
+		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
+		model.addObject("timesheetMode", dataMigrationCommonDTO.getTimesheetMode());
 		return model;
 	}
 	
