@@ -1481,7 +1481,7 @@ public class EMailJobScheduler {
 		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
 		invoiceList.forEach(invoice -> {
 			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
-				if (invoice.getDueDate().after(new Date())) {
+				if (new Date().after(invoice.getDueDate())) {
 					invoice.setPaymentStatus(Constants.OVER_DUE);
 					try {
 						invoiceService.saveInvocePojo(invoice);
