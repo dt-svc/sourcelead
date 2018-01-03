@@ -214,7 +214,7 @@ function vendorContractsList(orgRelationId){
 	                		        } */
 	                		         result = result + '</td>';
 	                		         result = result + '<td>';
-	                		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
+	                		           	result = result + '<div class="tblminwidth-100">'+report.contractType+'</div>';
 	                		         result = result + '</td>';
 	                		    	 result = result + '<td>';
 	                		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
@@ -225,9 +225,9 @@ function vendorContractsList(orgRelationId){
 	                		         result = result + '</td>';
 	                		         
 	                		         result = result + '<td>';
-	                		         result = result + '<div class="tblminwidth-75">'+report.startDateStr;
+	                		         result = result + '<div class="tblminwidth-100">'+report.startDateStr;
 	                		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-	                		        	 result = result +' | '+ report.endDateStr+'</div>';
+	                		        	 result = result +' <br> '+ report.endDateStr+'</div>';
 	                		         }else{
 	                		        	 result = result + '</div>';
 	                		         }
@@ -275,11 +275,11 @@ function vendorContractsList(orgRelationId){
 	                		         result = result + '</td>';
 	                		        
 	                		         result = result + '<td>';
-	                		         result = result + '<div class="tbldata-dotdot_80">';
+	                		         result = result + '<div class="tblminwidth-50 action-icons">';
 	                		         
 		                		         if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	                		     			 if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-		                	     	        	 result = result +'<div class="pull-left CurDiv mr10" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
+		                	     	        	 result = result +'<div class="pull-left CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check text-success" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i><i class="fa fa-times text-danger" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
 		                	     	         }
 	                		     		  }
 	                		     		 
@@ -302,7 +302,7 @@ function vendorContractsList(orgRelationId){
 	                	       			if(report.templateSubmissionStatus == "DRAFT" || report.templateSubmissionStatus == "WAITING_FOR_APPROVER" || report.templateSubmissionStatus == "REJECTED" ){
 	                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                	     	     		if(report.typeOfContract == "New"){
-	                	     	     			result = result + '<div class="pull-left ml10"><a href="/app/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+	                	     	     			result = result + '<div class="pull-left"><a href="/app/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}else if(report.typeOfContract == "Custom"){
 	                	     	     			result = result + '<div class="pull-left"><a href="/app/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}
