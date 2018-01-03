@@ -1740,7 +1740,7 @@ function clientSideBar(candidateId,recScore){
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(json) { 
-                if(json != null){  
+                if(json != null){ 
                 	// var json = JSON.parse(data);
               		/*  if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
@@ -1847,7 +1847,7 @@ function clientSideBar(candidateId,recScore){
 						 result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
 						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';					     result = result+'  </label>';
-					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+					     if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
@@ -3271,7 +3271,7 @@ function recommendationAlertMessage(message,candidateId){
 </script>
 
 <script>
-function refreshImageBlock(candidateId){   
+function refreshImageBlock(candidateId){  
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
@@ -3347,6 +3347,7 @@ function deleteProfileImage(candidateId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var submissionId = '${submissionId}';
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
@@ -3355,6 +3356,7 @@ function deleteProfileImage(candidateId){
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
 	        	 refreshImageBlock(candidateId);
+	        	 applicantQuickViewProfile(candidateId,submissionId);
 	       },
 	        
      }); 
