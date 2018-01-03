@@ -3,11 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-		<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-		<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script>
-				<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-		<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getTopFiveConracts();
@@ -86,9 +81,6 @@ $(document).ready(function(){
       </div>
     </div>
     <div class="ReqRepHead clearfix">
-      <div class="col-md-5 pull-left reqListBtn"> <a href="clients-report.html" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a> <a href="clientsreport-list.html" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
-        <div class="hidden"> <span class="rAct" title="Graphical View" id="GView"><i class="fa fa-pie-chart"></i></span> <span class="" title="List View" id="LView"><i class="fa fa-list"></i></span> </div>
-      </div>
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-4">
         <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
           <option>Select Date</option>
@@ -212,7 +204,7 @@ $(document).ready(function(){
                   <select class="chosen-select" data-placeholder="Select Client" id="topTenClientSelect" onchange="clientSummary()"></select>
                 </div>
                 <div class="col-md-2" id="clientContactSelectDiv" style="display: none;">
-                  <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect"></select>
+                  <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect" onchange="clientContactSummary()"></select>
                 </div>
               </div>
               <div class="require_wrap_table" id="topTenClientList"></div>
@@ -689,7 +681,7 @@ function topTenClientReports(){
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
 			            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
 			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
-			            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalPaidAmount+'</div></td>';
 			            result += '  </tr>';
 		            }
 		            
@@ -950,7 +942,7 @@ function topTenClientContactReports(){
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
 			            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
 			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
-			            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalPaidAmount+'</div></td>';
 			            result += '  </tr>';
 		            }
 		            
@@ -961,7 +953,7 @@ function topTenClientContactReports(){
 		           	opt += '<option >Select Client Contact</option>';
 		           	for(i=0; i<data.length; i++){
 		           		repo = data[i];
-		           		opt += '<option value='+repo.orgSpocId+'>'+repo.clientContactName+'</option>';
+		           		opt += '<option value='+repo.orgSpocUUID+'>'+repo.clientContactName+'</option>';
 		           	}
 		           	
 		           	$("#topTenClientContactList").empty();
@@ -984,6 +976,13 @@ function clientSummary(){
 	var orgRelationUUID = $("#topTenClientSelect").val();
 	if(orgRelationUUID != null && orgRelationUUID != '' && orgRelationUUID != 'undefined'){
 	 location.replace(sourceleadUrl+"/clientReportSummary?orgRelationUUID="+orgRelationUUID+"&invoiceType=Receivable&type=byClient");
+}
+}
+
+function clientContactSummary(){
+	var orgSpocUUID = $("#topTenClientContactSelect").val();
+	if(orgSpocUUID != null && orgSpocUUID != '' && orgSpocUUID != 'undefined'){
+	 location.replace(sourceleadUrl+"/clientReportSummary?orgRelationUUID="+orgSpocUUID+"&invoiceType=Receivable&type=byContact");
 }
 }
 </script>

@@ -105,7 +105,7 @@
  </c:if>
 
 
-<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/clientReports"}'>
+<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
 	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
