@@ -94,7 +94,7 @@ public class ClientsReportRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		List<ContractReportsDTO> contractList = new ArrayList<>();
-		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation.getId(),user,userRoleName,contractReportsDTO);
+		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation,user,userRoleName,contractReportsDTO);
 		
 		for(Map.Entry<String,Integer> entry : clientcontractList.entrySet()){
 			ContractReportsDTO conDto = new ContractReportsDTO();
@@ -162,9 +162,47 @@ public class ClientsReportRestController {
 			freqDates[0] = commonUtil.getDateFormat(fromDate);
 			freqDates[1] = commonUtil.getDateFormat(toDate);
 		}else{
-			freqDates = reportsUtil.getJobFilterDate(frequency);
+			freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
 		}
 		List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
+<<<<<<< HEAD
+		for(OrgRelations orgRelation : clientList){
+			ClientReportsDTO clientDto = new ClientReportsDTO();
+			if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
+				clientDto.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+			}else{
+				clientDto.setClientName(orgRelation.getLocationId().getOrgLocationName());
+			}
+			clientDto.setOrgRelationUUID(orgRelation.getUUID());
+			List<OrgSpoc> spocList = clientReportService.getClientSpocListByOrgRelationid(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates);
+			if(spocList != null && spocList.size() > 0)
+				clientDto.setNoOfContacts(spocList.size());
+			else
+				clientDto.setNoOfContacts(0);
+			
+			List<Requirement> reqList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates,null);
+			if(reqList != null && reqList.size() > 0)
+				clientDto.setReleasedJobs(reqList.size());
+			else
+				clientDto.setReleasedJobs(0);
+			for(Requirement req : reqList){
+				Map<String,Integer> subListCount = clientReportService.getSubmissionListByRequirementId(req.getId(),orgLocation.getId(),user.getId(),freqDates);
+				clientDto.setSubmissionCount(subListCount.get("submissionCount"));
+				clientDto.setSubmissionCount(subListCount.get("hiredCount"));
+			}
+			ContractReportsDTO contractReportsDTO = new ContractReportsDTO();
+			contractReportsDTO.setFrequency(frequency);
+			if("Custom".equalsIgnoreCase(frequency)){
+				contractReportsDTO.setFromDate(commonUtil.dateStrFromDate(freqDates[0]));
+				contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
+			}
+			
+			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
+			if(conList != null && conList.size() > 0){
+				clientDto.setTotalContracts(conList.size());
+			}else{
+				clientDto.setTotalContracts(0);
+=======
 		if(clientList != null && clientList.size() > 0) {
 			for(OrgRelations orgRelation : clientList){
 				ClientReportsDTO clientDto = new ClientReportsDTO();
@@ -218,6 +256,7 @@ public class ClientsReportRestController {
 				}
 				
 				clientDtoList.add(clientDto);
+>>>>>>> 9ab13da1eb510c0f1715625cce8a405254b5a0ea
 			}
 		}
 		
@@ -244,7 +283,7 @@ public class ClientsReportRestController {
 			freqDates[0] = commonUtil.getDateFormat(fromDate);
 			freqDates[1] = commonUtil.getDateFormat(toDate);
 		}else{
-			freqDates = reportsUtil.getJobFilterDate(frequency);
+			freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
 		}
 		List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), loginUser.getId());
 		if(clientList != null && clientList.size() > 0) {
@@ -262,6 +301,7 @@ public class ClientsReportRestController {
 				else
 					clientDto.setNoOfContacts(0);
 				
+
 				for(OrgSpoc spoc : spocList){
 					StringBuilder sb = new StringBuilder();
 					if(StringUtils.isNotBlank(spoc.getClientUser().getFirstName()) && StringUtils.isNotBlank(spoc.getClientUser().getLastName()))
@@ -290,7 +330,7 @@ public class ClientsReportRestController {
 						contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
 					}
 					contractReportsDTO.setContactUser(spoc.getClientUser().getId());
-					List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation.getId(), loginUser,orgRelation.getId(),userRoleName,contractReportsDTO);
+					List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, loginUser,orgRelation.getId(),userRoleName,contractReportsDTO);
 					if(conList != null && conList.size() > 0){
 						clientDto.setTotalContracts(conList.size());
 					}else{
@@ -307,6 +347,7 @@ public class ClientsReportRestController {
 							clientDto.setTotalPaidAmount(paidTotalAmount);
 						}
 					}
+
 				}
 				
 				clientDtoList.add(clientDto);

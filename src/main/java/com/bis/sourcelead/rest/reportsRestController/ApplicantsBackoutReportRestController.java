@@ -69,7 +69,7 @@ public class ApplicantsBackoutReportRestController {
 
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
 			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection(),orgLocation);
 			}else {
 				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
 	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
@@ -134,7 +134,7 @@ public class ApplicantsBackoutReportRestController {
 
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
 			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection(),orgLocation);
 			}else {
 				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
 	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
