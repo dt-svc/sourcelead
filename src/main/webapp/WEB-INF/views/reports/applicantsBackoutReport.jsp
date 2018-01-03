@@ -301,6 +301,10 @@ function getCustomDates(){
 				"gridThickness": 0,
 				"title": ""
 			},
+			"export": {
+
+            	"enabled": true
+            	},
 			"trendLines": [],
 			"graphs": [
 				{
