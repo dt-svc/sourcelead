@@ -86,7 +86,7 @@ function candReferencesList(candidateId){
              			/*  var json = JSON.parse(data);  */
 	                	 $("#candidateReferencesList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='candidateReferencesPagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='candidateReferencesPaginationId' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result + '<th>Name </th>';
@@ -175,17 +175,19 @@ function candidateReferencesList(candidateId){
 
 <script>
 function candidateReferencesPagination(){  
-    $('#candidateReferencesPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
+	
+	$('#candidateReferencesPaginationId').DataTable({
+		"scrollCollapse" : false,
+		"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+		"bLengthChange" : true,
+		"bDestroy" : true,
+		"ordering" : true,
+		"oLanguage" : {
+			"sSearch" : "",
+			"sZeroRecords" : "",
+			"sEmptyTable" : ""
+		}
+	});
 }
 </script>
 
