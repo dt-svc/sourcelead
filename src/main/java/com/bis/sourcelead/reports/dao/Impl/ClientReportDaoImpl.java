@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -150,7 +151,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 
 	@Override
 	@Transactional
-	public List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user,Long orgRelationId,String userRoleName,ContractReportsDTO contractReportsDTO)
+	public List<Contracts> getContractsListOFAllClients(OrgLocations orgLocations, User user,Long orgRelationId,String userRoleName,ContractReportsDTO contractReportsDTO) throws Exception
 	{
 		String subQuery = "";
 		Date[] freqDates = new Date[2];
@@ -160,7 +161,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			freqDates[0] = commonUtil.getDateFormat(contractReportsDTO.getFromDate());
 			freqDates[1] = commonUtil.getDateFormat(contractReportsDTO.getToDate());
 		}else{
-			freqDates = reportsUtil.getJobFilterDate(contractReportsDTO.getFrequency());
+			freqDates = reportsUtil.getJobFilterDate(contractReportsDTO.getFrequency(),orgLocations);
 			subQuery += " and ( contracts.updatedDate >= :startDate and contracts.updatedDate <= :endDate )";
 		}
 		}
@@ -198,12 +199,12 @@ public class ClientReportDaoImpl implements ClientReportDao {
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' "+submissionStatus+userRoleCondition+subQuery+spocCondition ;
 			if(freqDates[0] != null && freqDates[1] != null) {
 				if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 				}else{
-					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 				}
 			}else {
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			}
 		
 		if (ContractsList.size() > 0)

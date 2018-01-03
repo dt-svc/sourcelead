@@ -75,7 +75,7 @@ public class JobPipelineReoprtsRestController {
 		Date[] searchDates = null;
 		
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection());
+			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection(),orgLocation);
 		}else {
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

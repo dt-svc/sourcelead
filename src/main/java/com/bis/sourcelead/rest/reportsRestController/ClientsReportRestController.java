@@ -96,7 +96,7 @@ public class ClientsReportRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		List<ContractReportsDTO> contractList = new ArrayList<>();
-		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation.getId(),user,userRoleName,contractReportsDTO);
+		Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation,user,userRoleName,contractReportsDTO);
 		
 		for(Map.Entry<String,Integer> entry : clientcontractList.entrySet()){
 			ContractReportsDTO conDto = new ContractReportsDTO();
@@ -164,7 +164,7 @@ public class ClientsReportRestController {
 			freqDates[0] = commonUtil.getDateFormat(fromDate);
 			freqDates[1] = commonUtil.getDateFormat(toDate);
 		}else{
-			freqDates = reportsUtil.getJobFilterDate(frequency);
+			freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
 		}
 		List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
 		for(OrgRelations orgRelation : clientList){
@@ -198,7 +198,7 @@ public class ClientsReportRestController {
 				contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
 			}
 			
-			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation.getId(), user,orgRelation.getId(),userRoleName,contractReportsDTO);
+			List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
 			if(conList != null && conList.size() > 0){
 				clientDto.setTotalContracts(conList.size());
 			}else{
@@ -222,7 +222,7 @@ public class ClientsReportRestController {
 			freqDates[0] = commonUtil.getDateFormat(fromDate);
 			freqDates[1] = commonUtil.getDateFormat(toDate);
 		}else{
-			freqDates = reportsUtil.getJobFilterDate(frequency);
+			freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
 		}
 		List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), loginUser.getId());
 		for(OrgRelations orgRelation : clientList){
@@ -266,7 +266,7 @@ public class ClientsReportRestController {
 					contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
 				}
 				contractReportsDTO.setContactUser(spoc.getClientUser().getId());
-				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation.getId(), loginUser,orgRelation.getId(),userRoleName,contractReportsDTO);
+				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, loginUser,orgRelation.getId(),userRoleName,contractReportsDTO);
 				if(conList != null && conList.size() > 0){
 					clientDto.setTotalContracts(conList.size());
 				}else{
