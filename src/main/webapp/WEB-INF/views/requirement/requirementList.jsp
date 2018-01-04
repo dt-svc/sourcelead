@@ -140,7 +140,7 @@ function statusvalidating(id){
 					<div class="row">
 						<div class="clearfix">
 							<div class="col-md-4">
-								<label>Generated ID</label>
+								<label>ID</label>
 								<div class="clearfix">
 									<select class="chosen-select form-control input-sm" multiple
 										data-placeholder="Generated ID" id="generatedId" name="generatedId">

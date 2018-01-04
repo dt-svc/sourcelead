@@ -258,7 +258,7 @@ public class SubmissionsRateController {
 	/**
 	 * This method is used to Accept or Reject Rate from Candidate.
 	 */
-	@RequestMapping(value = "/app/ws/acceptOrRejectRequirement")
+	@RequestMapping(value = "/ws/acceptOrRejectRequirement")
 	public ModelAndView acceptOrRejectRequirement(@RequestParam(value="rateStatus", required=false) String rateStatus,@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
 		

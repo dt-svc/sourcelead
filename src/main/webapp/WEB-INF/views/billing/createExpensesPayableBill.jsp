@@ -1236,7 +1236,7 @@ function getVendorContacts(vendorContactId){
 
 <div id="divInvoiceExpTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid" placeholder="Rate" name="expenseInvoice[REPLACEROWID].rate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
+	   <input type="text" class="form-control input-sm valid allownumericwithdecimal" placeholder="Rate" name="expenseInvoice[REPLACEROWID].rate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
 	 </div>
 </div>
 
@@ -1302,6 +1302,17 @@ function getVendorContacts(vendorContactId){
 					  onSelect : function(selected) {
 				 	  }
 				    });
+				
+				$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+					 var v = this.value;
+					   if($.isNumeric(v) === false) {
+					        //chop off the last char entered
+					        this.value = this.value.slice(0,-1);
+					   }
+					   $('input.quantity').bind('cut copy paste', function (e) {
+						    e.preventDefault(); //disable cut,copy,paste
+						});
+					    });
 	}			
 </script>
 

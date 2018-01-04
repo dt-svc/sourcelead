@@ -17,6 +17,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -448,6 +449,12 @@ public class CandidateRestController {
 		if (reqCoolingOffPeriod != null && !reqCoolingOffPeriod.isEmpty() && reqCoolingOffPeriod != "undefined") {
 			coolingOffArr = reqCoolingOffPeriod.split(" ");
 			period = coolingOffArr[1];
+		}else {
+			Requirement requirement =  requirementService.getRequirementByRequirementId(requirementId);
+			if(requirement != null && StringUtils.isNotBlank(requirement.getReqCoolingOffPeriod())) {
+				coolingOffArr = requirement.getReqCoolingOffPeriod().split(" ");
+				period = coolingOffArr[1];
+			}
 		}
 		String reqCoolingOffPeriodDays;
 		int Days;
@@ -748,7 +755,7 @@ public class CandidateRestController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/profileBySkillSet", method = RequestMethod.POST)
+	@RequestMapping(value = {"/app/ws/profileBySkillSet", "/app/profileBySkillSet"}, method = RequestMethod.POST)
 	public @ResponseBody String profileBySkillSet(@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request) throws Exception
 	{
 		String[] mySkills = allSkills.split(",");

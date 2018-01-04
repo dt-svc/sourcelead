@@ -79,7 +79,7 @@ function sendOtp() {
 	var type = "email";
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/sendOtpToUser?id="+userId+"&type="+type,        
+	       url: sourceleadUrl+"/ws/sendOtpToUser?id="+userId+"&type="+type,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		    $("#twoStepAuthDiv").empty();
@@ -113,7 +113,7 @@ function verifyOTP(){
 		$("#errorDiv").attr("style","display:none");
 		$.ajax({
 		      type : "POST",
-		       url: sourceleadUrl+"/verificationDone?userName="+username+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+username+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
 		       success :function(result) {
 		    	 if(result == "true"){
 		    		 location.replace(sourceleadUrl+"/dashboard");  

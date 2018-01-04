@@ -190,7 +190,6 @@ var Signer = (function() {
     //Save coordinates
     let saveCoordinates = function() {
     	let sourceleadUrl = $("#sourceUrl").val();
-    	alert(sourceleadUrl)
     	 $.ajax({
    	        type : "POST",
    	        url: sourceleadUrl+"/saveSignatureCoordinates",
@@ -215,7 +214,6 @@ var Signer = (function() {
     //Create signature preview
     let createSignaturePreview = function(type) {
     	let sourceleadUrl = $("#sourceUrl").val();
-    	alert(sourceleadUrl)
         let userId = localStorage.getItem('userId');
         var userSign = userId.replace('/unsigned.pdf', '');
         let sigText = $('#txtsignname').val();
@@ -469,7 +467,6 @@ var Signer = (function() {
 
         //Make api call
         let sourceleadUrl = $("#sourceUrl").val();
-        alert(sourceleadUrl)
     	let contractId = $("#contractId").val();
     	 $.ajax({
     	      type : "POST",
@@ -613,9 +610,20 @@ var Signer = (function() {
     //Preview signature to user
     let previewSignature = function() {
     	$('#addSign,#backShadow').show();
+    	$('#cancelId').show();
     }
 
-
+    
+    //Initialize Signer
+    let init = function() {
+        $(document).ready(() => {
+        	$('#addSign,#backShadow').show();
+        	$('#cancelId').hide();
+        });
+    }
+    
+    init();
+    
     //Exposed public methods
     return {
         uploadDoc: uploadDoc,
