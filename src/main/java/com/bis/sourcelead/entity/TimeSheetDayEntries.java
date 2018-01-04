@@ -64,6 +64,11 @@ public class TimeSheetDayEntries implements Serializable{
 	
 	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
+	
+	
+	
+	@Column(name = "IS_MANUALLY_ADDED")
+	private String isManuallyAdded;
 	 
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
@@ -187,6 +192,14 @@ public class TimeSheetDayEntries implements Serializable{
 
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
+	}
+
+	public String getIsManuallyAdded() {
+		return isManuallyAdded;
+	}
+
+	public void setIsManuallyAdded(String isManuallyAdded) {
+		this.isManuallyAdded = isManuallyAdded;
 	}
 	
 }
