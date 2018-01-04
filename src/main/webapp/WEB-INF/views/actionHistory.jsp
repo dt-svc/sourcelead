@@ -107,7 +107,7 @@ function actionHistoryList(actionUUID){
 	                    		 activeClass = "class='active Activation'";
 	                    		 orgLocation = opt.orgLocations.id;
 	                    	 }
-	                    	 outPut = outPut +'<a href="#" id="shift'+opt.orgLocations.id+'" '+activeClass+' onclick="enableTabs('+opt.orgLocations.id+'); actionHistoryListByOrgLocation('+actionUUID+','+opt.orgLocations.id+');">'+opt.orgLocations.orgLocationName+'</a>';
+	                    	 outPut = outPut +'<a href="#" id="shift'+opt.orgLocations.id+'" '+activeClass+' onclick="enableTabs('+opt.orgLocations.id+'); actionHistoryListByOrgLocation(\''+actionUUID+'\','+opt.orgLocations.id+');">'+opt.orgLocations.orgLocationName+'</a>';
             	    	 }
             	    	outPut = outPut + '		</div>';
 	                    $("#actionHistoryOrgList").append(outPut);
@@ -133,7 +133,6 @@ function actionHistoryListByOrgLocation(actionUUID, orgLocation){
 			    		location.replace(sourceleadUrl);
 			    	 }
             	     else{
-            	    	 
             	    	 $("#actionHistoryLoading").removeAttr("style");
 	                	 $("#actionHistoryList").empty();
 	                	 var result = "";

@@ -2620,7 +2620,6 @@ var validationSettings = {
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
-        	 alert("pradeep")
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
