@@ -413,24 +413,24 @@ result = result  +'    <div class="billingArea"> ';
 					if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 							if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+							result = result +'           <span class="successBtn primary pull-left" >Receive</span>   ';	
 						}else{
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>   ';	
+							result = result +'           <span class="successBtn primary pull-left" >Send</span>   ';	
 						}
 						}else{
-							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							if(report.paymentStatus == "Paid"){
-								result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+								result = result +'           <span class="successBtn primary pull-left" >Receive</span>   ';	
 							}else{
-								result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+								result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 							}
 							
 						}else{
 							if(report.invoiceStatus == "Rejected"){
-								result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
+								result = result +'           <span class="successBtn primary pull-left" >Send</span>           ';	
 							}else{
 								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 							}
@@ -808,12 +808,12 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : recievePaymentPopUpDate,
+		/* dateFormat : recievePaymentPopUpDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
 			removeValidate();
-		}
+		} */
 	});
     
     
