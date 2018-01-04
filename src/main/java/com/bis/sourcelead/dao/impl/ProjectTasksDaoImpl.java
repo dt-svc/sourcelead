@@ -5,9 +5,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
@@ -21,12 +19,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -39,6 +40,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	ProjectMembersDao projectMembersDao;
+	
+	@Autowired
+	CandidateDao candidateDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -362,6 +369,28 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 					count = tasksCount.get(0).intValue();
 			}
 			return count;
+	}
+	
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })*/
+	public List<ProjectTasks> addProjectTasksForLoginUserAndLeaveType(User user,Long orgLocationId,String leaveType,String billableType) throws Exception {
+		List<ProjectTasks> projectTaskList = new ArrayList<>();
+		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocationId);
+		if(candidate != null){
+			List<ProjectMembers> projectMembersList =  projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocationId,candidate.getId());
+			if(projectMembersList != null && !projectMembersList.isEmpty()){
+				
+			}
+		}
+		
+		/*Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from ProjectTasks pt where pt.projectId.id = :projectId ";
+		List<Long> tasksCount = session.createQuery(query.toString()).setLong("projectId", projectId).list();
+			Integer count = 0;
+			if(tasksCount != null && !tasksCount.isEmpty()){
+					count = tasksCount.get(0).intValue();
+			}*/
+			return projectTaskList;
 	}
 
 	@SuppressWarnings("unchecked")
