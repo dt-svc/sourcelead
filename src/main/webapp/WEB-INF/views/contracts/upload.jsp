@@ -121,7 +121,7 @@ position: relative;top:8px;
   </c:if>
   </section>
             <div id="addSign">
-                <div class="cancelSign">
+                <div class="cancelSign" id ="cancelId">
                     <button type="button" onclick="Signer.hideSignModal()" class="close" aria-hidden="true">&times;</button>
                 </div>
                 <div>

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -150,7 +151,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 
 	@Override
 	@Transactional
-	public List<Contracts> getContractsListOFAllClients(Long orgLocationId, User user,Long orgRelationId,String userRoleName,ContractReportsDTO contractReportsDTO)
+	public List<Contracts> getContractsListOFAllClients(OrgLocations orgLocations, User user,Long orgRelationId,String userRoleName,ContractReportsDTO contractReportsDTO) throws Exception
 	{
 		String subQuery = "";
 		Date[] freqDates = new Date[2];
@@ -160,7 +161,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			freqDates[0] = commonUtil.getDateFormat(contractReportsDTO.getFromDate());
 			freqDates[1] = commonUtil.getDateFormat(contractReportsDTO.getToDate());
 		}else{
-			freqDates = reportsUtil.getJobFilterDate(contractReportsDTO.getFrequency());
+			freqDates = reportsUtil.getJobFilterDate(contractReportsDTO.getFrequency(),orgLocations);
 			subQuery += " and ( contracts.updatedDate >= :startDate and contracts.updatedDate <= :endDate )";
 		}
 		}
@@ -198,12 +199,12 @@ public class ClientReportDaoImpl implements ClientReportDao {
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.orgRelations.id =:orgRelationId and contracts.contractType like '%Client%' "+submissionStatus+userRoleCondition+subQuery+spocCondition ;
 			if(freqDates[0] != null && freqDates[1] != null) {
 				if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 				}else{
-					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
+					ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setLong("userId", user.getId()).setString("userCode", user.getUserCode()).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).setCacheable(true).list();
 				}
 			}else {
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			}
 		
 		if (ContractsList.size() > 0)
@@ -214,7 +215,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 
 	@Override
 	@Transactional
-	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId) {
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId,Date[] freqDates) {
 		String subQuery = "";
 		if(invoiceType.equalsIgnoreCase("payables")){
 			subQuery = " and invoice.invoiceType = 'Payables' ";
@@ -222,14 +223,19 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			subQuery = " and invoice.invoiceType = 'Receivable' ";
 		}
 		
+		String subQuery1 = "";
+		subQuery1 += " and ( invoice.createdDate >= :startDate and invoice.createdDate <= :endDate )";
+		
 		List<Invoice> clientInvoiceList = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		if(contactUserId != null) {
-			String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.contactUser.id = :contactUserId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
-			clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).setCacheable(true).list();
-		}else {
-			String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
-			clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		if(freqDates != null) {
+			if(contactUserId != null) {
+				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.contactUser.id = :contactUserId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+subQuery1+"";
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).setParameter("startDate", freqDates[0]).setParameter("endDate",freqDates[1]).setCacheable(true).list();
+			}else {
+				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+subQuery1+"";
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate",freqDates[1]).setCacheable(true).list();
+			}
 		}
 		return clientInvoiceList;
 	}
