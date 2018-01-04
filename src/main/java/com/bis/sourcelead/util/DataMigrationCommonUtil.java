@@ -79,7 +79,7 @@ public class DataMigrationCommonUtil {
 		dataMigrationDTOJsonCopy.keys().forEachRemaining(k -> {
 			try {
 				Boolean flag;
-				if((k.toString().equalsIgnoreCase("manager") || k.toString().equalsIgnoreCase("priority") || k.toString().equalsIgnoreCase("jobTitle") || k.toString().equalsIgnoreCase("location")) && (dataMigrationDTOJsonCopy.get(k.toString()) == null || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null"))){
+				if((k.toString().equalsIgnoreCase("applicationFrom") || k.toString().equalsIgnoreCase("manager") || k.toString().equalsIgnoreCase("priority") || k.toString().equalsIgnoreCase("jobTitle") || k.toString().equalsIgnoreCase("location")) && (dataMigrationDTOJsonCopy.get(k.toString()) == null || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null"))){
 					errorSet.put(k.toString(), k.toString()+"  field is missing");
 				}
 				
@@ -314,6 +314,20 @@ public class DataMigrationCommonUtil {
 						errorSet.put(k.toString(), "Approvers are invalid");
 					}else{
 						dataMigrationDTOJsonCopy.put((String) k, validApprovers);
+					}
+				}
+				
+				if (k.toString().equalsIgnoreCase("applicationFrom") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
+					flag = false;
+					List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocation.getId(),"Submission");
+					for(SubmissionTemplate submissionTemplete : submissionTempletesList){
+						if(submissionTemplete.getTemplateName().toLowerCase().equalsIgnoreCase(k.toString().toLowerCase())){
+							flag = true;
+							dataMigrationDTOJsonCopy.put((String) k, submissionTemplete.getId().toString());
+						}
+					}
+					if (!flag) {
+						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString()) + " is invalid Application Form");
 					}
 				}
 								

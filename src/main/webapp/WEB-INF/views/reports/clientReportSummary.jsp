@@ -10,8 +10,7 @@ $(document).ready(function(){
 	var orgRelationUUID = '${orgRelationUUID}';
 	var orgSpocUUID = '${orgSpocUUID}';
 	var invoiceType = '${invoiceType}';
-	var type = '${type}';
-		getClientreportSummary(orgRelationUUID,orgSpocUUID,invoiceType,type);
+	getClientreportSummary(orgRelationUUID,orgSpocUUID,invoiceType);
 });
 </script>
 
@@ -181,7 +180,7 @@ $(document).ready(function(){
   
   
   <script>
-  function getClientreportSummary(orgRelationUUID,orgSpocUUID,invoiceType,listType){
+  function getClientreportSummary(orgRelationUUID,orgSpocUUID,invoiceType){
 	  
 	  var url = "";
 	  if(orgRelationUUID != null && orgRelationUUID != '' && orgRelationUUID != 'undefined'){

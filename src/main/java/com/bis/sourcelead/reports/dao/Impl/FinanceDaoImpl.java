@@ -229,19 +229,19 @@ public class FinanceDaoImpl implements FinanceDao{
 			java.sql.Date endDate = null;
 			if(StringUtils.isNotBlank(apAgingDTO.getFilterType())) {
 				if("last_7days".equalsIgnoreCase(apAgingDTO.getFilterType())) {
-					Date[] dates = reportsUtil.last7Days();
+					Date[] dates = reportsUtil.last7Days(orgLocation);
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}else if("last_15days".equalsIgnoreCase(apAgingDTO.getFilterType())) {
-					Date[] dates = reportsUtil.last15DaysDates();
+					Date[] dates = reportsUtil.last15DaysDates(orgLocation);
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}else if("1month".equalsIgnoreCase(apAgingDTO.getFilterType())) {
-					Date[] dates =  reportsUtil.last1MonthDates();
+					Date[] dates =  reportsUtil.last1MonthDates(orgLocation);
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}else if("3months".equalsIgnoreCase(apAgingDTO.getFilterType())) {
-					Date[] dates = reportsUtil.last3MonthDates();
+					Date[] dates = reportsUtil.last3MonthDates(orgLocation);
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}else if("last_years".equalsIgnoreCase(apAgingDTO.getFilterType())) {
