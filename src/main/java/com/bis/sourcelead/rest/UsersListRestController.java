@@ -1571,7 +1571,7 @@ public class UsersListRestController {
 	
 	
 	
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/editUserRole", method = RequestMethod.POST)
 	public @ResponseBody String editUserRole(AddUserDTO addUserDTO, @RequestParam(value = "userId", required = false) Long userId,
 			 HttpServletRequest request) throws Exception {
@@ -2092,6 +2092,19 @@ public class UsersListRestController {
 		List<UserIndex> usersList = userService.getAllUniversalSearchUsersList(orgLocations, searchValue, user);
 		resultJson = commonUtil.toJSON(usersList);
 		return resultJson;
+
+	}
+	
+	
+	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.GET)
+	public @ResponseBody List<UserRoleDTO> getUserListForConnections(
+			@RequestParam(value = "searchValue", required = false) String searchValue, 
+			@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request)
+			throws Exception {
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<UserRoleDTO> userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
+		return userRoleDTOList;
 
 	}
 

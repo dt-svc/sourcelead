@@ -1147,4 +1147,11 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getLeaveRolesByRestrictDayId(restrictDayId);
 	}
 
+	@Override
+	public List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status)
+	{
+		
+		return leaveDao.getAllLeavesByLocationIdAndStatus(locationId, status);
+	}
+
 }

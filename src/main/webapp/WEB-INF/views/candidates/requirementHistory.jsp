@@ -19,7 +19,7 @@ function requirementHistory(candidateId){
 	/* result  = result + '<div class="success_pop" id="selector8" style="display: none;">'; */
 		result = result  +'<span class="pad-sea"></span>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div class="reqPop" id="requirementHistoryPopDiv" ></div>';
+		result  = result + '   <div class="reqPop reqPopHeight" id="requirementHistoryPopDiv" ></div>';
 		result  = result + '   <div id="requirementHistoryDiv" class="datatable_filter"></div>';
    /* result  = result + '   </div>'; */
    
@@ -149,8 +149,8 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
         	
         	var result = "";
      		result = result  +'	<div class="reqPopInn reqHistTitle">';
-     		result = result  +'		<div class="reqClose">';
-     		result = result  +'			<span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
+     		result = result  +'		<div class="reqClose clearfix">';
+     		result = result  +'			<span class="pull-left"><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
      		result = result  +'		</div>';
      		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
      		result = result  +'		<ul>';
@@ -293,7 +293,7 @@ function getRateListDiv(candidateId,submissionId){
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }else{
           			     var result = "";
-      			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+      			         result = result + '<i class="fa fa-times close-ratepop" title="Close" onClick="closeratediv();"></i>';
       			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
          			     result = result + '<section class="tbl-scroll require_wrap_table">';
 	                     result = result + '  <table>';
