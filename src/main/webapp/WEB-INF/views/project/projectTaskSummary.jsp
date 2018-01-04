@@ -20,7 +20,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		getSubTaskList();
 	});
  </script>
- 
+ <div id="taskDeletePopUp"></div>
 	<section class="content-wraper clearfix">
 	
 	<section class="content-header clearfix">
@@ -33,6 +33,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		</div>
 		
 	</section>
+	
 	<div class="taskview_wrapinn">
 	      
 	<div class="clearfix">
@@ -1630,6 +1631,7 @@ function getSubTaskList(){
 			result = result + '<th>Task Name</th>';
 			result = result + '<th>Assigned To</th>';
 			result = result + '<th>Status</th>';
+			result = result + '<th>Action</th>';
 			result = result + '</tr>';
 			result = result + '</thead>';
 			result = result + '<tbody>';
@@ -1652,7 +1654,7 @@ function getSubTaskList(){
 				result = result + '<tr>';
 				
 				'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
-				   result = result+ '<td><div><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+ opt.taskName+ '" >'+ opt.taskName+ '</a></div></td>';
+				   result = result+ '<td><div class="proj_show tblminwidth-100"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+ opt.taskName+ '" class="tbldata-dotdot_80 pull-left anchorBlack" >'+ opt.taskName+ '</a><i class="fa fa-binoculars pull-right"></i></div></td>';
 				'</sec:authorize>';
 				
 				'<sec:authorize access="!hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
@@ -1660,6 +1662,10 @@ function getSubTaskList(){
 				'</sec:authorize>';
 				result = result	+ '<td><div><span >'+taskAssignedUsers+'</span></div></td>';
 				result = result	+ '<td><div><span>'+taskStaus+'</span></div></td>';
+				result = result	+ '<td>';
+				result = result	+ '<div class="tbldata-dotdot-100 text-center">';
+				result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+				result = result	+ '</div></td>';
 				result = result + '</tr>';
 
 			}
@@ -1671,6 +1677,37 @@ function getSubTaskList(){
 
 		}
 	});
+}
+
+
+function deleteProjectTaskPopUp(projectTaskId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete a task ?</p>";
+	result = result + ' <div id="reasonForProjectDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteProjectTask('+projectTaskId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#taskDeletePopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function deleteProjectTask(projectTaskId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl	+ "/ProjectTasks/deleteProjectSubTasks?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		success : function(json) {
+			    $("#taskDeletePopUp").empty();
+			 	$(".project_inn_mask").fadeOut(200);
+			    getSubTaskList();
+		}
+	});
+}
+function cancelTermination(){
+	$("#taskDeletePopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
 <script>
