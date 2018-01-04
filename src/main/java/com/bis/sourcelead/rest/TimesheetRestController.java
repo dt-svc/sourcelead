@@ -1644,6 +1644,9 @@ public class TimesheetRestController {
 							if(taskType.equalsIgnoreCase("Billable")) {
 								if(StringUtils.isNotEmpty(teDTO.getHours())){
 									billableHours = teDTO.getHours();
+									 timesheetDayEntries.setIsManuallyAdded(Constants.YES);
+								}else{
+									 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 								}
 								totalBillableHours = getTotalHoursFormDayHours(billableHours,totalBillableHours);
 								timesheetDayEntries.setBillableHours(billableHours);
@@ -1652,6 +1655,9 @@ public class TimesheetRestController {
 							}else if(taskType.equalsIgnoreCase("Non-Billable")) {
 								if(StringUtils.isNotEmpty(teDTO.getHours())){
 									nonBillableHours = teDTO.getHours();
+									 timesheetDayEntries.setIsManuallyAdded(Constants.YES);
+								}else{
+									 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 								}
 								totalNonBillableHours = getTotalHoursFormDayHours(nonBillableHours,totalNonBillableHours);
 								timesheetDayEntries.setNonBillableHours(nonBillableHours);
@@ -1936,6 +1942,7 @@ public class TimesheetRestController {
 				timesheetDayEntries.setTotalHours("00:00");
 				timesheetDayEntries.setTimesheetSubmissions(timesheetSubmissions);
 				timesheetDayEntries.setTimesheetDate(actualStartDate);
+				timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 				timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 				timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 				timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
@@ -2080,6 +2087,7 @@ public class TimesheetRestController {
 	            		timesheetDayEntries.setProjectTask(projectTasks);
 	            		if(actualStartDate.equals(timesheetDate)){
 	            			total = getTotalHoursFormDayHours(hours, total);
+	            			 timesheetDayEntries.setIsManuallyAdded(Constants.YES);
 	            			if(taskType.equalsIgnoreCase("Billable")) {
 	            				timesheetDayEntries.setComments(comments);
 	                			timesheetDayEntries.setBillableHours(hours);
@@ -2095,6 +2103,7 @@ public class TimesheetRestController {
 	                		}
 	            		}
 	            		else {
+	            			 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 	            			total = getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours(), total);
 	            			totalBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getBillableHours(),totalBillableHours);
 	            			totalNonBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getNonBillableHours(),totalNonBillableHours);
