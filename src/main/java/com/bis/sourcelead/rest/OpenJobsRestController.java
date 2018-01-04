@@ -69,7 +69,7 @@ public class OpenJobsRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 
-	@RequestMapping(value = { "/getOpenJobsELK", "/app/getOpenJobsELK" })
+	@RequestMapping(value = { "/app/ws/getOpenJobsELK", "/app/getOpenJobsELK" })
 	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
 			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
@@ -320,7 +320,7 @@ public class OpenJobsRestController {
 		}
 	}
 
-	@RequestMapping(value = "/openJobsRequiremetsAdvancedSearch", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/ws/openJobsRequiremetsAdvancedSearch", method = RequestMethod.GET)
 	public @ResponseBody String openJobsRequiremetsAdvancedSearch(
 			@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "offset", required = false) Integer offset, HttpServletRequest request,
@@ -620,7 +620,7 @@ public class OpenJobsRestController {
 		}
 	}
 
-	@RequestMapping(value = { "/openRequirementsSummary", "/app/openRequirementsSummary" })
+	@RequestMapping(value = { "/app/ws/openRequirementsSummary", "/app/openRequirementsSummary" })
 	public @ResponseBody String openRequirementsSummary(
 			@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception {
 		Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
@@ -635,7 +635,7 @@ public class OpenJobsRestController {
 	}
 
 
-	@RequestMapping(value = { "/getOrgsListforOpenJobs", "/app/getOrgsListforOpenJobs" })
+	@RequestMapping(value = { "/app/ws/getOrgsListforOpenJobs", "/app/getOrgsListforOpenJobs" })
 	public @ResponseBody String getOrgsListforOpenJobs(
 			@RequestParam(value = "alphabet", required = false) String alphabet,
 			@RequestParam(value = "country", required = false) String country) throws Exception {

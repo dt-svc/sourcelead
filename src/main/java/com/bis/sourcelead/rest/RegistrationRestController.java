@@ -289,7 +289,7 @@ public class RegistrationRestController {
 	   }
 	
 	
-	 @RequestMapping(value = "/registerAsProfessional" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/ws/registerAsProfessional" , method = RequestMethod.POST)
 	 public  String registerAsProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTOO,
 			 @RequestParam(value="contactUUID", required=false) String contactUUID,
 			 HttpServletRequest request) throws Exception {
@@ -308,7 +308,7 @@ public class RegistrationRestController {
 		 return result;
 	   }
 	 
-	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
@@ -328,7 +328,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/ws/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
 			 HttpServletRequest request) throws Exception {
 		 
@@ -341,7 +341,7 @@ public class RegistrationRestController {
 		 return "success";
 	   }
 	 
-	 @RequestMapping(value = "/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 
 		 json = "{"+json+"}";
@@ -354,7 +354,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/resetCredentials" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/ws/resetCredentials" , method = RequestMethod.POST)
 	 public  String resetCredentials(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
@@ -386,7 +386,7 @@ public class RegistrationRestController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/getOptionalValueList" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/ws/getOptionalValueList" , method = RequestMethod.POST)
 	 public  String getOptionalValueList(HttpServletRequest request) throws Exception {
 	 			String registerTypeTwo = "Would like to";
 				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
@@ -597,7 +597,7 @@ public class RegistrationRestController {
 	
 	
 	
-	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
 	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
 		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
@@ -638,7 +638,7 @@ public class RegistrationRestController {
 	}
 	
 
-	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/ws/verifyResetPassword" , method = RequestMethod.POST)
 	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
 		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
@@ -900,7 +900,7 @@ public class RegistrationRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/resendVerificationEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/ws/resendVerificationEmail", method = RequestMethod.GET)
 	public @ResponseBody String resendVerificationEmail(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "userName", required = false) String userName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		User user = null;
@@ -921,7 +921,7 @@ public class RegistrationRestController {
 		}
 	}
 	   
-	@RequestMapping(value = "/app/verificationDone", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/ws/verificationDone", method = RequestMethod.POST)
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
@@ -938,7 +938,7 @@ public class RegistrationRestController {
 		return "true";
 	}
 	
-	@RequestMapping(value = "/app/getUserDetailsByRoleId", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/ws/getUserDetailsByRoleId", method = RequestMethod.GET)
 	public ModelAndView getUserDetailsByRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -966,7 +966,7 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/app/sendOtpToUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/ws/sendOtpToUser", method = RequestMethod.GET)
 	public ModelAndView sendOtpToUser(@RequestParam(value = "id", required = false) Long userId,@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -984,7 +984,7 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/app/validateWhitelistIp", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/ws/validateWhitelistIp", method = RequestMethod.GET)
 	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
