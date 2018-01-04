@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0; user-scalable=0;">
 	<link rel="icon" type="image/png" sizes="16x16" href="/resources/css/static-web/images/favicon.png">
 	<link rel="manifest" href="/manifest.json">
+	<link rel="icon" type="image/png" href="/resources/images/fav.png" />
     <title>::Welcome to SourceLead::</title>
 
     <!-- Bootstrap -->
@@ -41,7 +42,7 @@
 
 <div class="head_inn">
   
-  <div class="logo"><a href="index.html"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="/"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="/"><i class="fa fa-home"></i></a></li>

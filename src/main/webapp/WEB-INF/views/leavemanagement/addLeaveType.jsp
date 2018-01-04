@@ -359,7 +359,7 @@
 							<div class="col-md-6">
 								<div class="row">
 								<div class="col-md-3 padding_right">
-									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" field-name="experiencedDuration" value="${leaveType.experiencedDuration}">
+									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" field-name="Duration" value="${leaveType.experiencedDuration}">
 								</div>
 								<div class="col-md-5 dropdown-select padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
@@ -369,7 +369,7 @@
 									</select>
 								</div>
 								<div class="col-md-4" id="experiencedApplicableDaysDiv">
-								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="experiencedApplicableDays" value="${leaveType.experiencedApplicableDays}">
+								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
 								
 							</div>

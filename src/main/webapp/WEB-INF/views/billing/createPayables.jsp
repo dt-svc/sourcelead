@@ -216,7 +216,7 @@ function errRemoveVendorContact(){
 <div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot_80 validationTxt whiteSpace">
 		<input type="text"
-			class="form-control input-sm"
+			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
 			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required validate_float" field-name="Rate">
 	</div>

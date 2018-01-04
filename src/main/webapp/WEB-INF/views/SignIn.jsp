@@ -229,7 +229,7 @@ function resend() {
 	 var userName = document.getElementById("usernameval").value; 
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/resendVerificationEmail?userName="+userName,        
+       url: sourceleadUrl+"/ws/resendVerificationEmail?userName="+userName,        
        success :function(data) {
        if(data == "success"){
        		$("#selector1").removeAttr("style");

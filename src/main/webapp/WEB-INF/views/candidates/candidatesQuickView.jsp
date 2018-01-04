@@ -293,7 +293,7 @@ function candidateQuickViewProfile(candidateId){
 								$("#qvemployeeSubmission").append(result);
 					}else{
 			        	  var result = '';
-			        	  result = result +'            <div class="col-md-12">';
+			        	  result = result +'            <div class="col-md-12" style="display:none">';
 			        	  result = result +' <h4>Work Experience</h4>';
 			        	  result = result +' <div>---</div>';
 			        	  result = result +'</div>';
@@ -385,7 +385,7 @@ function qveducationSubmission(candidateId){
 	                     $("#qveducationSubmission").append(result); 
           }else{
         	  var result = '';
-        	  result = result +'            <div class="col-md-12">';
+        	  result = result +'            <div class="col-md-12 " style="display:none">';
         	  result = result +' <h4>Education</h4>';
         	  result = result +' <div>---</div>';
         	  result = result +'            </div>';
@@ -447,8 +447,10 @@ function qwikCertificates(candidateId){
 							$("#qvcertificationSubmission").append(result); 
           }else{
         	  var result = '';
+        	  result = result +'            <div class="col-md-12 " style="display:none">';
         	  result = result +' <h4>Certifications</h4>';
         	  result = result +' <div>---</div>';
+        	  result = result +'            </div>';
         	  $("#qvcertificationSubmission").empty();
         	  $("#qvcertificationSubmission").append(result); 
           }
