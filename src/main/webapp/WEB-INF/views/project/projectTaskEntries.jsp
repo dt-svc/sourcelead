@@ -117,7 +117,6 @@ function saveTaskDetails(){
   		         contentType:false, 
 				 url : sourceleadUrl+"/addTimeSheetDayEntries",
 				  		success : function(data) {
-				  					alert("hi"+data);
 				},
 			});
 			return true; 
@@ -149,10 +148,7 @@ function saveTaskDetails(){
 		  jsDateFormat = 'yy-dd-mm'; 
 	  }
 	  var projectAssignedDate = $("#projectAssignedDate").val();
-	  alert(projectAssignedDate);
 	  var projectTerminationDate = $("#projectTerminationDate").val();
-	  alert(projectTerminationDate);
-	  
 	  $('#timesheetDate').datepicker({
 	      dateFormat: jsDateFormat,
 	      changeMonth: true,

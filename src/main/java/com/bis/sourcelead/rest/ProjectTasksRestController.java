@@ -1194,12 +1194,23 @@ public class ProjectTasksRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		ProjectMembers projectmember = projectMembersService.getProjectMemberByUserIdAndProjectId(user.getId(), Long.parseLong(projectId));
+		ProjectMembersHistory projectMemberHistory = null;
 		if(projectmember != null && projectmember.getId() != null) {
-			ProjectMembersHistory projectMemberHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectmember.getId());
-			String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectAssignedDate());
-			String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectTerminationDate());
-			model.addObject("startDate",startDate);
-			model.addObject("endDate",endDate);
+			 projectMemberHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectmember.getId());
+			if(projectMemberHistory != null) {
+				String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectAssignedDate());
+				String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectTerminationDate());
+				model.addObject("startDate",startDate);
+				model.addObject("endDate",endDate);
+			}else {
+				projectMemberHistory = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectmember.getId());
+					if(projectMemberHistory != null) {
+						String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectAssignedDate());
+						String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectTerminationDate());
+						model.addObject("startDate",startDate);
+						model.addObject("endDate",endDate);
+					}
+			}
 		}
 		model.addObject("projectmember",projectmember);
 		model.addObject("projectId",projectId);

@@ -300,7 +300,6 @@ function getprojectTaskMembersByProjectId(projectId){
 		   	type: "POST",
 		    url: sourceleadUrl+"/ProjectTasks/getprojectTaskMembersByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskUUID="+taskUUID, 	   
 		    success: function(data) {
-		    	alert(data);
 		    	$('#tab-task1').empty();
 		    	$('#tab-task1').append(data);
 		    	$("#projectTaskDiv").removeAttr('style');
