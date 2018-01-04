@@ -654,27 +654,36 @@ function clientInvoicePagination(){
 		    //addcandidate-popup script
 		    function createBill(orgRelationId){
 		        
-		      var result = '';
-		      result = result +'<div class="addcandidate-popup">';
+		   	 var result = '';
+		        result = result +'<div class="addcandidate-popup">';
 			  result = result +'  <div class="row">';
-			  result = result +'    <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
-			  result = result +'    <div class="col-md-5 mt25">';
+			  result = result +'    <div class="col-md-offset-0 col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
+			  result = result +'    <div class="col-md-4 mt25">';
 			  result = result +'      <div class="small-widget bgGreen">';
-			  result = result +'          <a onClick="createClientInvoice('+orgRelationId+',\'custom\');" title="Create custom invoice">';
+			  result = result +'          <a onClick="createClientInvoice('+orgRelationId+',\'custom\');" title="Create custom bill">';
 			  result = result +'        <div class="clearfix mb10"> ';
 			  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 			  result = result +'        </div>';
 			  result = result +'        <strong class="clearfix">Custom</strong></a>';
 			  result = result +'        </div>';
 			  result = result +'    </div>';
-			  result = result +'      <div class="col-md-5 mt25">';
+			  result = result +'      <div class="col-md-4 mt25">';
 			  result = result +'        <div class="small-widget bg-yellow"> ';
-			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'project\');" title="Create project based invoice">';
+			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'project\');" title="Create project based bill">';
 			  result = result +'          <div class="clearfix mb10">';
 			  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
 			  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
 			  result = result +'          </div>';
 			  result = result +'          <strong class="clearfix">Project Based </strong> </a> </div>';
+			  result = result +'      </div>';
+			  result = result +'      <div class="col-md-4 mt25">';
+			  result = result +'        <div class="small-widget bg-purple"> ';
+			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'other\');" title="Create Other Bill">';
+			  result = result +'          <div class="clearfix mb10">';
+			  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
+			  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+			  result = result +'          </div>';
+			  result = result +'          <strong class="clearfix">Other </strong> </a> </div>';
 			  result = result +'      </div>';
 			  result = result +'        </div>';
 			  result = result +'  </div>';
@@ -808,7 +817,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		/* dateFormat : recievePaymentPopUpDate,
+	/* 	dateFormat : recievePaymentPopUpDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {

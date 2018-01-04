@@ -25,9 +25,16 @@
 				<li>Click on Import to start the importing.</li>
 			</ul>
 			
-			<c:if test="${!empty importStatus}"> 
-				<span class="colorRed">Some data is failed to import <a download class="colorRed glyphicon glyphicon-download-alt" target="_blank" href="${importStatus}" title="Download error file"></a></span>
-			</c:if>
+			<c:choose>
+			  <c:when test="${importStatus == 'success'}">
+			    <span class="text-green">Data imported successfully</span>
+			  </c:when>
+			  <c:otherwise>
+			    <c:if test="${!empty importStatus}"> 
+					<span class="colorRed">Some data is failed to import <a download class="colorRed glyphicon glyphicon-download-alt" target="_blank" href="${importStatus}" title="Download error file"></a></span>
+				</c:if>
+			  </c:otherwise>
+			</c:choose>
 			
 			
 		</div>

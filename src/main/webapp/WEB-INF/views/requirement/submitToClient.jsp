@@ -353,9 +353,9 @@ function addEmailtemplate(requirementId){
 			 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
 			 selectedShortlistsRatePer[i] = selectedRatePer;
 			 
-			 if(selectedRate != '' && selectedRatePer == ''){
+			 if(selectedRate != '' && selectedRate != null && selectedRate != 'undefined' && (selectedRatePer == '' || selectedRatePer == null || selectedRatePer == 'undefined')){
 				 isCountinue = false;
-			 }else if(selectedRate == '' && selectedRatePer != ''){
+			 }else if((selectedRate == '' || selectedRate == null || selectedRate == 'undefined') && selectedRatePer != '' && selectedRatePer != null && selectedRatePer != 'undefined'){
 				 isCountinue = false;
 			 }
 		});

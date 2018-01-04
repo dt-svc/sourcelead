@@ -26,6 +26,8 @@ public interface ProjectsDao {
 	
 	Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
+	Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception;
+	
 	public Boolean deleteProjectById(Long id) throws Exception;
 	
 	public Boolean validateProjectSequeneNumber(String projectSequeneNumber, Long orgLocationsId) throws Exception;
