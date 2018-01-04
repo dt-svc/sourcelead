@@ -5,4 +5,4 @@ INSERT INTO `sourcelead`.`SOURCELEAD_FORM_FIELDS` VALUES (1,1,'Employee Id','emp
 
 
 set SQL_SAFE_UPDATES=0;
-UPDATE `sourcelead`.`sourcelead_form_fields` SET `FIELD_NAME`='assignedTo', `STATUS`='0', `IS_IMPORT_FIELD`='1' WHERE `ID`='62';
+UPDATE `sourcelead`.`SOURCELEAD_FORM_FIELDS` SET `FIELD_NAME`='assignedTo', `STATUS`='0', `IS_IMPORT_FIELD`='1' WHERE `ID`='62';

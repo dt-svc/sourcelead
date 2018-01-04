@@ -13,6 +13,7 @@ public class UserRoleDTO {
 	private String reportingManagerName;
 	private String employeMentType;
 	private String userState;
+	private String orgName;
 	
 	
 	public Long getId() {
@@ -87,4 +88,11 @@ public class UserRoleDTO {
 	public void setUserState(String userState) {
 		this.userState = userState;
 	}
+	public String getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+	
 }
