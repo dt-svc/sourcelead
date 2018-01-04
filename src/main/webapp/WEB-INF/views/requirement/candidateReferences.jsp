@@ -93,6 +93,7 @@ function candReferencesList(candidateId){
 	                 	 result  = result + '<th>Email</th>';
 	                 	 result  = result + '<th>Phone</th>';
 	                 	 result  = result + '<th>Relation </th>';
+	                 	result = result + '<th>Designation </th>';
 	                 	 result  = result + '<th>Comment </th>';
 	                 	 result  = result + '<th>Action </th>';
 	                     result = result +"  </tr>"; 
@@ -125,6 +126,11 @@ function candReferencesList(candidateId){
 		                    	 }else{
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
+	                    	 if (opt.designation != null && opt.designation != ''&& opt.designation != 'undefined') {
+	 							result = result	+ ' <td><div><span title="'+opt.designation+'">'+ opt.designation + '</span></div></td>';
+	 						   } else {
+	 							result = result	+ ' <td><div><span>----</span></div></td>';
+	 						   }
 	                    	 
 	                    	 if(opt.comment != null && opt.comment != '' && opt.comment != 'undefined'){
 		                    	 result  = result + ' <td><div><span title="'+opt.comment+'">'+opt.comment+'</span></div></td>';
@@ -603,6 +609,9 @@ function deleteReference(candidateId,refId){
 										result = result + '</div>';
 										result = result + '</form>';
 										$("#popUpDiv").empty();
+										if(json.relation == "Work Related"){
+											$("#dvDesignationEdit").show();
+									      }
 										$("#popUpDiv").append(result);
 
 										$(".edit-details").toggleClass(
@@ -635,7 +644,7 @@ function deleteReference(candidateId,refId){
 							},
 
 						}).done(function() {
-					editRelation(this);
+					 editRelation(this); 
 				});
 
 	}
@@ -667,13 +676,14 @@ function deleteReference(candidateId,refId){
 
 <script>
 	function editRelation(e) {
-		if (e.value == 'Work Related') {
+		var type  = $("#relation").val();
+		if (type == 'Work Related') {
 			document.getElementById("dvDesignationEdit").style.display = "block";
 			$("#designationValEdit").removeAttr("data-validation-optional");
 			$('#designationValEdit').attr("data-validation",
 					"required validate_Space validate_length length2-100"); 
 			$("#designationValEdit").show();
-		} else if (e.value == 'Family Related') {
+		} else if (type == 'Family Related') {
 			document.getElementById("dvDesignationEdit").style.display = "none";
 
 			$("#designationValEdit").val('');

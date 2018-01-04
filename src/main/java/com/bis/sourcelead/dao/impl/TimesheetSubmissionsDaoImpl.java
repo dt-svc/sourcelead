@@ -86,7 +86,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
+	public List<TimesheetSubmissions> saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
@@ -101,6 +101,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_SUBMISSIONS"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
+		return timesheetSubmissionsList;
 		
 	}
 	
