@@ -267,12 +267,13 @@ a.alertBtn {
 		<div class="clear"></div>
 	</section>
 	
-	<section class="compaBann" id="orgImage" style="display:none">
+</div>
+
+<section class="compaBann" id="orgImage" style="display:none">
 	<span><img src="/resources/images/company-banner.jpg" alt=""></span>
 	<div class="compaBannLogo" style="background-image: url(/resources/images/company-logo.jpg)"></div>
 	<div class="compaBannLogoText">Business Intelli</div>
 </section>
-</div>
 
 <section class="innerContent">
 	<input type="hidden" name="openJobsOffset" id="openJobsOffset"

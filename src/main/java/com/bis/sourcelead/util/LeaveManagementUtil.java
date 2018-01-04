@@ -56,7 +56,7 @@ public class LeaveManagementUtil {
 		int totalLeaves = 0;
 		if(type.getPeriod() != null){
 			if("Annually".equalsIgnoreCase(type.getPeriod())){
-				if("AllEmployees".equalsIgnoreCase(type.getLeaveEffective())){
+				if("All Employees".equalsIgnoreCase(type.getLeaveEffective())){
 					totalLeaves = type.getNoOfDays(); 
 				}else{
 					if(emp.getHireDate() != null){
