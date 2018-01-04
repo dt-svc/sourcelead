@@ -385,7 +385,7 @@ public class UserServiceImpl implements UserService {
 			 * Saving USER DB data as ElasticSearch Documents
 			 */
 			
-			if(isUserActive == false)
+			if(isUserActive == false && Constants.YES.equalsIgnoreCase(addUserDTO.getIsMailSent()))
 				registrationService.sendActivationEmail(user1);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());

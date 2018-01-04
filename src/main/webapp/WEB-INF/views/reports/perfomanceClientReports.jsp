@@ -81,7 +81,7 @@ $(document).ready(function(){
       </div>
     </div>
     <div class="ReqRepHead clearfix">
-      <div class="col-md-2 dropdown-select positionRelative col-md-offset-4">
+      <div class="col-md-2 dropdown-select positionRelative col-md-offset-9">
         <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
           <option>Select Date</option>
           <option value="Last_7_days" selected>Last 7 days</option>

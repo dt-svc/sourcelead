@@ -139,6 +139,15 @@ public class UserLoginHelper {
 		
 	}
 	
+	public String getIpAddress(){
+		 String ipAddress = null;
+		 RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
+		  if (RequestContextHolder.getRequestAttributes() != null) {
+		      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
+		      ipAddress = getClientIpAddr(request);
+		  }
+		  return ipAddress;
+	}
 	private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
 
     	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
@@ -153,7 +162,7 @@ public class UserLoginHelper {
     	return Result;
     }
 	
-	public static String getClientIpAddr(HttpServletRequest request) {  
+	public String getClientIpAddr(HttpServletRequest request) {  
 	    String ip = request.getHeader("X-Forwarded-For");  
 	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
 	        ip = request.getHeader("Proxy-Client-IP");  
