@@ -276,7 +276,7 @@ public class SubmissionsRateRestController {
 	}
 	
 
-	@RequestMapping(value = "/app/getRateHistoryBySubmissionId", method = RequestMethod.POST)
+	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
 															 @RequestParam(value = "candidateId", required = false) Long candidateId,
 															 @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
