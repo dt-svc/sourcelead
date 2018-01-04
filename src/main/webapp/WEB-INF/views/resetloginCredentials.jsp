@@ -112,7 +112,7 @@ function getOptionalServiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 $.ajax({
       type: "POST",
-  	  url: sourceleadUrl+"/getOptionalValueList?${_csrf.parameterName}=${_csrf.token}",
+  	  url: sourceleadUrl+"/ws/getOptionalValueList?${_csrf.parameterName}=${_csrf.token}",
     	success: function(data) {
 		    var json = JSON.parse(data);
 		    var result = '';		
@@ -168,7 +168,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/resetCredentials?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                	  url: sourceleadUrl+"/ws/resetCredentials?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
