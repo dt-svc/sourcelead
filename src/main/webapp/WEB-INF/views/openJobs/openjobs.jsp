@@ -101,7 +101,6 @@ window.onload = function () {
 		getOpenJobsELKList();
 		
 	}
-	
 	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
 		$("#orgList").show();
 		$("#companiesListDiv").find("i").toggleClass("arrAc");
@@ -240,79 +239,7 @@ a.alertBtn {
 
 
 <!-- Content Area -->
-<div id="loadTime"></div>
-<header class="headerInpage">
-	<section class="headTop headTopFix">
-		<div class="headTopInn">
-			<ul>
-				<li><a href="tel:(214) 295-5535"><i class="fa fa-phone"></i>
-						(214) 295-5535</a></li>
-				<li><a href="mailto:info@sourcelead.com"><i
-						class="fa fa-envelope-o"></i>info@sourcelead.com</a></li>
-				<li class="hideres"><a href="/login"><i
-						class="fa fa-user-o"></i> Login</a></li>
-				<div class="clear"></div>
-			</ul>
-			<div class="clear"></div>
-		</div>
-	</section>
-	<div class="head_inn">
-		<div class="success_pop" id="selector" style="display: none;">
-			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
-		</div>
-		<div class="logo">
-
-			<a href="/"><img src="/resources/css/jobs/images/logo.png"
-</a>
-		</div>
-		<nav>
-			<ul class="menu">
-				<li><a href="/"><i class="fa fa-home"></i></a></li>
-				<li><a href="/jobs" class="rcolor">Jobs</a></li>
-				<li><a href="javascript:void(0)" class="ma">What we do<i
-						class="fa fa-caret-down"></i></a>
-					<ul>
-						<li><a href="/crowdsourcing.html">Crowdsourcing</a></li>
-						<li><a href="/ats.html">ATS</a></li>
-						<li><a href="/vms.html">VMS</a></li>
-						<li><a style="border-bottom: none;" href="../timesheet.html">Time
-								Management</a></li>
-					</ul></li>
-				<li><a href="javascript:void(0)" class="ma">resources<i
-						class="fa fa-caret-down"></i></a>
-					<ul>
-						<li><a href="/demo.html">Product Videos</a></li>
-						<li><a href="javascript:void(0)" class="requestDemo">Request
-								Personal Demo</a></li>
-						<li><a style="border-bottom: none;" href="/faqs.html">FAQs</a></li>
-					</ul></li>
-				<li><a href="javascript:void(0)">About SourceLead<i
-						class="fa fa-caret-down"></i></a>
-					<ul>
-						<li><a href="/about-us.html">About SourceLead</a></li>
-						<li><a href="/team.html">Our team</a></li>
-						<!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
-                <!--<li><a href="careers.html">Careers</a></li>-->
-						<li><a style="border-bottom: none;" href="/contact.html">Contact</a></li>
-					</ul></li>
-				<li><a href="/blog4.html">Blogs</a></li>
-				<li><a href="javascript:void(0)" class="freeTril freeTrail">Free
-						Trial</a></li>
-				<div class="clear"></div>
-			</ul>
-		</nav>
-
-		<section class="responsiveMenu">
-			<a href="javascript:void(0)" class="freeTril freeTrail">Free
-				Trial</a> <span id="resSe" class=""><i class="fa fa-search"></i></span>
-			<i id="menuIcon" class="fa fa-bars"></i>
-		</section>
-
-		<div class="clear"></div>
-	</div>
-</header>
-<section class="menuGapInpage"></section>
-
+<<jsp:include page="../staticHeader.jsp" />
 <div class="innerPageSearch"> 
 	<section class="searchWrap" id="orgProfile" style="display:block">
 		<span><i class="fa fa-search"></i><input type="text"
@@ -837,81 +764,79 @@ a.alertBtn {
 	</form:form>
 </section>
 <!-- Content Area Ends-->
-
 <footer>
-	<div class="footerInn">
-		<div class="footerInnCta resFoot">
-			<h3>SourceLead</h3>
-			<ul>
-				<li><a href="/about-us.html"><i class="fa fa-caret-right"></i>About
-						us</a></li>
-				<li><a href="/team.html"><i class="fa fa-caret-right"></i>Our
-						team</a></li>
-				<!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
-				<li><a href="/testimonial.html"><i
-						class="fa fa-caret-right"></i>Testimonial</a></li>
-				<!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
-				<li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact
-						us</a></li>
-			</ul>
-		</div>
-		<div class="footerInnCta resFoot">
-			<h3>What we do</h3>
-			<ul>
-				<li><a href="/crowdsourcing.html"><i
-						class="fa fa-caret-right"></i>Crowdsourcing</a></li>
-				<li><a href="/ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
-				<li><a href="/vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
-				<li><a href="/timesheet.html"><i class="fa fa-caret-right"></i>Time
-						Management</a></li>
-			</ul>
-		</div>
-		<div class="footerInnCta">
-			<div class="hBlogs">
-				<a href="/blog4.html"> <span>Loyal Relationships with
-						Recruiters</span> <b>FEB 20, 2017</b>
-				</a> <a href="/blog3.html"> <span>Recruiting Through Social
-						Media Platform</span> <b>FEB 15, 2017</b>
-				</a> <a href="/blog.html"> <span>Existing Process without
-						using any Tool</span> <b>DEC 20, 2016</b>
-				</a> <a href="/blog4.html">Viwe all</a>
-			</div>
-		</div>
-		<div class="footerInnCta">
-			<h3>Get in touch</h3>
-			<a href="mailto:info@sourcelead.com;"><b><i
-					class="fa fa-envelope-o"></i>info@sourcelead.com</b></a> <a
-				href="tel:(214) 295-5535"><b><i class="fa fa-phone"></i>USA
-					: (214) 295-5535</b></a> <a href="tel:(972) 559-3641"><b><i
-					class="fa fa-fax"></i>FAX : (972) 559-3641</b></a> <a
-				href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND :
-					+91. 40-6700-7676</b></a>
-			<h4>Go social</h4>
-			<div class="socila">
-				<a href="javascript:void(0)"><img
-					src="/resources/css/jobs/images/in.png" alt="" /></a> <a
-					href="javascript:void(0)"><img
-					src="/resources/css/jobs/images/fb.png" alt="" /></a> <a
-					href="javascript:void(0)"><img
-					src="/resources/css/jobs/images/tw.png" alt="" /></a> <a
-					href="javascript:void(0)"><img
-					src="/resources/css/jobs/images/gp.png" alt="" /></a>
-			</div>
-		</div>
-		<div class="clear"></div>
-	</div>
-	<jsp:include page="../masterFooter.jsp" />
-	<div class="copyrightOut">
-		<div class="copyright">
-			<b>© 2016 SourceLead. All rights reserved.</b> <span> <a
-				href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
-					of Use</a>
-			</span>
-			<div class="clear"></div>
-		</div>
-	</div>
+    <div class="footerInn">
+        <div class="footerInnCta resFoot">
+            <h3>SourceLead</h3>
+            <ul>
+                <li><a href="/about-us.html"><i class="fa fa-caret-right"></i>About
+                        us</a></li>
+                <li><a href="/team.html"><i class="fa fa-caret-right"></i>Our
+                        team</a></li>
+                <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
+                <li><a href="/testimonial.html"><i
+                        class="fa fa-caret-right"></i>Testimonial</a></li>
+                <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
+                <li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact
+                        us</a></li>
+            </ul>
+        </div>
+        <div class="footerInnCta resFoot">
+            <h3>What we do</h3>
+            <ul>
+                <li><a href="/crowdsourcing.html"><i
+                        class="fa fa-caret-right"></i>Crowdsourcing</a></li>
+                <li><a href="/ats.html"><i class="fa fa-caret-right"></i>ATS</a></li>
+                <li><a href="/vms.html"><i class="fa fa-caret-right"></i>VMS</a></li>
+                <li><a href="/timesheet.html"><i class="fa fa-caret-right"></i>Time
+                        Management</a></li>
+            </ul>
+        </div>
+        <div class="footerInnCta">
+            <div class="hBlogs">
+                <a href="/blog4.html"> <span>Loyal Relationships with
+                        Recruiters</span> <b>FEB 20, 2017</b>
+                </a> <a href="/blog3.html"> <span>Recruiting Through Social
+                        Media Platform</span> <b>FEB 15, 2017</b>
+                </a> <a href="/blog.html"> <span>Existing Process without
+                        using any Tool</span> <b>DEC 20, 2016</b>
+                </a> <a href="/blog4.html">Viwe all</a>
+            </div>
+        </div>
+        <div class="footerInnCta">
+            <h3>Get in touch</h3>
+            <a href="mailto:info@sourcelead.com;"><b><i
+                    class="fa fa-envelope-o"></i>info@sourcelead.com</b></a> <a
+                href="tel:(214) 295-5535"><b><i class="fa fa-phone"></i>USA
+                    : (214) 295-5535</b></a> <a href="tel:(972) 559-3641"><b><i
+                    class="fa fa-fax"></i>FAX : (972) 559-3641</b></a> <a
+                href="tel:040-6700-7676"><b><i class="fa fa-phone"></i>IND :
+                    +91. 40-6700-7676</b></a>
+            <h4>Go social</h4>
+            <div class="socila">
+                <a href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/in.png" alt="" /></a> <a
+                    href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/fb.png" alt="" /></a> <a
+                    href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/tw.png" alt="" /></a> <a
+                    href="javascript:void(0)"><img
+                    src="/resources/css/jobs/images/gp.png" alt="" /></a>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <jsp:include page="../masterFooter.jsp" />
+    <div class="copyrightOut">
+        <div class="copyright">
+            <b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+                href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
+                    of Use</a>
+            </span>
+            <div class="clear"></div>
+        </div>
+    </div>
 </footer>
-
 
 <section class="pageLoad"></section>
 <div class="backtotop">
@@ -1099,6 +1024,7 @@ function getOpenJobsELKListJOBS(){
 
 <script>
 function getOpenJobsELKList(orgLocationId){
+	var sourceleadUrl ='${sourceleadUrl}';
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	
 	var search = openJobsRequirementTitle.replace(/ & /g, '-and-').replace(/&/g, '-and-').replace(/'/g, '-or-').replace(/ /g, "-").replace(/\//g, "-or-");
@@ -1140,7 +1066,9 @@ function getOpenJobsELKList(orgLocationId){
 	/* if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	} */
-	var url ="/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
+	
+	
+	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
 	if(openJobsRequirementTitle)
 		url+="&openJobsRequirementTitle="+openJobsRequirementTitle;
 	if(openJobsLocation)
@@ -1188,9 +1116,9 @@ function prepareOpenJobsElkList(data,offset){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
-	}
+// 	if(sourceleadUrl.indexOf("/app")!=-1){
+// 		sourceleadUrl = sourceleadUrl.split("/app")[0];
+// 	}
     var json = JSON.parse(data);
   	 var experience ="";
   	 var location = "";
@@ -1246,7 +1174,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<h3 style="color:#368ee0;"><a target="_blank" href="'+sourceleadUrl+'/'+requirements.jobTitle.toLowerCase().replace(/ /g, "-").replace(/\//g,"-or-").replace(/ & /g,"-and-").replace("/ % /g","-mod-")+'--'+requirements.requirementId+'">'+requirements.jobTitle+'</a></h3>';
+				result = result +'	<h3 style="color:#368ee0;"><a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.jobTitle.toLowerCase().replace(/ /g, "-").replace(/\//g,"-or-").replace(/ & /g,"-and-").replace("/ % /g","-mod-")+'--'+requirements.requirementId+'">'+requirements.jobTitle+'</a></h3>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1374,17 +1302,17 @@ function getPostedOrgJobs(id){
 
 <script>
 function getOrgsList(alphabet,type){
+	var sourceleadUrl ='${sourceleadUrl}';
 	var country = "";
 	$('input:radio[name=countryFilter]:checked').each(function() 
     {
 		country = ($(this).val());
     });
-	
 	var companies = '${companies}';
 	var selectedCompanies = companies.split(",");
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: "/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
@@ -1473,13 +1401,14 @@ function getOpenJobsURL(requirementUUID){
 } 
 
 function getOpenJobsRequirementSummary(requirementsUUID){
+	var sourceleadUrl ='${sourceleadUrl}';
 	$("#loadMoreReq").css("display", "none");
 	$("#openJobsRequirementsSummary").show();
 	$("#openJobsRequirementsList").hide(); 
 	$("#loadMoreDiv").hide(); 
 	 $.ajax({
 		 type: "POST",
-		 url: "/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
+		 url: sourceleadUrl + "/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    		
@@ -1793,7 +1722,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : "/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl + "/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
@@ -1844,7 +1773,7 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/app/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
@@ -1917,11 +1846,12 @@ function openJobSearchRequirement(){
 <script>
 function getStates(){
 	var countryName = $("#country").val();
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(countryName != null && countryName !='' && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	         success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1954,12 +1884,12 @@ function getStates(){
 function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -2328,10 +2258,10 @@ function alertClose(){
 <!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
         type : "GET",
-        url: "/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
+        url: sourceleadUrl + "/ws/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
          success :function(data) {
         	 
         	 var json = JSON.parse(data);
@@ -2612,7 +2542,7 @@ function createAlert(requirementUUID){
         	    	var allSkills = $(event.target).val();
         	    	$.ajax({
         		    	type: "POST",
-        		        url: "/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+        		        url: sourceleadUrl + "/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
         		        success: function(data) {
         		        	var primarySkill = data;
         		        	      $("#primarySkill").val(primarySkill);
@@ -2687,9 +2617,10 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
    };  
+var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
-        	 
+        	 alert("pradeep")
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
@@ -2700,7 +2631,7 @@ var validationSettings = {
 							data: formData,
 			  		        processData: false,
 			  		        contentType:false, 
-        					url : "/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+        					url : sourceleadUrl + "/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
         							location.replace("/jobs");
         					},
@@ -2771,10 +2702,12 @@ var validationSettings = {
 
 <script type="text/javascript">
 function getAllCountriesJObalert(country){
+	var sourceleadUrl ='${sourceleadUrl}';
+}
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: "/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: sourceleadUrl + "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
@@ -2817,7 +2750,7 @@ function getStatesjobalert(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#statejobalert').empty();
@@ -2854,7 +2787,7 @@ function getStatesjobalert(country,state){
 
 <script>
 function getCitiesjobalert(country,state,city){
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	var countryName = '';
 	var stateName = '';
 	
@@ -2874,7 +2807,7 @@ function getCitiesjobalert(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: "/app/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#cityjobalert').empty();
@@ -2918,12 +2851,12 @@ function getRate(){
 <script>
 function validateAlertUserEmail(){
 	var email = document.getElementById("email").value;
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	if(email != null && email != ''){
 		$("#alert_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		       url: sourceleadUrl + "/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
