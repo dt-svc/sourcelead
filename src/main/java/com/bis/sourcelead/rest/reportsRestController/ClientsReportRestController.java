@@ -143,95 +143,98 @@ public class ClientsReportRestController {
 	}
 	
 	@RequestMapping(value = "/getTopFiveReceivablesReports", method = RequestMethod.GET)
-	public InvoiceReportDTO getTopFiveReceivsblesReports(@RequestParam(value = "type", required = false) String type,@RequestParam(value = "dateFrequency", required = false) String dateFrequency,HttpServletRequest request) throws Exception {
+	public InvoiceReportDTO getTopFiveReceivsblesReports(@RequestParam(value = "type", required = false) String type,@RequestParam(value = "dateFrequency", required = false) String dateFrequency,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		return clientReportService.getTopFiveReceivsblesReports(orgLocation,user,type,dateFrequency);
+		return clientReportService.getTopFiveReceivsblesReports(orgLocation,user,type,dateFrequency,fromDate,toDate);
 		
 	}
 	
 	@RequestMapping(value = "/getTopTenClientReports", method = RequestMethod.GET)
-    public List<ClientReportsDTO> getTopTenClientReports(@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) throws Exception {
-        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-        List<ClientReportsDTO> clientDtoList = new ArrayList<>();
-        Date[] freqDates = new Date[2];
-        if("Custom".equalsIgnoreCase(frequency)){
-            freqDates[0] = commonUtil.getDateFormat(fromDate);
-            freqDates[1] = commonUtil.getDateFormat(toDate);
-        }else{
-            freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
-        }
-        List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
-        if(clientList != null && clientList.size() > 0) {
-            for(OrgRelations orgRelation : clientList){
-                ClientReportsDTO clientDto = new ClientReportsDTO();
-                if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
-                    clientDto.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
-                }else{
-                    clientDto.setClientName(orgRelation.getLocationId().getOrgLocationName());
-                }
-                clientDto.setOrgRelationUUID(orgRelation.getUUID());
-                List<OrgSpoc> spocList = clientReportService.getClientSpocListByOrgRelationid(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates);
-                if(spocList != null && spocList.size() > 0)
-                    clientDto.setNoOfContacts(spocList.size());
-                else
-                    clientDto.setNoOfContacts(0);
-                
-                List<Requirement> reqList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates,null);
-                if(reqList != null && reqList.size() > 0)
-                    clientDto.setReleasedJobs(reqList.size());
-                else
-                    clientDto.setReleasedJobs(0);
-                for(Requirement req : reqList){
-                    Map<String,Integer> subListCount = clientReportService.getSubmissionListByRequirementId(req.getId(),orgLocation.getId(),user.getId(),freqDates);
-                    clientDto.setSubmissionCount(subListCount.get("submissionCount"));
-                    clientDto.setSubmissionCount(subListCount.get("hiredCount"));
-                }
-                ContractReportsDTO contractReportsDTO = new ContractReportsDTO();
-                contractReportsDTO.setFrequency(frequency);
-                if("Custom".equalsIgnoreCase(frequency)){
-                    contractReportsDTO.setFromDate(commonUtil.dateStrFromDate(freqDates[0]));
-                    contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
-                }
-                
-                List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
-                if(conList != null && conList.size() > 0){
-                    clientDto.setTotalContracts(conList.size());
-                }else{
-                    clientDto.setTotalContracts(0);
-                }
-                
-                List<Invoice> invoiceList = clientReportService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), Constants.RECEIVABLE,null);
-                if(invoiceList != null && invoiceList.size() > 0) {
-                    float paidTotalAmount = 0f;
-                    for (Invoice invoice : invoiceList) {
-                        if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
-                                !Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
-                            Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
-                            paidTotalAmount = paidTotalAmount + paidAmount;
-                            clientDto.setTotalPaidAmount(paidTotalAmount);
-                        }
-                    }
-                }
-                
-                clientDtoList.add(clientDto);
-            }
-        }
-        
-        clientDtoList.sort(new Comparator<ClientReportsDTO>() {
-            @Override
-            public int compare(ClientReportsDTO o1, ClientReportsDTO o2) {
-                if(o1 != null && (Float)o1.getTotalPaidAmount() != null) {
-                    return ((Float)o2.getTotalPaidAmount()).compareTo((Float)o1.getTotalPaidAmount());
-                }
-                return 0;
-            }
-        });
-        return clientDtoList;
-    }
+
+	public List<ClientReportsDTO> getTopTenClientReports(@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<ClientReportsDTO> clientDtoList = new ArrayList<>();
+		Date[] freqDates = new Date[2];
+		if("Custom".equalsIgnoreCase(frequency)){
+			freqDates[0] = commonUtil.getDateFormat(fromDate);
+			freqDates[1] = commonUtil.getDateFormat(toDate);
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
+		}
+		List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
+		if(clientList != null && clientList.size() > 0) {
+			for(OrgRelations orgRelation : clientList){
+				ClientReportsDTO clientDto = new ClientReportsDTO();
+				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
+					clientDto.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+				}else{
+					clientDto.setClientName(orgRelation.getLocationId().getOrgLocationName());
+				}
+				clientDto.setOrgRelationUUID(orgRelation.getUUID());
+				List<OrgSpoc> spocList = clientReportService.getClientSpocListByOrgRelationid(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates);
+				if(spocList != null && spocList.size() > 0)
+					clientDto.setNoOfContacts(spocList.size());
+				else
+					clientDto.setNoOfContacts(0);
+				
+				List<Requirement> reqList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates,null);
+				if(reqList != null && reqList.size() > 0)
+					clientDto.setReleasedJobs(reqList.size());
+				else
+					clientDto.setReleasedJobs(0);
+				for(Requirement req : reqList){
+					Map<String,Integer> subListCount = clientReportService.getSubmissionListByRequirementId(req.getId(),orgLocation.getId(),user.getId(),freqDates);
+					clientDto.setSubmissionCount(subListCount.get("submissionCount"));
+					clientDto.setSubmissionCount(subListCount.get("hiredCount"));
+				}
+				ContractReportsDTO contractReportsDTO = new ContractReportsDTO();
+				contractReportsDTO.setFrequency(frequency);
+				if("Custom".equalsIgnoreCase(frequency)){
+					contractReportsDTO.setFromDate(commonUtil.dateStrFromDate(freqDates[0]));
+					contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
+				}
+				
+				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
+				if(conList != null && conList.size() > 0){
+					clientDto.setTotalContracts(conList.size());
+				}else{
+					clientDto.setTotalContracts(0);
+				}
+				
+				List<Invoice> invoiceList = clientReportService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), Constants.RECEIVABLE,null,freqDates);
+				if(invoiceList != null && invoiceList.size() > 0) {
+					float paidTotalAmount = 0f;
+					for (Invoice invoice : invoiceList) {
+						if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+								!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+							Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+							paidTotalAmount = paidTotalAmount + paidAmount;
+							clientDto.setTotalPaidAmount(paidTotalAmount);
+						}
+					}
+				}
+				
+				clientDtoList.add(clientDto);
+			}
+		}
+		
+		clientDtoList.sort(new Comparator<ClientReportsDTO>() {
+			@Override
+			public int compare(ClientReportsDTO o1, ClientReportsDTO o2) {
+				if(o1 != null && (Float)o1.getTotalPaidAmount() != null) {
+					return ((Float)o2.getTotalPaidAmount()).compareTo((Float)o1.getTotalPaidAmount());
+				}
+				return 0;
+			}
+		});
+		return clientDtoList;
+	}
+
+   
 	
 	@RequestMapping(value = "/getTopTenClientContactReports", method = RequestMethod.GET)
 	public List<ClientReportsDTO> getTopTenClientContactReports(@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) throws Exception {
@@ -298,7 +301,7 @@ public class ClientsReportRestController {
 						clientDto.setTotalContracts(0);
 					}
 					
-					List<Invoice> invoiceList = clientReportService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), Constants.RECEIVABLE,spoc.getClientUser().getId());
+					List<Invoice> invoiceList = clientReportService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), Constants.RECEIVABLE,spoc.getClientUser().getId(),freqDates);
 					float paidTotalAmount = 0f;
 					for (Invoice invoice : invoiceList) {
 						if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
@@ -314,6 +317,16 @@ public class ClientsReportRestController {
 				clientDtoList.add(clientDto);
 			}
 		}
+		
+		clientDtoList.sort(new Comparator<ClientReportsDTO>() {
+			@Override
+			public int compare(ClientReportsDTO o1, ClientReportsDTO o2) {
+				if(o1 != null && (Float)o1.getTotalPaidAmount() != null) {
+					return ((Float)o2.getTotalPaidAmount()).compareTo((Float)o1.getTotalPaidAmount());
+				}
+				return 0;
+			}
+		});
 		return clientDtoList;
 	}
 	
@@ -370,9 +383,9 @@ public class ClientsReportRestController {
 		
 		List<Invoice> clientInvoiceList = null;
 		if(orgRel != null) {
-			 clientInvoiceList = clientReportService.getClientBasedInvoiceLists(orgRel.getId(), orgLocation.getId(), invoiceType,null);
+			 clientInvoiceList = clientReportService.getClientBasedInvoiceLists(orgRel.getId(), orgLocation.getId(), invoiceType,null,null);
 		}else if(spoc != null) {
-			 clientInvoiceList = clientReportService.getClientBasedInvoiceLists(spoc.getOrgRelations().getId(), orgLocation.getId(), invoiceType,spoc.getClientUser().getId());
+			 clientInvoiceList = clientReportService.getClientBasedInvoiceLists(spoc.getOrgRelations().getId(), orgLocation.getId(), invoiceType,spoc.getClientUser().getId(),null);
 		}
 		
 		if(clientInvoiceList != null && clientInvoiceList.size() >0) {

@@ -40,13 +40,24 @@
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 					<!-- Download File button -->
 					<div class="clearfix mb row">
-						<div class="col-xs-8 col-md-8">
+					<div class="col-xs-3 col-md-3">
+						<div id="timesheetModeDiv">
+							<select class="selectpicker form-control" id="timesheetMode" name="timesheetMode">
+								<option value="" disabled selected>--- Select Mode ---</option>
+								<option value="BiMonthly">Bi-Monthly</option>
+								<option value="Monthly">Monthly</option>
+								<option value="MonthlyWeekWise">Monthly-Week wise</option>
+								<option value="Weekly">Weekly</option>
+							</select>
+					</div>
+					</div>
+						<div class="col-xs-6 col-md-6">
 							<a href="#"
 								class="btn btn-success btn-block"> <i class="fa fa-download"></i>&nbsp;&nbsp;Download
 								Timesheets Template
 							</a>
 						</div>
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-3 col-md-3">
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
 									<input type="button" class="btn btn-primary" id="upload_button"
@@ -61,6 +72,8 @@
 						</div>
 					</div>
 					<!-- Attach File button -->
+
+					
 
 					<div class="dropzone">
 						<div class="clearfix"></div>
@@ -130,11 +143,13 @@ document.getElementById("uploadBtn").onchange = function () {
 <script type="text/javascript">
 function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
+	var timesheetMode = $("#timesheetMode").val();
 	var uploadType = "timesheetUpload";
-	if(fileUrl != "" && fileUrl != null && fileUrl != 'undefined'){
+	if(fileUrl != "" && fileUrl != null && fileUrl != 'undefined' && timesheetMode != "" && timesheetMode != null && timesheetMode != 'undefined'){
+		$('#timesheetModeDiv').find('p.jquery_form_error_message').remove();
 		$.ajax({
 			type: "POST",
-		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType, 
+		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&timesheetMode="+timesheetMode, 
 		    success: function(data) {
 		    	$("#jobFileImportDiv").attr("style","display:none");
 		    	$('#dataFieldsDiv').removeAttr("style");
@@ -142,7 +157,13 @@ function fetchFieldsWithMatchedColumn(){
 		    },
 		});
 	}else{
-		$('#newUploadFile').html("<p class='jquery_form_error_message'>File selection is required</p>");
+		$('#timesheetModeDiv').find('p.jquery_form_error_message').remove();
+		if(fileUrl == "" || fileUrl == null || fileUrl == 'undefined'){
+			$('#newUploadFile').html("<p class='jquery_form_error_message'>File selection is required</p>");
+		}
+		if(timesheetMode == "" || timesheetMode == null || timesheetMode == 'undefined'){
+			$('#timesheetModeDiv').append("<p class='jquery_form_error_message'>Timesheet Mode is required</p>");
+		}
 	}
 	
 }

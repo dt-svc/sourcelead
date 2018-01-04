@@ -43,7 +43,7 @@ public class ApplicantsBackoutReportServiceImpl implements ApplicantsBackoutRepo
 	    while (rejectedCount.hasNext()) {
 	        Map.Entry rejectValue = (Map.Entry)rejectedCount.next();
 	        System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());
-	        if(rejectValue.getKey().equals("betterOffer")){
+	        if(rejectValue.getKey().equals("Better Offer")){
 	        	applicantsBackoutDTO.setBetterOffer((int)rejectValue.getValue());
 	        }
 	        if(rejectValue.getKey().equals("Current Company")){

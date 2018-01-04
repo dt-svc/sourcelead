@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 
 public interface TimeSheetDayEntriesDao {
@@ -20,5 +21,8 @@ public interface TimeSheetDayEntriesDao {
 	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception;
 	 
 	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(Long submissionId,Date startDate,Date endDate) throws Exception;
-	
+	 
+	 public ResponseList<TimeSheetDayEntries> getTimesheetDayEntriesByTaskUUIDAndUserId(String taskUUID, Long userId,Long locationId,int start, int length, String searchValue) throws Exception;
+
+
 }

@@ -29,6 +29,8 @@ import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ClientsReportServiceImpl implements ClientReportService{
@@ -38,6 +40,9 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 	
 	@Override
 	public Map<String, Integer> getAllClientsCountByOrgLocationIdAndUserId(Long locationId, Long userId)
@@ -115,17 +120,16 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId) {
-		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType,contactUserId);
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId, Date[] freqDates) {
+		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType,contactUserId,freqDates);
 	}
 
 	@Override
-	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency) {
+	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency,String fromDate, String toDate) throws Exception {
 
 		Map<String,Float> amountList = new LinkedHashMap<>();
 		List<Entry<String, Float>> newList = null;
 		List<OrgRelations> clientsList = getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
-		
 		
 		InvoiceReportDTO invoiceDto = new InvoiceReportDTO();
 		Date todayDate = new Date();
@@ -134,9 +138,18 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		Float dueAfterInvoiceAmount = 0f;
 		Float openInvoiceTotal = 0f;
 		
+		
+		Date[] freqDates = new Date[2];
+		if("Custom".equalsIgnoreCase(dateFrequency)){
+			freqDates[0] = commonUtil.getDateFormat(fromDate);
+			freqDates[1] = commonUtil.getDateFormat(toDate);
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(dateFrequency,orgLocation);
+		}
+		
 		if(clientsList != null && clientsList.size() > 0) {
 		for(OrgRelations orgRelation : clientsList) {
-			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type,null);
+			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type,null,freqDates);
 			String clientName = null;
 			if(invoiceList != null && invoiceList.size() > 0) {
 				for (Invoice invoice : invoiceList) {

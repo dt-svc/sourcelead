@@ -26,9 +26,9 @@ public interface ClientReportService {
 
 	Map<String, Integer> getContractsListOFAllClients(OrgLocations orgLocation, User user, String userRoleName,ContractReportsDTO contractReportsDTO)  throws Exception;
 
-	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId,String invoiceType, Long contactUserId);
+	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId,String invoiceType, Long contactUserId,Date[] freqDates);
 
-	InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user, String type, String dateFrequency);
+	InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user, String type, String dateFrequency, String fromDate, String toDate)  throws Exception;
 
 	List<OrgSpoc> getClientSpocListByOrgRelationid(Long orgRelationid, Long locationId, Long userId, Date[] freqDates);
 

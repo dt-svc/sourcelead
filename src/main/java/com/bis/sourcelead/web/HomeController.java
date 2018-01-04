@@ -104,15 +104,21 @@ public class HomeController {
 		logger.debug(" *** HomeController init with: ");
 	}
 
-	/*
-	 * @RequestMapping(value = { "/**"}, method = { RequestMethod.GET,
-	 * RequestMethod.POST }) public String defaultPage(HttpServletRequest
-	 * request) { try { Authentication auth =
-	 * SecurityContextHolder.getContext().getAuthentication(); if(auth != null
-	 * && auth.getPrincipal() != null){ return "redirect:/dashboard"; } else{
-	 * return "redirect:/login"; } }catch(Exception ex) { ex.printStackTrace();
-	 * } return "redirect:/login"; }
-	 */
+	@RequestMapping(value = { "/app/**" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public String defaultPage(HttpServletRequest request) {
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			if (auth != null && auth.getPrincipal() != null) {
+				return "redirect:/app/dashboard";
+			} else {
+				return "redirect:/login";
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return "redirect:/login";
+	}
+	 
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public String customExceptionPage(HttpRequestMethodNotSupportedException exception) {
@@ -160,7 +166,7 @@ public class HomeController {
 
 	}
 
-	@RequestMapping(value = { "/login", "/app/login" }, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = {"/login"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,
 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			@RequestParam(value = "token", required = false) String token,
