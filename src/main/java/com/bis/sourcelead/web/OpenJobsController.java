@@ -85,7 +85,7 @@ public class OpenJobsController {
 		return "openJobs/openjobs";
 	}
 	
-	@RequestMapping(value = "/{title}--{id}")
+	@RequestMapping(value = "/app/ws/{title}--{id}")
 	public ModelAndView openRequirementsSummary(@PathVariable long id, @PathVariable String title) throws Exception
 	{
 		title = title != null
@@ -110,6 +110,7 @@ public class OpenJobsController {
 				&& requirementDeatilsSummary.getIsRequirementRelesedToPublic() != "") {
 			modelAndView.addObject("requirementReleaseStatus", requirementDeatilsSummary.getIsRequirementRelesedToPublic());
 		}
+		modelAndView.addObject("sourceleadUrl", sourceleadUrl);
 		modelAndView.setViewName("openJobs/openjobs");
 		return modelAndView;
 	}
