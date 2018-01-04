@@ -1068,7 +1068,6 @@ function clearTimesheet(){
 }
 </script>
 <script>
-
 function editMe(local){
 	     var id = local.id;
 	     var inputValue =  $("#"+id).val();
