@@ -2094,6 +2094,19 @@ public class UsersListRestController {
 		return resultJson;
 
 	}
+	
+	
+	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.GET)
+	public @ResponseBody List<UserRoleDTO> getUserListForConnections(
+			@RequestParam(value = "searchValue", required = false) String searchValue, 
+			@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request)
+			throws Exception {
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<UserRoleDTO> userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
+		return userRoleDTOList;
+
+	}
 
 	private String toJSON(Object obj) {
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

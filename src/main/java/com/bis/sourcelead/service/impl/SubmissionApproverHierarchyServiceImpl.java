@@ -180,12 +180,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 globalVarsMap.put("frequencyType",clientProjectMember.getProjects().getInvoiceFrequency());
 				 StringBuilder emailMsgBuilder = new StringBuilder();
 				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
-				 globalVarsMap.put("totalHours",totalHours.toString());
+				 globalVarsMap.put("totalHours",CommonUtil.getHoursDisplayFormat(totalHours));
 				 globalVarsMap.put("reason",reason);
-				 
-				 
-				 
-				 
 				 
 				 if(clientProjectMember.getProjectMemberCandidteId() !=null && !"".equalsIgnoreCase(clientProjectMember.getProjectMemberCandidteId().getFullName())){
 					 StringBuilder builder=new StringBuilder();
@@ -193,8 +189,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 }
 				 globalVarsMap.put("projectName", clientProjectMember.getProjects().getProjectName());
 				
-				
-				 
 				 StringBuilder acceptBuilder = new StringBuilder();
 				 StringBuilder rejectBuilder = new StringBuilder();
 				 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectReopenTimeSheet?type=accept&projectMemberId=").append(projectMemberId).append("&userId=").append(pah.getApproverUserId().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none; display:inline-block; margin-left:10px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());

@@ -47,13 +47,14 @@ function getJobsReportCustomDates(){
       <div class="pull-left">
         <h2>Jobs Pipeline</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Jobs Pipeline</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Jobs Pipeline Report</a>
+       </div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">
       <div class="ReqRepHead clearfix">
     		      <div class="col-md-2 pull-left reqListBtn">
-          <a href="${appPath}/jobPipelineReports" title="Grid View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+          <a href="${appPath}/jobPipelineReports" title="Reports View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
           <a href="${appPath}/jobPipelineReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
@@ -71,11 +72,11 @@ function getJobsReportCustomDates(){
         <div class="dropdown-select positionRelative">
         <select class="form-control" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
             <option value=''>Select Date</option>
-            <option value='Last_7_days' >Last 7 days</option>
+            <option value='Last_7_days' selected >Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month'>1 month</option>
             <option value='3_months'>3 months</option>
-            <option value='YTD' selected>YTD</option>
+            <option value='YTD' >YTD</option>
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>
@@ -103,13 +104,13 @@ function getJobsReportCustomDates(){
          
          <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-            <button type="button" class="btn btn-primary btn-sm" title="Actions" onclick="reload();"><i class="fa fa-retweet"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" title="Reload" onclick="reload();"><i class="fa fa-retweet"></i></button>
           </div>
         </div>
       </div>
     </div>
     
-    <div class="dashboard-widget clearfix mt"> 
+    <div class="dashboard-widget clearfix mt amchartTitile-hide"> 
        <div id="jobspipline" style="width: 100%; height: 350px;"></div>
     </div>
     
@@ -248,8 +249,8 @@ function getJobsPipelineAmcahrt(data){
 			"category": "Submit To Client",
 			"column-1": data.submitToClientCount,
 			"Color": "#EAEA23",
-			"Days": data.shortlistedDays,
-			"moveforward": 10
+			"Days": data.submitToClientDays,
+			"moveforward": data.submitToClientMove
 		    } );
 	}
 	if(data.interviewsCount>0){
@@ -359,9 +360,9 @@ function getJobsPipelineAmcahrt(data){
 				"dataProvider": mainChar
             }
 		); 
-	 
+    
+        jQuery("a[title='JavaScript charts']").remove();
 }
-
 </script>
 		
 <script type="text/javascript">
@@ -380,5 +381,7 @@ var config = {
     $this.next().css({'width': '100%'});
     });
     $('#priority').trigger('chosen:updated');
+    $(function() {
+    });
 </script> 
 <jsp:include page="../masterFooter.jsp" />
