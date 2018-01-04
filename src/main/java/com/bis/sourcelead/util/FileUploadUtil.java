@@ -240,15 +240,21 @@ public class FileUploadUtil {
 
 			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/resumes-"+(failed ? "failed" : "existed")+"-"+uploadid);
 			if(!folder.exists() || folder.list().length == 0)
-				return "No "+(failed ? "failed" : "existed")+" files found";
+				return "No "+(failed ? "failed" : "duplicate")+" files found";
 			File files[] = folder.listFiles();
+			
 			for (File f : files) {
 				try(FileInputStream fis = new FileInputStream(f);) {
+					byte[] buffer = new byte[128];
 					ZipEntry entry = new ZipEntry(f.getName());
-					byte b[] = new byte[fis.available()];
+					/*byte b[] = new byte[fis.available()];
 					fis.read(b);
-					entry.setExtra(b);
+					entry.setExtra(b);*/
 				    zos.putNextEntry(entry);
+				    int read = 0;
+			          while ((read = fis.read(buffer)) != -1) {
+			            zos.write(buffer, 0, read);
+			          }
 				    zos.closeEntry();
 				} catch(Exception ex) {
 					ex.printStackTrace();
