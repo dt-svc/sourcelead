@@ -92,10 +92,10 @@ function sendOtp() {
 	    			$("#mobileLabel").html(mobile);
 	    			$("#otpemail").val(email);
 	    			$("#otpmobile").val(mobile);
+	    			countdown( "resendOTP", 0, 30 );
 	    		   	$("#sendOTP").attr("style","display:none");
 	    		   	$("#resendOTP").attr("style","display:block");
 	    		   	$("#otpText").html("OTP has been sent to your registered "+type);
-	    		   	countdown( "resendOTP", 0, 30 );
 	    	   }
 	       },
 	  }); 
