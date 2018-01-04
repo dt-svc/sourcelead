@@ -113,6 +113,9 @@
 	}
 	 function socialInviterScripts() {
 		 var sourceleadUrl ='${sourceleadUrl}';
+		 var sourceleadWebUrl = sourceleadUrl.replace('/app','');
+		 var cssUrl = sourceleadWebUrl+"/resources/css/"
+		 var jsUrl = sourceleadWebUrl+"/resources/js/"
          socialinviter.load({
              dock:false,
              showmodal: true,
@@ -170,9 +173,9 @@
              },
              
              path: {
-                 css: "/resources/css/",
-                 js: "/resources/js/",
-                 authpage : sourceleadUrl+"/resources/oauth.html",
+                 css: cssUrl,
+                 js: jsUrl,
+                 authpage :sourceleadWebUrl + "/resources/oauth.html",
                  apiurl:sourceleadUrl+"/ws/getAPIService"
              }
          });
