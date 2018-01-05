@@ -257,12 +257,13 @@ public class CandidateListRestController {
 		}
 
 		// Any Keyword
-		List<String> anyKeyWordArray = search.getAnyOfKeyword();
+		/*List<String> anyKeyWordArray = search.getAnyOfKeyword();
 		if(anyKeyWordArray == null)
 			anyKeyWordArray = new ArrayList<>();
 		if(StringUtils.isNotEmpty(search.getSearchValue())) {
 			anyKeyWordArray.add(search.getSearchValue());
-		}
+		}*/
+		List<String> anyKeyWordArray = search.getAnyOfKeyword();
 		if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
@@ -292,6 +293,12 @@ public class CandidateListRestController {
 		}
 		// All Keywords
 		List<String> allKeyWordArray = search.getAllKeywords();
+		if(allKeyWordArray == null)
+			allKeyWordArray = new ArrayList<>();
+		if(StringUtils.isNotEmpty(search.getSearchValue())) {
+			allKeyWordArray.add(search.getSearchValue());
+		}
+		
 		if (allKeyWordArray != null && !allKeyWordArray.isEmpty()) {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
