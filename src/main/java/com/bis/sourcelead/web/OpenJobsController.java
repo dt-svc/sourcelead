@@ -91,6 +91,7 @@ public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String c
 {
 modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
 modelMap.addAttribute("companies", companies);
+modelMap.addAttribute("specificCompany", "specificCompany");
 return "openJobs/openjobs";
 }
 
