@@ -31,7 +31,7 @@ $(document).ready(function(){
               <div id="today-req" class="tab-pane fade in active">
                 <div class="db-widget-sm row">
                 <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
+                    <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesDraftCount"></span></p>
                         <p class="info-box-text"id="dial1txt">Draft </p>
@@ -39,7 +39,7 @@ $(document).ready(function(){
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
+                    <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesSubmittedForApprovalCount"></span></p>
                         <p class="info-box-text"id="dial2txt"> Submitted</p>
@@ -47,7 +47,7 @@ $(document).ready(function(){
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i> </span>
+                    <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesApprovedCount"></span></p>
                         <p class="info-box-text" id="dial3txt">Approved </p>
@@ -55,7 +55,7 @@ $(document).ready(function(){
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3" id="dial4txtDial">
-                    <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-tags" aria-hidden="true"></i> </span>
+                    <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesRejectCount"></span></p>
                         <p class="info-box-text" id="dial4txt">Rejected </p>
