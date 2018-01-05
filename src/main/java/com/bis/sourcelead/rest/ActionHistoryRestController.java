@@ -39,7 +39,7 @@ public class ActionHistoryRestController {
 	private UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
 	
-	@RequestMapping(value = "/getRestActionHistoryList", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/getRestActionHistoryList", method = RequestMethod.GET)
 	public @ResponseBody List<ActionHistory> getRestActionHistoryList(@RequestParam(value = "actionUUID", required = true) String actionUUID,@RequestParam(value = "orgLocation", required = true) Long orgLocation,HttpServletRequest request) throws Exception {
 		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionByActionUUID(actionUUID);
 		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUserActionUUID(userLoginLogoutSession.getActionUUID(), orgLocation);
@@ -52,7 +52,7 @@ public class ActionHistoryRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getRestLocationActionHistoryList", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/getRestLocationActionHistoryList", method = RequestMethod.GET)
 	public @ResponseBody List<ActionHistory> getRestLocationActionHistoryList(@RequestParam(value = "actionUUID", required = true) String actionUUID,HttpServletRequest request) throws Exception {
 		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionByActionUUID(actionUUID);
 		
