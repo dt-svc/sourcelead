@@ -1056,12 +1056,13 @@ function getOpenJobsELKList(orgLocationId){
 		orgLocationIds.push($(this).val());
 // 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
-	if(orgLocationId != null){
+// 	if(orgLocationId != null){
+	var orgListType = '${specificCompany}';
+		if(orgListType !=null && orgListType !='' && orgListType !='undefined' && orgListType == 'specificCompany') {
 		orgLocationIds = orgLocationId
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
 // 		 document.getElementById("jobResultHeadId").style.display="block";
-
 	}
 	var offset = 0;
 	/* if(type == "more"){
@@ -1133,11 +1134,9 @@ function prepareOpenJobsElkList(data,offset){
 				var link="";
 				var picture="";
 				var description='';
-				var comment='';
 				var rate=''
 				var rateType= '';
 				var currencyType = '';
-				
 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined' && requirements.maxRate != null && requirements.maxRate != '' && requirements.maxRate != 'undefined'){
 					rate = requirements.rate+" - "+requirements.maxRate;
 				}else if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
@@ -1175,7 +1174,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<h3 style="color:#368ee0;"><a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.jobTitle.toLowerCase().replace(/ /g, "-").replace(/\//g,"-or-").replace(/ & /g,"-and-").replace("/ % /g","-mod-")+'--'+requirements.requirementId+'">'+requirements.jobTitle+'</a></h3>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1186,7 +1185,8 @@ function prepareOpenJobsElkList(data,offset){
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
 				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
-				result = result +'	<h4 onClick="getPostedOrgJobs('+i+');" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';	
+				result = result +'<div class="clearfix"></div>';
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';	
 				result = result +'<div class="clearfix"></div>';
 				description =  description+'Posted By :'+requirements.postedOrg+";";
 				}else{
@@ -2621,7 +2621,6 @@ var validationSettings = {
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
-        	 alert("pradeep")
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();

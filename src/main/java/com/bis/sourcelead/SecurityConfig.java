@@ -91,9 +91,7 @@ public class SecurityConfig  {
         	http
 
     		.authorizeRequests()
-    			
-    			.antMatchers("/").permitAll() 
-//    			.antMatchers("/**").permitAll() 
+       		     .antMatchers("/").permitAll() 
     		    .antMatchers("/login").permitAll() 
     		    .antMatchers("/*.html").permitAll() 
     		    .antMatchers("/resetPassword").permitAll() 
@@ -106,8 +104,9 @@ public class SecurityConfig  {
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/submissionRate.jsp").permitAll() 
     			.antMatchers("/jobs/**").permitAll()  
-    			.antMatchers("/openJobs").permitAll()
-    			.antMatchers("/app/**").fullyAuthenticated()
+    			.antMatchers("/openJobs").permitAll() 
+    			.antMatchers("/openJobsPublicPage").permitAll()
+    			.antMatchers("/app/getActionHistoryList/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")

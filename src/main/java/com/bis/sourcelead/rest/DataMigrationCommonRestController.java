@@ -59,8 +59,30 @@ public class DataMigrationCommonRestController {
 		
 		switch(dataMigrationCommonDTO.getUploadType()){  
 	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;  
-	    case "timesheetUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(1l, 1);break;  
+	    //case "timesheetUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(1l, 1);break;  
 	    }
+		
+		if("timesheetUpload".equalsIgnoreCase(dataMigrationCommonDTO.getUploadType())) {
+			int noOfUnits = 0;
+			switch(dataMigrationCommonDTO.getTimesheetMode()){
+		    case "BiMonthly": noOfUnits=15;break;  
+		    case "Monthly": noOfUnits=31;break;
+		    case "MonthlyWeekWise": noOfUnits=5;break;  
+		    case "Weekly": noOfUnits=7;break;
+		    }
+			formFields = new ArrayList<SourceleadFormFields>();
+			for(int i=0; i<noOfUnits; i++) {
+				SourceleadFormFields field = new SourceleadFormFields();
+				if("Weekly".equalsIgnoreCase(dataMigrationCommonDTO.getTimesheetMode())) {
+					field.setLabelName(Constants.SHORTWEEKENDS[i]);
+				}else if("MonthlyWeekWise".equalsIgnoreCase(dataMigrationCommonDTO.getTimesheetMode())) {
+					field.setLabelName(Constants.SHORTWEEKWISEMONTH[i]);
+				}else {
+					field.setLabelName(Constants.SHORTDAYS[i]);
+				}
+				formFields.add(field);
+			}
+		}
 		
 		model.setViewName("upload/dataImport");
 		model.addObject("sourceleadUrl", sourceleadUrl);
