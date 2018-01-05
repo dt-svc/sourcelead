@@ -1822,12 +1822,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception
 	{
 Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from Requirement requirement left join fetch requirement.createdBy left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch requirement.orgLocationId  where requirement.id =:requirementId and requirement.jobTitle =:title";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("title", title).setCacheable(true).list();
+		String query = "from Requirement requirement left join fetch requirement.createdBy left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch requirement.orgLocationId  where requirement.id =:requirementId and requirement.url =:url";
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("url", url).setCacheable(true).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
