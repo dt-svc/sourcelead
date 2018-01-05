@@ -56,7 +56,16 @@
 		<div class="clearfix">
 			<!-- Select Dropdowns -->
 			<div class="col-xs-12 col-sm-6 col-md-12 col-lg-12">
-				<c:forEach var="field" items="${fields}">
+			
+			<c:if test="${empty timesheetMode}"> 
+				<jsp:include page="dataImportFormFields.jsp"></jsp:include>
+			</c:if>
+			<c:if test="${!empty timesheetMode}">
+				<jsp:include page="dataImportTimeSheetFormFields.jsp"></jsp:include>
+			</c:if>
+			
+			
+				<%-- <c:forEach var="field" items="${fields}">
 					<div class="form-group">
 						<c:if test="${empty field.slDependantField}">
 							<label class="col-md-4 text-right mt5">${field.labelName}<span class="text-danger paddingLeft">${field.isFieldRequired == "1" ? "*" : ""}</span></label>
@@ -78,7 +87,7 @@
 							</select>
 						</div>
 					</div>
-				</c:forEach>
+				</c:forEach> --%>
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">
 			</div>

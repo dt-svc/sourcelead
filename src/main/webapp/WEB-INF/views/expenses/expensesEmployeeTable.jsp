@@ -135,8 +135,15 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	        		  }else{
 	        			  projectName = "--";
 	        		  }
+	    	  		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">';
 	    	  		 result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" title="'+projectName+'">'+projectName+'</a></div></td>';
-		            return  result;
+	    	  		 '</sec:authorize>';
+	    	  		 
+	    	  		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">';
+	    	  		  result = result +'<td><div title='+projectName+'>'+projectName+'</div></td>';
+	    	  		 '</sec:authorize>';
+	    	  		 
+	    	  		 return  result;
 	    	  	}
 	      },{
 	    	  	"targets": colIndex++,

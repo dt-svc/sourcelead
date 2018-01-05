@@ -374,7 +374,13 @@ function removeWhiteSpacesMyExp(rowCount){
 	      		formData.append("json",jsonData); */
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
-				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+	      		if(status == 'submitted'){
+					$("#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+	      		}
+				if(status == 'draft'){
+					$("#draftForApprovalExpensesId" ).addClass('button').val('Processing..');
+				}
+				
 	     		$.ajax({
 	       	        type : "POST",
 	        	    data: formData,
