@@ -804,6 +804,7 @@ public class Constants {
     public static final String REQUESTED_DOCUMENT_SUBMITTED = "Submitted";
     public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
     public static final String PERCENTAGE = "percentage";
+    public static final String[] PERCENTAGES = {"0%","10%","20%","30%","40%","50%"};
 
 
     public static final String[] EMPLOYEE_PAYROLL_HEADERS = {"Employee","Emp ID","SSN","Total Hrs","Gross Wages","Fica","Futa","Sui","Er locals","wc cost","admin fee","total er cost"};

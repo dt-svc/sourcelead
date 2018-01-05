@@ -194,7 +194,7 @@ if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSe
 
 
 var searchData = $('#SearchExpensesData').val();
-var expenseStatus = $('#expenseStatusDivId').val();
+/* var expenseStatus = $('#expenseStatusDivId').val();
 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 	expenseStatus = expenseStatus
 }else{
@@ -203,7 +203,12 @@ if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 	{
 		expenseStatus.push($(this).val());
 	});	
-}
+} */
+var expenseStatus = [];
+$('input:checkbox[name=expenseStatus]:checked').each(function() 
+{
+	expenseStatus.push($(this).val());
+});
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
  var expensesApprvListDate = getJSDateFormat(locationList);
  
