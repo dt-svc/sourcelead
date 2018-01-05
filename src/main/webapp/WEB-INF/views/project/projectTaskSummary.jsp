@@ -5,7 +5,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
@@ -18,7 +17,9 @@ var sourceleadUrl = '${sourceleadUrl}';
 	$(document).ready(function(){ 
 		var projectId = "${projectId}";
 		tasksAssignList(projectId);
+		getprojectTaskMembersByProjectId(projectId);
 		getSubTaskList();
+		getSavedTaskDetails();
 		maskme();
 	});
  </script>
@@ -35,9 +36,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		</div>
 		
 	</section>
- 
-	<div class="time_pop" id="timeSheetErrorMsg"></div>
- 
+	<div class="time_pop" id="projectTaskErrorMsg"></div>
 	<div class="taskview_wrapinn">
 	      
 	<div class="clearfix">
@@ -99,7 +98,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
- 	           <!--  <li class="current"><a href="#tab-task1">Time Entry</a></li> -->
+ 	            <li class="current"><a href="#tab-task1">Time Entry</a></li>
 		            <c:if test="${taskTypeName != 'SubTask'}">
 		            	<li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 		            </c:if>
@@ -112,96 +111,9 @@ var sourceleadUrl = '${sourceleadUrl}';
 	          </ul>
 					          
 			<div class="project_tabs"> 
-			   <div id="tab-task1" class="project_tabs_inn" style="display: none;">
-					<div class="clearfix mt mb">
-	                    <div class="clearfix">
-	                    <button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addTimeEntry()">Add Time Entry</button>
-	                    </div>
-	                     <div class="clearfix">
-	                        <!-- <div class="col-md-3 paddingRight">
-	                            <input type="text" class="form-control input-sm" placeholder="Estimated Hours">
-	                        </div>
-	                        <div class="col-md-2 paddingLeft">
-	                            <button type="button" class="btn btn-primary btn-sm">
-	                                <i class="fa fa-pencil paddingRight"></i>Edit
-	                            </button>
-	                        </div>
-	                        <div class="col-md-3 paddingRight">
-	                            <input type="text" class="form-control input-sm" placeholder="Actual Hours">
-	                        </div> -->
-	
-	                    </div> 
-					                </div>
-					<!-- TimeEntry Modal Pop -->
-					<form id="time_entry_form" name="time_entry_form">
-					<div class="modal-Time clearfix">
-					    <!-- Modal content-->
-					      <div class="clearfix">
-					      <input type="hidden" name="taskUUID" value="${taskUUID}">
-					      <input type="hidden" name="projectId" value="${projectId}">
-					          <button type="button" class="close" onclick="closeTimeEntry()">&times;</button> 
-					          <p><strong>Time Entry</strong></p>
-					      </div>
-					        <div class="row clearfix">
-					          <div class="col-md-4">
-					            <div class="row">
-					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm calendar"  id="timesheetDate" placeholder="Date">
-					              </div>
-					            </div>
-					          </div>
-					          <div class="col-md-2">
-					            <div class="row">
-					              <div class="col-md-12">
-					                <input type="text" class="form-control input-sm timeicon editMe" onblur="editMe(this);" id= "timesheetHours"  placeholder="HH:MM">
-					              </div>
-					            </div>
-					          </div>
-					          <div class="clearfix mb"></div>
-					          <div class="col-md-12 mb10">
-					                <textarea class="form-control" rows="2" id="entryComment"  placeholder="Description"></textarea>
-					          </div>
-					        </div>
-					      <div class="modalFooter mt5">
-					      <div class="pull-right">
-					        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveTaskDetails();">Save</button>
-					        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="closeTimeEntry()">Cancel</button>
-					       </div>
-					      </div>
+					<div id="tab-task1" class="project_tabs_inn" style="display: none;">
+						<jsp:include page="projectTaskEntries.jsp"></jsp:include>
 					</div>
-					</form>
-					                <!-- TimeEntry Modal Pop Ends -->
-					 <div class="clearfix project_wrap_table">
-			                    <table>
-			                        <thead>
-			                            <tr>
-			                                <th>Date</th>
-			                                <th>SubTask</th>
-			                                <th>Description</th>
-			                                <th>Hours</th>
-			                            </tr>
-			                        </thead>
-			                        <tbody>
-			                            <tr>
-			                                <td><div><span>23/04/2017</span></div></td>
-			                                <td><div class="tbldata-dotdot-vsm">New Task</div></td>
-			                                <td>
-			                                    <div class="tbldata-dotdot-me">
-			                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-			                                    </div></td>
-			                                <td><div><span>100 Hours</span></div></td>
-			                            </tr>
-			                        </tbody>
-			                        <tfoot style="border-top: 1px solid #909090;">
-			                        <tr>
-			                            <td colspan="3">Total Hours</td>
-			                            <td>100 Hours</td>
-			                            </tr>
-			                        </tfoot>
-					          </table>
-					        </div>    
-					   </div>
-					    
 					<div id="tab-task2" class="project_tabs_inn" style="display: none;">
 						 <div class="clearfix mt10 mb btn-paddingright">
 						   <sec:authorize access="hasRole('ROLE_ADD_SUB_TASK')">
@@ -379,38 +291,24 @@ var sourceleadUrl = '${sourceleadUrl}';
 		dateFormat : 'yyyy/mm/dd' 
      }; 
 </script>
+
 <script>
-function saveTaskDetails(){
-	/* if ($('#saveProjectTask').validate(false, validationSettings)){  */  
-  		/* var formData = getFormData("time_entry_form"); */
-  		var form = $('#time_entry_form')[0];
-   	    var formData = new FormData(form); 
-  		var assignedMemberIds = $('select#assignedUsers').val();
-  		var timesheetDate = $('#timesheetDate').val();
-  		var timesheetHours = $('#timesheetHours').val();
-  		var entryComment = $('#entryComment').val();
-  		for(var i=0 ; i< assignedMemberIds.length ; i++){	
-  			formData.append('assignedMember['+i+'].projectMemberId',assignedMemberIds[i]);
-  			formData.append('assignedMember['+i+'].timesheetDate',timesheetDate);
-  			formData.append('assignedMember['+i+'].hours',timesheetHours);
-  			formData.append('assignedMember['+i+'].comments',entryComment);
-  		}
-  		alert(sourceleadUrl);
-	         $.ajax({
-				 type : "POST",
-				 data: formData,
-  		         processData: false,
-  		         contentType:false, 
-				 url : sourceleadUrl+"/addTimeSheetDayEntries",
-				  		success : function(data) {
-				  					alert("hi"+data);
-				},
-			});
-			/* return true; */
-	  /*  }else{ 
-			return false;
-	 }   */ 
+function getprojectTaskMembersByProjectId(projectId){
+	var taskUUID = '${taskUUID}';
+	if(projectId != null && projectId !='' && projectId !='undefined'){
+		 //$("#projectTaskDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/ProjectTasks/getprojectTaskMembersByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskUUID="+taskUUID, 	   
+		    success: function(data) {
+		    	$('#tab-task1').empty();
+		    	$('#tab-task1').append(data);
+		    	$("#projectTaskDiv").removeAttr('style');
+		    	}
+	 		});
+	}
 }
+
 </script>
 
 <script>
@@ -734,10 +632,12 @@ $(document).ready(function() {
         function addTimeEntry(){
             $(".modal-Time").fadeIn();
         }
-        function closeTimeEntry(){
+        function closeTimeEntryTasks(){
             $(".modal-Time").fadeOut();
+            $('#time_entry_form').find('p.jquery_form_error_message').remove();
         }
         </script>
+        
     <script>
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");
@@ -1875,157 +1775,8 @@ function commentTableList(){
 }
 </script>
 
-<script>
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var jsDateFormat= '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  jsDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  jsDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  jsDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  jsDateFormat = 'yy-dd-mm'; 
-	  }
-	  $('#timesheetDate').datepicker({
-	      dateFormat: jsDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true,
-	  });
-</script>
 
 
 <!-- ============================ Comments related Script End's ========================================== -->
-
-<script>
-function maskme(){
-	$.mask.definitions['H'] = "[0-9]";
-    $.mask.definitions['h'] = "[0-9]";
-    $.mask.definitions['M'] = "[0-9]";
-    $.mask.definitions['m'] = "[0-9]";
-    $.mask.definitions['P'] = "[AaPp]";
-    $.mask.definitions['p'] = "[Mm]";
-    $(".editMe").mask("Hh:Mm"); 
-}
-</script>
-
-<script>
-function editMe(local){
-	     var id = local.id;
-	     var inputValue =  $("#"+id).val();
-		 var split = inputValue.split(':');
-		 var hours = split[0];
-		 var minutes = split[1];
-		 var hours1 = hours.charAt(0);
-		 var hours2 = hours.charAt(1);
-		 var min1 = minutes.charAt(0);
-		 var min2 = minutes.charAt(1);
-		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val("0"+hours1+":00");
-			 //setTotals();
-			 checkHours(); 
-		 }
-		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val("0"+hours2+":00");
-			 //setTotals();
-			 checkHours(); 
-		 }
-		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val("00:"+min1+"0");
-			 //setTotals();
-			 checkHours(); 
-		 }
-		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-			 $("#"+id).val("00:0"+min2);
-			 //setTotals();
-			 checkHours(); 
-		 }
-		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val(hours+":00");
-			 //setTotals();
-			 checkHours(); 
-		 }
-		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val(hours+":"+"0"+min1);
-			 //setTotals();
-			 checkHours(); 
-		 }
-		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
-			 $("#"+id).val(hours+":"+"0"+min2);
-			 //setTotals();
-			 checkHours(); 
-		 }
-		 else if(!isNaN(hours)&& !isNaN(minutes)){
-			  var hrmin= hours * 60;
-			  var totalMin = parseInt(hrmin) + parseInt(minutes);
-			  hours = Math.floor(totalMin / 60); 
-			  minutes = totalMin % 60;
-			  if(hours<=9){
-				  hours = "0"+hours;
-			  }
-			  if(minutes<=9){
-				  minutes = "0"+minutes;
-			  }
-			  $("#"+id).val(hours+":"+minutes);
-			 // setTotals();
-			  checkHours(); 
-		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-		     $("#"+id).val("00:00");
-		    // setTotals();
-		 }
-		 
-}
-
-function checkHours(){ 
-	 var result = "";		
-	 var total; 
-	 var bsum = 0;
-	 var nbsum = 0;
-	 var total = 0;
-   	 var btemp = $("#timesheetHours").val();
-     if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-    	 var hours = btemp;
-    	 var split = hours.split(':');
-    	 var first = split[0];
-    	 var second = split[1];
-		 var minute = first * 60;
-		 var minute1 = second;
-		 var finalmin = parseInt(minute) + parseInt(minute1);
-	     bsum = parseFloat(bsum) + parseInt(finalmin);
-	}
-	    var t = bsum; 
-		var hours = Math.floor(t / 60); 
-		var minutes = t % 60;
-		total = hours +":"+ minutes;
-	 	var time = total.split(':'); 
-	 	if(!isNaN(time[0])){
-	 	if(time.length === 2 && parseInt(time[0],10)>=0 && parseInt(time[0],10)<=23  && parseInt(time[1],10)>=0  && parseInt(time[1],10)<=59){
-	 	}else{
-	    		result = result+"Day";
-	 	}
-  }
-	    if(result != "" && result != null && result != 'undefined'){   
-			var outPut = "<p>"+result+" hours should not be more than 24<b id='datePopUpError'>X</b></p>";
-			$("#timeSheetErrorMsg").removeAttr('style');
-			$("#timeSheetErrorMsg").attr('style','display:block;');
-			$("#timeSheetErrorMsg").empty();
-			$("#timeSheetErrorMsg").append(outPut);
-		 }else{
-		    $("#timeSheetErrorMsg").removeAttr('style');
-		    $("#timeSheetErrorMsg").attr('style','display:none;');
-			$("#timeSheetErrorMsg").empty();
-			$("#hideError").empty();
-		} 
-		
-		$(".time_pop b").click(function(){
-			$("#timeSheetErrorMsg").removeAttr('style');
-			$("#timeSheetErrorMsg").attr('style','display:none;');
-		    $("#timeSheetErrorMsg").empty();
-		}); 
-	
-}
-
-</script>
-
 
  <jsp:include page="../masterFooter.jsp" />	
