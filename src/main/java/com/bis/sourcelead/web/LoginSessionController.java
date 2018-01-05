@@ -1160,7 +1160,7 @@ public class LoginSessionController {
     }
   
   
-  @RequestMapping(value = "/app/userEnrolledOrgLocations" , method = RequestMethod.POST)
+  @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
   public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);

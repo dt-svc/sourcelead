@@ -71,7 +71,7 @@ function getSendersList(){
 	         result += '  <tr>';
 	         /* result += '    <th>Default Mail <br> Sender</th>'; */
 	         result += '    <th>Name</th>';
-	         result += '    <th>Nikname</th>';
+	         result += '    <th>Nick name</th>';
 	         result += '    <th>From mail</th>';
 	         result += '    <th>Reply mail</th>';
 	        /*  result += '    <th>Verified</th>'; */

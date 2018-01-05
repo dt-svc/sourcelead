@@ -1847,9 +1847,11 @@ $('body').on('submit', '#referToContacts', function(e){
 //Create Alert Poppup
 function alertFunction() {
 	$(".pop_mask").fadeIn();
-	$(".modal.modal_createalert").fadeIn();
+	$(".modal_createalert").addClass("modal");
+	$(".modal_createalert").fadeIn();
 }
 function alertClose(){
+	$(".modal_createalert").removeClass("modal");
 	$(".pop_mask").fadeOut();
 	$(".modal.modal_createalert").fadeOut();
 }

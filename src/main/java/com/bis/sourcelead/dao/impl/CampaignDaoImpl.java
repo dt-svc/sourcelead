@@ -1,6 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +29,7 @@ import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 @Repository
 public class CampaignDaoImpl implements CampaignDao {
 	@Autowired
@@ -124,37 +130,42 @@ public class CampaignDaoImpl implements CampaignDao {
 		ResponseList<CampaignList> response = new ResponseList<>();
 		String query = "from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1 and cpnList.campaignType = :campaignType";
 		String countQuery = "from CampaignList cpnList  where cpnList.orgLocation.id = :orgLocationId and cpnList.createdBy.id = :userId and cpnList.status = 1 and cpnList.campaignType = :campaignType";
-		Query queryObj = session.createQuery(query);
-		if (campaignListDTO != null || campaignListDTO.getLength() > 0) {
-			queryObj.setFirstResult(campaignListDTO.getStart());
-			queryObj.setMaxResults(campaignListDTO.getLength());
-			queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).setCacheable(true).list();
-		}
-		cpnList = queryObj.list();
-		int count = 0;
-		int filteredCount = 0;
-
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).setCacheable(true).list();
-
-		if (countlist != null && !countlist.isEmpty()) {
-			count = countlist.iterator().next().intValue();
-		}
-		response.setRecordsTotal(count);
-		if (campaignListDTO != null) {
-
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).list();
-
-			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
-				filteredCount = filteredCountlist.iterator().next().intValue();
-			}
-			response.setRecordsFiltered(filteredCount);
-		} else {
-			response.setRecordsFiltered(filteredCount);
-		}
-
-		response.setData(cpnList);
-		return response;
 		
+		StringBuilder query1 = new StringBuilder("");
+			if(campaignListDTO.getSearchValue() !=null && !"".equalsIgnoreCase(campaignListDTO.getSearchValue())) {
+//				query1 = " and wts.employeeId like %%";
+			query1.append(" and cpnList.listName like '%" + campaignListDTO.getSearchValue() + "%' ");
+			}
+			Query queryObj = session.createQuery(query + query1.toString());
+			if (campaignListDTO != null || campaignListDTO.getLength() > 0) {
+				queryObj.setFirstResult(campaignListDTO.getStart());
+				queryObj.setMaxResults(campaignListDTO.getLength());
+				queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).setCacheable(true).list();
+			}
+			cpnList = queryObj.list();
+			int count = 0;
+			int filteredCount = 0;
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).setCacheable(true).list();
+
+			if (countlist != null && !countlist.isEmpty()) {
+				count = countlist.iterator().next().intValue();
+			}
+			response.setRecordsTotal(count);
+			if (campaignListDTO != null) {
+
+				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", campaignType).list();
+
+				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+					filteredCount = filteredCountlist.iterator().next().intValue();
+				}
+				response.setRecordsFiltered(filteredCount);
+			} else {
+				response.setRecordsFiltered(filteredCount);
+			}
+
+			response.setData(cpnList);
+		
+			return response;
 		
 		
 	}

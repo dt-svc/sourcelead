@@ -28,7 +28,7 @@
 			noUsers();
 		}
 		var leaveEffective = '${leaveType.leaveEffective}';
-		if (leaveEffective == 'AllEmployees' || leaveEffective == '') {
+		if (leaveEffective == 'All Employees' || leaveEffective == '') {
 			hideExperienced();
 		/* 	$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
 			$('#experiencedDiv').find('p.jquery_form_error_message').remove();
@@ -308,7 +308,7 @@
 							
 							
 							<c:if test="${!empty leaveType.leaveEffective}">
-										<c:if test="${leaveType.leaveEffective == 'AllEmployees'}">
+										<c:if test="${leaveType.leaveEffective == 'All Employees'}">
 											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
 												<input type="radio" checked="true" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
@@ -649,9 +649,9 @@
 															+ " is already existed as Leave Type</span>");
 								} else {
 									$("#saveLeaveType").removeAttr("disabled");
-									$('#leaveTypeDiv').find(
-											'p.jquery_form_error_message')
-											.remove();
+									if(!(name.length > 250)){
+										$('#leaveTypeDiv').find('p.jquery_form_error_message').remove();
+									}
 								}
 							});
 		}

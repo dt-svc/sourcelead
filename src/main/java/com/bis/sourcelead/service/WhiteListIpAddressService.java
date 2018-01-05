@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
 
 public interface WhiteListIpAddressService {
@@ -14,5 +15,7 @@ public interface WhiteListIpAddressService {
 	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId);
 
 	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId);
+
+	public boolean validateIPAddress(String ipAddress, UserRole userRole);
 
 }

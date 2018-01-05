@@ -38,7 +38,7 @@ window.onload = function() {
                <div class="form-group" style="display: none" id="onbehalf">
               <label class="col-md-3">Select Employee<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
-                <select class="form-control chosen-select" id="user" name="user" field-name="Employee" data-validation="required" onchange="getPieChartBasedOnUser('onbehalf'); getApproversList();">
+                <select class="form-control chosen-select" id="user" name="user" field-name="Employee" onchange="getPieChartBasedOnUser('onbehalf'); getApproversList();">
                    <option value="">--Select Employee--</option>
                 	<c:forEach var="user" items="${usersLis}">
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
@@ -357,7 +357,15 @@ function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 
 <script>
 function onbehalf() { 
-    $("#onbehalf").toggle();
+	var ckbox = $('#checkbox-1');
+	if (ckbox.is(':checked')) {
+		$("#onbehalf").show();
+	    $("#user").attr('data-validation',"required");
+	}else{
+		$("#onbehalf").hide();
+	    $("#user").removeAttr('data-validation');
+	}
+    
 }
 </script>
 

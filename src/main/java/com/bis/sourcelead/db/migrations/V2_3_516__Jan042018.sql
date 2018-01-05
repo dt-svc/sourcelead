@@ -1,0 +1,5 @@
+ 
+SET SQL_SAFE_UPDATES = 0;
+update sourcelead.PROJECT_TASKS set STATUS='1';
+SET SQL_SAFE_UPDATES = 1;
+ 
