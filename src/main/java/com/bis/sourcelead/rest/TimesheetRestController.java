@@ -44,7 +44,6 @@ import com.bis.sourcelead.dto.TimeSheetSubmissionDTO;
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
-import com.bis.sourcelead.dto.TimesheetProjectMemberDTO;
 import com.bis.sourcelead.dto.TimesheetProjectTaskDTO;
 import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.dto.WeekDaysDTO;
@@ -1644,7 +1643,12 @@ public class TimesheetRestController {
 							if(taskType.equalsIgnoreCase("Billable")) {
 								if(StringUtils.isNotEmpty(teDTO.getHours())){
 									billableHours = teDTO.getHours();
-									 timesheetDayEntries.setIsManuallyAdded(Constants.YES);
+									 if(!teDTO.getHours().equalsIgnoreCase("00:00")) {
+										 timesheetDayEntries.setIsManuallyAdded(Constants.YES);
+									 }else {
+										 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
+									 }
+									
 								}else{
 									 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 								}
@@ -1655,7 +1659,11 @@ public class TimesheetRestController {
 							}else if(taskType.equalsIgnoreCase("Non-Billable")) {
 								if(StringUtils.isNotEmpty(teDTO.getHours())){
 									nonBillableHours = teDTO.getHours();
-									 timesheetDayEntries.setIsManuallyAdded(Constants.YES);
+									 if(!teDTO.getHours().equalsIgnoreCase("00:00")) {
+										 timesheetDayEntries.setIsManuallyAdded(Constants.YES);
+									 }else {
+										 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
+									 }
 								}else{
 									 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 								}
@@ -1957,13 +1965,7 @@ public class TimesheetRestController {
     	 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
-	 	 List<TimesheetProjectMemberDTO> assignedMember = timesheetProjectTaskDTO.getAssignedMember();
-	 	 if(assignedMember != null && !assignedMember.isEmpty()){
-	 		 for(TimesheetProjectMemberDTO memberDTO : assignedMember){
-	 			TimeSheetDayEntries tde = addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), memberDTO.getProjectMemberId(), timesheetProjectTaskDTO.getTaskUUID(), memberDTO.getTimesheetDate(), memberDTO.getHours(),memberDTO.getComments(),loginUser, loginOrgLocation);
-	 			timeSheetDayEntriesList.add(tde);
-	 		 }
-	 	 }
+		 TimeSheetDayEntries tde = addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(), timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(), timesheetProjectTaskDTO.getTimesheetDate(), timesheetProjectTaskDTO.getHours(),timesheetProjectTaskDTO.getComments(),loginUser, loginOrgLocation);
 	 	 return timeSheetDayEntriesList;
        }
        
@@ -2082,6 +2084,7 @@ public class TimesheetRestController {
 						 timesheetDayEntries.setBillableHours("00:00");
             			 timesheetDayEntries.setNonBillableHours("00:00");
     					 timesheetDayEntries.setTotalHours("00:00");
+    					 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 					   }
 						String taskType =projectTasks.getBillableType();
 	            		timesheetDayEntries.setProjectTask(projectTasks);
@@ -2103,7 +2106,6 @@ public class TimesheetRestController {
 	                		}
 	            		}
 	            		else {
-	            			 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
 	            			total = getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours(), total);
 	            			totalBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getBillableHours(),totalBillableHours);
 	            			totalNonBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getNonBillableHours(),totalNonBillableHours);

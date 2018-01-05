@@ -828,7 +828,7 @@ function preventTabkey(e){
  function checkLocationAccess(locationId,roleId,orgSecurity){
 	 $.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/validateWhitelistIp?userRoleId="+roleId,        
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
 	       success :function(result) {
 // 	    	   hasLocationAccess = result;
 	    	   
