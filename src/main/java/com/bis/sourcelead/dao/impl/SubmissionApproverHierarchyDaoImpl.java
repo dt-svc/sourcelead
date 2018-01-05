@@ -335,6 +335,59 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	}
 	
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeBySubmissionId(Long submissionId,Long masterCandidateId) {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc  where submission.id = :submissionId and mc.id = :masterCandidateId");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("submissionId", submissionId).setLong("masterCandidateId", masterCandidateId).setCacheable(true).list();
+		//return submissionApproverHierarchyList;
+		
+		Boolean isRejected = false; 
+	    Boolean isAPPROVED = false; 
+	    Boolean isSUBMITTED = false; 
+	    Boolean isNEW = false;
+	    Boolean isDRAFT = false;
+	    SubmissionApproverHierarchy submissionApproverHierarchy = null;
+	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
+	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
+				
+				if( sah.getSubmissionStatus() == Submission_Status.REJECTED){
+					isRejected   = true;  
+					submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected  && sah.getSubmissionStatus() == Submission_Status.NEW){
+					 isNEW   = true;  
+					 submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected && !isNEW &&  sah.getSubmissionStatus() == Submission_Status.DRAFT){
+					 isDRAFT   = true;  
+					 submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected && !isNEW && !isDRAFT && sah.getSubmissionStatus() == Submission_Status.SUBMITTED){
+					isSUBMITTED   = true;  
+					submissionApproverHierarchy = sah;
+				}
+				else if(!isRejected && !isNEW && !isDRAFT && !isSUBMITTED && sah.getSubmissionStatus() == Submission_Status.APPROVED ){
+					 isAPPROVED   = true;  
+					 submissionApproverHierarchy = sah;
+				}
+	      }
+	    }
+	    else{
+	    	 submissionApproverHierarchy = new SubmissionApproverHierarchy();
+	    	 submissionApproverHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+	    	 submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+	    }
+		
+		return submissionApproverHierarchy;
+	}
+	
+	
 	
 	
 	@Override

@@ -385,7 +385,7 @@ public class UserServiceImpl implements UserService {
 			 * Saving USER DB data as ElasticSearch Documents
 			 */
 			
-			if(isUserActive == false)
+			if(isUserActive == false && Constants.YES.equalsIgnoreCase(addUserDTO.getIsMailSent()))
 				registrationService.sendActivationEmail(user1);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
@@ -676,8 +676,6 @@ public class UserServiceImpl implements UserService {
 		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		 }
 		OrgLocations locations= orgLocationService.getOrgLocations(locationId);
-		 boolean isUserActive = false;
-		 isUserActive = userRoleService.isUserActive(user.getId());
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -708,7 +706,7 @@ public class UserServiceImpl implements UserService {
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
-		 if(isUserActive == false){
+		 if(password != null){
 			 globalVarsMap.put("password",password);
 		 }else{
 			 globalVarsMap.put("password","Login with your existing sourcelead credentials");

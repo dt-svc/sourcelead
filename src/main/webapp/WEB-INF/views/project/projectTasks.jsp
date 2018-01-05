@@ -51,7 +51,7 @@ function taskNameValidation(){
 <script>
 function projectTask(projectId, status) {
 	var result = "";
-	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom">';
+	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom timeHd_minHeight">';
 	result = result + '<input type="hidden" value='+projectId+' id="projectId">';
 	result = result + '<input type="hidden" value='+status+' id="projectStatus">';
 	 result = result	+ '<ul>';
@@ -115,6 +115,7 @@ function projectTask(projectId, status) {
 		 result = result + '</div>';
 // 	result = result +'<div id="taskListdivId" class="datatable_filter"> </div>';
 	result = result +'<div id="taskTitledivId" class="datatable_filter"> </div>';
+	result = result + '<div id="taskDeletePopUp"></div>';
 	$("#tab-1").empty();
 	$("#tab-3").empty();
 	$("#tab-2").empty();
@@ -188,6 +189,7 @@ function prepareTasksList(url){
 	result = result + '<th>Priotiry</th>';
 	result = result + '<th>Assigned To</th>';
 	result = result + '<th>Status</th>';
+	result = result + '<th>Action</th>';
 	result = result + '</tr>';
 	result = result + '</thead>';
 	result = result + '</table>';
@@ -213,7 +215,8 @@ function projectTaskPaginations(url){
             { "data": "taskstype"},
             { "data": "priority"},
             { "data": "assignedTo" },
-            { "data": "projectTaskStatus" }
+            { "data": "projectTaskStatus" },
+            { "data": "projectTaskActin" }
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -225,7 +228,7 @@ function projectTaskPaginations(url){
 					}else{
 						generatedId = "";
 					}
-	    	  		result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '</a><i class="fa fa-binoculars pull-right"></i></div></td>';
 		             return result;
 	    	  	}
 	      },{
@@ -260,7 +263,7 @@ function projectTaskPaginations(url){
 						taskAssignedUsers = "--"
 					}
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot"><span >'+taskAssignedUsers+'</span ></div></td>';
             	  return result;
               }
             }, {
@@ -276,7 +279,18 @@ function projectTaskPaginations(url){
                 	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
     	              return result;
                 }
-          }],
+          },{
+              "targets": colIndex++,
+              "data": "projectTaskActin",
+              "render": function ( data, type, opt, meta ) {
+               
+              	var result = "";
+              	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">';
+              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+              	result = result	+ '</div></td>';
+  	              return result;
+              }
+        }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
@@ -297,6 +311,39 @@ function projectTaskPaginations(url){
     	   }
     	});
 	
+}
+
+
+function deleteProjectTaskPopUp(projectTaskId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete a task ?</p>";
+	result = result + ' <div id="reasonForProjectDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteProjectTask('+projectTaskId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#taskDeletePopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function deleteProjectTask(projectTaskId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl	+ "/ProjectTasks/deleteProjectSubTasks?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		success : function(json) {
+			    var projectId = $("#projectId").val();
+			    var projectStatus = $("#projectStatus").val();
+			    $("#taskDeletePopUp").empty();
+			 	$(".project_inn_mask").fadeOut(200);
+			 	projectTask(projectId,projectStatus);
+		}
+	});
+}
+function cancelTermination(){
+	$("#taskDeletePopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
  

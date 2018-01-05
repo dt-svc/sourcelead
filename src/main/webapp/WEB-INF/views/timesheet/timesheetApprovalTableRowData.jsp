@@ -61,7 +61,7 @@
 		</td>
 	</c:if>
 	<td><div class="sm" title="New" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>
-<c:if test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'submitted for approval'}">
+<c:if test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'SUBMITTED FOR APPROVAL'}">
 <td>
 	<div class="sm text-center" id="action${timesheetSubmission.projectMemberId}">
 		<i class="fa fa-check" title="Approve" alt="Approve" onclick="approveSubmissionByProjectMemberId('${timesheetSubmission.projectMemberId}','${timesheetSubmission.actualStartDate}','${timesheetSubmission.actualEndDate}','${timesheetSubmission.tdSpanLength}','approval');"></i>|<i
@@ -70,7 +70,7 @@
 </td>
 </c:if>
 
-<c:if  test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'approved'}">
+<c:if  test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'APPROVED'}">
 	<td>
 		<div class="sm text-center">
 			<h3>${timesheetSubmission.submissionStatus}</h3>
@@ -79,7 +79,7 @@
 	</td>
 </c:if>
 
-<c:if  test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'rejected'}">
+<c:if  test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'REJECTED'}">
 	<td>
 		<div class="sm text-center">
 			<h3 class="reje_color">${timesheetSubmission.submissionStatus}</h3>
@@ -90,7 +90,7 @@
 		</div>
 	</td>
 </c:if>
-<c:if  test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'new'}">	
+<c:if  test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'NEW'}">	
 	<td>
 		<div  class="sm">--</div>
 	</td>

@@ -325,11 +325,11 @@ public class LeaveManagementRestController {
 				for (Leave leave : totalleavesTaken) {
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 //						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
-						pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
-						takenLeaveCounts = takenLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+						takenLeaveCounts = takenLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 				}
 				

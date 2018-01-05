@@ -310,6 +310,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
         tasks.setPercentage(Constants.CANDIDATE_IN_ACTIVE);
+        tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
         tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
         tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         tasks.setCreatedDate(commonUtil.currentDate());
