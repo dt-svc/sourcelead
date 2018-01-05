@@ -1868,6 +1868,19 @@ public class ClientRestController {
 			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 			 
 			// boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			 
+			 
+			 
+			 if(clientVendorDTO.getRecipientsEmails() != null && !clientVendorDTO.getRecipientsEmails().isEmpty()) {
+				 BoolQueryBuilder recipientsEmailQueryBuilder =  QueryBuilders.boolQuery();
+				 String[] recipientEmail = clientVendorDTO.getRecipientsEmails().split(",");
+				 for(int i=0; i<recipientEmail.length; i++) {
+					 recipientsEmailQueryBuilder.should(QueryBuilders.matchPhraseQuery("clientUserEmail", recipientEmail[i]));
+				 }
+				
+				 boolQueryBuilder.mustNot(recipientsEmailQueryBuilder);
+				 
+			 }
 			
 			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
 			 
