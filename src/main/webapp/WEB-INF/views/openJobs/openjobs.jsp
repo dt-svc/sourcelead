@@ -1062,7 +1062,7 @@ function getOpenJobsELKList(orgLocationId){
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
 // 		 document.getElementById("jobResultHeadId").style.display="block";
-
+		 $("#companiesListDiv").hide();
 	}
 	var offset = 0;
 	/* if(type == "more"){
@@ -2621,7 +2621,6 @@ var validationSettings = {
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
-        	 alert("pradeep")
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
