@@ -314,6 +314,21 @@ public class ProjectTasksRestController {
 		List<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndParentTaskId(projectId, subTaskId);
 		return taskList;
 	}
+	
+	/**
+	 * @author Laxman
+	 * @param projectTaskId
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteProjectSubTasks", method = RequestMethod.POST)
+	public @ResponseBody void deleteProjectSubTasks( @RequestParam(value = "projectTaskId", required = false) String projectTaskId) throws Exception {
+		    ProjectTasks tasks = tasksService.getTasksId(projectTaskId);
+		if(tasks != null) {
+			tasks.setStatus(String.valueOf(Constants.CANDIDATE_IN_ACTIVE));
+			tasks.setUpdatedDate(new Date());
+			tasksService.updateTasks(tasks);
+		}
+	}
 
 	/**
 	 * @author Laxman
