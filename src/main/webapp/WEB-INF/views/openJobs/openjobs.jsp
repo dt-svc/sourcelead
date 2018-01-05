@@ -1062,7 +1062,7 @@ function getOpenJobsELKList(orgLocationId){
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
 // 		 document.getElementById("jobResultHeadId").style.display="block";
-
+		 $("#companiesListDiv").hide();
 	}
 	var offset = 0;
 	/* if(type == "more"){
