@@ -199,7 +199,8 @@ public class JobPipelineReoprtsRestController {
 									shortlistCreatedDate = rsh.getCreatedDate();
 								}
 								
-							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("offermade"))){
+							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("offermade"))
+									|| (rsh.getFromStage().equalsIgnoreCase("submit_to_client") && rsh.getToStage().equalsIgnoreCase("client_interview"))){
 								interviewsCount++;
 								if(rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) {
 									interviewCreatedDate = createdDatesMap.get("SUBMISSION");
@@ -209,7 +210,7 @@ public class JobPipelineReoprtsRestController {
 									interviewCreatedDate = rsh.getCreatedDate();
 								}
 								
-							} if("offermade".equalsIgnoreCase(rsh.getToStage())){
+							} if("offermade".equalsIgnoreCase(rsh.getToStage())  ||  "client_interview".equalsIgnoreCase(rsh.getToStage())){
 								offeredCount++;
 								offerMadeCreatedDate = rsh.getCreatedDate();
 							} if("request_sent".equalsIgnoreCase(rsh.getToStage())){
