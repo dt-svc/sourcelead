@@ -350,7 +350,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		TeamMembers onboardingTeamMember = null;
 		boolean isUserActive = true;
 		
-		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		String password = null;
 		
 		if(!isNullOrEmpty(candidateOnBoarding.getCompanyEmail())){
 			onboardingUser = userDao.findByUserName(candidateOnBoarding.getCompanyEmail());
@@ -359,6 +359,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		if(onboardingUser == null){
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
 		    if("Newly Registered".equalsIgnoreCase(onboardingUser.getRegistrationType()))
@@ -657,8 +658,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    userRole = userRoleDao.getLoginUserPrimaryRole(user.getId());
 		 }
 		 
-		 boolean isUserActive = false;
-		 isUserActive = userRoleDao.isUserActive(user.getId());
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -689,7 +688,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
-		 if(isUserActive == false){
+		 if(password != null){
 			 globalVarsMap.put("password",password);
 		 }else{
 			 globalVarsMap.put("password","Login with your existing sourcelead credentials");

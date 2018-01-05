@@ -144,9 +144,10 @@ z-index: 1;
 		                <div class="col-md-4">
 		                  <label>Country</label>
 		                  <div class="clearfix">
-		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
+		                    <select class="chosen-select" name="searchCountry" id="countrySearch" field-name="Country"  >
+						     <option value="" selected>---select country---</option>
 						     <c:forEach var="cntry" items="${countryList}">
-					                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+					                      <option value="${cntry.name}">${cntry.name}</option>
  
 				             </c:forEach>
 				           </select>
@@ -155,7 +156,7 @@ z-index: 1;
 		                 <div class="col-md-4"> 
 							  <label>State</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="stateSearch" field-name="State"  >
+								  <select  class="chosen-select" name="searchState" id="stateSearch" field-name="State"  >
 								        <option value="">---select state---</option>
 								        <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
@@ -166,7 +167,7 @@ z-index: 1;
 						  <div class="col-md-4">
 							  <label>City</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
+								  <select  class="chosen-select" name="searchCity" id="citySearch" field-name="City"  >
 								      <option value="">---select city---</option>
                                   </select>
 							  </div>

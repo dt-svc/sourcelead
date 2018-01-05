@@ -85,14 +85,27 @@ public class OpenJobsController {
 		return "openJobs/openjobs";
 	}
 	
-	@RequestMapping(value = "/app/ws/{title}--{id}")
-	public ModelAndView openRequirementsSummary(@PathVariable long id, @PathVariable String title) throws Exception
+	
+	@RequestMapping(value = { "/app/ws/{postedOrgName}-{companies}"})
+public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String companies,HttpServletRequest request) throws Exception
+{
+modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
+modelMap.addAttribute("companies", companies);
+modelMap.addAttribute("specificCompany", "specificCompany");
+return "openJobs/openjobs";
+}
+
+	
+	@RequestMapping(value = "/app/ws/{url}--{id}")
+	public ModelAndView openRequirementsSummary(@PathVariable long id, @PathVariable String url) throws Exception
 	{
-		title = title != null
-				? title.replaceAll("-mod-","%").replaceAll("-and-","&").replaceAll("-or-","/").replaceAll("-", " ")
-				: title;
+		/*
+		 * url = title != null ?
+		 * title.replaceAll("-mod-","%").replaceAll("-and-","&").replaceAll(
+		 * "-or-","/").replaceAll("-", " ") : title;
+		 */
 		ModelAndView modelAndView = new ModelAndView();
-		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementIdAndJobTitle(id, title);
+		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementIdAndJobTitle(id, url);
 		if (requirementDeatilsSummary != null
 				&& requirementDeatilsSummary.getRequirementUUID() != null) {
 			String uuid = requirementDeatilsSummary.getRequirementUUID();
@@ -114,7 +127,6 @@ public class OpenJobsController {
 		modelAndView.setViewName("openJobs/openjobs");
 		return modelAndView;
 	}
-	
 
 	@RequestMapping(value = "/jobs")
 	public String openRequirementsRedirect(ModelMap modelMap, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
@@ -133,6 +145,7 @@ public class OpenJobsController {
 	{
 		return "forward:/jobs/" + title + "/" + location + "/null";
 	}
+	
 	@RequestMapping(value = "/requirementsSummary.html")
 	public String requirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception
 	{

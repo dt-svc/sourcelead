@@ -12,9 +12,16 @@ public class TimesheetProjectTaskDTO {
 	
 	private Long projectId;
 	
-	private List<TimesheetProjectMemberDTO> assignedMember;
+   private Long projectTaskMemberId;
 	
-
+	private String timesheetDate;
+	
+	private String hours;
+	
+	private String comments;
+	
+	private List<FileInfo> fileInfoList;
+	
 	public Long getUserId() {
 		return userId;
 	}
@@ -46,12 +53,46 @@ public class TimesheetProjectTaskDTO {
 		this.projectId = projectId;
 	}
 
-	public List<TimesheetProjectMemberDTO> getAssignedMember() {
-		return assignedMember;
+	public Long getProjectTaskMemberId() {
+		return projectTaskMemberId;
 	}
 
-	public void setAssignedMember(List<TimesheetProjectMemberDTO> assignedMember) {
-		this.assignedMember = assignedMember;
+	public void setProjectTaskMemberId(Long projectTaskMemberId) {
+		this.projectTaskMemberId = projectTaskMemberId;
 	}
+
+	public String getTimesheetDate() {
+		return timesheetDate;
+	}
+
+	public void setTimesheetDate(String timesheetDate) {
+		this.timesheetDate = timesheetDate;
+	}
+
+	public String getHours() {
+		return hours;
+	}
+
+	public void setHours(String hours) {
+		this.hours = hours;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public List<FileInfo> getFileInfoList() {
+		return fileInfoList;
+	}
+
+	public void setFileInfoList(List<FileInfo> fileInfoList) {
+		this.fileInfoList = fileInfoList;
+	}
+
+
 	
 }

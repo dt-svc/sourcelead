@@ -129,7 +129,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <label>Country </label>
                   <div class="clearfix">
                     <select class="chosen-select" name="country" id="country" field-name="Country"  >
-                          <option value=" ">---select country---</option>
+                          <option value="" selected>---select country---</option>
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}">${cntry.name}</option>
  
