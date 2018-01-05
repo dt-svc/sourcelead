@@ -2189,8 +2189,18 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		contracts.setStatus("0");
 		contracts.setOrgLocationId(orgLocation);
-		vendorContracts.setTemplateSubmissionStatus(Constants.FINALIZED);
-		contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+		
+		Date date = new Date();
+		String currentTimeStr = TZ_DF_TS.format(date);
+		Date curDate = TZ_DF_TS.parse(currentTimeStr);
+		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+			vendorContracts.setTemplateSubmissionStatus(Constants.EXPIRED);
+			contracts.setTemplateSubmissionStatus(Constants.EXPIRED);
+		}else{
+			vendorContracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+			contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+		}
+		
 		vendorContracts.setStatus("0");
 		contracts.setCreatedDate(new Date());
 		contracts.setCreatedBy(user.getUserCode());

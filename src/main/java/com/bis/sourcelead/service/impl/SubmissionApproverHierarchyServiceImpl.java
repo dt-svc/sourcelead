@@ -514,6 +514,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(Long projectApproverHierarchyId,Long submissionId) {
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(projectApproverHierarchyId,submissionId);
 	}
+
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeBySubmissionId(Long submissionId,
+			Long masterCandidateId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeBySubmissionId(submissionId, masterCandidateId);
+	}
 	
 	
 
