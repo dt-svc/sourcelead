@@ -230,8 +230,6 @@ public class DataMigrationCommonUtil {
 					}else{
 						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString())+" is invalid cooling-off period");
 					}
-				}else {
-					dataMigrationDTOJsonCopy.put((String) k, orgLocation.getCoolingOffPeriod());
 				}
 				
 				if(k.toString().equalsIgnoreCase("closedDate") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
