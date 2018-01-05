@@ -222,7 +222,7 @@
   </div>		  
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${appPath}/onboardingCandidateSetp2'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateStep2'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -311,7 +311,7 @@ function saveOnboardingCandidateDocs(saveType){
 	          contentType:false,
 	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
-		    	  location.replace(sourceleadUrl+"/onboardingCandidateSetp4");  
+		    	  location.replace(sourceleadUrl+"/onboardingCandidateStep4");  
 	      }
 	    	  
 	  });
