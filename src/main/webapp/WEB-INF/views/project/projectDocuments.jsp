@@ -10,6 +10,9 @@
 .validation_p p.jquery_form_error_message {
     bottom: -26px;
 }
+.file_mask {
+    z-index: 999999  !important;
+}
 </style>
 <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 <!-- this script is for Tasks list functionality at Projects screen -->
