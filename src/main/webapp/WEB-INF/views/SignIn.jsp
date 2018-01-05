@@ -58,6 +58,9 @@
 	    	<c:if test="${!empty email_notVerified_error}">
 	         		<div class="error"><font color="red">Your Email is not verified.   <a class="pull-right" id="resend" onclick="resend();" title="Resend Verification Link">Resend</a></font></div>
 	    	</c:if> 
+	    	<c:if test="${!empty invalid_IP_Address}">
+	         		<div class="error"><font color="red">You are not allowed to access this location</font></div>
+	    	</c:if> 
 	    	<c:if test="${not empty msg}">
 		        <div id="selector">
 			         <span><font color="green">${msg}</font></span>
@@ -226,7 +229,7 @@ function resend() {
 	 var userName = document.getElementById("usernameval").value; 
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/resendVerificationEmail?userName="+userName,        
+       url: sourceleadUrl+"/ws/resendVerificationEmail?userName="+userName,        
        success :function(data) {
        if(data == "success"){
        		$("#selector1").removeAttr("style");

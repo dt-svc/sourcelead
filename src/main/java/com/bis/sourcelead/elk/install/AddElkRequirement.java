@@ -109,6 +109,7 @@ public class AddElkRequirement {
 					requirementIndex.setMaxExperience(rs.getString("MAX_EXP"));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
+				requirementIndex.setUrl(rs.getString("URL"));
 				//requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
 				requirementIndex.setCountry(rs.getString("COUNTRY"));
 				requirementIndex.setState(rs.getString("STATE"));
