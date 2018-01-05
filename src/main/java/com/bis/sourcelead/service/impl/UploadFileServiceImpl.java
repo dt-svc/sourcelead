@@ -486,7 +486,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		Employees employee = new Employees();
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 		User reportUser = userService.findByEmailAndOrgLocationsId(userImport.getManager(), orgLocations.getId());
-		userRole.setIsPrimary(1);
+		userRole.setReportingManager(reportUser);
 		userRole.setRoles(role);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
@@ -499,20 +499,21 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setOrgLocations(orgLocations);
 		
 		employee.setHireDate(userImport.getDateOfJoin());
-		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		String password = null;
 		
 		User userExisted = userService.findByEmail(userImport.getEmailId());
 		
 		if(null !=  userExisted){
-			//User user1 = userService.findByEmail(userImport.getEmailId());
-			UserRole userRole1 = userRoleService.getUserByUserId(userExisted.getId());
-			if(userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
-				userRole.setUserState(Status.NOT_LOGGEDIN);
+			UserRole userRole1 = userRoleService.getLoginUserPrimaryRole(userExisted.getId());
+			if(userRole1 != null && userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
+				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				userExisted.setPassword(sourceleadPasswordEncoder.encode(password));
 				userService.addUser(userExisted);
+				userRole.setIsPrimary(0);
 			}else{
-				userRole.setUserState(Status.NOT_LOGGEDIN);
+				userRole.setIsPrimary(1);
 			}
+			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(userExisted);
 			userRole.setIsMailSent(userImport.getIsMailChecked());
 			userRoleService.addUserRole(userRole);
@@ -541,10 +542,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserName(userImport.getEmailId());
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			userRole.setIsPrimary(1);
 			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
-			userRole.setReportingManager(reportUser);
 			userRole.setIsMailSent(userImport.getIsMailChecked());
 		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
