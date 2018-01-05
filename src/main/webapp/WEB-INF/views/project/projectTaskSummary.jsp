@@ -19,6 +19,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		tasksAssignList(projectId);
 		getprojectTaskMembersByProjectId(projectId);
 		getSubTaskList();
+		getSavedTaskDetails();
 		maskme();
 	});
  </script>
@@ -633,6 +634,7 @@ $(document).ready(function() {
         }
         function closeTimeEntryTasks(){
             $(".modal-Time").fadeOut();
+            $('#time_entry_form').find('p.jquery_form_error_message').remove();
         }
         </script>
         

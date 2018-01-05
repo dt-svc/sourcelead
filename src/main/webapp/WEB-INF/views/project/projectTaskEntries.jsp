@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.simplePagination.js"></script>
 <script>
 //description script
 	$(document).ready(function(){ 
@@ -10,11 +11,11 @@
 	});
  </script>
 			
-					<div class="clearfix mt mb">
+					<%-- <div class="clearfix mt mb">
 	                    <c:if test="${not empty projectmember}">
-		                    <div class="clearfix">
+		                    <!-- <div class="clearfix">
 		                    	<button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addTimeEntry()">Add Time Entry</button>
-		                    </div>
+		                    </div> -->
 	                    </c:if>
 	                     <div class="clearfix">
 	                        <!-- <div class="col-md-3 paddingRight">
@@ -30,8 +31,22 @@
 	                        </div> -->
 	
 	                    </div> 
-					                </div>
-					<!-- TimeEntry Modal Pop -->
+					                </div> --%>
+					
+					                
+<div class="timesheet_head">
+	        	 <ul>
+	        	  <c:if test="${not empty projectmember}">
+	        	 	<li class="noPad"><button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addTimeEntry()">Add Time Entry</button></li>
+	        	  </c:if>
+	            </ul> 
+	<div class="remove_search">
+       					<input type="text" placeholder="Search..." value="" id="projectTaskSearch">
+        			</div>	            
+	            <div class="clearfix"></div>
+	        </div>
+	        
+<!-- TimeEntry Modal Pop -->
 					<form id="time_entry_form" name="time_entry_form">
 					<div class="modal-Time clearfix">
 					    <!-- Modal content-->
@@ -72,37 +87,49 @@
 					      </div>
 					</div>
 					</form>
-					                <!-- TimeEntry Modal Pop Ends -->
-					 <div class="clearfix project_wrap_table">
+					                <!-- TimeEntry Modal Pop Ends -->	        
+
+					 <div id="tableContent" class="clearfix project_wrap_table">
 			                    <table>
 			                        <thead>
 			                            <tr>
+			                                <th>Emp Name</th>
 			                                <th>Date</th>
-			                                <th>SubTask</th>
-			                                <th>Description</th>
 			                                <th>Hours</th>
+			                                <th>Comments</th>
+			                                <th>Status</th>
 			                            </tr>
 			                        </thead>
-			                        <tbody>
-			                            <tr>
-			                                <td><div><span>23/04/2017</span></div></td>
-			                                <td><div class="tbldata-dotdot-vsm">New Task</div></td>
-			                                <td>
-			                                    <div class="tbldata-dotdot-me">
-			                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-			                                    </div></td>
-			                                <td><div><span>100 Hours</span></div></td>
-			                            </tr>
+			                        <tbody id="timeDayEntriesData">
+			                        		<jsp:include page="projectTaskTableData.jsp"></jsp:include>
 			                        </tbody>
-			                        <tfoot style="border-top: 1px solid #909090;">
+			                        <!-- <tfoot style="border-top: 1px solid #909090;">
 			                        <tr>
-			                            <td colspan="3">Total Hours</td>
+			                            <td colspan="4">Total Hours</td>
 			                            <td>100 Hours</td>
 			                            </tr>
-			                        </tfoot>
+			                        </tfoot> -->
 					          </table>
 					        </div>    
-
+	<div id= "paginationDiv" class="clearfix">
+		<div class="col-md-6">
+			<div class="pull-left mt5">
+				<label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
+					<div class="dropdown-select pull-left mr5 tblminwidth-50">
+						<select id="pageSize" onchange="getTableDataByPageSize();">
+							<option value="5" >5</option>
+							<option value="10" >10</option>
+							<option value="15" >15</option>
+							<option value="20" >20</option>
+						</select>
+					</div> <span class="pull-left mt10">entries</span> </label>
+					 <span class="pull-left mt10 ml" id="pageMsg"></span>
+			</div>
+		</div>
+		<div id="paginationholder" class="col-md-6 pagiPad">
+			<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
+		</div>
+	</div>
 
 
 <script>
@@ -117,12 +144,48 @@ function saveTaskDetails(){
   		         contentType:false, 
 				 url : sourceleadUrl+"/addTimeSheetDayEntries",
 				  		success : function(data) {
+				  			getSavedTaskDetails();
+				  			flushTimeEntryTasks();
 				},
 			});
 			return true; 
 	    }else{ 
 			return false;
 	 }   
+}
+</script>
+
+<script>
+function getSavedTaskDetails(){
+	var taskUUID = '${taskUUID}';
+	var searchData = $('#projectTaskSearch').val();
+	var searchvalue = '';
+    if(searchData != null && searchData !='' && searchData!='undefined'){
+    	searchValue = searchData;
+    }else{
+    	searchValue = '';
+    }
+	$.ajax({
+		 type : "POST",
+		 	 url : sourceleadUrl+"/ProjectTasks/getSavedTaskDetails?&taskUUID="+taskUUID+"&searchValue="+searchValue,
+		  		success : function(data) {
+		  			$('#timeDayEntriesData').empty();
+		  			$('#timeDayEntriesData').append(data);
+		  			preparePagination(1);
+		  			
+		},
+	});
+}
+
+</script>
+
+<script>
+function flushTimeEntryTasks(){
+	 $('#timesheetDate').val('');
+	 $('#timesheetHours').val('');
+	 $('#entryComment').val('');
+	 $(".modal-Time").fadeOut();
+	 $('#time_entry_form').find('p.jquery_form_error_message').remove();
 }
 </script>
 
@@ -134,6 +197,98 @@ function saveTaskDetails(){
 		dateFormat : 'yyyy/mm/dd'
 	};
 </script>
+
+
+<script>
+$("#projectTaskSearch").keyup(function(event) {
+    if (event.keyCode === 13) {
+    	var searchData = $('#projectTaskSearch').val();
+    	getSavedTaskDetails();
+    	$('#projectTaskSearch').val(searchData);
+    }
+});
+</script>
+
+
+<script>
+      function getTableDataByPageSize(){
+    	//  $('#pagination-demo').twbsPagination('destroy'); 
+    	  getTableData(1);
+      }
+	  function getTableData(pageNo) {
+		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		  var searchData = $('#projectTaskSearch').val();
+		  var taskUUID = '${taskUUID}';
+          var pageSize = $("#pageSize").val();
+          var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
+          var searchvalue = '';
+          if(searchData != null && searchData !='' && searchData!='undefined'){
+          	searchValue = searchData;
+          }else{
+          	searchValue = '';
+          }
+          $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	      	$.ajax({
+	      		 type : "POST",
+	      		 	 url : sourceleadUrl+"/ProjectTasks/getSavedTaskDetails?&taskUUID="+taskUUID+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+	      		  		success : function(data) {
+	      		  			$('#timeDayEntriesData').empty();
+	      		  			$('#timeDayEntriesData').append(data);
+	      		  			preparePagination(pageNo);
+	      		  			
+	      		},
+	      	});  
+      	}
+	  function preparePagination(pageNo) {
+		  var totalRows =  $('#totalRows').val();
+		  var pageMsg = '';
+		  var searchData = '';
+		  var searchData = $('#searchInputValue').val();
+		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
+			  $('#paginationDiv').show();
+			  var pageCount = $('#pageCount').val();
+			  var pageSize = $("#pageSize").val();
+			  $('#projectTaskSearch').val('') ;
+			  $('#projectTaskSearch').val(searchData); 
+			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
+			  var endingRecord = parseInt(pageNo*pageSize);
+			  if(endingRecord > totalRows){
+				  endingRecord = totalRows;
+			  }
+			  var options = {
+					      currentPage:pageNo,
+					      items: totalRows,
+			              itemsOnPage: pageSize,
+			              ellipsePageSet :false,
+			              cssStyle: 'light-theme',
+			               onPageClick: function (pageNumber, event) {
+			                 getTableData(""+pageNumber+"");
+			              }
+		      };
+		      $("#pagination-demo").pagination(options);
+		      pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+		  }
+		  else{
+			  $("#tableContent").empty();
+	    	  $("#tableContent").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+			  $('#projectTaskSearch').val('') ;
+			  $('#projectTaskSearch').val(searchData);
+			  $('#paginationDiv').hide();
+			  
+			  
+		  }
+	      $('#pageMsg').html('');
+	      $('#pageMsg').html(pageMsg);
+	 }
+  </script>  
+
+
+
+
+
+
+
+
 
 <script>
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
