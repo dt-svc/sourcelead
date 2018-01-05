@@ -408,7 +408,6 @@ public class ProjectsDashboardRestController {
 		 public @ResponseBody   ResponseList<ProjectTasksDTO> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
 			 
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
 				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order

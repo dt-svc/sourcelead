@@ -68,7 +68,7 @@ $(document).ready(function(){
 	         result += '    <th>Name</th>';
 	         result += '    <th>Duration</th>';
 	         result += '    <th>Type</th>';
-	         result += '    <th>No.of Leaves</th>';
+// 	         result += '    <th>No.of Leaves</th>';
 	         result += '    <th>Status</th>';
 	         result += '    <th>Action</th>';
 	         result += '  </tr>';
@@ -96,11 +96,11 @@ $(document).ready(function(){
 		        	 result += '      <div title="'+report.leaveType+'" class="tbldata-dotdot-100">'+report.leaveType+'</div>'; 
 		         }
 		         result += '    </td>';
-		         result += '    <td>';
+		         /* result += '    <td>';
 		         if(report.numbefrOfLeavesPeryear != null && report.numbefrOfLeavesPeryear != '' && report.numbefrOfLeavesPeryear != 'undefined'){
 		        	 result += '        <div title="'+report.numbefrOfLeavesPeryear+'" class="tblminwidth-75">'+report.numbefrOfLeavesPeryear+'</div>'; 
 		         }
-		         result += '    </td>';
+		         result += '    </td>'; */
 		         result += '    <td>';
 		         if(report.status != null && report.status != '' && report.status != 'undefined'){
 		        	 if(report.status == 1){
@@ -161,6 +161,7 @@ $(document).ready(function(){
  <script>
 function deleteLeaveType(typeId){
 	 $(".project_inn_mask").remove();
+	 $("#deleteLeaveTypeDiv").empty();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";

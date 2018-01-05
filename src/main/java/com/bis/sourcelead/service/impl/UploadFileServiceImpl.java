@@ -66,6 +66,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -110,6 +111,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	RegistrationService registrationService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -552,6 +556,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			employeesService.addEmployee(employee);
 			if(isMailChecked !=null){
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
+				registrationService.sendActivationEmail(user);
 			}
 			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 			
