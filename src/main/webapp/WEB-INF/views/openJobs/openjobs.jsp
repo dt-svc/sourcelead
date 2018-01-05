@@ -1057,12 +1057,12 @@ function getOpenJobsELKList(orgLocationId){
 // 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
 // 	if(orgLocationId != null){
-		if(companies11 !=null && companies11 !='' && companies11 !='undefined') {
+	var orgListType = '${specificCompany}';
+		if(orgListType !=null && orgListType !='' && orgListType !='undefined' && orgListType == 'specificCompany') {
 		orgLocationIds = orgLocationId
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
 // 		 document.getElementById("jobResultHeadId").style.display="block";
-		 $("#companiesListDiv").hide();
 	}
 	var offset = 0;
 	/* if(type == "more"){
