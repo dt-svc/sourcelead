@@ -18,14 +18,24 @@ z-index: 1040 !important;
  </script>
 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+
 <!--   Popup Code  -->
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
+     
 	<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
+	
 		<div class="popupHead">
+		<c:if test="${empty campaignList.id}">
 			<h2>Add Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</c:if>
+		
+		<c:if test="${!empty campaignList.id}">
+			<h2>Edit Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</c:if>
 		</div>
+		
 		<div id="loading"></div>
 		<div class="popupMid popupMidPad clearfix">
 
