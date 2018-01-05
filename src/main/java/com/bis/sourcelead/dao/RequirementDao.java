@@ -25,7 +25,7 @@ public interface RequirementDao {
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
-	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String title) throws Exception;
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception;
 	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
