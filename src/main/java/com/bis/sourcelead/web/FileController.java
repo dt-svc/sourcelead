@@ -375,10 +375,10 @@ public class FileController {
 								: type == 0 ? "<span class='c'>Candidate Existed"
 										: "<span class='b'>Resume parsing failed")
 				+ "</span><br/>File Name: " + fileInfo.getFileName() + "<br/>Name: " + resume.getName() + "<br/>Email: "
-				+ resume.getEmail());
+				+ (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null") ? "" : resume.getEmail()));
 		saveLogMessage(uploadid,
 				"<br/><a href='"+ (sourceleadUrl.replace("/app", "")) + fileInfo.getFileURL() + "' target='_blank'>Click here to download the Resume</a>");
-		session.setAttribute("uploadstats" + uploadid, i + " of " + count + " processed...");
+		session.setAttribute("uploadstats" + uploadid, i + " of " + count + " Parsed...");
 	}
 	
 	@RequestMapping(value = "/downloadFile.html")

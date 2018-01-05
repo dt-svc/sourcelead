@@ -83,6 +83,18 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private Map<String,String> clientCustomFieldlabelNameAndValue;
 	
+	private String recipientsEmails;
+	
+	private String orgRelationIds;
+	
+	public String getOrgRelationIds() {
+		return orgRelationIds;
+	}
+
+	public void setOrgRelationIds(String orgRelationIds) {
+		this.orgRelationIds = orgRelationIds;
+	}
+
 	public String getVendorCreateduserName()
 	{
 		return vendorCreateduserName;
@@ -613,6 +625,14 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setClientCustomFieldlabelNameAndValue(Map<String, String> clientCustomFieldlabelNameAndValue) {
 		this.clientCustomFieldlabelNameAndValue = clientCustomFieldlabelNameAndValue;
+	}
+
+	public String getRecipientsEmails() {
+		return recipientsEmails;
+	}
+
+	public void setRecipientsEmails(String recipientsEmails) {
+		this.recipientsEmails = recipientsEmails;
 	}
 
 	

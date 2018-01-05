@@ -1632,7 +1632,7 @@ public class RequirementListRestController {
 							 }
 							 catch(Exception e){}
 							
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							anyBoolQueryBuilder.must(anyBoolSubQueryBuilder);
 						}
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);

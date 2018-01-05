@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 
+@Service
 public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesService {
 
 	@Autowired
