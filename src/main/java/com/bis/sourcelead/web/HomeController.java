@@ -104,7 +104,7 @@ public class HomeController {
 		logger.debug(" *** HomeController init with: ");
 	}
 
-	@RequestMapping(value = { "/app/**" }, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = {"/app", "/app/**"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public String defaultPage(HttpServletRequest request) {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();

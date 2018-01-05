@@ -33,6 +33,9 @@ function candidateDocuments(candidateId){
 		result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
 	}else{
 		var docUUID = '';
+		result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+');" title="Reject"></i></a></span>';
+		result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+');" title="Accept"></i></a></span>';
+		result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
 		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
@@ -60,6 +63,7 @@ function candidateDocuments(candidateId){
 
 <script>
 function candDocumentsList(candidateId){
+	var candidateType = '${candidateType}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
@@ -72,9 +76,12 @@ function candDocumentsList(candidateId){
 	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
+	                     result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>';
 	                     result  = result + '<th>Document Type</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
+	                 	 result  = result + '<th>Upload Status</th>';
+	                     result  = result + '<th>Document Status</th>';
 	                 	 result  = result + '<th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -82,20 +89,30 @@ function candDocumentsList(candidateId){
 	                     
 	                     for (var i = 0; i < json.data.length; i++) { 
 	                    	 var opt = json.data[i];  
+	                    	 if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
+
 	                    	 result  = result + ' <tr>';
+	                    	 if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
+	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
+	                    	 }else{
+	                    		 result = result +"  <td><div>--</div></td>"; 
+	                    	 }
+	                    	 
+	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
 	    	             	 {
 	    	            	  if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
-	    	                   result = result +"  <td><div>"+opt.documentOtherType+"</div></td>";
+	    	                   result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
 	    	             	 }else{
-	    	             		result = result +"  <td><div>"+opt.documentType+"</div></td>"; 
+	    	             		result = result +"  <td><div title='"+opt.documentType+"'>"+opt.documentType+"</div></td>"; 
 	    	             	 }
 	    	             	 }else{
 	    	             		 result = result +"  <td><div>----</div></td>"; 
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div><span title="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
+				           	 result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" download title="Download"></a></div></td>';
+
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -106,18 +123,43 @@ function candDocumentsList(candidateId){
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
 		                    	
+	                    	 
+							result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
+	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
+	                    		 result = result +"<td>";
+	                    		 result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
+	                    		 if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined'){
+					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
+					        	   }
+	                    		 result = result +"</div>";
+	                    		 result = result +"</td>";
+	                    	 
+	                    	 }else{
+	                    		 result = result +"  <td><div>----</div></td>"; 
+	                    	 }
+	                    	 
 		                   
-		                   result = result+'<td><div class="tblicons"> <a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
+		                   result = result+'<td><div class="tblicons">';
 			           		if(window.candidateStatusGlobal == 0){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 			           		}else{
 			           			var docUUID = opt.documentUUID;
-			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');"></a>';
-				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');"></i>';
+			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
+			           			if(candidateType =="Candidates"){
+			           				'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			'</sec:authorize>';
+			           			}else{
+			           				'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\')">';
+			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			'</sec:authorize>';
+			           			}
+			           			
 			           		}
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';
+	                    	 }
 	                      } 
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
@@ -127,6 +169,51 @@ function candDocumentsList(candidateId){
           });     
 }
 </script>
+
+<script>
+function candidateDocumentView(documentUUID,title){
+		if(documentUUID != null && documentUUID != ""){
+			window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
+		}
+}
+
+</script>
+
+<script>
+	function toggleAllDocuments(source) {
+	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+	        if (checkboxes[i] != source)
+	            checkboxes[i].checked = source.checked;
+	        
+	    }
+	$('input:checkbox:not(#checkAllDocuments)').click(function() {
+	    if(!this.checked) {
+	        $('#checkAllDocuments').removeAttr('checked');
+	    }
+	});
+	}
+</script>
+
+
+<script>
+function deleteRequestedDoc(){
+	
+	 var documentsIds = [];
+	 $("input[name='documents[]']:checked").each( function (i) {
+		 documentsIds[i] = $(this).val();
+	});
+	 
+	 if(documentsIds.length > 0){
+		 document.getElementById("rejectDoc").style.display="";
+		 document.getElementById("acceptDoc").style.display="";
+	 }else{
+		 document.getElementById("rejectDoc").style.display="none";
+		 document.getElementById("acceptDoc").style.display="none";
+	 }
+	 
+}
+</script> 
 
 <!-- Show success message after form submission script -->
 <script>
@@ -210,6 +297,54 @@ function closePopup(){
 }
 </script>
 
+<script>
+function closePopup1(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
+
+
+<div class="requestDocSideMask"></div>
+<div class="modal  requestDocuments">
+  <div class="modal-dialog modal-lg"> 
+    <div id="documentLoading"></div>
+    <div id="documentsTypeDiv"></div>
+    </div>
+  </div>
+  
+  <div id="divDocsTd1" style="display: none; float: left;">
+  <div class="dropdown-select paddingRight">
+              <select class="width100percnt form-control selectborder" data-validation="required" onchange="getSelectedDocumentType(REPLACEROWID);" field-name="Document Type" id="REPLACEROWIDdocType" name="requestDocumentList[REPLACEROWID].docType">
+                <option selected value="">--Document Type--</option>
+                <c:forEach var="doctype" items="${documentsList}">
+					<option value="${doctype.name}" >${doctype.name}</option>
+    			</c:forEach> 
+              </select>
+  </div>
+  
+ <div class="clearfix mt5" id="REPLACEROWIDotherType" name="REPLACEROWIDotherType" style="display: none;">
+	<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="requestDocumentList[REPLACEROWID].otherDocType" id="REPLACEROWIDotherDocType">
+ </div>
+ </div>
+  
+  <div id="divDocsTd2" style="display: none; float: left;">
+  <div>
+              <textarea rows="2" placeholder="Description" class="form-control" id="REPLACEROWIDdescription" name="requestDocumentList[REPLACEROWID].description"></textarea>
+   </div>
+  </div>
+  
+  <div id="divDocsTd3" style="display: none; float: left;">
+  <div>
+     <label class="switch mt10 ml10 pull-left">
+       <input type="checkbox" checked id="REPLACEROWIDchecked" name="requestDocumentList[REPLACEROWID].checked" onclick="checkDocument(REPLACEROWID)" value="Y">
+       <div class="slider round"></div>
+       </label>
+         <div class="pull-right">
+       <button type="button" class="btn btm-sm pull-right mt5" onclick="removeDocType(REPLACEROWID)"><i class="fa fa-remove text-danger"></i></button>
+             </div>
+   </div>
+</div>   
+
 <%-- 
      @author : prasad K.
      this script is for shown popUp.
@@ -225,39 +360,41 @@ function addDocument(candidateId, documentUUID) {
 	result = result  +'   ';
 	
 	result = result  +'<div class="clearfix mb10 col-md-12"> ';
-	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="name" data-validation="required" onchange="getDocumentType(this);">';
-					   <c:forEach var="doctype" items="${documentsList}">
-    result = result +'<option value="" disabled selected></option>';										 
-	result = result + '<option value="${doctype.name}">${doctype.name}</option>';
+	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docName" data-validation="required" onchange="getDocumentType(this);">';
+					   
+	
+	                   <c:forEach var="doctype" items="${documentsList}">
+    result = result +'<option value="" disabled selected></option>';	
+	result = result + '<option value="${doctype.name}" >${doctype.name}</option>';
 	                   </c:forEach>  
     result = result + '</select>';
 	result = result  +' </div> ';
 	result = result  +'';
 	
 	result = result + '<div class="col-md-12 documentTypeDiv mb10" id="documentTypeDiv" style="display:none">';
-	result = result + '<input type="text" class="form-control input-sm" name="documentOtherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+	result = result + '<input type="text" class="form-control input-sm" name="documentOtherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="required validate_Space validate_length length1-250">';
 	result = result + '</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
-	result = result+'<div class="col-md-12">';
-	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn" onChange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<div class="col-md-12 validation_p">';
+	result = result+'<div class="input-group" id="uploadFileGroup">';
+	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
-	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document Type" data-validation="validate_Space validatedoc">';
+	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
 	result = result+'</div>';
 	result = result+'</div>';  
 	result = result+'</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'<div class="col-md-12 mt">';
-	result = result+'<label id="docName" name="docName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_doc" onclick="removeDocNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'<label id="docsName" name="docName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_doc" onclick="removeDocNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
 	result = result+'</div>';
 	result = result+'</div>';
 	
 	result = result+'<div class="clearfix mb10 mt25">';
 	result = result+'<div class="col-md-12">';
-	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_length length2-250" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"  field-name="Description" class="form-control"></textarea>';
 	result = result+'</div>';
 	result = result+'</div>';  
 	
@@ -287,7 +424,7 @@ function addDocument(candidateId, documentUUID) {
 	   }; 
 	    
 	    /* upload file script for size validation 2MB*/
-	    
+	   
 	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
@@ -442,39 +579,45 @@ function getDocumentType(documentType){
 --%>
 <script>
 function getDocument(candidateId, documentId){
+	 $("#docsName").attr("data-validation-optional", "true");
+	  $("#documentOtherType").attr("data-validation-optional", "true");
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
+   		    	
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
+        			 if(data.fileName != null && data.fileName !="undefined" && data.fileName != ""){
         			 $("#docNameDiv").show();
-        			 $("#docName").append(data.fileName);
+        			 }
+        			 $("#docsName").append(data.fileName);
+        			 $("#docsName").prop('title', data.fileName);
         			 $("#docUpdateButton").show();
-        			if(data !=null){
-        				 if(data.documentType != null && data.documentType != "undefined" && data.documentType != ""){
-        					 
-            				 $("select#name").val(data.documentType);
-            				 $("select#name").trigger("chosen:updated");
-    	                     //here documentType is Other then documentOtherType  also display in Edit.
-    	                     
-    	                     if(data.documentType == 'Other'){
-    		        				 if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined"){
-    		        					 document.getElementById("documentTypeDiv").style.display="block";
-    		        					 $("#documentOtherType").val(data.documentOtherType);
-    			    	             }
-    	        			 }
+        			 if(data !=null){
+        			 if(data.documentType != null && data.documentType != "undefined" && data.documentType != ""){
+        				
+	                     $("select#docName").val(data.documentType);
+	                     $("select#docName").trigger("chosen:updated");
+	                   
+	                    //here documentType is Other then documentOtherType  also display in Edit.
+	                   
+	                     if(data.documentType == 'Other'){
+		        				 if(data.documentOtherType !=null && data.documentOtherType !='' && data.documentOtherType !="undefined"){
+		        					 document.getElementById("documentTypeDiv").style.display="block";
+		        					 $("#documentOtherType").val(data.documentOtherType);
+			    	             }
+	        			 }
 
-             			 }
-            			 
-            			 $("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
-            			 
-            			 if(data.description != null && data.description != "undefined" && data.description != ""){
-            				 $("textarea#description").val(data.description);
-            			 }	
-        			}
-        		
+        			 }
+        			 
+        			 $("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
+        			 
+        			 if(data.description != null && data.description != "undefined" && data.description != ""){
+        				 $("textarea#description").val(data.description);
+        			 }
+        			 }
         			 
    		    }
 	     });
@@ -581,3 +724,276 @@ function uploadFileDoc(){
 	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
 }
 </script>
+
+
+
+
+<!-- Requested Documents Scripts Start here -->
+
+<script>
+
+//Request Documents
+    function requestDoc(){
+    $(".requestDocuments").fadeIn();
+    $(".requestDocSideMask").fadeIn();
+    }
+    function closeRD(){
+    $(".requestDocuments").fadeOut();
+    $(".requestDocSideMask").fadeOut();
+    }
+</script>
+
+<script>
+function createDocsType(candidateId){
+	
+	$("#documentsTypeDiv").empty();
+	
+	var result = "";
+	result = result +'<form id="requestForDocuments_form" name="requestForDocuments_form" method="post">';
+	result = result +'<div class="modal-content">';
+	result = result +'<div class="modal-header">';
+	result = result +'<button type="button" class="close" data-dismiss="modal" onClick="closeRD();">&times;</button>';
+	result = result +'<h4 class="modal-title">';
+	result = result +'Request Documents';
+	result = result +'</h4>';
+	result = result +'</div>';
+	result = result +'<div class="modal-body">';
+	result = result +'<div class="form-horizontal clearfix mb">';
+	result = result +'<div class="clearfix"></div>';
+        
+        
+	result = result +'<div class="clearfix mb10 mt5 requestdocmntTable">';
+	result = result +'<input type="hidden" name="requestedCandidateId"  id="requestedCandidateId" value='+candidateId+' />';
+	result = result +'<input type="hidden" name="docuemntMaxRowNumber"  id="docuemntMaxRowNumber" value="1" />';
+	result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="requestedDocumentsTable" border="0">';
+	result = result +'<tbody>';
+	result = result +'<tr id="requestedDocumentsTsRow0">';
+	result = result +'<div id="0requestedDocumentsFileGroup">';
+	result = result +'<td width="200px">';
+	result = result +'<div class="dropdown-select">';
+	result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="Document Type" onchange="getSelectedDocumentType(0);" id="0docType" name="requestDocumentList[0].docType">';
+	result = result +'<option selected value="">--Document Type--</option>';
+	
+    <c:forEach var="doctype" items="${documentsList}">
+		result = result + '<option value="${doctype.name}" >${doctype.name}</option>';
+    </c:forEach> 
+    
+	result = result +'</select>';
+	result = result +'<div class="clearfix mt5" id="0otherType" name="0otherType" style="display: none;">';
+	result = result +'<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="requestDocumentList[0].otherDocType" id="0otherDocType">';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</td>';
+	result = result +'<td width="auto">';
+	result = result +'<div class="">';
+	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="description" name="requestDocumentList[0].description" field-name="Description" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>';
+	result = result +'</div>';
+	result = result +'</td>';
+	result = result +'<td width="150px">';
+	result = result +'<div class="">';
+	result = result +'<label class="switch mt10 ml10 pull-left">';
+	result = result +'<input type="checkbox" checked id="0checked" name="requestDocumentList[0].checked" onclick="checkDocument(0)" value="Y">';
+	result = result +'<div class="slider round"></div>';
+	result = result +'</label>';
+	result = result +'<div class="pull-right">';
+	result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addDocumentRow();"><i class="fa fa-plus text-primary"></i></button>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</td>';
+	result = result +'</div>';
+	result = result +'</tr>';
+	result = result +'</tbody>';
+	result = result +'</table>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+    
+	result = result +'<div class="modal-footer clearfix">';
+	result = result +'<button type="submit" id="submit_docs" class="btn btn-sm btn-primary mr10">Send</button>';
+	result = result +'<button type="button" class="btn btn-sm btn-default" onclick="closeRD();">Cancel</button>';
+	result = result +' </div>';
+	result = result +'</div>';
+	result = result + '</form>';
+	
+	$("#documentsTypeDiv").append(result);
+	
+}
+</script>
+
+<script>
+function checkDocument(id){
+	var checked = document.getElementById(id+"checked").checked
+	if(checked == true){
+		$("#"+id+"checked").val("Y");
+	}else{
+		$("#"+id+"checked").val("N");
+	}
+}
+</script>
+
+<script>
+function getSelectedDocumentType(id){
+	 var selectedDocType = document.getElementById(id+"docType").value; 
+	if(selectedDocType == 'Other'){
+		  document.getElementById(id+"otherType").style.display="block";
+		  $("#"+id+"otherDocType").removeAttr("data-validation-optional");
+		  $("#"+id+"otherDocType").attr("data-validation", "required validate_Space validate_length length2-250");
+	}else{
+		  document.getElementById(id+"otherType").style.display="none";
+		  $("#"+id+"otherDocType").removeAttr("data-validation");
+		  $("#"+id+"otherDocType").attr("data-validation-optional", "true");
+		  $("#"+id+"otherType").find('p.jquery_form_error_message').remove();
+		  if(selectedDocType ==null || selectedDocType == "" || selectedDocType == "undefined" || selectedDocType != 'Other'){
+			  $("#"+id+"otherDocType").val('');
+		  }
+	}
+}
+</script>
+
+<script type="text/javascript">
+$('body').on('submit', '#requestForDocuments_form', function(e){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	        borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	if ($('#requestForDocuments_form').validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var requestedCandidateId = document.getElementById("requestedCandidateId").value;
+     /*  var form = $('#requestForDocuments_form')[0];
+      var formData = new FormData(form); */
+      var formData = getFormData("requestForDocuments_form");
+        $("#submit_docs").attr("disabled", "disabled");
+		$("#submit_docs" ).addClass('button').val('Processing..');
+		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       $.ajax({
+		    	type: "POST",
+		    	data : formData,
+		    	 //processData: false,
+	    	   //  contentType:false,
+		    	 url: sourceleadUrl+"/requestCandidateForDocuments?"+tokenParamName+"="+tokenValue+"", 
+		        success: function(result) {
+		        	$("#documentLoading").removeAttr("style"); 
+		        	closeRD();
+		        	candidateDocuments(requestedCandidateId);
+		        },
+		    });   
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#requestForDocuments_form', function() {
+		$("#requestForDocuments_form").showHelpOnFocus();
+		$("#requestForDocuments_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
+
+
+<script>
+function addDocumentRow(){
+	var checkMaxTsRowNum = $("#docuemntMaxRowNumber").val();
+	var tbl = document.getElementById("requestedDocumentsTable");
+	var maxRowNum = parseInt($("input[name = 'docuemntMaxRowNumber']").val());
+	$("input[name = 'docuemntMaxRowNumber']").val(maxRowNum + 1);
+	
+	
+	var row = tbl.insertRow(maxRowNum);
+	row.setAttribute("id", "divRequestedDocumentsRow" + maxRowNum);
+	
+	
+	var cell0 = row.insertCell(0);
+	var divDocTypeTdStr = document.getElementById("divDocsTd1").innerHTML;
+	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell0.innerHTML = divDocTypeTdStr;
+	
+	var cell1 = row.insertCell(1);
+	var divDocDescTdStr = document.getElementById("divDocsTd2").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell1.innerHTML = divDocDescTdStr; 
+	
+	var cell2 = row.insertCell(2);
+	var divDocDescTdStr = document.getElementById("divDocsTd3").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell2.innerHTML = divDocDescTdStr; 
+}
+</script>
+
+<script type="text/javascript">
+	function removeDocType(rowId) {
+		 document.getElementById("divRequestedDocumentsRow"+rowId).style.display = 'none';
+		 document.getElementById("divRequestedDocumentsRow"+rowId).value= '';
+		 var  rId = "divRequestedDocumentsRow"+rowId;
+		  var r = document.getElementById("requestedDocumentsTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
+ 
+<script type="text/javascript">
+$('body').on('submit', '#docrejectedReason_form', function(e){
+	  if ($(this).validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var frm = $('#docrejectedReason_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      var rejectedDocsCandidateId = document.getElementById("rejectedDocsCandidateId").value;
+      
+      var documentsIds = [];
+	 	 $("input[name='documents[]']:checked").each( function (i) {
+	 		 documentsIds[i] = $(this).val();
+	 	});
+	 	 
+       $("#submit_rejectedReason").attr("disabled", "disabled");
+       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
+	        success: function(result) {
+	        	cancelDocumentRejectedReason();
+	        	$("#docsrejectedLoading").removeAttr("style"); 
+	        	candidateDocuments(rejectedDocsCandidateId);
+	        },
+	    });    
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#docrejectedReason_form', function() {
+		$("#docrejectedReason_form").showHelpOnFocus();
+		$("#docrejectedReason_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
+ 
+ 
+ <script type="text/javascript">
+$(document).ready(function() {
+    $(".glyphicon-edit").click(function(){
+		$(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	});
+	$(".settPop i, .btn-default").click(function(){
+		$(".settPop").slideUp(200);
+		$(".vendor_wrap_mask").fadeOut(200);
+	});
+});		
+	
+</script>  
+
+<!-- Requested Documents scripts End Here -->

@@ -60,7 +60,7 @@
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}');" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}','dateSearch');" /></span>
 					</div>
 					</div>
 					
@@ -501,7 +501,7 @@ function expenseView(expenseId){
             showButtonPanel: true,
             closeText: 'Clear',
             onClose : function(selected) {
-				$("#filterEndDate").datepicker("option", "minDate", selected);
+				$("#reportEndDate").datepicker("option", "minDate", selected);
 				var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -519,7 +519,7 @@ function expenseView(expenseId){
             showButtonPanel: true,
             closeText: 'Clear',
             onClose : function(selected) {
-				$("#filterStartDate").datepicker("option", "maxDate", selected);
+				$("#reportStartDate").datepicker("option", "maxDate", selected);
 				var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
