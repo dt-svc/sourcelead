@@ -100,7 +100,7 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"<thead>"; 
    result = result +"  <tr>"; 
    result = result +"    <th>Action</th>"; 
-   result = result +"    <th>ID</th>"; 
+   result = result +"    <th>Generated ID</th>"; 
    result = result +"    <th>Title</th>"; 
    result = result +"    <th>Client</th>"; 
    result = result +"    <th>Type</th>"; 

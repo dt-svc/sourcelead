@@ -724,7 +724,7 @@ function validate_fileupload(fileName)
 			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 			        success: function(data) {
 			        	var primarySkill = data;
-			        	      //$("#primarySkill").val(primarySkill);
+			        	      $("#primarySkill").val(primarySkill);
 			        	
 			        },
 			    });
