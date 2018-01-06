@@ -397,7 +397,7 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
     tele = tele.replace(/([-|\+])/g, '');
     return tele.length > 8 && tele.match(/[^0-9]/g) === null;*/
     tele = tele.replace(/([-|\+])/g, '');
-	return tele.length > 8 &&  tele.match(/^(?=.*[0-9])[- +()0-9]+$/);
+	return tele.length > 8 &&  tele.match(/^(?=.*[0-9])[. - +()0-9]+$/);
 };
 
 
