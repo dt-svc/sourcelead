@@ -2,25 +2,20 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
-import com.bis.sourcelead.model.ConnectionBean;
+import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.Connections;
+import com.bis.sourcelead.entity.User;
 
 public interface ConnectionsDao {
 
-	List<ConnectionBean> getFindConnections(Long id);
+	Connections saveConnection(Connections connections) throws Exception;
 
-	List<ConnectionBean> getConnectedList(Long id);
+	List<UserRoleDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String connectionStatus, String status) throws Exception;
 
-	List<ConnectionBean> getReceivedList(Long userId);
+	int deleteConnection(User user, User toUser, String value);
 
-	List<ConnectionBean> getSentList(Long userId);
+	int acceptConnection(User user, User toUser, String status);
 
-	void changeClickConnect(String userId, Long id);
+	List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String value);
 
-	void winthdrawUser(String userId, Long id);
-
-	void acceptRequest(String userId, Long id);
-
-	void ignoreUser(String userId, Long id);
-
-	void disconnectConnect(String userId, Long id);
 }

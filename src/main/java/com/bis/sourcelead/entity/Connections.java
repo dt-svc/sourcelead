@@ -1,14 +1,29 @@
 package com.bis.sourcelead.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import com.bis.sourcelead.enums.ConnectionStatus;
 
 @Entity
 @Table(name = "CONNECTIONS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "connections")
 public class Connections {
 
 	private static final long serialVersionUID = 1L;
@@ -18,14 +33,28 @@ public class Connections {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column(name="FROM_UID")
-	private Long fromUid;
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "FROM_UID", nullable = false)
+	private User fromUser;
 	
-	@Column(name="TO_UID")
-	private Long toUid;
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "TO_UID", nullable = false)
+	private User toUser;
 	
-	@Column(name="STATUS")
-	private String status;
+	@Column(name="CONNECTION_STATUS")
+	@Enumerated(EnumType.STRING)
+	private ConnectionStatus connectionStatus;
+	
+	@Column(name = "STATUS")
+	private Integer status;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
 	
 	public Long getId() {
 		return id;
@@ -33,24 +62,45 @@ public class Connections {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getFromUid() {
-		return fromUid;
+	
+	public User getFromUser() {
+		return fromUser;
 	}
-	public void setFromUid(Long fromUid) {
-		this.fromUid = fromUid;
+	public void setFromUser(User fromUser) {
+		this.fromUser = fromUser;
 	}
-	public Long getToUid() {
-		return toUid;
+	public User getToUser() {
+		return toUser;
 	}
-	public void setToUid(Long toUid) {
-		this.toUid = toUid;
+	public void setToUser(User toUser) {
+		this.toUser = toUser;
 	}
-	public String getStatus() {
+	public ConnectionStatus getConnectionStatus() {
+		return connectionStatus;
+	}
+	public void setConnectionStatus(ConnectionStatus connectionStatus) {
+		this.connectionStatus = connectionStatus;
+	}
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+	
+	
 	
 	
 }

@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ConnectionsDao;
-import com.bis.sourcelead.model.ConnectionBean;
+import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.Connections;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.service.ConnectionsService;
 
 @Service
@@ -15,53 +18,35 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 	@Autowired
 	private ConnectionsDao connectionsDao;
 	
-	
 	@Override
-	public List<ConnectionBean> getFindConnections(Long id) {
-		return connectionsDao.getFindConnections(id);
+	public Connections saveConnection(Connections connections) throws Exception {
+		return connectionsDao.saveConnection(connections);
 	}
 
 	@Override
-	public void changeClickConnect(String userId, Long id) {
-
-		connectionsDao.changeClickConnect(userId, id);
+	public List<UserRoleDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId,
+			String connectionStatus, String status) throws Exception {
+		return connectionsDao.getConnectionsListByStatus(searchValue, offset, userId, connectionStatus, status);
 	}
 
+
 	@Override
-	public List<ConnectionBean> getSentList(Long userId) {
-		return connectionsDao.getSentList(userId);
-		// TODO Auto-generated method stub
+	public int deleteConnection(User user, User toUser, String value) {
+		return connectionsDao.deleteConnection(user, toUser, value);
 		
 	}
 
 	@Override
-	public void withdrawUser(String userId, Long id) {
-		connectionsDao.winthdrawUser(userId, id);
+	public int acceptConnection(User user, User toUser, String status) {
+		return connectionsDao.acceptConnection(user, toUser, status);
 	}
 
 	@Override
-	public List<ConnectionBean> getReceivedList(Long userId) {
-		return connectionsDao.getReceivedList(userId);
+	public List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String status) {
+		return connectionsDao.getConnectedList(searchValue, offset, id, status);
 	}
 
-	@Override
-	public void acceptRequest(String userId, Long id) {
-		connectionsDao.acceptRequest(userId, id);
-	}
 
-	@Override
-	public void ignoreUser(String userId, Long id) {
-		connectionsDao.ignoreUser(userId, id);
-	}
-
-	@Override
-	public List<ConnectionBean> getConnectedList(Long id) {
-		return connectionsDao.getConnectedList(id);
-	}
-
-	@Override
-	public void disconnectConnect(String userId, Long id) {
-		connectionsDao.disconnectConnect(userId, id);
-	}
+	
 
 }
