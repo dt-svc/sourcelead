@@ -1,6 +1,6 @@
 
 
-function campaignSender(ele,senderId) {
+function campaignSender(ele,senderId, fromType) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
 		$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
@@ -15,7 +15,12 @@ function campaignSender(ele,senderId) {
 						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == true){
 								senderClose();
-								location.replace(sourceleadUrl+ "/campaignSendersList");
+								if(fromType == "hotList" || fromType == "jobList"){
+					            	$(".popMask").fadeOut(200);
+				            		$(".popUpOut").fadeOut(100);
+					             }else{
+								     location.replace(sourceleadUrl+ "/campaignSendersList");
+					             }
 								 $("#selector1").removeAttr("style");
 					  			 $("#selector1").css({ display: "block" });
 					  			 $("#msgDiv").html("Successfully Created sender identity");
