@@ -545,10 +545,10 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(userId,orgLocationId);
 			
 			 if(isadmin){
-				 Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId ");
+				 Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId and spoc.status = '1'");
 				 spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			 }else{
-				 Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId "
+				 Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId and spoc.status = '1' "
 				 		+ " and (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId)");
 				 spocsList = query.setLong("orgRelationId", orgRelationId).setLong("loginUserId", userId).setCacheable(true).list();
 			 }
