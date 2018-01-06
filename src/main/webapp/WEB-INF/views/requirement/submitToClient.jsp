@@ -494,8 +494,8 @@ function addEmailtemplate(requirementId){
 		 }); 
 }else{
 	var result = "";
-	result = result +"	<div class='sideMask'></div>";
-	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='comMask zInMask'></div>";
+	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -503,6 +503,7 @@ function addEmailtemplate(requirementId){
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
 	//$(".sideMask").fadeIn(200);
+	$(".comMask").fadeIn(200);
  }
 		 
  }else{
@@ -520,8 +521,8 @@ function addEmailtemplate(requirementId){
 	  
 		 if(selectedRate != '' && selectedRatePer == ''){
 		 var result = "";
-		result = result +"	<div class='comMask'></div>";
-		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"	<div class='comMask zInMask'></div>";
+		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -532,8 +533,8 @@ function addEmailtemplate(requirementId){
 		
 		}else if(selectedRate == '' && selectedRatePer != ''){
 		 var result = "";
-			result = result +"	<div class='comMask'></div>";
-			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"	<div class='comMask zInMask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 			result = result +"		<p>Submission Rate is Required</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
