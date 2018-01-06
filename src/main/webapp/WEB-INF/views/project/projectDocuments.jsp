@@ -415,7 +415,7 @@
 		result = result +'   </div>';
 		result = result +'   <div class="modal-body mt mb">';
 		result = result +'     <div class="row">';
-		result = result +'     	<label class="col-md-3">Rename Folder</label>';
+		result = result +'     	<label class="col-md-3">Rename Folder<span class="text-danger">&nbsp;*</span></label>';
 		result = result +'     	<div class="col-md-9" id="rmoveErrMsgEditCF">';
 		result = result +'     		<input type="text" class="form-control input-sm" placeholder="Create Folder" value="'+folderName+'" id="folderReName" name="folderName" field-name="Folder Name" data-validation="required validate_AlphaNumber validate_length length2-100" onkeyUp="validateRenameFolderName('+folderId+');">';
 		result = result +'     	</div>';
@@ -780,7 +780,7 @@ function renameFilePop(documentId,fileName){
 	result = result +'<div class="modal-content">';
 	result = result +'  <div class="modal-header">';
 	result = result +'    <button type="button" class="close" data-dismiss="modal">&times;</button>';
-	result = result +'    <h4 class="modal-title">Rename File</h4>';
+	result = result +'    <h4 class="modal-title">Rename File <span class="text-danger">&nbsp;*</span></h4>';
 	result = result +'  </div>';
 	result = result +'  <div class="modal-body mt mb">';
 	result = result +'    <div class="row">';
