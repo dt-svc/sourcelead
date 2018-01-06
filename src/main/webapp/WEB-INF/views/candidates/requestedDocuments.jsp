@@ -158,7 +158,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 		         contentType:false, 
 			url : sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
 			success : function(data) {
-				 location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
+				 location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
 
 			},
 		});

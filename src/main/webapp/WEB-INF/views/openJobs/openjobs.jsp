@@ -235,6 +235,9 @@ a.alertBtn {
 .jobResults_New .innerContent {
 	padding: 0px 0px 30px !important;
 }
+.modal {
+	z-index: 10500 !important;
+}
 </style>
 
 
