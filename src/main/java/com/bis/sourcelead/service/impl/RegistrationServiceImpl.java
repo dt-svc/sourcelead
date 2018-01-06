@@ -545,7 +545,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         	orgLocations.setDba(registration.getDba());
         }
         
-        if(registration.getGeneratedUserId() != null &&  registration.getGeneratedUserId().isEmpty()){
+        if(registration.getGeneratedUserId() != null &&  !registration.getGeneratedUserId().isEmpty()){
         	orgLocations.setGeneratedUserId(registration.getGeneratedUserId());
         }
         
