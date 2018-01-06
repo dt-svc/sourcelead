@@ -1504,11 +1504,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignationType(null);
 			}
 			
-			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
+			/*if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
 				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else
 			{
 				candidate.setDesignationOtherType(null);
+			}*/
+			
+			if(StringUtils.isNotBlank(candidateDTO.getDesignation())){
+				candidate.setDesignation(candidateDTO.getDesignation());
+			}else
+			{
+				candidate.setDesignation(null);
 			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){

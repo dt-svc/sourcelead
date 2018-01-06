@@ -80,6 +80,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
@@ -773,6 +774,11 @@ public class RequirementListRestController {
 					requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
 					requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
 					
+					if(requirementSubmission.getSubmissionStatus() != null) {
+						ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+						if(status != null)
+		  				requirementSubmission.setSubmissionDisplayStatus(status.getValue());
+					}
 					if (requirementSubmission.getVendorLocationId() != null) {
 						requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 					}
@@ -1632,7 +1638,7 @@ public class RequirementListRestController {
 							 }
 							 catch(Exception e){}
 							
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							anyBoolQueryBuilder.must(anyBoolSubQueryBuilder);
 						}
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);

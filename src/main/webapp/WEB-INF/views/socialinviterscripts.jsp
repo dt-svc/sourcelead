@@ -113,6 +113,9 @@
 	}
 	 function socialInviterScripts() {
 		 var sourceleadUrl ='${sourceleadUrl}';
+		 var sourceleadWebUrl = sourceleadUrl.replace('/app','');
+		 var cssUrl = sourceleadWebUrl+"/resources/css/"
+		 var jsUrl = sourceleadWebUrl+"/resources/js/"
          socialinviter.load({
              dock:false,
              showmodal: true,
@@ -127,8 +130,8 @@
              },
              apikeys:{
             	 "facebook":{
-                     "consumerKey":"200281393793197",
-                     "consumerSecret":"3a62bba550c343eb4f42bbeabd2e0f5e"
+                     "consumerKey":"1839828886269747",
+                     "consumerSecret":"dd4ee8b1292808c381148421204b0ef2"
                  }
              },
              callbacks: {
@@ -170,9 +173,9 @@
              },
              
              path: {
-                 css: "/resources/css/",
-                 js: "/resources/js/",
-                 authpage : sourceleadUrl+"/resources/oauth.html",
+                 css: cssUrl,
+                 js: jsUrl,
+                 authpage :sourceleadWebUrl + "/resources/oauth.html",
                  apiurl:sourceleadUrl+"/ws/getAPIService"
              }
          });

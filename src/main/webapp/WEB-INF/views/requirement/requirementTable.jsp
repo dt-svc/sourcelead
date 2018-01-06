@@ -44,17 +44,36 @@ function requirementList(searchType,sourceleadUrl){
 		    {
 				filterClients.push($(this).val());
 		    });
-			var searchValue = $("#dataTableSearch").val();
+			
+			
+			
+			
+			var frm = $('#requirement_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); 
+		    var jsonData = encodeURIComponent(con);
+			var form = $('#requirement_form')[0];
+	  		var formData = new FormData(form); 
+	  		var searchValue = $("#dataTableSearch").val();
+	  		searchValue = searchValue ? searchValue : "";
+	  		$("#requirementList").empty();
+			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue;
+	  		 url += "&"+$($('#requirement_form')[0]).serialize();
+			
+			
+			
+			/* var searchValue = $("#dataTableSearch").val();
 			searchValue = searchValue ? searchValue : "";
 			$("#requirementList").empty();
 			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		    url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue;
+		    url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue; */
 	    }
 	    else if(searchType == 'advanceSearch'){
 	    			 url = sourceleadUrl+"/searchRequirement?searchType="+searchType;
 	    			url += "&"+$($('#requirement_form')[0]).serialize();
 	    			closePop();
-	    			clearAlldata();
+	    			//clearAlldata();
 	    }
 	    $('#dataTableSearch').removeAttr('disabled');
 	    $('#dataTableSearch').attr('disabled','disabled');
@@ -81,7 +100,7 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"<thead>"; 
    result = result +"  <tr>"; 
    result = result +"    <th>Action</th>"; 
-   result = result +"    <th>ID</th>"; 
+   result = result +"    <th>Generated ID</th>"; 
    result = result +"    <th>Title</th>"; 
    result = result +"    <th>Client</th>"; 
    result = result +"    <th>Type</th>"; 
@@ -128,7 +147,7 @@ function clearAlldata(){
    $("#jobId").empty();
  
 }
-function clearSearch(){
+/* function clearSearch(){
 	document.getElementById("requirement_form").reset();
 	$('#requirementStatu').val('').trigger('chosen:updated');
 	$('#updatedOn').val('').trigger('chosen:updated');
@@ -138,7 +157,7 @@ function clearSearch(){
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
-}
+} */
 function jpagination(url,sourceleadUrl){ 
 	var colIndex = 0;
     $('#requirementPagination').DataTable( { 

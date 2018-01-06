@@ -5,13 +5,37 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
  <script>
-function getExpensesList(sourceleadUrl){
+function getExpensesList(sourceleadUrl,dateSearch){
+	var startDate = '';
+	var endDate = '';
+
+	if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSearch == 'dateSearch' ){
+		var startDateFilter = $("#filterStartDate").val();
+		var endDateFilter = $("#filterEndDate").val();
+		if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined' ){
+			 startDate = startDateFilter;
+			 endDate = endDateFilter;
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove();
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove();
+		}else if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  (endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined')){
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+			$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+		}else if((startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined') &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined'){
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+			$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+		}else if((endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined') && (startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined')){
+			$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+			$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+			$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+			$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+		}		
+	}
 
 	var url = '';
     var searchValue = $("#dataTableSearchExpensesEmp").val();
 	searchValue = searchValue ? searchValue : "";
-	var startDate = $("#filterStartDate").val();
-	var endDate = $("#filterEndDate").val();
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 
 	{
@@ -135,8 +159,15 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	        		  }else{
 	        			  projectName = "--";
 	        		  }
+	    	  		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">';
 	    	  		 result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" title="'+projectName+'">'+projectName+'</a></div></td>';
-		            return  result;
+	    	  		 '</sec:authorize>';
+	    	  		 
+	    	  		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">';
+	    	  		  result = result +'<td><div title='+projectName+'>'+projectName+'</div></td>';
+	    	  		 '</sec:authorize>';
+	    	  		 
+	    	  		 return  result;
 	    	  	}
 	      },{
 	    	  	"targets": colIndex++,

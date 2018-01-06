@@ -81,7 +81,7 @@ $(document).ready(function(){
       </div>
     </div>
     <div class="ReqRepHead clearfix">
-      <div class="col-md-2 dropdown-select positionRelative col-md-offset-4">
+      <div class="col-md-2 dropdown-select positionRelative col-md-offset-9">
         <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
           <option>Select Date</option>
           <option value="Last_7_days" selected>Last 7 days</option>
@@ -553,9 +553,11 @@ function getTopFiveConracts(){
 
 function getTopFiveReceivsblesReports(){
 	var frequency = $("#dateFrequency").val();
+	var fromDate = $("#custFromDate").val();
+	var toDate = $("#custToDate").val();
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl+"/getTopFiveReceivablesReports?&dateFrequency="+frequency+"&type=Receivable",
+		url : sourceleadUrl+"/getTopFiveReceivablesReports?&dateFrequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&type=Receivable",
 	    success: function(data) {
 	    	getAmchartData(data);
 	    	$("#draftTotalAmount").html(data.draftInvoiceTotal)
@@ -942,7 +944,7 @@ function topTenClientContactReports(){
 			            result += '    <td><div class="tblminwidth-30"> <strong class="">'+opt.hiredCount+'</strong></div></td>';
 			            result += '    <td><div class="tblminwidth-30">10 days</div></td>';
 			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
-			            result += '    <td><div class="tbldata-dotdot-vsm"><i class="fa fa-dollar paddingRight"></i>12365489788</div></td>';
+			            result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalPaidAmount+'</div></td>';
 			            result += '  </tr>';
 		            }
 		            

@@ -125,7 +125,7 @@ public class OrgSettingsRestController {
 		return "home";
 	}
 	
-	@RequestMapping(value = "/app/displayOrgImage/{orgCode}", method = RequestMethod.GET)
+	@RequestMapping(value = {"/app/displayOrgImage/{orgCode}","/app/ws/displayOrgImage/{orgCode}"}, method = RequestMethod.GET)
 	public void displayOrgImage(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -233,6 +233,7 @@ public class OrgSettingsRestController {
 		if (jsonObj.has("hierarchyId") && !isNullOrEmpty(jsonObj.getString("hierarchyId"))) {
 			hierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("hierarchyId")));
 			hierarchy.setHierarchyName(jsonObj.getString("level"));
+			hierarchy.setOrgLocations(orgLocations);
 			hierarchy.setUpdatedBy(user.getUserCode());
 			hierarchy.setUpdatedDate(new Date());
 		}

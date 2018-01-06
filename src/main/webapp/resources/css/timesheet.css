@@ -7098,7 +7098,8 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 }
 
 .companyDetWrap {
-	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); background-color: #fff; padding: 10px 0px 20px; border-radius: 3px;
+	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); background-color: #fff; padding: 10px 0px 20px;
+	border-radius: 3px; min-height: 300px;
 }
 .companyDetHead {
 	padding: 5px 0px;
@@ -7141,17 +7142,193 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	padding: 0px 0px 4px; margin: 0px 0px; font-size: 14px; color: #666;
 }
 
+.comPhotos {
+	padding: 0px 20px;
+}
+.comPhotos a {
+	width: 200px; display:block; float: left; padding: 2px; background-color: #f1f1f1; margin: 10px 10px 0px 0px;
+}
+.comPhotos a span {
+	width: 100%; height: 130px; display: block; background-size: cover; background-position: center;
+}
 
-.loadWrap {
-	display: block; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); padding: 8px 10px; font-size: 14px;
-	font-weight: 400; color: #666; margin: 15px 0px 0px 0px; text-align: center; border-radius: 2px;
+.borBot {
+	border-bottom: 1px solid #f1f1f1;
 }
-.loadWrap .fa {
-	display: inline-block; margin: 0px 5px 0px 0px;
+
+.srch-resultarea {
+    min-height: 240px; position:relative;
 }
-.noDate {
-    background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);  border-radius: 2px; padding: 20px;
-    margin: 10px 0px 0px 0px; background-image: url(../images/norecords.jpg); background-position: center center;
-    background-repeat: no-repeat; min-height: 200px; background-size: 250px;
+.p_left0 {
+	padding-left:0;
 }
+.width85 {
+	width:85px; display:inline-block;
+}
+.srchresulwidget {
+	padding: 20px; border-top: 1px solid #f1f1f1;
+}
+.srchresulwidget p {
+	margin-bottom: 5px;
+}
+.srchresulwidget p a {
+	font-size: 15px;
+}
+.srchresulwidget .btn {
+	padding:5px 25px; border-radius: 2px;
+}
+.width120 {
+	width: 120px; display:inline-block;
+}
+.pdr10 {
+	padding-right: 10px;
+}
+.jobDescription li {
+	line-height: 20px; font-size: 13px; margin-bottom: 10px;
+}
+.textBold {
+font-weight: 500;	
+}
+.phoInfo {
+	padding: 4px 0px 0px 0px; margin: 0px 0px; font-size: 12px; font-weight: 400; color: #666;
+}
+
+
+/* sdfsdfsd */
+
+.fancybox-lock .fancybox-overlay {
+	z-index: 100000;
+}
+.fancybox-type-iframe .fancybox-nav {
+    width: 60px;       
+}
+.fancybox-type-iframe .fancybox-nav span {
+    visibility: visible; opacity: 0.5;
+}
+.fancybox-type-iframe .fancybox-nav:hover span {
+    opacity: 1;
+}
+.fancybox-type-iframe .fancybox-next {
+    right: -60px;
+}
+.fancybox-type-iframe .fancybox-prev {
+    left: -60px;
+}
+
+.comRevWrap {
+	padding: 20px; border-top: 1px solid #f1f1f1; position: relative;
+}
+.comRevImg {
+	float: left; width: 70px; height: 70px; background-color: #f1f1f1; padding: 2px;
+}
+.comRevImg img {
+	width: 100%;
+}
+.comRevRight {
+	float: left; width: 90%; padding: 0px 0px 0px 20px;
+}
+.comRevRight h2{
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 16px; font-weight: 400; color: #454545;
+}
+.comRatingOut {
+	padding: 0px 0px 10px 0px;
+}
+.comRatingOut .ratingBg, .comRatingOut .ratingCom {
+	right: inherit; top: -15px; font-size: 16px; width: 80px;
+}
+.comRatingOut span {
+	display: inline-block; padding: 0px 0px 0px 90px; color: #666;
+}
+.comRatingOut span b {
+	display: inline-block; font-weight: 400; padding: 0px 20px 0px 0px;
+}
+.comRatingOut span i {
+	display: inline-block; padding: 0px 6px 0px 0px;
+}
+.comRevRight p {
+	padding: 0px 0px 10px; margin: 0px 0px; font-size: 14px; font-weight: 400; color: #545454;
+	line-height: 21px;
+}
+.comRevEdit {
+	position: absolute; right: 25px; top: 20px;
+}
+.comRevEdit a {
+	font-size: 18px; display: inline-block; padding:1px 5px; color: #666; position: relative;
+}
+.comRevEditBut {
+	position: absolute; right: 38px; top: -5px; display: none;
+}
+.comRevEditBut span {
+	padding: 5px 6px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); position: relative; width: 56px;
+	display: block; border-radius: 2px;
+}
+.comRevEditBut span:after {
+	left: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-left-color: #bababa; border-width: 10px; margin-top: -10px;
+}
+.comRevEditBut span a {
+	display: inline-block; font-size: 15px; color: #368ee0; padding:1px 3px;
+}
+.comRevEditBut span .fa-trash {
+	color: #f8695e;
+}
+.comRevHead {
+	padding: 0px 20px 10px 20px;
+}
+.comRevHead h2 {
+	padding: 2px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #666;
+}
+.comRevHead a {
+	padding: 6px 15px; border-radius: 5px; margin: 0px 5px 0px 0px; display: inline-block; font-size: 14px; font-weight: 400;
+	color: #545454;
+	
+}
+.comRevHead a:hover, .comRevHead a.act {
+	color: #fff; background-color: #368ee0;
+}
+.comEventWrap {}
+.comEventWrap .comRevRight {
+	padding: 0px; width: 95%;
+}
+.comEventWrap .comRevRight h2 {
+	padding: 0px 0px 15px 0px;
+}
+.comEventWrap .comRatingOut {
+	padding: 0px 0px 15px 0px;
+}
+.comEventWrap .comRatingOut span {
+	padding: 0px 0px 0px 0px;
+}
+
+.addReviewWrap {
+	border-top: 1px solid #f1f1f1; padding: 20px;
+}
+.addRevCta {
+	width: 350px;
+}
+.addRevRating {
+}
+.stars-container {
+	display: inline-block; vertical-align: top;
+}
+.stars-container .star {
+	float: right; display: inline-block; padding: 2px; color: #d2d2d2; cursor: pointer;
+}
+.stars-container .star:before {
+	content:"\f005"; font-size: 24px;
+}
+.star:hover:before, .star.selected:before {
+	content:"\f005"; color: #2CB359;
+}
+.star:hover ~ .star:before, .star.selected ~ .star:before {
+	content:"\f005"; color: #2CB359;
+}
+
+.poLeft {
+    right: 50px !important;
+}
+.minHeM {
+	min-height: 40px;
+}
+
 

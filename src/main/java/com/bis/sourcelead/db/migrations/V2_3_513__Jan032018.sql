@@ -1,12 +1,3 @@
-DROP TABLE IF EXISTS `sourcelead`.`CONNECTIONS`; 
-CREATE TABLE `sourcelead`.`CONNECTIONS` (
-  `ID` bigint(20) NOT NULL,
-  `FROM_UID` bigint(20) DEFAULT NULL,
-  `TO_UID` bigint(20) DEFAULT NULL,
-  `STATUS` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `FK_connections` (`FROM_UID`),
-  KEY `FK_connections1` (`TO_UID`),
-  CONSTRAINT `FK_connections` FOREIGN KEY (`FROM_UID`) REFERENCES `user` (`ID`),
-  CONSTRAINT `FK_connections1` FOREIGN KEY (`TO_UID`) REFERENCES `user` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+INSERT INTO `sourcelead`.`SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('222', '3', 'Application From', 'applicationFrom', 'SelectBox', '1', '1', '1');
+

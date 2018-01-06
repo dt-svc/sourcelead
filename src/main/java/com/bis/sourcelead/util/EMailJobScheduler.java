@@ -803,19 +803,21 @@ public class EMailJobScheduler {
 	public void runRemainderEmailScheduler() throws Exception {
 				logger.info("##########  E-Mail Job Scheduler started..! ##########");
 				logger.info("########## Mail Sent to: Applicant,Interviewer,Others  ##########");
-				
-				DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				
+				DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				int addMinuteTime = 30;
 				Date targetTime = new Date(); //now
 				Date date = new Date();
 				targetTime = DateUtils.addMinutes(targetTime, addMinuteTime); 
 				
-				String triggerTimeStr = dateFormat.format(targetTime); 
-				String currentTimeStr = dateFormat.format(date); 
+				String triggerTimeStr = Constants.TZ_DF.format(targetTime); 
+				String currentTimeStr = Constants.TZ_DF.format(date); 
 				
+				String endDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, triggerTimeStr);
+				String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, currentTimeStr);
+				Date endDateUTC = ts.parse(endDateString);
+				Date startDateUTC = ts.parse(startDateString);
 				
-				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
+				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(startDateString,endDateString);
 				for (RequirementInterviewHistory interviewHistory : interviewList) {
 					
 					RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
@@ -824,7 +826,7 @@ public class EMailJobScheduler {
 					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
 
 					
-					if(newTargetTime.after(date) && newTargetTime.before(targetTime)){
+					if(startDateUTC.after(newTargetTime) && newTargetTime.before(endDateUTC)){
 					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
 					User user = userService.getUserByUserCode(requirementInterview.getUpdatedBy());
 					 
@@ -839,7 +841,7 @@ public class EMailJobScheduler {
 					if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
 								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
 					}
-					if(interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
+					if(interviewHistory.getNotificationToSpoc() != null && interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
 
 						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
 
@@ -1490,7 +1492,7 @@ public class EMailJobScheduler {
 		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
 		invoiceList.forEach(invoice -> {
 			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
-				if (invoice.getDueDate().after(new Date())) {
+				if (new Date().after(invoice.getDueDate())) {
 					invoice.setPaymentStatus(Constants.OVER_DUE);
 					try {
 						invoiceService.saveInvocePojo(invoice);

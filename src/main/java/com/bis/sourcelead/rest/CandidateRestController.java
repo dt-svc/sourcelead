@@ -755,7 +755,7 @@ public class CandidateRestController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/profileBySkillSet", method = RequestMethod.POST)
+	@RequestMapping(value = {"/ws/profileBySkillSet", "/profileBySkillSet"}, method = RequestMethod.POST)
 	public @ResponseBody String profileBySkillSet(@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request) throws Exception
 	{
 		String[] mySkills = allSkills.split(",");

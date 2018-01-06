@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.beans.BudgetReportDTO;
@@ -35,30 +36,41 @@ import com.bis.sourcelead.beans.TasksReportDTO;
 import com.bis.sourcelead.beans.TasksStackedReportDTO;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TimeSheetDayEntriesDTO;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectBudget;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTaskComments;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectBudgetService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTaskCommentsService;
 import com.bis.sourcelead.service.ProjectTaskDocumentsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
-import com.sun.star.awt.Command;
 
 @RestController
 @RequestMapping("/app/ProjectTasks")
@@ -102,7 +114,19 @@ public class ProjectTasksRestController {
 	
 	@Autowired
 	ProjectBudgetService projectBudgetService;
-
+	
+	@Autowired
+	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private ProjectMembersHistoryService projectMembersHistoryService;
+	
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	private TimeSheetDayEntriesService timeSheetDayEntriesService; 
+	
 	/**
 	 * @author David sammeta
 	 * @return
@@ -289,6 +313,21 @@ public class ProjectTasksRestController {
 			@RequestParam(value = "subTaskId", required = false) Long subTaskId) throws Exception {
 		List<ProjectTasks> taskList = tasksService.getAllTasksByProjectIdAndParentTaskId(projectId, subTaskId);
 		return taskList;
+	}
+	
+	/**
+	 * @author Laxman
+	 * @param projectTaskId
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteProjectSubTasks", method = RequestMethod.POST)
+	public @ResponseBody void deleteProjectSubTasks( @RequestParam(value = "projectTaskId", required = false) String projectTaskId) throws Exception {
+		    ProjectTasks tasks = tasksService.getTasksId(projectTaskId);
+		if(tasks != null) {
+			tasks.setStatus(String.valueOf(Constants.CANDIDATE_IN_ACTIVE));
+			tasks.setUpdatedDate(new Date());
+			tasksService.updateTasks(tasks);
+		}
 	}
 
 	/**
@@ -1175,5 +1214,106 @@ public class ProjectTasksRestController {
 		report.setEstimatedHours(String.valueOf(estimatehoursSum));
 		return report;
 	}
-
+	
+	@RequestMapping(value="/getprojectTaskMembersByProjectId",method=RequestMethod.POST)
+	public ModelAndView getprojectTaskMembersByProjectIdAndLoginUserId(HttpServletRequest request,@RequestParam(value="projectId")String projectId,@RequestParam(value="taskUUID")String taskUUID) throws NumberFormatException, Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		ProjectMembers projectmember = projectMembersService.getProjectMemberByUserIdAndProjectId(user.getId(), Long.parseLong(projectId));
+		ProjectMembersHistory projectMemberHistory = null;
+		if(projectmember != null && projectmember.getId() != null) {
+			 projectMemberHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectmember.getId());
+			if(projectMemberHistory != null) {
+				String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectAssignedDate());
+				String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectTerminationDate());
+				model.addObject("startDate",startDate);
+				model.addObject("endDate",endDate);
+			}else {
+				projectMemberHistory = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectmember.getId());
+					if(projectMemberHistory != null) {
+						String startDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectAssignedDate());
+						String endDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projectMemberHistory.getProjectTerminationDate());
+						model.addObject("startDate",startDate);
+						model.addObject("endDate",endDate);
+					}
+			}
+		}
+		model.addObject("projectmember",projectmember);
+		model.addObject("projectId",projectId);
+		model.addObject("taskUUID",taskUUID);
+		model.setViewName("project/projectTaskEntries");
+		return model;
+	}
+	
+	@RequestMapping(value="/getSavedTaskDetails", method=RequestMethod.POST)
+	public ModelAndView getSavedTaskDetails(HttpServletRequest request,@RequestParam(value="taskUUID")String taskUUID,TimeSheetDayEntriesDTO timeSheetDayEntriesDto) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		List<TimeSheetDayEntriesDTOList> timeSheetDayEntriesDtoListData = new ArrayList<>();
+		
+		int start = timeSheetDayEntriesDto.getStart();
+		int length = 0;
+		if(timeSheetDayEntriesDto.getPageNo()<1) {
+			timeSheetDayEntriesDto.setPageNo(1);
+		}
+		if(timeSheetDayEntriesDto.getPageSize()<1) {
+			length = 5;
+			timeSheetDayEntriesDto.setPageSize(5);
+		}else {
+			length = timeSheetDayEntriesDto.getPageSize();
+		}
+		
+		ResponseList<TimeSheetDayEntries> timeEntryDayList = timeSheetDayEntriesService.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID,user.getId(),loginOrgLocation.getId(),start,length,timeSheetDayEntriesDto.getSearchValue());
+		for( TimeSheetDayEntries timeDayEntries:timeEntryDayList.getData()) {
+			TimeSheetDayEntriesDTOList timeSheetDayEntriesDtoList =new TimeSheetDayEntriesDTOList();
+			if(timeDayEntries.getTimesheetSubmissions() != null && timeDayEntries.getTimesheetSubmissions().getProjectMembers() != null && timeDayEntries.getTimesheetSubmissions().getProjectMembers().getProjectMemberCandidteId()!= null) {
+				timeSheetDayEntriesDtoList.setEmployeeName(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getProjectMemberCandidteId().getFullName());
+			 SubmissionApproverHierarchy subStatus = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeBySubmissionId(timeDayEntries.getTimesheetSubmissions().getId(), timeDayEntries.getTimesheetSubmissions().getProjectMembers().getProjectMemberCandidteId().getMasterCandidateId().getId());
+			 timeSheetDayEntriesDtoList.setApprovalStatus(subStatus.getSubmissionApprovalStatus().getValue().toUpperCase());
+			}
+			timeSheetDayEntriesDtoList.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), timeDayEntries.getTimesheetDate()));
+			timeSheetDayEntriesDtoList.setHours(timeDayEntries.getTotalHours());
+			timeSheetDayEntriesDtoList.setComments(timeDayEntries.getComments());
+			timeSheetDayEntriesDtoListData.add(timeSheetDayEntriesDtoList);
+		}
+		
+		timeSheetDayEntriesDto.setTotalRows(timeEntryDayList.getRecordsTotal());
+		int totalRows = timeEntryDayList.getRecordsTotal();
+		if(totalRows > 0) {
+			 int remainder = totalRows % length;
+			 int pageCount = totalRows / length;
+			 if(remainder > 0) {
+				 timeSheetDayEntriesDto.setPageCount(pageCount+1);
+			 }
+			 else {
+				 timeSheetDayEntriesDto.setPageCount(pageCount);
+			 }
+		}
+		
+		model.addObject("timeEntryDayListData",timeSheetDayEntriesDtoListData);
+		model.addObject("totalRows",timeSheetDayEntriesDto.getTotalRows());
+		model.addObject("pageCount",timeSheetDayEntriesDto.getPageCount());
+		model.addObject("pageSize",timeSheetDayEntriesDto.getPageSize());
+		model.addObject("searchInputValue",timeSheetDayEntriesDto.getSearchValue());
+		model.setViewName("project/projectTaskTableData");
+		return model;
+		 
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

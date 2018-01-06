@@ -3,6 +3,7 @@ var Signer = (function() {
     let pdfPageHeight = 1056; // in px
     let signOffset = 40;
     let signingType = 0;
+    let url = '';
 
     //Get page settings
     let getPageSettings = function() {
@@ -18,8 +19,9 @@ var Signer = (function() {
     	let sourceleadUrl = '';
     	if(publicUrl == 'public')
     		{
+    		 url = publicUrl;
     		 sourceleadUrl = $("#sourceUrl").val();
-    		 sourceleadUrl = sourceleadUrl.replace('/app', '');
+    		 sourceleadUrl = sourceleadUrl.concat('/ws');
     		}
     	else
     		{
@@ -189,8 +191,18 @@ var Signer = (function() {
 
     //Save coordinates
     let saveCoordinates = function() {
-    	let sourceleadUrl = $("#sourceUrl").val();
-    	alert(sourceleadUrl)
+    	
+       	let sourceleadUrl = '';
+    	if(url == 'public')
+    		{
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		 sourceleadUrl = sourceleadUrl.concat('/ws');
+    		}
+    	else
+    		{
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		}
+    	
     	 $.ajax({
    	        type : "POST",
    	        url: sourceleadUrl+"/saveSignatureCoordinates",
@@ -214,8 +226,17 @@ var Signer = (function() {
 
     //Create signature preview
     let createSignaturePreview = function(type) {
-    	let sourceleadUrl = $("#sourceUrl").val();
-    	alert(sourceleadUrl)
+    	
+      	let sourceleadUrl = '';
+    	if(url == 'public')
+    		{
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		 sourceleadUrl = sourceleadUrl.concat('/ws');
+    		}
+    	else
+    		{
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		}
         let userId = localStorage.getItem('userId');
         var userSign = userId.replace('/unsigned.pdf', '');
         let sigText = $('#txtsignname').val();
@@ -238,13 +259,23 @@ var Signer = (function() {
     	            dataType: "json",
     	            success: function(data) {
     	            	var json = JSON.parse(data);
-    	                $('#signImage').attr('src', '../' + userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
-    	                $('#initialImage').attr('src', '../' + userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
-    	                window.setTimeout(() => {
-    	                    $('#signImage').attr('src', '../' + userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
-    	                    $('#initialImage').attr('src', '../' + userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
-    	                }, 500);
-    	                $("#signPreview").show();
+    	            	if(url == 'public'){
+    	            	    $('#signImage').attr('src', ''+ userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
+    	    	            $('#initialImage').attr('src', ''+ userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
+    	    	              window.setTimeout(() => {
+    	    	                    $('#signImage').attr('src', ''+ userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
+    	    	                    $('#initialImage').attr('src', ''+ userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
+    	    	              }, 500);
+    	    	            $("#signPreview").show();
+    	            	}else{
+    	            	    $('#signImage').attr('src', '../' + userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
+        	                $('#initialImage').attr('src', '../' + userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
+        	                 window.setTimeout(() => {
+        	                    $('#signImage').attr('src', '../' + userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
+        	                    $('#initialImage').attr('src', '../' + userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
+        	                 }, 500);
+        	                $("#signPreview").show();
+    	            	}
     	            },
     	            error: function(data) {
     	            }
@@ -304,9 +335,17 @@ var Signer = (function() {
                         me.append('<a class="delete-sign"></a>');
                     }
                     if (me.hasClass('sign-initial')) {
-                        me.append('<img src="../' + userSign + '/signatures/initialsImage.jpeg" class="insertSignImg">');
+                    	if(url == 'public'){
+                    		me.append('<img src="' + userSign + '/signatures/initialsImage.jpeg" class="insertSignImg">');
+                    	}else{
+                    		me.append('<img src="../' + userSign + '/signatures/initialsImage.jpeg" class="insertSignImg">');
+                    	}
                     } else {
-                        me.append('<img src="../' + userSign + '/signatures/signedImage.jpeg" class="insertSignImg">');
+                    	if(url == 'public'){
+                    		 me.append('<img src="' + userSign + '/signatures/signedImage.jpeg" class="insertSignImg">');
+                    	}else{
+                    		 me.append('<img src="../' + userSign + '/signatures/signedImage.jpeg" class="insertSignImg">');
+                    	}
                     }
                 }
                 let signedCount = $('.insertSignImg').length;
@@ -409,7 +448,11 @@ var Signer = (function() {
             pages = parseInt(pages, 10);
             let pageHtml = '';
             for (let i = 0; i < pages; i++) {
-                pageHtml += '<div class="pdf-page"><img src="'+sourceleadUrl+'' + userId + '-' + (i + 1) + '.png?burst=' + (genran()) + '"><div class="pdf-page-number">' + (i + 1) + '</div></div>'
+            	if(url == 'public'){
+            		pageHtml += '<div class="pdf-page"><img src="' + userId + '-' + (i + 1) + '.png?burst=' + (genran()) + '"><div class="pdf-page-number">' + (i + 1) + '</div></div>'
+            	}else{
+            		pageHtml += '<div class="pdf-page"><img src="../' + userId + '-' + (i + 1) + '.png?burst=' + (genran()) + '"><div class="pdf-page-number">' + (i + 1) + '</div></div>'
+            	}
             }
             if ($('#pdf-preview').length === 0) {
                 $(".sign-container").append('<div id="pdf-preview"></div>');
@@ -468,8 +511,18 @@ var Signer = (function() {
         }
 
         //Make api call
-        let sourceleadUrl = $("#sourceUrl").val();
-        alert(sourceleadUrl)
+        
+      	let sourceleadUrl = '';
+    	if(url == 'public')
+    		{
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		 sourceleadUrl = sourceleadUrl.concat('/ws');
+    		}
+    	else
+    		{
+    		 sourceleadUrl = $("#sourceUrl").val();
+    		}
+        
     	let contractId = $("#contractId").val();
     	 $.ajax({
     	      type : "POST",
@@ -479,14 +532,23 @@ var Signer = (function() {
     	       url: sourceleadUrl+"/signDocument?&contractId="+contractId,       
     	       success: function(data) {
                	var result = "";
-            	result = result +"	<div class='project_inn_mask'></div>"; 
-            	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-            	result = result +"		<p>Document successfully signed..</p>";
-            	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="successHidePopuop();"  style="background-color: #5cb85c; width : 100%"></b>';
-            	result = result +"	</div>";
-            	$("#popup").append(result);
-            	$("#remove_user_pop").slideDown(200);
-            	$(".project_inn_mask").fadeIn(200);
+               	if(url == 'public'){
+                	result = result +"<div class='col-md-6 col-md-offset-3 inner-widget success-user'>";
+                	result = result +"	<i class='fa fa-clock-o fa-3x noPad'></i>";
+                	result = result +"<p class='reason-msg'>Document successfully signed..<br></p>";
+                	$("#successPop").append(result);
+                	$('.signContainer').hide();
+                	$('#hideSig').hide();
+               	}else{
+               		result = result +"	<div class='project_inn_mask'></div>"; 
+                	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+                	result = result +"		<p>Document successfully signed..</p>";
+                	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="successHidePopuop();"  style="background-color: #5cb85c; width : 100%"></b>';
+                	result = result +"	</div>";
+                	$("#popup").append(result);
+                	$("#remove_user_pop").slideDown(200);
+                	$(".project_inn_mask").fadeIn(200);
+               	}
                },
                error: function(data) {
                 result = result +"	<div class='project_inn_mask'></div>"; 
@@ -613,9 +675,20 @@ var Signer = (function() {
     //Preview signature to user
     let previewSignature = function() {
     	$('#addSign,#backShadow').show();
+    	$('#cancelId').show();
     }
 
-
+    
+    //Initialize Signer
+    let init = function() {
+        $(document).ready(() => {
+        	$('#addSign,#backShadow').show();
+        	$('#cancelId').hide();
+        });
+    }
+    
+    init();
+    
     //Exposed public methods
     return {
         uploadDoc: uploadDoc,

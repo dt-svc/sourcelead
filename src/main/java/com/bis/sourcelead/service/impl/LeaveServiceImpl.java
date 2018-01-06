@@ -705,6 +705,8 @@ public class LeaveServiceImpl implements LeaveService{
 		int pendingLeaveCounts = 0;
 		
 		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
+		User user = userService.getUserById(userId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
@@ -736,9 +738,12 @@ public class LeaveServiceImpl implements LeaveService{
 				   }
 			   }
 			   
+			   Employees emp = employeesService.getEmployeeByUserId(userId);
 			   for (LeaveType leaveType : roleLeaveType) {
-				   if(StringUtils.isNotBlank(leaveType.getNumbefrOfLeavesPeryear())){
-					   int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
+				  
+					   int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leaveType,emp,orgLocations,user);
+					   if(totalLeaves > 0){
+//					   int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
 					   List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
 					   for (Leave leave : totalleavesTaken) {
 							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {

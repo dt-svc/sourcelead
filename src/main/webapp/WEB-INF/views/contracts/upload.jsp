@@ -14,6 +14,7 @@
 </c:if>
 
  <c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+ <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
  <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
  <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
@@ -22,13 +23,8 @@
 
 <script>
 	$(document).ready(function() {
-		var url = '${SourceLeadWeb_sourceleadUrl}';
-		if(url != null && url != '' && url != 'undefined'){
-			Signer.uploadDoc();
-		}else{
-			var publicUrl = 'public';
-			Signer.uploadDoc(publicUrl);
-		}
+		var data = '${type}';
+		Signer.uploadDoc(data);
 		
 		var firstName = '${SourceLeadWeb_user.firstName}';
 		var lastName = '${SourceLeadWeb_user.lastName}';
@@ -109,11 +105,12 @@ position: relative;top:8px;
 
  <div id="backShadow"></div>
   <div id="popup"></div>
+  <div id="successPop"></div>
   
 <section class="content-wraper container">
 
 <section class="content-header clearfix">
-    <div class="text-center clearfix">
+    <div class="text-center clearfix" id="hideSig">
       <h2>Create Signature</h2>
     </div>
     <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
@@ -121,7 +118,7 @@ position: relative;top:8px;
   </c:if>
   </section>
             <div id="addSign">
-                <div class="cancelSign">
+                <div class="cancelSign" id ="cancelId">
                     <button type="button" onclick="Signer.hideSignModal()" class="close" aria-hidden="true">&times;</button>
                 </div>
                 <div>

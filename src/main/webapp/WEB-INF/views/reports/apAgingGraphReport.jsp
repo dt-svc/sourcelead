@@ -35,7 +35,7 @@ $(document).ready(function(){
        
         <div class="col-md-4 col-md-offset-3">
     <div class="dropdown-scroll">
-		<select class="chosen-select form-control" multiple data-placeholder="Select Clinet" id="orgId">
+		<select class="chosen-select form-control" multiple data-placeholder="Select Vendor" id="orgId">
 		  <c:if test="${not empty vendorList}">
                <c:forEach items="${vendorList}" var="vendor">
    						<option value='${vendor.id }'>${vendor.orgName}</option>
@@ -165,10 +165,10 @@ function prepareapagingGraph(data){
 					"fillAlphas": 1,
 					"fillColors": "#E57373",
 					"fixedColumnWidth": 50,
-					"id": "araging",
+					"id": "apaging",
 					"lineColor": "#EF5350",
 					"showOnAxis": true,
-					"title": "ARAging",
+					"title": "APAging",
 					"topRadius": 0,
 					"type": "column",
 					"valueField": "value"

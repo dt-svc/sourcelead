@@ -31,15 +31,15 @@ $(document).ready(function(){
               <div id="today-req" class="tab-pane fade in active">
                 <div class="db-widget-sm row">
                 <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
+                    <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesDraftCount"></span></p>
                         <p class="info-box-text"id="dial1txt">Draft </p>
                       </div>
                     </div>
                   </div>
-                  <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
+                  <div class="col-xs-12 col-sm-3" id="submittedId">
+                    <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesSubmittedForApprovalCount"></span></p>
                         <p class="info-box-text"id="dial2txt"> Submitted</p>
@@ -47,7 +47,7 @@ $(document).ready(function(){
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i> </span>
+                    <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesApprovedCount"></span></p>
                         <p class="info-box-text" id="dial3txt">Approved </p>
@@ -55,7 +55,7 @@ $(document).ready(function(){
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3" id="dial4txtDial">
-                    <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-tags" aria-hidden="true"></i> </span>
+                    <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center">
                         <p class="info-box-number"><span id="expensesRejectCount"></span></p>
                         <p class="info-box-text" id="dial4txt">Rejected </p>
@@ -147,8 +147,9 @@ function expensesCount(expenseType){
 	                  }
 		        	 
 		        	if(expenseType == "myExpenses"){
+		        		$("#submittedId").show(); 
 		        		if(expensesSubmittedForApprovalCount > 0){
-			        		  $("#dial2txt").html("<a onclick='myExpensesListByStage(\"submitted\");'>Submitted</a>");
+		        			$("#dial2txt").html("<a onclick='myExpensesListByStage(\"submitted\");'>Submitted</a>");
 			        		  $("#expensesSubmittedForApprovalCount").html("<a onclick='myExpensesListByStage(\"submitted\");'>"+expensesSubmittedForApprovalCount+"</a>");
 		        		}else{
 		        			 $("#dial2txt").html("Submitted");
@@ -156,13 +157,7 @@ function expensesCount(expenseType){
 		        		}
 		        		
 	                  }else{
-	                	  if(empExpensesApprovedCount > 0){
-		                	  $("#dial2txt").html("<a onclick='employeeExpensesListByStage(\"approved\");'>Approved</a>");
-		                	  $("#expensesSubmittedForApprovalCount").html("<a onclick='employeeExpensesListByStage(\"approved\");'>"+empExpensesApprovedCount+"</a>");
-	                	  }else{
-	                		  $("#dial2txt").html("Approved");
-		                	  $("#expensesSubmittedForApprovalCount").html(empExpensesApprovedCount);
-	                	  }
+	                	  $("#submittedId").hide();
 	                  }
 		        	
 		        	if(expenseType == "myExpenses"){
@@ -175,13 +170,13 @@ function expensesCount(expenseType){
 		        		  }
 		        		  
 	                }else{
-	                	if(empExpensesRejectedCount > 0){
-	                	   $("#dial3txt").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>Rejected</a>");
-	                	   $("#expensesApprovedCount").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>"+empExpensesRejectedCount+"</a>");
-	                	}else{
-	                		$("#dial3txt").html("Rejected");
-		                	$("#expensesApprovedCount").html(empExpensesRejectedCount);
-	                	}
+	                	  if(empExpensesApprovedCount > 0){
+		                	  $("#dial3txt").html("<a onclick='employeeExpensesListByStage(\"approved\");'>Approved</a>");
+		                	  $("#expensesApprovedCount").html("<a onclick='employeeExpensesListByStage(\"approved\");'>"+empExpensesApprovedCount+"</a>");
+	                	  }else{
+	                		  $("#dial3txt").html("Approved");
+		                	  $("#expensesApprovedCount").html(empExpensesApprovedCount);
+	                	  }
 	                  }
 		        	
 		        	if(expenseType == "myExpenses"){
@@ -194,10 +189,14 @@ function expensesCount(expenseType){
 	        		          $("#expensesRejectCount").html(expensesRejectCount);
 		        		  }
 	                 }else{
-	                	 $("#dial4txtDial").hide();
-	                	 /* $("#dial4txt").html("<a onclick='employeeExpensesListByStage(\"reopen\");'>Reopen</a>");
-	                	 $("#expensesRejectCount").html(empExpensesReopenCount); */
-	                  }
+		                	if(empExpensesRejectedCount > 0){
+			                	   $("#dial4txt").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>Rejected</a>");
+			                	   $("#expensesRejectCount").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>"+empExpensesRejectedCount+"</a>");
+			                	}else{
+			                		$("#dial4txt").html("Rejected");
+				                	$("#expensesRejectCount").html(empExpensesRejectedCount);
+			               }
+			           }
 		        	
 		        	  
 		 		}

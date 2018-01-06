@@ -241,6 +241,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				if(reqDTO.getParallelApprover() != null){
 					reqDTO.setApprover("Parallel");
 				}
+				if(reqDTO.getCoolingOff() == null || reqDTO.getCoolingOff() == "" || reqDTO.getCoolingOff() == "null"){
+					reqDTO.setCoolingOff(orgLocation.getCoolingOffPeriod());
+				}
 				Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
 		    break;
 		    

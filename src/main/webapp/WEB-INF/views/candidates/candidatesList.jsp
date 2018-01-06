@@ -615,7 +615,8 @@ function deleteProfileImage(candidateId){
 	        	 $("#popUp").empty();
 	        	 $(".project_inn_mask").fadeOut(200);
 	        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
-	        	// candidateQuickViewProfile(candidateId);
+	        	 candidateQuickViewProfile(candidateId);
+	        	 refreshImageBlock(candidateId);
 	       },
 	        
      }); 
@@ -842,7 +843,7 @@ function cancel(candidateId){
     <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrche">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
 			  </a> 
@@ -850,7 +851,7 @@ function cancel(candidateId){
 				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
 				  <div class="cand-advsrch-popup advancedsearch-popup">
 					  <h5 class="headerAdsrch">Advanced Search
-					  <a href="javascript:void(0)" class="close-div" onclick="closePop();"><i class="fa fa-close"></i></a>
+					  <a href="javascript:void(0)" class="close-div" onclick="closePop();clearCandidateSearchKeys();"><i class="fa fa-close"></i></a>
 					  </h5>
 					  <div class="addInner">
 					  <!-- <div class="candAdvsrchPop"> -->
@@ -1117,7 +1118,7 @@ function cancel(candidateId){
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
-                               <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
+                               <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
 				  </div>
@@ -1607,11 +1608,11 @@ function savedCommentAndCount(candidateId){
 	// Close Advanced Search
 		function closePop(){
 			 $("div.cand-advsrch-popup").hide();
-			 clearCandidateSearchKeys();
 			 $('#expId').find('p.jquery_form_error_message').remove();
 			 $(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
+		  $("#dataTableSearch").val('');
 		  $("div.cand-advsrch-popup").toggle();
 		  $(".advancedsearch-mask").fadeIn();
 		};
