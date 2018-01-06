@@ -76,6 +76,176 @@ public class DataMigrationDTO extends CommonDTO {
 
 	private String priority;
 
+	/*Timesheets*/
+	
+	private String employeeId;
+	private String employeeName;
+	private String employeeEmail;
+	private String project;
+	private String clientName;
+	private String actualStartDate;
+	private String actualEndDate;
+	private String submissionStatus;
+	private String week1;
+	private String week2;
+	private String week3;
+	private String week4;
+	private String week5;
+	private String totalHours;
+	private String billableHours;
+	private String nonBillableHours;
+	private String weeekComments;
+	
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public String getEmployeeEmail() {
+		return employeeEmail;
+	}
+
+	public void setEmployeeEmail(String employeeEmail) {
+		this.employeeEmail = employeeEmail;
+	}
+
+	public String getProject() {
+		return project;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	public String getActualStartDate() {
+		return actualStartDate;
+	}
+
+	public void setActualStartDate(String actualStartDate) {
+		this.actualStartDate = actualStartDate;
+	}
+
+	public String getActualEndDate() {
+		return actualEndDate;
+	}
+
+	public void setActualEndDate(String actualEndDate) {
+		this.actualEndDate = actualEndDate;
+	}
+
+	public String getTotalHours() {
+		return totalHours;
+	}
+
+	public void setTotalHours(String totalHours) {
+		this.totalHours = totalHours;
+	}
+
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
+	}
+	public String getWeek1() {
+		return week1;
+	}
+
+	public void setWeek1(String week1) {
+		this.week1 = week1;
+	}
+
+	public String getWeek2() {
+		return week2;
+	}
+
+	public void setWeek2(String week2) {
+		this.week2 = week2;
+	}
+
+	public String getWeek3() {
+		return week3;
+	}
+
+	public void setWeek3(String week3) {
+		this.week3 = week3;
+	}
+
+	public String getWeek4() {
+		return week4;
+	}
+
+	public void setWeek4(String week4) {
+		this.week4 = week4;
+	}
+
+	public String getWeek5() {
+		return week5;
+	}
+
+	public void setWeek5(String week5) {
+		this.week5 = week5;
+	}
+
+	public String getBillableHours() {
+		return billableHours;
+	}
+
+	public void setBillableHours(String billableHours) {
+		this.billableHours = billableHours;
+	}
+
+	public String getNonBillableHours() {
+		return nonBillableHours;
+	}
+
+	public void setNonBillableHours(String nonBillableHours) {
+		this.nonBillableHours = nonBillableHours;
+	}
+
+	public String getWeeekComments() {
+		return weeekComments;
+	}
+
+	public void setWeeekComments(String weeekComments) {
+		this.weeekComments = weeekComments;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*Timesheets*/
+	
+	
 	public String getStaticPath() {
 		return staticPath;
 	}
