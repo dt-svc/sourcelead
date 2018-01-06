@@ -629,6 +629,7 @@ function getActions(){
 			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
+			 $("#dataTableSearch").val('');
 			$("div.cand-advsrch-popup").toggle();
 			 $(".advancedsearch-mask").fadeIn();
 		}
