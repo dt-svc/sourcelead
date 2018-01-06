@@ -74,7 +74,7 @@ window.onload = function () {
 	}
 </script>
 <script type="text/javascript">
-
+var count = 0; 
 	function getConnectionsList(type){
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
@@ -92,6 +92,9 @@ window.onload = function () {
 			url : sourceleadUrl+"/getConnectionsList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset+"&status=received",
             success: function(json) {
 	        var result = "";
+	        if(json.length>0){
+	        	count++;
+	        }
 	        if(json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
@@ -117,11 +120,11 @@ window.onload = function () {
             		$('#findConnectionListId').append(result);
             	}
 	 			$("#noOrgsList").val("")
-	   		}else if(type == "scroll" && result === ""){
+	   		}else if(type == "scroll" && result === "" && count > 0){
             	$('#loadMoreDiv').empty();
 	         	result = result + '<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
-            }else if(type === 'manual' && result === ""){
+            }else if(type === 'manual' && result === "" && count == 0){
             	$("#loadMoreDiv").empty(); 
             	$('#findConnectionListId').hide();
 	         	result = result + '<div class="noDate"></div>';
