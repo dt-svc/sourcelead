@@ -250,7 +250,7 @@ public class CampaignController {
 	@RequestMapping(value = "/campaignAddRecipient",method=RequestMethod.POST)
 	public String campaignAddRecipientJsp(@RequestParam(value="listId", required=false) String listId,HttpServletRequest request,HttpServletResponse response,Model model) throws NumberFormatException, Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(StringUtils.isNotBlank(listId)) {
+		if(StringUtils.isNotBlank(listId) && !"undefined".equalsIgnoreCase(listId)) {
 			CampaignList campaignList = campaignService.getCampaignListById(Long.parseLong(listId));
 			model.addAttribute("campaignList", campaignList);
 			if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
