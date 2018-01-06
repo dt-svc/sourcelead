@@ -16,7 +16,6 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
-			getAssociateList();
 			getDepartmentsList();
 			maskme();
 			editMe(this);
