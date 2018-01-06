@@ -233,6 +233,7 @@ public class OrgSettingsRestController {
 		if (jsonObj.has("hierarchyId") && !isNullOrEmpty(jsonObj.getString("hierarchyId"))) {
 			hierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("hierarchyId")));
 			hierarchy.setHierarchyName(jsonObj.getString("level"));
+			hierarchy.setOrgLocations(orgLocations);
 			hierarchy.setUpdatedBy(user.getUserCode());
 			hierarchy.setUpdatedDate(new Date());
 		}
