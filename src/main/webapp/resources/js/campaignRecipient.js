@@ -1,6 +1,6 @@
 
 
-function campaignRecipient(ele,listId) {
+function campaignRecipient(ele,listId, fromType) {
 		$.post(sourceleadUrl+"/campaignAddRecipient?listId="+listId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
 			$(".popUpReci").fadeIn(100);
@@ -26,7 +26,13 @@ function campaignRecipient(ele,listId) {
 					  			 $("#popUp").empty();
 					 			 $(".project_inn_mask").fadeOut(200);
 					             msgFadein();	
-					             location.replace(sourceleadUrl+ "/recipientsList");
+					             if(fromType == "hotList" || fromType == "jobList"){
+					            	$(".popMask").fadeOut(200);
+				            		$(".popUpReci").fadeOut(100);
+					             }else{
+					            	 location.replace(sourceleadUrl+ "/recipientsList");
+					             }
+					             
 							}else{
 								alert("Something went wrong ..!");
 								$("#loading").removeAttr("style");

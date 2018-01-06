@@ -694,7 +694,7 @@ function payablePagination(url){
             	  result = result +'         <td>   ';
             	 
             	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-            	   result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'"> '+report.clientName+' </a></div>';
+            	   result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'"> '+report.clientName+' </a></div>';
             	  '</sec:authorize>';
             	  
             	  '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';

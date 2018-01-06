@@ -235,6 +235,9 @@ a.alertBtn {
 .jobResults_New .innerContent {
 	padding: 0px 0px 30px !important;
 }
+.modal {
+	z-index: 10500 !important;
+}
 </style>
 
 
@@ -1057,12 +1060,12 @@ function getOpenJobsELKList(orgLocationId){
 // 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
 // 	if(orgLocationId != null){
-		if(companies11 !=null && companies11 !='' && companies11 !='undefined') {
+	var orgListType = '${specificCompany}';
+		if(orgListType !=null && orgListType !='' && orgListType !='undefined' && orgListType == 'specificCompany') {
 		orgLocationIds = orgLocationId
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
 // 		 document.getElementById("jobResultHeadId").style.display="block";
-
 	}
 	var offset = 0;
 	/* if(type == "more"){
@@ -2621,7 +2624,6 @@ var validationSettings = {
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
-        	 alert("pradeep")
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
