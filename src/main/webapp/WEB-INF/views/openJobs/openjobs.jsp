@@ -103,6 +103,7 @@ window.onload = function () {
 	}
 	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
 		$("#orgList").show();
+		$("#selectedOrg").html('${postedOrgName}');
 		$("#companiesListDiv").find("i").toggleClass("arrAc");
 		getOrgsList('none','main');
 	}
@@ -275,7 +276,7 @@ a.alertBtn {
 <section class="compaBann" id="orgImage" style="display:none">
 	<span><img src="/resources/images/company-banner.jpg" alt=""></span>
 	<div class="compaBannLogo" style="background-image: url(/resources/images/company-logo.jpg)"></div>
-	<div class="compaBannLogoText">Business Intelli</div>
+	<div class="compaBannLogoText"><b id="selectedOrg"></b></div>
 </section>
 
 <section class="innerContent">
