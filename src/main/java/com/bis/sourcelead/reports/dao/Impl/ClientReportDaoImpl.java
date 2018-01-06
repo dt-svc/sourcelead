@@ -57,7 +57,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Integer> clientCount = new HashMap<>();
-		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		Boolean isadmin = isUserAdminByOrgLocationId(orgLocationId, userId);
 		Query clientsActiveCount;
 		List<Long> clientsActive;
 		if (isadmin) {
