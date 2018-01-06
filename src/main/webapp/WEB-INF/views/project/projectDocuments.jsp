@@ -733,7 +733,7 @@ function getProjectMemberlist(){
 		        <div class="modal-body mt mb">
 		          <div class="row">
 		          <div class="clearfix mb minHeight40" id="uploadDocDiv"> 
-		            <label class="col-md-3">Upload File</label>
+		            <label class="col-md-3">Upload File<span class="text-danger">&nbsp;*</span></label>
 					  <div class="col-md-9"> 
 						  <div class="input-group positionRelative errorInptgroup" id="uploadFileGroup"> 
 							  <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadProjectDocument();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File 
@@ -745,7 +745,7 @@ function getProjectMemberlist(){
 					  </div> 
 					</div> 
 					<div class="clearfix mb minHeight40 dropdown-select">
-					<label class="col-md-3">Select Folder</label>
+					<label class="col-md-3">Select Folder<span class="text-danger">&nbsp;*</span></label>
 		           	<div class="col-md-9">
     				   <select class="form-control" name="projectFolderId" id="projectFolderId"  field-name="Folder" data-validation="required">
 		           	  </select>
@@ -840,7 +840,7 @@ $('body').on('blur', '#reNameFile_form', function() {
         </div>
         <div class="modal-body mt mb">
           <div class="row" >
-          	<label class="col-md-3">Create Folder</label>
+          	<label class="col-md-3">Create Folder<span class="text-danger">&nbsp;*</span></label>
           	<div class="col-md-9" id="rmoveErrMsgCF">
           		<input type="text" class="form-control input-sm" placeholder="Create Folder" id="folderName" name="folderName" field-name="Folder Name" data-validation="required validate_length length2-100" onkeyUp="validateFolderName()">
           	</div>
