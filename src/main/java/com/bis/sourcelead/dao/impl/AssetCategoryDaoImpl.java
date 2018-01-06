@@ -71,7 +71,7 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	public List<AssetCategory> getAssetCategoryListByLocationId(Long orgLocationId) throws Exception {
 		
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' "; 
+		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' or (ac.defaultCategory = '1')"; 
 		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return assetCategoryList;
 	}

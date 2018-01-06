@@ -73,9 +73,17 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementInterview getRequirementInterviewById(String requirementInterviewId) {
 			logger.debug("In RequirementInterview getRequirementInterviewById method");
-			Long requirementInterviewIdValue = Long.parseLong(requirementInterviewId);
 			Session session = this.sessionFactory.getCurrentSession();
-			return (RequirementInterview) session.get(RequirementInterview.class, requirementInterviewIdValue);
+			String query = " from RequirementInterview ri left join fetch ri.submissionId sub left join fetch sub.requirement where ri.id = :requirementInterviewId" ;
+			List<RequirementInterview> interviewsList =session.createQuery(query).setLong("requirementInterviewId", Long.parseLong(requirementInterviewId)).setCacheable(true).list(); 
+			RequirementInterview interview = null;
+			if(interviewsList != null && !interviewsList.isEmpty()){
+				interview = interviewsList.get(0);
+			}
+			return interview;
+			
+			
+			
 	}
 	
 
