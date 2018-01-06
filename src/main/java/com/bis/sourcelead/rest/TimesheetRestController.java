@@ -505,6 +505,7 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setTimeSubFrequencies(timeSubFrequencies);
 			 timesheetEntryDetailsDTO.setTimesheetFor(timesheetFor);
 			 timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
+			 timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
 			 eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
         }
 	  }	
