@@ -1451,7 +1451,7 @@ public class ClientServiceImpl implements ClientService {
 
 			StringBuilder linkBuilder = new StringBuilder();
 			globalVarsMap.put("faqLink", linkBuilder.append(
-					"<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>")
+					"<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>Click Here</a>")
 					.toString());
 
 			StringBuilder loginBuilder = new StringBuilder();
@@ -1498,7 +1498,7 @@ public class ClientServiceImpl implements ClientService {
 
 			StringBuilder linkBuilder = new StringBuilder();
 			globalVarsMap.put("faqLink", linkBuilder.append(
-					"<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>")
+					"<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>Click Here</a>")
 					.toString());
 
 			StringBuilder fbLinkBuilder = new StringBuilder();
