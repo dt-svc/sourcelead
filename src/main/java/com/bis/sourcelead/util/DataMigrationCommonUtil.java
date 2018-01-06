@@ -423,12 +423,15 @@ public class DataMigrationCommonUtil {
 						 }
 					 }
 				}
-				
+				DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
 				Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
 				if (k.toString().equalsIgnoreCase("actualStartDate") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
 			        Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
 			        if(matcher.matches() == true) {
-			        	dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+						Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.get((String)k).toString());
+						String startDate = formatter.format(date);
+						dataMigrationDTOJsonCopy.put((String) k, startDate);
+			        	/*dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());*/
 			        }else {
 			        	errorSet.put(k.toString(), k.toString()+"  invalid date");
 			        }
@@ -436,7 +439,9 @@ public class DataMigrationCommonUtil {
 				if (k.toString().equalsIgnoreCase("actualEndDate") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
 			        Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
 			        if(matcher.matches() == true) {
-			        	dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+			        	Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.get((String)k).toString());
+						String endDate = formatter.format(date);
+						dataMigrationDTOJsonCopy.put((String) k, endDate);
 			        }else {
 			        	errorSet.put(k.toString(), k.toString()+"  invalid date");
 			        }
