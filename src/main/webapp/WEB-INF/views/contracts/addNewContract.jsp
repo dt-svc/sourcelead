@@ -94,8 +94,8 @@
 		                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
 		                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option ${contract.contractType == 'NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType == 'NSA' ? 'selected' : ''}>NSA</option>
+		                    <option ${contract.contractType == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
+		                    <option ${contract.contractType == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
 		                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
 		                 </select>
 				    </c:when>

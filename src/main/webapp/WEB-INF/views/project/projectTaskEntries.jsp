@@ -34,13 +34,13 @@
 					                </div> --%>
 					
 					                
-<div class="timesheet_head">
+<div class="timesheet_head minHeM">
 	        	 <ul>
 	        	  <c:if test="${not empty projectmember}">
 	        	 	<li class="noPad"><button type="button" class="btn btn-primary btn-sm pull-right mr" onclick="addTimeEntry()">Add Time Entry</button></li>
 	        	  </c:if>
 	            </ul> 
-	<div class="remove_search">
+		<div class="remove_search">
        					<input type="text" placeholder="Search..." value="" id="projectTaskSearch">
         			</div>	            
 	            <div class="clearfix"></div>

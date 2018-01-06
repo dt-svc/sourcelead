@@ -41,9 +41,11 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadFormFields;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -57,6 +59,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	private RequirementService requirementService;
+
+	@Autowired
+	private SubmissionTemplateService submissionTemplateService;
 	
 	@Autowired
 	private DataMigrationCommonUtil dataMigrationCommonUtil;
@@ -244,6 +249,18 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				if(reqDTO.getCoolingOff() == null || reqDTO.getCoolingOff() == "" || reqDTO.getCoolingOff() == "null"){
 					reqDTO.setCoolingOff(orgLocation.getCoolingOffPeriod());
 				}
+				
+				if(StringUtils.isNotEmpty(reqDTO.getClientSubmissionForm()) && StringUtils.isNotEmpty(reqDTO.getSelectContact()) && StringUtils.isNotEmpty(reqDTO.getSelectClient())){
+					reqDTO.setIsClient("Y");
+					
+					reqDTO.setApplicationFrom(null);
+				}else if(StringUtils.isEmpty(reqDTO.getIsClient()) || !reqDTO.getIsClient().equalsIgnoreCase("Y")){
+					if(StringUtils.isEmpty(reqDTO.getApplicationFrom())) {
+						SubmissionTemplate   submissionTempletes = submissionTemplateService.getDefaultSubmissionTemplateByOrgLocationId(orgLocation.getId());
+						reqDTO.setApplicationFrom(submissionTempletes.getId().toString());
+					}
+				}
+				
 				Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
 		    break;
 		    

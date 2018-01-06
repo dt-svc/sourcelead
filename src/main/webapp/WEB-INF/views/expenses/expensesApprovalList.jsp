@@ -575,7 +575,7 @@ function expensesCancel(){
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '+1d');
 	           // dt.setDate(dt.getDate() + 1);
-	            $("#reportEndDate").datepicker("option", "minDate", dt);
+	            $("#filterEndDate").datepicker("option", "minDate", dt);
 				var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -596,7 +596,7 @@ function expensesCancel(){
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '-1d');
 	           // dt.setDate(dt.getDate() - 1);
-	            $("#reportStartDate").datepicker("option", "maxDate", dt);
+	            $("#filterStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
