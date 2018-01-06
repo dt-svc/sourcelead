@@ -220,7 +220,7 @@
 												} else if (opt.submissionStatus == 'BACKOUT') {
 													result = result
 													+ '<td><div class="tblwidth-150"><span>'
-													+ opt.submissionStatus
+													+ opt.submissionDisplayStatus
 													+ '</span>';
 											if (opt.backOutReason != null
 													&& opt.backOutReason != ''
@@ -272,7 +272,7 @@
 													if (opt.submissionStatus == 'OFFERACCEPTED'
 															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result
-																+ '<option value="backout">Back-Out</option>';
+																+ '<option value="backout">BackOut</option>';
 													}
 													result = result
 															+ '</select>';
@@ -282,7 +282,7 @@
 											} else {
 												result = result
 														+ '<td><div class="tblwidth-150"><span>'
-														+ opt.submissionStatus
+														+ opt.submissionDisplayStatus
 														+ '</span>';
 											}
 											result = result + '</div></td>';

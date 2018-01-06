@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -65,6 +66,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private SubmissionTemplateService submissionTemplateService;
+
+	@Autowired
+	private LookUpDataService lookUpDataService;
 	
 	@Autowired
 	private ProjectsService projectsService;
@@ -97,14 +101,52 @@ public class DataMigrationCommonUtil {
 					}
 				}
 				
-				if(k.toString().equalsIgnoreCase("applicationFrom") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
+				/*if(k.toString().equalsIgnoreCase("applicationFrom") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
 					SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocation.getId(), dataMigrationDTOJsonCopy.get((String)k).toString());
 					if(null != submissionTemplate){
 						dataMigrationDTOJsonCopy.put((String) k, submissionTemplate.getId().toString());
 					}else{
 						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString())+" is invalid");
 					}
+				}*/
+				
+				if(k.toString().equalsIgnoreCase("visa") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
+					List<String> visaList = lookUpDataService.getAllVisaByCategory();
+					StringBuffer visaSB = new StringBuffer();
+					String[] visaListArr = dataMigrationDTOJsonCopy.get((String)k).toString().trim().split(",");
+					int incr = 0;
+					for(String visaArr : visaListArr) {
+						for(String visa : visaList) {
+							if(visaArr.toLowerCase().equalsIgnoreCase(visa.toLowerCase())) {
+								incr++;
+								if(incr > 1) {
+									visaSB.append(",");
+								}
+								visaSB.append(visaArr);
+							}
+						}
+					}
+					if(incr>0) {
+						dataMigrationDTOJsonCopy.put((String) k, visaSB.toString());
+					}else {
+						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString())+" is invalid immegration type");
+					}
 				}
+				
+				if(k.toString().equalsIgnoreCase("travelAllowance") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
+					String percent = dataMigrationDTOJsonCopy.get((String)k).toString();
+					int incr = 0;
+					for(String percentage :Constants.PERCENTAGES) {
+						if(percentage.equalsIgnoreCase(percent)){
+							incr++;
+							dataMigrationDTOJsonCopy.put((String) k, percent);
+						}
+					}
+					if(incr==0){
+						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString())+" is invalid Travel Allowance");
+					}
+				}
+				
 				
 				if(k.toString().equalsIgnoreCase("priority") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
 					String jobPriority = dataMigrationDTOJsonCopy.get((String)k).toString().toLowerCase();

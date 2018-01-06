@@ -57,7 +57,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Integer> clientCount = new HashMap<>();
-		Boolean isadmin = isUserAdminByOrgLocationId(userId, orgLocationId);
+		Boolean isadmin = isUserAdminByOrgLocationId(orgLocationId, userId);
 		Query clientsActiveCount;
 		List<Long> clientsActive;
 		if (isadmin) {
@@ -235,6 +235,14 @@ public class ClientReportDaoImpl implements ClientReportDao {
 			}else {
 				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+subQuery1+"";
 				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setParameter("startDate", freqDates[0]).setParameter("endDate",freqDates[1]).setCacheable(true).list();
+			}
+		}else {
+			if(contactUserId != null) {
+				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.contactUser.id = :contactUserId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setLong("contactUserId", contactUserId).setCacheable(true).list();
+			}else {
+				String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
+				clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			}
 		}
 		return clientInvoiceList;

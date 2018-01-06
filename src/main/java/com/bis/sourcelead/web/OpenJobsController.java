@@ -87,10 +87,12 @@ public class OpenJobsController {
 	
 	
 	@RequestMapping(value = { "/app/ws/{postedOrgName}-{companies}"})
-public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String companies,HttpServletRequest request) throws Exception
+public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String companies,@PathVariable String postedOrgName,HttpServletRequest request) throws Exception
 {
 modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
 modelMap.addAttribute("companies", companies);
+modelMap.addAttribute("postedOrgName", postedOrgName);
+modelMap.addAttribute("specificCompany", "specificCompany");
 return "openJobs/openjobs";
 }
 

@@ -103,6 +103,7 @@ window.onload = function () {
 	}
 	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
 		$("#orgList").show();
+		$("#selectedOrg").html('${postedOrgName}');
 		$("#companiesListDiv").find("i").toggleClass("arrAc");
 		getOrgsList('none','main');
 	}
@@ -235,6 +236,9 @@ a.alertBtn {
 .jobResults_New .innerContent {
 	padding: 0px 0px 30px !important;
 }
+.modal {
+	z-index: 10500 !important;
+}
 </style>
 
 
@@ -272,7 +276,7 @@ a.alertBtn {
 <section class="compaBann" id="orgImage" style="display:none">
 	<span><img src="/resources/images/company-banner.jpg" alt=""></span>
 	<div class="compaBannLogo" style="background-image: url(/resources/images/company-logo.jpg)"></div>
-	<div class="compaBannLogoText">Business Intelli</div>
+	<div class="compaBannLogoText"><b id="selectedOrg"></b></div>
 </section>
 
 <section class="innerContent">
@@ -1057,12 +1061,12 @@ function getOpenJobsELKList(orgLocationId){
 // 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
 // 	if(orgLocationId != null){
-		if(companies11 !=null && companies11 !='' && companies11 !='undefined') {
+	var orgListType = '${specificCompany}';
+		if(orgListType !=null && orgListType !='' && orgListType !='undefined' && orgListType == 'specificCompany') {
 		orgLocationIds = orgLocationId
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
 // 		 document.getElementById("jobResultHeadId").style.display="block";
-
 	}
 	var offset = 0;
 	/* if(type == "more"){
@@ -2621,7 +2625,6 @@ var validationSettings = {
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
-        	 alert("pradeep")
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
