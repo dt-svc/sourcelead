@@ -21,6 +21,7 @@ public class LeaveReportsDTO {
 	private String isThursdayHalfDay;
 	private String isFridayHalfDay;
 	private String isSaturdayHalfDay;
+	private String duration;
 	
 	public String getEmpName()
 	{
@@ -221,4 +222,16 @@ public class LeaveReportsDTO {
 	{
 		this.isSaturdayHalfDay = isSaturdayHalfDay;
 	}
+
+	public String getDuration()
+	{
+		return duration;
+	}
+
+	public void setDuration(String duration)
+	{
+		this.duration = duration;
+	}
+	
+	
 }
