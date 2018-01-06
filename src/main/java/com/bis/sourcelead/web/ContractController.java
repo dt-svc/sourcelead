@@ -668,12 +668,12 @@ public class ContractController {
 	}
 
 	@RequestMapping(value = {"/docusign","/ws/docusign"})
-	public ModelAndView docusignRedirect(@RequestParam(value="contractUUID", required=false)String contractUUID) throws Exception {
+	public ModelAndView docusignRedirect(@RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="type", required=false) String type) throws Exception {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		model.addObject("contract", contract);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("sourceleadLoginUrl", sourceleadLoginUrl);
+		model.addObject("type", type);
 		model.setViewName("contracts/upload");
 		return model;
 	}
