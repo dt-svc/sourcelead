@@ -260,11 +260,11 @@ var Signer = (function() {
     	            success: function(data) {
     	            	var json = JSON.parse(data);
     	            	if(url == 'public'){
-    	            	    $('#signImage').attr('src', + userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
-    	    	            $('#initialImage').attr('src', + userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
+    	            	    $('#signImage').attr('src', ''+ userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
+    	    	            $('#initialImage').attr('src', ''+ userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
     	    	              window.setTimeout(() => {
-    	    	                    $('#signImage').attr('src', + userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
-    	    	                    $('#initialImage').attr('src', + userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
+    	    	                    $('#signImage').attr('src', ''+ userSign + '/signatures/' + json.SignatureFileName + '?burst=' + getBurst());
+    	    	                    $('#initialImage').attr('src', ''+ userSign + '/signatures/' + json.InitialFileName + '?burst=' + getBurst());
     	    	              }, 500);
     	    	            $("#signPreview").show();
     	            	}else{

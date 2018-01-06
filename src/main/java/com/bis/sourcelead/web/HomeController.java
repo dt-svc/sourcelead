@@ -170,13 +170,17 @@ public class HomeController {
 	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,
 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			@RequestParam(value = "token", required = false) String token,
-			@RequestParam(value = "referUUID", required = false) String referUUID, HttpServletRequest request,
+			@RequestParam(value = "referUUID", required = false) String referUUID,
+			@RequestParam(value = "allowed", required = false) String allowed, HttpServletRequest request,
 			HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken)
 				&& !StringUtils.isNotEmpty(logout)) {
+			if("false".equalsIgnoreCase(allowed)){
+				return new ModelAndView("redirect:/logout?allowed=false");
+			}
 			if (isNullOrEmpty(requirementUUID)) {
 				return new ModelAndView("redirect:/app/dashboard");
 			} else {
@@ -212,6 +216,8 @@ public class HomeController {
 			if (!isNullOrEmpty(referUUID)) {
 				model.addObject("referUUID", referUUID);
 			}
+			if("false".equalsIgnoreCase(allowed))
+				model.addObject("msg", "You are not allowed to access from current location");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("login");
 		}
