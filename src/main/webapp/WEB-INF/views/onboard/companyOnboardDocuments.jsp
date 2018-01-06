@@ -136,7 +136,7 @@ $(function(){
 									${businessLicenseDocName}
 									</div>
 									<div class="pull-left mt5">
-										<a href="${businessLicenseDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${businessLicenseDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${businessLicenseDoc}','${businessLicenseDocName}','${businessLicenseDocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${businessLicenseDocfileUUID}','Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -165,7 +165,7 @@ $(function(){
 									${bankChequeDocName}
 									</div>
 									<div class="pull-left mt5">
-										<a href="${bankChequeDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${bankChequeDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${bankChequeDoc}','${bankChequeDocName}','${bankChequefileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${bankChequefileUUID}','Bank Cheque')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -196,7 +196,7 @@ $(function(){
 									${registrationDocName}
 									</div>
 									<div class="pull-left mt5">
-										<a href="${registrationDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${registrationDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${registrationDoc}','${registrationDocName}','${registrationDocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${registrationDocUUID}','Registration')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -231,7 +231,7 @@ $(function(){
 									${annulReportBusinessDocName}
 									</div>
 									<div class="pull-left mt5">
-										<a href="${annulReportBusinessDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${annulReportBusinessDoc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${annulReportBusinessDoc}','${annulReportBusinessDocName}','${annulReportBusinessDocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${annulReportBusinessDocUUID}','Annual Report Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -262,7 +262,7 @@ $(function(){
 									${w9DocName}
 									</div>
 									<div class="pull-left mt5">
-										<a href="${w9Doc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${w9Doc}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${w9Doc}','${w9DocName}','${w9DocfileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${w9DocUUID}','W-9,W-8 Ben-E')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>

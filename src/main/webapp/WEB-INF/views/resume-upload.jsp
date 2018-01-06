@@ -26,16 +26,24 @@ body {
         }
         .links {
         	display: none;
+        	width:80%; margin: 0px auto;
+        }
+        .links li:FIRST-CHILD {
+        	width: 10% !important;
+        	text-align: left !important;
         }
         .links li {
     float: left;
     list-style: none;
     padding: 10px;
-    width: 33%;
+    width: 26%;
     color: #337ab7;
     cursor: pointer;
     text-decoration: underline;
     text-align: center;
+}
+.links li:laST-CHILD {
+	width: 34%;
 }
     header {
         width: 100%; background-color: #368ee0; height: 54px; box-shadow: 0px 0px 2px rgba(0,0,0,0.4);
@@ -55,11 +63,19 @@ font-style: normal;
 color: #375d81;
 margin: 0px auto;
     }
+    div.title {
+    	float: left;
+    	color: white;
+    	font-size: 16px;
+    font-weight: 500;
+    padding: 15px 0px 0px 20px;
+    }
+    #uploader { width: 80%; margin: 0px auto; }
     .clear {
         clear: both;
     }
     .logo {
-        width: 210px; height: 54px; background-color: #fff; text-align: center; vertical-align: middle; display: table-cell;
+        float: left; width: 210px; height: 54px; background-color: #fff; text-align: center; vertical-align: middle; display: table-cell;
     }
     .logo img {
         width: auto; max-height: 50px; max-width: 190px; padding: 1px 0px 0px 0px;
@@ -75,8 +91,8 @@ margin: 0px auto;
         border-radius: 3px; display:none;
     }
     .browseProgressInn {
-        width: 85%; position: relative; margin: 0px auto; background-color: #fff; padding: 8px 12px 14px 12px;
-        border-radius: 2px; top: 32%;
+        width: 50%; position: relative; margin: 0px auto; background-color: #fff; padding: 8px 12px 14px 12px;
+        border-radius: 2px; top: 17%;
     }
     .browseProgressInn .progress {
         margin: 0px 0px; position: relative;
@@ -181,6 +197,9 @@ padding: 2px
     .mb {
     margin-bottom: 15px;
     }
+    .plupload_file_name {
+    	width: 700px !important;
+    }
 </style>
 <body>
 	<header>
@@ -223,12 +242,14 @@ padding: 2px
 				</div>
 		</c:if>
 		</div>
+		<div class='title'>
+		Candidate (Resume) Bulk Import
+		</div>
 		<div class="clear"></div>
 	</header>
-		<h2><b>Candidate (Resume) Bulk Import</b></h2>
 <div class="browseProgress">
             <div class="browseProgressInn">
-            <div class="labText" id='progressText'>Please wait while uploading the file(s)</div>
+            <div class="labText" id='progressText'>Please wait while uploading the file(s). This step may take more time depending on the size of the file.</div>
                 <div class="progress progress-striped active">
                     <div class="progress-bar progress-bar-success" id='progressBar'>0%</div>
                 </div>
@@ -239,9 +260,10 @@ padding: 2px
 </div>
 <div class='links'>
 	<ul>
+		<li onclick='location.reload();'>Refresh</li>
 		<li id='exportLog'>Download Upload Log</li>
 		 <li id='exportFailed'>Download Failed Resumes</li>
-		<li id='exportDuplicate'>Download Existed Resumes</li> 
+		<li id='exportDuplicate'>Download Duplicate Resumes</li> 
 	</ul>
 </div>
 	<footer>
@@ -284,6 +306,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 				$(".progress div").css("width", parseInt(percentComplete*100) + "%");
 				$("#progressBar").html(parseInt(percentComplete*100)+'%');
 				$("#progressText").html(data);
+				win2 = window.setTimeout('getUploadFileStatus()', 1000);
 			}
 // 			} else if(data !== "")
 // 				$("#progressText").html(data);
@@ -305,13 +328,13 @@ $(function() {
         
         runtimes : 'html5,flash,silverlight,html4',
         url : 'upload-resumes',
-        chunk_size : '250kb',
+        chunk_size : '400kb',
         rename : false,
         dragdrop: true,
          
         filters : {
             // Maximum file size
-            max_file_size : '1000mb',
+            max_file_size : '100mb',
             // Specify what files to browse for
             mime_types: [
                 {title : "Resume files", extensions : "doc,docx,pdf"},
@@ -336,6 +359,8 @@ $(function() {
         init: {
         	
     		PostInit: function(up) {
+    			$("#uploader_container").attr('title', '');
+    			$(".plupload_droptext").html('Upload or Drag files here');
     			$(".plupload_button.plupload_start").unbind('click');
     			$(".plupload_button.plupload_start").click(function() {
     				$.post("check-session", {}, function(data) {
@@ -343,11 +368,6 @@ $(function() {
     						uploadid = new Date().getTime();
     						up.settings.url = 'upload-resumes?uploadid='+uploadid;
     						up.start();
-    						$(".browseProgress").show();
-    						$("#progressBar").html('0%');
-    						$(".progress div").css("width", "0%");
-//     						$(".editText").html("");
-    						getUploadStatus();
     					} else {
     						alert("No Session found");
     						location.href='/login';
@@ -363,7 +383,21 @@ $(function() {
 				$("#clear").click();
 				clearTimeout(win1);
 				clearTimeout(win2);
+				$(".plupload_file_action a").attr("title", "Parsed");
             },
+            
+            ChunkUploaded: function(up, file, info) {
+				if(file.percent >= 90) {
+					$(".browseProgress").show();
+					$("#progressBar").html('0%');
+					$(".progress div").css("width", "0%");
+					getUploadFileStatus();
+				}
+            }, 
+            
+            FilesAdded: function() {
+            	$(".plupload_file_action a").attr('title', "Remove");
+            }
         }
     });
     
@@ -386,8 +420,10 @@ $(function() {
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-export-failed", {uploadid: uploadid}, function(data) {
-			if(data !== "")
+			if(data !== "" && data.indexOf("files found") === -1)
 				location.href = '/app/downloadFile.html?file='+data;
+			else if(data !== "" && data.indexOf("files found") !== -1)
+				alert(data);
 			else
 				alert("Unable to locate logs for this upload");
 		});
@@ -405,6 +441,8 @@ $(function() {
 				alert("Unable to locate logs for this upload");
 		});
 	});
+	
+	
 });
 </script>
 </html>

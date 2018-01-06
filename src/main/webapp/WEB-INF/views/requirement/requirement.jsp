@@ -302,14 +302,22 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
-            
+            <c:if test="${ empty requirement.positions}">
+          <div class="form-group">
+            <label class="col-md-3">No. of Positions</label>
+            <div class="col-md-9">
+               <input type="text" class="form-control" id="positions" name="positions" value="1"  field-name="Positions" data-validation="required validate_Space validate_length length1-5 validate_int" data-validation-optional="true">
+            </div>
+          </div>
+          </c:if>
+          	<c:if test="${! empty requirement.positions}">
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
             <div class="col-md-9">
                <input type="text" class="form-control" id="positions" name="positions" value="${requirement.positions}"  field-name="Positions" data-validation="validate_Space validate_length length1-5 validate_int" data-validation-optional="true"  value="">
             </div>
           </div>
-          
+          </c:if>
                  <div class="form-group">
               <label class="col-md-3">Project</label>
               <div class="col-md-9 select-field">
@@ -492,9 +500,9 @@ $(document).ready(function () {
               <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
-                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="Y"
                  
-						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants" checked  onclick="receivingApplicants();"> Allow Receiving Applicants
 				</label>
               </div>
             </div>
@@ -528,7 +536,7 @@ $(document).ready(function () {
 				<label class="col-md-3">Address<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
 				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Address" data-validation="required"></input>
-          			<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
+          			<i class="fa fa-refresh btn btn-primary refresh-icon mr" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
 				</div>
 		</div>
 		
@@ -635,7 +643,7 @@ $(document).ready(function () {
 				</c:if>
 				<c:if test="${empty requirement.medicalClearence}">
 				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
-			    <span class="paddingLeft"><input type="radio"   value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+			    <span class="paddingLeft"><input type="radio"   value="N" checked name="medicalClearence"><span class="mr5"></span>No</span>
 				</c:if>
 				</div>
 		 </div>
@@ -658,7 +666,7 @@ $(document).ready(function () {
 				
 				<c:if test="${empty requirement.securityClearance}">
 				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio"  value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				<span class="paddingLeft"><input type="radio"  value="N" checked name="securityClearance"><span class="mr5"></span>No</span>
 				</c:if>
 				</div>
 		 </div>
@@ -679,7 +687,7 @@ $(document).ready(function () {
 				</c:if>
 				<c:if test="${empty requirement.overTime}">
 				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				<span class="paddingLeft"><input type="radio" value="N" checked name="overTime"><span class="mr5"></span>No</span>
 				</c:if>
 				
 				</div>
@@ -701,7 +709,7 @@ $(document).ready(function () {
 				</c:if>
 				<c:if test="${empty requirement.backgroundCheck}">
 				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio"  value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				<span class="paddingLeft"><input type="radio"  value="N" checked name="backgroundCheck"><span class="mr5"></span>No</span>
 				</c:if>
 				</div>
 		 </div> 
@@ -730,7 +738,7 @@ $(document).ready(function () {
 				<c:if test="${empty requirement.gender}">
 				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
 				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
-				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender" checked><span class="mr5"></span>All</span>
 				</c:if>
 				
 				</div>
@@ -826,7 +834,7 @@ $(document).ready(function () {
             </div>
           
           <div class="form-group">
-	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for job, because of applied recently."></i></label>
+	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="It's a period driven by company's policy during which a candidate won't be allowed to apply for multiple jobs while the decision is awaiting or other reasons."></i></label>
 	         <div class="col-md-9 selectpicker_maxheight">
 	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             

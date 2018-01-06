@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +17,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Employees;
@@ -32,6 +37,7 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserLoginAttemptsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.UserLoginHelper;
 
 /**
@@ -69,6 +75,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 	
 	@Autowired 
 	UserLoginHelper userLoginHelper;
+	
+	@Autowired
+	WhiteListIpAddressService whiteListIpAddressService;
   
     /*@param
      * 
@@ -112,10 +121,17 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 					}
         		  
         		   if(authentication.getDetails() != null){
+        			  /* String ipAddress =userLoginHelper.getIpAddress();
+        			   boolean validIp = false;
+        			   if(userRolesList.size() == 1){
+        				   validIp = whiteListIpAddressService.validateIPAddress(ipAddress, userRolesList.get(0));
+        			   }*/
         			  if(userRolesList.size() > 1)
             			  throw new BadCredentialsException("login_2_Step_Process_Enabled");
             		  else if ((userRolesList.size() == 1 && Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())))
             			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
+            		 /* else if(userRolesList.size() == 1 && !validIp) 
+            		  	throw new BadCredentialsException("invalid_IP_Address");*/
             		  else{
             			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
             		  }

@@ -103,6 +103,7 @@ window.onload = function () {
 	}
 	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
 		$("#orgList").show();
+		$("#selectedOrg").html('${postedOrgName}');
 		$("#companiesListDiv").find("i").toggleClass("arrAc");
 		getOrgsList('none','main');
 	}
@@ -235,6 +236,9 @@ a.alertBtn {
 .jobResults_New .innerContent {
 	padding: 0px 0px 30px !important;
 }
+.modal {
+	z-index: 10500 !important;
+}
 </style>
 
 
@@ -267,12 +271,13 @@ a.alertBtn {
 		<div class="clear"></div>
 	</section>
 	
-	<section class="compaBann" id="orgImage" style="display:none">
+</div>
+
+<section class="compaBann" id="orgImage" style="display:none">
 	<span><img src="/resources/images/company-banner.jpg" alt=""></span>
 	<div class="compaBannLogo" style="background-image: url(/resources/images/company-logo.jpg)"></div>
-	<div class="compaBannLogoText">Business Intelli</div>
+	<div class="compaBannLogoText"><b id="selectedOrg"></b></div>
 </section>
-</div>
 
 <section class="innerContent">
 	<input type="hidden" name="openJobsOffset" id="openJobsOffset"
@@ -1055,12 +1060,13 @@ function getOpenJobsELKList(orgLocationId){
 		orgLocationIds.push($(this).val());
 // 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
-	if(orgLocationId != null){
+// 	if(orgLocationId != null){
+	var orgListType = '${specificCompany}';
+		if(orgListType !=null && orgListType !='' && orgListType !='undefined' && orgListType == 'specificCompany') {
 		orgLocationIds = orgLocationId
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
 // 		 document.getElementById("jobResultHeadId").style.display="block";
-
 	}
 	var offset = 0;
 	/* if(type == "more"){
@@ -1132,11 +1138,9 @@ function prepareOpenJobsElkList(data,offset){
 				var link="";
 				var picture="";
 				var description='';
-				var comment='';
 				var rate=''
 				var rateType= '';
 				var currencyType = '';
-				
 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined' && requirements.maxRate != null && requirements.maxRate != '' && requirements.maxRate != 'undefined'){
 					rate = requirements.rate+" - "+requirements.maxRate;
 				}else if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
@@ -1174,7 +1178,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<h3 style="color:#368ee0;"><a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.jobTitle.toLowerCase().replace(/ /g, "-").replace(/\//g,"-or-").replace(/ & /g,"-and-").replace("/ % /g","-mod-")+'--'+requirements.requirementId+'">'+requirements.jobTitle+'</a></h3>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1185,7 +1189,8 @@ function prepareOpenJobsElkList(data,offset){
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
 				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
-				result = result +'	<h4 onClick="getPostedOrgJobs('+i+');" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';	
+				result = result +'<div class="clearfix"></div>';
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';	
 				result = result +'<div class="clearfix"></div>';
 				description =  description+'Posted By :'+requirements.postedOrg+";";
 				}else{
@@ -2620,7 +2625,6 @@ var validationSettings = {
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
         	  
-        	 alert("pradeep")
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();

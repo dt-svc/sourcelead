@@ -125,7 +125,7 @@ function statusvalidating(id){
 		<div class="pull-left cand-advsrch advsrch_chosen">
 			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
 				title="Advanced Search"
-				onClick="openPop();loadChosenRequirementScripts();"> Advanced
+				onClick="openPop();"> Advanced
 				Search&nbsp;&nbsp; <i class="fa fa-search"></i>
 			</a>
 			</div>
@@ -629,6 +629,7 @@ function getActions(){
 			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
+			 $("#dataTableSearch").val('');
 			$("div.cand-advsrch-popup").toggle();
 			 $(".advancedsearch-mask").fadeIn();
 		}
@@ -722,7 +723,7 @@ function getActions(){
 	        		$("#generatedId").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    });*/
 		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
@@ -730,13 +731,13 @@ function getActions(){
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
-				/* for (var selector in config) {
+				 for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				}) */
+				}) 
 </script>
 
 <script>

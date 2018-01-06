@@ -281,8 +281,8 @@ public class SocialInviterService {
         	
         }
     	else if (service.equals("facebook")){
-        	APICredentials.put("consumerKey", "200281393793197");
-        	APICredentials.put("consumerSecret", "3a62bba550c343eb4f42bbeabd2e0f5e");
+        	APICredentials.put("consumerKey", "1839828886269747");
+        	APICredentials.put("consumerSecret", "dd4ee8b1292808c381148421204b0ef2");
         }
     	else if(service.equals("googleplus") || service.equals("gmail") || service.equals("google")){
         	APICredentials.put("consumerKey", "926632023543-jvf94kddpdemsb2p7r85j2clp1is9mkl.apps.googleusercontent.com");
