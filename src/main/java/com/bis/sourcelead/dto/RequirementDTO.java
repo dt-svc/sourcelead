@@ -138,6 +138,8 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String noOfOfferedApplicants;
 	
+	private String noOfApplicants;
+	
 
 	private String projectClientID;
 	
@@ -1237,6 +1239,15 @@ public class RequirementDTO extends CommonDTO {
 		this.customFormData = customFormData;
 	}
 
+
+	public String getNoOfApplicants() {
+		return noOfApplicants;
+	}
+
+	public void setNoOfApplicants(String noOfApplicants) {
+		this.noOfApplicants = noOfApplicants;
+	}
+
 	public String getUrl()
 	{
 		return url;
@@ -1248,5 +1259,6 @@ public class RequirementDTO extends CommonDTO {
 	}
 	
 	
+
 	
 }
