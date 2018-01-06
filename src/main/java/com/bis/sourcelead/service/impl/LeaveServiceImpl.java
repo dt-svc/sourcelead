@@ -539,6 +539,7 @@ public class LeaveServiceImpl implements LeaveService{
 			if(lh.getLeaveid().getUser().getFileUrl() != null){
 				leaveReportsDTO.setEmpProfileImageURL(lh.getLeaveid().getUser().getFileUrl());
 			}
+			leaveReportsDTO.setDuration(leave.getLeaveType().getDuration());
 			UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(lh.getLeaveid().getUser().getId(), orgLocations.getId());
 			leaveReportsDTO.setEmpType(role.getUserType());
 			Calendar calendar = new GregorianCalendar();
