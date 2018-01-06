@@ -119,9 +119,9 @@ function clientRequirementList(orgRelationId){
 	            result = result + '<th>Type</th>';
 	            result = result + '<th>Posted Date <br>(<small class="custom-small">'+reqListClientDate+'</small>)</th>';
 	            result = result + '<th>Owner</th>';
-	            result = result + '<th>Submissions</th>';
+	            result = result + '<th>Applicants</th>';
+	            result = result + '<th>Submit to client</th>';
 	            result = result + '<th>Offer</th>';
-	            //result = result + '<th>Back-out</th>';
 	            result = result + '<th>Interview</th>';
 	            result = result + '<th>Status</th>';
 	        	result = result +'</tr>';
@@ -156,9 +156,9 @@ function clientRequirementList(orgRelationId){
 	           	 }
 	                result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
 	                result = result + '<td><div class="tbldata-dotdot-vsm"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
-	               	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
+	               	result = result + '<td><div>'+opt.noOfApplicants+'</div></td>';
+	            	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 	                result = result + '<td><div>'+opt.noOfOfferedApplicants+'</div></td>';
-	               // result = result + '<td><div>'+opt.noOfBackOutApplicants+'</div></td>';
 	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
 	               // result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
 	                
