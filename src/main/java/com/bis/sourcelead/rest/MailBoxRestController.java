@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
@@ -152,26 +154,38 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/getClientContactsEmailsByOrgRelationId", method = RequestMethod.POST)
-	@ResponseBody String getClientContactsEmailsByOrgRelationId(@RequestParam(value = "orgRelationIds", required = false) String orgRelationIds,
+	@ResponseBody String getClientContactsEmailsByOrgRelationId(ClientVendorDTO clientVendorDTO,
 			HttpServletRequest request) throws Exception {
 		
 		
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    
-		String[] relationsId = orgRelationIds.split(",");
+	    String spocEmails = null;
+	    String[] recipientEmail = clientVendorDTO.getRecipientsEmails().split(",");
+	    List<String> selectedRecipiantEmails = new ArrayList<>();
+		if(clientVendorDTO.getRecipientsEmails() != null && !clientVendorDTO.getRecipientsEmails().isEmpty()) {
+			  for(int i=0; i<recipientEmail.length; i++) {
+					 selectedRecipiantEmails.add(recipientEmail[i]);
+				 }
+		}
+	    
+		String[] relationsId = clientVendorDTO.getOrgRelationIds().split(",");
 		StringBuilder emails  = new StringBuilder();
 		for(int i=0 ; i < relationsId.length; i++){
 			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocContactEmailsByOrgRelationIdAndUserId(user.getId(), Long.valueOf(relationsId[i]), orgLocations.getId());
 			for(OrgSpoc orgSpoc :orgSpocList){
-				emails.append(orgSpoc.getClientUser().getEmail()).append(",");
+				if(!selectedRecipiantEmails.contains(orgSpoc.getClientUser().getEmail())) {
+					emails.append(orgSpoc.getClientUser().getEmail()).append(",");
+				}
+				
 			}
 		}
 		emails.toString();
-		
-		 String spocEmails =  emails.substring(0,emails.length()-1);
+		if(emails.length() > 0) {
+			 spocEmails =  emails.substring(0,emails.length()-1);
+		}
 		 
-		return commonUtil.toJSON(spocEmails);
+		return spocEmails;
 	}
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
