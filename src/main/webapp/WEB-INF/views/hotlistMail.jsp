@@ -60,18 +60,26 @@ display: none;
           <label class="col-md-2 control-label text-muted small">From</label>
           <div class="col-md-10">
            <%--  <input type="text" value="${SourceLeadWeb_user.email}" class="form-control input-sm" readonly> --%>
-             <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
-			</select>  
+<!--              <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
+			</select>  --> 
+			
+<div class="input-group errorInptgroup">
+<select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
+			</select>						 
+<a class="input-group-addon" onclick="campaignSender('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a>
+</div>			
+			
           </div>
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
-
-            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation-optional="true" data-validation-optional="true" name="Toemails">
-
-            </select>
-            <span class="select-multiple" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
+          
+<div class="input-group errorInptgroup positionRelative">
+<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation-optional="true" data-validation-optional="true" name="Toemails"></select>
+<span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 					 
+<a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a>
+</div>
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="multiplemail" class="modal fade">
               <div class="modal-dialog modal-lg">
@@ -104,7 +112,8 @@ display: none;
               </div>
             </div>
             <!-- AMultiple mail modal popup ends --> 
-          </div>
+          </div>         
+          
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-warning small">Others</label>
@@ -1562,4 +1571,110 @@ function checkUniqueSubject(){
 	        $(".clearUpload").hide();
 	});
 </script>
+
+	<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
+	
+		<div class="popupHead">
+		<c:if test="${empty campaignList.id}">
+			<h2>Add Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</c:if>
+		
+		<c:if test="${!empty campaignList.id}">
+			<h2>Edit Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</c:if>
+		</div>
+		
+		<div id="loading"></div>
+		<div class="popupMid popupMidPad clearfix">
+
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-9 padding_right clearfix">
+              		<div class="col-md-6 padding_left">
+              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList();" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
+              		</div>
+              		<div class="col-md-6">
+              			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList();"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
+              		</div>              		
+				</div>
+			</div>
+			
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-3 padding_left">List Name<span class="text-danger">&nbsp;*</span></label>
+              	<div class="col-md-9 padding_right" id="cpnListNameDiv">
+                	<input type="text" class="form-control" id="cpnListName" name="cpnListName" value="${campaignList.listName}"  onblur="validateCampaignListName();" data-validation="required validate_length length1-100" field-name="List Name">
+				    <input type="hidden" value="${campaignList.id}" name="contactListId" id="contactListId" >
+				</div>
+			</div>			
+			
+          <div class="col-sm-12 noPad mt clearfix">
+              <label class="col-md-3 padding_left">Recipient(Email)<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
+               <c:if test="${not empty recipientList}"></c:if>
+               <c:forEach items="${recipientList}" var="recipient">
+   						<option value='${recipient.email }' selected>${recipient.email}</option>
+				</c:forEach>
+                </select>
+                
+              </div>
+              	<div class="col-md-1 noPad">
+					<a href="javascript:void(0)"  data-target="#multiplemail" onclick="selectRadio();" data-toggle="modal" class="btn btn-default"><i class="fa fa-list-alt"></i></a>
+					<div role="dialog" id="multiplemail" class="modal fade">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title" id="receipantCategoryType"></h4>
+                    <label class="paddingLeft paddingRight">
+               	    <input  type="radio" id="vendorCheck" name="users" checked onclick="selectRadio()"><strong class="paddingLeft" id="categoryListType"></strong></label>
+               	    <label class="paddingLeft">
+               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList();"><strong class="paddingLeft">My Contacts</strong></label>
+                  </div>
+                  
+                   <div class="modal-body clearfix">
+                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="vendorsListDiv" style="display: none">
+                          <select class="form-control" id="vendorListType" onchange="vendorListChange();">
+                           <option value="listbyVendor" selected>List By Vendor</option>
+                           <option value="listbyContact">List By Contact</option>
+                          </select>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="clearfix">
+                     <div id="mailBoxVendorsList" class="datatable_filter"></div>
+                    </div>
+                    
+                  </div>
+                  
+                  
+                  <div class="modal-body clearfix">
+                    <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="clientsListDiv" style="display: none">
+                          <select class="form-control" id="clientListType" onchange="clientListChange();">
+                           <option value="listbyClient" selected>List By Client</option>
+                           <option value="listbyClientContact">List By Contact</option>
+                          </select>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="clearfix">
+                     <div id="mailBoxClientsList" class="datatable_filter"></div>
+                    </div>
+                    
+                  </div> 
+                  
+                </div>
+              </div>
+            </div>
+				</div>              
+			</div>	
+		
+		</div>
+		
+		<div class="popupFoot">
+		<p id="errorMessage" class=""></p>
+            <input value="Save" class="btn btn-primary" type="button" id="addList">
+             <input value="Reset" class="btn btn-primary" type="button" id="resetForm">
+            <input value="Cancel" class="btn btn-default ml popCan" type="button" onclick="recipientClose();">
+          </div>		
+		</form:form>
+
 <jsp:include page="masterFooter.jsp" />

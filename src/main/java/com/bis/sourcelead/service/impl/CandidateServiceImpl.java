@@ -1497,22 +1497,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setMobilePhone(null);
 			}
 			
-			/*if(StringUtils.isNotBlank(candidateDTO.getDesignationType())){
+			if(StringUtils.isNotBlank(candidateDTO.getDesignationType())){
 				candidate.setDesignationType(candidateDTO.getDesignationType());
 			}else
 			{
 				candidate.setDesignationType(null);
 			}
 			
-			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
+			/*if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
 				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else
 			{
 				candidate.setDesignationOtherType(null);
 			}*/
 			
-			if(StringUtils.isNotBlank(candidateDTO.getDesignationType())){
-				candidate.setDesignation(candidateDTO.getDesignationType());
+			if(StringUtils.isNotBlank(candidateDTO.getDesignation())){
+				candidate.setDesignation(candidateDTO.getDesignation());
 			}else
 			{
 				candidate.setDesignation(null);

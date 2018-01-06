@@ -236,8 +236,8 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		    	  	 	var result = "";
 		    	  		if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 
-		    			  	 result = result +'<td class="text-center"><div><span title="Download"><a download class="glyphicon glyphicon-download-alt" href=\"'+report.fileUrl+'\"></a>';
-		    			  	 result = result +'<a class="fa fa-eye ml10" onclick="viewFile(\''+report.fileUrl+'\',\''+report.resumeName+'\',\''+report.fileContentType+'\');"></a></span></div></td>';
+		    			  	 result = result +'<td class="text-center"><div><span title="Download"><a download class="glyphicon glyphicon-download-alt" title="Download" href=\"'+report.fileUrl+'\"></a>';
+		    			  	 result = result +'<a class="fa fa-eye ml10"title="View" onclick="viewFile(\''+report.fileUrl+'\',\''+report.resumeName+'\',\''+report.fileContentType+'\');"></a></span></div></td>';
 
 		    				  }else{
 		    					result = result +'<td class="text-center"><div><span>--</span></div></td>';

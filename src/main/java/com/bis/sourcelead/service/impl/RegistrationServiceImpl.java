@@ -814,7 +814,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(sourceleadUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+		 String mailUrl = sourceleadUrl.replace("/app", "");
+		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1355,7 +1356,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 //		 }
 
 		 StringBuilder linkBuilder = new StringBuilder();
-				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 				
 				 StringBuilder fbLinkBuilder = new StringBuilder();
 				 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
@@ -1582,7 +1583,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 //		 }
 		 
 		  StringBuilder linkBuilder = new StringBuilder();
-			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 			
 			 StringBuilder fbLinkBuilder = new StringBuilder();
 			 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
@@ -1638,19 +1639,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 						String profileUrl = jsonObj.getString("profileUrl");
 						if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
 							user.setGooglePlus(profileUrl);
-							can.setGooglePlus(profileUrl);
+							//can.setGooglePlus(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
 							user.setFacebook(profileUrl);
-							can.setFacebookUrl(profileUrl);
+							//can.setFacebookUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
 							user.setTwitter(profileUrl);
-							can.setTwitterUrl(profileUrl);
+							//can.setTwitterUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
 							user.setLinkedIn(profileUrl);
-							can.setLinkedUrl(profileUrl);
+							//can.setLinkedUrl(profileUrl);
 						}
 						
 					}

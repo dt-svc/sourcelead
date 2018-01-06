@@ -276,7 +276,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId, Long parentTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query  = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.parentTaskId =:parentTaskId" ;
+		String query  = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.parentTaskId =:parentTaskId and pt.status ='1'" ;
 		List<ProjectTasks>  projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setLong("parentTaskId", parentTaskId).setCacheable(true).list(); 
 		 return projectTasksList;  
 	}
@@ -411,8 +411,8 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 					
 		}
 		 
-		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
-		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1'" ;
+		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
 		 String subQueryStr = "";
 		 if(StringUtils.isNotEmpty(taskType)) {
 			 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+taskType+")";
@@ -424,7 +424,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
 		 }
 		 
-		 Query query = session.createQuery(queryStr+subQueryStr+query1);
+		 Query query = session.createQuery(queryStr+subQueryStr+query1+" ORDER BY pt.generatedId ASC");
 		
 		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).setCacheable(true).list();
 		

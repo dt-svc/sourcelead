@@ -119,7 +119,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" field-name="Address" placeholde="Address" data-validation="required">';
+							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" readonly="readonly" field-name="Address" placeholde="Address" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
 							result = result + '</div>';
 							

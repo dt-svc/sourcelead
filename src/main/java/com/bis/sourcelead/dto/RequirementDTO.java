@@ -160,6 +160,8 @@ public class RequirementDTO extends CommonDTO {
 	private int length;
 	
 	private List<CustomFormFieldDTO> customFormData;
+	
+	private String url;
 
 	
 	/*
@@ -1237,6 +1239,7 @@ public class RequirementDTO extends CommonDTO {
 		this.customFormData = customFormData;
 	}
 
+
 	public String getNoOfApplicants() {
 		return noOfApplicants;
 	}
@@ -1244,5 +1247,18 @@ public class RequirementDTO extends CommonDTO {
 	public void setNoOfApplicants(String noOfApplicants) {
 		this.noOfApplicants = noOfApplicants;
 	}
+
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+	
+	
+
 	
 }

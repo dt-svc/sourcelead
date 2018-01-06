@@ -296,12 +296,17 @@
 	</table>
 </div>
 <div class="form-footer clearfix mt">
-		  <div class="col-lg-12">
+		   <div class="col-lg-12">
 			<div class="pull-right">
-			  <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
-			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			 <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
-			</div>
+			<input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			<input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
+			<c:if test ="${!empty expenses.id}">
+			  <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
+	        </c:if>
+			<c:if test ="${empty expenses.id}">
+			  <input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/expenses'/>' "  >
+			</c:if>
+		   </div>
 		  </div>
 		</div>
                 
@@ -374,7 +379,13 @@ function removeWhiteSpacesMyExp(rowCount){
 	      		formData.append("json",jsonData); */
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
-				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+	      		if(status == 'submitted'){
+					$("#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+	      		}
+				if(status == 'draft'){
+					$("#draftForApprovalExpensesId" ).addClass('button').val('Processing..');
+				}
+				
 	     		$.ajax({
 	       	        type : "POST",
 	        	    data: formData,

@@ -103,7 +103,7 @@ margin-top: 3px;
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList('dateSearch');" /></span>
 					</div>
 
 					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
@@ -164,11 +164,37 @@ margin-top: 3px;
 
 
 <script type="text/javascript">
-function getExpensesApprovalDataList(){
-var startDate = $("#filterStartDate").val();
-var endDate = $("#filterEndDate").val();
+function getExpensesApprovalDataList(dateSearch){
+var startDate = '';
+var endDate = '';
+
+if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSearch == 'dateSearch' ){
+	var startDateFilter = $("#filterStartDate").val();
+	var endDateFilter = $("#filterEndDate").val();
+	if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined' ){
+		 startDate = startDateFilter;
+		 endDate = endDateFilter;
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove();
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove();
+	}else if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  (endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined')){
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+		$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+	}else if((startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined') &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined'){
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+	}else if((endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined') && (startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined')){
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+		$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+	}		
+}
+
+
 var searchData = $('#SearchExpensesData').val();
-var expenseStatus = $('#expenseStatusDivId').val();
+/* var expenseStatus = $('#expenseStatusDivId').val();
 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 	expenseStatus = expenseStatus
 }else{
@@ -177,7 +203,12 @@ if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
 	{
 		expenseStatus.push($(this).val());
 	});	
-}
+} */
+var expenseStatus = [];
+$('input:checkbox[name=expenseStatus]:checked').each(function() 
+{
+	expenseStatus.push($(this).val());
+});
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
  var expensesApprvListDate = getJSDateFormat(locationList);
  
@@ -543,7 +574,7 @@ function expensesCancel(){
             onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
+	           // dt.setDate(dt.getDate() + 1);
 	            $("#filterEndDate").datepicker("option", "minDate", dt);
 				var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
@@ -564,7 +595,7 @@ function expensesCancel(){
             onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
+	           // dt.setDate(dt.getDate() - 1);
 	            $("#filterStartDate").datepicker("option", "maxDate", dt);
 	            var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it

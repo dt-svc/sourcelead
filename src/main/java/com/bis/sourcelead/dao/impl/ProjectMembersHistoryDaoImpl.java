@@ -175,6 +175,35 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 	}
 	
 	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public HashMap<String,Date> getAssignDateandEndDateByProjectMemberId(Long projectMemberId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId where pmh.projectMemberId.id = :projectMemberId");
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		HashMap<String,Date> dateList = new HashMap<>();
+		int count = 1;
+		int flag = projectMembersHistoryList.size();
+		 Date hStartDate = null;
+	     Date hEndDate = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			for(ProjectMembersHistory pmh :projectMembersHistoryList){
+				     if(count == 1) {
+				    	 hStartDate = pmh.getProjectAssignedDate();	
+				     }
+				    
+					 if(count == flag) {
+						 hEndDate = pmh.getProjectTerminationDate();
+					 }
+					 count++;
+			}
+		}
+		dateList.put("STARTDATE", hStartDate);
+		dateList.put("ENDDATE", hEndDate);
+		return dateList;
+	}
+	
+	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId) {
 		Session session =  this.sessionFactory.getCurrentSession();

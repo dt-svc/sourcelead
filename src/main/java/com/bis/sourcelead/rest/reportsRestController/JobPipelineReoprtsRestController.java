@@ -73,27 +73,29 @@ public class JobPipelineReoprtsRestController {
 		List<Long> jobIdList = new ArrayList<>();
 		
 		Date[] searchDates = null;
-		
-		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection()) && !jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
-			searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection(),orgLocation);
-		}else {
-			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
-    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
-			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
-			String customEndTimeStr = TZ_DF_CED.format(toDate);
-			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-			fromDate = TZ_DF_TS.parse(startDateString);
-			toDate = TZ_DF_TS.parse(endDateString);
-			
-    	    searchDates = new Date[2];
-    	    searchDates[0] = fromDate;
-    	    searchDates[1] = toDate;
+		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
+			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+				searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection(),orgLocation);
+			}else {
+				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+				String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+				String customEndTimeStr = TZ_DF_CED.format(toDate);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				fromDate = TZ_DF_TS.parse(startDateString);
+				toDate = TZ_DF_TS.parse(endDateString);
+				
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
 		}
+		
 
 		if(jobFilterDTO.getFromtype() != null && jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
 			
@@ -199,7 +201,8 @@ public class JobPipelineReoprtsRestController {
 									shortlistCreatedDate = rsh.getCreatedDate();
 								}
 								
-							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("offermade"))){
+							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("offermade"))
+									|| (rsh.getFromStage().equalsIgnoreCase("submit_to_client") && rsh.getToStage().equalsIgnoreCase("client_interview"))){
 								interviewsCount++;
 								if(rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) {
 									interviewCreatedDate = createdDatesMap.get("SUBMISSION");
@@ -209,7 +212,7 @@ public class JobPipelineReoprtsRestController {
 									interviewCreatedDate = rsh.getCreatedDate();
 								}
 								
-							} if("offermade".equalsIgnoreCase(rsh.getToStage())){
+							} if("offermade".equalsIgnoreCase(rsh.getToStage())  ||  "client_interview".equalsIgnoreCase(rsh.getToStage())){
 								offeredCount++;
 								offerMadeCreatedDate = rsh.getCreatedDate();
 							} if("request_sent".equalsIgnoreCase(rsh.getToStage())){
