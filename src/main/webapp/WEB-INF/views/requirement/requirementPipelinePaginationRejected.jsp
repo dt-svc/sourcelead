@@ -419,7 +419,7 @@
 											var result = "";
 											result = result
 													+ '<td><div class="tblwidth-150"><span>'
-													+ opt.submissionStatus
+													+ opt.submissionDisplayStatus
 													+ '</span>';
 											if (opt.rejectedReason != null
 													&& opt.rejectedReason != ''
