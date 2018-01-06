@@ -14,6 +14,7 @@ public class UserRoleDTO {
 	private String employeMentType;
 	private String userState;
 	private String orgName;
+	private Long mutualCount;
 	
 	
 	public Long getId() {
@@ -93,6 +94,12 @@ public class UserRoleDTO {
 	}
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+	public Long getMutualCount() {
+		return mutualCount;
+	}
+	public void setMutualCount(Long mutualCount) {
+		this.mutualCount = mutualCount;
 	}
 	
 }
