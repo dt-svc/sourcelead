@@ -710,6 +710,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setUpdatedBy(user.getUserCode());
 		 submissionTemplate.setTemplateType("Submission");
 		 submissionTemplate.setUpdatedDate(new Date());
