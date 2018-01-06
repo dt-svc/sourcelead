@@ -86,10 +86,13 @@ public class DataMigrationCommonUtil {
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation) throws Exception
 	{
 		logger.debug("In dataValidationForJobs method...");
-		dataMigrationDTOJsonCopy.keys().forEachRemaining(k -> {
+		Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
+
+		while( keys.hasNext() ) {
+		    String k = (String)keys.next();
 			try {
 				Boolean flag;
-				if((k.toString().equalsIgnoreCase("applicationFrom") || k.toString().equalsIgnoreCase("manager") || k.toString().equalsIgnoreCase("priority") || k.toString().equalsIgnoreCase("jobTitle") || k.toString().equalsIgnoreCase("location")) && (dataMigrationDTOJsonCopy.get(k.toString()) == null || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null"))){
+				if((k.toString().equalsIgnoreCase("manager") || k.toString().equalsIgnoreCase("priority") || k.toString().equalsIgnoreCase("jobTitle") || k.toString().equalsIgnoreCase("location")) && (dataMigrationDTOJsonCopy.get(k.toString()) == null || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null"))){
 					errorSet.put(k.toString(), k.toString()+"  field is missing");
 				}
 				
@@ -100,15 +103,6 @@ public class DataMigrationCommonUtil {
 						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString())+" is Already Existed");
 					}
 				}
-				
-				/*if(k.toString().equalsIgnoreCase("applicationFrom") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
-					SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocation.getId(), dataMigrationDTOJsonCopy.get((String)k).toString());
-					if(null != submissionTemplate){
-						dataMigrationDTOJsonCopy.put((String) k, submissionTemplate.getId().toString());
-					}else{
-						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString())+" is invalid");
-					}
-				}*/
 				
 				if(k.toString().equalsIgnoreCase("visa") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")){
 					List<String> visaList = lookUpDataService.getAllVisaByCategory();
@@ -378,16 +372,19 @@ public class DataMigrationCommonUtil {
 						errorSet.put(k.toString(), dataMigrationDTOJsonCopy.get(k.toString()) + " is invalid Application Form");
 					}
 				}
-								
-				/*String keyStr = (String)k;
-				System.out.println(keyStr);
-		        Object keyvalue = dataMigrationDTOJsonCopy.get(keyStr);
-		        System.out.println(keyvalue);*/
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		});
+		}
+		
+		
+		/*if(errorSet.isEmpty()) {
+			System.out.println(dataMigrationDTOJsonCopy.getString("manager"));
+			
+		}*/
+		
+		
+		
 	}
 	
 	
