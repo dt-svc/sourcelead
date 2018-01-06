@@ -200,12 +200,12 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			 searchQuery.append("  user.firstName like '%" + searchValue + "%' ")
 						.append("OR user.lastName like '%" + searchValue + "%' ")
 						.append("OR (concat(user.firstName,user.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
-			 			.append("OR tde.timesheetSubmissions.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus  like '%"+ searchValue +"%'  and sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = projects.id and pah.status != '0')')");
+			 			.append("OR tde.timesheetSubmissions.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus  like '%"+ searchValue +"%'  and sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = projects.id and pah.status != '0'))");
 				
 			 searchCountQuery.append("  tde.timesheetSubmissions.projectMembers.employee.user.firstName like '%" + searchValue + "%' ")
 				.append("OR tde.timesheetSubmissions.projectMembers.employee.user.lastName like '%" + searchValue + "%' ")
 				.append("OR (concat(tde.timesheetSubmissions.projectMembers.employee.user.firstName,tde.timesheetSubmissions.projectMembers.employee.user.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
-	 			.append("OR tde.timesheetSubmissions.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus  like '%"+ searchValue +"%'  and sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = projects.id and pah.status != '0')')");
+	 			.append("OR tde.timesheetSubmissions.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus  like '%"+ searchValue +"%'  and sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = tde.projectTask.projectId.id and pah.status != '0'))");
 			   if(matcher.matches() == true) {
 					java.sql.Date sqlDate = null;
 					if(searchValue.contains("/")||(searchValue.contains("-"))) {
@@ -223,8 +223,8 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				
 		}
 		
-		String query = "from  TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch tde.timesheetSubmissions ts left join fetch ts.projects projects left join fetch ts.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user  "
-				+ " where  pt.projectTasksUUID = :taskUUID and "
+		String query = "from  TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch tde.timesheetSubmissions ts left join fetch ts.projects projects left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch can.masterCandidateId left join fetch  pm.employee emp left join fetch emp.user user  "
+				+ " where  pt.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and"
 				+ " ( "
 				
 				+"  ( user.id = :userId ) "
@@ -239,10 +239,11 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
 				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
-				+ "   ) order by tde.timesheetDate ASC " ;
+				+ "   )" ;
 		
-		
-		String queryCount = " Select Count (*) from  TimeSheetDayEntries tde  where  tde.projectTask.projectTasksUUID = :taskUUID and "
+		String orderQuery = "order by tde.timesheetDate ASC"; 
+
+		String queryCount = " Select Count (*) from  TimeSheetDayEntries tde  where  tde.projectTask.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and "
                 + " ( "
 				+"  ( tde.timesheetSubmissions.projectMembers.employee.user.id = :userId ) "
 				+" OR "
@@ -250,7 +251,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
 				    */
 				+ "  ( "
-				+ "   :userId IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = projects.id ) "
+				+ "   :userId IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = tde.projectTask.projectId.id ) "
 				+ "   ) "
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
@@ -258,9 +259,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
 				+ "   ) " ;
 		
-		
-		
-		Query query1 = session.createQuery(query+" "+searchQuery.toString()).setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID);
+		Query query1 = session.createQuery(query+" "+searchQuery.toString()+" "+orderQuery).setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID);
 		if(length>0){
 			query1.setFirstResult(start).setMaxResults(length);
 		}
@@ -276,7 +275,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			}
 			int recordsTotal=0;
 			if(countList != null && !countList.isEmpty()) {
-				recordsTotal  =  countList.size();
+				recordsTotal  =  countList.iterator().next().intValue();
 			}
 			response.setRecordsTotal(recordsTotal);
 			

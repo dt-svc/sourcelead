@@ -18,14 +18,24 @@ z-index: 1040 !important;
  </script>
 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+
 <!--   Popup Code  -->
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
+     
 	<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
+	
 		<div class="popupHead">
+		<c:if test="${empty campaignList.id}">
 			<h2>Add Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</c:if>
+		
+		<c:if test="${!empty campaignList.id}">
+			<h2>Edit Recipient</h2><a onclick="recipientClose();" href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</c:if>
 		</div>
+		
 		<div id="loading"></div>
 		<div class="popupMid popupMidPad clearfix">
 
@@ -55,7 +65,7 @@ z-index: 1040 !important;
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
                <c:if test="${not empty recipientList}"></c:if>
                <c:forEach items="${recipientList}" var="recipient">
-   						<option value='${recipient.email }' selected>${recipient.email}</option>
+   						<option value='${recipient.email}' selected>${recipient.email}</option>
 				</c:forEach>
                 </select>
                 
@@ -225,8 +235,12 @@ function clientContactList(){
 function clientContactDataTableList(){
 	 var searchValue = $("#clientContactsDataTableSearch").val();
 	 var responderType ="ClientHotListCampaign";
+	 var recipientsEmails = '';
+	 if($("#recipientEmail").val() != null){
+		  recipientsEmails = $("#recipientEmail").val();
+	 }
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/searchClientContactDetails?searchValue="+searchValue+"&responderType="+responderType;
+	 var url = sourceleadUrl+"/searchClientContactDetails?searchValue="+searchValue+"&responderType="+responderType+"&recipientsEmails="+recipientsEmails;
 	 clientContactpagination(url);
 }
 </script>
@@ -1282,17 +1296,23 @@ function getClientEmails(){
 		 orgRelationIds.push(clientList[e])
 	  }
 	 
+	 var recipientsEmails = '';
+	 if($("#recipientEmail").val() != null){
+		  recipientsEmails = $("#recipientEmail").val();
+	 }
 	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getClientContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
+         url: sourceleadUrl+"/getClientContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds+"&recipientsEmails="+recipientsEmails,    
           success :function(data) {
-       	    var str_array = data.replace(/\"/g, "").split(',');
-				for(var i = 0; i < str_array.length; i++) {
-				   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-				   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-				}
+        	  if(data != null){
+        		  var str_array = data.replace(/\"/g, "").split(',');
+  				for(var i = 0; i < str_array.length; i++) {
+  				   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+  				   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+  				}
+        	  }
 				
 				 $("#recipientEmail").append(internalOutput);
 				 $("#recipientEmail").trigger("chosen:updated");

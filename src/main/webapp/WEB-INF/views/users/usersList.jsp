@@ -121,7 +121,7 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
       
-      <div class="project_wrap_table datatable_filter mt backgroundWhite" id="userListGrid">
+      <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
