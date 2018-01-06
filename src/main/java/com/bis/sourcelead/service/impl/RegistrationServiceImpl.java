@@ -545,7 +545,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         	orgLocations.setDba(registration.getDba());
         }
         
-        if(registration.getGeneratedUserId() != null &&  registration.getGeneratedUserId().isEmpty()){
+        if(registration.getGeneratedUserId() != null &&  !registration.getGeneratedUserId().isEmpty()){
         	orgLocations.setGeneratedUserId(registration.getGeneratedUserId());
         }
         
@@ -710,6 +710,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setUpdatedBy(user.getUserCode());
 		 submissionTemplate.setTemplateType("Submission");
 		 submissionTemplate.setUpdatedDate(new Date());
@@ -813,7 +814,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(sourceleadUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+		 String mailUrl = sourceleadUrl.replace("/app", "");
+		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
