@@ -1134,13 +1134,15 @@ function prepareOpenJobsElkList(data,offset){
   		var result = "";
 			for(var i=0; i<json.length; i++){
 				var requirements = json[i];
-				var title="";
+				var title=requirements.jobTitle;
 				var link="";
 				var picture="";
 				var description='';
 				var rate=''
 				var rateType= '';
 				var currencyType = '';
+				description =  description+'Job Title:'+requirements.jobTitle +";";
+ 				description =  description+' Posted By :'+requirements.postedOrg+";";
 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined' && requirements.maxRate != null && requirements.maxRate != '' && requirements.maxRate != 'undefined'){
 					rate = requirements.rate+" - "+requirements.maxRate;
 				}else if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
@@ -1184,7 +1186,7 @@ function prepareOpenJobsElkList(data,offset){
 				
 // 				sourceleadUrl+"/"+jobTitle+"-"+id
 				
-				link = "/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
+// 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 				
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
@@ -1259,8 +1261,13 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
-				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
-				result = result +'  <div class="addthis_inline_share_toolbox" data-url='+link+' data-title='+title+'></div>';
+// 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+// 				result = result +'  <div class="addthis_inline_share_toolbox" data-url='+link+' data-title='+title+'></div>';
+			    result = result +'	<div class="share">';
+			    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+				result = result +'	</div>'; 
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
@@ -1421,7 +1428,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    	 
 		      var result = "";
 
-		      var title="";
+		      var title=requirements.jobTitle;
 				var link="";
 				var picture="";
 				var description='';
@@ -1606,7 +1613,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:</label>--</div>';
 				}
-				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+// 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 				result = result +'	<div class="share">';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
@@ -1797,7 +1804,7 @@ function openJobSearchRequirement(){
 										
 										result = result +'	<div class="jobShare">';
 										result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>'+requirements.createdDate+'</div>';
-										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+// 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 										result = result +'	<div class="share">';
 										result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
@@ -2245,7 +2252,7 @@ $(".LettSelec a").click(function(){
 <!-- Create Alert modal Popup -->
 <div class="pop_mask"></div>
 <!-- Modal -->
-<div class="modal modal_createalert" id="myModal" role="dialog">
+<div class="modal_createalert" id="myModal" role="dialog">
 	<div id="createAlertPopUpDiv"></div>
 </div>
 <!-- Create Alert modal Popup Ends -->
@@ -2253,10 +2260,12 @@ $(".LettSelec a").click(function(){
 //Create Alert Poppup
 function alertFunction() {
 	$(".pop_mask").fadeIn();
+	$(".modal_createalert").addClass("modal");
 	$(".modal.modal_createalert").fadeIn();
 }
 function alertClose(){
 	$(".pop_mask").fadeOut();
+	$(".modal_createalert").removeClass("modal");
 	$(".modal.modal_createalert").fadeOut();
 }
 </script>
@@ -2981,8 +2990,4 @@ function preventTabkey(e){
 	 }
 }
 </script>
-<script type="text/javascript"
-	src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
-<script src="/resources/js/formvalidator.js"></script>
-
 <jsp:include page="../socialinviterscripts.jsp" />
