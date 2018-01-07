@@ -456,13 +456,13 @@ window.onload = function () {
                 <div class="col-xs-12 col-md-12 mb10">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
-	                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
+	                <div class="col-xs-12 col-md-12 mb10" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
                 </div>
@@ -690,6 +690,40 @@ function resetCredentials(type){
 })(jQuery);
 </script>
 
+
+<script type="text/javascript">
+(function($) {
+	$.fn.reccheckPass = function() {   
+		var pass1 = document.getElementById('recpassword');  
+	    var pass2 = document.getElementById('recconfirmPassword');
+	    $("#submit_button").attr("disabled", "disabled");
+	    
+	    if(pass1.value == pass2.value){
+			 $("#submit_button").removeAttr("disabled");
+			 $('input#recconfirmPassword').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#recpasswordDiv').find('p.jquery_form_error_message').remove(); 
+			 $( "#submit_button" ).removeAttr("style");
+			 $( "#submit_button" ).click(function() {
+			 if ($(this).validate(false, validationSettings)){
+			 }
+			});
+	    }
+	    else{ 
+		    $('#recpasswordDiv').find('p.jquery_form_error_message').remove(); 
+    	    $("input#recconfirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
+			$('input#recconfirmPassword').attr('record-exist','yes');
+			$('input#recconfirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
+	    }
+   }
+	
+    $.fn.clear = function() {   
+    	 $('#confirmPassword').val('');
+    	
+	 return false;
+    }
+})(jQuery);
+</script>
+
 <script type="text/javascript">
 function validateEmail(type){
 	
@@ -699,7 +733,7 @@ function validateEmail(type){
 			$("#register_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -767,7 +801,7 @@ function validateRecruiterEmail(type){
 			$("#recruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -834,7 +868,7 @@ function validatepopEmail(type){
 			$("#popregister_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -873,7 +907,7 @@ function validatepopRecruiterEmail(type){
 			$("#poprecruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url:"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){

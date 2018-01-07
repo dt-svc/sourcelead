@@ -290,6 +290,14 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 // 								result = result +'          </div>';
 								result = result +'        </div>';
 								$("#qvemployeeSubmission").append(result);
+						}else{
+							var result = '';
+				        	  result = result +'            <div class="col-md-12" style="display:none">';
+				        	  result = result +' <h4>Work Experience</h4>';
+				        	  result = result +' <div>---</div>';
+				        	  result = result +'</div>';
+				        	  $("#qvemployeeSubmission").empty();
+				        	  $("#qvemployeeSubmission").append(result); 
 						}
 					},
 
@@ -362,7 +370,15 @@ function recQveducationSubmission(candidateId){
 							
 							result = result +'        </div>';
 	                     $("#qveducationSubmission").append(result); 
-        	  }
+        	  }else{
+					var result = '';
+		        	  result = result +'            <div class="col-md-12" style="display:none">';
+		        	  result = result +' <h4>Education</h4>';
+		        	  result = result +' <div>---</div>';
+		        	  result = result +'</div>';
+		        	  $("#qveducationSubmission").empty();
+		        	  $("#qveducationSubmission").append(result); 
+				}
         },
           
      }); 
@@ -409,7 +425,16 @@ function recQwikCertificates(candidateId){
 							result = result +'        </div>';
 							
 							$("#qvcertificationSubmission").append(result); 
-          }
+          }else{
+				var result = '';
+	        	  result = result +'  <div class="col-md-12" style="display:none">';
+	        	  result = result +' <h4>Certificates</h4>';
+	        	  result = result +' <div>---</div>';
+	        	  result = result +'</div>';
+	        	  $("#qvcertificationSubmission").empty();
+	        	  $("#qvcertificationSubmission").append(result); 
+			}
+        	  
         },
           
      });
