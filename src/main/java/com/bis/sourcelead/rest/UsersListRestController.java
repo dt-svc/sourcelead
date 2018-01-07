@@ -1272,8 +1272,6 @@ public class UsersListRestController {
 	private void sendTerminateEmailtoUser( User user,UserRole userRole, OrgLocations orgLocations) throws Exception {
 		   // SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 		 
-	
-		
 	        EmailMessage emailMessage = new EmailMessage();
 	         emailMessage.setFirstName(userRole.getUser().getFirstName());
 	         emailMessage.setLastName(userRole.getUser().getLastName());
@@ -1307,10 +1305,7 @@ public class UsersListRestController {
 	         StringBuilder name1 = new StringBuilder();
 	         if(user.getFirstName() != null && user.getLastName()!= "" && user.getLastName() != "undefined"){
 	        	  globalVarsMap.put("admin", name1.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-	        
-	         }
-	         else
-	         {
+	         }else{
 	        	 globalVarsMap.put("admin", user.getFirstName());
 	         }
 	        
@@ -1353,8 +1348,6 @@ public class UsersListRestController {
 		
 	Requirement req = 	requirementService.getRequirementByRequirementId(requirement.getId());
 	
-
-	
 	 EmailMessage emailMessage = new EmailMessage();
 	 emailMessage.setFirstName(loginUser.getFirstName());
 	 emailMessage.setLastName(loginUser.getLastName());
@@ -1367,8 +1360,14 @@ public class UsersListRestController {
 	//setting the class filed values
 	 Map<String, String> globalVarsMap = new HashMap<String, String>();
 	 	 User termentaedUserName = userService.getUserById(userId);
-		 globalVarsMap.put("loginUser", loginUser.getFirstName());
-		 globalVarsMap.put("assignedUser", req.getManagerUserId().getFirstName());
+		 globalVarsMap.put("loginUser", loginUser.getFullName());
+		 
+		 StringBuilder assignedUserName = new StringBuilder();
+		 if(req.getManagerUserId().getLastName() != null){
+			 globalVarsMap.put("assignedUser", assignedUserName.append(req.getManagerUserId().getFirstName()).append(" ").append(req.getManagerUserId().getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("assignedUser", assignedUserName.append(req.getManagerUserId().getFirstName()).toString());
+		 }
 		 globalVarsMap.put("reqCount", requirementsCountAsManager2.toString());
 		 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 		 StringBuilder loginBuilder = new StringBuilder();
@@ -1424,8 +1423,15 @@ public class UsersListRestController {
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 	 User termentaedUserName = userService.getUserById(userId);
-			 globalVarsMap.put("loginUser", loginUser.getFirstName());
-			 globalVarsMap.put("assignedUser", abc.getApproverUserId().getFirstName());
+			 globalVarsMap.put("loginUser", loginUser.getFullName());
+		 	
+			 StringBuilder assignedUserName = new StringBuilder();
+			 if(abc.getApproverUserId().getLastName() != null){
+				 globalVarsMap.put("assignedUser", assignedUserName.append(abc.getApproverUserId().getFirstName()).append(" ").append(abc.getApproverUserId().getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("assignedUser", assignedUserName.append(abc.getApproverUserId().getFirstName()).toString());
+
+			 }
 			 globalVarsMap.put("reqCount", requirementsCountAsApprover.toString());
 			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 			 StringBuilder loginBuilder = new StringBuilder();
@@ -1480,8 +1486,8 @@ public class UsersListRestController {
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 	 User termentaedUserName = userService.getUserById(userId);
-			 globalVarsMap.put("loginUser", loginUser.getFirstName());
-			 globalVarsMap.put("assignedUser", assUserName.getFirstName());
+			 globalVarsMap.put("loginUser", loginUser.getFullName());
+			 globalVarsMap.put("assignedUser", assUserName.getFullName());
 			 globalVarsMap.put("reqCount", count.toString());
 			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
 			 StringBuilder loginBuilder = new StringBuilder();
@@ -1533,10 +1539,10 @@ public class UsersListRestController {
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 	 User termentaedUserName = userService.getUserById(userId);
-			 globalVarsMap.put("loginUser", loginUser.getFirstName());
-			 globalVarsMap.put("assignedUser", assUserName.getFirstName());
+			 globalVarsMap.put("loginUser", loginUser.getFullName());
+			 globalVarsMap.put("assignedUser", assUserName.getFullName());
 			 globalVarsMap.put("reqCount", teamsCountAsOwner.toString());
-			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+			 globalVarsMap.put("terminatedUser",termentaedUserName.getFullName());
 			 StringBuilder loginBuilder = new StringBuilder();
 			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		  
