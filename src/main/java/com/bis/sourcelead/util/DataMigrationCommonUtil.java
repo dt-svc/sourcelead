@@ -2,19 +2,25 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.joda.time.Days;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +33,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -81,6 +86,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation) throws Exception
@@ -391,131 +399,116 @@ public class DataMigrationCommonUtil {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
+//	@SuppressWarnings("unchecked")
 	public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation) throws Exception
 	{
 		logger.debug("In dataValidationForTimesheets method...");
-		//dataMigrationDTOJsonCopy.keys().forEachRemaining(k -> {
-		Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
 		Projects projectName = null;
-		while( keys.hasNext() ) {
-			String k = (String)keys.next();
 			try {
-				System.out.println(k.toString()+" "+dataMigrationDTOJsonCopy.get(k.toString()).toString());
-				if((k.toString().equalsIgnoreCase("employeeName") || k.toString().equalsIgnoreCase("employeeEmail") || k.toString().equalsIgnoreCase("project") || k.toString().equalsIgnoreCase("actualStartDate") || k.toString().equalsIgnoreCase("actualEndDate")) && (dataMigrationDTOJsonCopy.get(k.toString()) == null || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null"))){
-					errorSet.put(k.toString(), k.toString()+"  field is missing");
-				}
-				if (k.toString().equalsIgnoreCase("project") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					projectName = projectsService.getProjectByOrgLocationsIdAndProjectName(orgLocation.getId(),dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				if (!dataMigrationDTOJsonCopy.get("project").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("project").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("project").toString().equalsIgnoreCase("undefined")) {
+					projectName = projectsService.getProjectByOrgLocationsIdAndProjectName(orgLocation.getId(),dataMigrationDTOJsonCopy.get("project").toString());
 					if(projectName != null) {
-						dataMigrationDTOJsonCopy.put((String) k, projectName.getProjectName());
+						dataMigrationDTOJsonCopy.put((String) dataMigrationDTOJsonCopy.get("project").toString(), projectName.getProjectName());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  not a vaid Project");
+						errorSet.put("project", dataMigrationDTOJsonCopy.get("project").toString()+"  not a vaid Project");
+					}
+				}else {
+					errorSet.put("project"," project field is missing");
+				}
+				
+				if (!dataMigrationDTOJsonCopy.get("employeeEmail").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("employeeEmail").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("employeeEmail").toString().equalsIgnoreCase("undefined")) {
+					 boolean emailVaild = isValidEmailAddress(dataMigrationDTOJsonCopy.get("employeeEmail").toString());
+					if(emailVaild == true) {		 
+						dataMigrationDTOJsonCopy.put("employeeEmail",dataMigrationDTOJsonCopy.get("employeeEmail"));
+					}else {
+						errorSet.put("employeeEmail", dataMigrationDTOJsonCopy.get("employeeEmail").toString()+"  invalid date");
 					}
 				}
-					
-				if (k.toString().equalsIgnoreCase("employeeEmail") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					 List<ProjectMembers> projectMember = projectMembersService.getAllProjectsByOrgLocationId(orgLocation.getId());
-					 for(ProjectMembers proMember:projectMember) {
-						 if(proMember.getProjectMemberCandidteId().getEmail().equalsIgnoreCase(k.toString())) {
-							 dataMigrationDTOJsonCopy.put((String) k,proMember.getProjectMemberCandidteId().getEmail());
-							 break;
-						 }
-					 }
-				}
-				DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
-				Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-				if (k.toString().equalsIgnoreCase("actualStartDate") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-			        Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-			        if(matcher.matches() == true) {
-						Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.get((String)k).toString());
-						String startDate = formatter.format(date);
-						dataMigrationDTOJsonCopy.put((String) k, startDate);
-			        	/*dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());*/
-			        }else {
-			        	errorSet.put(k.toString(), k.toString()+"  invalid date");
-			        }
-				}
-				if (k.toString().equalsIgnoreCase("actualEndDate") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-			        Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-			        if(matcher.matches() == true) {
-			        	Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.get((String)k).toString());
-						String endDate = formatter.format(date);
-						dataMigrationDTOJsonCopy.put((String) k, endDate);
-			        }else {
-			        	errorSet.put(k.toString(), k.toString()+"  invalid date");
-			        }
+				
+				if (!dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("undefined")) {
+			         boolean monthYear = validateMonthYear(dataMigrationDTOJsonCopy.get("actualStartDate").toString());
+			         if(monthYear == true) {
+			        	 
+			         }else {
+			        	 errorSet.put("actualStartDate", "please provide proper month year format"); 
+			         }
 				}
 				Pattern patternWeekCheck = Pattern.compile("^(\\d{0,3})$");
-				if (k.toString().equalsIgnoreCase("week1") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 120L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				
+				if (!dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week1").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("week1").toString()) < 120L)) {
+						dataMigrationDTOJsonCopy.put("week1",dataMigrationDTOJsonCopy.get("week1").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 120Hrs");
+						errorSet.put("week1", "week1 hours cannot be more then 120Hrs");
 					}
 				}
-				if (k.toString().equalsIgnoreCase("week2") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 120L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				if (!dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week2").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("week2").toString()) < 120L)) {
+						dataMigrationDTOJsonCopy.put("week2",dataMigrationDTOJsonCopy.get("week2").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 120Hrs");
+						errorSet.put("week2", "week2 hours cannot be more then 120Hrs");
 					}
 				}
-				if (k.toString().equalsIgnoreCase("week3") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 120L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				if (!dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week3").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("week3").toString()) < 120L)) {
+						dataMigrationDTOJsonCopy.put("week3",dataMigrationDTOJsonCopy.get("week3").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 120Hrs");
+						errorSet.put("week3", "week3 hours cannot be more then 120Hrs");
 					}
 				}
-				if (k.toString().equalsIgnoreCase("week4") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 120L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				if (!dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week4").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("week4").toString()) < 120L)) {
+						dataMigrationDTOJsonCopy.put("week4",dataMigrationDTOJsonCopy.get("week4").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 120Hrs");
+						errorSet.put("week4", "week4 hours cannot be more then 120Hrs");
 					}
 				}
-				if (k.toString().equalsIgnoreCase("week5") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 120L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				if (!dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week5").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("week5").toString()) < 120L)) {
+						dataMigrationDTOJsonCopy.put("week5",dataMigrationDTOJsonCopy.get("week5").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 120Hrs");
+						errorSet.put("week5","week5 hours cannot be more then 120Hrs");
 					}
 				}
-				if (k.toString().equalsIgnoreCase("billableHours") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 600L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				
+				if (!dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("billableHours").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("billableHours").toString()) < 600L)) {
+						dataMigrationDTOJsonCopy.put("billableHours",dataMigrationDTOJsonCopy.get("billableHours").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 600Hrs");
+						errorSet.put("billableHours", "billableHours hours cannot be more then 600Hrs");
 					}
 				}
-				if (k.toString().equalsIgnoreCase("nonBillableHours") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 600L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				
+				
+				if (!dataMigrationDTOJsonCopy.get("nonBillableHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("nonBillableHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("nonBillableHours").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("nonBillableHours").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("nonBillableHours").toString()) < 600L)) {
+						dataMigrationDTOJsonCopy.put("nonBillableHours",dataMigrationDTOJsonCopy.get("nonBillableHours").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 600Hrs");
+						errorSet.put("nonBillableHours", "NonbillableHours hours cannot be more then 600Hrs");
 					}
 				}
-				if (k.toString().equalsIgnoreCase("totalHours") && dataMigrationDTOJsonCopy.get(k.toString()) != null && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k.toString()).toString().equalsIgnoreCase("null")) {
-					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get(k.toString()).toString());
-					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get(k.toString()).toString()) < 600L)) {
-						dataMigrationDTOJsonCopy.put((String) k,dataMigrationDTOJsonCopy.get(k.toString()).toString());
+				
+				
+				if (!dataMigrationDTOJsonCopy.get("totalHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("totalHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("totalHours").toString().equalsIgnoreCase("undefined")) {
+					Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("totalHours").toString());
+					if(matcherWeek.matches() == true && (Long.parseLong(dataMigrationDTOJsonCopy.get("totalHours").toString()) < 600L)) {
+						dataMigrationDTOJsonCopy.put("totalHours",dataMigrationDTOJsonCopy.get("totalHours").toString());
 					}else {
-						errorSet.put(k.toString(), k.toString()+"  hours cannot be more then 600Hrs");
+						errorSet.put("totalHours", "totalHours hours cannot be more then 600Hrs");
 					}
 				}
 			
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		//}
 			if(errorSet.isEmpty()) {
 				ImportTimesheetDTO importTimeSheet =  new ImportTimesheetDTO();
 				ObjectMapper mapper = new ObjectMapper();
@@ -528,15 +521,25 @@ public class DataMigrationCommonUtil {
 						 HashMap<String,Date> memberFrequency = projectMembersHistoryService.getAssignDateandEndDateByProjectMemberId(projectMember.getId());
 						 Date assignDate = memberFrequency.get("STARTDATE");
 						 Date terminatedDate = memberFrequency.get("ENDDATE");
-						 Date assignedStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), importTimeSheet.getActualStartDate());
-						 Date assignedEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), importTimeSheet.getActualEndDate());
-						 if(assignedStartDate.after(assignDate) && assignedStartDate.before(terminatedDate)) {
-							 if(terminatedDate == null) {
-								 terminatedDate = assignedEndDate;
-							 }else if(assignedEndDate.after(assignDate) && assignedEndDate.before(terminatedDate)) {
-								 
-							 }
+						 
+						 if(importTimeSheet.getActualStartDate() != null) {
+							String[] year = importTimeSheet.getActualStartDate().split("-");
+							if(year[1] != null) {
+								String years = "20"+year[1];
+								 YearMonth yearMonth = YearMonth.of(Integer.parseInt(years),1);  // January of 2015.
+								 LocalDate firstOfMonth = yearMonth.atDay(1);
+								 LocalDate last = yearMonth.atEndOfMonth();
+								 System.out.println(last);
+							}
 						 }
+						 
+						
+						 
+						 
+						 Date assignedStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), "12-1-2017");
+						 
+						 
+						 
 					 }else {
 						 errorSet.put(dataMigrationDTOJsonCopy.getString("employeeEmail"),"not a valid peoject member.");
 					 }
@@ -549,6 +552,66 @@ public class DataMigrationCommonUtil {
 			}
 		
 	}
+	
+	
+	
+	private boolean validateMonthYear(String mothYearString) {
+		Boolean flag =  false;
+		String[] mothYearStringSplit = mothYearString.split("-");
+		try {
+		if(mothYearStringSplit[0] != null && StringUtils.isNotEmpty(mothYearStringSplit[0])) {
+			Map<Integer,String> mothYear = new HashMap<>();
+			mothYear.put(1, "Jannuary,Jan");
+			mothYear.put(2, "February,Feb");
+			mothYear.put(3, "March,Mar");
+			mothYear.put(4, "April,Apr");
+			mothYear.put(5, "May,May");
+			mothYear.put(6, "June,Jun");
+			mothYear.put(7, "July,Jul");
+			mothYear.put(8, "August,Aug");
+			mothYear.put(8, "September,Sep");
+			mothYear.put(10, "October,Oct");
+			mothYear.put(11, "November,Nov");
+			mothYear.put(12, "December,Dec");
+			for( Entry<Integer, String> my:mothYear.entrySet()) {
+				String monthName [] =  my.getValue().split(",");
+				try {
+					 int value = Integer.parseInt(mothYearStringSplit[0]);
+					 if(value == my.getKey()) {
+						 flag = true;
+					 }
+				}catch (Exception e) {
+					if(monthName[0].equalsIgnoreCase(mothYearStringSplit[0]) || monthName[1].equalsIgnoreCase(mothYearStringSplit[0])) {
+						flag = true;
+					}
+				}
+			}
+		}if(mothYearStringSplit[1] != null && StringUtils.isNotEmpty(mothYearStringSplit[1])) {
+			try {
+				Long.parseLong(mothYearStringSplit[1]);
+				flag = true;
+			}catch(NumberFormatException|NullPointerException excep) {
+				flag = false;
+			}
+		}
+		}catch(Exception e) {
+			flag = false;
+		}
+		
+		return flag;	
+}
+
+
+	public static boolean isValidEmailAddress(String email) {
+		   boolean result = true;
+		   try {
+		      InternetAddress emailAddr = new InternetAddress(email);
+		      emailAddr.validate();
+		   } catch (AddressException ex) {
+		      result = false;
+		   }
+		   return result;
+		}
 	
 }
 	
