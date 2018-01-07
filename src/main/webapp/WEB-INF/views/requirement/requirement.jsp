@@ -712,8 +712,8 @@ $(document).ready(function () {
 				<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
 				</c:if>
 				<c:if test="${empty requirement.backgroundCheck}">
-				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
-				<span class="paddingLeft"><input type="radio"  value="N" checked name="backgroundCheck"><span class="mr5"></span>No</span>
+				<span class="paddingRight"><input type="radio"  value="Y" checked name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N"  name="backgroundCheck"><span class="mr5"></span>No</span>
 				</c:if>
 				</div>
 		 </div> 
