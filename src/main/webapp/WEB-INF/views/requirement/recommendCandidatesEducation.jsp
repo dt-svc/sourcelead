@@ -676,6 +676,7 @@ function candidateEducationStore(candidateId){
 				            			$("#selector4").css({ display: "block" });
 				        				$("#eduMsgDiv").html("Success!! New Education added");
 				               			 candidateEducationList(candidateId);
+				               			recQveducationSubmission(candidateId);
 				               			eduMsgFadeinFunction();
 							    	}
 				                 }   
@@ -788,6 +789,7 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
              			 $("#popUpDiv").removeClass("edit-details-active");
              			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			candidateEducationList(candidateId);
+             			recQveducationSubmission(candidateId);
              			eduMsgFadeinFunction();
              			
 			    	}
@@ -932,7 +934,8 @@ function clearSearchKey() {
 						url : sourceleadUrl+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 						success : function(result) {
 							closePopup();
-							candidateEducationList(candidateId)
+							candidateEducationList(candidateId);
+							recQveducationSubmission(candidateId);
 						},
 					});
 			return true;
