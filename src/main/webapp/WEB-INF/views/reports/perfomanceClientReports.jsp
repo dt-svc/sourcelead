@@ -18,7 +18,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Clients Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo; Clients Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Clients Report</div>
    </section>
     <div class="clearfix"></div>
     <div class="clearfix row mb">
