@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -504,6 +505,7 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
 			 timesheetEntryDetailsDTO.setTimeSubFrequencies(timeSubFrequencies);
 			 timesheetEntryDetailsDTO.setTimesheetFor(timesheetFor);
+			 timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
 			 timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
 			 eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
         }
@@ -1991,7 +1993,7 @@ public class TimesheetRestController {
 					  frequencyEndDate = CalendarUtil.getMonth15thDateByGivenDate(frequencyStartDate, 0).get("STARTDATE");
 				  }
     	   }else if(projects != null && projects.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly")){
-    		    Date biWeeklyStartMondayDate = timesheetFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects,timesheetDate);
+    		    Date biWeeklyStartMondayDate = timesheetFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDateForTsImports(projects,timesheetDate);
     		    Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 				cal.setLenient(false);
 				cal.setTime(biWeeklyStartMondayDate);
@@ -2003,9 +2005,17 @@ public class TimesheetRestController {
     		    Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 				cal.setLenient(false);
 				cal.setTime(timesheetDate);
-				Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",loginOrgLocation.getDateFormat());
+				Calendar startMonday = null;
+				Calendar endSunday = null;
+				SimpleDateFormat sf = new SimpleDateFormat("E"); 
+				if(sf.format(timesheetDate).equalsIgnoreCase("SUN")) {
+					startMonday = CalendarUtil.getPreviousWeekDayByCalendar(cal, "MON",loginOrgLocation.getDateFormat());
+					endSunday = CalendarUtil.getPreviousWeekDayByCalendar(cal, "SUN",loginOrgLocation.getDateFormat());
+				}else {
+					startMonday = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "MON",loginOrgLocation.getDateFormat());
+					endSunday = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "SUN",loginOrgLocation.getDateFormat());
+				}
 				frequencyStartDate = startMonday.getTime();
-				Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN",loginOrgLocation.getDateFormat());
 				frequencyEndDate = endSunday.getTime();
 				
            }

@@ -82,7 +82,7 @@ public class LeaveManagementUtil {
 				}
 			}
 			else if("HalfYearly".equalsIgnoreCase(type.getPeriod())){
-				if("AllEmployees".equalsIgnoreCase(type.getLeaveEffective())){
+				if("All Employees".equalsIgnoreCase(type.getLeaveEffective())){
 					totalLeaves = type.getNoOfDays() * 2; 
 				}else{
 					if(emp.getHireDate() != null){
@@ -109,7 +109,7 @@ public class LeaveManagementUtil {
 			}
 			else if("Quarterly".equalsIgnoreCase(type.getPeriod())){
 				
-				if("AllEmployees".equalsIgnoreCase(type.getLeaveEffective())){
+				if("All Employees".equalsIgnoreCase(type.getLeaveEffective())){
 					totalLeaves = type.getNoOfDays() * 4; 
 				}else{
 					if(emp.getHireDate() != null){
@@ -135,7 +135,7 @@ public class LeaveManagementUtil {
 				}
 			}
 			else if("Monthly".equalsIgnoreCase(type.getPeriod())){
-				if("AllEmployees".equalsIgnoreCase(type.getLeaveEffective())){
+				if("All Employees".equalsIgnoreCase(type.getLeaveEffective())){
 					totalLeaves = type.getNoOfDays() * 12; 
 				}else{
 					if(emp.getHireDate() != null){
@@ -161,7 +161,7 @@ public class LeaveManagementUtil {
 				}
 			}
 			else if("SemiMonthly".equalsIgnoreCase(type.getPeriod())){
-				if("AllEmployees".equalsIgnoreCase(type.getLeaveEffective())){
+				if("All Employees".equalsIgnoreCase(type.getLeaveEffective())){
 					totalLeaves = type.getNoOfDays() * 24;
 				}else{
 					if(emp.getHireDate() != null){
@@ -187,7 +187,7 @@ public class LeaveManagementUtil {
 				}
 			}
 			else if("BiWeekly".equalsIgnoreCase(type.getPeriod())){
-				if("AllEmployees".equalsIgnoreCase(type.getLeaveEffective())){
+				if("All Employees".equalsIgnoreCase(type.getLeaveEffective())){
 					totalLeaves = type.getNoOfDays() * 26;
 				}else{
 					if(emp.getHireDate() != null){

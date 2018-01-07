@@ -84,6 +84,7 @@ import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.model.ConnectionBean;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -2096,14 +2097,14 @@ public class UsersListRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.GET)
+	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.POST)
 	public @ResponseBody List<UserRoleDTO> getUserListForConnections(
 			@RequestParam(value = "searchValue", required = false) String searchValue, 
 			@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request)
 			throws Exception {
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserRoleDTO> userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
+		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
 		return userRoleDTOList;
 
 	}
