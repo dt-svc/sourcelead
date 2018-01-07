@@ -13,7 +13,6 @@
 			if("" != localStorage.getItem("myExpensesListGrid") && null != localStorage.getItem("myExpensesListGrid")){
 				$("#expensesListDiv").empty();
 	       		$("#expensesListDiv").append(localStorage.getItem("myExpensesListGrid"));
-	       		expensesPagination();
 	       		/* localStorage.removeItem("myExpensesListGrid"); */
 	       		localStorage.setItem("myExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
@@ -262,29 +261,6 @@ function getExpensesList(){
 	}
 
 </script> -->      
-
-<script>
-function expensesPagination(){ 
-    $('#expensesPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-		"aaSorting": [[0,'desc']],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
-    $("#expensesPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-}
-</script> 
-
 <script>
 
 function expenseView(expenseId){
