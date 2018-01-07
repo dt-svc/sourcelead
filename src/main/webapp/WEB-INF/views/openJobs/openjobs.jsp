@@ -599,8 +599,7 @@ a.alertBtn {
 				<div class="col-md-8">
 					<label>Keyword</label>
 						<div class="clearfix">
-							<input type="text" id="requirementTitle" name="requirementTitle"
-								class="form-control input-sm" placeholder="Keyword">
+						<select class="chosen-select form-control input-sm" multiple id="requirementTitle" name="requirementTitle"></select>
 						</div>
 				</div>
 				<div class="col-md-4">
@@ -640,7 +639,7 @@ a.alertBtn {
 											<option selected disabled>INR</option>
 											<option>AUD</option>
 											<option>USD</option>
-											<option>GPB</option>
+											<option>GBP</option>
 											<option>SGD</option>
 											<option>EUR</option>
 										</select>
@@ -1066,6 +1065,7 @@ function getOpenJobsELKList(orgLocationId){
 		orgLocationIds = orgLocationId
 		 document.getElementById("orgProfile").style.display="none";
 		 document.getElementById("orgImage").style.display="block";
+		 $("#companiesListDiv").hide();
 // 		 document.getElementById("jobResultHeadId").style.display="block";
 	}
 	var offset = 0;
@@ -1261,6 +1261,7 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
+
 // 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 // 				result = result +'  <div class="addthis_inline_share_toolbox" data-url='+link+' data-title='+title+'></div>';
 			    result = result +'	<div class="share">';
@@ -1613,7 +1614,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:</label>--</div>';
 				}
+
 // 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+
 				result = result +'	<div class="share">';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
@@ -1659,63 +1662,6 @@ function viewJobSummaryDocument(jobId,title){
 function openJobSearchRequirement(){
 	/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
 	
-				var sourceleadUrl = '${sourceleadUrl}';
-				var str = sourceleadUrl;
-				var sourceleadUrl1 = str.replace("app", "");
-				var url = "";
-				var openJobsRequirementTitle = document
-					.getElementById("requirementTitle").value;
-				if (openJobsRequirementTitle != null && openJobsRequirementTitle != ''
-					&& openJobsRequirementTitle != 'undefined') {
-				url += "/" + openJobsRequirementTitle;
-				} else {
-				url += "";
-				}
-				var openJobsLocation = document.getElementById("country").value;
-				if (openJobsLocation != null && openJobsLocation != ''
-					&& openJobsLocation != 'undefined') {
-				url += "/" + openJobsLocation;
-				} else {
-				url += "";
-				}
-				
-				var openJobState = document.getElementById("state").value;
-				if (openJobState != null && openJobState != ''
-					&& openJobState != 'undefined') {
-				url += "/" + openJobState;
-				} else {
-				url += "";
-				}
-				
-			
-				var openJobsExperience = document
-					.getElementById("minExp").value;
-				if (openJobsExperience != null && openJobsExperience != '' && openJobsExperience != 'undefined') {
-				url += "/" + openJobsExperience;
-				}
-				var openJobsskills = document
-				.getElementById("skills").value;
-			if (openJobsskills != null && openJobsskills != '' && openJobsskills != 'undefined') {
-			url += "/" + openJobsskills;
-			}
-				
-				if ((openJobsRequirementTitle == null || openJobsRequirementTitle == '' || openJobsRequirementTitle == 'undefined')
-					&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
-					&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
-				location.replace(sourceleadUrl1 + "jobs");
-				}  if ((openJobsRequirementTitle != null
-					&& openJobsRequirementTitle != '' && openJobsRequirementTitle != 'undefined')
-					&& (openJobsLocation == null || openJobsLocation == '' || openJobsLocation == 'undefined')
-					&& (openJobsExperience == null || openJobsExperience == '' || openJobsExperience == 'undefined')) {
-				location.replace(sourceleadUrl1 + "jobs/"
-						+ openJobsRequirementTitle);
-				} else {
-				location.replace(sourceleadUrl1 + "jobs" + url);
-				}
- 				
- 				
- 				
- 				
 			var frm = $('#openJobsAdvancedForm').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -1785,8 +1731,10 @@ function openJobSearchRequirement(){
 						 				var comment='';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
-										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
-										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
+										result = result +'	<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
+// 										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';
+// 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
 										result = result +'  <span>'+skills+'</span>';
@@ -1804,7 +1752,9 @@ function openJobSearchRequirement(){
 										
 										result = result +'	<div class="jobShare">';
 										result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>'+requirements.createdDate+'</div>';
+
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+
 										result = result +'	<div class="share">';
 										result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
@@ -1932,7 +1882,7 @@ function getCities(){
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
 			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
+		   /*  var select, chosen;
 		    select = $("#anyKeyWord");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosen = select.data('chosen');
@@ -1997,13 +1947,37 @@ function getCities(){
 	        		$("#excludeReqKeyWord").trigger("chosen:updated");
 	        		
 		        }
+		    }); */
+		    
+		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#requirementTitle");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keydown keyup', function(e2)
+		    {
+		    	var excludeKeyWord = this.value.replace(",","");
+		        if (tagItBykeyForSkills(e2) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
+		        {
+		        	preventTabkey(e2); 
+		        	var par = this.parent;
+		            var option = $("<option>").val(excludeKeyWord).text(excludeKeyWord);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#requirementTitle option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#requirementTitle").trigger("chosen:updated");
+	        		
+		        }
 		    });
+		    
 		    
 		    var selectthree, chosenthree;
 		    selectthree = $("#organizations");
 		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keyup', function(e3)
+		    chosenthree.search_field.on('keydown keyup', function(e3)
 		    {
 		    	var organizations = this.value.replace(",","");
 		        if ((e3.which == 13 || e3.which == 188) && (organizations != null  && organizations != '' && organizations != 'undefined'))

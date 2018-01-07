@@ -943,7 +943,7 @@ public class RegistrationRestController {
 	{
 		ModelAndView model = new ModelAndView();
 		UserRole userRole = null;
-		if(roleId != null)
+		if(roleId != null && roleId >0)
 			userRole = userRoleService.getUserRoleById(roleId);
 		else{
 			User user = userService.findByUserName(userName);
@@ -985,9 +985,16 @@ public class RegistrationRestController {
 	}
 	
 	@RequestMapping(value = "/app/ws/validateWhitelistIp", method = RequestMethod.GET)
-	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,HttpServletRequest request) throws Exception
+	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "name", required = false) String userName,HttpServletRequest request) throws Exception
 	{
-		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		UserRole userRole = null;
+		if(userRoleId > 0)
+			userRole = userRoleService.getUserRoleById(userRoleId);
+		else{
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
+		
 		String ipAddress = userLoginHelper.getClientIpAddr(request);
 		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole);
 	}
