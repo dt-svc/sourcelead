@@ -18,7 +18,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Clients Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo; Clients Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Clients Report</div>
     </section>
     <div class="clearfix"></div>
     <div class="clearfix row mb">
@@ -134,16 +134,16 @@ $(document).ready(function(){
 							<span class="text-warning" id="draftTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 						<li>
-							<label>OverDue</label>
+							<label>Unpaid</label>
 							<span class="text-danger" id="unpaidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
-						</li>
-						<li>
-							<label>Open</label>
-							<span class="text-info" id="openTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 						<li>
 							<label>Paid</label>
 							<span class="text-success" id="paidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
+						</li>
+						<li>
+							<label>Open</label>
+							<span class="text-info" id="openTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 					</ul>
 				</div>
@@ -562,7 +562,7 @@ function getTopFiveReceivsblesReports(){
 	    	getAmchartData(data);
 	    	$("#draftTotalAmount").html(data.draftInvoiceTotal)
 	    	$("#unpaidTotalAmount").html(data.overDueInvoicetotal)
-	    	$("#paidTotalAmount").html(data.allPaidInvoiceTotal)
+	    	$("#paidTotalAmount").html(data.paidInvoiceTotal)
 	    	$("#openTotalAmount").html(data.openInvoiceTotal)
  	    }
 	});
