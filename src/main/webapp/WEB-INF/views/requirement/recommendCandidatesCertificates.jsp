@@ -108,7 +108,7 @@ function storeCertificate(candidateId){
 				    	     			$("#cerMsgDiv").html("Success!! New Certification added");
 				               			candidateCertificateList(candidateId);
 				               			cerMsgFadein();
-				                   		qwikCertificates(candidateId);
+				               			recQwikCertificates(candidateId);
 				                   		setTimeout(function(){
 				    			 			candidateList();					 			
 				    			 		},100);
@@ -626,7 +626,7 @@ function addCertification(candidateId) {
 			     			$("#cerMsgDiv").html("Certification details updated");
 								candidateCertificateList(candidateId);
 								cerMsgFadein();
-								qwikCertificates(candidateId);
+								recQwikCertificates(candidateId);
 								setTimeout(function(){
 						 			candidateList();					 			
 						 		},100);
@@ -696,6 +696,7 @@ function deleteSelectedCertification(candidateCertificationId,candidateId){
               			 $("#cerMsgDiv").html("Certification deleted");
               			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
               			candidateCertificateList(candidateId);
+              			recQwikCertificates(candidateId);
               			cerMsgFadein();
               			setTimeout(function(){
 				 			candidateList();					 			
