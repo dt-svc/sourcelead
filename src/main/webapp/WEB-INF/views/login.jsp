@@ -19,10 +19,7 @@ window.onload = function() {
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = "";
 	if("${redirect_to_login_2_Step_Process}" != ''){
-		$("#directtwoStepAuthDiv").removeAttr("style");
- 	    $("#directtwoStepAuthDiv").attr("style","display : block");
- 	    $(".signWrap").addClass("orgOutWrap");
- 	    getUserDetailsByUserRoleIdfromLogin(userRoleId,userName,password);
+ 	   directLoginValidateWhiteListIp(userRoleId,userName,password);
 	}
 }
 </script>
@@ -64,29 +61,54 @@ window.onload = function() {
 <!--  Forgot Pass  -->	
 </div>
 
-<div id="twoStepAuthDiv" style="display:none">
+<div id="directtwoStepAuthDiv" style="display:none">
    <jsp:include page="otpVerification.jsp"></jsp:include>
 </div>
 
  </div>
  
+ <script>
+function directLoginValidateWhiteListIp(userRoleId,userName,password){
+	var userName = '${username}';
+	var password = '${password}';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = 0;
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&name="+userName,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 $('#loginWhiteListDiv').find('p.jquery_form_error_message').remove();
+	    		 $(".signWrap").addClass("orgOutWrap");
+	    		 getUserDetailsByUserRoleIdfromLogin(userRoleId,userName,password);
+	    	 }else{
+	    		$('#loginWhiteListDiv').find('p.jquery_form_error_message').remove();
+	 			$("#loginWhiteListDiv").append( "<p class='jquery_form_error_message'>You are not allowed to access this location</span>");
+	 			$("#loading").removeAttr('style');
+	    	 }
+	      },
+	  }); 
+}
+</script>
  
  <script>
 function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#signinDiv").removeAttr("style");
 		    	   $("#signinDiv").attr("style","display : none");
-	    		   $("#twoStepAuthDiv").removeAttr("style");
-		    	   $("#twoStepAuthDiv").attr("style","display : block");
-	    		   $("#twoStepAuthDiv").empty();
-	    		   $("#twoStepAuthDiv").append(data);
+	    		   $("#directtwoStepAuthDiv").removeAttr("style");
+		    	   $("#directtwoStepAuthDiv").attr("style","display : block");
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
 	    		   $("#resendOTP").attr("style","display:none");
 	    		   $("#backAnch").prop("onclick",null);
+	    		   $("#fromType").val("login");
 	    		   $("#backAnch").attr("onclick","logout('"+sourceleadUrl+"');");
 	    		   $("#sendOTP").attr("style","display:block");
 	    	   }
