@@ -192,6 +192,8 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
+			getLeaveDetails();
+			
 			}
 		});
 		

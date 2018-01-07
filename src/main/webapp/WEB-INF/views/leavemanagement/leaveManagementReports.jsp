@@ -71,7 +71,7 @@
                         <div class="row">
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
-                                <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
+                                <!-- <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
                                     <option value="">--Select Year--</option>
                                     <option>2020</option>
                                     <option>2019</option>
@@ -84,7 +84,7 @@
                                     <option>2012</option>
                                     <option>2011</option>
                                     <option>2010</option>
-                                </select>
+                                </select> -->
                             </div>
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
