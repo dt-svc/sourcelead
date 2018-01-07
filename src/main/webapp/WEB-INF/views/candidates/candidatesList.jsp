@@ -1612,6 +1612,7 @@ function savedCommentAndCount(candidateId){
 			 $(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
+		  $("#dataTableSearch").val('');
 		  $("div.cand-advsrch-popup").toggle();
 		  $(".advancedsearch-mask").fadeIn();
 		};

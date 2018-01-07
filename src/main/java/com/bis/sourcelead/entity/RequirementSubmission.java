@@ -525,6 +525,10 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+	private String submissionDisplayStatus;
+    
+    @Transient
+    @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
     @NotFound(action=NotFoundAction.IGNORE)
@@ -1623,5 +1627,12 @@ public class RequirementSubmission implements Serializable{
 		this.backOutCategoryOther = backOutCategoryOther;
 	}
 
+	public String getSubmissionDisplayStatus() {
+		return submissionDisplayStatus;
+	}
+
+	public void setSubmissionDisplayStatus(String submissionDisplayStatus) {
+		this.submissionDisplayStatus = submissionDisplayStatus;
+	}
 	
 }

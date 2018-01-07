@@ -480,6 +480,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 			submissionTemplate.setOrgLocationId(clientOrgLocations);
 			submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			submissionTemplate.setIsDefault(Constants.YES);
 			submissionTemplate.setTemplateType("Submission");
 			submissionTemplate.setCreatedBy(user.getUserCode());
 			submissionTemplate.setUpdatedBy(user.getUserCode());
@@ -499,6 +500,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setOrgLocationId(clientOrgLocations);
 			submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 			submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			submissionTemplate.setIsDefault(Constants.YES);
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setTemplateType("Feedback");
 			submissionTemplate.setUpdatedDate(new Date());
@@ -1451,7 +1453,7 @@ public class ClientServiceImpl implements ClientService {
 
 			StringBuilder linkBuilder = new StringBuilder();
 			globalVarsMap.put("faqLink", linkBuilder.append(
-					"<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>")
+					"<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>Click Here</a>")
 					.toString());
 
 			StringBuilder loginBuilder = new StringBuilder();
@@ -1498,7 +1500,7 @@ public class ClientServiceImpl implements ClientService {
 
 			StringBuilder linkBuilder = new StringBuilder();
 			globalVarsMap.put("faqLink", linkBuilder.append(
-					"<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>")
+					"<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>Click Here</a>")
 					.toString());
 
 			StringBuilder fbLinkBuilder = new StringBuilder();
