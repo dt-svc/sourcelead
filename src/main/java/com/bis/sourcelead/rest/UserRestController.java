@@ -289,7 +289,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
+		commonUtil.onboardCreationCandidateGeneratedIdUpdated(user,orgLocations);
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
+		
 		// userService.createUser(jsonObj,user,orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		return "usersList";
@@ -600,7 +602,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			
 			@RequestMapping(value = "/rest/refreshSessionAttributes", method = RequestMethod.GET)
 	         public int refreshSessionAttributes(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="locationCode", required=true) String locationCode,HttpServletRequest request) throws Exception {
-	             int output =  HttpServletResponse.SC_OK;
+	             int output =  HttpServletResponse.SC_NOT_FOUND;
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	             if(loginUser == null && userId != null){
 	            	 loginUser = userService.getUserById(userId);
@@ -610,7 +612,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	            	 SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLoc);
 	            	 Candidate candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
 					 SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
-					 output =  HttpServletResponse.SC_NOT_FOUND;
+					 output =  HttpServletResponse.SC_OK;
 	             }
 	             return output;
 	         }

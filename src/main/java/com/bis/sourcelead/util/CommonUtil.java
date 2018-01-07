@@ -1435,7 +1435,7 @@ public class CommonUtil {
 						candidate.setCountry(candidateDTO.getCountry());
 					}
 				
-				candidate.setIsAssociate(Constants.YES);
+				candidate.setIsAssociate(Constants.NO);
 				
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
@@ -1582,6 +1582,24 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		}
 		String datesStrLisr = dateStr.stream().collect(Collectors.joining(","));
 		return datesStrLisr;
+	}
+	
+	public void onboardCreationCandidateGeneratedIdUpdated(User user, OrgLocations locations) throws Exception{
+		
+		Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), locations.getId());
+		if(candidate!= null){
+			String generatedid = candidate.getGeneratedId().trim();
+			if(generatedid != null && StringUtils.isNotBlank(generatedid)){
+				if(generatedid.substring(0,4).equalsIgnoreCase("null")){
+					StringBuilder generatedIDBuild = new StringBuilder();
+					candidate.setGeneratedId(generatedIDBuild.append(locations.getGeneratedUserId()).append(generatedid.substring(4,generatedid.length())).toString());
+					candidateService.saveOrUpdateCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					
+				}
+			}
+		}
+		
 	}
 	
 	public void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {

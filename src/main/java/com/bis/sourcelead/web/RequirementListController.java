@@ -136,11 +136,11 @@ public class RequirementListController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
-		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqCreateMsg");
+		/*String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqCreateMsg");
 		if(!isNullOrEmpty(msg)){
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "reqCreateMsg");
-		}
+		}*/
 		
 		return model;
 

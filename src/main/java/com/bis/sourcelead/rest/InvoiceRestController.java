@@ -481,7 +481,7 @@ public class InvoiceRestController {
 					billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
 				}
 				
-				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
 						!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
@@ -1356,7 +1356,7 @@ public class InvoiceRestController {
 			}
 			
 			
-			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase((invoice.getPaymentStatus())) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()))){
+			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase((invoice.getPaymentStatus())) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))){
 				Double paidAmount1 = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
 				String convertedPaidAmount = String.valueOf(paidAmount1);
 				totalPaidAmount = totalPaidAmount + Double.parseDouble(convertedPaidAmount);
