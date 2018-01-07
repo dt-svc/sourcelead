@@ -1255,6 +1255,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
 			count = (Long) maxCountList.iterator().next().longValue();
 		}
+		if(count == 0){
+			 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'7') AS UNSIGNED)) FROM sourcelead.CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+			 maxCountList = session.createSQLQuery(query).list();
+			 if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+					count = (Long) maxCountList.iterator().next().longValue();
+				}
+		}
+		
 		return count;
 		
 	}
