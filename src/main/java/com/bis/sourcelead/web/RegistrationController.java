@@ -460,7 +460,7 @@ public class RegistrationController {
 	 
 	 
 	 
-	  @RequestMapping(value = "/validateCrowdSourcingEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/app/ws/validateCrowdSourcingEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
@@ -474,7 +474,7 @@ public class RegistrationController {
 	   }
 	  
 	  
-	  @RequestMapping(value = "/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/app/ws/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingRegistrationEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
