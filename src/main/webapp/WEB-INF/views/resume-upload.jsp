@@ -391,7 +391,7 @@ $(function() {
 					$(".browseProgress").show();
 					$("#progressBar").html('0%');
 					$(".progress div").css("width", "0%");
-					getUploadFileStatus();
+					getUploadStatus();
 				}
             }, 
             

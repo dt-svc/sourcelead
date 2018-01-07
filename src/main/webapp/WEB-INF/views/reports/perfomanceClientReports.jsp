@@ -134,16 +134,16 @@ $(document).ready(function(){
 							<span class="text-warning" id="draftTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 						<li>
-							<label>Unpaid</label>
+							<label>OverDue</label>
 							<span class="text-danger" id="unpaidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
-						</li>
-						<li>
-							<label>Paid</label>
-							<span class="text-success" id="paidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 						<li>
 							<label>Open</label>
 							<span class="text-info" id="openTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
+						</li>
+						<li>
+							<label>Paid</label>
+							<span class="text-success" id="paidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
 						</li>
 					</ul>
 				</div>
@@ -562,7 +562,7 @@ function getTopFiveReceivsblesReports(){
 	    	getAmchartData(data);
 	    	$("#draftTotalAmount").html(data.draftInvoiceTotal)
 	    	$("#unpaidTotalAmount").html(data.overDueInvoicetotal)
-	    	$("#paidTotalAmount").html(data.paidInvoiceTotal)
+	    	$("#paidTotalAmount").html(data.allPaidInvoiceTotal)
 	    	$("#openTotalAmount").html(data.openInvoiceTotal)
  	    }
 	});

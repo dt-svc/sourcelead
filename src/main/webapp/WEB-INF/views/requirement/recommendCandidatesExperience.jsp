@@ -116,7 +116,7 @@ function closeCertificatePopup(){
         			$("#empMsgDiv").html("Success!! New Employer added");
 					candidateEmployersList(candidateId);
 					empMsgFadein();
-					qvemployeeSubmission(candidateId);
+					recQvemployeeSubmission(candidateId);
 					
 					setTimeout(function(){
 			 			candidateList();					 			
@@ -791,6 +791,7 @@ function removeEmployer(candidateemployerId, candidateId){
 								 $("#remove_user_pop_emp, .project_inn_mask").fadeOut();
 								closeCertificatePopup();
 								candidateEmployersList(candidateId);
+								recQvemployeeSubmission(candidateId);
 								empMsgFadein();
 								 setTimeout(function(){
 							 			candidateList();					 			
@@ -837,7 +838,8 @@ function removeEmployer(candidateemployerId, candidateId){
 						url : sourceleadUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
 						success : function(result) {
 							closeCertificatePopup();
-							candidateEmployersList(candidateId)
+							candidateEmployersList(candidateId);
+							recQvemployeeSubmission(candidateId);
 						},
 					});
 			}

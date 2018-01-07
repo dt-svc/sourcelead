@@ -55,7 +55,7 @@ window.onload = function() {
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
                     <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
                   </div>
-                  <div class="col-md-5 paddingLeft">
+                  <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();">
@@ -73,7 +73,7 @@ window.onload = function() {
                   <div class="col-md-7 paddingRight" id="toDateDiv">
                     <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
                   </div>
-                  <div class="col-md-5 paddingLeft">
+                  <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();">
@@ -192,6 +192,8 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
+			getLeaveDetails();
+			
 			}
 		});
 		
@@ -361,9 +363,15 @@ function onbehalf() {
 	if (ckbox.is(':checked')) {
 		$("#onbehalf").show();
 	    $("#user").attr('data-validation',"required");
+	    $("#fromDate").val('');
+	    $("#toDate").val('');
 	}else{
 		$("#onbehalf").hide();
+		$("#user").val('');
+		$('#user').trigger("chosen:updated");
 	    $("#user").removeAttr('data-validation');
+	    $("#fromDate").val('');
+	    $("#toDate").val('');
 	}
     
 }
@@ -450,6 +458,14 @@ function getLeaveDetails(){
 		   	type: "POST",
 		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+leaveTypeId,	 
 		    success: function(report) {
+		    	if(report.duration == "Full Day"){
+		    		$("#fromHalfDayDiv").hide();
+		    		$("#toHalfDayDiv").hide();
+		    	}else{
+		    		$("#fromHalfDayDiv").show();
+		    		$("#toHalfDayDiv").show();
+		    	}
+		    	
 		    	if(report.reasonRequired == "Y"){
 			 		$("#reason").attr('data-validation',"required");
 			 		document.getElementById("reasonIdY").style.display = 'block';
@@ -493,8 +509,8 @@ function getLeaveDetails(){
 		        }else{
 		    		$("#applyId").prop("disabled", false);
 		        }
-		    	if(report.leavePolicyDescription !=null){
-	 				$("#termsAndConditions").html(data);
+		    	if(report.policyDescription !=null){
+	 				$("#termsAndConditions").html(report.policyDescription);
 	 				document.getElementById("termsModel").style.display="block";
 	 			}
 		    }

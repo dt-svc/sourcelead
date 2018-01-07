@@ -197,7 +197,11 @@ $(document).ready(function () {
      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
+    <div class="success_pop" id="selector2" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgJobDiv"></span>
+       </div>
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Add Job </div>
+  	
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -1651,7 +1655,19 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
 					  	success : function(data) {
+					  		$("#loading").removeAttr("style");	
 						location.replace(sourceleadUrl+"/jobs");
+						$("#selector2").removeAttr("style");
+			    		$("#selector2").css({ display: "block" });
+			    		if(saveType == 'save'){
+			    			$("#msgJobDiv").html("Successfully job  saved..");
+			    		}else if(saveType == 'draft'){
+			    			$("#msgJobDiv").html("Successfully job  saved to Draft");
+			    		}
+			    		else if(saveType == 'submitForApproval'){
+			    			$("#msgJobDiv").html("Successfully job  submitted for approval");
+			    		}
+		     			msgFadein();
 
 					},
 				});
@@ -1666,6 +1682,10 @@ function validate_fileupload(fileName)
 		$("#requirement_form").validateOnBlur(false, validationSettings);
 	});
 	
+	function msgFadein() {
+		$("#selector2").fadeIn(200);
+	    $('#selector2').delay(2000).fadeOut('slow');
+	}
 	
 </script>
 <script type="text/javascript">

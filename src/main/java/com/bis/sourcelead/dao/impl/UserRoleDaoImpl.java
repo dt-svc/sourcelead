@@ -26,8 +26,10 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.mchange.v1.util.StringTokenizerUtils;
@@ -890,8 +892,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		
 		if(userRoleList.size() >= offset){
-			if(userRoleList.size() > offset + 20){
-				userRoleList = userRoleList.subList(offset, (offset+20));
+			if(userRoleList.size() > offset + 5){
+				userRoleList = userRoleList.subList(offset, (offset+5));
 			}else{
 				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
 			}
@@ -899,23 +901,38 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			if(userRoleList != null && userRoleList.size() > 0) {
 				for(UserRole userRole : userRoleList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
+					String queryForStatus = "from Connections connections where (connections.fromUser.id = :fromId and connections.toUser.id = :toId) or (connections.fromUser.id = :toId and connections.toUser.id = :fromId)";
+					Connections connections = (Connections) session.createQuery(queryForStatus).setLong("fromId", userId).setLong("toId", userRole.getUser().getId()).uniqueResult();
+					if(connections != null) {
+						if(connections.getToUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {
+							userRoleDTO.setUserState("Request_received");
+						}else if(connections.getFromUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {
+							userRoleDTO.setUserState("Request_sent");
+						}else {
+							userRoleDTO.setUserState("connected");
+						}
+					}
 					StringBuilder userName = new StringBuilder();
 					if(userRole.getUser().getLastName() != null) {
 						userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
 					}else {
 						userName = userName.append(userRole.getUser().getFirstName());
 					}
+					String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.connectionStatus = :connectionStatus";
+					Long count = (Long) session.createQuery(queryMutual).setLong("userId", userRole.getUser().getId()).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
+					userRoleDTO.setMutualCount(count);
 					userRoleDTO.setUserName(userName.toString());
 					userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
 					userRoleDTO.setOrgName(userRole.getOrgLocations().getOrgLocationName());
 					userRoleDTO.setUserId(userRole.getUser().getId());
+					userRoleDTO.setUserCode(userRole.getUser().getUserCode());
 					userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
 					userRoleDTOList.add(userRoleDTO);
 				}
 			}
 			return  userRoleDTOList;
 		}else{
-			return  null;
+			return  userRoleDTOList;
 		}
 		
 	}
