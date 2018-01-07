@@ -153,7 +153,7 @@ $(function(){
 	        <div class="clearfix"></div>
 	        <div class="clearfix compOnBorLoca mt10">
 				<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
-               			<div id="registeredOrgs"></div>
+               			<div id="registeredOrgs" class="clearfix"></div>
     			<div class="welBtns welBtnsA">
 					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/dashboard'/>'"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
 					<c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
@@ -254,8 +254,8 @@ function loadRegisteredOrgs(){
 	 				
 	 				
 	 		        
-	 				result = "<div class='clearfix compOnBorLoca'>";
-	 				result = result +"<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4 padding_left'>";
+	 				result = "<div class='compOnBorLoca compOnBorCta'>";
+	 				result = result +"<div class=''>";
 	 				result = result +"<div class='user-profile'>";
 	 				result = result +"<div class='col-xs-4 col-sm-4'>";
 	 				result = result +"<div class='comLocaImg'>";
