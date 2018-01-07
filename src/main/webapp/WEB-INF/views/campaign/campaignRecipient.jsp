@@ -132,15 +132,14 @@ z-index: 1040 !important;
 	
 	<script>
 	function clearRecipantsList(id){
-		checkRespValues(id);
+// 		checkRespValues(id);
 		  $("#recipientEmail").empty();
 		  $("#recipientEmail").trigger("chosen:updated");
 		  $("#cpnListName").val('');
-// 		  $("#contactListId").val('');
+		  $("#contactListId").val('');
 	}
 	
 	function checkRespValues(id){
-		alert(id.value)
 		var contactListId = $("#contactListId").val();
 		<c:forEach items="${recipientList}" var="recipient">
 		</c:forEach>
