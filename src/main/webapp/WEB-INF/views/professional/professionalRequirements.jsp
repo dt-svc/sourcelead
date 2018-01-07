@@ -1839,7 +1839,7 @@ $('body').on('submit', '#referToContacts', function(e){
 <!-- Create Alert modal Popup --> 
 <div class="pop_mask"></div>
  <!-- Modal -->
-  <div class="modal modal_createalert" id="myModal" role="dialog">
+  <div class="modal_createalert" id="myModal" role="dialog">
     <div id="createAlertPopUpDiv"></div>
   </div>
   <!-- Create Alert modal Popup Ends -->
