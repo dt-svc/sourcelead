@@ -493,8 +493,8 @@ function getLeaveDetails(){
 		        }else{
 		    		$("#applyId").prop("disabled", false);
 		        }
-		    	if(report.leavePolicyDescription !=null){
-	 				$("#termsAndConditions").html(data);
+		    	if(report.policyDescription !=null){
+	 				$("#termsAndConditions").html(report.policyDescription);
 	 				document.getElementById("termsModel").style.display="block";
 	 			}
 		    }

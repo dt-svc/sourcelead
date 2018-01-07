@@ -548,9 +548,10 @@ public class OrgSettingsRestController {
 	}
 	
 	@RequestMapping(value = "/app/updateLoginSecurity",method = RequestMethod.GET)
-	public String updateLoginSecurity(@RequestParam(value = "security") String security,@RequestParam(value = "locationId") Long locationId) throws Exception
+	public String updateLoginSecurity(@RequestParam(value = "security") String security,@RequestParam(value = "locationId") Long locationId,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if(Constants.YES.equalsIgnoreCase(security)){
 			orgLocations.setLoginSecurity(Constants.YES);
 			orgLocationService.updateOrgLocations(orgLocations);

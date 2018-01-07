@@ -39,7 +39,7 @@ public class ClientReportDaoImpl implements ClientReportDao {
 	CommonUtil commonUtil;
 	
 	@Transactional
-	public boolean isUserAdminByOrgLocationId(Long orgLocationId, Long userId)
+	public boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();

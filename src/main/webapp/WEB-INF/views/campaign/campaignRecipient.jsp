@@ -43,10 +43,10 @@ z-index: 1040 !important;
 				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right clearfix">
               		<div class="col-md-6 padding_left">
-              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList();" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
+              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList(this);" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
               		</div>
               		<div class="col-md-6">
-              			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList();"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
+              			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>
               		</div>              		
 				</div>
 			</div>
@@ -131,12 +131,20 @@ z-index: 1040 !important;
 		
 	
 	<script>
-	function clearRecipantsList(){
+	function clearRecipantsList(id){
+		checkRespValues(id);
 		  $("#recipientEmail").empty();
 		  $("#recipientEmail").trigger("chosen:updated");
 		  $("#cpnListName").val('');
-		  $("#contactListId").val('');
-		   
+// 		  $("#contactListId").val('');
+	}
+	
+	function checkRespValues(id){
+		alert(id.value)
+		var contactListId = $("#contactListId").val();
+		<c:forEach items="${recipientList}" var="recipient">
+		</c:forEach>
+		
 	}
 	</script>	
 		
