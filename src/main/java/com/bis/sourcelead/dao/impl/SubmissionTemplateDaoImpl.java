@@ -84,6 +84,23 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 			return null;
 		}
    	}
+	
+	
+	@Override
+	@Transactional
+	public SubmissionTemplate getDefaultSubmissionTemplateByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateById start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.orgLocationId.id=:orgLocationId and st.isDefault='Y' and st.templateType='Submission' and st.clientLocationId IS NULL " ).setCacheable(true).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		logger.debug("getSubmissionTemplateById end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 
 	@Override
