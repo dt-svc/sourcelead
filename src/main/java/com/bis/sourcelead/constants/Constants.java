@@ -109,6 +109,7 @@ public class Constants {
 	public static final String ONBOARDING_CONTRACTS = "Contracts";
 	public static final String ONBOARDING_SUPPORTED = "Supported";
 	public static final String MAIL_TEAM_MEMBERS = "Mail To Team Members";
+	public static final String INVITE_CONNECTION_USER = "connectionInvitation";
 	public static final String INVITE_USER = "Invite User";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
 	public static final String INVITE_CLIENT = "Invite Client";
