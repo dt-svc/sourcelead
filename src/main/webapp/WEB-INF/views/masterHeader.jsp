@@ -782,7 +782,7 @@ function preventTabkey(e){
   
   <div class="authenticationMask" >
   <div class="signWrapOtp">
-  	<div id="twoStepAuthDiv">
+  	<div id="directtwoStepAuthDiv">
   		<jsp:include page="otpVerification.jsp"></jsp:include>
   	</div>
   </div>
@@ -811,13 +811,14 @@ function preventTabkey(e){
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
 		 type : "GET",
-	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+roleId,        
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
-	    		   $("#twoStepAuthDiv").empty();
-	    		   $("#twoStepAuthDiv").append(data);
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
 	    		   $("#gobackBtn").hide();
 	    		   $(".otpBackNew").show();
+	    		   $("#otpBackNewId").val("switchOtp");
 	    		   $("#resendOTP").attr("style","display:none");
 	    		   $("#sendOTP").attr("style","display:block");
 	    	   }
@@ -830,8 +831,6 @@ function preventTabkey(e){
 	      type : "GET",
 	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
 	       success :function(result) {
-// 	    	   hasLocationAccess = result;
-	    	   
 	    	   if(result == true){
 	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
 	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   

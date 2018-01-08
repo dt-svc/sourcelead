@@ -140,7 +140,7 @@ function statusvalidating(id){
 					<div class="row">
 						<div class="clearfix">
 							<div class="col-md-4">
-								<label>ID</label>
+								<label>Generated ID</label>
 								<div class="clearfix">
 									<select class="chosen-select form-control input-sm" multiple
 										data-placeholder="Generated ID" id="generatedId" name="generatedId">
@@ -159,7 +159,7 @@ function statusvalidating(id){
 							</div>
 							
 							<div class="col-md-4">
-								<label>Id</label>
+								<label>Job Id</label>
 								<div class="clearfix">
 									<select class="chosen-select form-control input-sm" multiple
 										data-placeholder="Job Id" id="jobId" name="jobId">
@@ -629,6 +629,7 @@ function getActions(){
 			$(".advancedsearch-mask").fadeOut();
 		}
 		function openPop(){
+			 $("#dataTableSearch").val('');
 			$("div.cand-advsrch-popup").toggle();
 			 $(".advancedsearch-mask").fadeIn();
 		}

@@ -39,7 +39,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
@@ -76,6 +75,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -117,6 +117,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Autowired
 	private ProjectsService projectsService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -287,7 +289,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
+		commonUtil.onboardCreationCandidateGeneratedIdUpdated(user,orgLocations);
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
+		
 		// userService.createUser(jsonObj,user,orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		return "usersList";
@@ -595,6 +599,25 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 				//commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
 			}
+			
+			@RequestMapping(value = "/rest/refreshSessionAttributes", method = RequestMethod.GET)
+	         public int refreshSessionAttributes(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="locationCode", required=true) String locationCode,HttpServletRequest request) throws Exception {
+	             int output =  HttpServletResponse.SC_NOT_FOUND;
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	             if(loginUser == null && userId != null){
+	            	 loginUser = userService.getUserById(userId);
+	             }
+	             OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+	             if(loginUser != null && orgLoc != null){
+	            	 SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLoc);
+	            	 Candidate candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
+					 SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+					 output =  HttpServletResponse.SC_OK;
+	             }
+	             return output;
+	         }
+			
+			
 			/**
 			 * to save the reason when we terminate the user from project 
 			 * @param projectMemberId

@@ -447,7 +447,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     color:#f04d4d;
     }
 .timesheet_appr_table table tr td div h3, .timesheet_appr_table ul li h3 {
-    font-weight: 400; display: inline-block; padding: 5px 2px; color: #FFF; font-size: 13px; border-radius: 3px; background-color: #30c453;
+    font-weight: 400; display: inline-block; padding: 5px 2px; color: #FFF; font-size: 13px; border-radius: 3px;
+	background-color: #30c453; text-transform: capitalize;
     margin:0px; text-align:center; width:78px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
     }
 .timesheet_appr_table table tr td div h3.reje_color{
@@ -463,7 +464,8 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:absolute; right:-10px; top:25px; display:none; z-index:100;
     }
 .timesheet_appr_table .glyphicon p {
-    background-color:#FFF; padding:10px 15px; width:200px; text-align:left; position:relative; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
+    background-color:#FFF; padding:10px 15px; width:200px; text-align:left; position:relative;
+	box-shadow:0px 0px 3px rgba(0,0,0,0.3);
     color:#333; font-size:13px; font-weight:500; font-family:roboto; margin:0px; min-height:100px;
     }
 .timesheet_appr_table .glyphicon p:after {
@@ -902,6 +904,9 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table .glyphicon {
     color:#368ee0; cursor:pointer;
     }
+.clients_wrap_table .glyphicon:hover {
+	color: #f15a29;
+}
 .clients_wrap_table table tr td .glyphicon-trash {
     cursor: pointer; font-size: 13px; color: #fe4556;
     }
@@ -5501,6 +5506,9 @@ bottom:-30px !important; padding: 0px 10px 0px 15px !important;
 .minHeBtn {
 min-height: 34px; padding: 9px 12px 0px !important;
 }
+.minHeBtnCam {
+    min-height: 31px; padding: 8px 12px 0px !important;
+}
 .minHeB {
 	min-height: 34px;
 }
@@ -5624,8 +5632,8 @@ padding:2px 10px 5px 10px;
 	float: right; width: 320px !important;
 }
 .cusFieldHeadFixed {
-	position: fixed; width: 100%; left: 0px; right: 0px; z-index: 20; top: 51px; box-sizing: border-box;
-	padding: 15px 20px 15px 210px !important;
+	position: fixed !important; width: 100%; left: 0px; right: 0px; z-index: 20; top: 51px; box-sizing: border-box;
+    padding: 15px 20px 15px 210px !important;
 }
 .cusFieldHeadFixedAct {
 	padding: 15px 20px 15px 70px !important;
@@ -6189,7 +6197,7 @@ position: absolute;
 	width: auto; padding: 0px 20px 20px 260px; min-height: 450px; background-color: #f0f0f0;
 }
 .cusFieldHead {
-	padding: 11px 0px 11px 0px;
+	position: relative;
 }
 .cusFieldCta {
 	box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
@@ -6236,7 +6244,9 @@ position: absolute;
 }
 
 .compOnBorLoca {
-	
+}
+.compOnBorLoca.compOnBorCta {
+	width: 31.3333%; float: left; margin: 0px 2% 2% 0px;
 }
 .compOnBorLoca .user-profile {
 	margin: 0px 0px 15px 0px; background-color: #f5f5f5;
@@ -6583,16 +6593,16 @@ text-shadow: 0 1px 0 #fff;
 /*  Custom */
 
 .cusFieldHead {
-	padding: 15px 20px !important; position: relative;
+	position: relative;
 }
 .cusFieldHead .bootstrap-select {
 	position: absolute; left: 120%; top: -7px; border:none !important; width:150px !important; 
 }
 .cusFielInn {
-    padding:0px 0px 15px 0px; position: relative;
+    padding:0px 0px 0px 0px; position: relative; overflow-y:auto;
     }
 .cusFielInnHead {
-	background-color: #fff; padding: 6px 15px;
+	background-color: #ededed; padding: 6px 15px;
 }
 .cusFielInnHead h2 {
 	float: left; font-size: 16px; color: #454545; font-weight: 500; padding: 6px 0px; margin: 0px 0px;
@@ -7049,16 +7059,303 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	width: 100%; border-radius: 3px;
 }
 .comProfileDetails {
-	float: left; min-height: 75px;
+	float: left; min-height: 75px; padding: 12px 0px 0px 142px;
+}
+.comProfileDetails h2 {
+	padding: 0px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #666;
+}
+.comProfileBtn {
+	padding: 10px 0px 0px 0px;
+}
+.comProfileBtn a {
+	display: inline-block; margin: 0px 10px 0px 0px; border: 1px solid #337ab7; padding: 4px 16px;
+	color: #337ab7; border-radius: 2px; font-size: 13px;
+}
+.comProfileBtn a.adReBtn {
+	background-color: #337ab7; color: #fff;
+}
+.comProfileBtn a:hover {
+	border: 1px solid #2669a3; background-color: #2669a3; color: #fff;
+}
+.comRating {
+	position: relative; display: inline-block;
+}
+.ratingBg {
+	color: #ccc; padding: 0px 0px 0px 0px; position: absolute; width: 90px; top: -17px; right: -100px;
+}
+.ratingBg:hover {
+	color: #ccc;
+}
+.ratingCom {
+	color: #2CB359; padding: 0px 0px 0px 0px; position: absolute; width: 90px; top: -17px; right: -100px;
+}
+.ratingCom:hover {
+	color: #1F9E49;
+}
+.comProfileRight {
+	float: right; padding: 15px; text-align: right;
+}
+.comProfileRight p {
+	padding: 0px 0px 4px 0px; margin: 0px 0px;
+}
+.comProfileRight a {
+	color: #666;
+}
+.comProfileRight a:hover {
+	text-decoration: underline;
+}
+
+.companyDetWrap {
+	width: 100%; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); background-color: #fff; padding: 10px 0px 20px;
+	border-radius: 3px; min-height: 300px;
+}
+.companyDetHead {
+	padding: 5px 0px;
+}
+.companyDetHead h2 {
+	padding: 5px 20px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #666;
+}
+.companyDetInn {
+	padding: 10px 20px 0px 20px;
+}
+.companyDetInn div {
+	width: 40%; float: left; padding: 0px 0px 10px 0px; font-size: 14px;
+}
+.companyDetInn div span {
+	float: left; width: 35%; color: #666;
+}
+.companyDetInn div p {
+	float: left; width: 60%; padding: 0px 0px; margin: 0px 0px; color: #333;
+}
+.companyDetInn div.fullDetails {
+	width: 100%; padding: 10px 0px 0px 0px;
+}
+.companyDetInn div.fullDetails p {
+	width: 100%; color: #454545; margin: 6px 0px 0px 0px; line-height: 21px; border-radius: 3px;
+}
+.compLoca {
+	padding: 10px 20px 15px; background-color: #fff; border-radius: 3px; margin: 10px 0px 0px 0px;
+}
+.compLoca h2 {
+	padding: 5px 0px 5px; margin: 0px 0px; font-size: 17px; font-weight: 400; color: #666;
+}
+.compLocaCta {
+	float: left; width: 25%; background-color: #f5f5f5; margin: 10px 10px 0px 0px; padding: 14px 15px; border-radius: 3px;
+	min-height: 140px;
+}
+.compLocaCta h3 {
+	margin: 0px 0px; padding: 0px 0px 8px; font-size: 16px; font-weight: 400; color: #454545;
+}
+.compLocaCta p {
+	padding: 0px 0px 4px; margin: 0px 0px; font-size: 14px; color: #666;
+}
+
+.comPhotos {
+	padding: 0px 20px;
+}
+.comPhotos a {
+	width: 200px; display:block; float: left; padding: 2px; background-color: #f1f1f1; margin: 10px 10px 0px 0px;
+}
+.comPhotos a span {
+	width: 100%; height: 130px; display: block; background-size: cover; background-position: center;
+}
+
+.borBot {
+	border-bottom: 1px solid #f1f1f1;
+}
+
+.srch-resultarea {
+    min-height: 240px; position:relative;
+}
+.p_left0 {
+	padding-left:0;
+}
+.width85 {
+	width:85px; display:inline-block;
+}
+.srchresulwidget {
+	padding: 20px; border-top: 1px solid #f1f1f1;
+}
+.srchresulwidget p {
+	margin-bottom: 5px;
+}
+.srchresulwidget p a {
+	font-size: 15px;
+}
+.srchresulwidget .btn {
+	padding:5px 25px; border-radius: 2px;
+}
+.width120 {
+	width: 120px; display:inline-block;
+}
+.pdr10 {
+	padding-right: 10px;
+}
+.jobDescription li {
+	line-height: 20px; font-size: 13px; margin-bottom: 10px;
+}
+.textBold {
+font-weight: 500;	
+}
+.phoInfo {
+	padding: 4px 0px 0px 0px; margin: 0px 0px; font-size: 12px; font-weight: 400; color: #666;
 }
 
 
+/* sdfsdfsd */
 
+.fancybox-lock .fancybox-overlay {
+	z-index: 100000;
+}
+.fancybox-type-iframe .fancybox-nav {
+    width: 60px;       
+}
+.fancybox-type-iframe .fancybox-nav span {
+    visibility: visible; opacity: 0.5;
+}
+.fancybox-type-iframe .fancybox-nav:hover span {
+    opacity: 1;
+}
+.fancybox-type-iframe .fancybox-next {
+    right: -60px;
+}
+.fancybox-type-iframe .fancybox-prev {
+    left: -60px;
+}
 
+.comRevWrap {
+	padding: 20px; border-top: 1px solid #f1f1f1; position: relative;
+}
+.comRevImg {
+	float: left; width: 70px; height: 70px; background-color: #f1f1f1; padding: 2px;
+}
+.comRevImg img {
+	width: 100%;
+}
+.comRevRight {
+	float: left; width: 90%; padding: 0px 0px 0px 20px;
+}
+.comRevRight h2{
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 16px; font-weight: 400; color: #454545;
+}
+.comRatingOut {
+	padding: 0px 0px 10px 0px;
+}
+.comRatingOut .ratingBg, .comRatingOut .ratingCom {
+	right: inherit; top: -15px; font-size: 16px; width: 80px;
+}
+.comRatingOut span {
+	display: inline-block; padding: 0px 0px 0px 90px; color: #666;
+}
+.comRatingOut span b {
+	display: inline-block; font-weight: 400; padding: 0px 20px 0px 0px;
+}
+.comRatingOut span i {
+	display: inline-block; padding: 0px 6px 0px 0px;
+}
+.comRevRight p {
+	padding: 0px 0px 10px; margin: 0px 0px; font-size: 14px; font-weight: 400; color: #545454;
+	line-height: 21px;
+}
+.comRevEdit {
+	position: absolute; right: 25px; top: 20px;
+}
+.comRevEdit a {
+	font-size: 18px; display: inline-block; padding:1px 5px; color: #666; position: relative;
+}
+.comRevEditBut {
+	position: absolute; right: 38px; top: -5px; display: none;
+}
+.comRevEditBut span {
+	padding: 5px 6px; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); position: relative; width: 56px;
+	display: block; border-radius: 2px;
+}
+.comRevEditBut span:after {
+	left: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-left-color: #bababa; border-width: 10px; margin-top: -10px;
+}
+.comRevEditBut span a {
+	display: inline-block; font-size: 15px; color: #368ee0; padding:1px 3px;
+}
+.comRevEditBut span .fa-trash {
+	color: #f8695e;
+}
+.comRevHead {
+	padding: 0px 20px 10px 20px;
+}
+.comRevHead h2 {
+	padding: 2px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #666;
+}
+.comRevHead a {
+	padding: 6px 15px; border-radius: 5px; margin: 0px 5px 0px 0px; display: inline-block; font-size: 14px; font-weight: 400;
+	color: #545454;
+	
+}
+.comRevHead a:hover, .comRevHead a.act {
+	color: #fff; background-color: #368ee0;
+}
+.comEventWrap {}
+.comEventWrap .comRevRight {
+	padding: 0px; width: 95%;
+}
+.comEventWrap .comRevRight h2 {
+	padding: 0px 0px 15px 0px;
+}
+.comEventWrap .comRatingOut {
+	padding: 0px 0px 15px 0px;
+}
+.comEventWrap .comRatingOut span {
+	padding: 0px 0px 0px 0px;
+}
 
+.addReviewWrap {
+	border-top: 1px solid #f1f1f1; padding: 20px;
+}
+.addRevCta {
+	width: 350px;
+}
+.addRevRating {
+}
+.stars-container {
+	display: inline-block; vertical-align: top;
+}
+.stars-container .star {
+	float: right; display: inline-block; padding: 2px; color: #d2d2d2; cursor: pointer;
+}
+.stars-container .star:before {
+	content:"\f005"; font-size: 24px;
+}
+.star:hover:before, .star.selected:before {
+	content:"\f005"; color: #2CB359;
+}
+.star:hover ~ .star:before, .star.selected ~ .star:before {
+	content:"\f005"; color: #2CB359;
+}
 
-
-
+.poLeft {
+    right: 11px !important;
+}
+.minHeM {
+	min-height: 40px;
+}
+.loadWrap {
+	display: block; background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); padding: 8px 10px; font-size: 14px;
+	font-weight: 400; color: #666; margin: 15px 0px 0px 0px; text-align: center; border-radius: 2px;
+}
+.loadWrap .fa {
+	display: inline-block; margin: 0px 5px 0px 0px;
+}
+.noDate {
+	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);  border-radius: 2px; padding: 20px;
+	margin: 10px 0px 0px 0px; background-image: url(../images/norecords.jpg); background-position: center center;
+	background-repeat: no-repeat; min-height: 200px; background-size: 250px;
+}
+.zInMask {
+	z-index: 999999 !important; background-color: rgba(0,0,0,0.2) !important;
+}
+.zInPop {
+	z-index: 1550000 !important;
+}
 
 
 

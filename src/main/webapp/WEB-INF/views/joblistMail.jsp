@@ -55,13 +55,18 @@ display: none;
        <form:form id="joblistCampaign_form" name="joblistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
-           <div class="col-md-10">
+           <div class="col-md-9">
             <%-- <input type="text" value="${createSender.fromMail}" class="form-control input-sm" readonly> --%>
 				<div class="input-group errorInptgroup">
 				 <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender"></select>  						 
-				<a class="input-group-addon" onclick="campaignSender('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a>
+				
+				<span class="input-group-addon cursorPointer bg-blue" onclick="getSenders();"><i class="fa fa-refresh "></i></span>
+				<!-- <a class="input-group-addon" onclick="campaignSender('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a> -->
 				</div>   
           </div> 
+          <div class="col-md-1">
+ <a class="" onclick="campaignSender('','','jobList');"><i class="fa fa-plus btn btn-default pull-right minHeBtnCam"></i></a>
+          </div>
          <!--   <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
 				              <div class="col-md-9 select-field" id="errClient">
@@ -74,12 +79,13 @@ display: none;
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-primary small">To</label>
-          <div class="col-md-10 positionRelative disable-choosen-dropdown">
+          <div class="col-md-9 positionRelative disable-choosen-dropdown">
             
-			<div class="input-group errorInptgroup">
+			<div class="input-group errorInptgroup col-md-12 noPad">
   				<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList"  data-validation-optional="true" name="Toemails"></select>
-            	<span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
-				<a class="input-group-addon" onclick="campaignRecipient('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a>
+            	<span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span>
+               <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->    	 
+				<!-- <a class="input-group-addon" onclick="campaignRecipient('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a> -->
 			</div>            
             
             <!-- Modal content Multiple mail -->
@@ -114,6 +120,11 @@ display: none;
             </div>
             <!-- AMultiple mail modal popup ends --> 
           </div>
+          
+          <div class="col-md-1">
+<a class="" onclick="campaignRecipient('','','jobList');"><i class="fa fa-plus btn btn-default pull-right minHeBtnCam"></i></a>
+          </div>
+          
         </div>
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-warning small">Others</label>

@@ -739,6 +739,7 @@
 				$("#priorDaysdiv").show();
 				$('#priorDays').removeAttr('data-validation-optional');
 				$('#priorDays').attr('data-validation', "required validate_length length1-250 validate_int");
+				$('#priorDays').attr('data-validation', "validate_int required validate_length length1-3");
 				$('#priorLeaveDaysDiv').find('p.jquery_form_error_message').remove();
 			} else {
 				$("#priorDaysdiv").hide();
@@ -757,6 +758,8 @@
 			$('#minDays').attr('data-validation', "required validate_length length1-250 validate_int");
 			$('#maxDays').removeAttr('data-validation-optional');
 			$('#maxDays').attr('data-validation', "required validate_length length1-250 validate_int");
+			$('#minDays').attr('data-validation', "validate_int required validate_length length1-3");
+			$('#maxDays').attr('data-validation', "validate_int required validate_length length1-3");
 			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
 			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
 			

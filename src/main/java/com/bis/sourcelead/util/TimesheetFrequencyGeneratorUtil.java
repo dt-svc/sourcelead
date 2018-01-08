@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -804,7 +805,35 @@ public  class TimesheetFrequencyGeneratorUtil {
 		return biWeeklyStartMondayDate;
 	}
 	
-	
+	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDateForTsImports(Projects projects,Date date) throws Exception{
+		Date biWeeklyStartMondayDate = null;
+		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+		projCal.setLenient(false);
+		projCal.setTime(projects.getStartDate());
+		Calendar projectStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(projCal, "MON",orgLocations.getDateFormat());
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		cal.setLenient(false);
+		cal.setTime(date);
+		Calendar currentMonday =null;
+		SimpleDateFormat sf = new SimpleDateFormat("E"); 
+		if(sf.format(date).equalsIgnoreCase("SUN")) {
+			 currentMonday = CalendarUtil.getPreviousWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+		}else {
+			 currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+		}
+		if(projectStartMonday.before(currentMonday) || projectStartMonday.equals(currentMonday)){
+			while(projectStartMonday.before(currentMonday) || projectStartMonday.equals(currentMonday)){
+				projectStartMonday = CalendarUtil.getDateIncrementByincrement(projectStartMonday,14);
+			}
+			biWeeklyStartMondayDate = CalendarUtil.getDateIncrementByincrement(projectStartMonday,-14).getTime();
+		}
+		else{
+			biWeeklyStartMondayDate = projectStartMonday.getTime();
+		}
+		
+		return biWeeklyStartMondayDate;
+	}
 	
 
 	private Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(Projects projects,Date employeeStartDate) throws Exception{

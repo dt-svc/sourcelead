@@ -35,6 +35,7 @@
 <div class="signin_wrap SignSlide">
 	<a href="/index.html"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
 		<h1>Sign In</h1>
+		<div id="loginWhiteListDiv" class="orgErrorMes"></div>
 	       	<c:if test="${not empty error}">
 				<div class="error">${error}</div>
 			</c:if>
@@ -63,7 +64,7 @@
 	    	</c:if> 
 	    	<c:if test="${not empty msg}">
 		        <div id="selector">
-			         <span><font color="green">${msg}</font></span>
+			         <span><font color="red">${msg}</font></span>
 				</div>
            </c:if> 
            <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
@@ -259,7 +260,7 @@ function forgotPassword(){
 </script>
 
 <script>
-  $('#selector').delay(2000).fadeOut('slow');
+//   $('#selector').delay(2000).fadeOut('slow');
 </script>
 
 
