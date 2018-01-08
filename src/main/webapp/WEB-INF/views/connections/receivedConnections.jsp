@@ -150,7 +150,7 @@ function ignoreConnection(userCode){
 function acceptConnection(userCode){
 	 $.ajax({ 
 	    	type : "GET",
-			url : sourceleadUrl+"/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
+			url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
         success: function(json) {
         	getConnectionsList("manual");
      },
