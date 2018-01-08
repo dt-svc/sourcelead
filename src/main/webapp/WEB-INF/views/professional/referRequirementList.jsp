@@ -445,7 +445,7 @@ function addContactsGroup(){
 	result = result + '<div class="form-group">';
 	result = result + '<div class="pull-right">';
      result = result + '	<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	 result = result + '	<button type="submit" value="Save" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
+	 result = result + '	<button type="button" value="Save" onclick= "contactgrp();" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
 	 result = result + '</div >';
 	 result = result + '</div >';
 	 result = result + '</form>';
@@ -870,17 +870,14 @@ $("#contactsFilter").click(function(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
 	   };  
-         $('body').on('submit', '#contactgroup_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-	          		
+	function contactgrp(){
+        	  if ($('#contactgroup_form').validate(false, validationSettings)){
 	          		$("#add_contactgroup").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	     var formData = getFormData1("contactgroup_form");
+	        	     var formData = getFormData("contactgroup_form");
 	        		$.ajax({
 	        					type : "POST",
-	        					 data: formData,
-	        					 processData: false,
-	        	  		         contentType:false, 
+	        					data: formData,
 	        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
 	        					success : function(result) {
 	        						location.replace(sourceleadUrl+"/referRequirementList");
@@ -892,10 +889,12 @@ $("#contactsFilter").click(function(){
             else{
             	return false;	
                }
-            });
-         $('#addcontact_form').showHelpOnFocus();
-         $('#addcontact_form').validateOnBlur(false, validationSettings); 
-            
+	}
+	$('body').on('blur', '#contactgroup_form', function() {
+		$("#contactgroup_form").showHelpOnFocus();
+		$("#contactgroup_form").validateOnBlur(false, validationSettings);
+		
+	});   
      
 </script> 
 <script>
