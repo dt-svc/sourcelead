@@ -536,12 +536,15 @@ function preventTabkey(e){
 	          </li>
             </c:if> --%>
             
-            <li class="reportsH">
+             <li class="reportsH">
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
+	        </li>
+            <li class="reportsH">
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadFindConnections'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
-					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
+					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
             <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
