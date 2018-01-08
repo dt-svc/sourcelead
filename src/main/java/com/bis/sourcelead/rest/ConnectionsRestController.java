@@ -187,77 +187,62 @@ public class ConnectionsRestController {
 		return userRoleDTOList;
 	}
 	
-	private void connectionInvitationMailToUser(User loginUser,User toUser,Long locationId) throws Exception{
-		OrgLocations locations= orgLocationService.getOrgLocations(locationId);
+	private void connectionInvitationMailToUser(User loginUser, User toUser, Long locationId) throws Exception
+	{
+		OrgLocations locations = orgLocationService.getOrgLocations(locationId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(toUser.getId(), locationId);
-		 
-		 StringBuilder sb = new StringBuilder();
-		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(toUser.getFirstName());
-		 emailMessage.setLastName(toUser.getLastName());
-		 emailMessage.setToEmail(toUser.getEmail());
-		 emailMessage.setFromEmail(loginUser.getEmail());
-		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
-		 emailMessage.setCreatedBy(loginUser.getUserCode());
-//		 emailMessage.setOrgLocationId(locationId);
-		 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		
-	
-		 globalVarsMap.put("receiverUserName",toUser.getFullName());
-		 
-		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
-		 globalVarsMap.put("loginUserName",loginUserFullName);
-		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
-		 globalVarsMap.put("receiverEmail",toUser.getEmail());
- 
-		StringBuilder connectionsBuilder = sendEmailToInvitationUserTable(loginUser,toUser,locations);
-		globalVarsMap.put("profilePicUrl",connectionsBuilder.toString());
-		
-		 
-		
-				 
-		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_CONNECTION_USER,Constants.ENTITY_TYPE_EMAIL);
-		 EmailScenario noificationEmailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_CONNECTION_USER,Constants.ENTITY_TYPE_NOTIFICATION);
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
-		 noificationEmailScenario.setBody(notificationbody);
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
-		 String actionLink = "";
-		 emailScenerioUtil.sendNotification(actionLink,loginUser,toUser,locations,noificationEmailScenario);
-	
-		
-		
-		
+		StringBuilder sb = new StringBuilder();
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(toUser.getFirstName());
+		emailMessage.setLastName(toUser.getLastName());
+		emailMessage.setToEmail(toUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		// emailMessage.setOrgLocationId(locationId);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("receiverUserName", toUser.getFullName());
+		String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase()
+				+ loginUser.getFullName().substring(1);
+		globalVarsMap.put("loginUserName", loginUserFullName);
+		StringBuilder loginBuilder = new StringBuilder();
+		globalVarsMap.put("loginLink", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+		globalVarsMap.put("receiverEmail", toUser.getEmail());
+		StringBuilder connectionsBuilder = sendEmailToInvitationUserTable(loginUser, toUser, locations);
+		globalVarsMap.put("profilePicUrl", connectionsBuilder.toString());
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_CONNECTION_USER, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario noificationEmailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_CONNECTION_USER, Constants.ENTITY_TYPE_NOTIFICATION);
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
+		noificationEmailScenario.setBody(notificationbody);
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, userRole.getOrgLocations().getOrg(), userRole.getOrgLocations());
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, locationId, iAdressArray, new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, locations, noificationEmailScenario);
 	}
 	
 	
-	public StringBuilder sendEmailToInvitationUserTable(User loginUser, User toUser,OrgLocations locations) throws Exception {
+	public StringBuilder sendEmailToInvitationUserTable(User loginUser, User toUser, OrgLocations locations) throws Exception
+	{
 		StringBuilder tempHTML = new StringBuilder();
-		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(toUser.getId(), locations.getId());
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(toUser.getId(), locations.getId());
 		String imageUrl = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
 		StringBuilder loginBuilder12 = new StringBuilder();
-		 loginBuilder12.append("<img src='"+imageUrl+""+toUser.getFileUrl()+"' style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
-		
+		loginBuilder12.append("<img src='" + imageUrl + "" + toUser.getFileUrl()
+				+ "' style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
 		tempHTML.append("<a style='text-decoration:none; display:block;' href='javascript:void(0)'>");
 		tempHTML.append("<div style='background-color: #fff; padding: 10px; border-bottom: 1px solid #f1f1f1;'>");
 		tempHTML.append("		<div class='userImg' style='width: 60px; padding: 0px 20px 0px 5px; float: left;'>");
@@ -265,8 +250,11 @@ public class ConnectionsRestController {
 		tempHTML.append("		</div>");
 		tempHTML.append("		<div style='width:350px; float: left; padding: 0px 0px;'>");
 		tempHTML.append("			<p style='padding: 0px 0px 3px; margin: 0px 0px; font-size: 14px; font-weight: 600; color: #454545;'>").append(toUser.getFullName()).append("</p>");
-		tempHTML.append("			<p style='padding: 0px 0px 3px; margin: 0px 0px; font-size: 13px; font-weight: 500; color: #666;'>").append(userRole.getUserType()).append(" at ").append(locations.getOrgLocationName()+"</span></p>");
-//		tempHTML.append("			<p style='padding: 0px 0px 3px; margin: 0px 0px; font-size: 13px; font-weight: 500; color: #666;'>16 mutual connections</p>");
+		tempHTML.append("			<p style='padding: 0px 0px 3px; margin: 0px 0px; font-size: 13px; font-weight: 500; color: #666;'>").append(userRole.getUserType()).append(" at ").append(locations.getOrgLocationName()
+				+ "</span></p>");
+		// tempHTML.append(" <p style='padding: 0px 0px 3px; margin: 0px 0px;
+		// font-size: 13px; font-weight: 500; color: #666;'>16 mutual
+		// connections</p>");
 		tempHTML.append("		</div>");
 		tempHTML.append("   	<div style='float: right; padding: 5px;'>");
 		tempHTML.append("<a href='").append(sourceleadLoginUrl).append(" ' style='display: block; background-color: #1176d4; color: #fff; text-decoration: none; padding: 4px 15px 6px; border-radius: 2px; font-size: 14px; line-height: 20px;' href='javascript:void(0)'>Accept </a>");
@@ -277,8 +265,6 @@ public class ConnectionsRestController {
 		tempHTML.append("<a href='").append(sourceleadLoginUrl).append(" ' style='text-decoration: none; font-size: 14px; font-weight: 600; color: #214b90;' href='javascript:void(0)'>Manage Invitations </a>");
 		tempHTML.append("   	</div>");
 		tempHTML.append(" </a>");
-		
-		
 		return tempHTML;
 	}
 	
