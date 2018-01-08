@@ -114,8 +114,9 @@
 	 function socialInviterScripts() {
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var sourceleadWebUrl = sourceleadUrl.replace('/app','');
-		 var cssUrl = sourceleadWebUrl+"/resources/css/"
-		 var jsUrl = sourceleadWebUrl+"/resources/js/"
+		 var cssUrl = sourceleadWebUrl+"/resources/css/";
+		 var jsUrl = sourceleadWebUrl+"/resources/js/";
+		 
          socialinviter.load({
              dock:false,
              showmodal: true,

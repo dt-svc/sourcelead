@@ -926,7 +926,7 @@ function cancel(candidateId){
 										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
 								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
 								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
-								                 <option ${currency  == 'GPB' ? 'selected' : ''}>GPB</option>
+								                 <option ${currency  == 'GBP' ? 'selected' : ''}>GBP</option>
 								                 <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
 								                 <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
 				                            </select>

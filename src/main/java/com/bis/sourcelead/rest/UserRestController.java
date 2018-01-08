@@ -289,7 +289,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
+		commonUtil.onboardCreationCandidateGeneratedIdUpdated(user,orgLocations);
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
+		
 		// userService.createUser(jsonObj,user,orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		return "usersList";

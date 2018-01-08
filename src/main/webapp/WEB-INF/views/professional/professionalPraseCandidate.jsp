@@ -263,7 +263,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
