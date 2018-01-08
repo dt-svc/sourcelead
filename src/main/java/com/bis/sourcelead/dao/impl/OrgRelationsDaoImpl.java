@@ -823,6 +823,27 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.locationId  left join fetch orgrelation.responderLocationId "
+	      		+ " where (orgrelation.locationId = :locationId and orgrelation.responderLocationId = :responderLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :locationId and orgrelation.locationId = :responderLocationId and orgrelation.responderType = 'Client' )");
+		  
+	       List<OrgRelations> orgRelationsList = session.createQuery(query.toString()).setLong("locationId", locationId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
+	       
+	       OrgRelations orgRelations = null;
+			if(orgRelationsList != null && !orgRelationsList.isEmpty())
+			{
+				orgRelations = (OrgRelations) orgRelationsList.iterator().next();
+			}
+			
+			return orgRelations;
+	}
+	
+	
+	@Override
+	@Transactional
+	public OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.locationId  left join fetch orgrelation.responderLocationId "
 	      		+ " where (orgrelation.locationId = :locationId and orgrelation.responderLocationId = :responderLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :locationId and orgrelation.locationId = :responderLocationId and orgrelation.responderType = 'Client' )");
 		  
 	       List<OrgRelations> orgRelationsList = session.createQuery(query.toString()).setLong("locationId", locationId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
@@ -1116,5 +1137,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		}
 		return orgLocation;
 	}
+
+	
 	
 }
