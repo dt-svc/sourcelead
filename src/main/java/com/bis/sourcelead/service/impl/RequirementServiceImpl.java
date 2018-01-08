@@ -658,7 +658,7 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			requirement.setApproverHierarchy(Constants.NO);
 		}
-		if (!requirementDTO.getSaveType().equalsIgnoreCase("draft")) {
+		if (requirementDTO.getSaveType() != null && !requirementDTO.getSaveType().equalsIgnoreCase("draft")) {
 			requirement.setRequirementApprover(requirementApproverHierarchyList);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getManager())) {
@@ -782,7 +782,7 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 			}*/
 		/*}*/
-		if (!requirementDTO.getSaveType().equalsIgnoreCase("draft")) {
+		if (requirementDTO.getSaveType() != null && !requirementDTO.getSaveType().equalsIgnoreCase("draft")) {
 			requirement.setRequirementAssignTo(requirementAssignToList);
 		}
 		// storing assigned team END
