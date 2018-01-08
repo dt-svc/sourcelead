@@ -188,6 +188,8 @@ public class ExpensesRestController {
             expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
         }
         response.setData(expensesDTOList);
+        response.setRecordsFiltered(expensesList.getRecordsFiltered());
+        response.setRecordsTotal(expensesList.getRecordsTotal());
         return response;
     }	
 	
