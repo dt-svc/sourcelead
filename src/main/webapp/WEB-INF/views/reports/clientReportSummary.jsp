@@ -22,7 +22,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Client Report: <span class="text-muted" id="clientNameId"></span></h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Client Report</div>
+<!--       <div class="pull-right brud-crum">Home &raquo; Client Report</div> -->
+
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="${appPath}/perfomanceClientReports">Client Report</a></div>
+      
       </c:if>
        <c:if test="${type == 'byContact'}">
       <div class="pull-left">

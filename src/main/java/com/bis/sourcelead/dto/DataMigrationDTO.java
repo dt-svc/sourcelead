@@ -75,6 +75,12 @@ public class DataMigrationDTO extends CommonDTO {
 	private String manager;
 
 	private String priority;
+	
+	private String requirementSubmissionStatus;
+	
+	private String experienceLevel;
+	
+	private String applicationFrom;
 
 	/*Timesheets*/
 	
@@ -538,6 +544,36 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setPriority(String priority) {
 		this.priority = priority;
+	}
+
+	public String getRequirementSubmissionStatus()
+	{
+		return requirementSubmissionStatus;
+	}
+
+	public void setRequirementSubmissionStatus(String requirementSubmissionStatus)
+	{
+		this.requirementSubmissionStatus = requirementSubmissionStatus;
+	}
+
+	public String getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(String experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
+	}
+
+	public String getApplicationFrom()
+	{
+		return applicationFrom;
+	}
+
+	public void setApplicationFrom(String applicationFrom)
+	{
+		this.applicationFrom = applicationFrom;
 	}
 
 	

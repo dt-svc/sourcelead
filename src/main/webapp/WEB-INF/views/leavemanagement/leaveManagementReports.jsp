@@ -71,7 +71,7 @@
                         <div class="row">
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
-                                <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
+                                <!-- <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
                                     <option value="">--Select Year--</option>
                                     <option>2020</option>
                                     <option>2019</option>
@@ -84,7 +84,7 @@
                                     <option>2012</option>
                                     <option>2011</option>
                                     <option>2010</option>
-                                </select>
+                                </select> -->
                             </div>
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
@@ -446,7 +446,7 @@ function getEmployeeLeavesList(){
 		        }
 		        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
 		        if(opt.isSunday == "Y" && opt.isSunday != null && opt.isSunday != '' && opt.isSunday != 'undefined'){
-		        	if(opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined'){
+		        	if((opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">S</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">S</li>';
@@ -454,9 +454,8 @@ function getEmployeeLeavesList(){
 		        }else{
 		        	result += '            <li title="Date">S</li>';
 		        }
-		        
 		        if(opt.isMonday == "Y" && opt.isMonday != null && opt.isMonday != '' && opt.isMonday != 'undefined'){
-		        	if(opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined'){
+		        	if((opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">M</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">M</li>';
@@ -466,7 +465,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isTuesday == "Y" && opt.isTuesday != null && opt.isTuesday != '' && opt.isTuesday != 'undefined'){
-		        	if(opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined'){
+		        	if((opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">T</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">T</li>';
@@ -476,7 +475,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isWednesday == "Y" && opt.isWednesday != null && opt.isWednesday != '' && opt.isWednesday != 'undefined'){
-		        	if(opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined'){
+		        	if((opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">W</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">W</li>';
@@ -486,7 +485,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isThursday == "Y" && opt.isThursday != null && opt.isThursday != '' && opt.isThursday != 'undefined'){
-		        	if(opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined'){
+		        	if((opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">T</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">T</li>';
@@ -496,7 +495,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isFriday == "Y" && opt.isFriday != null && opt.isFriday != '' && opt.isFriday != 'undefined'){
-		        	if(opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined'){
+		        	if((opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">F</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">F</li>';
@@ -506,7 +505,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isSaturday == "Y" && opt.isSaturday != null && opt.isSaturday != '' && opt.isSaturday != 'undefined'){
-		        	if(opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined'){
+		        	if((opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">S</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">S</li>';
