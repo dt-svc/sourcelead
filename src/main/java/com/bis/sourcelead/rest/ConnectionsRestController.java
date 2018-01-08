@@ -11,10 +11,13 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,6 +40,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -162,22 +166,41 @@ public class ConnectionsRestController {
 	}
 	
 	
-	@RequestMapping(value="/acceptConnection")
-	public String addAcceptConnection(@RequestParam(value = "userCode", required = false) String userCode, HttpServletRequest request){
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		
-		String result = "invalid";
-		try {
-			User toUser = userService.getUserByUserCode(userCode);
-			int resultValue = 0;
-				resultValue = connectionsService.acceptConnection(user, toUser, ConnectionStatus.CONNECTED.getValue());
-			if(resultValue != 0) {
-				result = "success";
+	@RequestMapping(value="/ws/acceptConnection")
+	public ModelAndView addAcceptConnection(@RequestParam(value = "userCode", required = false) String userCode,@RequestParam(value = "fromUser", required = false) String fromUser, HttpServletRequest request){
+		User user=null;
+		ModelAndView model = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() != null) {
+			
+			if(fromUser ==null){
+			 user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 			}
-		} catch (Exception e) {
-		e.printStackTrace();
+			
+			String result = "invalid";
+			try {
+				User toUser = userService.getUserByUserCode(userCode);
+				if(fromUser !=null){
+				user = userService.getUserByUserCode(fromUser);
+				}
+				int resultValue = 0;
+					resultValue = connectionsService.acceptConnection(user, toUser, ConnectionStatus.CONNECTED.getValue());
+				if(resultValue != 0) {
+					result = "success";
+				}
+			} catch (Exception e) {
+			e.printStackTrace();
+			}
+			if(fromUser !=null && result == "success"){
+				return new ModelAndView("redirect:/app/loadConnectedList");
+			}else{
+				model.setViewName("login");
+				return model;
+			}
+		} else {
+			model.setViewName("login");
+			return model;
 		}
-		return result;
 	}
 	
 
@@ -239,6 +262,7 @@ public class ConnectionsRestController {
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
 		String url = sourceleadUrl;
+		 StringBuilder acceptBuilder = new StringBuilder();
 		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
 		noificationEmailScenario.setBody(notificationbody);
 		// construct HTML template using required data
@@ -247,7 +271,11 @@ public class ConnectionsRestController {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, locationId, iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+//		String actionLink = "";
+		
+		 StringBuilder actionUrlBuilder = new StringBuilder();
+		 String actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("loadReceivedConnections").toString();
+		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, locations, noificationEmailScenario);
 	}
 	
@@ -258,8 +286,11 @@ public class ConnectionsRestController {
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(toUser.getId(), locations.getId());
 		String imageUrl = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
 		StringBuilder loginBuilder12 = new StringBuilder();
-		loginBuilder12.append("<img src='" + imageUrl + "" + toUser.getFileUrl()
-				+ "' style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
+		if(toUser.getFileUrl() != null){
+			loginBuilder12.append("<img src='" + imageUrl + "" + toUser.getFileUrl() + "' style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
+		}else{
+			loginBuilder12.append("<img src='"+imageUrl+"/resources/images/userprofileImg.jpg'  style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
+		}
 		tempHTML.append("<a style='text-decoration:none; display:block;' href='javascript:void(0)'>");
 		tempHTML.append("<div style='background-color: #fff; padding: 10px; border-bottom: 1px solid #f1f1f1;'>");
 		tempHTML.append("		<div class='userImg' style='width: 60px; padding: 0px 20px 0px 5px; float: left;'>");
@@ -274,7 +305,7 @@ public class ConnectionsRestController {
 		// connections</p>");
 		tempHTML.append("		</div>");
 		tempHTML.append("   	<div style='float: right; padding: 5px;'>");
-		tempHTML.append("<a href='").append(sourceleadLoginUrl).append(" ' style='display: block; background-color: #1176d4; color: #fff; text-decoration: none; padding: 4px 15px 6px; border-radius: 2px; font-size: 14px; line-height: 20px;' href='javascript:void(0)'>Accept </a>");
+		tempHTML.append("<a href='").append(sourceleadUrl).append("/ws/acceptConnection?userCode=").append(loginUser.getUserCode()).append("&fromUser=").append(toUser.getUserCode()).append(" ' style='display: block; background-color: #1176d4; color: #fff; text-decoration: none; padding: 4px 15px 6px; border-radius: 2px; font-size: 14px; line-height: 20px;' href='javascript:void(0)'>Accept </a>");
 		tempHTML.append("   	</div>");
 		tempHTML.append("   	<div style='clear:both'></div>");
 		tempHTML.append("	</div>");

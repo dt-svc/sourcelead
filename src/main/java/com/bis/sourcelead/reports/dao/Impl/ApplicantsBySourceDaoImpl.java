@@ -44,7 +44,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		
 		if(searchDates != null) {
 			 query ="select count(*) from RequirementSubmission rs where rs.requirement.id IN (:jobIds) "
-					+ " and (rs.requirement.createdDate BETWEEN :startDate and :endDate) and (rs.candidate.candidateType = 'Professional' OR (rs.vendorCandidateId.candidateType = 'Professional' AND rs.vendorCandidateId IS NOT NULL)) ";
+					+ " and date(rs.requirement.createdDate) BETWEEN :startDate and :endDate and (rs.candidate.candidateType = 'Professional' OR (rs.vendorCandidateId.candidateType = 'Professional' AND rs.vendorCandidateId IS NOT NULL)) ";
 			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
 		}else {
 			 query ="select count(*) from RequirementSubmission rs where (rs.candidate.candidateType = 'Professional' OR (rs.vendorCandidateId.candidateType = 'Professional' AND rs.vendorCandidateId IS NOT NULL)) and rs.requirement.id IN (:jobIds) ";
@@ -83,7 +83,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		
 		if(searchDates != null) {
 			query ="select  count(*) from RequirementSubmissionHistory rh where ((rh.submissionId.candidate.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional')) OR (rh.submissionId.vendorCandidateId IS NOT NULL AND rh.submissionId.vendorCandidateId.id IN(select cand.id from Candidate cand where cand.candidateType = 'Professional'))) "
-					+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+					+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and date(rh.submissionId.createdDate) BETWEEN :startDate and :endDate";
 			
 			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setCacheable(true).list();
 		}else {
@@ -110,7 +110,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		
 		if(searchDates != null) {
 			query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorLocationId IS NOT NULL "
-					+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+					+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and date(rh.submissionId.createdDate) BETWEEN :startDate and :endDate";
 			
 			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setCacheable(true).list();
 		}else {
@@ -139,7 +139,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		
 		if(searchDates != null) {
 			query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.recruiterUserId IS NOT NULL "
-					+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+					+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and date(rh.submissionId.createdDate) BETWEEN :startDate and :endDate";
 			 
 			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setCacheable(true).list();
 		}else {
@@ -166,7 +166,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		
 		if(searchDates != null) {
 			 query ="select  count(*) from RequirementSubmissionHistory rh where rh.submissionId.vendorCandidateId IS NULL and rh.submissionId.candidate.orgLocationId = :orgLocationId "
-						+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and (rh.submissionId.createdDate BETWEEN :startDate and :endDate)";
+						+ " and  rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :stage and date(rh.submissionId.createdDate) BETWEEN :startDate and :endDate";
 			
 			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setString("stage", stage).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		}else {
