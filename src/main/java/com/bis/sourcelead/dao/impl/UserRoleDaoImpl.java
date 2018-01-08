@@ -80,6 +80,20 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<ProjectMembers> projectMemberList = null;
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where emp IS NOT NULL and proj.id = :projectId and loc.id = :locationId ";
+		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setCacheable(true).list(); 
+		 HashSet<ProjectMembers> projectMemberSet  = null;
+		 if(projectMemberList != null && !projectMemberList.isEmpty()){
+			 projectMemberSet = new HashSet<>(projectMemberList);
+		 }
+		 return projectMemberSet;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
@@ -885,6 +899,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
 			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
 			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
 		}
 		

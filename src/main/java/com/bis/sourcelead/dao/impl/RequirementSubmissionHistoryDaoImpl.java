@@ -142,4 +142,18 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		return  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationID", orgLocationID).setCacheable(true).list();
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			session.saveOrUpdate(requirementSubmissionHistory);
+		}catch(Exception ex){
+			logger.error(ExceptionUtils.getFullStackTrace(ex)); 
+		}
+		logger.info("updated requirement history..!!");
+		return requirementSubmissionHistory;
+	}
+
 }
