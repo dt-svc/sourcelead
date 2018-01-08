@@ -168,4 +168,10 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		return requirementSubmissionHistoryDao.getRequirementHistoryByLocationIdAndSubId(orgLocationID, submissionId);
 	}
 
+	@Override
+	public RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)
+			throws Exception {
+		return requirementSubmissionHistoryDao.addRequirementHistory(requirementSubmissionHistory);
+	}
+
 }
