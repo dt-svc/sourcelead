@@ -18,4 +18,6 @@ public interface ConnectionsDao {
 
 	List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String value);
 
+	Long getConnectionReceivedCount(Long id);
+
 }
