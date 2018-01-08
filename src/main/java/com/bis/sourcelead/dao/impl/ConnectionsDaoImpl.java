@@ -86,6 +86,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
 			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
 			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
 		}
 		String query = null;
@@ -196,6 +197,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
 			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
 			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
 		}
 		String query = "from Connections connections left join fetch connections.fromUser left join fetch connections.toUser "
