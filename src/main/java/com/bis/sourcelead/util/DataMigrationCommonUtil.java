@@ -28,11 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -89,6 +92,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	
+	@Autowired
+	private ProjectTasksDao tasksDao;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation) throws Exception
@@ -516,17 +522,22 @@ public class DataMigrationCommonUtil {
 				mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 				importTimeSheet = mapper.readValue(dataMigrationDTOJsonCopy.toString(),ImportTimesheetDTO.class);
 				if(projectName != null){
+					 
 					 ProjectMembers projectMember = projectMembersService.getProjectMemberByUserIdAndProjectId(user.getId(), projectName.getId());
 					 if(projectMember != null && projectMember.getProjectMemberCandidteId().getEmail().equalsIgnoreCase(importTimeSheet.getEmployeeEmail())) {
 						 HashMap<String,Date> memberFrequency = projectMembersHistoryService.getAssignDateandEndDateByProjectMemberId(projectMember.getId());
 						 Date assignDate = memberFrequency.get("STARTDATE");
 						 Date terminatedDate = memberFrequency.get("ENDDATE");
+						 if(importTimeSheet.getTaskName()== null) {
+							 
+						 }
+						 
 						 
 						 if(importTimeSheet.getActualStartDate() != null) {
 							String[] year = importTimeSheet.getActualStartDate().split("-");
 							if(year[1] != null) {
 								String years = "20"+year[1];
-								 YearMonth yearMonth = YearMonth.of(Integer.parseInt(years),1);  // January of 2015.
+								 YearMonth yearMonth = YearMonth.of(Integer.parseInt(years),1); 
 								 LocalDate firstOfMonth = yearMonth.atDay(1);
 								 LocalDate last = yearMonth.atEndOfMonth();
 								 System.out.println(last);

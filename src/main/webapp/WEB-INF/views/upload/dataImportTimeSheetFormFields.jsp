@@ -81,10 +81,10 @@
 </div>
 
 <%-- <div class="form-group">
-	<label class="col-md-4 text-right mt5">End Date<span
+	<label class="col-md-4 text-right mt5">Task Name<span
 		class="text-danger paddingLeft">*</span></label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="actualEndDate" field-name="End Date" data-validation="required">
+		<select class="form-control" name="taskName" field-name="End Date" data-validation="required">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
