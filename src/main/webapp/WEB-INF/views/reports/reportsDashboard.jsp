@@ -102,6 +102,8 @@
 				<li><a href="#">Associate Onboard</a></li>
 				<li><a href="#">Associate Offboard</a></li>
 				<li><a href="${appPath}/expensesReportsList">Expenses</a></li>
+				<li><a href="${appPath}/missingTimesheetsReport">Missing Timesheets</a></li>
+				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
