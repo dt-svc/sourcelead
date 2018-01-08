@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.crypto.tls.SessionParameters;
@@ -84,6 +86,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
 			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
 			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
 		}
 		String query = null;
@@ -97,8 +100,8 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.getNameByValue(connectionStatus).toString()).setCacheable(true).list();
 		
 		if(connectionsList.size() >= offset){
-			if(connectionsList.size() > offset + 5){
-				connectionsList = connectionsList.subList(offset, (offset+5));
+			if(connectionsList.size() > offset + 6){
+				connectionsList = connectionsList.subList(offset, (offset+6));
 			}else{
 				connectionsList = connectionsList.subList(offset, (  offset + (connectionsList.size() - offset)));
 			}
@@ -128,11 +131,19 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					userRoleDTO.setUserName(userName.toString());
 					UserRole userRole = (UserRole) session.createQuery(query2).setLong("userId", userIdValue).setCacheable(true).uniqueResult();
 					if(userRole != null) {
-						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.connectionStatus = :connectionStatus";
-						Long count = (Long) session.createQuery(queryMutual).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
+						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId and connections.toUser.id <> :toUserId and connections.connectionStatus = :connectionStatus) and (connections.fromUser.id <> :toUserId and connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus)";
+						Long count = (Long) session.createQuery(queryMutual).setLong("userId", userId).setLong("toUserId", userIdValue).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 						userRoleDTO.setMutualCount(count);
 						userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
-						userRoleDTO.setOrgName(userRole.getOrgLocations().getOrgLocationName());
+						String userOrgName = null;
+						if(userRole.getRoles().getId() == 10) {
+							userOrgName = "";
+						}else if(userRole.getRoles().getId() == 11) {
+							userOrgName = "";
+						}else {
+							userOrgName = userRole.getOrgLocations().getOrgLocationName();
+						}
+						userRoleDTO.setOrgName(userOrgName);
 						userRoleDTO.setUserId(userRole.getUser().getId());
 						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
 						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
@@ -168,8 +179,8 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		logger.debug("deleteConnection");
 		Session session = this.sessionFactory.getCurrentSession();
 		Query qry = null;
-		String queryString="UPDATE Connections connections SET connections.connectionStatus = :status WHERE connections.fromUser.id = :fromUid and connections.toUser.id = :toUid";
-		qry = session.createQuery(queryString).setLong("fromUid", toUser.getId()).setLong("toUid", user.getId()).setString("status", ConnectionStatus.getNameByValue(status).toString());
+		String queryString="UPDATE Connections connections SET connections.connectionStatus = :status, connections.createdDate = :createdDate WHERE connections.fromUser.id = :fromUid and connections.toUser.id = :toUid";
+		qry = session.createQuery(queryString).setLong("fromUid", toUser.getId()).setLong("toUid", user.getId()).setTimestamp("createdDate", new Timestamp(new Date().getTime())).setString("status", ConnectionStatus.getNameByValue(status).toString());
     	int i = qry.executeUpdate();
     	return i;
 	}
@@ -186,14 +197,15 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
 			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
 			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
 		}
 		String query = "from Connections connections left join fetch connections.fromUser left join fetch connections.toUser "
 					+ " where (connections.toUser.id =:userId or connections.fromUser.id =:userId1) and connections.connectionStatus = :connectionStatus ";
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", id).setLong("userId1", id).setString("connectionStatus", ConnectionStatus.getNameByValue(status).toString()).setCacheable(true).list();
 		if(connectionsList.size() >= offset){
-			if(connectionsList.size() > offset + 5){
-				connectionsList = connectionsList.subList(offset, (offset+5));
+			if(connectionsList.size() > offset + 6){
+				connectionsList = connectionsList.subList(offset, (offset+6));
 			}else{
 				connectionsList = connectionsList.subList(offset, (  offset + (connectionsList.size() - offset)));
 			}
@@ -225,11 +237,19 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					UserRole userRole = null;
 					userRole = (UserRole) session.createQuery(queryRole).setLong("userId", userId).setCacheable(true).uniqueResult();
 					if(userRole != null) {
-						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.connectionStatus = :connectionStatus";
-						Long count = (Long) session.createQuery(queryMutual).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
+						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId and connections.toUser.id <> :toUserId and connections.connectionStatus = :connectionStatus) and (connections.fromUser.id <> :toUserId and connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus)";
+						Long count = (Long) session.createQuery(queryMutual).setLong("userId", id).setLong("toUserId", userId).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 						userRoleDTO.setMutualCount(count);
 						userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
-						userRoleDTO.setOrgName(userRole.getOrgLocations().getOrgLocationName());
+						String userOrgName = null;
+						if(userRole.getRoles().getId() == 10) {
+							userOrgName = "";
+						}else if(userRole.getRoles().getId() == 11) {
+							userOrgName = "";
+						}else {
+							userOrgName = userRole.getOrgLocations().getOrgLocationName();
+						}
+						userRoleDTO.setOrgName(userOrgName);
 						userRoleDTO.setUserId(userRole.getUser().getId());
 						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
 						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());

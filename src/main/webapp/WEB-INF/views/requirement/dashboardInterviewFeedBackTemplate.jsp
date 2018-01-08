@@ -621,7 +621,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		    	     result = result + '<div class="clearfix row">';
 		  			 result = result + '<div class="release-jobs submissionDetails">';
 				     result = result + '<div class="clearfix sub-details">';
-				     result = result + ' <h2 class="active clearfix intfd_dashbord"><span class="col-md-3">Interview Feedback Details</span> <span class="col-md-4">Req. Name:<lable class="paddingLeft" title="'+requirementName+'">'+requirementName+'</label></span><span class="col-md-4">Appli. Name:<lable class="paddingLeft" title="'+applicantName+'">'+applicantName+'</label></span></h2>';
+				     result = result + ' <h2 class="active clearfix intfd_dashbord"><span class="col-md-3">Interview Feedback Details</span> <span class="col-md-4">Job Name:<lable class="paddingLeft" title="'+requirementName+'">'+requirementName+'</label></span><span class="col-md-4">Appli. Name:<lable class="paddingLeft" title="'+applicantName+'">'+applicantName+'</label></span></h2>';
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';

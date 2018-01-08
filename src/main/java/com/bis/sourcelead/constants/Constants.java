@@ -842,7 +842,7 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 
-	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home","SystemTaskBillable","SystemTaskNonBillable"};
 	public static final String BIS_CHECKS = "BIS_CHECKS";
 
 
@@ -985,6 +985,8 @@ public class Constants {
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
 	public static final String CLIENT_REPORT = "clientReport";
+	public static final String GENERAL = "General";
+	public static final Long TaskStatusID = 1069L;
 
 
 
