@@ -443,8 +443,6 @@ $('body').on('submit', '#signatory_form', function(e){
 		        	saveOrgLocationSignatory(formData);
 		        },
 		    });   
-		    
-        saveOrgLocationSignatory(formData);
       }
 		    
       return true; 
