@@ -4841,4 +4841,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			Long vendorLocationId) throws Exception {
 		return requirementSubmissionDao.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(sourceSubmissionId, vendorLocationId);
 	}
+
+	@Override
+	public List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception {
+		return requirementSubmissionDao.getSubmmisionsForIsClientJob(submissionIds);
+	}
 }
