@@ -20,4 +20,6 @@ public interface ConnectionsService {
 
 	List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String status);
 
+	Long getConnectionReceivedCount(Long id);
+
 }
