@@ -8,6 +8,7 @@
 
 <script>
 $(document).ready(function() {
+	 $("#myModal").hide();
 	socialInviterScripts();
 	refercontactList();
 });	
@@ -44,7 +45,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 </script> 
 
 
-<div class="modal fade" id="myModal" role="dialog">
+<div class="fade" id="myModal" role="dialog">
    <form:form id="uploadContactCSV_form" name="uploadContactCSV_form" enctype="multipart/form-data">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -207,6 +208,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 		$("#uploadFile").val('');
 		$(".clearUpload").hide();
 		$("#myModal").hide();
+		$("#myModal").removeClass("modal");
 		$("#myModal").addClass("fade");
 		$("#accordion").find(".in").removeClass("in");
 	}

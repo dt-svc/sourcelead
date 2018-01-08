@@ -29,4 +29,4 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 			
 #Notification
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
-('connectionInvitation', 'Notification', 'connectionInvitation', ' connectionInvitation Notification to user', 'sourcelead', '', '{{connectionInvitation.loginUserName}} invited you to connect','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+('connectionInvitation', 'Notification', 'connectionInvitation', ' connectionInvitation Notification to user', '','sourcelead', '', '{{connectionInvitation.loginUserName}} invited you to connect','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
