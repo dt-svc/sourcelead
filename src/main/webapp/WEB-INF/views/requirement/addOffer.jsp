@@ -37,6 +37,7 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 				
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
+				result = result + '<input type="hidden" id="clientOffer" name="clientOffer" value="N">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
 				result= result + '	            <div class="add_inter_head"> <span>Generate Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
@@ -67,7 +68,7 @@ function addOffer(requirementId){
 				result = result + '<div class="ne-ch">';
 				
 				result= result + ' <label>';
-				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
+				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" value="Y" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
 					result= result + '<input type="hidden" value="Y"  id="notifyToVendor" name="notifyToVendor"/>';
@@ -485,40 +486,6 @@ function cancelOfferPopup(){
 }
 </script>
  
-<!-- <script type="text/javascript">
- function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
-	 var existingApplicantsIds = [];    
-	 for(i=rowId ; i > 0; i--){
-		 var applicant = $("#"+(i)+"applicantId").val();
-		 if(applicant != null && applicant != '' && applicant != 'undefined'){
-			 existingApplicantsIds.push(applicant);
-		 }
-	 }
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementId = $("#reqId").val();
-     
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
-					}
-		        	$("#"+rowId+"applicantId").empty();
-		        	$("#"+rowId+"applicantId").append(output);
-		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
-			       
-		        },
-		    });
-	
- }
-</script>  -->
 
 <script type="text/javascript">
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
@@ -684,6 +651,11 @@ $(function(){
 <script>
 function myOfferFunction(){
 	$("#isFlushCandidateRequired").val('Y');
+	if(document.getElementById('isClientOffer').checked) {
+		 $("#clientOffer").val("Y");
+    }else{
+    	$("#clientOffer").val("N");
+    }
 	getShortListAndSubmittedAndInterviewedCandidates();
 }
 </script>

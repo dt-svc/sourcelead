@@ -899,6 +899,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
 			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
 			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
 		}
 		
@@ -936,8 +937,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					}else {
 						userName = userName.append(userRole.getUser().getFirstName());
 					}
-					String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId and connections.toUser.id <> :toUserId and connections.connectionStatus = :connectionStatus) and (connections.fromUser.id <> :toUserId and connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus)";
-					Long count = (Long) session.createQuery(queryMutual).setLong("userId", userId).setLong("toUserId", userRole.getUser().getId()).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
+					String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.fromUser.id <> :loginUserId and connections.toUser.id <> :loginUserId and connections.connectionStatus = :connectionStatus";
+					Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", userId).setLong("userId", userRole.getUser().getId()).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 					userRoleDTO.setMutualCount(count);
 					userRoleDTO.setUserName(userName.toString());
 					userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());

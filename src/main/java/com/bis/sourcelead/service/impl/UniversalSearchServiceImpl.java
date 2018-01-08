@@ -604,7 +604,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							}
 						}	
 			}
-			if("Users".equals(tabs.getTabName())){
+			if("Associates".equals(tabs.getTabName())){
 				// ELK list for the user
 				BoolQueryBuilder userBoolQueryBuilder = new BoolQueryBuilder();
 				userBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));

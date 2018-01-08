@@ -524,6 +524,7 @@ public class ContractRestController {
 		
 		List<RequirementSubmission> requirementSubmissionsList = new ArrayList<>();
 		
+		Requirement req = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 		if(!"".equalsIgnoreCase(requirementId)){
 			requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
 		}
@@ -546,7 +547,15 @@ public class ContractRestController {
 				if(null != requirementSubmission.getRequirement()){
 					requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
 				}
+				
+				
 			}
+		}
+		
+		if (req.getClientId() != null) {
+			RequirementSubmission reqSub = new RequirementSubmission();
+			reqSub.setOrgRelationId(req.getClientId().getId());
+			requirementSubmissionsList.add(reqSub);
 		}
 		
 		return commonUtil.toJSON(requirementSubmissionsList);
