@@ -1430,7 +1430,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    	 
 		      var result = "";
 
-		      var title=json.jobTitle;
+		      var title=requirements.jobTitle;
 				var link="";
 				var picture="";
 				var description='';
