@@ -207,7 +207,7 @@ function getOpenJobsELKList(){
 					}else{
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 					}
-					result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
+// 					result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 					result = result +'	<div class="share">';
 					
 					/* result = result +'	<div class="socialinviter holder break" type="socialpost"></div>'; */ 
