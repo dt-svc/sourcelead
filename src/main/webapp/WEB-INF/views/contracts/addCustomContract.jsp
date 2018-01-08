@@ -682,6 +682,19 @@ function getCustomDependentField(sectionId){
 	}			
 </script>
 <script type="text/javascript">
+
+function removeDocument(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+     type : "POST",
+      url: sourceleadUrl+"/terminateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+      success :function(data) {
+      	    $("#tr"+id).empty();
+     },
+ });  
+	}
+</script>
+<script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},

@@ -1048,6 +1048,7 @@ public class ClientRestController {
 			RequirementDTO.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),req.getCreatedDate()));
 			int interviewsSum = 0;
 			int offeredSum = 0;
+			int applicantsCount = 0;
 			int submitToClient = 0;
 			if (req.getManagerUserId() != null) {
 				String managerFirstName = "";
@@ -1066,6 +1067,7 @@ public class ClientRestController {
 					RequirementSubmission sourceSub = requirementSubmissionService.getClientRequierementSubmission(reqsub.getId());
 					int vendorInterviewsCount = 0;
 					int vendorOfferedCount = 0;
+					int submitedApplicantsCount = 0;
 					int vendorSubmittoClientCount = 0;
 					if(sourceSub != null && sourceSub.getRequirement() != null ){
 						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(sourceSub.getId(),null,null);
@@ -1077,13 +1079,22 @@ public class ClientRestController {
 							}
 							else if (ApplicantSubmissionStatus.OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
 								vendorOfferedCount++;
-							}else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(subhistory.getToStage())){
-								vendorSubmittoClientCount++;
 							}
 							
 						}
+						
+						List<RequirementSubmissionHistory> submissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqsub.getId(),null,null);
+						for(RequirementSubmissionHistory subhistory : submissionHistoryList){
+							 if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(subhistory.getToStage())){
+									submitedApplicantsCount++;
+							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equalsIgnoreCase(subhistory.getToStage())){
+								    vendorSubmittoClientCount++;
+							}
+						}
+						
 						interviewsSum = interviewsSum + vendorInterviewsCount;
 						offeredSum = offeredSum + vendorOfferedCount;
+						applicantsCount = applicantsCount+submitedApplicantsCount;
 						submitToClient = submitToClient + vendorSubmittoClientCount;
 						
 					}else{
@@ -1098,6 +1109,8 @@ public class ClientRestController {
 							}
 							else if (ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
 								vendorOfferedCount++;
+							}else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(subhistory.getToStage())){
+								submitedApplicantsCount++;
 							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equalsIgnoreCase(subhistory.getToStage())){
 								vendorSubmittoClientCount++;
 							}
@@ -1105,12 +1118,14 @@ public class ClientRestController {
 						}
 						interviewsSum = interviewsSum + vendorInterviewsCount;
 						offeredSum = offeredSum + vendorOfferedCount;
+						applicantsCount = applicantsCount+submitedApplicantsCount;
 						submitToClient = submitToClient + vendorSubmittoClientCount;
 					}
 				}
 				
 				RequirementDTO.setNoOfInterviewedApplicants(String.valueOf(interviewsSum));
 				RequirementDTO.setNoOfOfferedApplicants(String.valueOf(offeredSum));
+				RequirementDTO.setNoOfApplicants(String.valueOf(applicantsCount));
 				RequirementDTO.setNoOfSubmittedApplicants(String.valueOf(submitToClient));
 				RequirementDTO.setRequirementUUID(req.getRequirementUUID());
 				RequirementDTO.setJobTitle(req.getJobTitle());

@@ -121,17 +121,10 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 					}
         		  
         		   if(authentication.getDetails() != null){
-        			  /* String ipAddress =userLoginHelper.getIpAddress();
-        			   boolean validIp = false;
-        			   if(userRolesList.size() == 1){
-        				   validIp = whiteListIpAddressService.validateIPAddress(ipAddress, userRolesList.get(0));
-        			   }*/
         			  if(userRolesList.size() > 1)
             			  throw new BadCredentialsException("login_2_Step_Process_Enabled");
-            		  else if ((userRolesList.size() == 1 && Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())))
+            		  else if ((userRolesList.size() == 1 && (Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())) || Constants.YES.equalsIgnoreCase(userRolesList.get(0).getUser().getLoginSecurity())))
             			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
-            		 /* else if(userRolesList.size() == 1 && !validIp) 
-            		  	throw new BadCredentialsException("invalid_IP_Address");*/
             		  else{
             			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
             		  }
