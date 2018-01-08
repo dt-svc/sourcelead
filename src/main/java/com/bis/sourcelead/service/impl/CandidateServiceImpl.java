@@ -1706,4 +1706,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateByShortURL(shortURL);
 	}
 
+	@Override
+	public Integer getCandidatesCountByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getCandidatesCountByLocation(orgLocationId);
+	}
+
 }

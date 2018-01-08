@@ -51,6 +51,8 @@ public interface CandidateDao {
 	
 	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception;
 	
+	public Integer getCandidatesCountByLocation(Long orgLocationId)throws Exception;
+	
 	Candidate getCandidateByEmailAndRecruiterUserId(String email, Long recruiterUserId) throws Exception;
 	
 	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId, String employeementType) throws Exception;

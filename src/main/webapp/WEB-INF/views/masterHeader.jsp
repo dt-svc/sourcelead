@@ -31,7 +31,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
+<title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
 <link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">

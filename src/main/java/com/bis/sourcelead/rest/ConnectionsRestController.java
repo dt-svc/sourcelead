@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ public class ConnectionsRestController {
 			connections.setToUser(toUser);
 			connections.setConnectionStatus(ConnectionStatus.REQUEST_SENT);
 			connections.setStatus(Constants.RECORD_ACTIVE);
-			connections.setCreatedDate(new Date());
+			connections.setCreatedDate(new Timestamp(new Date().getTime()));
 			connectionsService.saveConnection(connections);
 			connectionInvitationMailToUser(user,toUser,loginOrgLocation.getId());
 			result = "success";
