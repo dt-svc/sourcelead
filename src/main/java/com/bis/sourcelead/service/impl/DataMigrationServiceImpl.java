@@ -3,23 +3,31 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.format.CellDateFormatter;
+import org.apache.poi.ss.format.CellFormatter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -242,7 +250,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 				reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
-				reqDTO.setSaveType("save");
+				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
+					reqDTO.setSaveType("submitForApproval");
+				}
+				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("DRAFT")) {
+					reqDTO.setSaveType("draft");
+				}
+				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("OPEN")) {
+					reqDTO.setSaveType("save");
+				}
+				
 				if(reqDTO.getParallelApprover() != null){
 					reqDTO.setApprover("Parallel");
 				}
@@ -252,7 +269,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				
 				if(StringUtils.isNotEmpty(reqDTO.getClientSubmissionForm()) && StringUtils.isNotEmpty(reqDTO.getSelectContact()) && StringUtils.isNotEmpty(reqDTO.getSelectClient())){
 					reqDTO.setIsClient("Y");
-					
 					reqDTO.setApplicationFrom(null);
 				}else if(StringUtils.isEmpty(reqDTO.getIsClient()) || !reqDTO.getIsClient().equalsIgnoreCase("Y")){
 					if(StringUtils.isEmpty(reqDTO.getApplicationFrom())) {

@@ -276,6 +276,7 @@ public class ProjectsController {
 				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				
+				
 			    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -382,6 +383,15 @@ public class ProjectsController {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.Projects);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
 				
 				 ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
 				 OrgLocations locations=orgLocationService.getOrgLocations(projectTask.getProjectId().getOrgLocationsId().getId());
