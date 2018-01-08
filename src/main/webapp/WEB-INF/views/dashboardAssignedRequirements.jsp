@@ -71,7 +71,8 @@ function requirementList(){
 	                	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>ID</th>";
+	                     result = result +"    <th>Actions</th>";
+	                     result = result +"    <th>Generated ID</th>"; 
 	                     result = result +"    <th>Title</th>";
 	                     if(orgATS == 'Y'){
 	                     result = result +"    <th>Client</th>";
@@ -84,7 +85,6 @@ function requirementList(){
 	                     result = result +"    <th>Interview</th>"; 
 	                     result = result +"    <th>Offered</th>";
 	                     result = result +"    <th>Status</th>";
-	                     result = result +"<th>Actions</th>";
 // 	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -109,8 +109,31 @@ function requirementList(){
 	                    	 var opt = json[i]; 
 	                    	 
 	                    	 result = result +"<tr>";
-	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class=''><span title='"+opt.jobId+"'>"+opt.jobId+"</span></a></div></td>";
+	                    	  result = result +"<td>";
+			                     result = result + '<div class="tblminwidth-75">';
+			         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+				         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+				         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
+				         	       }else{
+				         	    	  result = result +"<div class='text-center'>---</div>";
+				         	       }
+			         	        '</sec:authorize>';
+			         	       '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+			                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+			                    	 if(opt.isRequirementReleasedByuser == 'Y'){
+			                       		 result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
+			                       	 }else{	
+			                       	 result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
+			                       	 }
+			                     }else{
+				                     result = result +"<div>---</div>";
+			                     } 
+			                     '</sec:authorize>';
+			                     result = result + '</div>';
+			                     result = result +"</td>";
+			                     
+	                    	 if(opt.generatedId!=null && opt.generatedId !='' && opt.generatedId !='undefined'){
+	                    		 result = result +"<td><div class=''><span title='"+opt.generatedId+"'>"+opt.generatedId+"</span></a></div></td>";
 	                    	 }
 	                    	 else{
 	                    		 result = result +"<td><div>---</div></td>";
@@ -172,28 +195,7 @@ function requirementList(){
 	                    		 result = result +"<td><div>---</div></td>";
 	                    	 }
 		                     
-		                     result = result +"<td>";
-		                     result = result + '<div class="tblminwidth-75">';
-		         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-			         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-			         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
-			         	       }else{
-			         	    	  result = result +"<div class='text-center'>---</div>";
-			         	       }
-		         	        '</sec:authorize>';
-		         	       '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
-		                       		 result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
-		                       	 }else{	
-		                       	 result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
-		                       	 }
-		                     }else{
-			                     result = result +"<div>---</div>";
-		                     } 
-		                     '</sec:authorize>';
-		                     result = result + '</div>';
-		                     result = result +"</td>";
+		                   
 		                     if(checkSize>=10 && i==9 ){
 		                    	 $("#viewmoresDiv").css("display", "block");
 			 	   	   	    	 } 
