@@ -776,7 +776,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
 		        	}
 			  }*/
-			sendContractForSignature(contracts,orgLocation,user);
+			if(!Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())) {
+				sendContractForSignature(contracts,orgLocation,user);
+			}
 		}
 		
 		return savedContracts;
@@ -1392,7 +1394,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			          Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);*/
 				contractApproveEmail(contracts,user,org,orgLocation);
 				sendMailToOwner(contracts,user,org,orgLocation);
+				if(!Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())) {
 				sendContractForSignature(contracts, orgLocation, user);
+				}
 		}else{
 
 			contracts.setRejectedReason(rejectReason);

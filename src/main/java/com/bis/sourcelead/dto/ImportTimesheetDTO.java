@@ -1,5 +1,9 @@
 package com.bis.sourcelead.dto;
 
+/**
+ * @author BIS115
+ *
+ */
 public class ImportTimesheetDTO {
 
 	private String employeeId;
@@ -8,6 +12,7 @@ public class ImportTimesheetDTO {
 	private Long projectId;
 	private Long projectMemberId;
 	private String project;
+	private String taskName;
 	private String clientName;
 	private String actualStartDate;
 	private String actualEndDate;
@@ -128,6 +133,12 @@ public class ImportTimesheetDTO {
 	}
 	public void setWeek5(String week5) {
 		this.week5 = week5;
+	}
+	public String getTaskName() {
+		return taskName;
+	}
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 	
 }
