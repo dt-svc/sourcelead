@@ -7784,9 +7784,19 @@ padding: 0 !important;
 .resume-view .resume-skills ul li {
 	padding: 3px 0;
 }
-
 /* Resume view single page styles Ends */
-
+.exportButton_custom div.dt-buttons {
+top: 0px; left: 15px; z-index: 99;
+}
+.exportButton_custom button.dt-button, .exportButton_custom div.dt-button, a.dt-button {
+	padding: 4px 10px !important;
+}
+ .exportButton_custom .buttons-excel:before,  .exportButton_custom .buttons-pdf:before {
+     top: 0;
+ }
+  .exportButton_custom  .dataTables_info {
+  padding-left: 15px !important;
+  }
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
