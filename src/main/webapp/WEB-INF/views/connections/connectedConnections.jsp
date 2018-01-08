@@ -13,15 +13,16 @@
 		$(imageId).attr('src', '/resources/images/userprofileImg.jpg');
 	}
 </script>
+<div class="success_pop" id="selector4" style="display: none;">
+	<i class="fa fa-check-circle"></i><span id="inviteMessage"></span>
+</div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>Connections</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a
-				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Conections
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/referRequirementList'/>">Contacts</a> &raquo; Conections
 		</div>
 	</section>
 
@@ -59,7 +60,7 @@ $(document).scroll(function(e){
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	
-    	avilableCount = parseInt(avilableCount) + parseInt(5); 
+    	avilableCount = parseInt(avilableCount) + parseInt(6); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -83,6 +84,11 @@ $("#searchFindConnId").keydown(function(e) {
 		getConnectionsList('manual');
 	}
 });
+function eduMsgFadeinFunction(message) {
+	$("#selector4").fadeIn(200);
+	$("#inviteMessage").text(message);
+    $('#selector4').delay(1000).fadeOut('slow');
+}
 	function getConnectionsList(type){
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
@@ -115,12 +121,18 @@ $("#searchFindConnId").keydown(function(e) {
 		 			}else{
 		 				mutCountStatus = "No Mutual Connections";
 		 			}
+		 			var orgNameValue = null;
+	 				if(user.orgName == ""){
+	 					orgNameValue = "";
+	 				}else{
+	 					orgNameValue = "at " + user.orgName;
+	 				}
 	 				result = result + "<div class='connCta'><div class='connCtaInn'><div class='connCtaInnText'>";
 	 				result = result + "<span><img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' src='"+user.fileUrl+"' class='m-t-xs'   alt='image'>";
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
-	 				result = result + "<p>"+user.userRoleName+" <b> at "+user.orgName+" </b></p></a>";
+	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink">Disconnect</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Disconnect</a></div></div></div>';
 	   		    }
 	 			
 	 			if(type == "manual"){
@@ -131,7 +143,7 @@ $("#searchFindConnId").keydown(function(e) {
 	 			$("#noOrgsList").val("")
 	   		}else if(type == "scroll" && flag == true){
             	$('#loadMoreDiv').empty();
-	         	result = result + '<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> No More Records..</div>';
+	         	result = result + '<div class="loadWrap"> No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
             }else if(type === 'manual' && flag == false){
             	$("#loadMoreDiv").empty(); 
@@ -146,12 +158,15 @@ $("#searchFindConnId").keydown(function(e) {
 	}
 </script>
 <script>
-function getDisconnectConnection(userCode){
+function getDisconnectConnection(userCode,userName){
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
+            	$("#selector4").removeAttr("style");
+    			$("#selector4").css({ display: "block" });
             	getConnectionsList("manual");
+            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
 	 });  
     }

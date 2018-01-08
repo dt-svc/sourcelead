@@ -1427,9 +1427,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    		
 	    	  var json = JSON.parse(data);
 	    	 
-		      var result = "";
-
-		      var title=requirements.jobTitle;
+		      	var result = "";
+		      	var title=json.jobTitle;
 				var link="";
 				var picture="";
 				var description='';

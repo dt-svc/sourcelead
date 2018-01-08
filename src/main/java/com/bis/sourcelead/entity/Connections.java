@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -51,10 +52,10 @@ public class Connections {
 	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
-	private Date createdDate;
+	private Timestamp createdDate;
 	
 	@Column(name = "UPDATED_DATE")
-	private Date updatedDate;
+	private Timestamp updatedDate;
 	
 	public Long getId() {
 		return id;
@@ -90,13 +91,13 @@ public class Connections {
 	public Date getCreatedDate() {
 		return createdDate;
 	}
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
 	}
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 	
