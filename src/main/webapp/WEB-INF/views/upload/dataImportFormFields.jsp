@@ -4,6 +4,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
+<script type="text/javascript">
+    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+ </script>
 
 <c:forEach var="field" items="${fields}">
 	<div class="form-group">
@@ -16,12 +27,12 @@
 		</c:if>
 		<div class="col-md-8 dropdown-select">
 			<c:if test="${empty field.slDependantField}">
-				<select class="form-control" name="${field.fieldName}"
+				<select class="chosen-select form-control" name="${field.fieldName}"
 					field-name="${field.labelName}"
 					${field.isFieldRequired == "1" ? "data-validation='required'" : ""}>
 			</c:if>
 			<c:if test="${!empty field.slDependantField}">
-				<select class="form-control" name="${field.fieldName}"
+				<select class="chosen-select form-control" name="${field.fieldName}"
 					field-name="${field.labelName}">
 			</c:if>
 			<option value="">- - - Select - - -</option>
