@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -92,6 +93,12 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
 					session.saveOrUpdate(timesheetSubmissions);
+					if(timesheetSubmissions.getApproverHierarchyList() != null && !timesheetSubmissions.getApproverHierarchyList().isEmpty()) {
+						for(SubmissionApproverHierarchy sah:timesheetSubmissions.getApproverHierarchyList()) {
+							      sah.setSubmissionId(timesheetSubmissions);;
+									session.saveOrUpdate(sah);
+							}
+					}
 				}
 				
 			}

@@ -524,17 +524,21 @@ public class TimesheetRestController {
 			timesheetFor = "user";
 	  }
 	HashMap<String,String> statusMap = new HashMap<>();
+	
+	
    if(pm != null){
     Long projectId = pm.getProjects().getId();
     Long masterCandidateId = pm.getMasterCandidateId().getId();
 	Date frequencyStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentFrequencyStartDate.replaceAll("/", "-"));
 	Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentFrequencyEndDate.replaceAll("/", "-"));
 	 
+	Boolean isReopenButtonVisible = false;
 	SubmissionApproverHierarchy sah = null;
 	if(StringUtils.isNotEmpty(timesheetFor) && timesheetFor.equalsIgnoreCase("user")){
 		sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectId,masterCandidateId);  
 	}
 	else{
+		isReopenButtonVisible = submissionApproverHierarchyService.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,orgLocations.getId());
 		sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(),projectId,masterCandidateId,orgLocations.getId(),frequencyStartDate, frequencyEndDate);
 	}
 	Submission_Status submissionStatus = sah.getSubmissionStatus();
@@ -562,24 +566,25 @@ public class TimesheetRestController {
     statusMap.put("STATUS", submissionStatusStr.toUpperCase());
     statusMap.put("REOPEN_REASON",sah.getReopenReason());
     if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
-    	if(isSahApproved && isModifyMyTimeSheet && timesheetFor.equalsIgnoreCase("user") && isModifyMyTimeSheet && isFillMyTimeSheet){
+    	if(isSahApproved && isModifyMyTimeSheet && timesheetFor.equalsIgnoreCase("user") && isModifyMyTimeSheet && isFillMyTimeSheet ){
     		 statusMap.put("IS_MODIFY_BUTTON_VISIBLE","true");
     	}
     }
     
     if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
         	if(timesheetFor.equalsIgnoreCase("approver") && StringUtils.isEmpty(sah.getReopenReason())){
+        	
         		//to show re-open rejected reason
-        		if(StringUtils.isNotEmpty(sah.getReopenRejectedReason())){
+        		if(StringUtils.isNotEmpty(sah.getReopenRejectedReason()) && isReopenButtonVisible){
         			 statusMap.put("REOPEN_REJECTED_REASON",sah.getReopenRejectedReason());
         		}
-        		if(!isNullOrEmpty(acSubmissionStatusStr) && acSubmissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
+        		if(!isNullOrEmpty(acSubmissionStatusStr)&& isReopenButtonVisible && acSubmissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
         			statusMap.put("IS_REOPEN_BUTTON_VISIBLE","true");
         		}
         	}
         	else if(timesheetFor.equalsIgnoreCase("approver") && !isSuperUser && StringUtils.isNotEmpty(sah.getReopenReason()) && isSahReopened){
         		//to show re-open reason
-        		if(StringUtils.isNotEmpty(sah.getReopenReason())){
+        		if(StringUtils.isNotEmpty(sah.getReopenReason()) && isReopenButtonVisible){
         			 statusMap.put("REOPEN_REASON",sah.getReopenReason());
         		}
         		statusMap.put("REOPEN_REQUEST_SENT","true");
@@ -597,6 +602,10 @@ public class TimesheetRestController {
         if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))){
         	statusMap.put("REJECTED_REASON",sah.getRejectedReason());
         }
+        
+        statusMap.put("IS_Client_PrimeVendor",isReopenButtonVisible.toString());
+        
+        
        }
        return statusMap;
     }
@@ -735,6 +744,8 @@ public class TimesheetRestController {
 		    String[] currentSubFrequency = currentTimeSubFrequency.split("To");
 		 	String currentSubFrequencyStartDate = currentSubFrequency[0].trim();
 		    String currentSubFrequencyEndDate = currentSubFrequency[1].trim();
+		    
+		    Boolean reopenButtonIsVisible = new Boolean(statusMap.get("IS_Client_PrimeVendor"));
 		  	  
 			Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentSubFrequencyStartDate.replaceAll("/", "-"));
 		    Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentSubFrequencyEndDate.replaceAll("/", "-"));
@@ -879,31 +890,31 @@ public class TimesheetRestController {
 		    currentCal.setTime(actualWeekStartDate);
 			 
 			
-			if( (!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+			if( (!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition1.setLength(0);
 				disbleCondition1.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition2.setLength(0);
 	       	disbleCondition2.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition3.setLength(0);
 	       	disbleCondition3.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition4.setLength(0);
 	       	disbleCondition4.append("disabled");
 			} 
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition5.setLength(0);
 	       	disbleCondition5.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition6.setLength(0);
 	       	disbleCondition6.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition7.setLength(0);
 	       	disbleCondition7.append("disabled");
 			} 
@@ -1056,8 +1067,8 @@ public class TimesheetRestController {
 			tsDTO.setFileInfo(fileInfoList);
 		}
 		 if( isFillMyTimeSheet) {
-		    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user")) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-		    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && timesheetFor.equalsIgnoreCase("user")))
+		    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+		    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)))
 		    	  tsDTO.setSaveButtonVisible(true);
 				
 				if(StringUtils.isNotEmpty(currentFrequencyEndDate)){
