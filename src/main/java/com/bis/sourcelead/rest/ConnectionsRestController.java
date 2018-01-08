@@ -106,6 +106,10 @@ public class ConnectionsRestController {
 	public ModelAndView loadFindConnections(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
+		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
 		model.setViewName("/connections/connections");
 		return model;
 	}
@@ -113,6 +117,10 @@ public class ConnectionsRestController {
 	@RequestMapping(value="/loadSentConnections")
 	public ModelAndView loadSentConnections(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
+		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/connections/sentConnections");
 		return model;
@@ -121,6 +129,10 @@ public class ConnectionsRestController {
 	@RequestMapping(value="/loadReceivedConnections")
 	public ModelAndView loadReceivedConnections(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
+		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/connections/receivedConnections");
 		return model;
@@ -172,6 +184,10 @@ public class ConnectionsRestController {
 	@RequestMapping(value="/loadConnectedList")
 	public ModelAndView loadConnectedList(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
+		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/connections/connectedConnections");
 		return model;
@@ -268,6 +284,7 @@ public class ConnectionsRestController {
 		tempHTML.append(" </a>");
 		return tempHTML;
 	}
+	
 	
 	
 }
