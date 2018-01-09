@@ -118,6 +118,7 @@ public class SecurityConfig  {
     			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
     			.and().exceptionHandling().accessDeniedPage("/403")
+    			//.and().requiresChannel().anyRequest().requiresSecure()
     			.and().csrf().disable();
     			
     			

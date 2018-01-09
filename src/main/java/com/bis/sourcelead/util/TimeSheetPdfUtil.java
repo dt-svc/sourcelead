@@ -129,7 +129,7 @@ public class TimeSheetPdfUtil {
 		Date employeeEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyEndDate.replaceAll("/", "-"));
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(projectMember.getProjectMemberCandidteId().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+		sb.append(orgLocations.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		file = File.createTempFile(sb.toString(),".pdf");
 		file.setReadable(true);
 		

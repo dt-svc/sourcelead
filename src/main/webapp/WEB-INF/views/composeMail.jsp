@@ -20,6 +20,11 @@ display: none;
 .mt40{
  margin-top: 50px !important;
 }
+.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+    height: 35px;
+    line-height: 35px;
+    width: 500px !important;
+}
 </style>
 
  <script>
@@ -52,7 +57,7 @@ display: none;
         <h2>Compose Mail</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/mailBox/mails'/>"> Mailbox</a>
-			&raquo; Compose Email</div>
+			&raquo; Compose Mail</div>
     </section>
     
     
@@ -93,7 +98,7 @@ display: none;
                     <h4 class="modal-title">Select Mailer</h4>
                    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
                     <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Associate</strong></label>
+               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Associates</strong></label>
                	    <label class="paddingLeft">
                	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label>
                	    </c:if>
