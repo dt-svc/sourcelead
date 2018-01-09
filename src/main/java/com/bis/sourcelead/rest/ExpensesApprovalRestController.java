@@ -203,7 +203,7 @@ public class ExpensesApprovalRestController {
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
 	 			    //For Employee
-			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName(), projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName(), projectMembers.getProjectMemberCandidteId().getConsultantUser().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 			 		 
 			 		//For Approvers of EndClient
 			 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
