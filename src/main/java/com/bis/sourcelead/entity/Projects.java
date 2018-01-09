@@ -215,13 +215,13 @@ public class Projects implements Serializable{
   
 
     @NotFound(action=NotFoundAction.IGNORE)
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="projects")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;
     
     @NotFound(action=NotFoundAction.IGNORE)
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="projectId")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocumentFolder> ProjectDocumentFolder;

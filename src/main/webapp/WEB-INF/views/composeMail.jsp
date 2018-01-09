@@ -199,15 +199,11 @@ $(function() {
    <script>
   function loadMailBoxDetails(UUID){
 	  var sourceleadUrl = '${sourceleadUrl}';
-	  
 			 $.ajax({
-				 
 				 type: "POST",
 			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
-			        	
-			        	
 			        	 $("input[name=subject]").val(json['subject']);
 			    		 
 			        	 if(json['comments'] != '' && json['comments'] != null && json['comments'] != 'undefied'){
@@ -216,8 +212,8 @@ $(function() {
 			        	 }
 			        	 
 			        	 if(json['comments'] == null && json['body'] != '' && json['body'] != null && json['body'] != 'undefied'){
-			        		 //nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
-			        		 $('#bodytext').summernote('editor.pasteHTML','<br/><br/>'+json['body']);
+			        		 nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+// 			        		 $('#bodytext').summernote('editor.pasteHTML','<br/><br/>'+json['body']);
 			        	 }
 			        	
 			        }

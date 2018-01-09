@@ -908,6 +908,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				venContractsDto.setFileName(contracts.getFileName());
 			}
 			
+			if(contracts.getInvoiceFrequency() != null){
+				venContractsDto.setBillingCycle(contracts.getInvoiceFrequency());
+			}
+			
 			if(null != contracts.getParentContractId()){
 				venContractsDto.setParentContractId(contracts.getParentContractId().getId());
 				venContractsDto.setParentId(contracts.getParentContractId().getId().toString());
@@ -1047,6 +1051,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			if(contracts.getFileName() != null){
 				clientConDto.setFileName(contracts.getFileName());
+			}
+			
+			if(contracts.getInvoiceFrequency() != null){
+				clientConDto.setBillingCycle(contracts.getInvoiceFrequency());
 			}
 			
 			if(null != contracts.getParentContractId()){

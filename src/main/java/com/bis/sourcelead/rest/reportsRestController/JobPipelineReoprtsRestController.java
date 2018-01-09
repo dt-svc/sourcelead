@@ -201,7 +201,7 @@ public class JobPipelineReoprtsRestController {
 									shortlistCreatedDate = rsh.getCreatedDate();
 								}
 								
-							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("offermade"))
+							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && (rsh.getToStage().equalsIgnoreCase("offermade") || rsh.getToStage().equalsIgnoreCase("client_interview")))
 									|| (rsh.getFromStage().equalsIgnoreCase("submit_to_client") && rsh.getToStage().equalsIgnoreCase("client_interview"))){
 								interviewsCount++;
 								if(rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) {
