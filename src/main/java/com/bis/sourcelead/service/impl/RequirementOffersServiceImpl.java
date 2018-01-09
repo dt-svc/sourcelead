@@ -350,6 +350,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        	   }
 					        	  
 	                            	
+					           }else {
+						        	   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+				        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
+				        			   requirementSubmissionHistory.setCreatedBy(loginUser.getUserCode());
+				       				   requirementSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
+				        			   requirementSubmissionHistory.setSubmissionId(requirementSubmission);
+				        			   requirementSubmissionHistory.setCreatedDate(new Date());
+				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
+				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					           }
 					           
 					           /*if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES) ){
@@ -1468,7 +1479,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setRateType(requirementOffers.getPaymentMode());
     		
     		if(requirementSubmission.getSourceSubmission() != null){
-    			OrgRelations orgRelations = orgRelationsDao.getOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(),requirementOffers.getSubmissionId().getVendorLocationId().getId());
+    			OrgRelations orgRelations = orgRelationsDao.getOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(),orgLocations.getId());
         		if(orgRelations != null){
         			candidate.setOrgRelationId(orgRelations);
         			Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();

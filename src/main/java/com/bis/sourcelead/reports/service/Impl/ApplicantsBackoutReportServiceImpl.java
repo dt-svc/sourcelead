@@ -42,7 +42,7 @@ public class ApplicantsBackoutReportServiceImpl implements ApplicantsBackoutRepo
 		Iterator rejectedCount = typeCount.entrySet().iterator();
 	    while (rejectedCount.hasNext()) {
 	        Map.Entry rejectValue = (Map.Entry)rejectedCount.next();
-	        System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());
+	        /*System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());*/
 	        if(rejectValue.getKey().equals("Better Offer")){
 	        	applicantsBackoutDTO.setBetterOffer((int)rejectValue.getValue());
 	        }

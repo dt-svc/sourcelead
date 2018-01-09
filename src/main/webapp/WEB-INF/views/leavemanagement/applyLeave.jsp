@@ -193,7 +193,7 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
-			getLeaveDetails();
+			getLeaveDetails(finalDateFormatEndDate);
 			
 			}
 		});
@@ -453,7 +453,7 @@ $(".close").click(function(){
 </script>
 
 <script>
-function getLeaveDetails(){
+function getLeaveDetails(finalDateFormatEndDate){
 	var leaveTypeId = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
@@ -498,7 +498,7 @@ function getLeaveDetails(){
 		    	}
 		    	
 		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
-		    		validatePriorDays(report.priorDays);
+		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
 		    		
 		    	}
 		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
@@ -545,13 +545,14 @@ function validateOverDrawLeaves(leaveTypeName){
 </script>
 <script>
 var errorMessage = "";
-function validatePriorDays(priorDays){
+function validatePriorDays(priorDays,finalDateFormatEndDate){
 	var currentDate = new Date();
-    var fromDate = $("#fromDate").val();
-    var convertedCurrentDate = parseInt(currentDate.getDate());
-    var convertedFromDate = parseInt(fromDate);
-    var dayDiff= (convertedFromDate - convertedCurrentDate);
-    if(priorDays >= dayDiff){
+	
+	$( "#fromDate" ).datepicker({ dateFormat: finalDateFormatEndDate });
+	var start = $('#fromDate').datepicker('getDate');
+    var diffDays = parseInt((start - currentDate) / (1000 * 60 * 60 * 24)); 
+    
+    if(priorDays > diffDays){
     	errorMessage += "You need to apply this Leave Type "+priorDays+" earlier.";
     }
 }

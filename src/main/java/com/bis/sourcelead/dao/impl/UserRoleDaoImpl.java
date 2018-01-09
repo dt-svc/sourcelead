@@ -904,12 +904,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
-				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+"  ";
+				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+" ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		
 		if(userRoleList.size() >= offset){
-			if(userRoleList.size() > offset + 6){
-				userRoleList = userRoleList.subList(offset, (offset+6));
+			if(userRoleList.size() > offset + 18){
+				userRoleList = userRoleList.subList(offset, (offset+18));
 			}else{
 				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
 			}
@@ -919,9 +919,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					String queryForStatus = "from Connections connections where (connections.fromUser.id = :fromId and connections.toUser.id = :toId) or (connections.fromUser.id = :toId and connections.toUser.id = :fromId)";
 					Connections connections = (Connections) session.createQuery(queryForStatus).setLong("fromId", userId).setLong("toId", userRole.getUser().getId()).uniqueResult();
-					boolean flag = false;
 					if(connections != null) {
-						flag = true;
 						if(connections.getToUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {
 							userRoleDTO.setUserState("Request_received");
 						}else if(connections.getFromUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {

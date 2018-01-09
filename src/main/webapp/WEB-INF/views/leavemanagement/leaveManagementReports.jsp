@@ -71,20 +71,12 @@
                         <div class="row">
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
-                                <!-- <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
+                                 <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
                                     <option value="">--Select Year--</option>
-                                    <option>2020</option>
-                                    <option>2019</option>
-                                    <option>2018</option>
-                                    <option>2017</option>
-                                    <option>2016</option>
-                                    <option>2015</option>
-                                    <option>2014</option>
-                                    <option>2013</option>
-                                    <option>2012</option>
-                                    <option>2011</option>
-                                    <option>2010</option>
-                                </select> -->
+                    			<c:forEach var="year" items="${yearsList}">
+	                    			<option value="${year}">${year}</option>
+                     			</c:forEach> 
+                                </select> 
                             </div>
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
