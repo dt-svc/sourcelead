@@ -110,20 +110,45 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 				}
 			}else
 			{
+				if(methodName.equalsIgnoreCase("loginSession"))
+				{
+					List<ActionHistory> list = getAllActionHistoryList(userLoginLogoutSession.getId(), loginOrgLocation.getId());
+					if(!(list.size()>0)){
+					ActionNames actionNames = actionNamesList.get(0);
+					actionHistory.setActionName(actionNames.getActionName());
+					actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
+					//test
+					actionHistory.setOrgLocations(loginOrgLocation);
+					actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+					actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+					// saving the Activity Time based on the time zone 
+					Date date = new Date();
+					/*DateTime dt = new DateTime(date);
+					DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+					DateTime dtus = dt.withZone(dtZone); 
+					Date dateWithTimezone = dtus.toLocalDateTime().toDate();*/
+					actionHistory.setActionTime(commonUtil.orgLocationCommonDate(date, loginOrgLocation));
+					}
+				}
+				else
+				{
 				ActionNames actionNames = actionNamesList.get(0);
 				actionHistory.setActionName(actionNames.getActionName());
 				actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
+				//test
+				actionHistory.setOrgLocations(loginOrgLocation);
+				actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+				actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+				// saving the Activity Time based on the time zone 
+				Date date = new Date();
+				/*DateTime dt = new DateTime(date);
+				DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+				DateTime dtus = dt.withZone(dtZone); 
+				Date dateWithTimezone = dtus.toLocalDateTime().toDate();*/
+				actionHistory.setActionTime(commonUtil.orgLocationCommonDate(date, loginOrgLocation));
+				}
 			}
-			actionHistory.setOrgLocations(loginOrgLocation);
-			actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
-			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
-			// saving the Activity Time based on the time zone 
-			Date date = new Date();
-			/*DateTime dt = new DateTime(date);
-			DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
-			DateTime dtus = dt.withZone(dtZone); 
-			Date dateWithTimezone = dtus.toLocalDateTime().toDate();*/
-			actionHistory.setActionTime(commonUtil.orgLocationCommonDate(date, loginOrgLocation));
+			
 			try {
 				if (actionHistory != null) {
 					session.saveOrUpdate(actionHistory);

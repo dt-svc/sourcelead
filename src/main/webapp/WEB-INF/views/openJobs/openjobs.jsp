@@ -967,6 +967,12 @@ function requirementsFilter(type){
 		var temp = url.substring(0, 1);
 		url+=(url.indexOf("=")>0?"&":"")+"postedOrgName="+postedOrgName.toString().toLowerCase().replace(/ /g ,"-");
 	}
+	
+	if(offset!=undefined && offset!=""){
+// 		var temp = url.substring(0, 1);
+		url+=(url.indexOf("=")>0?"&":"")+"offset="+offset.toString();
+	}
+	
 	window.location.href = url;
 	
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1068,10 +1074,10 @@ function getOpenJobsELKList(orgLocationId){
 		 $("#companiesListDiv").hide();
 // 		 document.getElementById("jobResultHeadId").style.display="block";
 	}
-	var offset = 0;
-	/* if(type == "more"){
-		offset = $("#openJobsOffset").val();
-	} */
+	var offset = '${offset}';
+	if(offset == ''){
+		offset = 0;
+	}
 	
 	
 	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
@@ -1099,7 +1105,7 @@ function getOpenJobsELKList(orgLocationId){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length > 10){
+	    		if(json.length > 2){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,offset);
