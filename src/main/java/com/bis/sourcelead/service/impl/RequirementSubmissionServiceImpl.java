@@ -580,8 +580,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
-		 requirementSubmission.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
-		 requirementSubmission.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+		 requirementSubmission.setCreatedDate(new Date());
+		 requirementSubmission.setUpdatedDate(new Date());
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
 		 String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
 		 if(null !=score){
