@@ -19,7 +19,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class UpdateJobUrl {
 	
 
-	private ComboPooledDataSource comboPooledDataSource;
+private ComboPooledDataSource comboPooledDataSource;
 	
 /**
  * @author sathish
@@ -69,7 +69,6 @@ try {
 		}
 	}
 }
-
 
 /**
  * getting connection
