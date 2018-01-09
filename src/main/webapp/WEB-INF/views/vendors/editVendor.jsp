@@ -57,7 +57,7 @@
 							paymentTerms1 = 'selected';
 							} 
 						
-						if(json.PaymentTerm == '15 days'){
+						if(json.paymentTerms == '15 days'){
 							paymentTerms2 = 'selected';
 							} 
 						

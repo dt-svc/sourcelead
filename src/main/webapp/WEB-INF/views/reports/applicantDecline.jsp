@@ -43,11 +43,11 @@ $(window).load(function() {
 	<div class="col-md-2 dropdown-select positionRelative">
           <select class="form-control" name="dateSelection" id="dateSelection" onchange="getCustomDates();">
             <option value=''>Select Date</option>
-            <option value='Last_7_days'>Last 7 days</option>
+            <option value='Last_7_days' selected>Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month'>1 month</option>
             <option value='3_months'>3 months</option>
-            <option value='YTD' selected>YTD</option>
+            <option value='YTD' >YTD</option>
             <option value='Last_Year'>Last Year</option>
             <option value="custom">Custom</option>
           </select>

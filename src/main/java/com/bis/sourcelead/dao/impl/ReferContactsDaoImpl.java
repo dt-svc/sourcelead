@@ -176,6 +176,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 					.append("OR contacts.firstName like '%" + contactsDTO.getSearchValue() + "%' ")
 					.append("OR contacts.lastName like '%" + contactsDTO.getSearchValue() + "%' ")
 					.append("OR contacts.contactUserPhone like '%" + contactsDTO.getSearchValue() + "%' ")
+					.append("OR (concat( contacts.firstName, contacts.lastName) like '%" + contactsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
 					.append("OR contacts.contactSource like '%" + contactsDTO.getSearchValue() + "%' ");
 						
 			}
