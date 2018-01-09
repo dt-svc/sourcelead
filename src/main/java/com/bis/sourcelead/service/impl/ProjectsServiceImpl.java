@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -232,7 +234,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
 		projects.setUpdatedDate(commonUtil.currentDate());
-		return projectsDao.saveProject(projects);
+		return  projectsDao.saveProject(projects);
 	}
 
 	@Override

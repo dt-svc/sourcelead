@@ -1344,5 +1344,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getCandidatesCountByLocation(Long orgLocationId) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from Candidate candidate where candidate.orgLocationId.id = :orgLocationId ";
+		List<Long> candidateCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+			Integer count = 0;
+			if(candidateCount != null && !candidateCount.isEmpty()){
+					count = candidateCount.get(0).intValue();
+			}
+		return count;
+	}
+
 }
 

@@ -22,7 +22,7 @@
   <div class="pull-left">
     <h2>Connections</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/referRequirementList'/>">Contacts</a> &raquo; Conections</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
 </section>
 
 
@@ -38,6 +38,7 @@
 		</ul>
 		<span><input class="immigraTabSerach" type="text" id="searchFindConnId"></span>
 	</div>
+	<div class="conHeadgap"></div>
 	<div class="conneWrapInn" id="findConnectionListId"></div>
 	<div class="clearfix"></div>
 	<div id="loadMoreDiv"></div> 	
@@ -57,7 +58,7 @@ $(document).scroll(function(e){
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	
-    	avilableCount = parseInt(avilableCount) + parseInt(6); 
+    	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -83,6 +84,8 @@ function eduMsgFadeinFunction(message) {
 }
 var count = 0; 
 	function getConnectionsList(type){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -99,10 +102,10 @@ var count = 0;
 			url : sourceleadUrl+"/getConnectionsList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset+"&status=received",
             success: function(json) {
 	        var result = "";
-	        if(json.length>0){
+	        if(json != null && json.length>0){
 	        	count++;
 	        }
-	        if(json.length > 0)
+	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
 	 			for(var i=0; i<json.length; i++){
@@ -124,7 +127,7 @@ var count = 0;
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Accept</a><a href="#" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Ignore</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="#" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a></div></div></div>';
 	   		    }
 	 			
 	 			if(type == "manual"){
@@ -132,7 +135,7 @@ var count = 0;
             	}else{
             		$('#findConnectionListId').append(result);
             	}
-	 			$("#noOrgsList").val("")
+	 			$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	   		}else if(type == "scroll" && result === "" && count > 0){
             	$('#loadMoreDiv').empty();
 	         	result = result + '<div class="loadWrap"> No More Records..</div>';
@@ -148,33 +151,66 @@ var count = 0;
 	        }
 	    });  
 	}
+	else {
+		location.href='/login';
+	}
+	});
+	}
 </script>
 <script>
 function ignoreConnection(userCode,userName){
-	 $.ajax({ 
-	    	type : "GET",
-			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
-         success: function(json) {
-        	 $("#selector4").removeAttr("style");
- 			$("#selector4").css({ display: "block" });
-         	getConnectionsList("manual");
-         	eduMsgFadeinFunction(userName+"'\s invitation removed");
-      },
-	 }); 
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
+			$.ajax({ 
+		    	type : "GET",
+				url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
+	         success: function(json) {
+		        	 $("#selector4").removeAttr("style");
+		 			$("#selector4").css({ display: "block" });
+		         	getConnectionsList("manual");
+		         	eduMsgFadeinFunction(userName+"'\s invitation removed");
+	      },error: function(e){
+	        }
+		 }); 
+		} else {
+			location.href='/login';
+		}
+	}); 
  }
  
 function acceptConnection(userCode,userName){
-	 $.ajax({ 
-	    	type : "GET",
-			url : sourceleadUrl+"/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
-        success: function(json) {
-        	$("#selector4").removeAttr("style");
-			$("#selector4").css({ display: "block" });
-        	getConnectionsList("manual");
-        	eduMsgFadeinFunction("You're connected with "+userName);
-     },
-	 }); 
-}
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
+			 $.ajax({ 
+			    	type : "GET",
+					url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
+		        	success: function(json) {
+				        	$("#selector4").removeAttr("style");
+							$("#selector4").css({ display: "block" });
+				        	getConnectionsList("manual");
+				        	eduMsgFadeinFunction("You're connected with "+userName);
+		     		},
+		     		error: function(e){
+			        }
+			 });
+		} else {
+			location.href='/login';
+		}
+	});
+	}
+</script>
+<script>
+$(document).ready(function(){
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 50) {
+            $('.conneWrapHead').addClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "44px");
+        } else {
+               $('.conneWrapHead').removeClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "0px");
+        }
+    });
+});
 </script>
 </body>
 </html>

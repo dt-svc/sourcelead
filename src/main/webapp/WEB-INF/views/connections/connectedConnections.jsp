@@ -22,8 +22,7 @@
 			<h2>Connections</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/referRequirementList'/>">Contacts</a> &raquo; Conections
-		</div>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
 	</section>
 
 
@@ -41,6 +40,7 @@
 			</ul>
 			<span><input class="immigraTabSerach" type="text" id="searchFindConnId"></span>
 		</div>
+		<div class="conHeadgap"></div>
 		<div class="conneWrapInn" id="findConnectionListId"></div>
 	<div class="clearfix"></div>
 	<div id="loadMoreDiv"></div> 
@@ -60,7 +60,7 @@ $(document).scroll(function(e){
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	
-    	avilableCount = parseInt(avilableCount) + parseInt(6); 
+    	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -89,7 +89,10 @@ function eduMsgFadeinFunction(message) {
 	$("#inviteMessage").text(message);
     $('#selector4').delay(1000).fadeOut('slow');
 }
+var count = 0;
 	function getConnectionsList(type){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -107,10 +110,10 @@ function eduMsgFadeinFunction(message) {
             success: function(json) {
 	        var result = "";
 	        var flag = false;
-	        if(json.length>0){
-	        	flag = true;
+	        if(json != null && json.length>0){
+	        	count++;
 	        }
-	        if(json.length > 0)
+	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
 	 			for(var i=0; i<json.length; i++){
@@ -132,7 +135,7 @@ function eduMsgFadeinFunction(message) {
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Disconnect</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a></div></div></div>';
 	   		    }
 	 			
 	 			if(type == "manual"){
@@ -140,12 +143,12 @@ function eduMsgFadeinFunction(message) {
             	}else{
             		$('#findConnectionListId').append(result);
             	}
-	 			$("#noOrgsList").val("")
-	   		}else if(type == "scroll" && flag == true){
+	 			$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
+	   		}else if(type == "scroll" && result === "" && count > 0){
             	$('#loadMoreDiv').empty();
 	         	result = result + '<div class="loadWrap"> No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
-            }else if(type === 'manual' && flag == false){
+            }else if(type === 'manual' && result === "" && count == 0){
             	$("#loadMoreDiv").empty(); 
             	$('#findConnectionListId').hide();
 	         	result = result + '<div class="noDate"></div>';
@@ -155,21 +158,47 @@ function eduMsgFadeinFunction(message) {
 	        error: function(e){
 	        }
 	    });  
+	}else {
+		location.href='/login';
 	}
+});
+}
 </script>
 <script>
 function getDisconnectConnection(userCode,userName){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
-            	$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-            	getConnectionsList("manual");
-            	eduMsgFadeinFunction(userName+" removed from your connections");
+	            	$("#selector4").removeAttr("style");
+	    			$("#selector4").css({ display: "block" });
+	            	getConnectionsList("manual");
+	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
+         error: function(e){
+	        }
 	 });  
-    }
+    }else {
+		location.href='/login';
+	}
+});
+}
+
+</script>
+<script>
+$(document).ready(function(){
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 50) {
+            $('.conneWrapHead').addClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "44px");
+        } else {
+               $('.conneWrapHead').removeClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "0px");
+        }
+    });
+});
 </script>
 </body>
 </html>

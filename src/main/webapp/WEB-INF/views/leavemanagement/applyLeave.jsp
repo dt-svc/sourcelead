@@ -47,6 +47,12 @@ window.onload = function() {
               </div>
             </div>
               
+              <div class="form-group">
+              <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-9 dropdown-select">
+              <div id="leaveTypeIdDiv"></div>
+              </div>
+             </div>
               
             <div class="form-group">
               <label class="col-md-3">From<span class="text-danger paddingLeft">*</span></label>
@@ -84,12 +90,7 @@ window.onload = function() {
                 </div>
               </div>
             </div>
-              <div class="form-group">
-              <label class="col-md-3">Leave Type<span class="text-danger paddingLeft">*</span></label>
-              <div class="col-md-9 dropdown-select">
-              <div id="leaveTypeIdDiv"></div>
-              </div>
-            </div>
+              
             <div class="form-group">
               <label class="col-md-3" id="reasonIdY" style="display:block">Reason<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="reasonIdN" style="display:none">Reason</label>
@@ -192,7 +193,7 @@ window.onload = function() {
 			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
-			getLeaveDetails();
+			getLeaveDetails(finalDateFormatEndDate);
 			
 			}
 		});
@@ -207,7 +208,8 @@ window.onload = function() {
 			$("#fromdate").datepicker("option", "maxDate", dt);
 			removeEndValid();
 			validateDate();
-			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
+			getLeaveDetails();
+// 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
 		
@@ -258,6 +260,7 @@ function removeEndValid(){
 	 }else{
 		 userId = '${SourceLeadWeb_userId}';
 	 }
+	 if(userId != null && userId !='' && userId !='undefined'){
 	 $.ajax({
          type : "GET",
           url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
@@ -274,7 +277,7 @@ function removeEndValid(){
         	  $("#leaveTypeIdDiv").append(output);
         	  $('#leaveType').chosen();
         	  $("#leaveType").trigger("chosen:updated");
-        	  $('#leaveType').prop('disabled', true).trigger("chosen:updated");
+//         	  $('#leaveType').prop('disabled', true).trigger("chosen:updated");
         	  
         	  var counts = json[json.length-1];
         	  var totalBalanceCounts = counts.balanceLeaveCounts;
@@ -301,7 +304,8 @@ function removeEndValid(){
 	        	 
          },
           
-     }); 
+     });
+	}
 	 
 function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 	//ApplyLeves piechart
@@ -449,7 +453,7 @@ $(".close").click(function(){
 </script>
 
 <script>
-function getLeaveDetails(){
+function getLeaveDetails(finalDateFormatEndDate){
 	var leaveTypeId = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
@@ -494,7 +498,7 @@ function getLeaveDetails(){
 		    	}
 		    	
 		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
-		    		validatePriorDays(report.priorDays);
+		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
 		    		
 		    	}
 		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
@@ -509,7 +513,7 @@ function getLeaveDetails(){
 		        }else{
 		    		$("#applyId").prop("disabled", false);
 		        }
-		    	if(report.policyDescription !=null){
+		    	if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
 	 				$("#termsAndConditions").html(report.policyDescription);
 	 				document.getElementById("termsModel").style.display="block";
 	 			}
@@ -541,13 +545,14 @@ function validateOverDrawLeaves(leaveTypeName){
 </script>
 <script>
 var errorMessage = "";
-function validatePriorDays(priorDays){
+function validatePriorDays(priorDays,finalDateFormatEndDate){
 	var currentDate = new Date();
-    var fromDate = $("#fromDate").val();
-    var convertedCurrentDate = parseInt(currentDate.getDate());
-    var convertedFromDate = parseInt(fromDate);
-    var dayDiff= (convertedFromDate - convertedCurrentDate);
-    if(priorDays >= dayDiff){
+	
+	$( "#fromDate" ).datepicker({ dateFormat: finalDateFormatEndDate });
+	var start = $('#fromDate').datepicker('getDate');
+    var diffDays = parseInt((start - currentDate) / (1000 * 60 * 60 * 24)); 
+    
+    if(priorDays > diffDays){
     	errorMessage += "You need to apply this Leave Type "+priorDays+" earlier.";
     }
 }
@@ -582,6 +587,7 @@ function validateMaxLeave(data){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	
 	var leaveTypeId = $("#leaveType").val();
+	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
 		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
@@ -594,12 +600,13 @@ function validateMaxLeave(data){
 		}); 
 	}
 	
+  }
+	
 }
 </script>
 <div class='comMask'></div>
 <script>
 function validateDate(){
-	
 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var roleId = '${SourceLeadWeb_loginUserRoleId}';
@@ -612,14 +619,17 @@ function validateDate(){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
-		if(data != null){
-			$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
-			$(".comMask").fadeIn();
-		}else{
-			$('.warMess').hide();
-		}
-	}); 
+	if(userId != null && userId != '' && userId != 'undefined'){
+		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+			if(data != null){
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
+				$(".comMask").fadeIn();
+			}else{
+				$('.warMess').hide();
+			}
+		});
+	}
+	 
 };
 
 function closedate(){
@@ -644,7 +654,7 @@ function getApproversList(){
 	}else{
 		userId = '${SourceLeadWeb_userId}';
 	}
-
+   if(userId != null && userId !='' && userId !='undefined'){
 	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
 		if(data !=null){
 		var result = "";
@@ -663,6 +673,7 @@ function getApproversList(){
 		$('#approverUser').trigger("chosen:updated");
 		}
 		});
+   }
 }
 </script>
 

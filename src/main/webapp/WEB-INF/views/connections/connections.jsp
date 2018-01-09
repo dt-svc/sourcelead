@@ -32,7 +32,7 @@ window.onload = function () {
   <div class="pull-left">
     <h2>Connections</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/referRequirementList'/>">Contacts</a> &raquo; Conections</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
 </section>
 
 
@@ -48,6 +48,7 @@ window.onload = function () {
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" type="text"></span>
 	</div>
+	<div class="conHeadgap"></div>
 	<div class="conneWrapInn" id="findConnectionListId"></div>
 	<div class="clearfix"></div>
 	<div id="loadMoreDiv"></div> 
@@ -60,11 +61,11 @@ $(document).scroll(function(e){
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
     offset = $("#orgOffset").val();
-    var UsersCount = $("#totalUsersCount").val(); 
+    /* var UsersCount = $("#totalUsersCount").val();  */
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
-    	avilableCount = parseInt(avilableCount) + parseInt(6); 
+    	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -82,31 +83,28 @@ $("#searchFindConnId").keydown(function(e) {
 });
 	function getConnectionListOnClick(){
 		getConnectionsList('manual')
-		$('#findConnectionListId').empty();
+		/* $('#findConnectionListId').empty(); */
 	}
 	var count = 0;
 	var userName = null;
 	function getConnectionsList(type){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
 			offset = $("#orgOffset").val();
-			//var searchValue =  document.getElementById("searchOrgElement").innerHTML
     	}
 		if(type == "manual"){
 			$('#findConnectionListId').empty();
     		$("#orgOffset").val(0);
    		    offset = 0;
     	} 
-		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "POST",
 			url : sourceleadUrl+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
             success: function(json) {
 	        var result = "";
-	        if($("#searchFindConnId").val().length !== 0){
-				$('#findConnectionListId').empty();
-			}
 	        if(json.length>0){
 	        	count++;
 	        }
@@ -117,11 +115,11 @@ $("#searchFindConnId").keydown(function(e) {
 	 				var user = json[i];
 	 				var state = null;
 	 				if(user.userState == 'Request_sent'){
-	 					state = '<a href="#" onclick="getWithdrawConnections(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Withdraw</a>';
+	 					state = '<a href="#" onclick="getWithdrawConnections(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a>';
 	 				}else if(user.userState == 'Request_received'){
-	 					state = '<a href="#" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Accept</a><a href="#" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink">Ignore</a>';
+	 					state = '<a href="#" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="#" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
 	 				}else if(user.userState == 'connected'){
-	 					state = '<a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Disconnect</a>';
+	 					state = '<a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a>';
 	 				}else{
 	 					state = '<a href="#" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Connect</a>';
 	 				}
@@ -149,13 +147,14 @@ $("#searchFindConnId").keydown(function(e) {
             	}else{
             		$('#findConnectionListId').append(result);
             	}
+	 			$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	   		}else if(type == "scroll" && result === "" && count > 0){
             	$('#loadMoreDiv').empty();
 	         	result = result + '<div class="loadWrap"> No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
             }else if(type === 'manual' && result === "" && count == 0){
             	$("#loadMoreDiv").empty(); 
-            	$('#findConnectionListId').hide();
+            	/* $('#findConnectionListId').hide(); */ 
 	         	result = result + '<div class="noDate"></div>';
 	         	$('#loadMoreDiv').append(result);
             }
@@ -163,6 +162,10 @@ $("#searchFindConnId").keydown(function(e) {
 	        error: function(e){
 	        }
 	    });  
+	}else {
+		location.href='/login';
+	}
+	});
 	}
 </script>	
 
@@ -174,84 +177,143 @@ function eduMsgFadeinFunction(message) {
 	message = "";
     $('#selector4').delay(200).fadeOut('slow');
 }
+
+
 function getConnection(userCode,userName){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/addNewConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
             success: function(json) {
-            	$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-    			$("#connectionState"+userCode).empty();
-    			$("#connectionState"+userCode).append('<a href="#" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Withdraw</a>')
-            	/* getConnectionsList("manual"); */
-            	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
-         },
+	            	$("#selector4").removeAttr("style");
+	    			$("#selector4").css({ display: "block" });
+	    			$("#connectionState"+userCode).empty();
+	    			$("#connectionState"+userCode).append('<a href="#" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>')
+	    			$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
+	            	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
+            },
+         error: function(e){
+	        }
 	 });  
-    }
+    }else {
+		location.href='/login';
+	}
+	});
+}
 </script>
 <script>
 function getWithdrawConnections(userCode,userName){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=withdraw",
             success: function(json) {
-            	$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-    			$("#connectionState"+userCode).empty();
-            	/* getConnectionsList("manual"); */
-            	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
-            	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");
+	            	$("#selector4").removeAttr("style");
+	    			$("#selector4").css({ display: "block" });
+	    			$("#connectionState"+userCode).empty();
+	            	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+	            	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
+	            	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");
          },
+         error: function(e){
+	        }
 	 });  
-    }
+    }else {
+		location.href='/login';
+	}
+	});
+	}
 </script>
 <script>
 function ignoreConnection(userCode,userName){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
-         success: function(json) {
-        	$("#selector4").removeAttr("style");
- 			$("#selector4").css({ display: "block" });
-         	/* getConnectionsList("manual"); */
-         	$("#connectionState"+userCode).empty();
-         	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
-         	eduMsgFadeinFunction(userName+"'\s invitation removed");
+         	success: function(json) {
+	        	$("#selector4").removeAttr("style");
+	 			$("#selector4").css({ display: "block" });
+	         	$("#connectionState"+userCode).empty();
+	         	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+	         	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
+	         	eduMsgFadeinFunction(userName+"'\s invitation removed");
       },
+      error: function(e){
+      }
 	 }); 
- }
+ }else {
+		location.href='/login';
+	}
+	});
+	}
  
 function acceptConnection(userCode,userName){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
         success: function(json) {
-        	$("#selector4").removeAttr("style");
-			$("#selector4").css({ display: "block" });
-			$("#connectionState"+userCode).empty();
-        	/* getConnectionsList("manual"); */
-        	$("#connectionState"+userCode).append('<a href="#" onclick="getDisconnectConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Disconnect</a>');
-        	eduMsgFadeinFunction("You're connected with "+userName);
+	        	$("#selector4").removeAttr("style");
+				$("#selector4").css({ display: "block" });
+				$("#connectionState"+userCode).empty();
+	        	$("#connectionState"+userCode).append('<a href="#" onclick="getDisconnectConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink red">Disconnect</a>');
+	        	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
+	        	eduMsgFadeinFunction("You're connected with "+userName);
      },
+     error: function(e){
+     }
 	 }); 
-}
+}		else {
+			location.href='/login';
+		}
+		});
+		}
 </script>
 <script>
 function getDisconnectConnection(userCode,userName){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
-            	$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-    			$("#connectionState"+userCode).empty();
-            	/* getConnectionsList("manual"); */
-            	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
-            	eduMsgFadeinFunction(userName+" removed from your connections");
+	            	$("#selector4").removeAttr("style");
+	    			$("#selector4").css({ display: "block" });
+	    			$("#connectionState"+userCode).empty();
+	            	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+	            	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
+	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
+         error: function(e){
+				location.href='/login';
+	        }
 	 });  
     }
+		else {
+			location.href='/login';
+		}
+		});
+		}
 </script>
 </section>
+
+<script>
+$(document).ready(function(){
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 50) {
+            $('.conneWrapHead').addClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "44px");
+        } else {
+               $('.conneWrapHead').removeClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "0px");
+        }
+    });
+});
+</script>
+
 <jsp:include page="../masterFooter.jsp" />
  

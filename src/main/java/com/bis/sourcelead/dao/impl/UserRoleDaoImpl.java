@@ -80,6 +80,20 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<ProjectMembers> projectMemberList = null;
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where emp IS NOT NULL and proj.id = :projectId and loc.id = :locationId ";
+		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setCacheable(true).list(); 
+		 HashSet<ProjectMembers> projectMemberSet  = null;
+		 if(projectMemberList != null && !projectMemberList.isEmpty()){
+			 projectMemberSet = new HashSet<>(projectMemberList);
+		 }
+		 return projectMemberSet;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
@@ -885,16 +899,17 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
 			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
+			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
 			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
 		}
 		
 		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
-				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+"  ";
+				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+" ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		
 		if(userRoleList.size() >= offset){
-			if(userRoleList.size() > offset + 6){
-				userRoleList = userRoleList.subList(offset, (offset+6));
+			if(userRoleList.size() > offset + 18){
+				userRoleList = userRoleList.subList(offset, (offset+18));
 			}else{
 				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
 			}
@@ -904,9 +919,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					String queryForStatus = "from Connections connections where (connections.fromUser.id = :fromId and connections.toUser.id = :toId) or (connections.fromUser.id = :toId and connections.toUser.id = :fromId)";
 					Connections connections = (Connections) session.createQuery(queryForStatus).setLong("fromId", userId).setLong("toId", userRole.getUser().getId()).uniqueResult();
-					boolean flag = false;
 					if(connections != null) {
-						flag = true;
 						if(connections.getToUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {
 							userRoleDTO.setUserState("Request_received");
 						}else if(connections.getFromUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {
@@ -922,8 +935,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					}else {
 						userName = userName.append(userRole.getUser().getFirstName());
 					}
-					String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId and connections.toUser.id <> :toUserId and connections.connectionStatus = :connectionStatus) and (connections.fromUser.id <> :toUserId and connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus)";
-					Long count = (Long) session.createQuery(queryMutual).setLong("userId", userId).setLong("toUserId", userRole.getUser().getId()).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
+					String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.fromUser.id <> :loginUserId and connections.toUser.id <> :loginUserId and connections.connectionStatus = :connectionStatus";
+					Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", userId).setLong("userId", userRole.getUser().getId()).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 					userRoleDTO.setMutualCount(count);
 					userRoleDTO.setUserName(userName.toString());
 					userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());

@@ -184,7 +184,7 @@ function resourceRequestsTab(){
 	    		
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Associate Request</a></li>';
 	    		 '</sec:authorize>';
 	    		
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_REQUEST_ASSOCIATE\')">';

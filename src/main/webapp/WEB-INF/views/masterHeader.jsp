@@ -31,8 +31,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<title>Welcome to Source Lead</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
 <link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
@@ -536,12 +536,15 @@ function preventTabkey(e){
 	          </li>
             </c:if> --%>
             
-            <li class="reportsH">
+             <li class="reportsH">
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
+	        </li>
+            <li class="reportsH">
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadFindConnections'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
-					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
+					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
             <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
