@@ -1308,6 +1308,7 @@ function rejectOffer(offerStatus,submissionId,offerId){
 <script>
 function acceptingOffer(offerStatus,submissionId,offerId){
 	
+	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var reason;
@@ -1333,8 +1334,8 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           	 if(offerStatus == "OFFERREJECTED"){
           		$("#"+(offerId)+"showOfferStatus").html("<font color='red' >OFFERREJECTED</font>");
           	 }
- 
-        	 $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+             $("#offerLoading").removeAttr('style');
+             $("#remove_user_pop, .project_inn_mask").fadeOut(200);
         	 getOfferDetails(submissionId);
         	 
        },
