@@ -86,7 +86,7 @@ public class ConnectionsRestController {
 			connections.setStatus(Constants.RECORD_ACTIVE);
 			connections.setCreatedDate(new Timestamp(new Date().getTime()));
 			connectionsService.saveConnection(connections);
-			connectionInvitationMailToUser(user,toUser,loginOrgLocation.getId());
+			//connectionInvitationMailToUser(user,toUser,loginOrgLocation.getId());
 			result = "success";
 		} catch (Exception e) {
 			e.printStackTrace();
