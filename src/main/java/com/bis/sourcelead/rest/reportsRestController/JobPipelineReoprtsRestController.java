@@ -146,6 +146,7 @@ public class JobPipelineReoprtsRestController {
             int rejectedFromRequestSentCount = 0;
             int rejectedFromOfferAccepetCount = 0;
             int rejectedFromSubmitTOClientCount = 0;
+            int rejectedFromNewCount = 0;
             
 			JobPipelineDTO report = new JobPipelineDTO();
 			
@@ -244,7 +245,7 @@ public class JobPipelineReoprtsRestController {
 									rejectedFromSubmitTOClientCount++;
 									rejectedFromCreatedDate =  createdDatesMap.get("SUBMIT_TO_CLIENT");
 								}else if(rsh.getFromStage().equalsIgnoreCase("NEW")){
-									rejectedFromSubmitTOClientCount++;
+									rejectedFromNewCount++;
 									rejectedFromCreatedDate =  createdDatesMap.get("NEW");
 								}
 							} if("backout".equalsIgnoreCase(rsh.getToStage())){
@@ -386,28 +387,40 @@ public class JobPipelineReoprtsRestController {
 		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum)*100));
 		    	
 		    	Double rejectedMove = 0d;
+		    	int rejctMoveCount = 0;
+		    	if(rejectedFromNewCount > 0 & applicantsSum >0) {
+		    		rejctMoveCount++;
+		    		rejectedMove = rejectedMove+(((double)rejectedFromNewCount/(double)applicantsSum)*100);
+		    	}
 		    	if(rejectedFromSubmissionCount > 0 && applicantsSum >0) {
+		    		rejctMoveCount++;
 		    		rejectedMove = rejectedMove+(((double)rejectedFromSubmissionCount/(double)applicantsSum)*100);
 		    	}
 		    	if(rejectedFromShortlistedCount > 0 && shortlistedSum >0) {
+		    		rejctMoveCount++;
 		    		rejectedMove = rejectedMove+(((double)rejectedFromShortlistedCount/(double)shortlistedSum)*100);
 		    	}
 		    	if(rejectedFromInterviewCount > 0 && interviewsSum > 0) {
+		    		rejctMoveCount++;
 		    		rejectedMove = rejectedMove+(((double)rejectedFromInterviewCount/(double)interviewsSum)*100);
 		    	}
 		    	if(rejectedFromOffermadeCount > 0 && offeredSum > 0) {
+		    		rejctMoveCount++;
 		    		rejectedMove = rejectedMove+(((double)rejectedFromOffermadeCount/(double)offeredSum)*100);
 		    	}
 		    	if(rejectedFromRequestSentCount > 0 && applicantsSum > 0) {
+		    		rejctMoveCount++;
 		    		rejectedMove = rejectedMove+(((double)rejectedFromRequestSentCount/(double)applicantsSum)*100);
 		    	}
 		    	if(rejectedFromOfferAccepetCount > 0 && offeracceptedSum > 0) {
+		    		rejctMoveCount++;
 		    		rejectedMove = rejectedMove+(((double)rejectedFromOfferAccepetCount/(double)offeracceptedSum)*100);
 		    	}
 		    	if(rejectedFromSubmitTOClientCount > 0 && submitToClientSum > 0) {
+		    		rejctMoveCount++;
 		    		rejectedMove = rejectedMove+(((double)rejectedFromSubmitTOClientCount/(double)submitToClientSum)*100);
 		    	}
-		    	report.setRejectedMove(Math.round(rejectedMove));
+		    	report.setRejectedMove(Math.round(rejectedMove/rejctMoveCount));
 		    	 
 		    	//jobs count
 		    	report.setAllJobsCount(openJobcount + onholdJobcount + closedJobcount + cancelJobcount + unfilledclosedJobcount + filledclosedJobcount);
