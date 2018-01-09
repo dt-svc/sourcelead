@@ -1,13 +1,27 @@
 package com.bis.sourcelead.web;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -76,6 +90,50 @@ public class DataMigrationCommonController {
 			model.setViewName("upload/uploadTimeSheetForm");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
+		}
+	 
+	 
+	 @RequestMapping(value = "/downloadDataImportTemplate", method = RequestMethod.GET)
+		public void downloadDataImportTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
+			logger.debug("download job template is for Import downloadJobsDataImportTemplate method");
+	        @SuppressWarnings("resource")
+			XSSFWorkbook workbook = new XSSFWorkbook();
+	        XSSFSheet sheet = workbook.createSheet("JobTemplate");
+	        String[] tableColumns = Constants.IMPORT_JOB_EXCEL_HEADERS;
+	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellValue((String)key);
+	        }
+	        try {
+	            File file = new File("Job_Import_Template.xlsx");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	            
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
 		}
 	 
 }

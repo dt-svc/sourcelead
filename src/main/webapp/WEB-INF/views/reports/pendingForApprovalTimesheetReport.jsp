@@ -34,7 +34,7 @@ function reloadFunction(){
       <div class="pull-left">
         <h2>Pending for Approval</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Pending for Approval</a></div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard </a>&raquo; Pending for Approval</div>
     </section>
 
     <div class="ReqRepHead clearfix">
