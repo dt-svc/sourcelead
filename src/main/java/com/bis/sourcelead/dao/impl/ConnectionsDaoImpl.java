@@ -102,13 +102,6 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					+ " where connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus ";
 		}
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.getNameByValue(connectionStatus).toString()).setCacheable(true).list();
-		
-		if(connectionsList.size() >= offset){
-			if(connectionsList.size() > offset + 6){
-				connectionsList = connectionsList.subList(offset, (offset+6));
-			}else{
-				connectionsList = connectionsList.subList(offset, (  offset + (connectionsList.size() - offset)));
-			}
 			if(connectionsList != null && connectionsList.size() > 0) {
 				for(Connections connections : connectionsList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
@@ -154,11 +147,20 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTOList.add(userRoleDTO);
 					}
 				}
+				if(userRoleDTOList.size() >= offset){
+					if(userRoleDTOList.size() > offset + 18){
+						userRoleDTOList = userRoleDTOList.subList(offset, (offset+18));
+					}else{
+						userRoleDTOList = userRoleDTOList.subList(offset, (  offset + (userRoleDTOList.size() - offset)));
+					}
+				return  userRoleDTOList;
+			}else{
+				return  null;
 			}
-			return  userRoleDTOList;
-		}else{
-			return  userRoleDTOList;
-		}
+			}else {
+				return null;
+			}
+			
 	}
 
 
@@ -207,12 +209,6 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		String query = "from Connections connections left join fetch connections.fromUser left join fetch connections.toUser "
 					+ " where (connections.toUser.id =:userId or connections.fromUser.id =:userId1) and connections.connectionStatus = :connectionStatus ";
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", id).setLong("userId1", id).setString("connectionStatus", ConnectionStatus.getNameByValue(status).toString()).setCacheable(true).list();
-		if(connectionsList.size() >= offset){
-			if(connectionsList.size() > offset + 6){
-				connectionsList = connectionsList.subList(offset, (offset+6));
-			}else{
-				connectionsList = connectionsList.subList(offset, (  offset + (connectionsList.size() - offset)));
-			}
 			if(connectionsList != null && connectionsList.size() > 0) {
 				for(Connections connections : connectionsList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
@@ -260,14 +256,20 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTOList.add(userRoleDTO);
 					}
 				}
+				if(userRoleDTOList.size() >= offset){
+					if(userRoleDTOList.size() > offset + 18){
+						userRoleDTOList = userRoleDTOList.subList(offset, (offset+18));
+					}else{
+						userRoleDTOList = userRoleDTOList.subList(offset, (  offset + (userRoleDTOList.size() - offset)));
+					}
+				return  userRoleDTOList;
+			}else{
+				return  null;
 			}
-			return  userRoleDTOList;
-		}else{
-			return  userRoleDTOList;
-		}
-		
+			}else {
+				return null;
+			}
 	}
-
 
 	@Override
 	@Transactional

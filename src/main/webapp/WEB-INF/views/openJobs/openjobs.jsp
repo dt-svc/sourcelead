@@ -1122,9 +1122,9 @@ function prepareOpenJobsElkList(data,offset){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
-// 	if(sourceleadUrl.indexOf("/app")!=-1){
-// 		sourceleadUrl = sourceleadUrl.split("/app")[0];
-// 	}
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
     var json = JSON.parse(data);
   	 var experience ="";
   	 var location = "";
@@ -1180,7 +1180,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -2726,7 +2726,6 @@ function getAllCountriesJObalert(country){
         error: function(e){
         }
     });
-} 
 </script>
 
 
@@ -2971,4 +2970,32 @@ function preventTabkey(e){
 	 }
 }
 </script>
+
+<!--   Free trial pop   -->
+ 
+<div class="clPop"><img src="/resources/css/static-web/images/menu-close.png" alt=""/></div> 
+<section class="freeTrialPop" id="requestDemo">
+	<div class="Rdemo">
+    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<h3>Request a Demo</h3>
+    	<p>We are so glad for your interest in SourceLead.
+Please mail us at </p>
+		<a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a>
+		<span>We will get back to you As soon as possible</span>
+    </div>
+</section>
+<section class="freeTrialPop" id="freeTrial">
+
+	<div class="Rdemo">
+    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<h3>Free Trial</h3>
+    	<p>We are so glad for your interest in SourceLead.
+Please mail us at </p>
+		<a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a>
+		<span>We will get back to you As soon as possible</span>
+    </div>    
+</section> 
+ 
+ <!--   Free trial pop   -->  
+
 <jsp:include page="../socialinviterscripts.jsp" />

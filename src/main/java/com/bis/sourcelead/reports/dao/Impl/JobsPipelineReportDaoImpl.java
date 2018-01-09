@@ -43,7 +43,7 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 		String query = null;
 		if(jobIds.size() > 0) {
 			if(searchDates != null) {
-				 query =" from RequirementSubmission rs left join fetch rs.requirement    where rs.requirement.id IN (:jobIds) and (rs.createdDate BETWEEN :startDate and :endDate)";
+				 query =" from RequirementSubmission rs left join fetch rs.requirement    where rs.requirement.id IN (:jobIds) and date(rs.createdDate) BETWEEN :startDate and :endDate";
 				 subList = session.createQuery(query).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
 			}else {
 				 query =" from RequirementSubmission rs left join fetch rs.requirement    where rs.requirement.id IN (:jobIds)";
@@ -73,11 +73,11 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 		List<Long> requiremnetCount = null;
 		if(jobIds.size() > 0) {
 			if(searchDates != null){
-				query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus =:JobStage  and (requirement.createdDate BETWEEN :startDate and :endDate)";
+				query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus = :JobStage and date(requirement.createdDate) BETWEEN :startDate and :endDate";
 				requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setString("JobStage", JobStage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
 			}else {
-				query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds)";
-				requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setCacheable(true).list();
+				query = "select  count(*) from Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus = :JobStage";
+				requiremnetCount = session.createQuery(query).setParameterList("jobIds", jobIds).setString("JobStage", JobStage).setCacheable(true).list();
 			
 			}
 		}
