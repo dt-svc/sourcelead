@@ -1108,7 +1108,7 @@ function candidateProfile(candidateId,candidateType){
 
 		        	 $("#selector1").removeAttr("style");
          			 $("#selector1").css({ display: "block" });
-		        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
+		        	 $("#candMsgDiv").html("Success!!  Associate Updated");
 		        	candUpdateMsgFadeinFunction();
 		        	profileDetails(candidateId);
 		        });
