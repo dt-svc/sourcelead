@@ -265,7 +265,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}else if(StringUtils.isEmpty(reqDTO.getIsClient()) || !reqDTO.getIsClient().equalsIgnoreCase("Y")){
 					if(StringUtils.isEmpty(reqDTO.getApplicationFrom())) {
 						SubmissionTemplate   submissionTempletes = submissionTemplateService.getDefaultSubmissionTemplateByOrgLocationId(orgLocation.getId());
-						reqDTO.setApplicationFrom(submissionTempletes.getId().toString());
+						if(submissionTempletes != null) {
+							reqDTO.setApplicationFrom(submissionTempletes.getId().toString());
+						}
+						
 					}
 				}
 				

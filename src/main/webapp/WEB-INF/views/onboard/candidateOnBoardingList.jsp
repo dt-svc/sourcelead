@@ -158,13 +158,14 @@
 	                    	 result = result +"<td>";
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
-	                    
-		                    	 if(opt.candidateOnBoardStatus == 'Draft'){
+	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'	 
+	                    	 if(opt.candidateOnBoardStatus == 'Draft'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
-		                    	 }else if(opt.candidateOnBoardStatus == 'Finished' || opt.candidateOnBoardStatus == 'Submitted' || opt.candidateOnBoardStatus == 'Rejected' || opt.candidateOnBoardStatus == 'Accepted'){
+		                    	 }
+		                    	 else if(opt.candidateOnBoardStatus == 'Finished' || opt.candidateOnBoardStatus == 'Submitted' || opt.candidateOnBoardStatus == 'Rejected' || opt.candidateOnBoardStatus == 'Accepted'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }
-	                 
+		                    	 '</sec:authorize>'
 	                    	 
 	                    	 result = result +"</td>";
 	                    	 
@@ -204,8 +205,10 @@
                     			 result = result +"<td><div><span class='text-danger'>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 }else{
                     			 if(opt.onboardSubmitted == 'Y'){
+                    				 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
                         			 result = result	+ '<td><div><span><a><i class="fa fa-check text-success" onclick="acceptOnboardingCandiate(\''+opt.onboardCandidateUUID+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" onclick="rejectedReason(\''+opt.onboardCandidateUUID+'\',\''+opt.candidateName+'\',\''+opt.userEmail+'\');"></i></a></span></div></td>';
-                        		 }else{
+                        			 '</sec:authorize>';
+                    			 }else{
                         			 result = result	+ '<td><div>-----</div></td>';
                         		 }
                     		 }
@@ -280,14 +283,14 @@
 	                    	 result = result +"<div class='width300px'>";
 	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
-	                   
+	                   	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
 		                    	 if(opt.offboardSubmitted == 'N'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }else if(opt.offboardSubmitted == 'Y'){
 		                    		 result = result +"<b class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateSummaryDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </b> </div>";
 		                    	 }
 	                  
-	                    	 
+	                    	 '</sec:authorize>';
 	                    	 result = result +"</td>";
 	                    	 
 	                    	 

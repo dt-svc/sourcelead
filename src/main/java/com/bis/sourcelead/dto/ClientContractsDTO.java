@@ -99,6 +99,7 @@ public class ClientContractsDTO {
     private String orgRelationUUID;
 	private String spocUUID;
 	private String templateFileURL;
+	private String billingCycle;
 	
 	public Long getId()
 	{
@@ -955,6 +956,14 @@ public class ClientContractsDTO {
 
 	public void setTemplateFileURL(String templateFileURL) {
 		this.templateFileURL = templateFileURL;
+	}
+
+	public String getBillingCycle() {
+		return billingCycle;
+	}
+
+	public void setBillingCycle(String billingCycle) {
+		this.billingCycle = billingCycle;
 	}
 	
 	

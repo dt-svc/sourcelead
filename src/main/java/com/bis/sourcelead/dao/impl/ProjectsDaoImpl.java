@@ -33,6 +33,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -105,6 +107,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Date weekStartDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects, projects.getStartDate());
 			projects.setWeekStartDate(weekStartDate);
 			session.saveOrUpdate(projects);
+			if(projects != null && projects.getProjectDocumentFolder() != null &&  !projects.getProjectDocumentFolder().isEmpty()) {
+				for(ProjectDocumentFolder pdf :projects.getProjectDocumentFolder()){
+				pdf.setProjectId(projects);
+				session.saveOrUpdate(pdf);
+				}
+			}
+			if(projects != null && projects.getProjectDocuments() != null &&  !projects.getProjectDocuments().isEmpty()) {
+				for(ProjectDocuments pd :projects.getProjectDocuments()) {
+					pd.setProjects(projects);
+					session.saveOrUpdate(pd);
+				}
+			}
 		}catch(Exception exception){
 			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());

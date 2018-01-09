@@ -7,7 +7,7 @@
       <div class="pull-left">
         <h2>Report(s) Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Reports Dashboard</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Reports Dashboard</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
@@ -97,11 +97,14 @@
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 				<li><a href="${appPath}/timeSheetReports">Timesheet Report</a></li>
 				<li><a href="${appPath}/expensesReportsList">Expenses</a></li>
+                <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheets</a></li>
+				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
 				<li><a href="#">Associate Onboard</a></li>
 				<li><a href="#">Associate Offboard</a></li> -->
-				
+						
+
 				</ul>
 			</div>
                  <!-- Dropdown -->
