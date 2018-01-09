@@ -101,8 +101,15 @@
 				 <div class="form-group" id="errEmployeeRemove">
 				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<select class="chosen-select form-control" autocomplete="off" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="getProjectMemberStartDateAndEndDate();">
-					</select>
+					<c:if test="${not empty expenses}">
+						<input type="hidden" name="projectMemberId" id="projectMemberIdHidden" />
+						<select class="chosen-select form-control" autocomplete="off" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="getProjectMemberStartDateAndEndDate();" disabled="disabled">
+						</select>
+					</c:if>
+					<c:if test="${empty expenses}">
+						<select class="chosen-select form-control" autocomplete="off" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="getProjectMemberStartDateAndEndDate();">
+						</select>
+					</c:if>
 				</div>
 			   </div>              
 	            <div class="form-group">
@@ -502,6 +509,8 @@ function getClientBasedOnSelectedProject(){
 			 $('#expenseAutoId').val('${project.expenseId}');
 			 <c:forEach var="pm" items="${project.projectMembersList}">
 			     result = result + '<option ${expenses.masterCandidateId == pm.masterCandidateId ? "selected" : " " }  value="${pm.id}">${pm.name}</option>';
+			     var pmId = ${pm.id};
+			     $('#projectMemberIdHidden').val(pmId);
 			 </c:forEach>
 		 }  
  	    </c:forEach>
