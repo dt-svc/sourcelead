@@ -83,7 +83,6 @@ $(document).ready(function(){
     <div class="ReqRepHead clearfix">
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-9">
         <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
-          <option>Select Date</option>
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
@@ -105,20 +104,20 @@ $(document).ready(function(){
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
-      <div class="col-md-1">
+<!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
           <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
           <ul class="dropdown-menu clearfix  dropdown-menu-right">
             <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            <!--
+           
                         <li role="Print" class="mt5 cursorPointer"><i class="fa fa-print paddingRight"></i>Print</li>
                         <li role="Download" class="mt5 cursorPointer"><i class="fa fa-download paddingRight"></i>Download</li>
                         <li role="Share" class="mt5 mb5 cursorPointer"><i class="fa fa-share-alt paddingRight"></i>Share</li>
--->
+
           </ul>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="GraView">
       <div class="content-area mt">
@@ -131,25 +130,26 @@ $(document).ready(function(){
                   <ul class="list-unstyled list-inline vendor-listcount mt">
                         <li>
                             <label>Draft</label>
-                            <span class="text-warning" id="draftTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
+                            <span class="text-warning" id="draftTotalAmount">0</span>
                         </li>
                         <li>
                             <label>OverDue</label>
-                            <span class="text-danger" id="unpaidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
+                            <span class="text-danger" id="unpaidTotalAmount">0</span>
                         </li>
                         <li>
                             <label>Open</label>
-                            <span class="text-info" id="openTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
+                            <span class="text-info" id="openTotalAmount">0</span>
                         </li>
                         <li>
                             <label>Paid</label>
-                            <span class="text-success" id="paidTotalAmount"><i class="fa fa-dollar paddingRight"></i>0</span>
+                            <span class="text-success" id="paidTotalAmount">0</span>
                         </li>
                     </ul>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="projectDashboad clearfix positionRelative">
+                <div id="engagedContractsDiv" style="width:100%; height:250px"></div>
                   <div id="engagedContracts" style="width:100%; height:250px" class="amchartAnchor-Hide"></div>
                   <ul class="list-unstyled list-inline vendor-listcount mt">
                         <li>
@@ -189,7 +189,7 @@ $(document).ready(function(){
       </div>
         <div class="clearfix mt row">
           <div class="col-md-12">
-          <div id="topClientloadingDiv"></div>
+          
             <div class="projectDashboad clearfix positionRelative">
               <div class="row">
                 <h4 class="col-md-8" id="vr">Top 10 Clients Report</h4>
@@ -207,6 +207,7 @@ $(document).ready(function(){
                   <select class="chosen-select" data-placeholder="Select Contact" id="topTenClientContactSelect" onchange="clientSummary()"></select>
                 </div>
               </div>
+              <div id="topClientloadingDiv"></div>
               <div class="require_wrap_table" id="topTenClientList"></div>
               <div class="require_wrap_table" id="topTenClientContactList"></div>
               
@@ -501,6 +502,7 @@ function getTopFiveConracts(){
     var frequency = $("#dateFrequency").val();
     var fromDate = $("#custFromDate").val();
     var toDate = $("#custToDate").val();
+    var result = '';
     if(frequency != "Custom" || ((fromDate != null && fromDate != '' && fromDate != 'undefined')) && (toDate != null && toDate != '' && toDate != 'undefined')){
         $.get(sourceleadUrl+ "/getTopFiveConracts?frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&templateSubmissionStatus='FINALIZED'", function(data) {
             if(data != null && data != '' && data != 'undefined'){
@@ -516,28 +518,36 @@ function getTopFiveConracts(){
                 var client4Count = 0;
                 var client5Count = 0;
                 var clientOthersCount = 0;
-                for(i=0; i<data.length-1; i++){
-                    var opt = data[i];
-                        if(i == 0){
-                            client1 = opt.clientName;
-                            client1Count = opt.contractsCount;
-                        }else if(i == 1){
-                            client2 = opt.clientName;
-                            client2Count = opt.contractsCount;
-                        }else if(i == 2){
-                            client3 = opt.clientName;
-                            client3Count = opt.contractsCount;
-                        }else if(i == 3){
-                            client4 = opt.clientName;
-                            client4Count = opt.contractsCount;
-                        }else if(i == 4){
-                            client5 = opt.clientName;
-                            client5Count = opt.contractsCount;
-                        }else{
-                            clientOthers = opt.clientName;
-                            clientOthersCount += opt.contractsCount;
+                if(data.length != 1){
+                    for(i=0; i<data.length-1; i++){
+                        var opt = data[i];
+                            if(i == 0){
+                                client1 = opt.clientName;
+                                client1Count = opt.contractsCount;
+                            }else if(i == 1){
+                                client2 = opt.clientName;
+                                client2Count = opt.contractsCount;
+                            }else if(i == 2){
+                                client3 = opt.clientName;
+                                client3Count = opt.contractsCount;
+                            }else if(i == 3){
+                                client4 = opt.clientName;
+                                client4Count = opt.contractsCount;
+                            }else if(i == 4){
+                                client5 = opt.clientName;
+                                client5Count = opt.contractsCount;
+                            }else{
+                                clientOthers = opt.clientName;
+                                clientOthersCount += opt.contractsCount;
+                            }
                         }
-                    }
+                    $("#engagedContracts").show();
+                    $("#engagedContractsDiv").hide();
+                }else{
+                	result = result + '<div class="dataTables_empty center" ></div>';
+                	$("#engagedContractsDiv").append(result);
+                	$("#engagedContracts").hide();
+                }
                 var report = data[data.length-1];
                 $("#msaCount").html(report.msaCount);
                 $("#sowCount").html(report.sowCount);
@@ -545,6 +555,10 @@ function getTopFiveConracts(){
                 $("#ndaCount").html(report.ndaCount);
                     
                 prepareContractChart(client1,client2,client3,client4,client5,client1Count,client2Count,client3Count,client4Count,client5Count,clientOthersCount,clientOthers);
+            }else{
+            	result = result + '<div class="dataTables_empty center" ></div>';
+            	$("#engagedContractsDiv").append(result);
+            	$("#engagedContracts").hide();
             }
         });
     }
@@ -560,10 +574,26 @@ function getTopFiveReceivsblesReports(){
         url : sourceleadUrl+"/getTopFiveReceivablesReports?&dateFrequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&type=Receivable",
         success: function(data) {
             getAmchartData(data);
-            $("#draftTotalAmount").html(data.draftInvoiceTotal)
-            $("#unpaidTotalAmount").html(data.overDueInvoicetotal)
-            $("#paidTotalAmount").html(data.allPaidInvoiceTotal)
-            $("#openTotalAmount").html(data.openInvoiceTotal)
+            if(data.draftInvoiceTotal != null && data.draftInvoiceTotal != 'undefined' && data.draftInvoiceTotal != ''){
+            	$("#draftTotalAmount").html(data.draftInvoiceTotal)
+            }else{
+            	$("#draftTotalAmount").html(0)
+            }
+            if(data.overDueInvoicetotal != null && data.overDueInvoicetotal != 'undefined' && data.overDueInvoicetotal != ''){
+            	$("#unpaidTotalAmount").html(data.overDueInvoicetotal)
+            }else{
+            	$("#unpaidTotalAmount").html(0)
+            }
+            if(data.allPaidInvoiceTotal != null && data.allPaidInvoiceTotal != 'undefined' && data.allPaidInvoiceTotal != ''){
+            	$("#paidTotalAmount").html(data.allPaidInvoiceTotal)
+            }else{
+            	$("#paidTotalAmount").html(0)
+            }
+            if(data.openInvoiceTotal != null && data.openInvoiceTotal != 'undefined' && data.openInvoiceTotal != ''){
+            	$("#openTotalAmount").html(data.openInvoiceTotal)
+            }else{
+            	$("#openTotalAmount").html(0)
+            }
          }
     });
 }
@@ -650,8 +680,8 @@ function topTenClientReports(){
             type : "GET",
             url : sourceleadUrl+"/getTopTenClientReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&templateSubmissionStatus=FINALIZED",
             success: function(data) {
+            	var result = "";
                 if(data.length > 0){
-                    var result = "";
                     
                     result += '<table>';
                     result += '<thead>';
@@ -706,8 +736,15 @@ function topTenClientReports(){
                     $("#clientSelectDiv").show();
                     $("#clientContactSelectDiv").hide();
                     $("#topTenClientSelect").trigger("chosen:updated");
-                }
+                }else{
+                	result = result + '<div class="dataTables_empty center" ></div>';
+                	$("#topTenClientList").empty();
+                    $("#topTenClientList").show();
+                    $("#topTenClientContactList").hide();
+                    $("#topClientloadingDiv").removeAttr('style');
+                    $("#topTenClientList").append(result);
              }
+            }
         });
     }
     
@@ -911,9 +948,8 @@ function topTenClientContactReports(){
             type : "GET",
             url : sourceleadUrl+"/getTopTenClientContactReports?&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&templateSubmissionStatus=FINALIZED",
             success: function(data) {
+            	var result = "";
                 if(data.length > 0){
-                    var result = "";
-                    
                     result += '<table>';
                     result += '<thead>';
                     result += '  <tr>';
@@ -967,6 +1003,13 @@ function topTenClientContactReports(){
                        $("#clientSelectDiv").hide();
                     $("#clientContactSelectDiv").show();
                        $("#topTenClientContactSelect").trigger("chosen:updated");
+                }else{
+                	result = result + '<div class="dataTables_empty center" ></div>';
+                	$("#topTenClientContactList").empty();
+                    $("#topTenClientContactList").show();
+                    $("#topTenClientList").hide();
+                    $("#topClientloadingDiv").removeAttr('style');
+                    $("#topTenClientContactList").append(result);
                 }
              }
         });

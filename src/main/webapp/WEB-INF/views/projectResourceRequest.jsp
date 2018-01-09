@@ -25,7 +25,7 @@
     <section class="clearfix">
       <div class="content-dashboard clearfix"> 
       	  <div class="clearfix dashboard-widget mb col-md-12">
-      	    <h4>Resource Requests</h4>
+      	    <h4>Associate Requests</h4>
       	    
       	    <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>

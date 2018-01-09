@@ -70,7 +70,7 @@ public class FileController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 
-	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
+	@RequestMapping(value = {"/upload/{type}","/rest/upload/{type}"}, method = RequestMethod.POST)
 	@ResponseBody
 	public List<FileInfo> uploadFile(MultipartHttpServletRequest request, @PathVariable String type,
 			@RequestParam(defaultValue = "0") long orgId, @RequestParam(defaultValue = "0") long orgLocationId,
