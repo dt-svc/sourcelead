@@ -93,7 +93,7 @@ display: none;
                     <h4 class="modal-title">Select Mailer</h4>
                    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
                     <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Associate</strong></label>
+               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Associates</strong></label>
                	    <label class="paddingLeft">
                	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label>
                	    </c:if>

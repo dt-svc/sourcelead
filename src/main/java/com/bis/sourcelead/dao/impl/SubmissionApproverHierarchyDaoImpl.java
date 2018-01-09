@@ -263,7 +263,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					isSUBMITTED   = true;  
 					submissionApproverHierarchy = sah;
 				}
-				else if(!isRejected && !isNEW && !isDRAFT && sah.getSubmissionStatus() == Submission_Status.APPROVED ){
+				else if(!isRejected && !isNEW && !isDRAFT && !isSUBMITTED && sah.getSubmissionStatus() == Submission_Status.APPROVED ){
+					 isAPPROVED   = true;  
+					 submissionApproverHierarchy = sah;
+				}
+				//manager 1 Approved Scenario 
+				else if(!isRejected && !isNEW && !isDRAFT && sah.getSubmissionStatus() == Submission_Status.APPROVED)
+				{
 					 isAPPROVED   = true;  
 					 submissionApproverHierarchy = sah;
 				}
