@@ -112,7 +112,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 			{
 				if(methodName.equalsIgnoreCase("loginSession"))
 				{
-					List<ActionHistory> list = getAllActionHistoryList(userLoginLogoutSession.getId(), loginOrgLocation.getId());
+					List<ActionHistory> list = getAllOrglocationsActionHistoryList(userLoginLogoutSession.getId());
 					if(!(list.size()>0)){
 					ActionNames actionNames = actionNamesList.get(0);
 					actionHistory.setActionName(actionNames.getActionName());
@@ -150,7 +150,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 			}
 			
 			try {
-				if (actionHistory != null) {
+				if (actionHistory != null && actionHistory.getUserId() != null) {
 					session.saveOrUpdate(actionHistory);
 				}
 			} catch (Exception exception) {
