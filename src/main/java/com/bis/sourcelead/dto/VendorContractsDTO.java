@@ -92,6 +92,7 @@ public class VendorContractsDTO {
     private String orgRelationUUID;
 	private String spocUUID;
 	private String templateFileURL;
+	private String billingCycle;
 	
 	
 	public String getTemplateId()
@@ -949,6 +950,14 @@ public class VendorContractsDTO {
 
 	public void setTemplateFileURL(String templateFileURL) {
 		this.templateFileURL = templateFileURL;
+	}
+
+	public String getBillingCycle() {
+		return billingCycle;
+	}
+
+	public void setBillingCycle(String billingCycle) {
+		this.billingCycle = billingCycle;
 	}
 	
 }

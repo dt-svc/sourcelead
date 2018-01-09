@@ -66,6 +66,8 @@ public interface OrgRelationsDao {
 	
 	OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
 	
+	OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
+	
 	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
 	
 	ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO ,Long id,String status, String vendorsRelationId) throws Exception;
