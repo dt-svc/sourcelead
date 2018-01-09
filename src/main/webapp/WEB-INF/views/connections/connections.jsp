@@ -147,6 +147,7 @@ $("#searchFindConnId").keydown(function(e) {
             	}else{
             		$('#findConnectionListId').append(result);
             	}
+	 			$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	   		}else if(type == "scroll" && result === "" && count > 0){
             	$('#loadMoreDiv').empty();
 	         	result = result + '<div class="loadWrap"> No More Records..</div>';
