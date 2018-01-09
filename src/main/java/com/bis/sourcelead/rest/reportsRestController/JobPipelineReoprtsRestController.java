@@ -69,9 +69,7 @@ public class JobPipelineReoprtsRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
 		List<Long> jobIdList = new ArrayList<>();
-		
 		Date[] searchDates = null;
 		if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
 			if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
@@ -96,7 +94,6 @@ public class JobPipelineReoprtsRestController {
 			}
 		}
 		
-
 		if(jobFilterDTO.getFromtype() != null && jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
 			
 			jobIdList = getClientRequirementList(orgLocation,user,searchDates);
@@ -109,9 +106,7 @@ public class JobPipelineReoprtsRestController {
 			}else {
 				jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
 			}
-		}
-			
-	 
+		 }
 	    	int applicantsSum = 0;
 			int requestSentSum = 0;
 			int shortlistedSum = 0;
@@ -170,7 +165,6 @@ public class JobPipelineReoprtsRestController {
 					int offeracceptedCount = 0;
 					int rejectedCount = 0;
 					int backoutCount = 0;
-					
 					
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonId(reqSub.getId());
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
@@ -282,7 +276,6 @@ public class JobPipelineReoprtsRestController {
 						if(rejectedCreatedDate != null && rejectedFromCreatedDate != null) {
 							rejectedMap.put(count, CalendarUtil.getNumberOfDays(rejectedFromCreatedDate,rejectedCreatedDate));
 						}
-						
 						
 						 applicantsSum = applicantsSum+applicantsCount;
 						 requestSentSum = requestSentSum+requestSentCount;
@@ -428,7 +421,6 @@ public class JobPipelineReoprtsRestController {
 		    	report.setOnHoldJobsCount(onholdJobcount);
 		    	report.setClosedJonbsCount(closedJobcount + unfilledclosedJobcount + filledclosedJobcount);
 		    	report.setCancelledjobsCount(cancelJobcount);
-		    	
 	    	
 	    	}
 			return report;
