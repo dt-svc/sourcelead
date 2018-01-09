@@ -554,6 +554,9 @@ public class RequirementSubmission implements Serializable{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;
     
+    @Transient
+    @JsonProperty
+	private Long orgRelationId;
 
 	public int getProfilePercentage()
 	{
@@ -1634,5 +1637,14 @@ public class RequirementSubmission implements Serializable{
 	public void setSubmissionDisplayStatus(String submissionDisplayStatus) {
 		this.submissionDisplayStatus = submissionDisplayStatus;
 	}
-	
+
+	public Long getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
 }

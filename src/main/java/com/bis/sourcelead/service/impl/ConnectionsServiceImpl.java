@@ -46,6 +46,11 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 		return connectionsDao.getConnectedList(searchValue, offset, id, status);
 	}
 
+	@Override
+	public Long getConnectionReceivedCount(Long id) {
+		return connectionsDao.getConnectionReceivedCount(id);
+	}
+
 
 	
 

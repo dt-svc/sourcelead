@@ -93,7 +93,7 @@ display: none;
                     <h4 class="modal-title">Select Mailer</h4>
                    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
                     <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Users</strong></label>
+               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Associate</strong></label>
                	    <label class="paddingLeft">
                	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label>
                	    </c:if>
@@ -199,15 +199,11 @@ $(function() {
    <script>
   function loadMailBoxDetails(UUID){
 	  var sourceleadUrl = '${sourceleadUrl}';
-	  
 			 $.ajax({
-				 
 				 type: "POST",
 			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
-			        	
-			        	
 			        	 $("input[name=subject]").val(json['subject']);
 			    		 
 			        	 if(json['comments'] != '' && json['comments'] != null && json['comments'] != 'undefied'){
@@ -216,8 +212,8 @@ $(function() {
 			        	 }
 			        	 
 			        	 if(json['comments'] == null && json['body'] != '' && json['body'] != null && json['body'] != 'undefied'){
-			        		 //nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
-			        		 $('#bodytext').summernote('editor.pasteHTML','<br/><br/>'+json['body']);
+			        		 nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+// 			        		 $('#bodytext').summernote('editor.pasteHTML','<br/><br/>'+json['body']);
 			        	 }
 			        	
 			        }

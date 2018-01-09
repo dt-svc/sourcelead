@@ -2605,7 +2605,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			
 			  Session session = this.sessionFactory.getCurrentSession();
 			
-			  String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION') "; 
+			  String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') "; 
 			 
 			 
 			 List<RequirementSubmission> shortListCandidatesList;
@@ -2962,5 +2962,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 				response.setData(requirementSubmissionList);
 				return response;
+		}
+
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.sourceSubmission.id IN (:submissionIds)";
+			List<RequirementSubmission>  subList = session.createQuery(query).setParameterList("submissionIds", submissionIds).setCacheable(true).list();
+		    return subList;
 		}
 }

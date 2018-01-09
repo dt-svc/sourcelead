@@ -188,9 +188,10 @@ public class CompanyOnboardRestController {
 	public @ResponseBody String saveOrgLocationSignatory(OrglocationSignatoryDTO orglocationSignatoryDTO,HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String result = orglocationSignatoryService.addOrglocationSignatory(orglocationSignatoryDTO, user, loginOrgLocation);
-		commonUtil.onboardCreationCandidateGeneratedIdUpdated(user,loginOrgLocation);
+		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,loginOrgLocation);
 		return result;
 	}
 	
@@ -198,11 +199,11 @@ public class CompanyOnboardRestController {
 	public @ResponseBody String skipAndSaveOrglocationSignatory(HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
 		orgLocationService.updateOrgLocations(loginOrgLocation);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
-		commonUtil.onboardCreationCandidateGeneratedIdUpdated(user,loginOrgLocation);
+		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,loginOrgLocation);
 		return "success";
 	}
 	
