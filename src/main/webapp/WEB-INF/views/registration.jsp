@@ -122,7 +122,7 @@ window.onload = function () {
 				    <form:form class="login-form clearfix"  id="popprofessionalRegistration_form"  name="popprofessionalRegistration_form" method="post" >
 				    <div class="col-md-3">
 						<div class="userImg">
-					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
+					      <img src="https://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
 					   </div>
 				    </div>
 		            <div class="col-md-9">
@@ -204,7 +204,7 @@ window.onload = function () {
 		      <form:form class="login-form clearfix"  id="poprecruiterRegistration_form"  name="poprecruiterRegistration_form" method="post" >
 				     <div class="col-md-3">
 						<div class="userImg">
-					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popRecruiterprofileimage">
+					      <img src="https://socialinviter.com/assets/img/icons/avator.JPG" id="popRecruiterprofileimage">
 					   </div>
 				    </div>   
 		            <div class="col-md-9">
