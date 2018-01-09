@@ -268,12 +268,6 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
     <div class="pull-left">
       <h2><a href="#" id="contactsListId">Contacts List</a></h2>
       </div> 
-       <div class="pull-left">
-     &nbsp;&nbsp;|&nbsp;&nbsp;
-     </div>
-     <div class="pull-left"> 
-  <h2><a href="<c:url value='${appPath}/loadFindConnections'/>"  id="connectionsId">Connections</a></h2> 
-    </div>
     <div class="pull-right brud-crum" id="contactsListUrl"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
   <div id="contactsListSheet" class="timesheet_out">

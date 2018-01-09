@@ -1468,7 +1468,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setRateType(requirementOffers.getPaymentMode());
     		
     		if(requirementSubmission.getSourceSubmission() != null){
-    			OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());
+    			OrgRelations orgRelations = orgRelationsDao.getOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(),requirementOffers.getSubmissionId().getVendorLocationId().getId());
         		if(orgRelations != null){
         			candidate.setOrgRelationId(orgRelations);
         			Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
