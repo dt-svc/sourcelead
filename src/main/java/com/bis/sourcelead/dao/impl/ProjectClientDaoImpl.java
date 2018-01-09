@@ -119,7 +119,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		
 		logger.debug("In getProjectClientsListByProjectId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String candidateListQuery= "from ProjectClients pc where pc.projectId.id = :projectId and pc.status = '1' ";
+		String candidateListQuery= "from ProjectClients pc where pc.id = :projectId and pc.status = '1' ";
 		List<ProjectClients> pcList =session.createQuery(candidateListQuery).setLong("projectId", projectId).setCacheable(true).list(); 
 		ProjectClients pc = null;
 		if(pcList != null && !pcList.isEmpty()){
