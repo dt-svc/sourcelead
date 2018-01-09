@@ -908,8 +908,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		
 		if(userRoleList.size() >= offset){
-			if(userRoleList.size() > offset + 6){
-				userRoleList = userRoleList.subList(offset, (offset+6));
+			if(userRoleList.size() > offset + 12){
+				userRoleList = userRoleList.subList(offset, (offset+12));
 			}else{
 				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
 			}
