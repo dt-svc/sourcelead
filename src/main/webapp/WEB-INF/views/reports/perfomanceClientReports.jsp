@@ -104,20 +104,20 @@ $(document).ready(function(){
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
-      <div class="col-md-1">
+<!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
           <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
           <ul class="dropdown-menu clearfix  dropdown-menu-right">
             <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            <!--
+           
                         <li role="Print" class="mt5 cursorPointer"><i class="fa fa-print paddingRight"></i>Print</li>
                         <li role="Download" class="mt5 cursorPointer"><i class="fa fa-download paddingRight"></i>Download</li>
                         <li role="Share" class="mt5 mb5 cursorPointer"><i class="fa fa-share-alt paddingRight"></i>Share</li>
--->
+
           </ul>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="GraView">
       <div class="content-area mt">
