@@ -1929,6 +1929,7 @@ public class RequirementListRestController {
       	requirement.setCountry(requirementIndex.getCountry());
       	requirement.setState(requirementIndex.getState());
       	requirement.setCity(requirementIndex.getCity());
+      	requirement.setLocation(requirementIndex.getLocation());
       	requirement.setSearchType("Requirement");
       	requirement.setPositions(requirementIndex.getNumberOfPositions());
       	if(null != requirementIndex.getNumberOfApplicants()){
