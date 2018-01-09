@@ -47,7 +47,7 @@ function getJobsReportCustomDates(){
       <div class="pull-left">
         <h2>Jobs Pipeline</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Jobs Pipeline Report</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard</a>&raquo;Jobs Pipeline Report
        </div>
     </section>
     <!-- hiring Process  -->
