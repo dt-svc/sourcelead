@@ -20,7 +20,7 @@ public interface DataMigrationService {
 	 * @throws Exception
 	 * 
 	 */
-	Map<String, String> getfileData(String filePath) throws Exception;
+	Map<String, String> getfileData(String filePath, String headerPosition) throws Exception;
 	
 	String validateImportedFormData(DataMigrationDTO dataMigrationDTO, HttpServletRequest request) throws Exception;
 	
