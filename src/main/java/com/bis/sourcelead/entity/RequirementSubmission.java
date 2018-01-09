@@ -386,6 +386,15 @@ public class RequirementSubmission implements Serializable{
 	private int duplicateCount;
 	
 	@Transient
+    @JsonProperty
+   	private Long reqManagerId;
+	
+	
+	@Transient
+    @JsonProperty
+   	private String reqReleaseAllJobUserStatus;
+	
+	@Transient
 	@JsonProperty
 	private Long requirementId;
 	
@@ -1646,5 +1655,25 @@ public class RequirementSubmission implements Serializable{
 	public void setOrgRelationId(Long orgRelationId)
 	{
 		this.orgRelationId = orgRelationId;
+	}
+
+	public Long getReqManagerId()
+	{
+		return reqManagerId;
+	}
+
+	public void setReqManagerId(Long reqManagerId)
+	{
+		this.reqManagerId = reqManagerId;
+	}
+
+	public String getReqReleaseAllJobUserStatus()
+	{
+		return reqReleaseAllJobUserStatus;
+	}
+
+	public void setReqReleaseAllJobUserStatus(String reqReleaseAllJobUserStatus)
+	{
+		this.reqReleaseAllJobUserStatus = reqReleaseAllJobUserStatus;
 	}
 }
