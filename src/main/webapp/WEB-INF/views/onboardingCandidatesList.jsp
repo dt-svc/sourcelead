@@ -43,7 +43,7 @@ $(document).ready(function(){
 function onboardingCandidatesList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 
+	  var userId = '${SourceLeadWeb_userId}';
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  onBoardListDate = 'YYYY-MM-DD';
@@ -84,13 +84,14 @@ function onboardingCandidatesList(){
 	                    	 for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-	                    	 
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></div></td>";
-	                    		
 	                    		 result = result +"<td><div><span title='"+opt.candidateEmail+"'>"+opt.candidateEmail+"</span></div></td>";
-	                    		 
+	                    		 if(opt.reqManagerId == userId || opt.reqReleaseAllJobUserStatus == "Y"){
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></a></div></td>";
-		                    
+	                    		 }
+	                    		 else{
+		                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></div></td>";
+	                    		 }
 	                    		 result = result +"<td><div><span>"+opt.offerJoinDate+"</span></div></td>";
 	                    		 
 			                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
