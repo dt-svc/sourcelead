@@ -60,7 +60,7 @@ $(document).scroll(function(e){
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	
-    	avilableCount = parseInt(avilableCount) + parseInt(12); 
+    	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
