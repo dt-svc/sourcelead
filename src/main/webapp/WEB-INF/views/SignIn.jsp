@@ -6,9 +6,6 @@
     <c:if test="${staticTime == null || staticTime == 0 }">
     	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
     </c:if>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>::. Sign In .::</title>
     <%-- <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">

@@ -40,7 +40,7 @@
 	rel="stylesheet">
 <link rel="stylesheet"
 	href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet"
+<link rel="stylesheet"3
 	href="/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
 
@@ -1272,7 +1272,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-				result = result +'   <a href="/login?requirementUUID="'+requirements.requirementUUID+'">Apply</a>';
+				result = result +'   <a href="/login?requirementUUID='+requirements.requirementUUID+'">Apply</a>';
 				result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 				result = result +'	</div>';
 				result = result +'	</div>';
@@ -1419,6 +1419,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#openJobsRequirementsSummary").show();
 	$("#openJobsRequirementsList").hide(); 
 	$("#loadMoreDiv").hide(); 
+	
 	 $.ajax({
 		 type: "POST",
 		 url: sourceleadUrl + "/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
@@ -1427,8 +1428,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	    		
 	    	  var json = JSON.parse(data);
 	    	 
-		      	var result = "";
-		      	var title=json.jobTitle;
+		      var result = "";
+
+		      var title=json.jobTitle;
 				var link="";
 				var picture="";
 				var description='';
@@ -1469,6 +1471,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
 				result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>';
+				description =  description+'Posted By :'+json.requirementOrgName+";";
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	
 		    	}
@@ -1477,17 +1480,19 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	result = result +'	<div class="skills clearfix"><strong>Skills :</strong>';
 				if(json.skills != null && json.skills != '' && json.skills !='undefined'){
 				result = result +'	<span>'+json.skills+'</span>';
+				description =  description+'Skills :'+json.skills+";";
 				}else{
 				result = result +'	<span>--</span>';	
 				}
 				result = result +'	</div>';					
 				result = result +'	<span>';
 				
-				link = "/openJobsPublicPage?requirementUUID="+json.requirementUUID;
+// 				link = "/openJobsPublicPage?requirementUUID="+json.requirementUUID;
 				description =  description+'Job Title:'+json.jobTitle+";";
 				
 				if(json.jobType != null && json.jobType != '' && json.jobType !='undefined'){
 				result = result +'	<b><i class="fa fa-clock-o"></i>'+json.jobType+'</b>';
+				description =  description+'Job Type:'+json.jobType+";";
 				}else{
 				result = result +'	<b><i class="fa fa-clock-o"></i>--</b>';	
 				}
@@ -1507,6 +1512,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod !='undefined'){
 				result = result +'	<b><i class="fa fa-bell"></i>'+json.noticePeriod+'</b>';
+				description =  description+'Notice Period :'+json.noticePeriod+";";
 				}else{
 				result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
 				}
@@ -1514,6 +1520,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				
 				if(rate != null && rate != '' && rate !='undefined'){
 				result = result +'	<b><i class="fa fa-rupee"></i>'+rate+'-'+rateType+'/'+currencyType+'</b>';
+				description =  description+'Rate: '+rate+";";
 				}else{
 				result = result +'	<b><i class="fa fa-rupee"></i>--</b>';	
 				}
@@ -1522,14 +1529,14 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'    </div>';			
 				result = result +'  <div class="jobApply">';
 				result = result +'	<a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+json.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-				result = result +'  <a href="/login?requirementUUID="'+json.requirementUUID+'">Apply</a>';
+				result = result +'  <a href="/login?requirementUUID='+json.requirementUUID+'">Apply</a>';
 				result = result +'	<a href="/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				result = result +'	<div style="clear:both;"></div>';
-				result = result +'	<div class="share hidden">';
+				/* result = result +'	<div class="share hidden">';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
-				result = result +'	</div>';
+				result = result +'	</div>'; */
 				result = result +'    </div>';
 				result = result +'    <div style="clear:both;"></div>';
 				result = result +'	<div class="jobDesc">';
@@ -1542,6 +1549,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<h4>Other details:</h4>';
 				if(json.location != null && json.location != '' && json.location !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>&nbsp;'+json.location+'</b>';
+				description =  description+'Job Location: '+json.location+";";
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>--</b>';
 	
@@ -1564,6 +1572,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				if(json.visaType != null && json.visaType != '' && json.visaType !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:'+json.visaType+'</label></b>';
+				description =  description+'Visa Type :'+json.visaTypes+";";
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:</label>--</b>';	
 				}
@@ -1610,16 +1619,16 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<div class="jobShare">';
 				if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString !='undefined'){
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:'+json.requirementCreatedDateToString+'</label></div>';
+				description =  description+'Posted Date :'+json.requirementCreatedDateToString+";";
 				}else{
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:</label>--</div>';
 				}
 
 // 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
-
 				result = result +'	<div class="share">';
-				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
-				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+				result = result +'	<a  href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+				result = result +'	<a  href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
+				result = result +'	<a  href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1635,6 +1644,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	   	   	   }
 	   	   	}
 		});  
+	 socialInviterScripts();
 }
 
 function backtoList(){
@@ -1670,7 +1680,6 @@ function openJobSearchRequirement(){
 			//It will escape all the special characters
 			$("#advancedOpenJobsSearch").attr("disabled", "disabled");
 			$("#advancedOpenJobsSearch").addClass('button').val('Processing..');
-			
 			$.ajax({
 						type : "GET",
 		        	    data: formData,
@@ -1763,7 +1772,7 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 										result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-										result = result +'   <a href="/login?requirementUUID="'+requirements.requirementUUID+'">Apply</a>';
+										result = result +'   <a href="/login?requirementUUID='+requirements.requirementUUID+'">Apply</a>';
 										result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 													
 										result = result +'	</div>';
@@ -2729,7 +2738,6 @@ function getStatesjobalert(country,state){
 		countryName = country;
 	}else{
 	   countryName = $("#countryjobalert").val();
-	}
 	
 	
 	if(countryName != null && countryName != "" && countryName !="undefined"){

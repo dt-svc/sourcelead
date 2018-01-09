@@ -629,4 +629,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getUserListForConnections(searchByName,offSet,userId);
 	}
 
+	@Override
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId, Long locationId)
+			throws Exception {
+		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId);
+	}
+
 }
