@@ -331,10 +331,10 @@ $(document).ready(function () {
                 <c:forEach var="projectClient" items="${projectList}">
 								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
 								<c:if test="${! empty projectClient.clientName}">
-		                           <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id  ? 'selected' : ''} >${projectClient.projectId.projectName} (${projectClient.clientName})</option>
+		                           <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.id  ? 'selected' : ''} >${projectClient.projectId.projectName} (${projectClient.clientName})</option>
 								 </c:if>
 								 <c:if test="${empty projectClient.clientName}">
-								 <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id ? 'selected' : ''} >${projectClient.projectId.projectName} </option>
+								 <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.id ? 'selected' : ''} >${projectClient.projectId.projectName} </option>
 								 </c:if>
 				                    	
 				                 <%--    </c:if>   --%>
