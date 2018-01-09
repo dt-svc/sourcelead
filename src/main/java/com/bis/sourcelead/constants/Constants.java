@@ -504,6 +504,14 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	
+	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
+			"Min Experience", "Max Experience", "Rate", "Location", "City",	"State", "Country", "Zip Code",	
+			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", 
+			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Manager", "Approver", "Assign To",
+			"Application Form", "Client Name", "Client Contact Name", "Client Contact Email", "Client Submission Form",
+			"Status"};
+	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
 	public static final String[] STATUS_DROPDOWN = { "Active", "In-Active", "New", "Negotiation",
