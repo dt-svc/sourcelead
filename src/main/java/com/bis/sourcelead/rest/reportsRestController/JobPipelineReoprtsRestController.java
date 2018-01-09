@@ -151,10 +151,9 @@ public class JobPipelineReoprtsRestController {
 			
 			Integer openJobcount    = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "OPEN");
 			Integer onholdJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "ONHOLD");
-			Integer closedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CLOSED,UNFILLEDCLOSED,FILLEDCLOSED");
+			Integer closedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CLOSED");
 			Integer unfilledclosedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "UNFILLEDCLOSED");
 			Integer filledclosedJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "FILLEDCLOSED");
-
 			Integer cancelJobcount  = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates, "CANCEL");
 			
 			int count = 1;
@@ -201,8 +200,8 @@ public class JobPipelineReoprtsRestController {
 									shortlistCreatedDate = rsh.getCreatedDate();
 								}
 								
-							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && (rsh.getToStage().equalsIgnoreCase("offermade") || rsh.getToStage().equalsIgnoreCase("client_interview")))
-									|| (rsh.getFromStage().equalsIgnoreCase("submit_to_client") && rsh.getToStage().equalsIgnoreCase("client_interview"))){
+							} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && ((rsh.getToStage().equalsIgnoreCase("offermade") || rsh.getToStage().equalsIgnoreCase("client_offermade")) || rsh.getToStage().equalsIgnoreCase("client_interview")))
+									|| ((rsh.getFromStage().equalsIgnoreCase("submit_to_client") || rsh.getFromStage().equalsIgnoreCase("client_interview")) && rsh.getToStage().equalsIgnoreCase("client_interview"))){
 								interviewsCount++;
 								if(rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) {
 									interviewCreatedDate = createdDatesMap.get("SUBMISSION");
@@ -212,7 +211,7 @@ public class JobPipelineReoprtsRestController {
 									interviewCreatedDate = rsh.getCreatedDate();
 								}
 								
-							} if("offermade".equalsIgnoreCase(rsh.getToStage())  ||  "client_interview".equalsIgnoreCase(rsh.getToStage())){
+							} if("offermade".equalsIgnoreCase(rsh.getToStage())  ||  "client_offermade".equalsIgnoreCase(rsh.getToStage())){
 								offeredCount++;
 								offerMadeCreatedDate = rsh.getCreatedDate();
 							} if("request_sent".equalsIgnoreCase(rsh.getToStage())){
@@ -244,6 +243,9 @@ public class JobPipelineReoprtsRestController {
 								}else if(rsh.getFromStage().equalsIgnoreCase("submit_to_client")){
 									rejectedFromSubmitTOClientCount++;
 									rejectedFromCreatedDate =  createdDatesMap.get("SUBMIT_TO_CLIENT");
+								}else if(rsh.getFromStage().equalsIgnoreCase("NEW")){
+									rejectedFromSubmitTOClientCount++;
+									rejectedFromCreatedDate =  createdDatesMap.get("NEW");
 								}
 							} if("backout".equalsIgnoreCase(rsh.getToStage())){
 								backoutCount++;
