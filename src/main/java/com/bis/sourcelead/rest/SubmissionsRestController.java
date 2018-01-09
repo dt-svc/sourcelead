@@ -563,19 +563,17 @@ public class SubmissionsRestController {
 
 		for (int i = 0; i < submissionId.length; i++) {
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-			RequirementSubmission submission = requirementSubmissionService
-					.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+			RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
 			requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
 			submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
 			submission.setUpdatedBy(user.getUserCode());
+			submission.setUpdatedUser(user.getFullName());
 			if(null != submission.getSourceSubmission()){
 				count = count + 1;
 			}
 			submission.setUpdatedDate(new Date());
-			RequirementSubmission requirementSubmission = requirementSubmissionService
-					.storeRequirementSubmission(submission);
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-					requirementSubmissionHistory);
+			RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 
 		}
 		int shotListCount = submissionId.length;

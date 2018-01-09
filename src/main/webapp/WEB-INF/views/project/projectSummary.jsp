@@ -92,12 +92,11 @@ window.onload = function () {
 				  	'</sec:authorize>';
 			  	'</sec:authorize>';
 		  	 }
-	  	   
+		  	 
+		  	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_DOCUMENTS\',\'ROLE_VIEW_EDIT_DOCUMENTS\')">'; 
+		  	result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
+		  	'</sec:authorize>';
 		  	if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
-			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-			  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
-				'</sec:authorize>';
-				
 				//this condition is for hiding the report subtab for client project in vendor login
 				 result = result + ' <li><a href="#tab-5" onClick="projectReports('+projectId+');getDayWiseReports('+projectId+');" >Reports</a></li>';
 		  	  }

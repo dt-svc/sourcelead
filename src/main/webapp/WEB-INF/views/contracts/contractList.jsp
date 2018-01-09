@@ -1836,8 +1836,8 @@ function preparedContractListWTV(json){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         if(report.invoiceFrequency != null && report.invoiceFrequency != '' && report.invoiceFrequency != 'undefined'){
-			         result = result + '<div><span>'+report.invoiceFrequency+'</span></div>';
+		         if(report.billingCycle != null && report.billingCycle != '' && report.billingCycle != 'undefined'){
+			         result = result + '<div><span>'+report.billingCycle+'</span></div>';
 		         }else{
 		        	 result = result + '<div><span>---</span></div>';
 		         }
@@ -1937,8 +1937,8 @@ function preparedContractListWTV(json){
 	         opt = opt + '</td>';
 
 	         opt = opt + '<td>';
-	         if(output.invoiceFrequency != null && output.invoiceFrequency != '' && output.invoiceFrequency != 'undefined'){
-	        	 opt = opt + '<div><span>'+output.invoiceFrequency+'</span></div>';
+	         if(output.billingCycle != null && output.billingCycle != '' && output.billingCycle != 'undefined'){
+	        	 opt = opt + '<div><span>'+output.billingCycle+'</span></div>';
 	         }else{
 	        	 opt = opt + '<div><span>---</span></div>';
 	         }

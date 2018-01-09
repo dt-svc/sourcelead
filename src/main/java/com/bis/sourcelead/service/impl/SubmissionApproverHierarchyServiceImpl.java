@@ -520,6 +520,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			Long masterCandidateId) {
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyForEmployeeBySubmissionId(submissionId, masterCandidateId);
 	}
+
+	@Override
+	public Boolean getPendingForApprovalTimesheetReportByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
+		return submissionApproverHierarchyDao.getPendingForApprovalTimesheetReportByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+	}
 	
 	
 

@@ -585,5 +585,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		return vandorContactList;
 	 
 	}
+
+	@Override
+	public OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+			throws Exception {
+		return orgRelationsDao.getOrgRelationByResponderLocationIdAndLocationId(responderLocationId, locationId);
+	}
 	
 }
