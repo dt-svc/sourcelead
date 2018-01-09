@@ -604,9 +604,17 @@ function getAmchartData(data){
     var colors = ["#7E57C2", "#5C6BC0", "#64B5F6", "#81C784", "#FFB74D", "#FF7043"];
     var i = 0;
     var mainAmcahrt = [];
-    for(var k in data.newAmountList) {
-        mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
+    if(data.newAmountList != null){
+    	 for(var k in data.newAmountList) {
+    	        mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
+    	    }
+    }else{
+    	var result = '';
+    	result = result + '<div class="dataTables_empty center" ></div>';
+    	 $("#top5receivables").empty();
+    	 $("#top5receivables").append(result);
     }
+   
     if(data.othersAmountList != null && data.othersAmountList != '' && data.othersAmountList != 'undefined'){
         for(var k in data.othersAmountList) {
             mainAmcahrt[i] = {"category": k, "column-1": data.othersAmountList[k].toFixed(2), "color": colors[i++] };
