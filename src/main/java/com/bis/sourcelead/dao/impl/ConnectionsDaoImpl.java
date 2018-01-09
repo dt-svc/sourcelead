@@ -148,8 +148,8 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					}
 				}
 				if(userRoleDTOList.size() >= offset){
-					if(userRoleDTOList.size() > offset + 12){
-						userRoleDTOList = userRoleDTOList.subList(offset, (offset+12));
+					if(userRoleDTOList.size() > offset + 18){
+						userRoleDTOList = userRoleDTOList.subList(offset, (offset+18));
 					}else{
 						userRoleDTOList = userRoleDTOList.subList(offset, (  offset + (userRoleDTOList.size() - offset)));
 					}
@@ -257,8 +257,8 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					}
 				}
 				if(userRoleDTOList.size() >= offset){
-					if(userRoleDTOList.size() > offset + 12){
-						userRoleDTOList = userRoleDTOList.subList(offset, (offset+12));
+					if(userRoleDTOList.size() > offset + 18){
+						userRoleDTOList = userRoleDTOList.subList(offset, (offset+18));
 					}else{
 						userRoleDTOList = userRoleDTOList.subList(offset, (  offset + (userRoleDTOList.size() - offset)));
 					}
