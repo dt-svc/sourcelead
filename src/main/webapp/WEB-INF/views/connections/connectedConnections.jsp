@@ -40,6 +40,7 @@
 			</ul>
 			<span><input class="immigraTabSerach" type="text" id="searchFindConnId"></span>
 		</div>
+		<div class="conHeadgap"></div>
 		<div class="conneWrapInn" id="findConnectionListId"></div>
 	<div class="clearfix"></div>
 	<div id="loadMoreDiv"></div> 
@@ -59,7 +60,7 @@ $(document).scroll(function(e){
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	
-    	avilableCount = parseInt(avilableCount) + parseInt(6); 
+    	avilableCount = parseInt(avilableCount) + parseInt(12); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -88,6 +89,7 @@ function eduMsgFadeinFunction(message) {
 	$("#inviteMessage").text(message);
     $('#selector4').delay(1000).fadeOut('slow');
 }
+var count = 0;
 	function getConnectionsList(type){
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
@@ -106,10 +108,10 @@ function eduMsgFadeinFunction(message) {
             success: function(json) {
 	        var result = "";
 	        var flag = false;
-	        if(json.length>0){
-	        	flag = true;
+	        if(json != null && json.length>0){
+	        	count++;
 	        }
-	        if(json.length > 0)
+	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
 	 			for(var i=0; i<json.length; i++){
@@ -140,11 +142,11 @@ function eduMsgFadeinFunction(message) {
             		$('#findConnectionListId').append(result);
             	}
 	 			$("#noOrgsList").val("")
-	   		}else if(type == "scroll" && flag == true){
+	   		}else if(type == "scroll" && result === "" && count > 0){
             	$('#loadMoreDiv').empty();
 	         	result = result + '<div class="loadWrap"> No More Records..</div>';
 	         	$('#loadMoreDiv').append(result);
-            }else if(type === 'manual' && flag == false){
+            }else if(type === 'manual' && result === "" && count == 0){
             	$("#loadMoreDiv").empty(); 
             	$('#findConnectionListId').hide();
 	         	result = result + '<div class="noDate"></div>';
@@ -169,6 +171,19 @@ function getDisconnectConnection(userCode,userName){
          },
 	 });  
     }
+</script>
+<script>
+$(document).ready(function(){
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 50) {
+            $('.conneWrapHead').addClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "44px");
+        } else {
+               $('.conneWrapHead').removeClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "0px");
+        }
+    });
+});
 </script>
 </body>
 </html>
