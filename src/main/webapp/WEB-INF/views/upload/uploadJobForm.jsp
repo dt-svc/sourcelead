@@ -42,7 +42,7 @@
 					<!-- Download File button -->
 					<div class="clearfix mb row">
 						<div class="col-xs-8 col-md-8">
-							<a href="#"
+							<a href="<c:url value='${appPath}/downloadDataImportTemplate'/>"
 								class="btn btn-success btn-block"> <i class="fa fa-download"></i>&nbsp;&nbsp;Download
 								Job Template
 							</a>
