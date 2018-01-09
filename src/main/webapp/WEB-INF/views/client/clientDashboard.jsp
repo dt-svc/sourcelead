@@ -359,7 +359,9 @@ z-index: 1;
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
 		     	  <table id="clientList" class="display" cellspacing="0" width="100%"> </table>
-		     	 <table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
+		     	  <div class="overflow_Auto width100percnt">
+		     	 	<div id="vendorContactList" class="display" cellspacing="0" width="100%"> </div>
+		     	 </div> 
 				</div>
 				<div id="popUp"></div>
 			</div>
