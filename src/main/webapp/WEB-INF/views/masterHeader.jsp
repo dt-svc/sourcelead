@@ -31,7 +31,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
+<title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
 <link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -536,12 +536,15 @@ function preventTabkey(e){
 	          </li>
             </c:if> --%>
             
-            <li class="reportsH">
+             <li class="reportsH">
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
+	        </li>
+            <li class="reportsH">
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadFindConnections'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
-					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
+					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
             <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
@@ -782,7 +785,7 @@ function preventTabkey(e){
   
   <div class="authenticationMask" >
   <div class="signWrapOtp">
-  	<div id="twoStepAuthDiv">
+  	<div id="directtwoStepAuthDiv">
   		<jsp:include page="otpVerification.jsp"></jsp:include>
   	</div>
   </div>
@@ -811,13 +814,14 @@ function preventTabkey(e){
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
 		 type : "GET",
-	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+roleId,        
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
-	    		   $("#twoStepAuthDiv").empty();
-	    		   $("#twoStepAuthDiv").append(data);
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
 	    		   $("#gobackBtn").hide();
 	    		   $(".otpBackNew").show();
+	    		   $("#otpBackNewId").val("switchOtp");
 	    		   $("#resendOTP").attr("style","display:none");
 	    		   $("#sendOTP").attr("style","display:block");
 	    	   }
@@ -830,8 +834,6 @@ function preventTabkey(e){
 	      type : "GET",
 	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
 	       success :function(result) {
-// 	    	   hasLocationAccess = result;
-	    	   
 	    	   if(result == true){
 	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
 	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   

@@ -109,6 +109,7 @@ public class Constants {
 	public static final String ONBOARDING_CONTRACTS = "Contracts";
 	public static final String ONBOARDING_SUPPORTED = "Supported";
 	public static final String MAIL_TEAM_MEMBERS = "Mail To Team Members";
+	public static final String INVITE_CONNECTION_USER = "connectionInvitation";
 	public static final String INVITE_USER = "Invite User";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
 	public static final String INVITE_CLIENT = "Invite Client";
@@ -503,6 +504,14 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	
+	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
+			"Min Experience", "Max Experience", "Rate", "Location", "City",	"State", "Country", "Zip Code",	
+			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", 
+			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Manager", "Approver", "Assign To",
+			"Application Form", "Client Name", "Client Contact Name", "Client Contact Email", "Client Submission Form",
+			"Status"};
+	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
 	public static final String[] STATUS_DROPDOWN = { "Active", "In-Active", "New", "Negotiation",
@@ -841,7 +850,7 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 
-	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home","SystemTaskBillable","SystemTaskNonBillable"};
 	public static final String BIS_CHECKS = "BIS_CHECKS";
 
 
@@ -984,6 +993,8 @@ public class Constants {
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
 	public static final String CLIENT_REPORT = "clientReport";
+	public static final String GENERAL = "General";
+	public static final Long TaskStatusID = 1069L;
 
 
 

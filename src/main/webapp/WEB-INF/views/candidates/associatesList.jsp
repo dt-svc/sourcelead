@@ -896,7 +896,7 @@ function cancel(candidateId){
 										         <option>INR</option>
 								                 <option>AUD</option>
 								                 <option>USD</option>
-								                 <option>GPB</option>
+								                 <option>GBP</option>
 								                 <option>SGD</option>
 								                 <option>EUR</option>
 				                            </select>

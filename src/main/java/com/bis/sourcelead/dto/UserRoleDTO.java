@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.util.Date;
+
 public class UserRoleDTO {
 	private Long id;
 	private String userName;
@@ -15,6 +17,7 @@ public class UserRoleDTO {
 	private String userState;
 	private String orgName;
 	private Long mutualCount;
+	private Date createdDate;
 	
 	
 	public Long getId() {
@@ -100,6 +103,12 @@ public class UserRoleDTO {
 	}
 	public void setMutualCount(Long mutualCount) {
 		this.mutualCount = mutualCount;
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 	
 }
