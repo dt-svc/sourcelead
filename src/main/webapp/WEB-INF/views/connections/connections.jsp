@@ -48,6 +48,7 @@ window.onload = function () {
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" type="text"></span>
 	</div>
+	<div class="conHeadgap"></div>
 	<div class="conneWrapInn" id="findConnectionListId"></div>
 	<div class="clearfix"></div>
 	<div id="loadMoreDiv"></div> 
@@ -64,7 +65,7 @@ $(document).scroll(function(e){
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
-    	avilableCount = parseInt(avilableCount) + parseInt(6); 
+    	avilableCount = parseInt(avilableCount) + parseInt(12); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -104,9 +105,9 @@ $("#searchFindConnId").keydown(function(e) {
 			url : sourceleadUrl+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
             success: function(json) {
 	        var result = "";
-	        if($("#searchFindConnId").val().length !== 0){
+	        /* if($("#searchFindConnId").val().length !== 0){
 				$('#findConnectionListId').empty();
-			}
+			} */
 	        if(json.length>0){
 	        	count++;
 	        }
@@ -155,7 +156,7 @@ $("#searchFindConnId").keydown(function(e) {
 	         	$('#loadMoreDiv').append(result);
             }else if(type === 'manual' && result === "" && count == 0){
             	$("#loadMoreDiv").empty(); 
-            	$('#findConnectionListId').hide();
+            	$('#findConnectionListId').hide(); 
 	         	result = result + '<div class="noDate"></div>';
 	         	$('#loadMoreDiv').append(result);
             }
@@ -174,6 +175,8 @@ function eduMsgFadeinFunction(message) {
 	message = "";
     $('#selector4').delay(200).fadeOut('slow');
 }
+
+
 function getConnection(userCode,userName){
 	 $.ajax({ 
 	    	type : "GET",
@@ -183,8 +186,9 @@ function getConnection(userCode,userName){
     			$("#selector4").css({ display: "block" });
     			$("#connectionState"+userCode).empty();
     			$("#connectionState"+userCode).append('<a href="#" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Withdraw</a>')
-            	/* getConnectionsList("manual"); */
+    			$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
             	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
+    			return false;
          },
 	 });  
     }
@@ -198,9 +202,10 @@ function getWithdrawConnections(userCode,userName){
             	$("#selector4").removeAttr("style");
     			$("#selector4").css({ display: "block" });
     			$("#connectionState"+userCode).empty();
-            	/* getConnectionsList("manual"); */
             	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+            	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
             	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");
+            	return false;
          },
 	 });  
     }
@@ -213,9 +218,9 @@ function ignoreConnection(userCode,userName){
          success: function(json) {
         	$("#selector4").removeAttr("style");
  			$("#selector4").css({ display: "block" });
-         	/* getConnectionsList("manual"); */
          	$("#connectionState"+userCode).empty();
          	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+         	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
          	eduMsgFadeinFunction(userName+"'\s invitation removed");
       },
 	 }); 
@@ -229,8 +234,8 @@ function acceptConnection(userCode,userName){
         	$("#selector4").removeAttr("style");
 			$("#selector4").css({ display: "block" });
 			$("#connectionState"+userCode).empty();
-        	/* getConnectionsList("manual"); */
         	$("#connectionState"+userCode).append('<a href="#" onclick="getDisconnectConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Disconnect</a>');
+        	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
         	eduMsgFadeinFunction("You're connected with "+userName);
      },
 	 }); 
@@ -245,13 +250,28 @@ function getDisconnectConnection(userCode,userName){
             	$("#selector4").removeAttr("style");
     			$("#selector4").css({ display: "block" });
     			$("#connectionState"+userCode).empty();
-            	/* getConnectionsList("manual"); */
             	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+            	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
             	eduMsgFadeinFunction(userName+" removed from your connections");
          },
 	 });  
     }
 </script>
 </section>
+
+<script>
+$(document).ready(function(){
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 50) {
+            $('.conneWrapHead').addClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "44px");
+        } else {
+               $('.conneWrapHead').removeClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "0px");
+        }
+    });
+});
+</script>
+
 <jsp:include page="../masterFooter.jsp" />
  
