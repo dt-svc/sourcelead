@@ -436,15 +436,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 
 						 candidate.setSkillsName(candidateSkills);
 						 
-						 
-//						 for(int i=0; i<skillsList.length; i++){
-//							  CandidateSkills candSkill = new  CandidateSkills();
-//				    		  candSkill.setName(skillsList[i]);
-//				    		  candSkill.setCandidateId(candidate);
-//				    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-//				    		  candSkill.setOrgLocationID(orgLocations);
-//				    		  candidateSkillsService.storeCandidateSkills(candSkill);
-//						 }
+					
 					 }
 					
 					 candidate = candidateDao.storeCandidate(candidate);
