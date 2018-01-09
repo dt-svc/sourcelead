@@ -60,7 +60,7 @@ $(document).scroll(function(e){
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	
-    	avilableCount = parseInt(avilableCount) + parseInt(12); 
+    	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -91,6 +91,8 @@ function eduMsgFadeinFunction(message) {
 }
 var count = 0;
 	function getConnectionsList(type){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -133,7 +135,7 @@ var count = 0;
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Disconnect</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a></div></div></div>';
 	   		    }
 	 			
 	 			if(type == "manual"){
@@ -141,7 +143,7 @@ var count = 0;
             	}else{
             		$('#findConnectionListId').append(result);
             	}
-	 			$("#noOrgsList").val("")
+	 			$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	   		}else if(type == "scroll" && result === "" && count > 0){
             	$('#loadMoreDiv').empty();
 	         	result = result + '<div class="loadWrap"> No More Records..</div>';
@@ -156,21 +158,34 @@ var count = 0;
 	        error: function(e){
 	        }
 	    });  
+	}else {
+		location.href='/login';
 	}
+});
+}
 </script>
 <script>
 function getDisconnectConnection(userCode,userName){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
-            	$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-            	getConnectionsList("manual");
-            	eduMsgFadeinFunction(userName+" removed from your connections");
+	            	$("#selector4").removeAttr("style");
+	    			$("#selector4").css({ display: "block" });
+	            	getConnectionsList("manual");
+	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
+         error: function(e){
+	        }
 	 });  
-    }
+    }else {
+		location.href='/login';
+	}
+});
+}
+
 </script>
 <script>
 $(document).ready(function(){
