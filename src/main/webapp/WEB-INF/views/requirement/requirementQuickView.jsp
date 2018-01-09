@@ -402,7 +402,7 @@
 			            
                     <div class="clearfix"></div>
                     
-                    <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
+                    <div class="require_wrap_details_cta"> <b>Assign to all :</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
 			        <div class="clearfix"></div>			            
                 </div> 							            
            
