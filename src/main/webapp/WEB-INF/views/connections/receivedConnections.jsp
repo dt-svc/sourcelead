@@ -165,12 +165,10 @@ function ignoreConnection(userCode,userName){
 		    	type : "GET",
 				url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
 	         success: function(json) {
-	        	 if(json == "success"){
 		        	 $("#selector4").removeAttr("style");
 		 			$("#selector4").css({ display: "block" });
 		         	getConnectionsList("manual");
 		         	eduMsgFadeinFunction(userName+"'\s invitation removed");
-	        	 }
 	      },error: function(e){
 	        }
 		 }); 
@@ -181,18 +179,17 @@ function ignoreConnection(userCode,userName){
  }
  
 function acceptConnection(userCode,userName){
+	alert(123)
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			 $.ajax({ 
 			    	type : "GET",
 					url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
 		        	success: function(json) {
-		        		if(json == "success"){
 				        	$("#selector4").removeAttr("style");
 							$("#selector4").css({ display: "block" });
 				        	getConnectionsList("manual");
 				        	eduMsgFadeinFunction("You're connected with "+userName);
-		        		 }
 		     		},
 		     		error: function(e){
 			        }

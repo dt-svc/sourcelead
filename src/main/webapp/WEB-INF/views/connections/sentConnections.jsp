@@ -172,12 +172,10 @@ function getConnection(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=withdraw",
             success: function(json) {
-            	if(json == "success"){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	            	getConnectionsList("manual");
 	            	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");
-            	}
          },
          error: function(e){
 	        }

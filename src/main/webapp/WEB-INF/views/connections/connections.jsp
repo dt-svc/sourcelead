@@ -185,14 +185,12 @@ function getConnection(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/addNewConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
             success: function(json) {
-            	if(json == 'success'){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	    			$("#connectionState"+userCode).empty();
 	    			$("#connectionState"+userCode).append('<a href="#" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>')
 	    			$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
 	            	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
-            	}
             },
          error: function(e){
 	        }
@@ -211,14 +209,12 @@ function getWithdrawConnections(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=withdraw",
             success: function(json) {
-            	if(json == 'success'){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	    			$("#connectionState"+userCode).empty();
 	            	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	            	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
 	            	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");
-            	}
          },
          error: function(e){
 	        }
@@ -237,14 +233,12 @@ function ignoreConnection(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
          	success: function(json) {
-        	if(json == 'success'){ 
 	        	$("#selector4").removeAttr("style");
 	 			$("#selector4").css({ display: "block" });
 	         	$("#connectionState"+userCode).empty();
 	         	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	         	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
 	         	eduMsgFadeinFunction(userName+"'\s invitation removed");
-        	}
       },
       error: function(e){
       }
@@ -262,14 +256,12 @@ function acceptConnection(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
         success: function(json) {
-        	if(json == 'success'){ 
 	        	$("#selector4").removeAttr("style");
 				$("#selector4").css({ display: "block" });
 				$("#connectionState"+userCode).empty();
 	        	$("#connectionState"+userCode).append('<a href="#" onclick="getDisconnectConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink red">Disconnect</a>');
 	        	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
 	        	eduMsgFadeinFunction("You're connected with "+userName);
-        	}
      },
      error: function(e){
      }
@@ -288,14 +280,12 @@ function getDisconnectConnection(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
-            	if(json == 'success'){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	    			$("#connectionState"+userCode).empty();
 	            	$("#connectionState"+userCode).append('<a href="#" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	            	$(window).scrollTop($('#connectionState'+userCode).offset().top-450);
 	            	eduMsgFadeinFunction(userName+" removed from your connections");
-            	}
          },
          error: function(e){
 				location.href='/login';

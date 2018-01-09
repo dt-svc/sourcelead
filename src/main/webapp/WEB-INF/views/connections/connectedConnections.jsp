@@ -172,12 +172,10 @@ function getDisconnectConnection(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
-            	if(json == "success"){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	            	getConnectionsList("manual");
 	            	eduMsgFadeinFunction(userName+" removed from your connections");
-            	}
          },
          error: function(e){
 	        }
