@@ -2,8 +2,10 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -18,19 +21,22 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Months;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 
-	public static void main(String[] args){
-	 //System.out.println(CommonUtil.getCombinedHours(8.45f, 8.30f));
-		System.out.println(getStartAndEndDateFromMonthAndYear(1, "2017"));
+	public static void main(String[] args) {
 		
-	 /*Months.monthsBetween(new LocalDate(), new LocalDate());*/
+		Double actualHours = (Double.parseDouble("7.35"))/5;
+		
+		Integer hours = actualHours.intValue();
+		System.out.println(hours);
+		Long actualMinutes = Math.round((actualHours-hours)*60);
+		System.out.println((actualHours-hours)*60);
+		System.out.println(hours.toString()+":"+actualMinutes.toString());
+		
 	}
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
@@ -195,6 +201,35 @@ public  class CalendarUtil {
 	     }
 		return startEndDate;
    }*/
+	
+	public static String getTimesheetHoursDisplayFormat(Float hours2){
+		float cthHours = 0;
+		float cthHoursValue = (int) cthHours;
+		float cthMinutesValue = cthHours - cthHoursValue;
+		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		float wthHours = hours2;
+		float wthHoursValue = (int) wthHours;
+		float wthMinutesValue = wthHours - wthHoursValue;
+		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		float totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+		float actualMinutes = (totalMinutes % 60)/100;
+		
+		final DecimalFormat decimalFormat = new DecimalFormat("00.00");                
+		String actualTimeString = null;
+		if(actualMinutes != 0){
+			actualTimeString = decimalFormat.format((actualHours+actualMinutes));
+		}
+		else{
+			actualTimeString = decimalFormat.format(actualHours+actualMinutes);
+		}
+		
+		return actualTimeString;
+	}
+
 	
 	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
@@ -912,4 +947,36 @@ public  class CalendarUtil {
 		return numberofDays+1;
 
 	}
+	
+	public static int  getNumberOfBillableDates(Date assignDate, Date terminatedDate) {
+	    int count = 0;
+	    Calendar start = Calendar.getInstance();
+	    start.setTime(assignDate);
+	    Calendar end = Calendar.getInstance();
+	    end.setTime(terminatedDate);
+	    end.add(Calendar.DAY_OF_YEAR, 1); //Add 1 day to endDate to make sure endDate is included into the final list
+	    while (start.before(end)) {
+	    	 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
+	    	 String day_Of_Date = simpleDateformat.format(start.getTime());
+	    	 if(!day_Of_Date.equals("Sat") && !day_Of_Date.equals("Sun")) {
+	    		 count++;
+	    	 }
+	        start.add(Calendar.DAY_OF_YEAR, 1);
+	    }
+	    return count;
+	}
+
+ public  List<Date> getListOfDaysBetweenTwoDates(Date assignDate, Date terminatedDate) {
+    List<Date> result = new ArrayList<Date>();
+    Calendar start = Calendar.getInstance();
+    start.setTime(assignDate);
+    Calendar end = Calendar.getInstance();
+    end.setTime(terminatedDate);
+    end.add(Calendar.DAY_OF_YEAR, 1); //Add 1 day to endDate to make sure endDate is included into the final list
+    while (start.before(end)) {
+        result.add(start.getTime());
+        start.add(Calendar.DAY_OF_YEAR, 1);
+    }
+    return result;
+}
 }
