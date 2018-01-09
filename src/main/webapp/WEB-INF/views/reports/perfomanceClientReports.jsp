@@ -104,20 +104,20 @@ $(document).ready(function(){
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
-      <div class="col-md-1">
+<!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
           <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
           <ul class="dropdown-menu clearfix  dropdown-menu-right">
             <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
-            <!--
+           
                         <li role="Print" class="mt5 cursorPointer"><i class="fa fa-print paddingRight"></i>Print</li>
                         <li role="Download" class="mt5 cursorPointer"><i class="fa fa-download paddingRight"></i>Download</li>
                         <li role="Share" class="mt5 mb5 cursorPointer"><i class="fa fa-share-alt paddingRight"></i>Share</li>
--->
+
           </ul>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="GraView">
       <div class="content-area mt">
@@ -604,9 +604,17 @@ function getAmchartData(data){
     var colors = ["#7E57C2", "#5C6BC0", "#64B5F6", "#81C784", "#FFB74D", "#FF7043"];
     var i = 0;
     var mainAmcahrt = [];
-    for(var k in data.newAmountList) {
-        mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
+    if(data.newAmountList != null){
+    	 for(var k in data.newAmountList) {
+    	        mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
+    	    }
+    }else{
+    	var result = '';
+    	result = result + '<div class="dataTables_empty center" ></div>';
+    	 $("#top5receivables").empty();
+    	 $("#top5receivables").append(result);
     }
+   
     if(data.othersAmountList != null && data.othersAmountList != '' && data.othersAmountList != 'undefined'){
         for(var k in data.othersAmountList) {
             mainAmcahrt[i] = {"category": k, "column-1": data.othersAmountList[k].toFixed(2), "color": colors[i++] };
