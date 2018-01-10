@@ -90,9 +90,10 @@ public class TimeToFillRestController {
     	    		  
     	    	  }
     	      }
-    	     
+    	      
     	      Double timeToFillCount = 0d;
     	      if(requirementIds.size() > 0) {
+    	    	  timeToFillDays = (timeToFillDays/offerAcceptedList.size());
     	    	  timeToFillCount = (double) ((double)timeToFillDays/((double)requirementIds.size()));
     	      }else {
     	    	  timeToFillDTO.setFillCount(String.valueOf(timeToFillCount));
