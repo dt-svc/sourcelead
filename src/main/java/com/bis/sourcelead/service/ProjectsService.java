@@ -122,6 +122,8 @@ public interface ProjectsService {
 		
 		ResponseList<ProjectsDTO> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole,Long candidateId) throws Exception;
 		
+		List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
+		
 //		public String getProjectId(OrgLocations orgLocations);
 		
 }
