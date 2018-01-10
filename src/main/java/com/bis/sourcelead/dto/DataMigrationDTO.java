@@ -104,7 +104,7 @@ public class DataMigrationDTO extends CommonDTO {
 	private String totalHours;
 	private String billableHours;
 	private String nonBillableHours;
-	private String weeekComments;
+	private String weekComments;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -233,29 +233,18 @@ public class DataMigrationDTO extends CommonDTO {
 		this.nonBillableHours = nonBillableHours;
 	}
 
-	public String getWeeekComments() {
-		return weeekComments;
-	}
-
-	public void setWeeekComments(String weeekComments) {
-		this.weeekComments = weeekComments;
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/*Timesheets*/
 	
 	
+	public String getWeekComments() {
+		return weekComments;
+	}
+
+	public void setWeekComments(String weekComments) {
+		this.weekComments = weekComments;
+	}
+
 	public String getStaticPath() {
 		return staticPath;
 	}

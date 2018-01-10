@@ -69,7 +69,6 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TimeSheetDayEntries"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
-		logger.info("saved timesheet day entries");
 		return timeSheetDayEntries;
 		
 	}
