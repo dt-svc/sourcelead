@@ -20,6 +20,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 
@@ -945,6 +946,20 @@ public  class CalendarUtil {
 		long diff = date2.getTime() - date1.getTime();
 		long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 		return numberofDays+1;
+		
+		/* long diff = date2.getTime() - date1.getTime();
+		long  numberofDays = 0L;
+		if(DateUtils.isSameDay(date1, date2)) {
+			return numberofDays+1;
+		}else {
+			numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+			if(numberofDays == 0) {
+				return numberofDays+2;
+			}else {
+				return numberofDays+1;
+			}
+		
+		}*/
 
 	}
 	
