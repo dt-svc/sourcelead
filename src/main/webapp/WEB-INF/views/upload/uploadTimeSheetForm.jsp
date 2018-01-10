@@ -33,7 +33,7 @@
 			&raquo; Import Timesheets
 		</div>
 	</section>
-	<div class="content-area clearfix" id="timesheetFileImportDiv">
+	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_timesheet_form" name="upload_timesheet_form" method="post" enctype="multipart/form-data">
 		<div id="loading"></div>
 		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -153,7 +153,7 @@ function fetchFieldsWithMatchedColumn(){
     			type: "POST",
     			url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&timesheetMode="+timesheetMode+"&headerPosition="+headerPosition, 
     		    success: function(data) {
-    		    	$("#timesheetFileImportDiv").attr("style","display:none");
+    		    	$("#dataFileImportDiv").attr("style","display:none");
     		    	$('#dataFieldsDiv').removeAttr("style");
     		    	$('#dataFieldsDiv').append(data);
     		    },

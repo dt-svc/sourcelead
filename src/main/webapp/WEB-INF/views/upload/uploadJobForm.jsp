@@ -33,7 +33,7 @@
 			&raquo; Import Jobs
 		</div>
 	</section>
-	<div class="content-area clearfix" id="jobFileImportDiv">
+	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_job_form" name="upload_job_form" method="post" enctype="multipart/form-data">
 		<div id="loading"></div>
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -118,7 +118,7 @@
 		</div>
 		</form:form>
 	</div>
-	<div id="jobFieldsDiv" style="display: none">
+	<div id="dataFieldsDiv" style="display: none">
 	</div>
 	<%-- <jsp:include page="importJobs.jsp"></jsp:include> --%>
 	
@@ -143,9 +143,9 @@ function fetchFieldsWithMatchedColumn(){
     			type: "POST",
     		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
     		    success: function(data) {
-    		    	$("#jobFileImportDiv").attr("style","display:none");
-    		    	$('#jobFieldsDiv').removeAttr("style");
-    		    	$('#jobFieldsDiv').append(data);
+    		    	$("#dataFileImportDiv").attr("style","display:none");
+    		    	$('#dataFieldsDiv').removeAttr("style");
+    		    	$('#dataFieldsDiv').append(data);
     		    },
     		});
         }
