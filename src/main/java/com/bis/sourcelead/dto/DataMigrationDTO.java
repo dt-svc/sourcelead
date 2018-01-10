@@ -7,6 +7,10 @@ public class DataMigrationDTO extends CommonDTO {
 	private String staticPath;
 	
 	private String uploadType;
+	
+	private String headerPosition;
+	
+	private String timesheetMode;
 
 	private List<FileInfo> fileInfo;
 
@@ -266,6 +270,26 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setUploadType(String uploadType) {
 		this.uploadType = uploadType;
+	}
+
+	public String getHeaderPosition()
+	{
+		return headerPosition;
+	}
+
+	public void setHeaderPosition(String headerPosition)
+	{
+		this.headerPosition = headerPosition;
+	}
+
+	public String getTimesheetMode()
+	{
+		return timesheetMode;
+	}
+
+	public void setTimesheetMode(String timesheetMode)
+	{
+		this.timesheetMode = timesheetMode;
 	}
 
 	public List<FileInfo> getFileInfo() {

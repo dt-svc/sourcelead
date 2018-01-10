@@ -967,6 +967,12 @@ function requirementsFilter(type){
 		var temp = url.substring(0, 1);
 		url+=(url.indexOf("=")>0?"&":"")+"postedOrgName="+postedOrgName.toString().toLowerCase().replace(/ /g ,"-");
 	}
+	
+	if(offset!=undefined && offset!=""){
+// 		var temp = url.substring(0, 1);
+		url+=(url.indexOf("=")>0?"&":"")+"offset="+offset.toString();
+	}
+	
 	window.location.href = url;
 	
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1068,10 +1074,10 @@ function getOpenJobsELKList(orgLocationId){
 		 $("#companiesListDiv").hide();
 // 		 document.getElementById("jobResultHeadId").style.display="block";
 	}
-	var offset = 0;
-	/* if(type == "more"){
-		offset = $("#openJobsOffset").val();
-	} */
+	var offset = '${offset}';
+	if(offset == ''){
+		offset = 0;
+	}
 	
 	
 	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
@@ -1099,7 +1105,7 @@ function getOpenJobsELKList(orgLocationId){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length > 10){
+	    		if(json.length >= 10){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,offset);
@@ -1192,7 +1198,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
 				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
 				result = result +'<div class="clearfix"></div>';
-				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';	
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/app/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';	
 				result = result +'<div class="clearfix"></div>';
 				description =  description+'Posted By :'+requirements.postedOrg+";";
 				}else{
