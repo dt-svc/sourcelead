@@ -512,6 +512,7 @@ function closeCertificatePopup(){
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
 									result = result	+ '<input type="text" max class="form-control input-sm" value="'+json.endYear+'" id="empEditEndDate" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 								}else{
+									result = result	+ '<input type="text" max class="form-control input-sm" value="" id="empEditEndDate" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
 								}
 								result = result + '	                <div><p id="endYearValidation" class="small text-danger" style="display: none"></p>';
 								result = result + '</div>';
