@@ -207,7 +207,6 @@ function filter(){
     	result = result +'     <th>Manager</th>';
     	result = result +'     <th>Invoice Frequency</th>';
     	result = result +'     <th>Budget</th>';
-    	result = result +'     <th>Project Status</th>';
     	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
     	result = result +'      <th>Client</th>';
     	result = result +'       <th>Status</th>';
@@ -267,7 +266,6 @@ function projectsPagination(url,sourceleadUrl){
             { "data": "projectManagers"},
             { "data": "invoiceFrequency" },
             { "data": "budget" },
-            { "data": "projectStatus" },
             { "data": "projectDate" },
             { "data": "client"},
             { "data": "projectStatus"}
@@ -343,14 +341,6 @@ function projectsPagination(url,sourceleadUrl){
 	              }
 		     },{
 		    	  "targets": colIndex++,
-	              "data": "projectMode",
-	              "render": function ( data, type, opt, meta ) {
-	            	    var result = "";
-	            		result = result + '<td><div class="tblminwidth-75">'+opt.projectMode+'</div></td>';
-	            		return result;
-	              }
-		     },{
-		    	  "targets": colIndex++,
 	              "data": "projectDate",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
@@ -389,23 +379,32 @@ function projectsPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result +'<td data-title="Status"><div>';
-	   		    		if(opt.projectStatus == 'INPROGRESS'){
-	  	    			  result = result +'<b class="proj_process">In-Progress</b>';
+	            	  var projectStatus = "";
+	            	  
+	            	  if(opt.projectStatus == 'INPROGRESS'){
+	            		  projectStatus = 'In-Progress';
 	  	    			}
 	   		    		else if(opt.projectStatus == 'COMPLETED'){
-	  	    			  result = result +'<b class="proj_active">Completed</b>';
+	   		    			projectStatus = '<b class="proj_active">Completed</b>';
 	  	    			}
 	   		    		else if(opt.projectStatus == 'ONHOLD'){
-	  	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
+	   		    			projectStatus = '<b class="proj_deactivate">On-Hold</b>';
 	  	    			}
 	   		    		else if(opt.projectStatus == 'NOTSTARTED'){
-	   	    			  result = result +'<b class="proj_deactivate">Not-Started</b>';
+	   		    			projectStatus = '<b class="proj_deactivate">Not-Started</b>';
 	   	    			}
 	   		    		else if(opt.projectStatus == 'DROPPED'){
-	   	    			  result = result +'<b class="proj_deactivate">Dropped</b>';
+	   		    			projectStatus = '<b class="proj_deactivate">Dropped</b>';
 	   	    			}
-	   		    		result = result +'</div></td>';
+	            	  
+	            	   result = result +'<td data-title="Status"><div class="tblminwidth-75">';
+	            	  
+	            	  if(opt.projectMode == 'Draft'){
+	            		  result = result + projectStatus+'<br/>('+opt.projectMode+')';
+	            	  }else{
+	            		  result = result + projectStatus;
+		   		    	  result = result +'</div></td>';
+	            	  }
 	            	  
 	            	  return result;
 	              }
