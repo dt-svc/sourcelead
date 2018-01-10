@@ -538,8 +538,9 @@ public class DataMigrationCommonUtil {
 							}
 						}
 						
+						Pattern patternWeekTotalCheck = Pattern.compile("^\\d{0,3}(\\.\\d{1,2})?$");
 						if (!dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("billableHours").toString());
+							Matcher matcherWeek = patternWeekTotalCheck.matcher(dataMigrationDTOJsonCopy.get("billableHours").toString());
 							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("billableHours").toString()) < 600L)) {
 								dataMigrationDTOJsonCopy.put("billableHours",dataMigrationDTOJsonCopy.get("billableHours").toString());
 							}else {
@@ -549,7 +550,7 @@ public class DataMigrationCommonUtil {
 						
 						
 						if (!dataMigrationDTOJsonCopy.get("nonBillableHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("nonBillableHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("nonBillableHours").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("nonBillableHours").toString());
+							Matcher matcherWeek = patternWeekTotalCheck.matcher(dataMigrationDTOJsonCopy.get("nonBillableHours").toString());
 							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("nonBillableHours").toString()) < 600L)) {
 								dataMigrationDTOJsonCopy.put("nonBillableHours",dataMigrationDTOJsonCopy.get("nonBillableHours").toString());
 							}else {
@@ -559,18 +560,22 @@ public class DataMigrationCommonUtil {
 						
 						
 						if (!dataMigrationDTOJsonCopy.get("totalHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("totalHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("totalHours").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("totalHours").toString());
+							Matcher matcherWeek = patternWeekTotalCheck.matcher(dataMigrationDTOJsonCopy.get("totalHours").toString());
 							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("totalHours").toString()) < 600L)) {
 								dataMigrationDTOJsonCopy.put("totalHours",dataMigrationDTOJsonCopy.get("totalHours").toString());
 							}else {
 								errorSet.put("totalHours", "totalHours hours cannot be more then 600Hrs");
 							}
 						}
+						if (!dataMigrationDTOJsonCopy.get("weekComments").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("weekComments").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("weekComments").toString().equalsIgnoreCase("undefined")) {
+								dataMigrationDTOJsonCopy.put("weekComments",dataMigrationDTOJsonCopy.get("weekComments").toString());
+						}
+						
+						
 					
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				//}
 					if(errorSet.isEmpty()) {
 						
 						ImportTimesheetDTO importTimeSheet =  new ImportTimesheetDTO();
@@ -630,7 +635,8 @@ public class DataMigrationCommonUtil {
 												    			   frequencyEndDate = value;
 												    		   }
 												    		   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours);
-												    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate);
+												    		   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+												    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet);
 												    		   
 												    		  count++;
 														}
@@ -661,7 +667,7 @@ public class DataMigrationCommonUtil {
 			}
 			
 
-		private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUID,ProjectMembers projectMember, Date actualStartDate, Date actualEndDate, float averageHours, User loginUser, OrgLocations orgLocation, Date frequencyStartDate, Date frequencyEndDate) throws Exception {
+		private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUID,ProjectMembers projectMember, Date actualStartDate, Date actualEndDate, float averageHours, User loginUser, OrgLocations orgLocation, Date frequencyStartDate, Date frequencyEndDate, ImportTimesheetDTO importTimeSheet) throws Exception {
 			 TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 		 	if(timesheetSubmissions == null){
 		 		timesheetSubmissions =  new TimesheetSubmissions();
@@ -819,7 +825,7 @@ public class DataMigrationCommonUtil {
 		         	billableStartWithZero ="0";	
 		         	String actualBillableTimeString =  actualBillableHours+"."+billableStartWithZero+actualBillableMinutes;
 					timesheetSubmissions.setBillableHours(actualBillableTimeString);
-					
+					timesheetSubmissions.setWeekcomments(importTimeSheet.getWeekComments());
 					/**
 					 * Non-Billable Hours Calculation
 					 */
@@ -1015,7 +1021,7 @@ public class DataMigrationCommonUtil {
 			return res4;
 		}	
 			private static double getMinutes(double val) {
-			return Math.round(((Math.floor(val) * 60) + ((val-Math.floor(val)) * 100)));
+			return Math.ceil(((Math.floor(val) * 60) + ((val-Math.floor(val)) * 100)));
 		}
 
 			private static double getMinutes1(double val) {
