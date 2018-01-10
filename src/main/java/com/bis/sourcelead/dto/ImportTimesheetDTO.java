@@ -25,6 +25,7 @@ public class ImportTimesheetDTO {
 	private String week3;
 	private String week4;
 	private String week5;
+	private String weekComments;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -140,5 +141,12 @@ public class ImportTimesheetDTO {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
+	public String getWeekComments() {
+		return weekComments;
+	}
+	public void setWeekComments(String weekComments) {
+		this.weekComments = weekComments;
+	}
+	
 	
 }

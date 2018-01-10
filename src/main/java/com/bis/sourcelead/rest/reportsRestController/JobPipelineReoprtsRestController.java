@@ -187,9 +187,11 @@ public class JobPipelineReoprtsRestController {
 							if("submission".equalsIgnoreCase(rsh.getToStage())){
 								applicantsCount++;
 								applicantCreatedDate= rsh.getCreatedDate();
-							} if("shortList".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade"))|| (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("interview"))){
+							} if("shortList".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade"))|| 
+									(rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("interview"))){
 								shortlistedCount++;
-								if((rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade"))|| (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("interview"))) {
+								if((rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade"))|| (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("interview")) 
+										|| (rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("interview"))) {
 									shortlistCreatedDate = createdDatesMap.get("SUBMISSION");
 								}else {
 									shortlistCreatedDate = rsh.getCreatedDate();
@@ -375,7 +377,7 @@ public class JobPipelineReoprtsRestController {
 		    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum)*100));
 		    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum)*100));
 		    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum)*100));
-		    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum)*100));
+		    	report.setOfferedMove(Math.round((((double)offeredSum/(double)interviewsSum)*100)/offeredSum));
 		    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum)*100));
 		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum)*100));
 		    	

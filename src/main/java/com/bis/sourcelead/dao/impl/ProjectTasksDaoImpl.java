@@ -451,4 +451,20 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		return response;
 		
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId, String taskName)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks projectsTasks left join fetch projectsTasks.projectId where projectsTasks.projectId =:projectId and projectsTasks.taskName =:taskName";
+		List<ProjectTasks> projectTasksList =session.createQuery(query) .setString("taskName", taskName).setLong("projectId", projectId).setCacheable(true).list();
+		ProjectTasks projectTasks = null;
+		if(projectTasksList != null && !projectTasksList.isEmpty())
+		{
+			projectTasks = (ProjectTasks) projectTasksList.iterator().next();
+		}
+		return projectTasks;
+	}
 }
