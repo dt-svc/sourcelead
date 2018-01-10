@@ -515,7 +515,7 @@ function preventTabkey(e){
               </div>
             </div>
             <ul class="list-unstyled">
-              <li><a href="<c:url value='${appPath}/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              <li><a href="<c:url value='${appPath}/professionalProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
               <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
             </ul>
           </div>
@@ -683,6 +683,9 @@ function preventTabkey(e){
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
+	                     
+	                      <li><a href="<c:url value="/app/userProfile" />"><i class="fa fa-user-circle" aria-hidden="true"></i>Account Settings</a></li>
+	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
