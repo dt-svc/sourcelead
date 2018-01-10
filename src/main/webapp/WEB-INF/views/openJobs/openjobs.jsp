@@ -833,7 +833,7 @@ a.alertBtn {
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+            <b>Â© 2016 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
@@ -1107,7 +1107,8 @@ function getOpenJobsELKList(orgLocationId){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json[0].noOfSearchHits < (offset + 10)){
+				var newOffset = parseInt(offset) + 10;
+	    		if(json[0].noOfSearchHits < newOffset){
 	    			$("#loadMoreReq").css("display", "none");
 	    		}else{
 	    			$("#loadMoreReq").css("display", "block");
