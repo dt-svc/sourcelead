@@ -584,7 +584,7 @@ public class Projects implements Serializable{
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = null;
-			if(StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
 				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
 			}
 			else{
@@ -595,7 +595,7 @@ public class Projects implements Serializable{
 		return startDateStr;
 	}
 
-	public void setStartDateStr(String startDateStr) {
+	public void setStartDateStr(String startDateStr) { 
 		this.startDateStr = startDateStr;
 	}
 

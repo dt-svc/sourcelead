@@ -33,6 +33,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,6 +178,8 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectTasksDao tasksDao;
+	
+	
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -1539,13 +1543,104 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					
 					if(jsonObj.has("email") && jsonObj.getString("email") !=null){
 						candidate.setEmail(jsonObj.getString("email"));
-					}else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null){
+					}else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") != null && !jsonObj.getString("EmailId").isEmpty()){
 						candidate.setEmail(jsonObj.getString("EmailId"));
 					}
 					
-					if(jsonObj.has("country") && jsonObj.getString("country") !=null){
-						candidate.setCountry(jsonObj.getString("country"));
+					if(jsonObj.has("location") && jsonObj.getString("location") != null && !jsonObj.getString("location").isEmpty()){
+			        	candidate.setLocation(jsonObj.getString("location"));
 					}
+						
+			        if(jsonObj.has("country") && jsonObj.getString("country") != null && !jsonObj.getString("country").isEmpty()){
+			        	candidate.setCountry(jsonObj.getString("country"));
+					}
+					 
+					if(jsonObj.has("state") && jsonObj.getString("state") != null && !jsonObj.getString("state").isEmpty()){
+						 candidate.setState(jsonObj.getString("state"));
+					}
+					 
+					if(jsonObj.has("city") && jsonObj.getString("city") != null && !jsonObj.getString("city").isEmpty()){
+						 candidate.setCity(jsonObj.getString("city"));
+					}
+					
+					 if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") != null && !jsonObj.getString("zipcode").isEmpty()){
+				        	candidate.setZipCode(jsonObj.getString("zipcode"));
+					}
+					 
+					 if(jsonObj.has("PhoneNumber") && jsonObj.getString("PhoneNumber") != null && !jsonObj.getString("PhoneNumber").isEmpty()){
+						 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+					}
+					
+					if(jsonObj.has("AlternateNumber") && jsonObj.getString("AlternateNumber") != null && !jsonObj.getString("AlternateNumber").isEmpty()){
+						 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+					}
+					
+					
+					if(jsonObj.has("currentCTCRateType") && jsonObj.getString("currentCTCRateType") != null && !jsonObj.getString("currentCTCRateType").isEmpty()){
+						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+					}
+					
+					if(jsonObj.has("CurrentCTC") && jsonObj.getString("CurrentCTC") != null && !jsonObj.getString("CurrentCTC").isEmpty()){
+						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
+					}
+					
+					if(jsonObj.has("currentCTCRatePer") && jsonObj.getString("currentCTCRatePer") != null && !jsonObj.getString("currentCTCRatePer").isEmpty()){
+						 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+					}
+					
+					if(jsonObj.has("expectedCTCRateType") && jsonObj.getString("expectedCTCRateType") != null && !jsonObj.getString("expectedCTCRateType").isEmpty()){
+						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+						 
+					}
+					 
+					if(jsonObj.has("ExpectedCTC") && jsonObj.getString("ExpectedCTC") != null && !jsonObj.getString("ExpectedCTC").isEmpty()){
+						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+						 
+					}
+					
+					if(jsonObj.has("expectedCTCRatePer") && jsonObj.getString("expectedCTCRatePer") != null && !jsonObj.getString("expectedCTCRatePer").isEmpty()){
+						 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+					}
+					
+					if(jsonObj.has("NoticePeriod") && jsonObj.getString("NoticePeriod") != null && !jsonObj.getString("NoticePeriod").isEmpty()){
+						 candidate.setNoticePeriod(jsonObj.getString("NoticePeriod"));
+						 
+					}
+					
+					if(jsonObj.has("Designation") && jsonObj.getString("Designation") != null && !jsonObj.getString("Designation").isEmpty()){
+						candidate.setDesignation(jsonObj.getString("Designation"));
+					}
+					 if(jsonObj.has("WorkExperience") && jsonObj.getString("WorkExperience") != null && !jsonObj.getString("WorkExperience").isEmpty()){
+						 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+					 }
+					 
+					 if(jsonObj.has("monthExp") && jsonObj.getString("monthExp") != null && !jsonObj.getString("monthExp").isEmpty()){
+						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
+					 }
+					 
+					 candidate.setDesignationType("Full Time");
+					
+					if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null && !jsonObj.getString("primarySkill").isEmpty()){
+						 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+					}
+					 
+					 if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") != null && !jsonObj.getString("candidateSkills").isEmpty()){
+						  
+						 String candidateSkills = null;
+							try{
+					    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+					    		   candidateSkills = jsonArray.toString();
+					    	  }
+					    	  catch(JSONException e){
+					    		  candidateSkills= jsonObj.getString("candidateSkills");
+					    	  }
+							candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+							
+						 
+						 candidate.setSkillsName(candidateSkills);
+						 
+					
+					 }
 				
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setStatus(1);
