@@ -736,7 +736,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-							candidateDTO.getStart(), candidateDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+							0, 100, tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
 			
 			SearchHit searchHits[] = searchResponse.getHits().getHits();
 			
