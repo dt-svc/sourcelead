@@ -184,7 +184,7 @@ function closeCertificatePopup(){
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                 <div class="col-md-6">';
-		result = result	+ '	                   <select class="newSelect"  name="startMonth" id="startMonth" onClick="" onChange="monthIfYearRequired();">';
+		result = result	+ '	                   <select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">';
 		result = result	+ '	                       <option value="">Select Month</option>';
 		result = result	+ ' 					   <option value="1&January">January</option>';
 		result = result	+ '	                       <option value="2&February">February</option>';
@@ -351,7 +351,8 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result + '	                 <p class="ml">Start Date</p>';
 								result = result	+ '	                 <div class="col-md-6">';
-								result = result	+ '	                   <select class="newSelect"  value="'+json.startMonth+'" name="startMonth" id="startMonth" onchange="monthIfYearRequired();">';
+								result = result	+ '	                   <select class="newSelect" name="startMonth" id="startMonth" onchange="monthIfYearRequired();">';
+								result = result	+ '	                       <option value="">Select Month</option>';
 								if (json.startMonth == "January") {
 									result = result + ' <option '+ (json.startMonth == "January" ? "selected" : '') +' value="January">January</option>';
 								} else {
