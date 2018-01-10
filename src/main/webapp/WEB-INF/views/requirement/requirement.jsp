@@ -77,7 +77,7 @@ $(document).ready(function() {
  <script>
 		$(document).ready(function() {
 			document.getElementById("requirement_form").reset();
-			getIsClientVal();
+			
 			var requirementStatus = '${requirement.requirementSubmissionStatus}';
 			if(requirementStatus == "OPEN" ||  requirementStatus == "ONHOLD"){
 				$(function() {
@@ -184,8 +184,7 @@ $(document).ready(function () {
 				 $("#apprverReq").prop('checked', false); 
 			}
 	}
-    
-    
+	getIsClientVal();
 });    
 </script>
     
