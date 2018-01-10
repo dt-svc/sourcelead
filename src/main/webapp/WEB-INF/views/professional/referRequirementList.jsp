@@ -908,7 +908,7 @@ function getContactsGroupList(){
 	                    	 result = result +"<tr id='deleteGroup"+opt.id+"'>";
 				             
 				             if(opt.groupName != null && opt.groupName != '' && opt.groupName != 'undefined'){
-				             result = result +"<td><div class='tbldata-dotdot-sm'>"+opt.groupName+"</div></td>";
+				             result = result +"<td><div class='tbldata-dotdot-sm' title='"+opt.groupName+"'>"+opt.groupName+"</div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
