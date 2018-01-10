@@ -149,25 +149,25 @@ public class FinanceDaoImpl implements FinanceDao{
 			    		   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			    		   AparagingDate aparagingdate = new AparagingDate();
 			    		   Date dueDate = sdf.parse(sdf.format(invoice.getDueDate()));
-			    		   if(dueDate.after(tenDays[0]) && dueDate.before(tenDays[1])) {
-			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getTotal());
+			    		   if((dueDate.after(tenDays[0]) || dueDate.equals(tenDays[0])) && (dueDate.before(tenDays[1]) || dueDate.equals(tenDays[1]))) {
+			    			   tenDaysTotal = tenDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }
-			    		   if(dueDate.after(fifteenDays[0]) && dueDate.before(fifteenDays[1])) {
+			    		   if((dueDate.after(fifteenDays[0]) || dueDate.equals(fifteenDays[0])) && (dueDate.before(fifteenDays[1]) || dueDate.equals(fifteenDays[1]))) {
 			    			   fifteenDaysTotal = fifteenDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }
-			    		   if(dueDate.after(thirtyDays[0]) && dueDate.before(thirtyDays[1])) {
+			    		   if((dueDate.after(thirtyDays[0]) || dueDate.equals(thirtyDays[0])) && (dueDate.before(thirtyDays[1]) || dueDate.equals(thirtyDays[1]))) {
 			    			   thirtyDaysTotal = thirtyDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }
-			    		   if(dueDate.after(sixtyDays[0]) && dueDate.before(sixtyDays[1])) {
+			    		   if((dueDate.after(sixtyDays[0]) || dueDate.equals(sixtyDays[0])) && (dueDate.before(sixtyDays[1]) || dueDate.equals(sixtyDays[1]))) {
 			    			   sixtyDaysTotal = sixtyDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }
-			    		   if(dueDate.after(nintyDays[0]) && dueDate.before(nintyDays[1])) {
+			    		   if((dueDate.after(nintyDays[0]) || dueDate.equals(nintyDays[0])) && (dueDate.before(nintyDays[1]) || dueDate.equals(nintyDays[1]))) {
 			    			   nintyDaysTotal = nintyDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }
-			    		   if(dueDate.after(oneEightyDays[0]) && dueDate.before(oneEightyDays[1])) {
+			    		   if((dueDate.after(oneEightyDays[0]) || dueDate.equals(oneEightyDays[0])) && (dueDate.before(oneEightyDays[1]) || dueDate.equals(oneEightyDays[1]))) {
 			    			   oneEightyDaysTotal = oneEightyDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }
-			    		   if(dueDate.after(threeSictyDays[0]) && dueDate.before(threeSictyDays[1])) {
+			    		   if((dueDate.after(threeSictyDays[0]) || dueDate.equals(threeSictyDays[0])) && (dueDate.before(threeSictyDays[1]) || dueDate.equals(threeSictyDays[1]))) {
 			    			   threeSixtyDaysTotal = threeSixtyDaysTotal + Double.parseDouble(invoice.getDueAmount());
 			    		   }if(dueDate.before(above365Days)) {
 			    			   abovethreeSixtyFiveDaysToatl = abovethreeSixtyFiveDaysToatl +  Double.parseDouble(invoice.getDueAmount());
