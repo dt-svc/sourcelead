@@ -236,7 +236,7 @@ public class ConnectionsRestController {
 		emailMessage.setFirstName(toUser.getFirstName());
 		emailMessage.setLastName(toUser.getLastName());
 		emailMessage.setToEmail(toUser.getEmail());
-		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setFromEmail("donotreply@sourcelead.com");
 		emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		// emailMessage.setOrgLocationId(locationId);
@@ -283,11 +283,11 @@ public class ConnectionsRestController {
 	public StringBuilder sendEmailToInvitationUserTable(User loginUser, User toUser, OrgLocations locations) throws Exception
 	{
 		StringBuilder tempHTML = new StringBuilder();
-		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(toUser.getId(), locations.getId());
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), locations.getId());
 		String imageUrl = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
 		StringBuilder loginBuilder12 = new StringBuilder();
-		if(toUser.getFileUrl() != null){
-			loginBuilder12.append("<img src='" + imageUrl + "" + toUser.getFileUrl() + "' style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
+		if(loginUser.getFileUrl() != null){
+			loginBuilder12.append("<img src='" + imageUrl + "" + loginUser.getFileUrl() + "' style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
 		}else{
 			loginBuilder12.append("<img src='"+imageUrl+"/resources/images/userprofileImg.jpg'  style='width: 60px; height: 60px; border-radius: 50%;'>").toString();
 		}
@@ -297,7 +297,7 @@ public class ConnectionsRestController {
 		tempHTML.append(loginBuilder12.toString());
 		tempHTML.append("		</div>");
 		tempHTML.append("		<div style='width:350px; float: left; padding: 0px 0px;'>");
-		tempHTML.append("			<p style='padding: 0px 0px 3px; margin: 0px 0px; font-size: 14px; font-weight: 600; color: #454545;'>").append(toUser.getFullName()).append("</p>");
+		tempHTML.append("			<p style='padding: 0px 0px 3px; margin: 0px 0px; font-size: 14px; font-weight: 600; color: #454545;'>").append(loginUser.getFullName()).append("</p>");
 		tempHTML.append("			<p style='padding: 0px 0px 3px; margin: 0px 0px; font-size: 13px; font-weight: 500; color: #666;'>").append(userRole.getUserType()).append(" at ").append(locations.getOrgLocationName()
 				+ "</span></p>");
 		// tempHTML.append(" <p style='padding: 0px 0px 3px; margin: 0px 0px;

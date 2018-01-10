@@ -266,7 +266,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
     <div class="pull-left">
-      <h2><a href="#" id="contactsListId">Contacts List</a></h2>
+      <h2>Contacts List</h2>
       </div> 
     <div class="pull-right brud-crum" id="contactsListUrl"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
@@ -465,7 +465,7 @@ function refercontactList(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix">';
-  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+  		result = result +'<table id="example" class="display" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result +'<th><input type="checkbox" id="checkReferContacts" onclick="toggleContactsGroup(this);"></th>';

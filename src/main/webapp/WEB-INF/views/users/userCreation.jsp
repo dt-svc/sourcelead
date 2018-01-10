@@ -294,7 +294,7 @@
 		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isMailSent" checked="checked">
-		                    Send Mail to User</label>
+		                    Send Mail to Associate</label>
 		                </div>
 		                 </div>
                </div>

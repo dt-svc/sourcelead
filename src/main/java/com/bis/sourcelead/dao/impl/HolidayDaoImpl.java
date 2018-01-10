@@ -48,7 +48,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	public List<Holiday> getAllHolidaysList(Long id) {
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status";
+		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status ORDER BY holiday.fromDate ASC";
 		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
 		return holidayList;
 	}
@@ -62,7 +62,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 //		java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
 //		java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
 	
-		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"'";
+		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"')";
 		//String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
 		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
 		return holidayList;

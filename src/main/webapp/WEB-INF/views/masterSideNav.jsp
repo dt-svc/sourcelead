@@ -359,4 +359,19 @@
 
  
   </aside>
-  <!-- Side Nav Bar --> 
+  <!-- Side Nav Bar -->
+  
+  <script>
+$(function(){
+	resizeFunction();
+});
+function resizeFunction() {
+	var sidenavHeight = $(window).innerHeight();
+	$(".sidenav_inner").height(sidenavHeight-75);
+}
+$(window).resize(function(){
+	resizeFunction();
+});
+</script>
+  
+  

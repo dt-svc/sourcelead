@@ -350,6 +350,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        	   }
 					        	  
 	                            	
+					           }else {
+						        	   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+				        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
+				        			   requirementSubmissionHistory.setCreatedBy(loginUser.getUserCode());
+				       				   requirementSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
+				        			   requirementSubmissionHistory.setSubmissionId(requirementSubmission);
+				        			   requirementSubmissionHistory.setCreatedDate(new Date());
+				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
+				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					           }
 					           
 					           /*if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES) ){
