@@ -87,7 +87,9 @@ display: block !important;
 	.exprience .select-field select{
 	background-position: 96% center !important;
 	}
-	
 	.require_wrap_details{
 	text-align:left;
+	}
+	.ratetype-right p.jquery_form_error_message {
+	bottom: -14px; left: -30px !important; position: absolute;	
 	}
