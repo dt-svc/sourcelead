@@ -119,13 +119,13 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" readonly="readonly" field-name="Address" placeholde="Address" data-validation="required">';
-							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
+							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" readonly="readonly"  field-name="Address" placeholde="Address" data-validation="required">';
+// 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta" id="errCountryMsg">';
 							result = result + '<label>Country</label>';
-							result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+							result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" disabled onchange="changeCountry();">';
 							result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
 							result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
 							result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
@@ -251,8 +251,8 @@
 						$("#editVendorDetailsDiv").empty();
 				        $("#editVendorDetailsDiv").append(result);
 				        if(json.orgType == 'Company'){
-				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite','addressId');
-				        	zipcodeMask(country,'existingZipCode');
+// 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite','addressId');
+// 				        	zipcodeMask(country,'existingZipCode');
 				        }else{
 				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite','addressId');	
 				        	zipcodeMask(country,'clientZipCode');
