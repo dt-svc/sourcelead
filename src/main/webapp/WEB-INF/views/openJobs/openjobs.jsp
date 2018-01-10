@@ -1107,8 +1107,6 @@ function getOpenJobsELKList(orgLocationId){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-				alert("json[0].noOfSearchHits "+json[0].noOfSearchHits)	   
-				alert("offset "+(offset+10))	
 	    		if(json[0].noOfSearchHits < (offset + 10)){
 	    			$("#loadMoreReq").css("display", "none");
 	    		}else{
