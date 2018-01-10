@@ -8,7 +8,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Emp Id</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="employeeId" field-name="Emp Id">
+		<select class="chosen-select form-control" name="employeeId" field-name="Emp Id">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -21,7 +21,7 @@
 	<label class="col-md-4 text-right mt5">Emp Name<span
 		class="text-danger paddingLeft">*</span></label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="employeeName" field-name="Emp Name" data-validation="required">
+		<select class="chosen-select form-control" name="employeeName" field-name="Emp Name" data-validation="required">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -34,7 +34,7 @@
 	<label class="col-md-4 text-right mt5">Email<span
 		class="text-danger paddingLeft">*</span></label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="employeeEmail" field-name="Email" data-validation="required">
+		<select class="chosen-select form-control" name="employeeEmail" field-name="Email" data-validation="required">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -46,7 +46,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Project</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="project" field-name="Project">
+		<select class="chosen-select form-control" name="project" field-name="Project">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -58,7 +58,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Client</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="clientName" field-name="Client">
+		<select class="chosen-select form-control" name="clientName" field-name="Client">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -71,7 +71,7 @@
 	<label class="col-md-4 text-right mt5">Month-Year<span
 		class="text-danger paddingLeft">*</span></label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="actualStartDate" field-name="Start Date" data-validation="required">
+		<select class="chosen-select form-control" name="actualStartDate" field-name="Start Date" data-validation="required">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -97,7 +97,7 @@
 	<div class="form-group">
 		<label class="col-md-4 text-right mt5">${field.labelName}</label>
 		<div class="col-md-8 dropdown-select">
-			<select class="form-control" name="${field.labelName}" field-name="${field.labelName}">
+			<select class="chosen-select form-control" name="${field.labelName}" field-name="${field.labelName}">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -110,7 +110,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Total Hrs</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="totalHours" field-name="Total Hrs">
+		<select class="chosen-select form-control" name="totalHours" field-name="Total Hrs">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -122,7 +122,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Billable Hrs</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="billableHours" field-name="Billable Hrs">
+		<select class="chosen-select form-control" name="billableHours" field-name="Billable Hrs">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -134,7 +134,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Non Billable Hrs</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="nnnBillableHours" field-name="Non Billable Hrs">
+		<select class="chosen-select form-control" name="nnnBillableHours" field-name="Non Billable Hrs">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -147,7 +147,7 @@
 	<label class="col-md-4 text-right mt5">Status<span
 		class="text-danger paddingLeft">*</span></label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="submissionStatus" field-name="Status" data-validation="required">
+		<select class="chosen-select form-control" name="submissionStatus" field-name="Status" data-validation="required">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -159,7 +159,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Comment</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="form-control" name="weekComments" field-name="Comment">
+		<select class="chosen-select form-control" name="weekComments" field-name="Comment">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>

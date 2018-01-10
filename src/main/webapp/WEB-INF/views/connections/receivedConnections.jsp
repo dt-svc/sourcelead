@@ -179,7 +179,6 @@ function ignoreConnection(userCode,userName){
  }
  
 function acceptConnection(userCode,userName){
-	alert(123)
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			 $.ajax({ 

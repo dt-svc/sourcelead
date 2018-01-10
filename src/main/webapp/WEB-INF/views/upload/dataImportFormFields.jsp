@@ -1,20 +1,8 @@
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-	
-<script type="text/javascript">
-    var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
- </script>
 
 <c:forEach var="field" items="${fields}">
 	<div class="form-group">
