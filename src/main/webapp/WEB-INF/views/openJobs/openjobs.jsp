@@ -1077,6 +1077,8 @@ function getOpenJobsELKList(orgLocationId){
 	var offset = '${offset}';
 	if(offset == ''){
 		offset = 0;
+	}else{
+		$("#openJobsOffset").val(offset)
 	}
 	
 	
@@ -1105,7 +1107,11 @@ function getOpenJobsELKList(orgLocationId){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length >= 10){
+				alert("json[0].noOfSearchHits "+json[0].noOfSearchHits)	   
+				alert("offset "+(offset+10))	
+	    		if(json[0].noOfSearchHits < (offset + 10)){
+	    			$("#loadMoreReq").css("display", "none");
+	    		}else{
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,offset);
