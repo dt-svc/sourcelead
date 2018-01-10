@@ -1133,6 +1133,16 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 		return projects;
 	}
+
+	@Override
+	@Transactional
+	public List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,
+			String projectClientUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.uuid <> :uuid ) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setString("uuid", projectClientUUID).setCacheable(true).list();
+		return projectsList;
+	}
 	
 	
 	 
