@@ -786,7 +786,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
              PdfPTable table = new PdfPTable(headers.length);
             com.itextpdf.text.Font font = new com.itextpdf.text.Font(FontFamily.HELVETICA, 14, com.itextpdf.text.Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
-	        cell1.setColspan(12);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
 	        
@@ -1102,8 +1102,16 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	// creating excel sheet data here depending upon input frequency.
 	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,OrgLocations loginOrg, ProjectMembers projectMember) throws Exception {
 		Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
-		if (projectMember.getProjectMemberCandidteId().getFirstName() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getFirstName())) {
-			writeRow.createCell(0).setCellValue(projectMember.getProjectMemberCandidteId().getFirstName());
+		
+		StringBuilder fullname=	new StringBuilder();
+        if(projectMember.getProjectMemberCandidteId().getLastName() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getLastName()))
+        {
+    	   writeRow.createCell(0).setCellValue(fullname.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
+			createExcelsheet.setColumnWidth(0, 10000);
+        }
+		else
+    	   {
+    	   writeRow.createCell(0).setCellValue(projectMember.getProjectMemberCandidteId().getFirstName());
 			createExcelsheet.setColumnWidth(0, 10000);
 		}
 		if (projectMember.getProjectMemberCandidteId().getEmail() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getEmail())) {

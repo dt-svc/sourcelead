@@ -154,12 +154,11 @@ function getTimeToFillChart(){
 		        			    	date: timeToFill.month,
 		        					column1: timeToFill.fillCount,
 		        			    } );
-		        			    
-		        			     if(timeToFill.monthStr == "Jan" || timeToFill.monthStr == "Feb" || timeToFill.monthStr == "Mar") {
+		        			     if(timeToFill.monthStr == "January" || timeToFill.monthStr == "February" || timeToFill.monthStr == "March") {
 		        	    	    	  quarter1 = parseFloat(quarter1)+parseFloat(timeToFill.fillCountValue);
-		        	    	      }else if(timeToFill.monthStr == "Apr" || timeToFill.monthStr == "May" || timeToFill.monthStr == "Jun") {
+		        	    	      }else if(timeToFill.monthStr == "Apirl" || timeToFill.monthStr == "May" || timeToFill.monthStr == "June") {
 		        	    	    	  quarter2 = parseFloat(quarter2)+parseFloat(timeToFill.fillCountValue);
-		        	    	      }else if(timeToFill.monthStr == "Jul" || timeToFill.monthStr == "Aug" || timeToFill.monthStr == "Sep") {
+		        	    	      }else if(timeToFill.monthStr == "July" || timeToFill.monthStr == "August" || timeToFill.monthStr == "September") {
 		        	    	    	  quarter3 = parseFloat(quarter3)+parseFloat(timeToFill.fillCountValue);
 		        	    	      }else {
 		        	    	    	  quarter4 = parseFloat(quarter4)+parseFloat(timeToFill.fillCountValue);
@@ -167,6 +166,7 @@ function getTimeToFillChart(){
 		        			  }
 		        	
 		        		 loadTimeToFillChart(chartData);
+		        		 
 		        		 
 		        		 if(year != null && year != '' && year != 'undefined'){
 		        			 $("#yearchart").html(year); 
