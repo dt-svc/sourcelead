@@ -826,7 +826,11 @@ public class RequirementListRestController {
 						requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
 					}
 					if (requirementSubmission.getCreatedDate() != null) {
-						String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
+						
+						requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getCreatedDate()));
+						//commented by Laxman
+						//add applicant created date is wrong
+						/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
 						if (null != timezone && null != timezone.getTimeZoneId()) {
 							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -836,17 +840,20 @@ public class RequirementListRestController {
 							SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 							String time = localDateFormat.format(converteDate);
 							requirementSubmission.setCreatedTimeStr(time);
-						}
+						}*/
 					}
 					if (requirementSubmission.getUpdatedDate() != null) {
-						String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
+						requirementSubmission.setUpDatedStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getUpdatedDate()));
+					   //commented by Laxman
+						//add applicant updated date is wrong
+						/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
 						if (null != timezone && null != timezone.getTimeZoneId()) {
 							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 							currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
 							requirementSubmission.setUpDatedStr(currentDateInTimezone);
-						}
+						}*/
 					}
 					//submissionList.add(requirementSubmission);
 				}

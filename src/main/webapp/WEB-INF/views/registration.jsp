@@ -122,7 +122,7 @@ window.onload = function () {
 				    <form:form class="login-form clearfix"  id="popprofessionalRegistration_form"  name="popprofessionalRegistration_form" method="post" >
 				    <div class="col-md-3">
 						<div class="userImg">
-					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
+					      <img src="https://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
 					   </div>
 				    </div>
 		            <div class="col-md-9">
@@ -204,7 +204,7 @@ window.onload = function () {
 		      <form:form class="login-form clearfix"  id="poprecruiterRegistration_form"  name="poprecruiterRegistration_form" method="post" >
 				     <div class="col-md-3">
 						<div class="userImg">
-					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popRecruiterprofileimage">
+					      <img src="https://socialinviter.com/assets/img/icons/avator.JPG" id="popRecruiterprofileimage">
 					   </div>
 				    </div>   
 		            <div class="col-md-9">
@@ -452,7 +452,7 @@ window.onload = function () {
                     <b></b>
                 </div>
                 
-                <div id="pwdDiv">
+                <div id="recpwdDiv">
                 <div class="col-xs-12 col-md-12 mb10">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
@@ -807,11 +807,11 @@ function validateRecruiterEmail(type){
 					     if(data == 'Invalid'){
 					    	    $('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    
-					    	    $('#pwdDiv').attr("style" , "display : none"); 
-					    	    $('#confirmPassword').removeAttr('data-validation');
-						 		$('#confirmPassword').attr('data-validation-optional',"true");
-						 		$('#password').removeAttr('data-validation');
-						 		$('#password').attr('data-validation-optional',"true");
+					    	    $('#recpwdDiv').attr("style" , "display : none"); 
+					    	    $('#recconfirmPassword').removeAttr('data-validation');
+						 		$('#recconfirmPassword').attr('data-validation-optional',"true");
+						 		$('#recpassword').removeAttr('data-validation');
+						 		$('#recpassword').attr('data-validation-optional',"true");
 					    	    
 					    	    $("input#recruiterEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 			    				$('input#recruiterEmail').attr('record-exist','yes');
@@ -825,21 +825,21 @@ function validateRecruiterEmail(type){
 			    				$('input#recruiterEmail').attr('record-exist-errorMsg','Invalid Domain Name'); 
 					     } else if(data == 'Not found'){
 					    	    $("#recruiter_register").removeAttr("disabled");
-					    	 	$('#pwdDiv').attr("style" , "display : block"); 
-						 		$('#confirmPassword').removeAttr('data-validation-optional');
-								$('#confirmPassword').attr("data-validation","required");
-								$('#password').removeAttr('data-validation-optional');
-								$('#password').attr("data-validation","required");
+					    	 	$('#recpwdDiv').attr("style" , "display : block"); 
+						 		$('#recconfirmPassword').removeAttr('data-validation-optional');
+								$('#recconfirmPassword').attr("data-validation","required");
+								$('#recpassword').removeAttr('data-validation-optional');
+								$('#recpassword').attr("data-validation","required");
 								$('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
 					     }
 					     
 				       	else{
 				       		
-				       		$('#pwdDiv').attr("style" , "display : none"); 
-				    	    $('#confirmPassword').removeAttr('data-validation');
-					 		$('#confirmPassword').attr('data-validation-optional',"true");
-					 		$('#password').removeAttr('data-validation');
-					 		$('#password').attr('data-validation-optional',"true");
+				       		$('#recpwdDiv').attr("style" , "display : none"); 
+				    	    $('#recconfirmPassword').removeAttr('data-validation');
+					 		$('#recconfirmPassword').attr('data-validation-optional',"true");
+					 		$('#recpassword').removeAttr('data-validation');
+					 		$('#recpassword').attr('data-validation-optional',"true");
 				       		
 				       		 $("#recruiter_register").removeAttr("disabled");
 							 $('input#recruiterEmail').removeAttr( "record-exist record-exist-errormsg");

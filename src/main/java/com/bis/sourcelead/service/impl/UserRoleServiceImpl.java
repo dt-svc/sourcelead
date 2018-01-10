@@ -329,7 +329,13 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
 		   }
 		   if(userRoles.getReportingManager() !=null){
-			   writeRow.createCell(9).setCellValue(userRoles.getReportingManager().getFirstName());
+			   StringBuilder reportingManager = new StringBuilder();
+			   if(userRoles.getReportingManager().getLastName() != null && !userRoles.getReportingManager().getLastName().isEmpty()) {
+				   reportingManager = reportingManager.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getReportingManager().getLastName());
+			   }else {
+				   reportingManager = reportingManager.append(userRoles.getReportingManager().getFirstName());
+			   }
+			   writeRow.createCell(9).setCellValue(reportingManager.toString());
 		   }
 		   
 		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
