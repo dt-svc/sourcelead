@@ -263,6 +263,7 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
+	    
        //For saving the User Role 
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
@@ -273,7 +274,8 @@ public class UserServiceImpl implements UserService {
 					 userRole.setUserType("Employee");
 				 }
 		  }else{
-			  if(isUserActive == false){
+			  UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			  if(primaryUserRole == null){
 				  userRole.setIsPrimary(1);
 			  }else{
 				  userRole.setIsPrimary(0);
