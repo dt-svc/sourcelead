@@ -245,7 +245,7 @@ function editCandidate(candidateId){
 
 								result = result + '<div class="clearfix mb10">';
 								result = result + '<div class="col-md-6">';
-								result = result + '<div class="input-group er ratetype padding_left">';
+								result = result + '<div class="input-group er ratetype">';
 								result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
 								result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
 								result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
