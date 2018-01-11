@@ -293,7 +293,6 @@ function getDisconnectConnection(userCode,userName){
 	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
          error: function(e){
-				location.href='/login';
 	        }
 	 });  
     }
