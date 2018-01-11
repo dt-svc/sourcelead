@@ -904,7 +904,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
-				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+" ";
+				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString();
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		
 		if(userRoleList.size() >= offset){
@@ -954,6 +954,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
 					userRoleDTOList.add(userRoleDTO);
 				}
+				Collections.sort(userRoleDTOList,new Comparator<UserRoleDTO>() {
+				    @Override
+				    public int compare(UserRoleDTO a, UserRoleDTO b) {
+				        return (int) (b.getMutualCount()-a.getMutualCount());
+				    }
+				});
 			}
 			return  userRoleDTOList;
 		}else{
