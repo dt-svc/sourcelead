@@ -40,7 +40,7 @@
 			<li class="current"><a href="${appPath}/loadSentConnections">Sent</a></li>
 			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
 		</ul>
-		<span><input class="immigraTabSerach" id="searchFindConnId" type="text"></span>
+		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Company" type="text"></span>
 	</div>
 	<div class="conHeadgap"></div>
 	<div class="conneWrapInn clearfix" id="findConnectionListId"></div>

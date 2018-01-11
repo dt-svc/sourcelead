@@ -46,14 +46,13 @@ window.onload = function () {
 			<li><a href="${appPath}/loadSentConnections">Sent</a></li>
 			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
 		</ul>
-		<span><input class="immigraTabSerach" id="searchFindConnId" type="text"></span>
+		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Company" type="text"></span>
 	</div>
 	<div class="conHeadgap"></div>
 	
 	<h5 class="connHeadText">People You May Know</h5>
 	<div class="conneWrapInn clearfix" id="mutualConnList"></div>
 	
-	<h5 class="connHeadText">Others</h5>
 	<div class="conneWrapInn clearfix" id="findConnectionListId">
 	</div>
 	<div id="loadMoreDiv"></div> 
@@ -66,13 +65,11 @@ $(document).scroll(function(e){
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
     offset = $("#orgOffset").val();
-    /* var UsersCount = $("#totalUsersCount").val();  */
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
-    	//searchUser("scroll");
     	 getConnectionsList("scroll");
     }
     
@@ -88,7 +85,6 @@ $("#searchFindConnId").keydown(function(e) {
 });
 	function getConnectionListOnClick(){
 		getConnectionsList('manual')
-		/* $('#findConnectionListId').empty(); */
 	}
 	var count = 0;
 	var userName = null;
@@ -155,6 +151,8 @@ $("#searchFindConnId").keydown(function(e) {
 	   		    }
 	 			if(mutualResult !== ""){
  					$("#mutualConnList").append(mutualResult);
+ 				}else{
+ 					$("#mutualConnList").hide();
  				}
 	 			if(result !== ""){
         			$("#findConnectionListId").append(result);
