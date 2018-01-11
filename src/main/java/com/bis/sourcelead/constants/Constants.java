@@ -506,11 +506,10 @@ public class Constants {
 	public static final String YEARLY = "Yearly";
 	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
-			"Min Experience", "Max Experience", "Rate", "Location", "City",	"State", "Country", "Zip Code",	
-			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", 
-			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Manager", "Approver", "Assign To",
-			"Application Form", "Client Name", "Client Contact Name", "Client Contact Email", "Client Submission Form",
-			"Status"};
+			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
+			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
+			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
+			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
