@@ -306,7 +306,7 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group mt">
+							<div class="form-group mt" id="generatedUserIdDiv">
 							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
@@ -1865,7 +1865,7 @@ function createOrg(){
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Phone Number </label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="mobilePhone"  id="mobilePhone"  value="${mobilePhone}" class="form-control" field-name="Phone Number" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone"  />';
+	            result = result +'<input type="text" name="mobilePhone"  id="mobilePhone"  value="${mobilePhone}" class="form-control" field-name="Phone Number" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20"  />';
 	            result = result +'<span class="hidden">Phone Number</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
@@ -2460,7 +2460,7 @@ function editPrimaryUser(orgLocationId){
         				
         		result = result + '<div class="user_summary_edit_cta" id="phoneNumberDiv">';
         		result = result + '<label>Phone Number</span></label>';
-        		result = result + '<input type="text" value="'+json['orglocationUserPhone']+'" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control">';
+        		result = result + '<input type="text" value="'+json['orglocationUserPhone']+'" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control" data-validation-optional="true">';
         		result = result + '</div>';
         				
         				 

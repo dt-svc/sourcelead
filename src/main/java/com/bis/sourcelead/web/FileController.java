@@ -70,7 +70,7 @@ public class FileController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 
-	@RequestMapping(value = "/upload/{type}", method = RequestMethod.POST)
+	@RequestMapping(value = {"/upload/{type}","/rest/upload/{type}"}, method = RequestMethod.POST)
 	@ResponseBody
 	public List<FileInfo> uploadFile(MultipartHttpServletRequest request, @PathVariable String type,
 			@RequestParam(defaultValue = "0") long orgId, @RequestParam(defaultValue = "0") long orgLocationId,
@@ -375,10 +375,10 @@ public class FileController {
 								: type == 0 ? "<span class='c'>Candidate Existed"
 										: "<span class='b'>Resume parsing failed")
 				+ "</span><br/>File Name: " + fileInfo.getFileName() + "<br/>Name: " + resume.getName() + "<br/>Email: "
-				+ resume.getEmail());
+				+ (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null") ? "" : resume.getEmail()));
 		saveLogMessage(uploadid,
 				"<br/><a href='"+ (sourceleadUrl.replace("/app", "")) + fileInfo.getFileURL() + "' target='_blank'>Click here to download the Resume</a>");
-		session.setAttribute("uploadstats" + uploadid, i + " of " + count + " processed...");
+		session.setAttribute("uploadstats" + uploadid, i + " of " + count + " Parsed...");
 	}
 	
 	@RequestMapping(value = "/downloadFile.html")

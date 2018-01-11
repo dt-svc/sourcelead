@@ -1990,8 +1990,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
       					}
       					if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
       							&& !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
-      							&& Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
-      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      							&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))
       							&& !Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())) {
       						paidCount = paidCount + 1;
       						Float paidAmount = Float.parseFloat(invoice.getTotal())
@@ -2001,7 +2001,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
       					if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
       							&& !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
       							&& (Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())
-      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()))) {
+      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))) {
       						Date invoiceDueDate = invoice.getDueDate();
       						Float dueAmount = Float.parseFloat(invoice.getDueAmount());
       						if (dueAmount > 0) {

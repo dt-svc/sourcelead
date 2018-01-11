@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -30,12 +33,15 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -73,6 +79,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
     @Autowired
     ProjectBudgetService projectBudgetService;
     
+    @Autowired
+    OrgLocationService orgLocationService;
+    
     @Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -98,6 +107,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Date weekStartDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(projects, projects.getStartDate());
 			projects.setWeekStartDate(weekStartDate);
 			session.saveOrUpdate(projects);
+			if(projects != null && projects.getProjectDocumentFolder() != null &&  !projects.getProjectDocumentFolder().isEmpty()) {
+				for(ProjectDocumentFolder pdf :projects.getProjectDocumentFolder()){
+				pdf.setProjectId(projects);
+				session.saveOrUpdate(pdf);
+				}
+			}
+			if(projects != null && projects.getProjectDocuments() != null &&  !projects.getProjectDocuments().isEmpty()) {
+				for(ProjectDocuments pd :projects.getProjectDocuments()) {
+					pd.setProjects(projects);
+					session.saveOrUpdate(pd);
+				}
+			}
 		}catch(Exception exception){
 			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
@@ -538,13 +559,33 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		ResponseList<ProjectsDTO> response = new ResponseList<>();
 		Query queryObj = null;
 		
+		Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+	   Matcher matcher = pattern.matcher(projectsDTO.getSearchValue());
+	   java.sql.Date sqlDate = null;
+	    if(matcher.matches() == true) {
+					if(projectsDTO.getSearchValue().contains("/")||(projectsDTO.getSearchValue().contains("-"))) {
+						String replacedValue = projectsDTO.getSearchValue().replaceAll("/", "-");
+						    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
+							SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					        java.util.Date utilDate = format.parse(replacedValue);
+					        sqlDate = new java.sql.Date(utilDate.getTime());
+					}
+	    }
+		
 		StringBuilder query1 = new StringBuilder("");
 		if(projectsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectsDTO.getSearchValue())) {
 		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.projectStatus like '%" + projectsDTO.getSearchValue() + "%' ")
+				.append("OR ps.projectStatus like '%" + Project_Status.getNameByValue(projectsDTO.getSearchValue()) + "%' ")
+				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue() + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue() + "' ) ")
+				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
 				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue() + "%' ");
+		 
+			    if(sqlDate != null) {
+			    	query1.append("OR ps.startDate like '%" + sqlDate + "%' OR ps.endDate like '%" + sqlDate + "%' ");
+				}
+			
 					
 		}
 		
@@ -1076,6 +1117,31 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					count = projectsCount.get(0).intValue();
 			}
 			return count;
+	}
+
+	@Override
+	@Transactional
+	public Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId, String projectName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectName = :projectName ";
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("projectName", projectName).setCacheable(true).list();
+
+		Projects projects = null;
+		if (projectsList != null && projectsList.size() > 0) {
+			projects = (Projects) projectsList.iterator().next();
+		}
+		return projects;
+	}
+
+	@Override
+	@Transactional
+	public List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,
+			String projectClientUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.uuid <> :uuid ) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setString("uuid", projectClientUUID).setCacheable(true).list();
+		return projectsList;
 	}
 	
 	

@@ -6,14 +6,12 @@ body {
     outline:none;
     }      
 a { cursor:pointer;}
-  
 .bgImg {
 	width: 100%; height: 100%; position: fixed; background-position: center; background-size: cover;
 }
 .signWrap {
-    position: fixed; background-color: #fff; width: 380px; min-height: 70%; right: 10%; top: 15%;
-    box-shadow: 5px 5px 1px rgba(0,0,0,0.2); border-radius: 4px; overflow: hidden;
-    
+    background-color: #fff; width: 380px; box-shadow: 5px 5px 1px rgba(0,0,0,0.2); border-radius: 4px;
+    float: right; margin: 5% 10% 2% 0px; 
     background-image:url("/resources/images/loading.gif"); background-position:center;
     background-repeat:no-repeat; background-size:75px;
 }
@@ -25,12 +23,9 @@ a { cursor:pointer;}
 .forPassOut {
 	height: 50%; right: 10%; top: 25%; min-height: 50%;
 }
-.orgOutWrap {
-	height: 80%; right: 10%; top: 10%;
-}
 .signin_wrap {
-	width:auto; text-align: center; padding: 40px 40px 20px; position: relative;
-	background-color: #fff;
+	width:auto; text-align: center; padding: 35px 40px 30px; position: relative; background-color: #fff;
+	border-radius: 4px; box-shadow: 5px 5px 1px rgba(0,0,0,0.1);
 	}
 .ForPasSlide {
 	display: none; background-color: #fff;
@@ -39,7 +34,7 @@ a { cursor:pointer;}
 	width: 280px; display: block; margin: 0px auto 25px;
 }
 .signin_wrap h1 {
-	margin:0px 0px; padding:0px 0px 20px 0px; font-weight:400; color:#404a63; font-size:18px; text-align:center;
+	margin:0px 0px; padding:20px 0px; font-weight:400; color:#404a63; font-size:18px; text-align:center;
 	}	
 .signin_wrap span {
 	display:block; position:relative; padding:0px 0px 8px 0px;
@@ -78,8 +73,8 @@ input.signin_fild:-webkit-autofill {
 	text-align:right; color:#333;
 	}		
 .for-pas-text strong {
-	display:inline-block; cursor:pointer; color:#333; font-weight:500; font-size:14px; padding:0px 0px 0px 25px;
-	margin: 3px 0px 15px 0px;
+	display:inline-block; cursor:pointer; color:#333; font-weight:500; font-size:14px; padding:2px 0px 0px 25px;
+	margin: 5px 0px 15px 0px;
 	}
 .for-pas-text i {
 	position: static !important; width: inherit !important; height:inherit !important; display: inline-block;
@@ -95,23 +90,22 @@ input.signin_fild:-webkit-autofill {
 	color:#277cb3; padding:0px 0px 0px 2px;
 }
 .backBtn {
-	width: 100%; padding: 0px 0px 20px 0px;
+	width: 100%; padding: 0px 0px 10px 0px;
 }
 .backBtn u {
-	width: 40px; height: 40px; background-color: #277cb3; text-align: center; text-decoration: none;
-	color: #fff; line-height: 40px; font-size: 18px; border-radius: 50%; cursor: pointer;
+	width: 40px; height: 40px; background-color: #fff; text-align: center; text-decoration: none;
+	color: #277cb3; line-height: 38px; font-size: 18px; border-radius: 50%; cursor: pointer;
 }
 .backBtn u:hover {
-	background-color: #186ba1;
+	background-color: #f1f1f1;
 }
 
 .orgWrap {
-	padding: 0px 20px; position: relative; height: 100%; box-sizing: border-box; display: none;
-	background-color: #fff;
+	padding: 0px 20px 20px; position: relative; box-sizing: border-box; display: none;
+	background-color: #fff; border-radius: 4px; box-shadow: 5px 5px 1px rgba(0,0,0,0.1);
 }
 .orgInn {
-	background-color: #ededed; position: absolute; height: 80%; left: 4%; top: 10%; width: 92%;
-	padding: 2px; overflow-y: auto;
+	background-color: #ededed; width: 100%; padding: 2px; overflow-y: auto; min-height: 320px; max-height: 420px;
 }
 .orgCta {
 	width: auto; background-color: #fff; margin: 2px 2px 4px; box-sizing: border-box;
@@ -119,29 +113,29 @@ input.signin_fild:-webkit-autofill {
 }
 .orgCta span {
 	width: 52px; height: 52px; border: 2px solid #e0e0e0; display: block; float: left; text-align: center;
-	vertical-align: middle; margin: 5px 10px 0px 10px; border-radius: 50%; box-sizing: border-box;
-	background-repeat: no-repeat; background-position: center;
-	background-size: cover;
+	vertical-align: middle; margin: 10px 10px 0px 10px; border-radius: 50%; box-sizing: border-box;
+/*	background-image: url(../images/office-image.jpg); background-repeat: no-repeat; background-position: center;
+	background-size: cover;*/
 }
 .orgCta span img {
-	width: auto; max-width: 48px; max-height: 48px; border-radius: 50%;
+	width: 100%; max-width: 48px; max-height: 48px; border-radius: 50%;
 }
 .orgtext {
-	position: relative; width: 65%; float: left; margin: 0px 0px 0px 5px;
+	position: relative; width: 65%; float: left; margin: 0px 0px 0px 5px; padding: 0px 0px 6px 0px;
 }
 .orgtext b {
-	padding: 9px 0px 0px 0px; margin: 0px 0px; width: 100%; display: block; overflow: hidden; text-overflow: ellipsis;
-	white-space: nowrap; font-size: 16px; font-weight: 500; color: #2d3447;
+	padding: 6px 0px 0px 0px; margin: 0px 0px; width: 100%; display: block; overflow: hidden; text-overflow: ellipsis;
+	white-space: nowrap; font-size: 15px; font-weight: 500; color: #2d3447;
 }
 .orgtext p {
-	padding: 5px 0px 0px; margin: 0px 0px; width: 50%; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-	font-size: 14px; font-weight: 400; color: #666; float: left;
+	padding: 3px 0px 0px; margin: 0px 0px; width: 100%; display: block; overflow: hidden; text-overflow: ellipsis;
+	white-space: nowrap; font-size: 14px; font-weight: 400; color: #666; float: left;
 }
 .orgtext p i {
 	display: inline-block; width: 14px; color: #666; text-align: left;
 }
 .raBtn {
-	float: left; width: 25px; height: 62px; background-color: #ccc; line-height: 60px;
+	float: left; width: 25px; height: 73px; background-color: #ccc; line-height: 72px;
 }
 .raBtn.raBtnActive {
 	background-color: #157aae;
@@ -169,20 +163,20 @@ input.signin_fild:-webkit-autofill {
 }
 
 .orgBack {
-	width: 100%; padding: 8px 0px 20px 0px; text-align: center;
+	width: 100%; padding: 14px 0px 14px 0px; text-align: center;
 }
 .orgBack u {
-	width: 35px; height: 35px; background-color: #277cb3; text-align: center; text-decoration: none;
-	color: #fff; line-height: 35px; font-size: 16px; border-radius: 50%; cursor: pointer;
+	width: 35px; height: 35px; background-color: #fff; text-align: center; text-decoration: none;
+	color: #277cb3; line-height: 33px; font-size: 20px; border-radius: 50%; cursor: pointer;
 }
 .orgBack u:hover {
-	background-color: #186ba1;
+	background-color: #f1f1f1;
 }
 
 
 .otp_wrap {
 	width:100%; display:none; z-index:100; position:relative; text-align: center; padding: 25px 30px 30px;
-	background-color: #fff;
+	background-color: #fff; border-radius: 4px;
 	}
 .otp_wrap img {
 	width: 300px; margin: 0px auto; display: block;
@@ -252,6 +246,47 @@ color:#666; position: absolute; right: -15px; top: -15px; padding: 5px; display:
 color: #cb6060;
 }
 
-
-
+@media screen and (max-width: 590px){
+	.signWrap {
+		width: 90%; margin: 12% 5% 5%; box-sizing: border-box;
+	}
+	.signin_wrap {
+		padding: 25px 25px 20px; width: auto;
+	}
+	.orgWrap {
+		padding: 0px 10px 20px;
+	}
+	.orgtext {
+		width: 62%;
+	}
+	.otp_wrap {
+		padding: 25px 15px 30px;
+	}
+	.otpMail {
+		padding: 10px 10px;
+	}
+	.otpMail span label {
+		width: 210px;
+	}
+	.otp_wrap img {
+		width: 90%;
+	}
+	.otpfeild {
+		width: 160px;
+	}
+	.otp_wrap button {
+		width: 80px;
+	}
+	.logLogo {
+		display: block; text-align: center;
+	}
+	.logLogo img {
+		width: 280px; display: inline-block;
+	}
+}
+@media screen and (max-width: 355px){
+	.orgtext {
+		width: 55%;
+	}
+}
 

@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -86,12 +87,18 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
+	public List<TimesheetSubmissions> saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
 					session.saveOrUpdate(timesheetSubmissions);
+					if(timesheetSubmissions.getApproverHierarchyList() != null && !timesheetSubmissions.getApproverHierarchyList().isEmpty()) {
+						for(SubmissionApproverHierarchy sah:timesheetSubmissions.getApproverHierarchyList()) {
+							      sah.setSubmissionId(timesheetSubmissions);;
+									session.saveOrUpdate(sah);
+							}
+					}
 				}
 				
 			}
@@ -101,6 +108,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_SUBMISSIONS"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
+		return timesheetSubmissionsList;
 		
 	}
 	

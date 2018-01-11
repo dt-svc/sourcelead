@@ -102,15 +102,13 @@ var sourceleadUrl ='${sourceleadUrl}';
 					   				</c:if>
 					   				</td>
 								    <td class="text-center">
-								    <div class="width300px mt5">
+								    <div class="width300px mt5" id="attachmentDiv${docs.id}">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">
-								            <%-- <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc();"> --%>
-								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
-								           <%--  <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc();"> --%>
-								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								     </div>
 								    </td>
@@ -160,7 +158,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
 		         contentType:false, 
 			url : sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
 			success : function(data) {
-				 location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
+				 location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
 
 			},
 		});
@@ -190,8 +188,8 @@ function tagItBykeyForEmails(e){
 </script>
 <script>
 function uploadFileReqDoc(id){
-	
 	fileUpload("uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
+	$('#attachmentDiv'+id).find('p.jquery_form_error_message').remove();
 }
 </script> 
   

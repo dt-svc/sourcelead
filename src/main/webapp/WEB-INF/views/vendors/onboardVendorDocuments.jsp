@@ -106,7 +106,7 @@ function getOnboardDocuments(){
                 	 
                 	 if(opt.uploadedFileUrl != null){
                 		 result = result +"<td class='inputpadding positionRelative'>";
-                		 result = result +"<i class=''><a class='downloadbtn glyphicon glyphicon-save' href=\""+opt.uploadedFileUrl+"\"></a></i>";
+                		 result = result +"<i class=''><a class='downloadbtn glyphicon glyphicon-save' target='_blank' href=\""+opt.uploadedFileUrl+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.uploadedFileName+"' class='tbldata-dotdot'>";
            				 result = result +"</td>";
            				 result = result +"<td><i class='fa fa-times'  onClick='deleteVendorUploadedDocument("+opt.id+");'></i></td>";

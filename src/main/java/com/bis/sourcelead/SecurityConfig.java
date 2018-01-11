@@ -91,18 +91,23 @@ public class SecurityConfig  {
         	http
 
     		.authorizeRequests()
-    			
-    			.antMatchers("/").permitAll() 
-    			.antMatchers("/**").permitAll() 
+       		     .antMatchers("/").permitAll() 
     		    .antMatchers("/login").permitAll() 
     		    .antMatchers("/*.html").permitAll() 
+    		    .antMatchers("/resetPassword").permitAll() 
+    		    .antMatchers("/forgotPassword").permitAll() 
+    		    .antMatchers("/register").permitAll()
+    		    .antMatchers("/register/**").permitAll()
     			.antMatchers("/app/resources/**").permitAll()
     			.antMatchers("/resources/**").permitAll()
     			.antMatchers("/app/ws/**").permitAll()
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/submissionRate.jsp").permitAll() 
     			.antMatchers("/jobs/**").permitAll()
-    			.antMatchers("/app/**").fullyAuthenticated()
+    			.antMatchers("/job/**").permitAll()
+    			.antMatchers("/openJobs").permitAll() 
+    			.antMatchers("/openJobsPublicPage").permitAll()
+    			.antMatchers("/app/getActionHistoryList/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")
@@ -113,6 +118,7 @@ public class SecurityConfig  {
     			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
     			.and().exceptionHandling().accessDeniedPage("/403")
+    			//.and().requiresChannel().anyRequest().requiresSecure()
     			.and().csrf().disable();
     			
     			

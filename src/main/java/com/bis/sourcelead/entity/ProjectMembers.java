@@ -441,6 +441,9 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String projectClientUUID;
 	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
 	
 	@Transient
 	@JsonProperty
@@ -1494,6 +1497,17 @@ public class ProjectMembers implements Serializable {
 		}
 		return projectClientUUID;
 	}
+	
+	public String getOrgRelationUUID() {
+		if(projectClientsId != null && projectClientsId.getOrgRelationId() != null) {
+			orgRelationUUID = projectClientsId.getOrgRelationId().getUUID();
+		}
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
 
 	public void setProjectClientUUID(String projectClientUUID) {
 		this.projectClientUUID = projectClientUUID;
@@ -1513,5 +1527,6 @@ public class ProjectMembers implements Serializable {
 
 	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
 		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
-	} 
+	}
+
 }

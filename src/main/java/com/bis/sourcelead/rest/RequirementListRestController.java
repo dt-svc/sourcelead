@@ -80,6 +80,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
@@ -773,6 +774,11 @@ public class RequirementListRestController {
 					requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
 					requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
 					
+					if(requirementSubmission.getSubmissionStatus() != null) {
+						ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+						if(status != null)
+		  				requirementSubmission.setSubmissionDisplayStatus(status.getValue());
+					}
 					if (requirementSubmission.getVendorLocationId() != null) {
 						requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 					}
@@ -820,7 +826,11 @@ public class RequirementListRestController {
 						requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
 					}
 					if (requirementSubmission.getCreatedDate() != null) {
-						String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
+						
+						requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getCreatedDate()));
+						//commented by Laxman
+						//add applicant created date is wrong
+						/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getCreatedDate());
 						if (null != timezone && null != timezone.getTimeZoneId()) {
 							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -830,17 +840,20 @@ public class RequirementListRestController {
 							SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 							String time = localDateFormat.format(converteDate);
 							requirementSubmission.setCreatedTimeStr(time);
-						}
+						}*/
 					}
 					if (requirementSubmission.getUpdatedDate() != null) {
-						String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
+						requirementSubmission.setUpDatedStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getUpdatedDate()));
+					   //commented by Laxman
+						//add applicant updated date is wrong
+						/*String currentTimeStr = Constants.TZ_DF.format(requirementSubmission.getUpdatedDate());
 						if (null != timezone && null != timezone.getTimeZoneId()) {
 							String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 							DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 							currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
 							requirementSubmission.setUpDatedStr(currentDateInTimezone);
-						}
+						}*/
 					}
 					//submissionList.add(requirementSubmission);
 				}
@@ -1632,7 +1645,7 @@ public class RequirementListRestController {
 							 }
 							 catch(Exception e){}
 							
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+							anyBoolQueryBuilder.must(anyBoolSubQueryBuilder);
 						}
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
@@ -1812,7 +1825,9 @@ public class RequirementListRestController {
 	            			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
 	            			requirement.setSpocUUID(orgSpoc.getUUID());
 	            		}
-	            		
+	            		if(StringUtils.isEmpty(requirement.getReqCoolingOffPeriod())){
+            				requirement.setReqCoolingOffPeriod(orgLocation.getCoolingOffPeriod());
+            			}
 	            		
 	            		reqList.add(requirement);
 	            	}
@@ -1921,6 +1936,7 @@ public class RequirementListRestController {
       	requirement.setCountry(requirementIndex.getCountry());
       	requirement.setState(requirementIndex.getState());
       	requirement.setCity(requirementIndex.getCity());
+      	requirement.setLocation(requirementIndex.getLocation());
       	requirement.setSearchType("Requirement");
       	requirement.setPositions(requirementIndex.getNumberOfPositions());
       	if(null != requirementIndex.getNumberOfApplicants()){

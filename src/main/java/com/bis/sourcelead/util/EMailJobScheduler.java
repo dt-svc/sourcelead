@@ -42,6 +42,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -85,6 +87,7 @@ import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -260,6 +263,12 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private CampaignUtil campaignUtil;
+	
+	@Autowired
+	private LeaveService leaveService;
+	
+	@Autowired
+	LeaveDao leaveDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -794,19 +803,21 @@ public class EMailJobScheduler {
 	public void runRemainderEmailScheduler() throws Exception {
 				logger.info("##########  E-Mail Job Scheduler started..! ##########");
 				logger.info("########## Mail Sent to: Applicant,Interviewer,Others  ##########");
-				
-				DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				
+				DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				int addMinuteTime = 30;
 				Date targetTime = new Date(); //now
 				Date date = new Date();
 				targetTime = DateUtils.addMinutes(targetTime, addMinuteTime); 
 				
-				String triggerTimeStr = dateFormat.format(targetTime); 
-				String currentTimeStr = dateFormat.format(date); 
+				String triggerTimeStr = Constants.TZ_DF.format(targetTime); 
+				String currentTimeStr = Constants.TZ_DF.format(date); 
 				
+				String endDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, triggerTimeStr);
+				String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, currentTimeStr);
+				Date endDateUTC = ts.parse(endDateString);
+				Date startDateUTC = ts.parse(startDateString);
 				
-				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
+				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(startDateString,endDateString);
 				for (RequirementInterviewHistory interviewHistory : interviewList) {
 					
 					RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
@@ -815,7 +826,7 @@ public class EMailJobScheduler {
 					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
 
 					
-					if(newTargetTime.after(date) && newTargetTime.before(targetTime)){
+					if(startDateUTC.after(newTargetTime) && newTargetTime.before(endDateUTC)){
 					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
 					User user = userService.getUserByUserCode(requirementInterview.getUpdatedBy());
 					 
@@ -830,7 +841,7 @@ public class EMailJobScheduler {
 					if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
 								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
 					}
-					if(interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
+					if(interviewHistory.getNotificationToSpoc() != null && interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
 
 						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
 
@@ -1481,7 +1492,7 @@ public class EMailJobScheduler {
 		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
 		invoiceList.forEach(invoice -> {
 			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
-				if (invoice.getDueDate().after(new Date())) {
+				if (new Date().after(invoice.getDueDate())) {
 					invoice.setPaymentStatus(Constants.OVER_DUE);
 					try {
 						invoiceService.saveInvocePojo(invoice);
@@ -2244,6 +2255,30 @@ public class EMailJobScheduler {
 		}
 		}
 		
+	}
+	
+	/**
+	 * This method is used to update the leave Status from pending to approved for expired leaves
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Async
+	public void updateLeaveStatus() throws Exception
+	{
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		for (OrgLocations orgLocation : orgLocationsList) {
+			List<Leave> leaveList = leaveService.getAllLeavesByLocationIdAndStatus(orgLocation.getId(), Constants.PENDING);
+			for (Leave leave : leaveList) {
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
+				Date date = new Date();
+				String currentTimeStr = TZ_DF_TS.format(date);
+				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+				if (leave.getToDate().before(curDate)) {
+					leave.setStatus(Constants.APPROVED);
+					leaveDao.saveLeave(leave);
+				}
+			}
+		}
 	}
 	
 }

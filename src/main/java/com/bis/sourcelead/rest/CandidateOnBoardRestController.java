@@ -1538,6 +1538,16 @@ public class CandidateOnBoardRestController {
 				 candidateOnBoarding.setMobileNumber(onboardingCandidateSetp2DTO.getMobileNumber());
 			 }
 			 
+			 if(StringUtils.isNotBlank(onboardingCandidateSetp2DTO.getAddress1())){
+				 candidateOnBoarding.setAddress1(onboardingCandidateSetp2DTO.getAddress1());
+			 }
+			 
+			 if(StringUtils.isNotBlank(onboardingCandidateSetp2DTO.getAddress2())){
+				 candidateOnBoarding.setAddress2(onboardingCandidateSetp2DTO.getAddress2());
+			 }else {
+				 candidateOnBoarding.setAddress2(null);
+			 }
+			 
 			 userService.addUser(user);
 			 SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 			 
@@ -1668,7 +1678,12 @@ public class CandidateOnBoardRestController {
 					submission.setRequirementName(submission.getRequirement().getJobTitle());
 					submission.setCandidateUUID(submission.getCandidate().getCandidateUUID());
 					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
-					
+					if(submission.getRequirement().getManagerUserId() !=  null){
+						submission.setReqManagerId(submission.getRequirement().getManagerUserId().getId());
+					}
+					if(submission.getRequirement().getReleaseJobToAllUsers() != null){
+						submission.setReqReleaseAllJobUserStatus(submission.getRequirement().getReleaseJobToAllUsers());
+					}
 					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
 					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
 					submission.setPositionType(requirementOffers.getPositionType());

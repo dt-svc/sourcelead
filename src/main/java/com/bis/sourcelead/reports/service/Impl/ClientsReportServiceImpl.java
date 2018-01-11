@@ -29,6 +29,8 @@ import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
 import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
 import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ClientsReportServiceImpl implements ClientReportService{
@@ -38,6 +40,9 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 	
 	@Override
 	public Map<String, Integer> getAllClientsCountByOrgLocationIdAndUserId(Long locationId, Long userId)
@@ -74,10 +79,10 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public Map<String, Integer> getContractsListOFAllClients(Long orgLocationId, User user,String userRoleName,ContractReportsDTO contractReportsDTO)
+	public Map<String, Integer> getContractsListOFAllClients(OrgLocations orgLocation, User user,String userRoleName,ContractReportsDTO contractReportsDTO)  throws Exception
 	{
 		Map<String, Integer> conCount = new HashMap<>();
-		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocationId, user.getId());
+		List<OrgRelations> orgRelationsList = getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
 		List<Contracts> contractList = new ArrayList<>();
 		int totalMsaCount = 0;
 		int totalSowCount = 0;
@@ -85,10 +90,10 @@ public class ClientsReportServiceImpl implements ClientReportService{
 		int totalNsaCount = 0;
 		if(orgRelationsList != null) {
 			for(OrgRelations orgRelation : orgRelationsList){
-				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocationId, user,orgRelation.getId(),userRoleName,contractReportsDTO);
+				List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
 //				contractList.add(conList.size());
 				if(conList != null && conList.size() > 0){
-					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
+					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
 						conCount.put(orgRelation.getResponderLocationId().getOrgLocationName(), conList.size());
 					}else{
 						conCount.put(orgRelation.getLocationId().getOrgLocationName(), conList.size());
@@ -115,34 +120,43 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	}
 
 	@Override
-	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType) {
-		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType);
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocId, String invoiceType,Long contactUserId, Date[] freqDates) {
+		return clientReportDao.getClientBasedInvoiceLists(orgRelationId,orgLocId,invoiceType,contactUserId,freqDates);
 	}
 
 	@Override
-	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency) {
+	public InvoiceReportDTO getTopFiveReceivsblesReports(OrgLocations orgLocation, User user,String type,String dateFrequency,String fromDate, String toDate) throws Exception {
 
 		Map<String,Float> amountList = new LinkedHashMap<>();
-		Map<String,Float> newAmountList = null;
 		List<Entry<String, Float>> newList = null;
 		List<OrgRelations> clientsList = getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(),user.getId());
 		
-		
 		InvoiceReportDTO invoiceDto = new InvoiceReportDTO();
 		Date todayDate = new Date();
-		Float paidTotalAmount = 0f;
+		
 		Float draftTotalAmount = 0f;
 		Float dueAfterInvoiceAmount = 0f;
 		Float openInvoiceTotal = 0f;
+		Float allPaidTotalAmount = 0f;
+		
+		
+		Date[] freqDates = new Date[2];
+		if("Custom".equalsIgnoreCase(dateFrequency)){
+			freqDates[0] = commonUtil.getDateFormat(fromDate);
+			freqDates[1] = commonUtil.getDateFormat(toDate);
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(dateFrequency,orgLocation);
+		}
 		
 		if(clientsList != null && clientsList.size() > 0) {
 		for(OrgRelations orgRelation : clientsList) {
-			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type);
+			Float paidTotalAmount = 0f;
+			List<Invoice> invoiceList = getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), type,null,freqDates);
 			String clientName = null;
 			if(invoiceList != null && invoiceList.size() > 0) {
 				for (Invoice invoice : invoiceList) {
 					
-					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
 							!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
 						Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
 						paidTotalAmount = paidTotalAmount + paidAmount;
@@ -153,6 +167,9 @@ public class ClientsReportServiceImpl implements ClientReportService{
 						if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 							clientName = invoice.getOrgRelationID().getLocationId().getOrgLocationName();
 						}
+						
+						allPaidTotalAmount += paidAmount;
+						invoiceDto.setAllPaidInvoiceTotal(allPaidTotalAmount);
 						
 					}
 					
@@ -202,21 +219,23 @@ public class ClientsReportServiceImpl implements ClientReportService{
 	            }
 	        } );
 	        
-	        newAmountList =  new LinkedHashMap<>();
+	        Map<String,Float> newAmountList =  new LinkedHashMap<>();
+	        Map<String,Float> othersAmountList =  new LinkedHashMap<>();
 	        if(list.size() > 5) {
 	        	 newList =   list.subList(0, 5);
-	        	 
-	        	List<Entry<String, Float>> othersList =   list.subList(5,list.size());
-	 	        Float otherAmt = 0f;
-	 	        for (Entry<String, Float> entry : othersList) {
-	 	        	Float calcOtherAmt = entry.getValue();
-	 	        	otherAmt = otherAmt + calcOtherAmt;
-	 	        	newAmountList.put("Others", otherAmt);
-	 	        	invoiceDto.setNewAmountList(newAmountList);
-	 			}
+	        	    List<Entry<String, Float>> othersList =   list.subList(5,list.size());
+	    	        Float otherAmt = 0f;
+	     	        for (Entry<String, Float> entry : othersList) {
+	     	        	Float calcOtherAmt = entry.getValue();
+	     	        	otherAmt = otherAmt + calcOtherAmt;
+	     	        	othersAmountList.put("Others", otherAmt);
+	     	        	invoiceDto.setOthersAmountList(othersAmountList);
+	     			}
 	        }else {
 	        	 newList =   list;
 	        }
+	        
+	        
 	        for(Map.Entry<String, Float> entry:newList){
 //	            System.out.println(entry.getKey()+" ==== "+entry.getValue());
 	            newAmountList.put(entry.getKey(), entry.getValue());
@@ -248,8 +267,8 @@ public class ClientsReportServiceImpl implements ClientReportService{
 
 	@Override
 	public List<Contracts> getClientBasedContractsLists(OrgLocations orgLocation, User user, String userRoleName,
-			Long orgRelationId, ContractReportsDTO contractReportsDTO) {
-		return clientReportDao.getContractsListOFAllClients(orgLocation.getId(), user, orgRelationId, userRoleName, contractReportsDTO);
+			Long orgRelationId, ContractReportsDTO contractReportsDTO) throws Exception  {
+		return clientReportDao.getContractsListOFAllClients(orgLocation, user, orgRelationId, userRoleName, contractReportsDTO);
 	}
 
 }

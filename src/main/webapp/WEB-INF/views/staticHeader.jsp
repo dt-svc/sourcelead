@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0; user-scalable=0;">
 	<link rel="icon" type="image/png" sizes="16x16" href="/resources/css/static-web/images/favicon.png">
 	<link rel="manifest" href="/manifest.json">
+	<link rel="icon" type="image/png" href="/resources/images/fav.png" />
     <title>::Welcome to SourceLead::</title>
 
     <!-- Bootstrap -->
@@ -41,36 +42,36 @@
 
 <div class="head_inn">
   
-  <div class="logo"><a href="index.html"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
+  <div class="logo"><a href="/"><img src="/resources/css/static-web/images/logo.png" alt="SourceLead" title="SourceLead"/></a></div>
   <nav>
   	<ul class="menu">
     	<li><a href="/"><i class="fa fa-home"></i></a></li>
-		<li><a href="index.html">Jobs</a></li>
+		<li><a href="/jobs">Jobs</a></li>
         <li><a href="javascript:void(0)" class="ma">What we do<i class="fa fa-caret-down"></i></a>
 			<ul>
-				<li><a href="crowdsourcing.html">Crowdsourcing</a></li>
-            	<li><a href="ats.html">ATS</a></li>
-                <li><a href="vms.html">VMS</a></li>
-                <li><a style="border-bottom:none;" href="timesheet.html">Time Management</a></li>
+				<li><a href="/crowdsourcing.html">Crowdsourcing</a></li>
+            	<li><a href="/ats.html">ATS</a></li>
+                <li><a href="/vms.html">VMS</a></li>
+                <li><a style="border-bottom:none;" href="/timesheet.html">Time Management</a></li>
             </ul>
         </li>
         <li><a href="javascript:void(0)" class="ma">Resources<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="demo.html">Product Videos</a></li>
+            	<li><a href="/demo.html">Product Videos</a></li>
                 <li><a href="javascript:void(0)" class="requestDemo">Request Personal Demo</a></li>
                 <!-- <li><a style="border-bottom:none;" href="faqs.html">FAQs</a></li> -->
             </ul>
         </li>
         <li><a href="javascript:void(0)">About SourceLead<i class="fa fa-caret-down"></i></a>
         	<ul>
-            	<li><a href="about-us.html">About SourceLead</a></li>
-                <li><a href="team.html">Our team</a></li>
+            	<li><a href="/about-us.html">About SourceLead</a></li>
+                <li><a href="/team.html">Our team</a></li>
                 <!--<li><a href="about-us.html#client">Clienef="testimonial.html">Testimonial</a></li>
                 <!--<li><a href="careers.html">Careers</a></li>-->
-                <li><a style="border-bottom:none;" href="contact.html">Contact</a></li>
+                <li><a style="border-bottom:none;" href="/contact.html">Contact</a></li>
             </ul>        
         </li>
-        <li><a href="blog.html">Blogs</a></li>
+        <li><a href="/blog.html">Blogs</a></li>
         <li><a href="javascript:void(0)" class="freeTril freeTrail">Free Trial</a></li>
         <div class="clear"></div>
     </ul>

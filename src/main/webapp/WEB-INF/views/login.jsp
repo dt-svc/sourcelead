@@ -4,9 +4,13 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <meta charset="utf-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
  <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
@@ -19,10 +23,7 @@ window.onload = function() {
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = "";
 	if("${redirect_to_login_2_Step_Process}" != ''){
-		$("#directtwoStepAuthDiv").removeAttr("style");
- 	    $("#directtwoStepAuthDiv").attr("style","display : block");
- 	    $(".signWrap").addClass("orgOutWrap");
- 	    getUserDetailsByUserRoleIdfromLogin(userRoleId,userName,password);
+ 	   directLoginValidateWhiteListIp(userRoleId,userName,password);
 	}
 }
 </script>
@@ -31,7 +32,7 @@ window.onload = function() {
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
  
  <div class="signWrap">
- <div id="loading"></div>
+<!--  <div id="loading"></div> -->
  <c:if test="${!empty login_2_Step_Process_Enabled}">
   <jsp:include page="twoStepVerification.jsp"></jsp:include>
 </c:if>
@@ -64,29 +65,54 @@ window.onload = function() {
 <!--  Forgot Pass  -->	
 </div>
 
-<div id="twoStepAuthDiv" style="display:none">
+<div id="directtwoStepAuthDiv" style="display:none">
    <jsp:include page="otpVerification.jsp"></jsp:include>
 </div>
 
  </div>
  
+ <script>
+function directLoginValidateWhiteListIp(userRoleId,userName,password){
+	var userName = '${username}';
+	var password = '${password}';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = 0;
+// 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&name="+userName,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 $('#loginWhiteListDiv').find('p.jquery_form_error_message').remove();
+	    		 $(".signWrap").addClass("orgOutWrap");
+	    		 getUserDetailsByUserRoleIdfromLogin(userRoleId,userName,password);
+	    	 }else{
+	    		$('#loginWhiteListDiv').find('p.jquery_form_error_message').remove();
+	 			$("#loginWhiteListDiv").append( "<p class='jquery_form_error_message'>You are not allowed to access this location</span>");
+// 	 			$("#loading").removeAttr('style');
+	    	 }
+	      },
+	  }); 
+}
+</script>
  
  <script>
 function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#signinDiv").removeAttr("style");
 		    	   $("#signinDiv").attr("style","display : none");
-	    		   $("#twoStepAuthDiv").removeAttr("style");
-		    	   $("#twoStepAuthDiv").attr("style","display : block");
-	    		   $("#twoStepAuthDiv").empty();
-	    		   $("#twoStepAuthDiv").append(data);
+	    		   $("#directtwoStepAuthDiv").removeAttr("style");
+		    	   $("#directtwoStepAuthDiv").attr("style","display : block");
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
 	    		   $("#resendOTP").attr("style","display:none");
 	    		   $("#backAnch").prop("onclick",null);
+	    		   $("#fromType").val("login");
 	    		   $("#backAnch").attr("onclick","logout('"+sourceleadUrl+"');");
 	    		   $("#sendOTP").attr("style","display:block");
 	    	   }
@@ -115,13 +141,13 @@ function logout(url){
         		var form = $('#forgetPassword_form').serializeFormJSON();
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
-        		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+//         		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
                 $.ajax({
             	      type: "POST",
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: "/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: "app/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -130,7 +156,7 @@ function logout(url){
 	             				 document.getElementById("email").setAttribute('pass-exist','yes');
 	             				 document.getElementById("email").setAttribute('pass-exist-errorMsg', ' Invalid User Name'); 
 	             				 $("input#email").removeAttr("style");
-	             				 $("#loading").removeAttr("style");
+// 	             				 $("#loading").removeAttr("style");
     			        	}
                     		else if(json.status == 'login'){
     			        		  location.replace("/login"); 

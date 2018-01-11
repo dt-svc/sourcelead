@@ -6,9 +6,6 @@
     <c:if test="${staticTime == null || staticTime == 0 }">
     	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
     </c:if>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>::. Sign In .::</title>
     <%-- <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
@@ -33,8 +30,9 @@
 
 
 <div class="signin_wrap SignSlide">
-	<a href="/index.html"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
+	<a href="/"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
 		<h1>Sign In</h1>
+		<div id="loginWhiteListDiv" class="orgErrorMes"></div>
 	       	<c:if test="${not empty error}">
 				<div class="error">${error}</div>
 			</c:if>
@@ -58,9 +56,12 @@
 	    	<c:if test="${!empty email_notVerified_error}">
 	         		<div class="error"><font color="red">Your Email is not verified.   <a class="pull-right" id="resend" onclick="resend();" title="Resend Verification Link">Resend</a></font></div>
 	    	</c:if> 
+	    	<c:if test="${!empty invalid_IP_Address}">
+	         		<div class="error"><font color="red">You are not allowed to access this location</font></div>
+	    	</c:if> 
 	    	<c:if test="${not empty msg}">
 		        <div id="selector">
-			         <span><font color="green">${msg}</font></span>
+			         <span><font color="red">${msg}</font></span>
 				</div>
            </c:if> 
            <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
@@ -226,7 +227,7 @@ function resend() {
 	 var userName = document.getElementById("usernameval").value; 
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/resendVerificationEmail?userName="+userName,        
+       url: sourceleadUrl+"/ws/resendVerificationEmail?userName="+userName,        
        success :function(data) {
        if(data == "success"){
        		$("#selector1").removeAttr("style");
@@ -256,7 +257,7 @@ function forgotPassword(){
 </script>
 
 <script>
-  $('#selector').delay(2000).fadeOut('slow');
+//   $('#selector').delay(2000).fadeOut('slow');
 </script>
 
 

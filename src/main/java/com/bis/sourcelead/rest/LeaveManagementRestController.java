@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,6 +78,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -230,6 +232,9 @@ public class LeaveManagementRestController {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
+		   
+		   LinkedHashSet<String> yearsList = CalendarUtil.getYearsListFromCurrentDate(1, 10);
+		   model.addObject("yearsList", yearsList);
 		   model.addObject("departmentList",departmentList);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/leaveManagementReports");
@@ -325,11 +330,11 @@ public class LeaveManagementRestController {
 				for (Leave leave : totalleavesTaken) {
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 //						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
-						pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
-						takenLeaveCounts = takenLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
+						takenLeaveCounts = takenLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 				}
 				

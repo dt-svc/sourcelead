@@ -8,6 +8,7 @@
 
 <script>
 $(document).ready(function() {
+	 $("#myModal").hide();
 	socialInviterScripts();
 	refercontactList();
 });	
@@ -44,7 +45,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 </script> 
 
 
-<div class="modal fade" id="myModal" role="dialog">
+<div class="fade" id="myModal" role="dialog">
    <form:form id="uploadContactCSV_form" name="uploadContactCSV_form" enctype="multipart/form-data">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -176,7 +177,6 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
     </div>
      </form:form>
   </div>
-  
   <script type="text/javascript">
 	//script for upload file
 	document.getElementById("uploadBtn").onchange = function () {
@@ -208,6 +208,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 		$("#uploadFile").val('');
 		$(".clearUpload").hide();
 		$("#myModal").hide();
+		$("#myModal").removeClass("modal");
 		$("#myModal").addClass("fade");
 		$("#accordion").find(".in").removeClass("in");
 	}
@@ -256,6 +257,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
         }).on('hide.bs.collapse', function(){
         	$(this).parent().find(".fa").removeClass("fa-angle-up").addClass("fa-angle-down");
         });
+        
     });
 </script>
 <section class="content-wraper">
@@ -265,10 +267,10 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
      </div>
     <div class="pull-left">
       <h2>Contacts List</h2>
-    </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
+      </div> 
+    <div class="pull-right brud-crum" id="contactsListUrl"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
-  <div class="timesheet_out">
+  <div id="contactsListSheet" class="timesheet_out">
       <div class="vendor_wrap">
       <div class="timesheet_head">
           <ul>
@@ -387,6 +389,11 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
       <div id="refercontactListDiv" class="datatable_filter"></div>
       </div>
 	</div>
+	
+	<div id="connnectionsSheet" class="conneWrap">
+	
+	
+	</div>
   
 </section>
 
@@ -417,6 +424,9 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
   <!-- Create Label div html -->
 
 <script>
+
+
+
 function addContactsGroup(){
 	var result = "";
 	result = result + '<form id="contactgroup_form"  name="contactgroup_form">'; 
@@ -429,7 +439,7 @@ function addContactsGroup(){
 	result = result + '<div class="form-group">';
 	result = result + '<div class="pull-right">';
      result = result + '	<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	 result = result + '	<button type="submit" value="Save" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
+	 result = result + '	<button type="button" value="Save" onclick= "contactgrp();" id="add_contactgroup" class="btn btn-sm btn-primary">Save</button>';
 	 result = result + '</div >';
 	 result = result + '</div >';
 	 result = result + '</form>';
@@ -447,6 +457,7 @@ function addContactsGroup(){
 
 
 <script>
+
 function refercontactList(){
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
@@ -454,7 +465,7 @@ function refercontactList(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix">';
-  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+  		result = result +'<table id="example" class="display" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result +'<th><input type="checkbox" id="checkReferContacts" onclick="toggleContactsGroup(this);"></th>';
@@ -637,6 +648,8 @@ function contactsPagination(url,sourceleadUrl){
     	   }
     	});
 }
+
+
 
 </script>
 
@@ -851,17 +864,14 @@ $("#contactsFilter").click(function(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
 	   };  
-         $('body').on('submit', '#contactgroup_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-	          		
+	function contactgrp(){
+        	  if ($('#contactgroup_form').validate(false, validationSettings)){
 	          		$("#add_contactgroup").attr("disabled", "disabled");
 	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	     var formData = getFormData1("contactgroup_form");
+	        	     var formData = getFormData("contactgroup_form");
 	        		$.ajax({
 	        					type : "POST",
-	        					 data: formData,
-	        					 processData: false,
-	        	  		         contentType:false, 
+	        					data: formData,
 	        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
 	        					success : function(result) {
 	        						location.replace(sourceleadUrl+"/referRequirementList");
@@ -873,10 +883,12 @@ $("#contactsFilter").click(function(){
             else{
             	return false;	
                }
-            });
-         $('#addcontact_form').showHelpOnFocus();
-         $('#addcontact_form').validateOnBlur(false, validationSettings); 
-            
+	}
+	$('body').on('blur', '#contactgroup_form', function() {
+		$("#contactgroup_form").showHelpOnFocus();
+		$("#contactgroup_form").validateOnBlur(false, validationSettings);
+		
+	});   
      
 </script> 
 <script>
@@ -896,7 +908,7 @@ function getContactsGroupList(){
 	                    	 result = result +"<tr id='deleteGroup"+opt.id+"'>";
 				             
 				             if(opt.groupName != null && opt.groupName != '' && opt.groupName != 'undefined'){
-				             result = result +"<td><div class='tbldata-dotdot-sm'>"+opt.groupName+"</div></td>";
+				             result = result +"<td><div class='tbldata-dotdot-sm' title='"+opt.groupName+"'>"+opt.groupName+"</div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
@@ -931,8 +943,8 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
 	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" class="btn btn-sm btn-primary">Save</button>';
-	        	outPut = outPut+ '</div>';
+	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" onclick= "contactgrp();" class="btn btn-sm btn-primary">Save</button>';
+				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
 	        	
@@ -1173,4 +1185,20 @@ function selectedContactList(){
 	 $(".movefolder-popdiv").fadeOut();
 	 $(".sideMask").fadeOut();
  });
+ 
+ $("#connectionsId").click(function(){
+	 $("#contactsListSheet").hide();
+	 $("#contactsListUrl").hide();
+	 $("#connectionsUrl").show();
+	 $("#connnectionsSheet").show();
+	 connectionsList();
+	 
+ });
+ $("#contactsListId").click(function(){
+	 $("#contactsListUrl").show();
+	 $("#connectionsUrl").hide();
+	 $("#contactsListSheet").show();
+	 $("#connnectionsSheet").hide();
+ });
+ 
  </script>

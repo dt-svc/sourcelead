@@ -121,7 +121,7 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 		var locationCode ='${SourceLeadWeb_locationCode}';
 	    $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from="+from+"&locationCode="+locationCode, 	   
+	    url: "http://localhost:8080/app/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from="+from+"&locationCode="+locationCode, 	   
 	    success: function(data) {
 	    		 //$("#timesheetPopUp").removeAttr("style");
  	    	     $("#timesheetPopUp").empty();

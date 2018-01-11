@@ -121,6 +121,7 @@
 						result = result + '<th>Email</th>';
 						result = result + '<th>Phone</th>';
 						result = result + '<th>Relation </th>';
+						result = result + '<th>Designation </th>';
 						result = result + '<th>Comment </th>';
 						result = result + '<th>Action </th>';
 						result = result + "  </tr>";
@@ -170,6 +171,11 @@
 								result = result
 										+ ' <td><div><span>----</span></div></td>';
 							}
+							if (opt.designation != null && opt.designation != ''&& opt.designation != 'undefined') {
+								result = result	+ ' <td><div><span title="'+opt.designation+'">'+ opt.designation + '</span></div></td>';
+							   } else {
+								result = result	+ ' <td><div><span>----</span></div></td>';
+							   }
 
 							if (opt.comment != null && opt.comment != ''
 									&& opt.comment != 'undefined') {
@@ -758,42 +764,27 @@
 			$('#designationVal').attr("data-validation",
 					"required validate_Space validate_length length2-100");
 			$("#dvDesignation").show();
-		} else if (relation == 'Family Related') {
-
+		} else {
 			$('#designationVal').val('');
 			$("#designationVal").attr("data-validation-optional", "true");
 			$("#dvDesignation").hide();
-		}else {
-			$("#dvDesignationEdit").hide();
-			$("#designationVal").remove();
-			$('#dvDesignation').find('p.jquery_form_error_message').remove();
-			$('#designationVal').removeAttr("data-validation");
 		}
 	}
 </script>
 
 <script>
 	function editRelation(e) {
-		if (e.value == 'Work Related') {
+		var relationEdittype = $("#relation").val();
+		if (relationEdittype == 'Work Related') {
 			document.getElementById("dvDesignationEdit").style.display = "block";
 			$("#designationValEdit").removeAttr("data-validation-optional");
-			$('#designationValEdit').attr("data-validation",
-					"required validate_Space validate_length length2-100"); 
+			$('#designationValEdit').attr("data-validation","required validate_Space validate_length length2-100"); 
 			$("#designationValEdit").show();
-		} else if (e.value == 'Family Related') {
-			document.getElementById("dvDesignationEdit").style.display = "none";
-
-			$("#designationValEdit").val('');
-			$('#designationValEdit').find('p.jquery_form_error_message')
-					.remove();
-			$('#designationValEdit').removeAttr("data-validation");
 		} else {
-			$("#dvDesignationEdit").removeAttr("style");
-			$("#dvDesignationEdit").hide();
+			document.getElementById("dvDesignationEdit").style.display = "none";
 			$("#designationValEdit").val('');
-			$('#dvDesignationEdit').find('p.jquery_form_error_message')
-					.remove();
+			$('#designationValEdit').find('p.jquery_form_error_message').remove();
 			$('#designationValEdit').removeAttr("data-validation");
-		}
+		} 
 	}
 </script>

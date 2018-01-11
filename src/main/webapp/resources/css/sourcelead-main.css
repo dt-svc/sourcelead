@@ -46,7 +46,7 @@ textarea {
 	margin-right: 15px;
 }
 .mr10{
-	margin-right: 10px;
+	margin-right: 10px !important;
 }
 .mr5 {
 	margin-right: 5px;
@@ -7748,6 +7748,129 @@ top:0 !important;
 .minHeight75 textarea {
    	border:0; background: transparent !important; width: 100%; position: relative; top:10px;
    }
+.action-icons a, .action-icons .fa-check, .action-icons .fa-times {
+margin: 0px 4px !important; padding: 0px !important;
+}
+.action-icons a i {
+padding: 0 !important;
+}
+/* Resume view single page styles */
+.resume-view {
+	padding: 15px;
+}
+.resume-view .resume-profissionaldetails {
+	width: 100%; height: 100%; background-color: #EEEEEE; padding: 0 15px;
+}
+.resume-view .resumeHeader h2 {
+	font-size: 20px; margin:10px 0 5px 0px;
+}
+.resume-view .candidateImage {
+	width: 100px; height: 100px; margin: 0 auto; text-align: center;
+}
+.resume-view .candidateImage img {
+	max-height: 100%; border: 1px solid #cecece; padding: 2px;
+}
+.resume-view h4 {
+	color: #616161; border-bottom: 1px solid #E0E0E0; margin: 10px 0; padding: 5px 0;
+}
+.resume-view .contact-information .fa {
+	width: 20px; height: 20px; margin-right: 2px;
+}
+.resume-view .resume-ul {
+	padding-left: 15px;
+}
+.resume-skills {
+}
+.resume-view .resume-skills ul  {
+	border-left: 1px solid #E0E0E0; padding-left: 10px;
+}
+.resume-view .resume-skills ul li {
+	padding: 3px 0;
+}
+.resumeHeader .editDetails, .resume-education .editDetails, .resume-skills .editDetails, .resume-rolesresponsibilites .editDetails,
+.resume-professionalexp .editDetails, .resume-certificates .editDetails, .resume-educationdetails .editDetails,
+.resume-skills_v2 .editDetails
+{
+	position: absolute; right: 0; top: 5px;
+	display: none;
+}
+.resumeHeader:hover .editDetails {
+	display: block;
+}
+.resume-education:hover .editDetails {
+	display: block;
+}
+.resume-skills:hover .editDetails {
+	display: block;
+}
+.resume-rolesresponsibilites:hover .editDetails {
+	display: block;
+}
+.resume-professionalexp:hover .editDetails {
+	display: block;
+}
+.resume-certificates:hover .editDetails {
+	display: block;
+}
+.resume-educationdetails:hover .editDetails {
+	display: block;
+}
+.resume-skills_v2:hover .editDetails {
+	display: block;
+}
+.editDetails a {
+	color: #616161; padding-right: 5px;
+}
+.editDetails a .fa {
+font-size: 0.8em;
+}
+.resume-skills_v2 ul li {
+	list-style-type: none; float: left; padding: 5px 15px; border: 1px solid #fff; background-color: #fff; border-radius: 3px;
+	margin: 0 10px 10px 0; position: relative;
+}
+.resume-skills_v2 ul li::after {
+	content: "\f00d"; position: absolute; right: 2px; top: 0; 
+	font-family: fontAwesome; font-size: 11px; color: #BDBDBD;
+}
+/* Version 2 Styles */ 
+.resume-view.resumeview_v2 {
+	background-color: #fff; border-radius: 3px;
+}
+.resume-view.resumeview_v2 h4 {
+	font-weight: 300; color: #a21e23;
+}
+.resumeHeader_v2 {
+	padding:15px; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #EEEEEE;
+}
+.resumeHeader_v2 h2 {
+	font-size: 25px; color: #a21e23;
+}
+/* Version 2 Styles */
+/* Resume view single page styles Ends */
+.resumeSettings {
+	position: absolute; right: 0; top: 0; padding: 5px; background: #E0E0E0; color: #333; z-index: 2;
+}
+.resumeSettings .fa-gears {
+	position: relative; z-index: 9;
+}
+.resumeSettings .resumesetting-links {
+	width: 200px; display: none; position: absolute; top: 0px; right: 25px; z-index: 1;
+}
+.resumeSettings .resumesetting-links a {
+padding: 5px; display: inline-block; text-align: center; background-color: #E0E0E0; margin: 0; color: #333;
+}
+.exportButton_custom div.dt-buttons {
+top: 0px; left: 15px; z-index: 99;
+}
+.exportButton_custom button.dt-button, .exportButton_custom div.dt-button, a.dt-button {
+padding: 4px 10px !important;
+}
+.exportButton_custom .buttons-excel:before, .exportButton_custom .buttons-pdf:before {
+top: 0;
+}
+.exportButton_custom .dataTables_info {
+padding-left: 15px !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

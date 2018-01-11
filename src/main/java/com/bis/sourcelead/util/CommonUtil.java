@@ -33,6 +33,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -92,6 +95,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -171,6 +175,10 @@ public class CommonUtil {
 	
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
+	@Autowired
+	private ProjectTasksDao tasksDao;
+	
 	
 	
 	/**
@@ -280,6 +288,7 @@ public class CommonUtil {
 	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
 		if(tasksList != null && !tasksList.isEmpty()){
+			Integer generatedIdcount = 1;
 			for(ProjectTasks task :tasksList){
 				task.setProjectId(projects);
 				if (!Constants.HOLIDAY.equalsIgnoreCase(task.getTaskName()) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(task.getTaskName()) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(task.getTaskName())) {
@@ -295,12 +304,32 @@ public class CommonUtil {
 				task.setTaskStatus(taskStatusLookUpData);
 				task.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				task.setCreatedBy(user.getCreatedBy());
+				task.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+				task.setGeneratedId(getProjectTaskGenaratedId(projects,generatedIdcount));
 				task.setCreatedDate(new Date());
 				task.setUpdatedDate(new Date());
 				task.setUpdatedBy(user.getCreatedBy());
+				generatedIdcount++;
 			}
 		}
 		projectTasksService.saveAll(tasksList);
+	}
+	
+	/**
+	 * This method is used to Get the Project task generatedIds
+	 * @author Laxman
+	 * @param projects
+	 * @param generatedIdcount2 
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public String getProjectTaskGenaratedId(Projects projects, Integer number) throws Exception {
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(projects.getProjectShortCode());
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(number);
+		return sbuilder.append(convetredRequirementsId).toString();
 	}
 	/**
 	 * This method is used to Get the Approver User of Time or Expense Reopen Requests
@@ -982,6 +1011,21 @@ public class CommonUtil {
 		    return outputFormatter.print(dateTime);
 		}
 		
+		/**
+		 * convertTimeZones is used to convert to UTC timezone 
+		 * @author Laxman
+		 * @param toTimeZoneString
+		 * @param fromDateTime
+		 * @return
+		 */
+		public static String convertTimeUTC(final String toTimeZoneString, final String fromDateTime) {
+		    final DateTimeZone toTimeZone = DateTimeZone.forID(toTimeZoneString);
+		    final DateTime dateTime = new DateTime(fromDateTime);
+
+		    final DateTimeFormatter outputFormatter  = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").withZone(toTimeZone);
+		    return outputFormatter.print(dateTime);
+		}
+		
 		
 		public static Float getCombinedHours(Float hours1,Float hours2){
 			float cthHours = hours1;
@@ -1395,7 +1439,7 @@ public class CommonUtil {
 						candidate.setCountry(candidateDTO.getCountry());
 					}
 				
-				candidate.setIsAssociate(Constants.YES);
+				candidate.setIsAssociate(Constants.NO);
 				
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
@@ -1499,13 +1543,104 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					
 					if(jsonObj.has("email") && jsonObj.getString("email") !=null){
 						candidate.setEmail(jsonObj.getString("email"));
-					}else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null){
+					}else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") != null && !jsonObj.getString("EmailId").isEmpty()){
 						candidate.setEmail(jsonObj.getString("EmailId"));
 					}
 					
-					if(jsonObj.has("country") && jsonObj.getString("country") !=null){
-						candidate.setCountry(jsonObj.getString("country"));
+					if(jsonObj.has("location") && jsonObj.getString("location") != null && !jsonObj.getString("location").isEmpty()){
+			        	candidate.setLocation(jsonObj.getString("location"));
 					}
+						
+			        if(jsonObj.has("country") && jsonObj.getString("country") != null && !jsonObj.getString("country").isEmpty()){
+			        	candidate.setCountry(jsonObj.getString("country"));
+					}
+					 
+					if(jsonObj.has("state") && jsonObj.getString("state") != null && !jsonObj.getString("state").isEmpty()){
+						 candidate.setState(jsonObj.getString("state"));
+					}
+					 
+					if(jsonObj.has("city") && jsonObj.getString("city") != null && !jsonObj.getString("city").isEmpty()){
+						 candidate.setCity(jsonObj.getString("city"));
+					}
+					
+					 if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") != null && !jsonObj.getString("zipcode").isEmpty()){
+				        	candidate.setZipCode(jsonObj.getString("zipcode"));
+					}
+					 
+					 if(jsonObj.has("PhoneNumber") && jsonObj.getString("PhoneNumber") != null && !jsonObj.getString("PhoneNumber").isEmpty()){
+						 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+					}
+					
+					if(jsonObj.has("AlternateNumber") && jsonObj.getString("AlternateNumber") != null && !jsonObj.getString("AlternateNumber").isEmpty()){
+						 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+					}
+					
+					
+					if(jsonObj.has("currentCTCRateType") && jsonObj.getString("currentCTCRateType") != null && !jsonObj.getString("currentCTCRateType").isEmpty()){
+						candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+					}
+					
+					if(jsonObj.has("CurrentCTC") && jsonObj.getString("CurrentCTC") != null && !jsonObj.getString("CurrentCTC").isEmpty()){
+						candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
+					}
+					
+					if(jsonObj.has("currentCTCRatePer") && jsonObj.getString("currentCTCRatePer") != null && !jsonObj.getString("currentCTCRatePer").isEmpty()){
+						 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+					}
+					
+					if(jsonObj.has("expectedCTCRateType") && jsonObj.getString("expectedCTCRateType") != null && !jsonObj.getString("expectedCTCRateType").isEmpty()){
+						 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+						 
+					}
+					 
+					if(jsonObj.has("ExpectedCTC") && jsonObj.getString("ExpectedCTC") != null && !jsonObj.getString("ExpectedCTC").isEmpty()){
+						 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+						 
+					}
+					
+					if(jsonObj.has("expectedCTCRatePer") && jsonObj.getString("expectedCTCRatePer") != null && !jsonObj.getString("expectedCTCRatePer").isEmpty()){
+						 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+					}
+					
+					if(jsonObj.has("NoticePeriod") && jsonObj.getString("NoticePeriod") != null && !jsonObj.getString("NoticePeriod").isEmpty()){
+						 candidate.setNoticePeriod(jsonObj.getString("NoticePeriod"));
+						 
+					}
+					
+					if(jsonObj.has("Designation") && jsonObj.getString("Designation") != null && !jsonObj.getString("Designation").isEmpty()){
+						candidate.setDesignation(jsonObj.getString("Designation"));
+					}
+					 if(jsonObj.has("WorkExperience") && jsonObj.getString("WorkExperience") != null && !jsonObj.getString("WorkExperience").isEmpty()){
+						 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+					 }
+					 
+					 if(jsonObj.has("monthExp") && jsonObj.getString("monthExp") != null && !jsonObj.getString("monthExp").isEmpty()){
+						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
+					 }
+					 
+					 candidate.setDesignationType("Full Time");
+					
+					if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null && !jsonObj.getString("primarySkill").isEmpty()){
+						 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+					}
+					 
+					 if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") != null && !jsonObj.getString("candidateSkills").isEmpty()){
+						  
+						 String candidateSkills = null;
+							try{
+					    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+					    		   candidateSkills = jsonArray.toString();
+					    	  }
+					    	  catch(JSONException e){
+					    		  candidateSkills= jsonObj.getString("candidateSkills");
+					    	  }
+							candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+							
+						 
+						 candidate.setSkillsName(candidateSkills);
+						 
+					
+					 }
 				
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setStatus(1);
@@ -1542,6 +1677,17 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		}
 		String datesStrLisr = dateStr.stream().collect(Collectors.joining(","));
 		return datesStrLisr;
+	}
+	
+	public void onboardCreationCandidateGeneratedIdUpdated(Candidate candidate, OrgLocations locations) throws Exception{
+		
+		if(candidate!= null && (candidate.getGeneratedId() == null || candidate.getGeneratedId().isEmpty())){
+			StringBuilder generatedIDBuild = new StringBuilder();
+			candidate.setGeneratedId(generatedIDBuild.append(locations.getGeneratedUserId()).append("CD1").toString());
+			candidateService.saveOrUpdateCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		}
+		
 	}
 	
 	public void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {

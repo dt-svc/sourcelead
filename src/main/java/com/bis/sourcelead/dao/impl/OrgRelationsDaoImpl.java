@@ -835,6 +835,27 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			
 			return orgRelations;
 	}
+	
+	
+	@Override
+	@Transactional
+	public OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.locationId  left join fetch orgrelation.responderLocationId "
+	      		+ " where (orgrelation.locationId = :locationId and orgrelation.responderLocationId = :responderLocationId and orgrelation.responderType = 'Vendor') or (orgrelation.responderLocationId = :locationId and orgrelation.locationId = :responderLocationId and orgrelation.initiatorType = 'Vendor' )");
+		  
+	       List<OrgRelations> orgRelationsList = session.createQuery(query.toString()).setLong("locationId", locationId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
+	       
+	       OrgRelations orgRelations = null;
+			if(orgRelationsList != null && !orgRelationsList.isEmpty())
+			{
+				orgRelations = (OrgRelations) orgRelationsList.iterator().next();
+			}
+			
+			return orgRelations;
+	}
 
 	@Override
 	@Transactional
@@ -1107,8 +1128,8 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		logger.debug("In OrgRelations getAllClientsByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<OrgRelations> clientsList = null;
-		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
-		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		Query clientsListQuery= session.createQuery("from OrgRelations orgrelation where (orgrelation.locationId.id = :orgLocationId and orgrelation.initiatorType = 'Vendor' and orgrelation.responderLocationId.orgLocationName= :name) or (orgrelation.responderLocationId.id = :orgLocationId and orgrelation.responderType = 'Vendor' and orgrelation.locationId.orgLocationName= :name )");
+		clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
 		OrgRelations orgLocation = null;
 		if(clientsList != null && !clientsList.isEmpty())
 		{
@@ -1116,5 +1137,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		}
 		return orgLocation;
 	}
+
+	
 	
 }

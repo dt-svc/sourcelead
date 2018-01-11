@@ -65,6 +65,7 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
+			requirementIndex.setUrl(requirement.getUrl());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
 			if(requirement.getMedicalClearence() != null){
 			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());

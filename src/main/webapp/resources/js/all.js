@@ -2331,6 +2331,8 @@ var contactimporter = (function () {
             authmsg = authmsg.replace("{0}", convertName(service));
         }
         if (service == "csv") {
+        	  $("#myModal").addClass('modal');
+        	  $("#myModal").show().removeClass("fade");
             socialinviter.modalSI.load({ "title": convertName(service), "icon": icons[service], "body": "<div class='CI-loading'>Please authenticate your " + convertName(service) + " account, make sure the authenticating window is not blocked by popup blocker.</div>" }, "show");
             $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
             scrollToWindow();
@@ -4435,8 +4437,8 @@ var modalSI = (function () {
             attachModalEvents();
             $(".modal-SI-CI").hide();
             $(".modal-SI-CI-BG").hide();
-            $("#myModal").show().removeClass("fade");
            
+          
             
             if (type == "large") {
                 $(".modal-SI-CI").find(".modal-SI-holder").removeClass("modal-SI-small");

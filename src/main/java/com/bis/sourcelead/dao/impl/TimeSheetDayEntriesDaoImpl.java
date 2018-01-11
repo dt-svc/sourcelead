@@ -1,10 +1,15 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,15 +21,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesHistoryDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimeSheetDayEntriesHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.OrgLocationService;
 
 @Repository
 public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired
 	private TimeSheetDayEntriesHistoryDao timeSheetDayEntriesHistoryDao;
@@ -58,7 +69,6 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TimeSheetDayEntries"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
-		logger.info("saved timesheet day entries");
 		return timeSheetDayEntries;
 		
 	}
@@ -171,6 +181,116 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
              tde = timesheetEntriesList.iterator().next();
 		}
 		return tde;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<TimeSheetDayEntries> getTimesheetDayEntriesByTaskUUIDAndUserId(String taskUUID, Long userId,Long locationId,int start, int length, String searchValue) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		ResponseList<TimeSheetDayEntries> response = new ResponseList<>();
+		Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+		StringBuilder searchQuery = new StringBuilder();
+		StringBuilder searchCountQuery = new StringBuilder();
+		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
+			  Matcher matcher = pattern.matcher(searchValue);
+			 searchQuery.append(" and ( ");
+			 searchCountQuery.append(" and ( ");
+			 searchQuery.append("  user.firstName like '%" + searchValue + "%' ")
+						.append("OR user.lastName like '%" + searchValue + "%' ")
+						.append("OR (concat(user.firstName,user.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+			 			.append("OR tde.timesheetSubmissions.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus  like '%"+ searchValue +"%'  and sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = projects.id and pah.status != '0'))");
+				
+			 searchCountQuery.append("  tde.timesheetSubmissions.projectMembers.employee.user.firstName like '%" + searchValue + "%' ")
+				.append("OR tde.timesheetSubmissions.projectMembers.employee.user.lastName like '%" + searchValue + "%' ")
+				.append("OR (concat(tde.timesheetSubmissions.projectMembers.employee.user.firstName,tde.timesheetSubmissions.projectMembers.employee.user.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+	 			.append("OR tde.timesheetSubmissions.id IN(select sah.submissionId.id from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus  like '%"+ searchValue +"%'  and sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectId.id = tde.projectTask.projectId.id and pah.status != '0'))");
+			   if(matcher.matches() == true) {
+					java.sql.Date sqlDate = null;
+					if(searchValue.contains("/")||(searchValue.contains("-"))) {
+						String replacedValue = searchValue.replaceAll("/", "-");
+						    OrgLocations orgLoc = orgLocationService.getOrgLocations(locationId);
+							SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					        java.util.Date utilDate = format.parse(replacedValue);
+					        sqlDate = new java.sql.Date(utilDate.getTime());
+					}
+					searchQuery.append("OR tde.timesheetDate like '" + sqlDate + "' ");
+					searchCountQuery.append("OR tde.timesheetDate like '" + sqlDate + "' ");
+				}
+				searchQuery.append(" ) ");
+				searchCountQuery.append(" ) ");
+				
+		}
+		
+		String query = "from  TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch tde.timesheetSubmissions ts left join fetch ts.projects projects left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch can.masterCandidateId left join fetch  pm.employee emp left join fetch emp.user user  "
+				+ " where  pt.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and"
+				+ " ( "
+				
+				+"  ( user.id = :userId ) "
+				+" OR "
+				    /*
+				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				    */
+				+ "  ( "
+				+ "   :userId IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = projects.id ) "
+				+ "   ) "
+				    /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "   )" ;
+		
+		String orderQuery = "order by tde.timesheetDate ASC"; 
+
+		String queryCount = " Select Count (*) from  TimeSheetDayEntries tde  where  tde.projectTask.projectTasksUUID = :taskUUID and tde.isManuallyAdded = 'Y' and "
+                + " ( "
+				+"  ( tde.timesheetSubmissions.projectMembers.employee.user.id = :userId ) "
+				+" OR "
+				    /*
+				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+				    */
+				+ "  ( "
+				+ "   :userId IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = tde.projectTask.projectId.id ) "
+				+ "   ) "
+				    /*
+					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+					 */
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "   ) " ;
+		
+		Query query1 = session.createQuery(query+" "+searchQuery.toString()+" "+orderQuery).setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID);
+		if(length>0){
+			query1.setFirstResult(start).setMaxResults(length);
+		}
+		List<TimeSheetDayEntries> tslist = query1.setCacheable(true).list();
+		response.setData(tslist);
+		if(length>0){
+			Query countQ = session.createQuery(queryCount+" "+searchCountQuery.toString());
+			 countQ.setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID).setCacheable(true);
+			
+			List<Long> countList  = null;
+			if(countQ != null) {
+				countList  = countQ.list();
+			}
+			int recordsTotal=0;
+			if(countList != null && !countList.isEmpty()) {
+				recordsTotal  =  countList.iterator().next().intValue();
+			}
+			response.setRecordsTotal(recordsTotal);
+			
+			int recordsFiltered = 0;
+			if(tslist != null && !tslist.isEmpty()) {
+				recordsFiltered = tslist.size();
+			}
+			if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
+				response.setRecordsFiltered(recordsFiltered);
+			}
+			else {
+				response.setRecordsFiltered(recordsTotal);
+			}
+		}
+		
+		return response;
 	}
 
 	

@@ -55,7 +55,7 @@ public class ApplicantsBackoutReportDaoImpl implements ApplicantsBackoutReportDa
 		for(String type:typeName) {
 		if(searchDates != null) {
 			 query ="select count(*) from RequirementSubmission rs where rs.submissionStatus ='BACKOUT' and rs.backOutCategoryType = '"+type+"' and rs.requirement.id IN (:jobIds) "
-					+ " and (rs.createdDate BETWEEN :startDate and :endDate)";
+					+ " and date(rs.createdDate) BETWEEN :startDate and :endDate";
 			 submissionCount =  session.createQuery(query.toString()).setParameterList("jobIds", jobIdList).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
 		}else {
 			 query ="select count(*) from RequirementSubmission rs where rs.submissionStatus ='BACKOUT' and rs.backOutCategoryType = '"+type+"' and rs.requirement.id IN (:jobIds) ";

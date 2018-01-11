@@ -69,7 +69,7 @@
 	          </c:if>
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" src="<c:url value='${sourceleadUrl}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -118,7 +118,7 @@
 		  </div>		  
 		  
 <div class="welBtns">
-	<input type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/onboardingCandidateSetp3'/>'"  value="Previous"><input type="button" value="Finish" class="Brig">
+	<input type="button" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateStep3'/>'"  value="Previous"><input type="button" value="Finish" class="Brig">
 	<div class="clearfix"></div>
 </div>
 		  

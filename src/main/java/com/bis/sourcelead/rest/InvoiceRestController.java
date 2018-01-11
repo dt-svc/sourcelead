@@ -347,35 +347,23 @@ public class InvoiceRestController {
 		ResponseList<BillingDTO> responseList = new ResponseList<>();
 		
 		
-		// TODO do not delete until sorting  work pending @Rajashekar
-	/*	String[] tableColumns = {"invoiceId", "clientName", "clientContact", "projectName", "invoiceDate", "inoviceTotal","inoviceDue","dueDate","inoviceStatus","paymentStatus","action"};
-	     int sortColumnIndex = 1; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
-		if(invoiceDTO.getOrder() != null && !invoiceDTO.getOrder().isEmpty()) {
-			sortColumnIndex = Integer.parseInt(invoiceDTO.getOrder().get(0).get("column"));
-			sortColumnOrder = invoiceDTO.getOrder().get(0).get("dir");
-		}
-		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		invoiceDTO.setSortOrder(sortColumnOrder);*/
-		
-		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateTime zoned = new DateTime();
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
 		Date endDateUTC = null;
 		Date startDateUTC = null;
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDayWisetype()) && !"".equals(invoiceDTO.getDayWisetype())) {
 			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
+//			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
+			endDateUTC = TZ_DF_TS.parse(endDate);
 		}
 		if (null != invoiceDTO.getDayWisetype() && !"".equals(invoiceDTO.getDayWisetype())) {
 			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDayWisetype())) {
 			String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
+//				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
+				startDateUTC = TZ_DF_TS.parse(startDate);
 			 if (Constants.ONE_MONTH.equals(invoiceDTO.getDayWisetype())) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
@@ -394,16 +382,16 @@ public class InvoiceRestController {
 			}
 		}else {
 			if (StringUtils.isNotBlank(invoiceDTO.getStartDate()) && StringUtils.isNotBlank(invoiceDTO.getEndDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getStartDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getEndDate())) {
-				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
 				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getStartDate());
 				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getEndDate());
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-				endDateUTC = TZ_DF_TS.parse(endDateString);
+//				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+//				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+				endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 			}else{
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
@@ -493,7 +481,7 @@ public class InvoiceRestController {
 					billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
 				}
 				
-				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+				if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
 						!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
@@ -1253,25 +1241,25 @@ public class InvoiceRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				invoiceDTO.setSearchValue("");
 			    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-				DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-				DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				DateTime zoned = new DateTime();
+				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+				DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
 				Date endDateUTC = null;
 				String filterDate = null;
 				Date startDateUTC = null;
 				
 				if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDurationType())) {
 					String endDate = outputFormatter1.print(zoned);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
+//					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
+					endDateUTC = TZ_DF_TS.parse(endDate);
 				}
 				if (null != invoiceDTO.getDurationType() && !"".equals(invoiceDTO.getDurationType())) {
 					if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(invoiceDTO.getDurationType())) {
 				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
+//				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
 				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
+				startDateUTC = TZ_DF_TS.parse(startDate);
 			    if (Constants.ONE_MONTH.equals(invoiceDTO.getDurationType())) {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 				}
@@ -1289,16 +1277,16 @@ public class InvoiceRestController {
 				}
 				}else {
 					if (!"".equalsIgnoreCase(invoiceDTO.getExportStartDate()) && !"".equalsIgnoreCase(invoiceDTO.getExportEndDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getExportStartDate()) && !"undefined".equalsIgnoreCase(invoiceDTO.getExportEndDate())) {
-							DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-							DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+							DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd");
+							DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd");
 							Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getExportStartDate());
 							Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),invoiceDTO.getExportEndDate());
 							String customStartTimeStr = TZ_DF_CSD.format(startTime);
 							String customEndTimeStr = TZ_DF_CED.format(endTime);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-							String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
-							endDateUTC = TZ_DF_TS.parse(endDateString);
+//							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+//							String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+							startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 						}
 					}
 				}
@@ -1344,7 +1332,7 @@ public class InvoiceRestController {
 		for(Invoice invoice : invoiceList.getData()){
 			
 			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
-					Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+					(Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))){
 				
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				String currentDate = sdf.format(new Date());
@@ -1368,7 +1356,7 @@ public class InvoiceRestController {
 			}
 			
 			
-			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && Constants.INVOICE_STATUS_PAID.equalsIgnoreCase((invoice.getPaymentStatus())) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase((invoice.getPaymentStatus())) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))){
 				Double paidAmount1 = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
 				String convertedPaidAmount = String.valueOf(paidAmount1);
 				totalPaidAmount = totalPaidAmount + Double.parseDouble(convertedPaidAmount);
@@ -1433,8 +1421,8 @@ public class InvoiceRestController {
 	{
 		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
 		String yesterDayDate = outputFormatter.print(yesterDayZoned);
-		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
-		return TZ_DF_TS.parse(startDateString);
+//		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
+		return TZ_DF_TS.parse(yesterDayDate);
 	}
 	@RequestMapping(value = "/getClientBasedInvoiceList", method = RequestMethod.POST)
 	@ResponseBody

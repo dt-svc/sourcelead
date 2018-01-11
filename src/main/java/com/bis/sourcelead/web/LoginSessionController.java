@@ -53,6 +53,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ConnectionsService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -167,7 +168,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	OrgService orgService;
-
+	
+	@Autowired
+	ConnectionsService connectionsService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -486,9 +489,11 @@ public class LoginSessionController {
 				StringBuilder redirectUrl = new StringBuilder();
 				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
 					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}
 				else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
 					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}
 				else{
 					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
@@ -921,9 +926,15 @@ public class LoginSessionController {
 		//get notification count
 		String orgCode = loginOrgCode;
 		String locationCode = loginOrgLocation;
+		
 		Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
+		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
+		
+		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
+		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		
@@ -1160,7 +1171,7 @@ public class LoginSessionController {
     }
   
   
-  @RequestMapping(value = "/app/userEnrolledOrgLocations" , method = RequestMethod.POST)
+  @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
   public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);

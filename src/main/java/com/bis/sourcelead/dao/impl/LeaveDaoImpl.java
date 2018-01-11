@@ -2,17 +2,10 @@ package com.bis.sourcelead.dao.impl;
 
 
 import java.text.ParseException;
-
 import java.util.ArrayList;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,10 +28,9 @@ import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -56,6 +48,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	ProjectTasksService projectTasksService;
 
 	
 	@Override
@@ -652,5 +647,17 @@ public class LeaveDaoImpl implements LeaveDao{
 	    	qry = session.createQuery(query).setString("holId", id);
     	}
 		qry.executeUpdate();
+	}
+
+
+	@Override
+	@Transactional
+	public List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Leave> list = null;
+		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status =:status";
+		list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).list();
+		return list;
 	}
 }

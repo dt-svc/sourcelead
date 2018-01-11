@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
+import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
@@ -201,6 +204,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 @Autowired
 	 private ProjectCustomFieldDataService projectCustomFieldDataService;
 	 
+	 @Autowired
+	 private ProjectTasksDao tasksDao;
+	 
+	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
 			
@@ -227,7 +234,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
 		projects.setUpdatedDate(commonUtil.currentDate());
-		return projectsDao.saveProject(projects);
+		return  projectsDao.saveProject(projects);
 	}
 
 	@Override
@@ -679,15 +686,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 * setting default tasks for every project
 	 * @param projects
 	 * @return set
+	 * @throws Exception 
 	 */
-	private Set<ProjectTasks> getDefaultTasksForProject(Projects projects) {
+	private Set<ProjectTasks> getDefaultTasksForProject(Projects projects) throws Exception {
 		Set<ProjectTasks> set = new HashSet<>();
 		String[] defaultTasks = Constants.DEFAULT_TASKS;
+		int generatedId = 1;
 		for (String taskName : defaultTasks) {
 			ProjectTasks projectTasks = new ProjectTasks();
 			projectTasks.setTaskName(taskName);
 			projectTasks.setDescription(taskName);
-			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName)) {
+			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName) && !Constants.SYSTEM_TASK_NONBILLABE.equalsIgnoreCase(taskName)) {
 				projectTasks.setBillableType(Constants.TASK_NON_BILLABLE);
 			} else {
 				projectTasks.setBillableType(Constants.TASK_BILLABLE);
@@ -699,15 +708,45 @@ public class ProjectsServiceImpl implements ProjectsService{
 			LookUpData taskStatusLookUpData = new LookUpData();
 			taskStatusLookUpData.setId(1069L);
 			projectTasks.setTaskStatus(taskStatusLookUpData);
+			projectTasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
 			projectTasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
 			projectTasks.setProjectId(projects);
 			set.add(projectTasks);
+			generatedId++;
 		}
 		return set;
 	}
 	
+	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
+		Integer generatedIdcount = 0;
+		Long number = 1L;
+		String requirementId = null;
+		 
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(projects.getProjectShortCode());
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Integer checkNumber = tasksDao.getProjectTasksCountByProjectId(projects.getId()); 
+		if (checkNumber == null) {
+			requirementId = number.toString();
+		} else {
+			Integer reqId = checkNumber + 1;
+			requirementId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+		
+		return sbuilder.append(convetredRequirementsId).toString();
+	}
 	
 	private Set<ProjectClients> getProjectClientsForProject(ProjectsDTO projectsDTO,Projects projects,OrgLocations orglocations,User user) throws Exception {
 		Set<ProjectClients> projectClientsSet = new HashSet<>();
@@ -1143,6 +1182,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectsDTO.setOrgLocationId(projects.getOrgLocationsId().getId());
 		projectsDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
 		projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
+		projectsDTO.setProjectUUID(projects.getProjectUUID());
 		if(projects.getFlatPercent() != null) {
 			projectsDTO.setFlatPercent(projects.getFlatPercent().toString());
 		}
@@ -2457,6 +2497,17 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			@Override
 			public Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId, String userCode) throws Exception {
 				return projectsDao.getProjectCountByOrgLocationIdAndUserCode(orgLocationId, userCode);
+			}
+
+			@Override
+			public Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception {
+				return projectsDao.getProjectByOrgLocationsIdAndProjectName(orgLocationsId,projectName);
+			}
+
+			@Override
+			public List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,
+					String projectClientUUID) throws Exception {
+				return projectsDao.getAllProjectsByOrgLocationIdAndStatusForTransfer(orgLocationId, projectClientUUID);
 			}
 
 

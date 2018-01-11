@@ -14,12 +14,12 @@ window.onload = function() {
 	var password = '${password}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	userName = userName.trim();
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+// 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/userEnrolledOrgLocations?userName="+userName+"&password="+password,        
+	       url: sourceleadUrl+"/ws/userEnrolledOrgLocations?userName="+userName+"&password="+password,        
 	       success :function(data) {
-	    	   $("#loading").removeAttr('style');
+// 	    	   $("#loading").removeAttr('style');
 	    	   $("#enrolledLocDiv").removeAttr("style");
 	    	   $("#enrolledLocDiv").attr("style","display : block");
 	    	   $("#enrolledLocDiv").empty();
@@ -38,7 +38,7 @@ function getUserDetailsByUserRoleId(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#twoStepAuthDiv").removeAttr("style");
@@ -65,7 +65,7 @@ function goToLocations(){
     $("#enrolledLocDiv").attr("style","display : block");
 	$("#twoStepAuthDiv").removeAttr("style");
     $("#twoStepAuthDiv").attr("style","display : none");
-    $("#loading").removeAttr("style");
+//     $("#loading").removeAttr("style");
     $(".signWrap").addClass("orgOutWrap");
     $("div.raBtnActive").children().removeAttr("checked");
  	$(".orgCta").parent().find('div.raBtnActive').removeClass('raBtnActive');

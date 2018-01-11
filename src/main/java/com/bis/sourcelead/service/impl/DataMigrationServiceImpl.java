@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,9 +41,11 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadFormFields;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -56,6 +59,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	private RequirementService requirementService;
+
+	@Autowired
+	private SubmissionTemplateService submissionTemplateService;
 	
 	@Autowired
 	private DataMigrationCommonUtil dataMigrationCommonUtil;
@@ -64,7 +70,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	private String staticPath;
 	
 	@Override
-	public Map<String, String> getfileData(String filePath) throws Exception
+	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception
 	{
 		FileInputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
 		Workbook workbook = null;
@@ -78,35 +84,26 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			workbook = new XSSFWorkbook(inputStream);
 			objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
 		}
-		
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		List<String> fieldList = new ArrayList<String>();
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
-			Iterator<Cell> cellIterator = nextRow.cellIterator();
-			while (cellIterator.hasNext()) {
-				Cell cell = cellIterator.next();
-				String cellValueStr = objDefaultFormat.formatCellValue(cell,objFormulaEvaluator);
-				if (!fieldList.contains(CellReference.convertNumToColString(cell.getColumnIndex())) && StringUtils.isNotEmpty(cellValueStr))
-					mapExcelColumns(cellValueStr, cell, dataWithCellId, fieldList);
+			if(nextRow.getRowNum()+1 == Integer.parseInt(headerPosition) ) {
+				Iterator<Cell> cellIterator = nextRow.cellIterator();
+				while (cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					String cellValueStr = objDefaultFormat.formatCellValue(cell,objFormulaEvaluator);
+					if (!fieldList.contains(CellReference.convertNumToColString(cell.getColumnIndex())) && StringUtils.isNotEmpty(cellValueStr))
+						dataWithCellId.put(CellReference.convertNumToColString(cell.getColumnIndex()) + cell.getRowIndex(), cellValueStr);
+						fieldList.add(CellReference.convertNumToColString(cell.getColumnIndex()));
+				}
 			}
 		}
 		workbook.close();
 		inputStream.close();
 		return dataWithCellId;
-	}
-	
-	private void mapExcelColumns(String cellValueStr, Cell cell, Map<String, String> dataWithCellId, List<String> fieldList)
-	{
-		mapCellValueType(cellValueStr, cell, dataWithCellId, fieldList);
-	}
-	
-	private void mapCellValueType(String cellValueStr, Cell cell, Map<String, String> dataWithCellId, List<String> fieldList)
-	{
-		dataWithCellId.put(CellReference.convertNumToColString(cell.getColumnIndex()) + cell.getRowIndex(), cellValueStr);
-		fieldList.add(CellReference.convertNumToColString(cell.getColumnIndex()));
 	}
 
 	@Override
@@ -138,62 +135,69 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		}
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> rowIterator = firstSheet.iterator();
-		int rowId = 0;
+		int colCount = 0;
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
-			if (rowId == 0) {
-				rowId = rowId + 1;
-				continue;
-			}
-			HashMap< String, String> errorSet = new HashMap< String, String>();
-			JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
-			DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
-			JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
-			dataMigrationDTOJson.keys().forEachRemaining(k -> {
-				try {
+			if(nextRow.getRowNum()+1 == Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
 					Iterator<Cell> cellIterator = nextRow.cellIterator();
 					while (cellIterator.hasNext()) {
 						Cell cell = cellIterator.next();
-						if (dataMigrationDTOJson.get((String) k) != null) {
-							if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
-								dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
-								//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+						colCount++;
+					continue;
+				}
+			}
+			if(nextRow.getRowNum()+1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
+				HashMap< String, String> errorSet = new HashMap< String, String>();
+				JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
+				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
+				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
+				
+				Iterator<?> keys = dataMigrationDTOJson.keys();
+	
+				while( keys.hasNext() ) {
+				    String k = (String)keys.next();
+				    	Iterator<Cell> cellIterator = nextRow.cellIterator();
+						while (cellIterator.hasNext()) {
+							Cell cell = cellIterator.next();
+							if (dataMigrationDTOJson.get((String) k) != null) {
+								if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+									dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+									//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+								}
 							}
 						}
+				}
+				
+				switch(dataMigrationDTO.getUploadType()){  
+			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
+			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
+			    }
+				
+				
+				if(errorSet.isEmpty()){
+					mapToEntities(dataMigrationDTOJsonCopy.toString(), user, orgLocation, dataMigrationDTO.getUploadType());
+					importStatus = "success";
+				}else{
+					int errorCount = 0;
+					StringBuilder errorSB = new StringBuilder();
+					for (Map.Entry<String, String> error : errorSet.entrySet()) {
+						errorCount++;
+						errorSB.append(errorCount).append(") ").append(error.getValue()).append("\n");
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
+						CellStyle style = workbook.createCellStyle();
+				        Font font = workbook.createFont();
+				        style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+				        font.setColor(HSSFColor.RED.index);
+				        style.setFont(font);
+				        style.setWrapText(true);
+					 	nextRow.createCell(colCount+5).setCellValue(errorSB.toString());
+					 	nextRow.getCell(colCount+5).setCellStyle(style);
+	
+				        FileOutputStream outputStream = new FileOutputStream(new File(ac + dataMigrationDTO.getExportFilePath()));
+				        workbook.write(outputStream);
+				        //outputStream.close();
+				        importStatus = dataMigrationDTO.getExportFilePath();
 				}
-			});
-			
-			switch(dataMigrationDTO.getUploadType()){  
-		    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
-		    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
-		    }
-			
-			
-			if(errorSet.isEmpty()){
-				mapToEntities(dataMigrationDTOJsonCopy.toString(), user, orgLocation, dataMigrationDTO.getUploadType());
-			}else{
-				int errorCount = 0;
-				StringBuilder errorSB = new StringBuilder();
-				for (Map.Entry<String, String> error : errorSet.entrySet()) {
-					errorCount++;
-				    /*errorSB.append(errorCount).append(") ").append(error.getKey()).append(" : ").append(error.getValue()).append(".");*/
-					errorSB.append(errorCount).append(") ").append(error.getValue()).append("\n");
-				}
-					CellStyle style = workbook.createCellStyle();
-			        Font font = workbook.createFont();
-			        font.setColor(HSSFColor.RED.index);
-			        style.setFont(font);
-			        style.setWrapText(true);
-				 	nextRow.createCell(0).setCellValue(errorSB.toString());
-				 	nextRow.getCell(0).setCellStyle(style);
-
-			        FileOutputStream outputStream = new FileOutputStream(new File(ac + dataMigrationDTO.getExportFilePath()));
-			        workbook.write(outputStream);
-			        //outputStream.close();
-			        importStatus = dataMigrationDTO.getExportFilePath();
 			}
 		}
 		workbook.close();
@@ -211,9 +215,34 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 				reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
-				reqDTO.setSaveType("save");
+				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
+					reqDTO.setSaveType("submitForApproval");
+				}
+				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("DRAFT")) {
+					reqDTO.setSaveType("draft");
+				}
+				if(reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("OPEN")) {
+					reqDTO.setSaveType("save");
+				}
+				
 				if(reqDTO.getParallelApprover() != null){
 					reqDTO.setApprover("Parallel");
+				}
+				if(reqDTO.getCoolingOff() == null || reqDTO.getCoolingOff() == "" || reqDTO.getCoolingOff() == "null"){
+					reqDTO.setCoolingOff(orgLocation.getCoolingOffPeriod());
+				}
+				
+				if(StringUtils.isNotEmpty(reqDTO.getClientSubmissionForm()) && StringUtils.isNotEmpty(reqDTO.getSelectContact()) && StringUtils.isNotEmpty(reqDTO.getSelectClient())){
+					reqDTO.setIsClient("Y");
+					reqDTO.setApplicationFrom(null);
+				}else if(StringUtils.isEmpty(reqDTO.getIsClient()) || !reqDTO.getIsClient().equalsIgnoreCase("Y")){
+					if(StringUtils.isEmpty(reqDTO.getApplicationFrom())) {
+						SubmissionTemplate   submissionTempletes = submissionTemplateService.getDefaultSubmissionTemplateByOrgLocationId(orgLocation.getId());
+						if(submissionTempletes != null) {
+							reqDTO.setApplicationFrom(submissionTempletes.getId().toString());
+						}
+						
+					}
 				}
 				Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
 		    break;

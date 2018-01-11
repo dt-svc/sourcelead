@@ -60,7 +60,7 @@
 	          </c:if>
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" src="<c:url value='${sourceleadUrl}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -83,6 +83,7 @@
 		  
 		  <div class="welCo1"> 
 			<div id="loading"></div>
+			<h5>Offboard Task List</h5>
 				<div class="step4">
 					<c:if test="${tasksListSize > 0}">
 					<c:forEach var="tasks" items="${tasksList}">

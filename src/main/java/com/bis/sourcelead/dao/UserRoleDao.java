@@ -94,6 +94,8 @@ public interface UserRoleDao {
 	 */
 	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception;
+	
 	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception;
 	
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
@@ -115,5 +117,7 @@ public interface UserRoleDao {
 	public UserRole getUserRoleByVerficationUUID(String uuid);
 	
 	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
+	
+	List<UserRoleDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
 
 }

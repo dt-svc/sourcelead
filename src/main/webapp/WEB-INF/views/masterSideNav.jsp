@@ -52,7 +52,7 @@
  		</c:if>
         
              
-         <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile"><span><i class="fa fa-id-card-o"></i></span><i class="subMenu">Profile</i></a></li> 
+        <%--  <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile"><span><i class="fa fa-id-card-o"></i></span><i class="subMenu">Profile</i></a></li> --%> 
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
@@ -295,7 +295,7 @@
 
           </c:forEach>
          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
-          <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
+          <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Payroll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
           	</c:if>	
           	
           	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_USER'}">
@@ -359,4 +359,19 @@
 
  
   </aside>
-  <!-- Side Nav Bar --> 
+  <!-- Side Nav Bar -->
+  
+  <script>
+$(function(){
+	resizeFunction();
+});
+function resizeFunction() {
+	var sidenavHeight = $(window).innerHeight();
+	$(".sidenav_inner").height(sidenavHeight-75);
+}
+$(window).resize(function(){
+	resizeFunction();
+});
+</script>
+  
+  

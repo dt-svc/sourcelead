@@ -215,13 +215,13 @@ public class Projects implements Serializable{
   
 
     @NotFound(action=NotFoundAction.IGNORE)
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="projects")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;
     
     @NotFound(action=NotFoundAction.IGNORE)
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="projectId")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocumentFolder> ProjectDocumentFolder;
@@ -584,7 +584,7 @@ public class Projects implements Serializable{
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = null;
-			if(StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
 				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
 			}
 			else{
@@ -595,7 +595,7 @@ public class Projects implements Serializable{
 		return startDateStr;
 	}
 
-	public void setStartDateStr(String startDateStr) {
+	public void setStartDateStr(String startDateStr) { 
 		this.startDateStr = startDateStr;
 	}
 

@@ -31,7 +31,7 @@
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3">Time in<span class="text-danger paddingLeft">*</span></label>
+       <label class="col-md-3">Time In<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
        <input type="text" class="timepicker form-control" id="datetimepicker2"
                name="timeIn" placeholder="HH:MM" value="${shift.timeIn}" field-name="Time in" onblur="checktime()" data-validation = "required">

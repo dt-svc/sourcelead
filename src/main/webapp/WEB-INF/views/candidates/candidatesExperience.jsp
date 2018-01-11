@@ -208,7 +208,7 @@ function closeCertificatePopup(){
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <p class="ml">Start Date</p>';
 		result = result + '	                 <div class="col-md-6">';
-		result = result	+ '	                   <select class="newSelect"  name="startMonth" id="startMonth" onClick="" onChange="monthIfYearRequired();">';
+		result = result	+ '	                   <select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">';
 		result = result	+ '	                       <option value="">Select Month</option>';
 		result = result	+ ' 					   <option value="1&January">January</option>';
 		result = result	+ '	                       <option value="2&February">February</option>';
@@ -234,7 +234,7 @@ function closeCertificatePopup(){
 		result = result + '	                 <div class="clearfix mb10 endDate">';
 		result = result + '	                 <p class="ml">End Date</p>';
 		
-		result = result	+ '	                 <div class="col-md-6 id = "endMR"">';
+		result = result	+ '	                 <div class="col-md-6 id = "endMR">';
 		result = result	+ '	                    <select class="newSelect" class="required" field-name="End Month" name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
 		result = result	+ '	                       <option value="">Select Month</option>';
 		result = result	+ '	                       <option value="1&January">January</option>';
@@ -352,7 +352,8 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result + '	                 <p class="ml">Start Date</p>';
 								result = result	+ '	                 <div class="col-md-6">';
-								result = result	+ '	                   <select class="newSelect"  value="'+json.startMonth+'" name="startMonth" id="startMonth" onchange="monthIfYearRequired();">';
+								result = result	+ '	                   <select class="newSelect"  name="startMonth" id="startMonth" onchange="monthIfYearRequired();">';
+								result = result	+ '<option value="">Select Month</option>';
 								if (json.startMonth == "January") {
 									result = result + ' <option '+ (json.startMonth == "January" ? "selected" : '') +' value="January">January</option>';
 								} else {
@@ -434,7 +435,7 @@ function closeCertificatePopup(){
 								result = result	+ '<div id="endDateEditDiv">';
 								result = result	+ '<div class="clearfix mb10 endDate">';
 								result = result	+ '<p class="ml">End Date</p>';
-								result = result	+ '<div class="col-md-6 id = "endMR"">';
+								result = result	+ '<div class="col-md-6 id = "endMR">';
 								result = result	+ '<select class="newSelect" selected  class="required" field-name="End Month" name="endMonth" id="endMonthEdit" onchange="monthIfYearRequired();">';
 								result = result	+ '<option value="">Select Month</option>';
 								
@@ -511,7 +512,7 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="col-md-6">';
 								
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control input-sm" value="'+json.endYear+'" id="empEditEndDate" name="endYearEdit"   placeholder="Enter Year"  field-name="end Year" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control input-sm" value="'+json.endYear+'" id="empEditEndDate" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 								}else{
 									result = result	+ '<input type="text" max class="form-control input-sm" value="" id="empEditEndDate" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
 								}
@@ -815,11 +816,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#candidateExperianceEdit_form').validate(false,
-				validationSettings)) {
-
-			var frm = $('#candidateExperianceEdit_form').serializeFormJSON();
-
+		if ($('#candidateExperianceEdit_form').validate(false,validationSettings)) {
 			var formData = getFormData("candidateExperianceEdit_form");
 			var startYear = document.getElementById("startYear").value;
 			var endYear = document.getElementById("empEditEndDate").value;
@@ -829,7 +826,7 @@ function removeEmployer(candidateemployerId, candidateId){
 				
 			}
 			else{
-	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
+				$.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(data) {
 	        	
 	        	$(".edit-details").toggleClass("edit-details-active");
 				$(".close-div")	.click(function() {

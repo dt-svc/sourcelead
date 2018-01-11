@@ -2,21 +2,17 @@ package com.bis.sourcelead.service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
-import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
 public interface UserRoleService {
@@ -114,6 +110,8 @@ public interface UserRoleService {
 	 */
 	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	 
+	 public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception;
+	 
 	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception;
 	 
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
@@ -139,6 +137,8 @@ public interface UserRoleService {
 	public UserRole getUserRoleByVerficationUUID(String uuid);
 	
 	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
+	
+	List<UserRoleDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
 
 
 }

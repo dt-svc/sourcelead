@@ -16,7 +16,6 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
-			getAssociateList();
 			getDepartmentsList();
 			maskme();
 			editMe(this);
@@ -162,7 +161,7 @@
                 <div class="form-group">
          <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" >
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select Employment type--</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>
@@ -295,7 +294,7 @@
 		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isMailSent" checked="checked">
-		                    Send Mail to User</label>
+		                    Send Mail to Associate</label>
 		                </div>
 		                 </div>
                </div>

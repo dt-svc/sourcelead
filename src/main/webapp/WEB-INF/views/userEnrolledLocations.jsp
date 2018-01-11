@@ -28,7 +28,7 @@
 				 <label for="userRoleId"></label>
 			</div>
 					
-			<span><img onerror="this.src='/resources/images/office-image.jpg'" src="${sourceleadUrl}/displayOrgImage/${userRole.orgLocations.org.orgCode}"></span>
+			<span><img onerror="this.src='/resources/images/office-image.jpg'" src="${sourceleadUrl}/ws/displayOrgImage/${userRole.orgLocations.org.orgCode}"></span>
 			<div class="orgtext">
 				<b>${userRole.orgLocations.orgLocationName}</b>
 				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : ""} ${userRole.orgLocations.country}</p>
@@ -55,10 +55,10 @@ function validateWhiteListIp(){
 	    	userRoleId = $(this).val();
 	    }
 	});
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+// 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/validateWhitelistIp?userRoleId="+userRoleId,        
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId,        
 	       success :function(result) {
 	    	 if(result == true){
 	    		 $('#whiteListerrDiv').find('p.jquery_form_error_message').remove();
@@ -66,7 +66,7 @@ function validateWhiteListIp(){
 	    	 }else{
 	    		$('#whiteListerrDiv').find('p.jquery_form_error_message').remove();
 	 			$("#whiteListerrDiv").append( "<p class='jquery_form_error_message'>You are not allowed to access this location</span>");
-	 			$("#loading").removeAttr('style');
+// 	 			$("#loading").removeAttr('style');
 	    	 }
 	      },
 	  }); 
@@ -87,7 +87,7 @@ function validateTwoStepAuth() {
 	if((isTwoStepEnabled == null || isTwoStepEnabled == '' || isTwoStepEnabled == 'undefined' || isTwoStepEnabled  == 'N') && (userLoginSecurity == null || userLoginSecurity == '' || userLoginSecurity == 'undefined' || userLoginSecurity  == 'N')){
 		$.ajax({
 		      type : "POST",
-		       url: sourceleadUrl+"/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
 		       success :function(result) {
 		    	 if(result == "true"){
 		    		 location.replace(sourceleadUrl+"/dashboard");   

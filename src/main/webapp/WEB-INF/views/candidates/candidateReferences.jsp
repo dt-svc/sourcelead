@@ -121,6 +121,7 @@
 						result = result + '<th>Email</th>';
 						result = result + '<th>Phone</th>';
 						result = result + '<th>Relation </th>';
+						result = result + '<th>Designation </th>';
 						result = result + '<th>Comment </th>';
 						result = result + '<th>Action </th>';
 						result = result + "  </tr>";
@@ -170,6 +171,11 @@
 								result = result
 										+ ' <td><div><span>----</span></div></td>';
 							}
+							if (opt.designation != null && opt.designation != ''&& opt.designation != 'undefined') {
+							result = result	+ ' <td><div><span title="'+opt.designation+'">'+ opt.designation + '</span></div></td>';
+						   } else {
+							result = result	+ ' <td><div><span>----</span></div></td>';
+						   }
 
 							if (opt.comment != null && opt.comment != ''
 									&& opt.comment != 'undefined') {
@@ -679,7 +685,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+												+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" placeholder="Designation *">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -717,6 +723,9 @@
 										result = result + '</div>';
 										result = result + '</form>';
 										$("#popUpDiv").empty();
+										if(json.relation == "Work Related"){
+											$("#dvDesignationEdit").show();
+									      }
 										$("#popUpDiv").append(result);
 
 										$(".edit-details").toggleClass(
@@ -752,48 +761,32 @@
 <script type="text/javascript">
 	function getRelation() {
 		var relation = $("#relation").val();
-		
 		if (relation == 'Work Related') {
 			$('#designationVal').val('');
-			$('#designationVal').attr("data-validation",
-					"required validate_Space validate_length length2-100");
+			$('#designationVal').attr("data-validation","required validate_Space validate_length length2-100");
 			$("#dvDesignation").show();
-		} else if (relation == 'Family Related') {
-
+		} else{
 			$('#designationVal').val('');
 			$("#designationVal").attr("data-validation-optional", "true");
 			$("#dvDesignation").hide();
-		}else {
-			$("#dvDesignationEdit").hide();
-			$("#designationVal").remove();
-			$('#dvDesignation').find('p.jquery_form_error_message').remove();
-			$('#designationVal').removeAttr("data-validation");
 		}
 	}
 </script>
 
 <script>
 	function editRelation(e) {
-		if (e.value == 'Work Related') {
+		var relationType = $("#relation").val();
+		if (relationType == 'Work Related') {
 			document.getElementById("dvDesignationEdit").style.display = "block";
 			$("#designationValEdit").removeAttr("data-validation-optional");
 			$('#designationValEdit').attr("data-validation",
 					"required validate_Space validate_length length2-100"); 
 			$("#designationValEdit").show();
-		} else if (e.value == 'Family Related') {
-			document.getElementById("dvDesignationEdit").style.display = "none";
-
-			$("#designationValEdit").val('');
-			$('#designationValEdit').find('p.jquery_form_error_message')
-					.remove();
-			$('#designationValEdit').removeAttr("data-validation");
 		} else {
-			$("#dvDesignationEdit").removeAttr("style");
-			$("#dvDesignationEdit").hide();
+			document.getElementById("dvDesignationEdit").style.display = "none";
 			$("#designationValEdit").val('');
-			$('#dvDesignationEdit').find('p.jquery_form_error_message')
-					.remove();
+			$('#designationValEdit').find('p.jquery_form_error_message').remove();
 			$('#designationValEdit').removeAttr("data-validation");
-		}
+		} 
 	}
 </script>

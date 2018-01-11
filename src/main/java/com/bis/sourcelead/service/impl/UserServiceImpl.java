@@ -263,6 +263,7 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
+	    
        //For saving the User Role 
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
@@ -273,7 +274,8 @@ public class UserServiceImpl implements UserService {
 					 userRole.setUserType("Employee");
 				 }
 		  }else{
-			  if(isUserActive == false){
+			  UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			  if(primaryUserRole == null){
 				  userRole.setIsPrimary(1);
 			  }else{
 				  userRole.setIsPrimary(0);
@@ -385,7 +387,7 @@ public class UserServiceImpl implements UserService {
 			 * Saving USER DB data as ElasticSearch Documents
 			 */
 			
-			if(isUserActive == false)
+			if(isUserActive == false && Constants.YES.equalsIgnoreCase(addUserDTO.getIsMailSent()))
 				registrationService.sendActivationEmail(user1);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
@@ -676,8 +678,6 @@ public class UserServiceImpl implements UserService {
 		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		 }
 		OrgLocations locations= orgLocationService.getOrgLocations(locationId);
-		 boolean isUserActive = false;
-		 isUserActive = userRoleService.isUserActive(user.getId());
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -708,7 +708,7 @@ public class UserServiceImpl implements UserService {
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
-		 if(isUserActive == false){
+		 if(password != null){
 			 globalVarsMap.put("password",password);
 		 }else{
 			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
@@ -977,7 +977,7 @@ public class UserServiceImpl implements UserService {
 			 StringBuilder rejecturlBuilder = new StringBuilder();
 			 globalVarsMap.put("rejectURL",rejecturlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptClientOrVendorInvitation?actionLink=rejectNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			 StringBuilder linkBuilder = new StringBuilder();
-			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 			
 			 StringBuilder fbLinkBuilder = new StringBuilder();
 			 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
@@ -1039,7 +1039,7 @@ public class UserServiceImpl implements UserService {
 			 StringBuilder rejectActionUrlBuilder = new StringBuilder();
 			 globalVarsMap.put("rejectURL",rejectActionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptClientOrVendorInvitation?actionLink=rejectNotification&respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			 StringBuilder vendorLinkBuilder = new StringBuilder();
-			 globalVarsMap.put("supportLink",vendorLinkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+			 globalVarsMap.put("supportLink",vendorLinkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 			 
 			 StringBuilder fbLinkBuilder = new StringBuilder();
 			 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());

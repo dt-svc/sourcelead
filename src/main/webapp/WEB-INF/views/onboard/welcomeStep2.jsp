@@ -89,7 +89,7 @@
 				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" src="<c:url value='${sourceleadUrl}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -350,7 +350,7 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -520,7 +520,7 @@ function getOnBoardCandidateCities(country,state,city){
 		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(onboardId) {
 		        	
-		        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+		        	location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
 		        },
 		    });  
 	        return true;

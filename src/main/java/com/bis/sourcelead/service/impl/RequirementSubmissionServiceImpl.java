@@ -436,15 +436,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 
 						 candidate.setSkillsName(candidateSkills);
 						 
-						 
-//						 for(int i=0; i<skillsList.length; i++){
-//							  CandidateSkills candSkill = new  CandidateSkills();
-//				    		  candSkill.setName(skillsList[i]);
-//				    		  candSkill.setCandidateId(candidate);
-//				    		  candSkill.setStatus(Constants.CANDIDATE_SKILL_ACTIVE);
-//				    		  candSkill.setOrgLocationID(orgLocations);
-//				    		  candidateSkillsService.storeCandidateSkills(candSkill);
-//						 }
+					
 					 }
 					
 					 candidate = candidateDao.storeCandidate(candidate);
@@ -580,8 +572,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
 		 requirementSubmission.setCreatedBy(user.getUserCode());
-		 requirementSubmission.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
-		 requirementSubmission.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+		 requirementSubmission.setCreatedDate(new Date());
+		 requirementSubmission.setUpdatedDate(new Date());
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
 		 String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
 		 if(null !=score){
@@ -1408,14 +1400,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 StringBuilder rejectBuilder = new StringBuilder();
 		 StringBuilder negotiateBuilder = new StringBuilder();
 		 
-		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectRequirement?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectRequirement?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:15px;'><div style=' width:150px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:16px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 	        
-	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectRequirement?rateStatus=RejectedApplicant&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectRequirement?rateStatus=RejectedApplicant&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:15px;'><div style=' width:150px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:16px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 
 	     
 	     if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
 	     
-	     globalVarsMap.put("negotiateRateLink",negotiateBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
+	     globalVarsMap.put("negotiateRateLink",negotiateBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:15px;'><div style='width:200px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:16px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
 
 	     }
 	        
@@ -4840,5 +4832,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId,
 			Long vendorLocationId) throws Exception {
 		return requirementSubmissionDao.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(sourceSubmissionId, vendorLocationId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception {
+		return requirementSubmissionDao.getSubmmisionsForIsClientJob(submissionIds);
 	}
 }

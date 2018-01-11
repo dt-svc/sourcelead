@@ -176,9 +176,8 @@ function getCustomDates(){
 				        					column9: applicantSource.offerRejectedAvgCount,
 				        					column10: applicantSource.backoutAvgCount,
 				        					
-				        					
 				        					applicantsCount: applicantSource.applicantsCount,
-				        					shortlistedCount: applicantSource.shortlisteCount,
+				        					shortlistedCount: applicantSource.shortlistedCount,
 				        					submitToClientCount: applicantSource.submitToClientCount,
 				        					interviewsCount: applicantSource.interviewsCount,
 				        					rejectedCount: applicantSource.rejectedCount,

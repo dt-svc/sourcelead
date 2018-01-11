@@ -300,6 +300,7 @@ public class CandidateServiceImpl implements CandidateService {
 				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDto, user);
 			}
 			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
 		if(orgLocations != null){
@@ -542,7 +543,6 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * System Generated Id For Candidate
 		 */
-		candidate.setGeneratedId(getCandidateId(orgLocations));
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
@@ -1504,11 +1504,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignationType(null);
 			}
 			
-			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
+			/*if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
 				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else
 			{
 				candidate.setDesignationOtherType(null);
+			}*/
+			
+			if(StringUtils.isNotBlank(candidateDTO.getDesignation())){
+				candidate.setDesignation(candidateDTO.getDesignation());
+			}else
+			{
+				candidate.setDesignation(null);
 			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
@@ -1528,7 +1535,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				}
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			candidate.setGeneratedId(getCandidateId(orgLocations));
+			if(orgLocations.getGeneratedUserId() != null && !orgLocations.getGeneratedUserId().isEmpty()) {
+				candidate.setGeneratedId(getCandidateId(orgLocations));
+			}
 			Date date= new Date();
 			candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
@@ -1697,6 +1706,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Candidate getCandidateByShortURL(String shortURL) throws Exception
 	{
 		return candidateDao.getCandidateByShortURL(shortURL);
+	}
+
+	@Override
+	public Integer getCandidatesCountByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getCandidatesCountByLocation(orgLocationId);
 	}
 
 }

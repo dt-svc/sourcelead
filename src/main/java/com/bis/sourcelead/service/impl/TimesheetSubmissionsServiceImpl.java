@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -18,7 +17,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
@@ -27,7 +25,6 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsService {
@@ -959,8 +956,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 * @throws NullPointer
 		 */
 		@Override
-		public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
-			 timesheetSubmissionsDao.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		public List<TimesheetSubmissions> saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception {
+			 return timesheetSubmissionsDao.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 		}
 
 		

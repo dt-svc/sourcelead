@@ -433,9 +433,12 @@ public class SubmissionsRestController {
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-			requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
-			requirementSubmission.setFilename((requirementSubmission.getCandidateResumes().getFileName()));
-			requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
+			if(requirementSubmission.getCandidateResumes() != null) {
+				requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+				requirementSubmission.setFilename((requirementSubmission.getCandidateResumes().getFileName()));
+				requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
+			}
+			
 			
 			if(requirementSubmission.getVendorLocationId() != null){
 				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
@@ -496,7 +499,9 @@ public class SubmissionsRestController {
 			requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-			requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+			if(requirementSubmission.getCandidateResumes() != null) {
+				requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+			}
 			
 			if(StringUtils.isNotEmpty(requirementSubmission.getFinalizedRate())){
 				requirementSubmission.setSubmitToClientRate(requirementSubmission.getFinalizedRate());
@@ -558,19 +563,17 @@ public class SubmissionsRestController {
 
 		for (int i = 0; i < submissionId.length; i++) {
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-			RequirementSubmission submission = requirementSubmissionService
-					.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
+			RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
 			requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
 			submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
 			submission.setUpdatedBy(user.getUserCode());
+			submission.setUpdatedUser(user.getFullName());
 			if(null != submission.getSourceSubmission()){
 				count = count + 1;
 			}
 			submission.setUpdatedDate(new Date());
-			RequirementSubmission requirementSubmission = requirementSubmissionService
-					.storeRequirementSubmission(submission);
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-					requirementSubmissionHistory);
+			RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 
 		}
 		int shotListCount = submissionId.length;

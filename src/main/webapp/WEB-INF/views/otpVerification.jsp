@@ -22,9 +22,11 @@
 
 
 </style>
+
+
 <!--  OTP Wrap  -->
     <div class="otp_wrap" style="display:block">
-    	<div class="otpBackNew" style="display: none;"><a onclick="otpClose();"><i class="fa fa-close"></i></a></div>
+    	<div class="otpBackNew" style="display: none;"><a onclick="otpClose();" id="otpBackNewId" ><i class="fa fa-close"></i></a></div>
 <%--     <c:if test='${empty SourceLeadWeb_sourceleadUrl}'> --%>
 	    <div class="backBtn" id="gobackBtn">
 			<u class="fa fa-arrow-left OtpBack" id="backAnch" onclick="goToLocations();"></u>
@@ -35,6 +37,7 @@
 		<div class="otpMail">
 			<span class="clearfix">
 				<input type="hidden" name="userRoleId" id="otpuserRoleId" value="${userRoleId}">
+				<input type="hidden" name="fromType" id="fromType" value="">
 				<input type="hidden" name="username" id="otpusername" value="${username}">
 				<input type="hidden" name="password" id="otppassword" value="${password}">
 				<input type="hidden" name="userId" id="otpuserId" value="${userId}">
@@ -69,6 +72,7 @@ function sendOtp() {
 	var username = $("#otpusername").val();
 	var password = $("#otppassword").val();
 	var email = '${emailId}';
+	var fromType = $("#fromType").val();
 	if(email != null && email != '' && email != 'undefined')
 		email = $("#otpemail").val();
 	var mobile = '${mobilePhone}';
@@ -77,13 +81,17 @@ function sendOtp() {
 	$("#resendOTP").removeAttr("onclick");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var type = "email";
+	var backSwitchType = $("#otpBackNewId").val();
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/sendOtpToUser?id="+userId+"&type="+type,        
+	       url: sourceleadUrl+"/ws/sendOtpToUser?id="+userId+"&type="+type,        
 	       success :function(data) {
+	    	   var status = '${status}';
 	    	   if(data != null){
-	    		    $("#twoStepAuthDiv").empty();
-	    		    $("#twoStepAuthDiv").append(data);
+	    		    /* $("#twoStepAuthDiv").empty();
+	    		    $("#twoStepAuthDiv").append(data); */
+	    		    $("#directtwoStepAuthDiv").empty();
+	    		    $("#directtwoStepAuthDiv").append(data);
 	    		   	$("#otpuserId").val(userId);
 	    			$("#otpuserRoleId").val(userRoleId);
 	    			$("#otpusername").val(username);
@@ -92,10 +100,18 @@ function sendOtp() {
 	    			$("#mobileLabel").html(mobile);
 	    			$("#otpemail").val(email);
 	    			$("#otpmobile").val(mobile);
+	    			countdown( "resendOTP", 0, 30 );
+	    			if(fromType != null && fromType != '' && fromType != 'undefined' && fromType == 'login'){
+    					$("#backAnch").prop("onclick",null);
+	 	    		   $("#fromType").val("login");
+	 	    		   $("#backAnch").attr("onclick","logout('"+sourceleadUrl+"');");
+	    			}else if(backSwitchType == "switchOtp"){
+	    				$("#gobackBtn").hide();
+	 	    		    $(".otpBackNew").show();
+	    			}
 	    		   	$("#sendOTP").attr("style","display:none");
 	    		   	$("#resendOTP").attr("style","display:block");
 	    		   	$("#otpText").html("OTP has been sent to your registered "+type);
-	    		   	countdown( "resendOTP", 0, 30 );
 	    	   }
 	       },
 	  }); 
@@ -108,12 +124,13 @@ function verifyOTP(){
 	var password = $("#otppassword").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var type = "email";
+	
 	if((enteredOTP != null && enteredOTP != '' && enteredOTP !='undefined') && (enteredOTP == '${authToken}')){
 		$("#errorDiv").removeAttr("style");
 		$("#errorDiv").attr("style","display:none");
 		$.ajax({
 		      type : "POST",
-		       url: sourceleadUrl+"/verificationDone?userName="+username+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+username+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
 		       success :function(result) {
 		    	 if(result == "true"){
 		    		 location.replace(sourceleadUrl+"/dashboard");  

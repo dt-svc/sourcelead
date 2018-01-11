@@ -8,8 +8,9 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	var orgRelationUUID = '${orgRelationUUID}';
+	var orgSpocUUID = '${orgSpocUUID}';
 	var invoiceType = '${invoiceType}';
-	getClientreportSummary(orgRelationUUID,invoiceType);
+	getClientreportSummary(orgRelationUUID,orgSpocUUID,invoiceType);
 });
 </script>
 
@@ -21,7 +22,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Client Report: <span class="text-muted" id="clientNameId"></span></h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Client Report</div>
+<!--       <div class="pull-right brud-crum">Home &raquo; Client Report</div> -->
+
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="${appPath}/perfomanceClientReports">Client Report</a></div>
+      
       </c:if>
        <c:if test="${type == 'byContact'}">
       <div class="pull-left">
@@ -179,47 +183,54 @@ $(document).ready(function(){
   
   
   <script>
-  function getClientreportSummary(orgRelationUUID,invoiceType){
-		$.ajax({
-			type : "POST",
-			url : sourceleadUrl+"/getClientreportSummary?&orgRelationUUID="+orgRelationUUID+"&invoiceType="+invoiceType,
-		    success: function(data) {
-		    	$("#draftAmountId").html(data.totalDraftAmount);
-		    	$("#openAmountId").html(data.totalSentAmount);
-		    	$("#overdueAmountId").html(data.totalOverdueAmount);
-		    	$("#paidAmountId").html(data.totalPaidAmount);
-		    	$("#totalPaidCount").html(data.totalPaidbillCount);
-		    	$("#totalRecevableAmount").html(data.totalReceivableAmount);
-		    	$("#draftCount").html(data.draftCount);
-		    	$("#watingCount").html(data.watingCount);
-		    	$("#signCount").html(data.signCount);
-		    	$("#counterSignCount").html(data.counterSignCount);
-		    	$("#expiredCount").html(data.expiredCount);
-		    	$("#rejectedCount").html(data.rejectedCount);
-		    	$("#finalizedCount").html(data.finalizedCount);
-		    	
-		    	$("#hiredCount").html(data.offeracceptedCount);
-		    	$("#applicantCountID").html(data.applicantsCount);
-		    	$("#shortListCountID").html(data.shortlistedCount);
-		    	$("#submittoClientCountID").html(data.interviewsCount);
-		    	$("#interviewdCountID").html(data.interviewsCount);
-		    	$("#offeredCountID").html(data.offeredCount);
-		    	$("#offerAcceptedCountID").html(data.offeracceptedCount);
-		    	$("#rejectedCountID").html(data.applicantRejectedCount);
-		    	
-		    	$("#totalPostedCount").html(data.totalPostedCount);
-		    	$("#openCount").html(data.openCount);
-		    	$("#onholdCount").html(data.onholdCount);
-		    	$("#cancelledCount").html(data.cancelledCount);
-		    	$("#filledCount").html(data.filledClosedCount);
-		    	$("#unfilledCount").html(data.unfilledClosedCount);
-		    	$("#closedCount").html(data.closedCount);
-		    	
-		    	$("#clientNameId").html(data.clientName);
-		    	$("#clientContactNameId").html(data.clientContactName);
-		    	
-	 	    }
-		});
+  function getClientreportSummary(orgRelationUUID,orgSpocUUID,invoiceType){
+	  
+	  var url = "";
+	  if(orgRelationUUID != null && orgRelationUUID != '' && orgRelationUUID != 'undefined'){
+		  url += sourceleadUrl+"/getClientreportSummary?&orgRelationUUID="+orgRelationUUID+"&invoiceType="+invoiceType;
+	  }else if(orgSpocUUID != null && orgSpocUUID != '' && orgSpocUUID != 'undefined'){
+		  url += sourceleadUrl+"/getClientreportSummary?&orgSpocUUID="+orgSpocUUID+"&invoiceType="+invoiceType;
+	  }
+		  $.ajax({
+				type : "POST",
+				url : url,
+			    success: function(data) {
+			    	$("#draftAmountId").html(data.totalDraftAmount);
+			    	$("#openAmountId").html(data.totalSentAmount);
+			    	$("#overdueAmountId").html(data.totalOverdueAmount);
+			    	$("#paidAmountId").html(data.totalPaidAmount);
+			    	$("#totalPaidCount").html(data.totalPaidbillCount);
+			    	$("#totalRecevableAmount").html(data.totalReceivableAmount);
+			    	$("#draftCount").html(data.draftCount);
+			    	$("#watingCount").html(data.watingCount);
+			    	$("#signCount").html(data.signCount);
+			    	$("#counterSignCount").html(data.counterSignCount);
+			    	$("#expiredCount").html(data.expiredCount);
+			    	$("#rejectedCount").html(data.rejectedCount);
+			    	$("#finalizedCount").html(data.finalizedCount);
+			    	
+			    	$("#hiredCount").html(data.offeracceptedCount);
+			    	$("#applicantCountID").html(data.applicantsCount);
+			    	$("#shortListCountID").html(data.shortlistedCount);
+			    	$("#submittoClientCountID").html(data.interviewsCount);
+			    	$("#interviewdCountID").html(data.interviewsCount);
+			    	$("#offeredCountID").html(data.offeredCount);
+			    	$("#offerAcceptedCountID").html(data.offeracceptedCount);
+			    	$("#rejectedCountID").html(data.applicantRejectedCount);
+			    	
+			    	$("#totalPostedCount").html(data.totalPostedCount);
+			    	$("#openCount").html(data.openCount);
+			    	$("#onholdCount").html(data.onholdCount);
+			    	$("#cancelledCount").html(data.cancelledCount);
+			    	$("#filledCount").html(data.filledClosedCount);
+			    	$("#unfilledCount").html(data.unfilledClosedCount);
+			    	$("#closedCount").html(data.closedCount);
+			    	
+			    	$("#clientNameId").html(data.clientName);
+			    	$("#clientContactNameId").html(data.clientContactName);
+			    	
+		 	    }
+			});
   }
   
   </script>

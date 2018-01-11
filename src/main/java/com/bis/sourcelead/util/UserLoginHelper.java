@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 
 @Component
 public class UserLoginHelper {
@@ -58,8 +60,8 @@ public class UserLoginHelper {
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
-//	@Autowired
-//	HttpServletRequest request;
+	@Autowired
+	WhiteListIpAddressService whiteListIpAddressService;
 
 	public  UsernamePasswordAuthenticationToken redirectToDashboard(UserRole userRole, String username, String password,String verfDone)
 	{
@@ -114,10 +116,10 @@ public class UserLoginHelper {
 		  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
 		  if (RequestContextHolder.getRequestAttributes() != null) {
 		      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
+		      String ipAddress = getClientIpAddr(request);
 		      
 		      if(loginUser != null){
 			    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
-			    	String ipAddress = getClientIpAddr(request);
 			    	userLoginSession.setIpaddress(ipAddress);
 				    userLoginSession.setUserId(loginUser);
 				    if(StringUtils.isNotEmpty(verfDone) && verfDone.equalsIgnoreCase("Y")){
@@ -139,6 +141,15 @@ public class UserLoginHelper {
 		
 	}
 	
+	public String getIpAddress(){
+		 String ipAddress = null;
+		 RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
+		  if (attribs != null) {
+		      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
+		      ipAddress = getClientIpAddr(request);
+		  }
+		  return ipAddress;
+	}
 	private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
 
     	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
@@ -153,7 +164,7 @@ public class UserLoginHelper {
     	return Result;
     }
 	
-	public static String getClientIpAddr(HttpServletRequest request) {  
+	public String getClientIpAddr(HttpServletRequest request) {  
 	    String ip = request.getHeader("X-Forwarded-For");  
 	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
 	        ip = request.getHeader("Proxy-Client-IP");  

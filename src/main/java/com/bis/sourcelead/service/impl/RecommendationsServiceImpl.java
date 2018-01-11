@@ -611,8 +611,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		float expPercentage = 0; //  experience = 10%
 //		float visaTypePercentage = 0; //  visaType = 10%
 //		float educationPercentage = 0; //  education = 10%
-		float eduPer = 0;
-		float visaPer = 0;
 		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
 		ResponseList<CandidateIndex> response = new ResponseList<>();
 		String reqSkills = "";
@@ -687,7 +685,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			boolQueryBuilder.minimumShouldMatch("1");
 			boolQueryBuilderForCount.minimumShouldMatch("1");
-			String[] tableColumns = {"firstName", "email", "city", "mobilePhone", "currentResumeId", "noOfReq","updatedDate","finalScore","action"};
+			String[] tableColumns = {"","firstName", "email", "city", "mobilePhone", "", "noOfReq","updatedDate","",""};
 			
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			boolean sortColumnOrder = false; //by default descending order
@@ -770,6 +768,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				// rate logic end
 				
 				for (SearchHit hit : searchHits) {
+					
 					ObjectMapper mapper = new ObjectMapper();
 					String json = hit.getSourceAsString();
 		    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
@@ -778,6 +777,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					int matchedSkillCount = 0;
 					int matchedVisaTypeCount = 0;
 					int matchedEducationCount = 0;
+					
+					float eduPer = 0;
+					float visaPer = 0;
 					
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
@@ -900,7 +902,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				response.setRecordsFiltered(CandidateListcopy.size());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-								0, 10, "email", SortOrder.DESC, boolQueryBuilderForCount);
+								0, 10, "firstName", SortOrder.DESC, boolQueryBuilderForCount);
 				
 				response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			 }

@@ -119,7 +119,7 @@ $(function(){
 				 
 				 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" src="<c:url value='${sourceleadUrl}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -156,7 +156,7 @@ $(function(){
 				<div class="welCoInn">
 					<div class="welCoInnLeft">
 						<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
-							<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+							<img class="logo" src="<c:url value='${sourceleadUrl}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
 						</c:if>
 						
 						<c:if test="${empty SourceLeadWeb_org.fileContentType}">
@@ -232,7 +232,7 @@ $(function(){
   </div>		  
 		  
 <div class="welBtns">
-<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='${appPath}/onboardingCandidateSetp2'/>'"  class="Brig">
+<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateStep2'/>'"  class="Brig">
 <div class="clearfix"></div>
 </div>
 		  

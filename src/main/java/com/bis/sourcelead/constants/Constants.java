@@ -109,6 +109,7 @@ public class Constants {
 	public static final String ONBOARDING_CONTRACTS = "Contracts";
 	public static final String ONBOARDING_SUPPORTED = "Supported";
 	public static final String MAIL_TEAM_MEMBERS = "Mail To Team Members";
+	public static final String INVITE_CONNECTION_USER = "connectionInvitation";
 	public static final String INVITE_USER = "Invite User";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
 	public static final String INVITE_CLIENT = "Invite Client";
@@ -503,6 +504,14 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	
+	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
+			"Min Experience", "Max Experience", "Rate", "Location", "City",	"State", "Country", "Zip Code",	
+			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", 
+			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Manager", "Approver", "Assign To",
+			"Application Form", "Client Name", "Client Contact Name", "Client Contact Email", "Client Submission Form",
+			"Status"};
+	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
 	public static final String[] STATUS_DROPDOWN = { "Active", "In-Active", "New", "Negotiation",
@@ -804,6 +813,7 @@ public class Constants {
     public static final String REQUESTED_DOCUMENT_SUBMITTED = "Submitted";
     public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
     public static final String PERCENTAGE = "percentage";
+    public static final String[] PERCENTAGES = {"0%","10%","20%","30%","40%","50%"};
 
 
     public static final String[] EMPLOYEE_PAYROLL_HEADERS = {"Employee","Emp ID","SSN","Total Hrs","Gross Wages","Fica","Futa","Sui","Er locals","wc cost","admin fee","total er cost"};
@@ -840,7 +850,7 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 
-	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home","System Task Billable","System Task NonBillable"};
 	public static final String BIS_CHECKS = "BIS_CHECKS";
 
 
@@ -911,6 +921,10 @@ public class Constants {
 	public static final String DEFAULT_COOLINGOFF_PERIOD = "3 Months";
 	public static final String[] WEEKENDS = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
 	
+	public static final String[] SHORTWEEKENDS = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+	public static final String[] SHORTWEEKWISEMONTH = {"Week1","Week2","Week3","Week4","Week5"};
+	public static final String[] SHORTDAYS = {"Day1","Day2","Day3","Day4","Day5","Day6","Day7","Day8","Day9","Day10","Day11","Day12","Day13","Day14","Day15","Day16","Day17","Day18","Day19","Day20","Day21","Day22","Day23","Day24","Day25","Day26","Day27","Day28","Day29","Day30","Day31"};
+	
 	public static final String[] MONTHS = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
@@ -979,7 +993,11 @@ public class Constants {
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
 	public static final String CLIENT_REPORT = "clientReport";
+	public static final String GENERAL = "General";
+	public static final Long TaskStatusID = 1069L;
 
+	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
+	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
 
 
 }

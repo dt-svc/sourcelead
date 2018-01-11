@@ -28,7 +28,7 @@
 			noUsers();
 		}
 		var leaveEffective = '${leaveType.leaveEffective}';
-		if (leaveEffective == 'AllEmployees' || leaveEffective == '') {
+		if (leaveEffective == 'All Employees' || leaveEffective == '') {
 			hideExperienced();
 		/* 	$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
 			$('#experiencedDiv').find('p.jquery_form_error_message').remove();
@@ -308,7 +308,7 @@
 							
 							
 							<c:if test="${!empty leaveType.leaveEffective}">
-										<c:if test="${leaveType.leaveEffective == 'AllEmployees'}">
+										<c:if test="${leaveType.leaveEffective == 'All Employees'}">
 											<label class="paddingLeft paddingRight" onClick="hideExperienced();">
 												<input type="radio" checked="true" value="All Employees" name="leaveEffective"> <span class="paddingLeft">All Employees</span>
 											</label>
@@ -359,7 +359,7 @@
 							<div class="col-md-6">
 								<div class="row">
 								<div class="col-md-3 padding_right">
-									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" field-name="experiencedDuration" value="${leaveType.experiencedDuration}">
+									<input type="text" class="form-control" id="experiencedDuration" name="experiencedDuration" field-name="Duration" value="${leaveType.experiencedDuration}">
 								</div>
 								<div class="col-md-5 dropdown-select padding_left">
 									<select id="experiencedType" name="experiencedType" field-name="experiencedType" >
@@ -369,7 +369,7 @@
 									</select>
 								</div>
 								<div class="col-md-4" id="experiencedApplicableDaysDiv">
-								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="experiencedApplicableDays" value="${leaveType.experiencedApplicableDays}">
+								<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
 								
 							</div>
@@ -649,9 +649,9 @@
 															+ " is already existed as Leave Type</span>");
 								} else {
 									$("#saveLeaveType").removeAttr("disabled");
-									$('#leaveTypeDiv').find(
-											'p.jquery_form_error_message')
-											.remove();
+									if(!(name.length > 250)){
+										$('#leaveTypeDiv').find('p.jquery_form_error_message').remove();
+									}
 								}
 							});
 		}
@@ -739,6 +739,7 @@
 				$("#priorDaysdiv").show();
 				$('#priorDays').removeAttr('data-validation-optional');
 				$('#priorDays').attr('data-validation', "required validate_length length1-250 validate_int");
+				$('#priorDays').attr('data-validation', "validate_int required validate_length length1-3");
 				$('#priorLeaveDaysDiv').find('p.jquery_form_error_message').remove();
 			} else {
 				$("#priorDaysdiv").hide();
@@ -757,6 +758,8 @@
 			$('#minDays').attr('data-validation', "required validate_length length1-250 validate_int");
 			$('#maxDays').removeAttr('data-validation-optional');
 			$('#maxDays').attr('data-validation', "required validate_length length1-250 validate_int");
+			$('#minDays').attr('data-validation', "validate_int required validate_length length1-3");
+			$('#maxDays').attr('data-validation', "validate_int required validate_length length1-3");
 			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
 			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
 			

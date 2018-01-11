@@ -26,6 +26,8 @@ public interface ProjectTasksService {
     
     public ProjectTasks getProjectTasksByUUID(String taskUUD)throws Exception;
     
+    public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId,String taskName)throws Exception;
+    
     public Boolean deleteTask(String id)throws Exception;
     
     public List<ProjectTasks> getAllTasks()throws Exception;

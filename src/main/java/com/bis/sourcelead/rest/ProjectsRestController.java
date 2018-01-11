@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -366,6 +367,28 @@ public class ProjectsRestController {
 			return projectsService.validateProjectShortCode(projectShortCode, orgLocId);
 		}
 		
+		// to validate Project project Name
+		@RequestMapping(value = "/validateOrgLocationProjectName", method = RequestMethod.GET)
+		public @ResponseBody Boolean validateOrgLocationProjectName(@RequestParam(value = "projectUUID", required = false) String projectUUID,
+				@RequestParam(value = "projectName", required = false) String projectName,HttpServletRequest request) throws Exception {
+			
+			boolean flag = false;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			if(StringUtils.isNotBlank(projectName)) {
+				Projects projects = projectsService.getProjectByOrgLocationsIdAndProjectName(orgLocations.getId(), projectName.trim());
+				if(projects != null) {
+					if(!projects.getProjectUUID().equalsIgnoreCase(projectUUID)) {
+						if(projects.getProjectName().equalsIgnoreCase(projectName.trim())) {
+							flag = true;
+						}
+					}
+				}
+			}
+			
+			return flag;
+		}	
+		
+		
 	// Validate for Cilent Website
 	@RequestMapping(value = "/validateClientWebsite", method = RequestMethod.GET)
 	public @ResponseBody String validateOrgWebsite(@RequestParam(value = "website", required = false) String website,
@@ -425,9 +448,9 @@ public class ProjectsRestController {
 	    }
 
 	    @RequestMapping(value = { "/getProjectsListByOrgLocationForTransfer", "/rest/getProjectsListByOrgLocationForTransfer" }, method = RequestMethod.GET)
-		public  List<ProjectsDTO> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public  List<ProjectsDTO> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="projectClientUUID", required=true) String projectClientUUID) throws Exception {
 		   
-		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
+		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatusForTransfer(orgLocationId,projectClientUUID);
 		   List<ProjectsDTO> projectsDTOList = new ArrayList<>();
 		   
 		   if(projectsList != null && projectsList.size() > 0) {

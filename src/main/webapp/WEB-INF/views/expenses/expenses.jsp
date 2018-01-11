@@ -13,7 +13,6 @@
 			if("" != localStorage.getItem("myExpensesListGrid") && null != localStorage.getItem("myExpensesListGrid")){
 				$("#expensesListDiv").empty();
 	       		$("#expensesListDiv").append(localStorage.getItem("myExpensesListGrid"));
-	       		expensesPagination();
 	       		/* localStorage.removeItem("myExpensesListGrid"); */
 	       		localStorage.setItem("myExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
@@ -60,7 +59,7 @@
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}');" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList('${sourceleadUrl}','dateSearch');" /></span>
 					</div>
 					</div>
 					
@@ -262,29 +261,6 @@ function getExpensesList(){
 	}
 
 </script> -->      
-
-<script>
-function expensesPagination(){ 
-    $('#expensesPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-		"aaSorting": [[0,'desc']],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
-    $("#expensesPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-}
-</script> 
-
 <script>
 
 function expenseView(expenseId){
@@ -501,7 +477,7 @@ function expenseView(expenseId){
             showButtonPanel: true,
             closeText: 'Clear',
             onClose : function(selected) {
-				$("#filterEndDate").datepicker("option", "minDate", selected);
+				$("#reportEndDate").datepicker("option", "minDate", selected);
 				var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
@@ -519,7 +495,7 @@ function expenseView(expenseId){
             showButtonPanel: true,
             closeText: 'Clear',
             onClose : function(selected) {
-				$("#filterStartDate").datepicker("option", "maxDate", selected);
+				$("#reportStartDate").datepicker("option", "maxDate", selected);
 				var event = arguments.callee.caller.caller.arguments[0];
                 // If "Clear" gets clicked, then really clear it
                 if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {

@@ -351,8 +351,16 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	
 	
-	
 	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
+	result = result +"<label class='col-md-4 noPad'>Designation</label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='designationType' id='designationType' field-name='Designation'  pattern='[A-Za-z\s]*' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	/* result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4 noPad'>Designation</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
@@ -366,7 +374,7 @@ function loadLeagelSignerForm(){
 	result = result +"</select>";
 	result = result +"</div>";
 	result = result +"</div>";
-	result = result +"</div>";
+	result = result +"</div>"; */
 	
 	
 	
@@ -435,8 +443,6 @@ $('body').on('submit', '#signatory_form', function(e){
 		        	saveOrgLocationSignatory(formData);
 		        },
 		    });   
-		    
-        saveOrgLocationSignatory(formData);
       }
 		    
       return true; 

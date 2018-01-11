@@ -51,6 +51,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class SubmissionsRateRestController {
 	
 	@Autowired
@@ -92,7 +93,7 @@ public class SubmissionsRateRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	@RequestMapping(value = "/app/ws/storeReject", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/storeReject", method = RequestMethod.POST)
 	public @ResponseBody String storeReject(@RequestParam(value = "submissionId", required = false) Long submissionId,
 			@RequestParam(value = "rejectreason", required = false) String rejectreason,@RequestParam(value = "type", required = false) String type) throws Exception {
 		 
@@ -275,7 +276,8 @@ public class SubmissionsRateRestController {
 	}
 	
 
-	@RequestMapping(value = "/app/getRateHistoryBySubmissionId", method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
 															 @RequestParam(value = "candidateId", required = false) Long candidateId,
 															 @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -420,7 +422,7 @@ public class SubmissionsRateRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/app/proposeRate",  method = RequestMethod.POST)
+	 @RequestMapping(value = "/proposeRate",  method = RequestMethod.POST)
 		public @ResponseBody  String proposeRate(@RequestParam(value="json", required=false) String json,
 				@RequestParam(value = "submissionId", required = false) Long submissionId,
 				@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
@@ -517,7 +519,7 @@ public class SubmissionsRateRestController {
 	  * @return JSON
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/app/acceptRejectRate",  method = RequestMethod.POST)
+	 @RequestMapping(value = "/acceptRejectRate",  method = RequestMethod.POST)
 		public @ResponseBody  String acceptRejectRate(@RequestParam(value="submissionId", required=false) Long submissionId,
 				@RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception {
 		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -618,7 +620,7 @@ public class SubmissionsRateRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/ws/storeApplicantRejectReason", method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/storeApplicantRejectReason", method = RequestMethod.POST)
 		public @ResponseBody String storeApplicantRejectReason(@RequestParam(value = "submissionId", required = false) Long submissionId,
 				@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
 			 

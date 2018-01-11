@@ -31,8 +31,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<title>Welcome to Source Lead</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
 <link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
@@ -105,7 +105,7 @@
  </c:if>
 
 
-<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/clientReports"}'>
+<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
 	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
@@ -451,8 +451,8 @@ function preventTabkey(e){
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		       <c:if test="${userTabs.tabName == 'Users'}">
-	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
+		       <c:if test="${userTabs.tabName == 'Associates'}">
+	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
@@ -515,7 +515,7 @@ function preventTabkey(e){
               </div>
             </div>
             <ul class="list-unstyled">
-              <li><a href="<c:url value='${appPath}/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              <li><a href="<c:url value='${appPath}/professionalProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
               <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
             </ul>
           </div>
@@ -536,12 +536,15 @@ function preventTabkey(e){
 	          </li>
             </c:if> --%>
             
-            <li class="reportsH">
+             <li class="reportsH">
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
+	        </li>
+            <li class="reportsH">
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadFindConnections'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
-					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
+					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
             <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
@@ -589,7 +592,7 @@ function preventTabkey(e){
 				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Professional' ? 'active-comp' : ''}">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
 						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
 					                       </div>
 						                   </div>
@@ -605,7 +608,7 @@ function preventTabkey(e){
 				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Recruiter' ? 'active-comp' : ''}">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
 						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
 					                       </div>
 						                   </div>
@@ -680,6 +683,9 @@ function preventTabkey(e){
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
+	                     
+	                      <li><a href="<c:url value="/app/userProfile" />"><i class="fa fa-user-circle" aria-hidden="true"></i>Account Settings</a></li>
+	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
@@ -782,14 +788,14 @@ function preventTabkey(e){
   
   <div class="authenticationMask" >
   <div class="signWrapOtp">
-  	<div id="twoStepAuthDiv">
+  	<div id="directtwoStepAuthDiv">
   		<jsp:include page="otpVerification.jsp"></jsp:include>
   	</div>
   </div>
   </div>
   
   <!--  Alert message for Switching Locaction -->
-  <div class="location-alert alert alert-danger alert-dismissable">
+  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
     <strong>Alert !</strong> Your are not allowded to access this Location.
   </div>
@@ -811,13 +817,14 @@ function preventTabkey(e){
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
 		 type : "GET",
-	       url: sourceleadUrl+"/getUserDetailsByRoleId?id="+roleId,        
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
-	    		   $("#twoStepAuthDiv").empty();
-	    		   $("#twoStepAuthDiv").append(data);
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
 	    		   $("#gobackBtn").hide();
 	    		   $(".otpBackNew").show();
+	    		   $("#otpBackNewId").val("switchOtp");
 	    		   $("#resendOTP").attr("style","display:none");
 	    		   $("#sendOTP").attr("style","display:block");
 	    	   }
@@ -828,10 +835,8 @@ function preventTabkey(e){
  function checkLocationAccess(locationId,roleId,orgSecurity){
 	 $.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/validateWhitelistIp?userRoleId="+roleId,        
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
 	       success :function(result) {
-// 	    	   hasLocationAccess = result;
-	    	   
 	    	   if(result == true){
 	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
 	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   

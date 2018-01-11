@@ -311,7 +311,12 @@ public class TimeApprovalRedefinedRestController {
 	 			    	}
 	 			    } 
 			 }	
-			 timesheetApprovalDTO.setWeekFrequency(currentTimesheetFrequency);
+			 if(!timesheetApprovalDTO.getTimesheetFrequency().equalsIgnoreCase("Monthly")) {
+				 timesheetApprovalDTO.setWeekFrequency(currentTimesheetFrequency);
+			 }
+			 else {
+				 timesheetApprovalDTO.setWeekFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("STARTDATE"))+"To"+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("ENDDATE")));
+			 }
 			 timesheetApprovalDTO.setFrequencyStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("STARTDATE")));
 			 timesheetApprovalDTO.setFrequencyEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("ENDDATE")));
 			 return timesheetApprovalDTO;
@@ -590,19 +595,19 @@ public class TimeApprovalRedefinedRestController {
 				    	 }
 				    	 if(sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null){
 				    		 totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
-				    		  weekTotalList.add(weekTotal.toString());
+				    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
 				    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey())));
 				    	 }else{
-				    		 weekTotalList.add(weekTotal.toString());
+				    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
 				    	 }
 				    	 
 				     }
 				     ts.setWeeekTotal(weekTotalList);
-			   	 ts.setSubmissionTotal(submissionTotalList);
+				     ts.setSubmissionTotal(submissionTotalList);
 			   	 
-				    ts.setTotalHours(totalHours.toString());
-				    ts.setEstimatedHours(estimatedTotalHours.toString());
-				    ts.setSubmissionStatus(sah.getSubmissionApprovalStatus().getValue());
+				    ts.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours));
+				    ts.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours));
+				    ts.setSubmissionStatus(sah.getSubmissionApprovalStatus().getValue().toUpperCase());
 			  	  }
 				  if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 			      	 ts.setTdSpanLength(tdSpanLength);

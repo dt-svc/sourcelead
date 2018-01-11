@@ -310,6 +310,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
         tasks.setPercentage(Constants.CANDIDATE_IN_ACTIVE);
+        tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
         tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
         tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         tasks.setCreatedDate(commonUtil.currentDate());
@@ -549,5 +550,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	@Override
 	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
 		return tasksDao.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,projectId,taskType,taskStatus,userRole,assignedMembers);
+	}
+
+	@Override
+	public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId, String taskName)
+			throws Exception {
+		return tasksDao.getProjectTasksByProjectIdAndProjectIdAndTaskName(projectId, taskName);
 	}
 }

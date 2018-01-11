@@ -122,7 +122,7 @@ window.onload = function () {
 				    <form:form class="login-form clearfix"  id="popprofessionalRegistration_form"  name="popprofessionalRegistration_form" method="post" >
 				    <div class="col-md-3">
 						<div class="userImg">
-					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
+					      <img src="https://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
 					   </div>
 				    </div>
 		            <div class="col-md-9">
@@ -204,7 +204,7 @@ window.onload = function () {
 		      <form:form class="login-form clearfix"  id="poprecruiterRegistration_form"  name="poprecruiterRegistration_form" method="post" >
 				     <div class="col-md-3">
 						<div class="userImg">
-					      <img src="http://socialinviter.com/assets/img/icons/avator.JPG" id="popRecruiterprofileimage">
+					      <img src="https://socialinviter.com/assets/img/icons/avator.JPG" id="popRecruiterprofileimage">
 					   </div>
 				    </div>   
 		            <div class="col-md-9">
@@ -287,7 +287,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb10"><a href="<c:url value='/openJobs'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
+        <div class="company_logo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
@@ -452,17 +452,17 @@ window.onload = function () {
                     <b></b>
                 </div>
                 
-                <div id="pwdDiv">
+                <div id="recpwdDiv">
                 <div class="col-xs-12 col-md-12 mb10">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
-	                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
+	                <div class="col-xs-12 col-md-12 mb10" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Confirm Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <input type="password" id="recconfirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).reccheckPass();" data-validation="required validate_length length6-100" >
 	                    <b></b>
 	                </div>
                 </div>
@@ -690,6 +690,40 @@ function resetCredentials(type){
 })(jQuery);
 </script>
 
+
+<script type="text/javascript">
+(function($) {
+	$.fn.reccheckPass = function() {   
+		var pass1 = document.getElementById('recpassword');  
+	    var pass2 = document.getElementById('recconfirmPassword');
+	    $("#submit_button").attr("disabled", "disabled");
+	    
+	    if(pass1.value == pass2.value){
+			 $("#submit_button").removeAttr("disabled");
+			 $('input#recconfirmPassword').removeAttr( "record-exist record-exist-errormsg");
+    		 $('#recpasswordDiv').find('p.jquery_form_error_message').remove(); 
+			 $( "#submit_button" ).removeAttr("style");
+			 $( "#submit_button" ).click(function() {
+			 if ($(this).validate(false, validationSettings)){
+			 }
+			});
+	    }
+	    else{ 
+		    $('#recpasswordDiv').find('p.jquery_form_error_message').remove(); 
+    	    $("input#recconfirmPassword").after("<p class='jquery_form_error_message'> Passwords not matched</span>");
+			$('input#recconfirmPassword').attr('record-exist','yes');
+			$('input#recconfirmPassword').attr('record-exist-errorMsg','Passwords Not Matched'); 
+	    }
+   }
+	
+    $.fn.clear = function() {   
+    	 $('#confirmPassword').val('');
+    	
+	 return false;
+    }
+})(jQuery);
+</script>
+
 <script type="text/javascript">
 function validateEmail(type){
 	
@@ -699,7 +733,7 @@ function validateEmail(type){
 			$("#register_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -767,17 +801,17 @@ function validateRecruiterEmail(type){
 			$("#recruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
 					    	    $('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    
-					    	    $('#pwdDiv').attr("style" , "display : none"); 
-					    	    $('#confirmPassword').removeAttr('data-validation');
-						 		$('#confirmPassword').attr('data-validation-optional',"true");
-						 		$('#password').removeAttr('data-validation');
-						 		$('#password').attr('data-validation-optional',"true");
+					    	    $('#recpwdDiv').attr("style" , "display : none"); 
+					    	    $('#recconfirmPassword').removeAttr('data-validation');
+						 		$('#recconfirmPassword').attr('data-validation-optional',"true");
+						 		$('#recpassword').removeAttr('data-validation');
+						 		$('#recpassword').attr('data-validation-optional',"true");
 					    	    
 					    	    $("input#recruiterEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 			    				$('input#recruiterEmail').attr('record-exist','yes');
@@ -791,21 +825,21 @@ function validateRecruiterEmail(type){
 			    				$('input#recruiterEmail').attr('record-exist-errorMsg','Invalid Domain Name'); 
 					     } else if(data == 'Not found'){
 					    	    $("#recruiter_register").removeAttr("disabled");
-					    	 	$('#pwdDiv').attr("style" , "display : block"); 
-						 		$('#confirmPassword').removeAttr('data-validation-optional');
-								$('#confirmPassword').attr("data-validation","required");
-								$('#password').removeAttr('data-validation-optional');
-								$('#password').attr("data-validation","required");
+					    	 	$('#recpwdDiv').attr("style" , "display : block"); 
+						 		$('#recconfirmPassword').removeAttr('data-validation-optional');
+								$('#recconfirmPassword').attr("data-validation","required");
+								$('#recpassword').removeAttr('data-validation-optional');
+								$('#recpassword').attr("data-validation","required");
 								$('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
 					     }
 					     
 				       	else{
 				       		
-				       		$('#pwdDiv').attr("style" , "display : none"); 
-				    	    $('#confirmPassword').removeAttr('data-validation');
-					 		$('#confirmPassword').attr('data-validation-optional',"true");
-					 		$('#password').removeAttr('data-validation');
-					 		$('#password').attr('data-validation-optional',"true");
+				       		$('#recpwdDiv').attr("style" , "display : none"); 
+				    	    $('#recconfirmPassword').removeAttr('data-validation');
+					 		$('#recconfirmPassword').attr('data-validation-optional',"true");
+					 		$('#recpassword').removeAttr('data-validation');
+					 		$('#recpassword').attr('data-validation-optional',"true");
 				       		
 				       		 $("#recruiter_register").removeAttr("disabled");
 							 $('input#recruiterEmail').removeAttr( "record-exist record-exist-errormsg");
@@ -834,7 +868,7 @@ function validatepopEmail(type){
 			$("#popregister_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: "/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -873,7 +907,7 @@ function validatepopRecruiterEmail(type){
 			$("#poprecruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url:"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/ws/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -947,14 +981,14 @@ var validationSettings = {
          		$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: "/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&contactUUID="+contactUUID,		  
+                	  url: "app/ws/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&contactUUID="+contactUUID,		  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
 			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
-									location.replace("/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+									location.replace("/app/ws/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
 			        		}else{
-			        			location.replace("/verifyAccount");  
+			        			location.replace("/app/ws/verifyAccount");  
 			        		}
 			        		
 			        	}else if((result == 'login')){
@@ -1017,14 +1051,14 @@ var validationSettings = {
          	 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: "/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}",
+                	  url: "app/ws/registerAsIndividualRecruiter?${_csrf.parameterName}=${_csrf.token}",
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
-			        			location.replace("/verifyAccount?requirementUUID="+requirementUUID);  
+			        			location.replace("/app/ws/verifyAccount?requirementUUID="+requirementUUID);  
 			        		}else{
-			        			location.replace("/verifyAccount");  
+			        			location.replace("/app/ws/verifyAccount");  
 			        		}
 			        	}else if((result == 'login')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
@@ -1084,7 +1118,7 @@ var validationSettings = {
          			  type: "POST",
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                	  url: "/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
+                	  url: "app/ws/registerAsProfessionalFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		  
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		$("#loadTime").removeAttr('style');
@@ -1143,7 +1177,7 @@ var validationSettings = {
          			  type: "POST",
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
-                	url: "/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                	url: "app/ws/registerAsIndividualRecruiterFromSocialInviter?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		$("#loadTime").removeAttr('style');

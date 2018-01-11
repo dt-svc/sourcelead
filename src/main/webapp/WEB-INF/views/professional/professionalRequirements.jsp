@@ -234,7 +234,7 @@ window.onload = function () {
                             <option selected disabled>INR</option>
                             <option>AUD</option>
                             <option>USD</option>
-                            <option>GPB</option>
+                            <option>GBP</option>
                             <option>SGD</option>
                             <option>EUR</option>
                           </select>
@@ -1839,7 +1839,7 @@ $('body').on('submit', '#referToContacts', function(e){
 <!-- Create Alert modal Popup --> 
 <div class="pop_mask"></div>
  <!-- Modal -->
-  <div class="modal modal_createalert" id="myModal" role="dialog">
+  <div class="modal_createalert" id="myModal" role="dialog">
     <div id="createAlertPopUpDiv"></div>
   </div>
   <!-- Create Alert modal Popup Ends -->
@@ -1847,9 +1847,11 @@ $('body').on('submit', '#referToContacts', function(e){
 //Create Alert Poppup
 function alertFunction() {
 	$(".pop_mask").fadeIn();
-	$(".modal.modal_createalert").fadeIn();
+	$(".modal_createalert").addClass("modal");
+	$(".modal_createalert").fadeIn();
 }
 function alertClose(){
+	$(".modal_createalert").removeClass("modal");
 	$(".pop_mask").fadeOut();
 	$(".modal.modal_createalert").fadeOut();
 }

@@ -84,15 +84,16 @@ public class TimeToFillRestController {
     	      if(offerAcceptedList != null && offerAcceptedList.size() > 0) {
     	    	  for(RequirementSubmissionHistory rh : offerAcceptedList) {
     	    		  RequirementSubmissionHistory rsHisory = timeToFillService.getRequirementHistoryBySubmissionIdsAndStage(rh.getSubmissionId().getId(), "SUBMISSION");
-    	    		  requirementIds.add(rsHisory.getSubmissionId().getRequirementId());
+    	    		  requirementIds.add(rsHisory.getSubmissionId().getRequirement().getId());
     	    		  Long dayDiff = CalendarUtil.getNumberOfDaysForReports(rsHisory.getCreatedDate(), rh.getCreatedDate());
     	    		  timeToFillDays = timeToFillDays+dayDiff;
     	    		  
     	    	  }
     	      }
-    	     
+    	      
     	      Double timeToFillCount = 0d;
     	      if(requirementIds.size() > 0) {
+    	    	  timeToFillDays = (timeToFillDays/offerAcceptedList.size());
     	    	  timeToFillCount = (double) ((double)timeToFillDays/((double)requirementIds.size()));
     	      }else {
     	    	  timeToFillDTO.setFillCount(String.valueOf(timeToFillCount));
