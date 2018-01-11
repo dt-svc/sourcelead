@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.mchange.v1.util.StringTokenizerUtils;
@@ -826,6 +827,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			   .append("OR (concat(userRole.reportingManager.firstName,userRole.reportingManager.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
 			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%')  ")
 			   .append("OR userRole.userState like '%" + userDTO.getSearchValue() + "%' )");
+		 
+		 if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-active".toLowerCase()) || userDTO.getSearchValue().equalsIgnoreCase("inactive".toLowerCase())) {
+			 query1.append("OR userRole.userState like '%" + Status.INACTIVE + "%' ");
+		 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("active".toLowerCase())) {
+			 query1.append("OR userRole.userState like '%" + Status.ACTIVE + "%' ");
+		 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("resend".toLowerCase())) {
+			 query1.append("OR (userRole.userState like '%" + Status.NOT_LOGGEDIN + "%' and userRole.isMailSent = 'Y')");
+		 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("invite".toLowerCase())) {
+			 query1.append("OR (userRole.userState like '%" + Status.NOT_LOGGEDIN + "%' and userRole.isMailSent = 'N') ");
+		 }
 					
 		}
 //		role.getReportingManager().getFirstName()
