@@ -577,7 +577,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.projectStatus like '%" + projectsDTO.getSearchValue() + "%' ")
+				.append("OR ps.projectStatus like '%" + Project_Status.getNameByValue(projectsDTO.getSearchValue()) + "%' ")
 				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue() + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue() + "' ) ")
 				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
 				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue() + "%' ");
@@ -1132,6 +1132,16 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			projects = (Projects) projectsList.iterator().next();
 		}
 		return projects;
+	}
+
+	@Override
+	@Transactional
+	public List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,
+			String projectClientUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.uuid <> :uuid ) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setString("uuid", projectClientUUID).setCacheable(true).list();
+		return projectsList;
 	}
 	
 	

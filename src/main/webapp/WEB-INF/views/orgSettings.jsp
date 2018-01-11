@@ -306,7 +306,7 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group mt">
+							<div class="form-group mt" id="generatedUserIdDiv">
 							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
