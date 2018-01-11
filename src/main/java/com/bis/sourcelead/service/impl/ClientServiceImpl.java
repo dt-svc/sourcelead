@@ -592,8 +592,6 @@ public class ClientServiceImpl implements ClientService {
 	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName().trim()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
 
-	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
-	    	
 	    	Calendar cal = Calendar.getInstance();
 	    	cal.add(Calendar.MONTH, -2);
 	    	Date startDate = cal.getTime();
