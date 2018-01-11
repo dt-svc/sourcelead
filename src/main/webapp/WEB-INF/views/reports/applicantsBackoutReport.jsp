@@ -21,16 +21,19 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant(s) Backout</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicant(s) BackOut </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; Applicant(s) BackOut </div>
    
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-2 pull-left reqListBtn">
-       		 <a href="${appPath}/applicantsBackoutReport" title="Graphical View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+       		<%--  <a href="${appPath}/applicantsBackoutReport" title="Graphical View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
               <a href="${appPath}/applicantBackoutReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
-        </div>
+        --%>
+        <a  title="Graphical View"  id="graphView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+          <a   title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>
+         </div>
         <div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
@@ -62,51 +65,36 @@ $(window).load(function() {
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
                 <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBackoutReportCount();"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getApplicantBackoutReportCount();getBackoutApplicantList();"><i class="fa fa-search"></i></button>
             </div>
           </div>
           <!-- Top Leave Takers Custom Date --> 
           
         </div>
         <div class="col-md-1 noPad">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getApplicantBackoutReportCount();">Run</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick = "getApplicantBackoutReportCount();getBackoutApplicantList();">Run</button>
         </div>
       </div>
+     
+       <!-- Decline Reasons -->
+     <div class="row" id="applicantBackoutGraph" style="display:block">
+        <div class="col-md-12 mt">
+        <div class="clients_wrap_table dashboard-widget" id="applicantBackoutReportDivId" style="display:block">
+              <div id="backoutReason" style="width:100%; height: 250px; margin-bottom: 25px;" ></div>
+        </div>
+        </div>
+	</div>
       <!-- Decline Reasons -->
-      <div class="row" id="applicantBackoutGraph" style="display:block">
-      <div class="row">
-        <div class="col-md-12 mt25">
-          <div class="clients_wrap_table dashboard-widget">
-            <h4 class="pull-left">Backout Reasons</h4>
-            <div id="backoutReason" style="width:100%; height: 250px; margin-bottom: 25px;" ></div>
+      <div class="clearfix tableStyles mt datatable_filter" id="applicantBackoutListDivId" style="display:none">
+          <div id="applicantBackoutListDiv" class="clearfix dashboard-widget col-md-12 dataTablesFilter-relative dataTablesFilter-relative-top"></div>
           </div>
-        </div>
-      </div>
-      </div>
-      <!-- Decline Reasons -->
       
-      <!-- Best recruiters  -->
-    <div class="clearfix dashboard-widget mt col-md-12" id="applicantBackoutGraphList" style="display:none">
-          <div class="clearfix">
-          <h4 class="pull-left"></h4>
-          </div>
-          <div class="clearfix tableStyles mt datatable_filter">
-          <div id="applicantBackoutListDiv"></div>
-             
-            
-          </div>
-        </div>
-            
           </div>
   
   </section>
   
   <script>
   function getApplicantBackoutReportCount(){
-	  
-	  document.getElementById("applicantBackoutGraphList").style.display="none";
-		document.getElementById("applicantBackoutGraph").style.display="block";
-	  
 	  
 		var flag = true;
 		  var jobIds = $("#jobIds").val();
@@ -146,8 +134,43 @@ $(window).load(function() {
 				   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 				    success: function(json) {
 				  	  var total = (json.currentCompany + json.compensation + json.betterOffer + json.coldFeet +json.personal + json.other);
+				  	var listView = document.getElementById("listView");
+		        	 listView.addEventListener("click", function() {
+		        		 getBackoutApplicantList();
+		        		 document.getElementById("applicantBackoutGraph").style.display="none";
+					    	document.getElementById("applicantBackoutListDivId").style.display="block";
+					    	var element = document.getElementById("listView");
+					    	var grid = document.getElementById("graphView");
+					    	element.classList.add("rAct");
+					    	grid.classList.remove("rAct");
+					    	
+					  });
+		        	 
+		        	 var graphicView = document.getElementById("graphView");
+		        	 graphicView.addEventListener("click", function() {
+		        		 if(total > 0 ){
+								loadApplicantBackoutChart(json);
+
+						    	
+							}else{
+								var result = '';
+				 	   			result = result+"<div class='dataTables_empty'>"; 
+				 	   			result = result+"</div> ";
+				 	   	        $("#backoutReason").empty();
+				                $("#backoutReason").append(result);
+							}
+		        		 document.getElementById("applicantBackoutGraph").style.display="block";
+					    	document.getElementById("applicantBackoutListDivId").style.display="none";
+					    	
+					    	var element = document.getElementById("listView");
+					    	var grid = document.getElementById("graphView");
+					    	element.classList.remove("rAct");
+					    	grid.classList.add("rAct");
+					  });
 						if(total > 0 ){
 							loadApplicantBackoutChart(json);
+
+					    	
 						}else{
 							var result = '';
 			 	   			result = result+"<div class='dataTables_empty'>"; 
@@ -167,6 +190,113 @@ $(window).load(function() {
 		  }
 	  
   </script>
+  
+  <script type="text/javascript">
+ 
+ function getBackoutApplicantList(){
+	 
+		var flag = true;
+		  var jobIds = $("#jobIds").val();
+		  if(jobIds == null){
+			  jobIds = '';
+		  }
+		  var dateSelection = $("#dateSelection").val(); 
+		  var fromDate = '';
+		  var toDate = '';
+		  if(dateSelection == 'custom'){
+			   fromDate = $("#fromDate").val();
+			   toDate = $("#toDate").val();
+			  
+			  if(fromDate == '' || toDate == ''){
+				  flag = false;
+				  if(fromDate == ''){
+					  document.getElementById("fromDateDiv").style.display="block";
+				  }else{
+					  document.getElementById("fromDateDiv").style.display="none";
+				  }
+				  if(toDate == ''){
+					  document.getElementById("toDateDiv").style.display="block";
+				  }else{
+					  document.getElementById("toDateDiv").style.display="none";
+				  }
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+			  
+		  }
+		  
+		  if(flag){
+			  
+			  $.ajax({ 
+				   	type: "GET",
+				   	url: sourceleadUrl+"/getApplicantBackoutReportForInduvidualJob?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
+				    success: function(data) {
+				    	
+				    	var result = "";
+			             result  = result + '    <table class="table table-bordered" id="applicantBackoutPagenationId">     ';
+						 result  = result + '     <thead>                                 ';
+						 result  = result + '       <tr>                                  ';
+						 result  = result + '         <th>Jobs</th>                       ';
+						 result  = result + '         <th>Current Company</th>                     ';
+						 result  = result + '         <th>Compensation</th>             ';
+						 result  = result + '         <th>Better Offer</th>                    ';
+						 result  = result + '         <th>Cold Feet</th>                  ';
+						 result  = result + '         <th>Personal</th>                     ';
+						 result  = result + '         <th>Other</th>                      ';
+						 result  = result + '         <th>Total</th>                      ';
+						 result  = result + '       </tr>                                 ';
+						 result  = result + '       </thead>                              ';
+						 result  = result + '       <tbody>                               ';
+						 for (var i = 0; i < data.length; i++) { 
+							 var report = data[i];
+							 if(report.totalCount != 0){
+							 result  = result + '       <tr>                                  ';
+							 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
+							 result  = result + '         <td><div>'+report.currentCompany+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.compensation+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.betterOffer+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.coldFeet+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.personal+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.other+'</div></td>               ';
+							 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
+							 //result  = result + '         <td><div>31</div></td>              ';
+							 result  = result + '         </tr>     ';
+							 }
+						 }
+						
+						 
+						 result  = result + '     </tbody>                                ';
+						 result  = result + '   </table>                                  ';
+						 $("#applicantBackoutListDiv").empty();
+						 $("#applicantBackoutListDiv").append(result);
+						 applicantBackoutListPagination();
+			 
+			 
+		}
+			  });
+			  
+		  }
+	  
+	 
+	 
+	 
+ }
+ function applicantBackoutListPagination(){
+		$('#applicantBackoutPagenationId').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    } );
+	}
+
+</script>
   
   <script type="text/javascript">
 var config = {
