@@ -82,7 +82,7 @@ function getConfiguredList(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Profile Settings</h2>
+        <h2>Account Settings</h2>
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -106,7 +106,7 @@ function getConfiguredList(){
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab">
 		  <ul class="nav nav-tabs">
-			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Profile</a></li>
+			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Details</a></li>
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 		  </ul>

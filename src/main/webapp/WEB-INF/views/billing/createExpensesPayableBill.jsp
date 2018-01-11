@@ -1835,6 +1835,33 @@ function attachFile(id){
 </script>
 
 <script>
+function maskme(){
+
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hhh:Mm"); 
+	
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+}
+</script>
+
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+
+<script>
 
 function creatExpPayBilsEmptyVendorContact(){
 	$("#vendorContact").empty();

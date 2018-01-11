@@ -782,7 +782,6 @@ function addTimeSheetRow(projectId) {
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "timesheetRow"+maxRowNum);
 			
-			
 		    var previousMaxRowNum =parseInt(rowNum-1);
 		    
 		    var entryIndex = $("#entryIndexValue").val();
@@ -794,8 +793,6 @@ function addTimeSheetRow(projectId) {
 			/* cell0.setAttribute("class", "pname");*/
 			cell0.innerHTML = divadttTd0Str;
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
-			
-			
 			
 			var cell1 = row.insertCell(1);
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;

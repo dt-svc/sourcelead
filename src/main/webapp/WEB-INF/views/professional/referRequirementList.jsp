@@ -311,7 +311,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 					<span title="Manage Group" class="paddingRight" onClick="getContactsGroupList();showLable();"><strong>Manage Group
 					 <i class="paddingLeft fa fa-caret-right"></i></strong></span> |
 			  	<!-- ManageLabels div -->
-			  	<div class="manageLables-div">
+			  	<div class="manageLables-div" id="add_group_Div">
        			<div class="clearfix">
        			<button type="button" class="btn btn-sm btn-primary" onClick="addLabelPop();">
        				<i class="fa fa-plus paddingRight"></i>Add
@@ -333,7 +333,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 				<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">
 				<ul class="checkBox" role="menu" aria-labelledby="menu1">
                     	  <c:forEach var="report" items="${contactsGroupList}">
-                        	<li><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"><label for="">${report.groupName}</label></li>
+                        	<li><label class="tbldata-dotdot-big" title="${report.groupName}"><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"> ${report.groupName}</label></li>
 						  </c:forEach>
 				</ul>
 				</div>
@@ -405,7 +405,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 	<a class="close">&times;</a>
 	<ul class="list-unstyled">
 	<c:forEach var="conGroup" items="${contactsGroupList}">
-		<li><input type="radio" name="groupName" id="consGroup${conGroup.id}" value="${conGroup.id}"> ${conGroup.groupName}</li>
+		<li class="tbldata-dotdot-big" title="${conGroup.groupName}"><input type="radio" name="groupName" id="consGroup${conGroup.id}" value="${conGroup.id}"> ${conGroup.groupName}</li>
    </c:forEach>
    </ul>
    <div class="clearfix mt5">
@@ -447,8 +447,10 @@ function addContactsGroup(){
 	 $("#addGroupDiv").empty();
      $("#groupEditDiv").empty();
 	 $("#addGroupDiv").append(result)
+	 
 	 $(".comMask").fadeIn();
 	 $(".createLabel-popdiv").fadeIn();
+	 $('#addcontacttogroup_form').reset();
 }
 
 </script>
@@ -908,7 +910,7 @@ function getContactsGroupList(){
 	                    	 result = result +"<tr id='deleteGroup"+opt.id+"'>";
 				             
 				             if(opt.groupName != null && opt.groupName != '' && opt.groupName != 'undefined'){
-				             result = result +"<td><div class='tbldata-dotdot-sm'>"+opt.groupName+"</div></td>";
+				             result = result +"<td><div class='tbldata-dotdot-sm' title='"+opt.groupName+"'>"+opt.groupName+"</div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
@@ -920,6 +922,7 @@ function getContactsGroupList(){
 	                     result = result +"</table>"; 
 	                     $("#groupList").empty();
 	                     $("#groupList").append(result); 
+	                    
           },
             
        }); 
@@ -943,17 +946,18 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
 	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" class="btn btn-sm btn-primary">Save</button>';
-	        	outPut = outPut+ '</div>';
+	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" onclick= "contactgrp();" class="btn btn-sm btn-primary">Save</button>';
+				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
 	        	
 	            $("#addGroupDiv").empty();
 	            $("#groupEditDiv").empty();
-	        	$("#groupEditDiv").append(outPut); 
+	        	$("#groupEditDiv").append(outPut);
 	        	$(".comMask").fadeIn();
 	        	$(".createLabel-popdiv").fadeIn();
-	         
+	        	 
+	        	$('#addcontacttogroup_form').reset();
 }
 </script>
 
@@ -970,6 +974,7 @@ function deleteContactsGroup(groupId,groupNmae){
 	$("#deleteGroupPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+	$('#addcontacttogroup_form').reset();
 	
 }
 </script>  
@@ -1176,6 +1181,8 @@ function selectedContactList(){
  function movefolderPop() {
 	 $(".movefolder-popdiv").fadeIn();
 	 $(".sideMask").fadeIn();
+	 $("#add_group_Div").hide();
+	 
  }
  $(".close").click(function(){
 	 $(".movefolder-popdiv").fadeOut();

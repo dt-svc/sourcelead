@@ -87,15 +87,21 @@ function requirementHistoryList(candidateId){
            	 }else{
            		rate = "--";
            	 }
-           	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
-           		clientName  = report.clientName;
+           	 if(report.country != null && report.country != '' && report.country != 'undefined'){
+           		country  = report.country;
            	 }else{
-           		clientName = "--"
+           		country = "--"
            	 }
+           	 
+           	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
+            		clientName  = report.clientName;
+            	 }else{
+            		clientName = "--"
+            	 }
 	           	result = result  +'	          <tr>';
 	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+jobType+'">'+jobType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.country+'">'+report.country+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+country+'">'+country+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+clientName+'">'+clientName+'</span></div></td>';
