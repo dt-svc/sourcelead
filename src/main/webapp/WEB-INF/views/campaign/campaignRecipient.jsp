@@ -155,6 +155,8 @@ z-index: 1040 !important;
 	  var campaignType = $( 'input[name="campaignType"]:checked' ).val();
 	  if(campaignType == 'hotlistCampaign'){
 		 $("#receipantCategoryType").html("Select Client");
+		 document.getElementById("vendorCheck").checked = true;
+		  document.getElementById("contactsCheck").checked = false;
 		 $("#categoryListType").html("Client");
 		 clientListChange();
 	  }else{

@@ -118,9 +118,7 @@
 		</div>
 		</form:form>
 	</div>
-	<div id="dataFieldsDiv" style="display: none">
-	</div>
-	<%-- <jsp:include page="importJobs.jsp"></jsp:include> --%>
+	<div id="dataFieldsDiv" style="display: none"></div>
 	
 </section>
 

@@ -38,11 +38,10 @@
 				<li><a
 					href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
 			</ul>
-			<span><input class="immigraTabSerach" type="text" id="searchFindConnId"></span>
+			<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
 		</div>
 		<div class="conHeadgap"></div>
-		<div class="conneWrapInn" id="findConnectionListId"></div>
-	<div class="clearfix"></div>
+		<div class="conneWrapInn clearfix" id="findConnectionListId"></div>
 	<div id="loadMoreDiv"></div> 
 	</div>
 
@@ -135,25 +134,19 @@ var count = 0;
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a></div></div></div>';
 	   		    }
 	 			
-	 			if(type == "manual"){
-            		$('#findConnectionListId').append(result);
-            	}else{
-            		$('#findConnectionListId').append(result);
-            	}
-	 			$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
-	   		}else if(type == "scroll" && result === "" && count > 0){
-            	$('#loadMoreDiv').empty();
-	         	result = result + '<div class="loadWrap"> No More Records..</div>';
-	         	$('#loadMoreDiv').append(result);
-            }else if(type === 'manual' && result === "" && count == 0){
-            	$("#loadMoreDiv").empty(); 
-            	$('#findConnectionListId').hide();
-	         	result = result + '<div class="noDate"></div>';
-	         	$('#loadMoreDiv').append(result);
-            }
+	 			$('#findConnectionListId').append(result);
+        		if(json.length < 18){
+	 				$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
+	 			}else if(json.length >= 18){
+	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
+	 			}
+	   		}else if(type === 'manual' && json == null){
+	   			$('.connHeadText').empty();
+	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
+	   		}
 			 },
 	        error: function(e){
 	        }
@@ -174,7 +167,8 @@ function getDisconnectConnection(userCode,userName){
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
-	            	getConnectionsList("manual");
+	    			$("#connectionState"+userCode).empty();
+	            	$("#connectionState"+userCode).append('<b class="connlink gray">Disconnected</b>');
 	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
          error: function(e){

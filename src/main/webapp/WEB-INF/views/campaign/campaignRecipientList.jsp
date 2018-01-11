@@ -48,6 +48,7 @@ function getCampaignRecipientList(){
        type : "GET",
         url: sourceleadUrl+"/getCampaignRecipientList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&typeOfCampaign="+typeOfCampaign,       
         success :function(json) {
+        	   var json = json.data;
                 populategRecipientList(json);
        },
         
