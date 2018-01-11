@@ -72,6 +72,22 @@ public class DataMigrationCommonController {
 
 		}
 	 
+	 @RequestMapping(value = "/uploadassetManagement")
+		public ModelAndView uploadassetManagement(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.AssetManagement);
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadassetManagement");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	 
 	 /*
 	  * author Venkat Kesav
 	  * redirect to timeSheetImport page
@@ -109,6 +125,49 @@ public class DataMigrationCommonController {
 	        }
 	        try {
 	            File file = new File("Job_Import_Template.xlsx");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	            
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
+		}
+	 
+	 @RequestMapping(value = "/downloadDataImportTemplateForAsset", method = RequestMethod.GET)
+		public void downloadDataImportTemplateForAsset(HttpServletRequest request,HttpServletResponse response) throws Exception{
+			logger.debug("download Asset template is for Import downloadAssetDataImportTemplate method");
+	        @SuppressWarnings("resource")
+			XSSFWorkbook workbook = new XSSFWorkbook();
+	        XSSFSheet sheet = workbook.createSheet("AssetTemplate");
+	        String[] tableColumns = Constants.IMPORT_ASSET_EXCEL_HEADERS;
+	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellValue((String)key);
+	        }
+	        try {
+	            File file = new File("Asset_Import_Template.xlsx");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            
