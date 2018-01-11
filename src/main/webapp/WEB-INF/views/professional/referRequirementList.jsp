@@ -943,8 +943,8 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
 	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" class="btn btn-sm btn-primary">Save</button>';
-	        	outPut = outPut+ '</div>';
+	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" onclick= "contactgrp();" class="btn btn-sm btn-primary">Save</button>';
+				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
 	        	
