@@ -121,15 +121,15 @@ function candidateEducationList(candidateId){
 	                    		 result  = result + '<td><div><span>----</span></div></td>';
 	                    	 }
 	                    	 if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
-	                    	 }
-	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
-			                 }else{
-			                 result  = result + '<td><div><span>----</span></div></td>'; 
-			                 }
+		                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
+		                    	 }else{
+		                    		 result  = result + '<td><div><span>----</span></div></td>'; 
+		                    	 }
+		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+				                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+				                 }else{
+				                 result  = result + '<td><div><span>----</span></div></td>'; 
+				                 }
 	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
 	                    	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
 	                    	 }else{
@@ -480,7 +480,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -500,7 +500,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                  <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';

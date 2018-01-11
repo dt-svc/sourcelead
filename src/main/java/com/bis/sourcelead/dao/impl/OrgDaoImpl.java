@@ -351,12 +351,12 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.openSession();
 		List<UserDTO> userList = new ArrayList<>();
 		try{
-			String query = "select u.id, u.FIRST_NAME, u.last_name, u.doc_file, r.display_name, ur.reporting_manager_id, o.primary_contact_user_id " + 
-					" from USER u, USER_ROLE ur, ROLES r, ORG o, ORG_LOCATIONS ol " + 
-					" where r.id = ur.role_id and u.id = ur.user_id and ur.org_locations_id = "+orgLocationId.longValue() + 
-					" and o.id = ol.org_id and ol.id = ur.org_locations_id order by ur.reporting_manager_id;";
+			String query = "SELECT U.ID, U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
+					" FROM USER U, USER_ROLE UR, ROLES R, ORG O, ORG_LOCATIONS OL " + 
+					" WHERE R.ID = UR.ROLE_ID AND U.ID = UR.USER_ID AND UR.ORG_LOCATIONS_ID = :orgLocationId"+ 
+					" AND O.ID = OL.ORG_ID AND OL.ID = UR.ORG_LOCATIONS_ID ORDER BY UR.REPORTING_MANAGER_ID;";
 			
-			List<Object[]> result = session.createSQLQuery(query).list();
+			List<Object[]> result = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
 			for(Object[] record : result) {
 				UserDTO user = new UserDTO();
 				int i = 0;
@@ -365,8 +365,10 @@ public class OrgDaoImpl implements OrgDao {
 				String lastName = record[i] == null ? "" : record[i].toString();
 				user.setName(user.getName()+(lastName.isEmpty() ? "" : " "+ lastName));
 				i++;
+				user.setFileURL(record[i] == null ? "" : record[i].toString());
 				i++;
-				user.setDesignation(record[i++].toString());
+				user.setDesignation(record[i] == null ? "" : record[i].toString());
+				i++;
 				String parentId = record[i] == null ? null : record[i].toString();
 				i++;
 				user.setParentId(Long.valueOf(parentId == null ? record[i++].toString() : parentId));
