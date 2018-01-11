@@ -85,6 +85,14 @@ public class DataMigrationDTO extends CommonDTO {
 	private String experienceLevel;
 	
 	private String applicationFrom;
+	
+	private String fileURL;
+	
+	private String fileContentType;
+	
+	private String fileName;
+	
+	private String projectClientID;
 
 	/*Timesheets*/
 	
@@ -104,7 +112,7 @@ public class DataMigrationDTO extends CommonDTO {
 	private String totalHours;
 	private String billableHours;
 	private String nonBillableHours;
-	private String weeekComments;
+	private String weekComments;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -233,29 +241,18 @@ public class DataMigrationDTO extends CommonDTO {
 		this.nonBillableHours = nonBillableHours;
 	}
 
-	public String getWeeekComments() {
-		return weeekComments;
-	}
-
-	public void setWeeekComments(String weeekComments) {
-		this.weeekComments = weeekComments;
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/*Timesheets*/
 	
 	
+	public String getWeekComments() {
+		return weekComments;
+	}
+
+	public void setWeekComments(String weekComments) {
+		this.weekComments = weekComments;
+	}
+
 	public String getStaticPath() {
 		return staticPath;
 	}
@@ -598,6 +595,46 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setApplicationFrom(String applicationFrom)
 	{
 		this.applicationFrom = applicationFrom;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public String getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(String projectClientID)
+	{
+		this.projectClientID = projectClientID;
 	}
 
 	

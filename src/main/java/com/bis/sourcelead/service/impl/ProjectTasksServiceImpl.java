@@ -551,4 +551,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
 		return tasksDao.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,projectId,taskType,taskStatus,userRole,assignedMembers);
 	}
+
+	@Override
+	public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId, String taskName)
+			throws Exception {
+		return tasksDao.getProjectTasksByProjectIdAndProjectIdAndTaskName(projectId, taskName);
+	}
 }
