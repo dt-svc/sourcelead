@@ -121,7 +121,6 @@
 
 	}
 	
-	
 	//get the document list
 	function getdocumentListById(folderId,folderName){
 		if(folderName != null && folderName != "" && folderName != 'undefined'){
