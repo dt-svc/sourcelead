@@ -41,23 +41,4 @@ public class JobPipelineReportsController {
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
 	}
-	
-	
-	@RequestMapping(value = "/jobPipelineReportsList")
-	public ModelAndView jobPipelineReportsList(HttpServletRequest request) throws Exception
-	{
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		 ModelAndView model = new ModelAndView();
-		 
-		 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
-		 model.addObject("requirementsList", requirementsDTOList);
-		 
-		 model.setViewName("reports/jobPipelineReportsList");
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 return model;
-	}
-	
-	
 }

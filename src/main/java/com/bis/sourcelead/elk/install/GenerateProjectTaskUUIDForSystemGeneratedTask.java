@@ -1,0 +1,103 @@
+package com.bis.sourcelead.elk.install;
+
+import java.beans.PropertyVetoException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.bis.sourcelead.db.DatabaseConnectionConfig;
+import com.bis.sourcelead.db.PropertyPathConfiguration;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
+public class GenerateProjectTaskUUIDForSystemGeneratedTask {
+	private ComboPooledDataSource comboPooledDataSource;
+	
+
+	/**
+	 * @author shivayogi
+	 * this method is using for update the UUID to project tasks	
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public void projectTaskUUID() throws IOException, SQLException {
+		Connection conn = null ;
+		PreparedStatement stmt1 = null;
+		
+		List<String> taskName =  new ArrayList<>();
+		taskName.add("System Task Billable,Billable");
+		taskName.add("System Task NonBillable,Non-Billable");
+
+		try {
+			DataSource dataSource = comboPooledDataSource();
+			conn = dataSource.getConnection();
+			for(String task:taskName) {
+				String taskNameArray[]  = task.split(",");
+				 String sql = "SELECT * FROM sourcelead.project_tasks where TASK_NAME = '"+taskNameArray[0]+"' and BILLABLE_TYPE = '"+taskNameArray[1]+"';";
+				 stmt1 = conn.prepareStatement(sql);
+				 ResultSet rs = stmt1.executeQuery();
+				 System.out.println("----Adding unique UUID project tasks starts-----");
+				 while(rs.next()){
+					 String projectTasksUUID = rs.getString("PROJECT_TASKS_UUID");
+					 Long id = rs.getLong("ID");
+					 if(projectTasksUUID == null) {
+						 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
+						 String query = "update sourcelead.PROJECT_TASKS set PROJECT_TASKS_UUID = ? where ID = ?";
+						 PreparedStatement pstmt = conn.prepareStatement(query);
+						 pstmt.setString(1, uuid);
+						 pstmt.setLong(2, id);
+						 pstmt.executeUpdate(); 
+					 }
+				 }
+				 
+				 System.out.println("----Adding unique UUID project tasks ends-----");
+		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			try {
+				stmt1.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	/**
+	 * getting connection
+	 * @return DataSource
+	 */ 
+	private DataSource comboPooledDataSource() {
+			@SuppressWarnings("resource")
+			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
+			this.comboPooledDataSource = new ComboPooledDataSource();
+			try {
+				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
+			} catch (PropertyVetoException e) {
+				throw new RuntimeException(e);
+			}
+			comboPooledDataSource.setJdbcUrl(dbconfig.getJdbcUrl());
+			comboPooledDataSource.setUser(dbconfig.getUser());
+			comboPooledDataSource.setPassword(dbconfig.getPassword());
+			return comboPooledDataSource;
+		}
+	 
+	public static void main(String[] args) throws IOException, SQLException {
+		GenerateProjectTaskUUID dump = new GenerateProjectTaskUUID();
+		dump.projectTaskUUID();
+	}
+
+}

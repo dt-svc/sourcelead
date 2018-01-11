@@ -313,13 +313,13 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" readonly="readonly" field-name="Location" placeholde="Location" data-validation="required">';
-								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\',\'addressId\');"></i>';
+								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readonly="readonly" value="'+location+'" readonly="readonly" field-name="Location" placeholde="Location" data-validation="required">';
+// 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Country</label>';
-								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" >';
+								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" field-name="Country" data-placeholder="Select Country" disabled data-validation="required" >';
 								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
 								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
 								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
@@ -331,12 +331,12 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 								result = result + '<label>State</label>';
-								result = result + '<input type="text" name="state" id="existingState" value="'+state+'" >';
+								result = result + '<input type="text" name="state" readonly="readonly" id="existingState" value="'+state+'" >';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>City</label>';
-								result = result + '<input type="text" name="city" id="existingCity" value="'+city+'" >';
+								result = result + '<input type="text" name="city" readonly="readonly" id="existingCity" value="'+city+'" >';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
@@ -359,14 +359,14 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Address" placeholde="Address" data-validation="required">';
-								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\',\'addressId\');"></i>';
+								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" readonly="readonly" value="'+location+'" field-name="Address" placeholde="Address" data-validation="required">';
+// 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
 								
 								result = result + '<div class="user_summary_edit_cta" id="errCountryMsg">';
 								result = result + '<label>Country</label>';
-								result = result + ' <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+								result = result + ' <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" disabled data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
 								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
 								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
 								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
@@ -378,12 +378,12 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 								result = result + '<label>State</label>';
-								result = result + '<input type="text"  class="form-control" name="state" value="'+state+'" id="clientState" field-name="State"  > ';
+								result = result + '<input type="text"  class="form-control" name="state" readonly="readonly" value="'+state+'" id="clientState" field-name="State"  > ';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>City</label>';
-								result = result + '<input type="text"  class="form-control" name="city" id="clientCity" value="'+city+'" field-name="City"  > ';
+								result = result + '<input type="text"  class="form-control" name="city" readonly="readonly" id="clientCity" value="'+city+'" field-name="City"  > ';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
@@ -447,8 +447,8 @@
 						$(".user_summary_edit").slideToggle(100);
 						$("#editClientDetailsDiv").empty();
 				        $("#editClientDetailsDiv").append(result);
-				        initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite','addressId');
-				        zipcodeMask(country,'clientZipCode');
+// 				        initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite','addressId');
+// 				        zipcodeMask(country,'clientZipCode');
 				        $(function(){
 				            var config = {
 				        		  '.chosen-select'           : {},
