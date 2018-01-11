@@ -30,7 +30,7 @@ public class ApplicantDeclineServiceImpl implements ApplicantDeclineService {
 		Iterator rejectedCount = typeCount.entrySet().iterator();
 	    while (rejectedCount.hasNext()) {
 	        Map.Entry rejectValue = (Map.Entry)rejectedCount.next();
-	        System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());
+	     /*   System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());*/
 	        if(rejectValue.getKey().equals("Wrong Skill Sets")){
 	        	applicantDeclineDTO.setSkillsCount((int)rejectValue.getValue());
 	        }

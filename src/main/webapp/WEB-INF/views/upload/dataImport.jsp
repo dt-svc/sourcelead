@@ -11,7 +11,7 @@
   </div>
   <div class="pull-right brud-crum">Home &raquo; Jobs &raquo; Jobs Import</div>
 </section> -->
-<div class="content-area content-new clearfix" id="importFieldsDiv">
+<div class="content-area content-new clearfix" id="dataFieldsDiv">
 
 	<div class="col-xs-12 col-md-12 col-lg-12 mt">
 		<div class="well">
@@ -64,32 +64,10 @@
 				<jsp:include page="dataImportTimeSheetFormFields.jsp"></jsp:include>
 			</c:if>
 			
-			
-				<%-- <c:forEach var="field" items="${fields}">
-					<div class="form-group">
-						<c:if test="${empty field.slDependantField}">
-							<label class="col-md-4 text-right mt5">${field.labelName}<span class="text-danger paddingLeft">${field.isFieldRequired == "1" ? "*" : ""}</span></label>
-						</c:if>
-						<c:if test="${!empty field.slDependantField}">
-							<label class="col-md-4 text-right mt5">${field.labelName}</label>
-						</c:if>
-						<div class="col-md-8 dropdown-select">
-						<c:if test="${empty field.slDependantField}">
-							<select class="form-control" name="${field.fieldName}" field-name="${field.labelName}" ${field.isFieldRequired == "1" ? "data-validation='required'" : ""}>
-						</c:if>
-						<c:if test="${!empty field.slDependantField}">
-							<select class="form-control" name="${field.fieldName}" field-name="${field.labelName}">
-						</c:if>
-								<option value="">- - - Select - - -</option>
-								<c:forEach var="map" items="${dataWithCellId}">
-									<option value="${map.key}">${map.value} (column-${map.key})</option>
-								</c:forEach>
-							</select>
-						</div>
-					</div>
-				</c:forEach> --%>
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">
+				<input type="hidden"  readonly id="headerPosition" name="headerPosition" value="${headerPosition}">
+				<input type="hidden"  readonly id="timesheetMode" name="timesheetMode" value="${timesheetMode}">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>
@@ -109,10 +87,10 @@
 				url : sourceleadUrl + "/getDataByMatchedFields?"
 						+ tokenParamName + "=" + tokenValue,
 				success : function(data) {
-					$("#jobFileImportDiv").attr("style","display:none");
-			    	$('#jobFieldsDiv').removeAttr("style");
-			    	$('#jobFieldsDiv').empty();
-			    	$('#jobFieldsDiv').append(data);
+					$("#dataFileImportDiv").attr("style","display:none");
+			    	$('#dataFieldsDiv').removeAttr("style");
+			    	$('#dataFieldsDiv').empty();
+			    	$('#dataFieldsDiv').append(data);
 				}
 			});
 		}
@@ -129,4 +107,8 @@
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
+</script>
+
+<script>
+    $(".chosen-select").chosen();
 </script>

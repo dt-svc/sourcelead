@@ -465,7 +465,7 @@ function refercontactList(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix">';
-  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+  		result = result +'<table id="example" class="display" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result +'<th><input type="checkbox" id="checkReferContacts" onclick="toggleContactsGroup(this);"></th>';
@@ -908,7 +908,7 @@ function getContactsGroupList(){
 	                    	 result = result +"<tr id='deleteGroup"+opt.id+"'>";
 				             
 				             if(opt.groupName != null && opt.groupName != '' && opt.groupName != 'undefined'){
-				             result = result +"<td><div class='tbldata-dotdot-sm'>"+opt.groupName+"</div></td>";
+				             result = result +"<td><div class='tbldata-dotdot-sm' title='"+opt.groupName+"'>"+opt.groupName+"</div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
@@ -943,8 +943,8 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
 	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" class="btn btn-sm btn-primary">Save</button>';
-	        	outPut = outPut+ '</div>';
+	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" onclick= "contactgrp();" class="btn btn-sm btn-primary">Save</button>';
+				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
 	        	

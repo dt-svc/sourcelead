@@ -306,7 +306,7 @@ function getVendorDetails(){
 									<input class="form-control positionRelative"
 										id="vendorLocation" name="location"
 										placeholder="Enter your Address" type="text"
-										field-name="Location" data-validation="required"></input> <i
+										field-name="Address" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
 										onClick="refreshGoogleApiLocation('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode','addressId');"></i>
@@ -488,7 +488,7 @@ function getVendorDetails(){
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="email" name="email"
-									value="${emailId}" field-name="Email Id"
+									value="${emailId}" field-name="Email"
 									data-validation="required validate_Space validate_length length1-100 validate_email"
 									onblur="validateEmail();getSpocUserDetails();"> <span
 									class="hidden">Valid Email</span>
@@ -556,7 +556,7 @@ function getVendorDetails(){
 							<div class="col-md-9 candAdvsrch">
 								<select data-placeholder="select owner" multiple
 									class="chosen-select form-control" name="owner" id="owner"
-									field-name="Owner" data-validation="required">
+									field-name="Owner Name" data-validation="required">
 									<c:forEach var="user" items="${userList}">
 										<option value="${user.id}"
 											${user.id  == SourceLeadWeb_userId ? 'selected' : ''}>${user.fullName}</option>

@@ -7,6 +7,10 @@ public class DataMigrationDTO extends CommonDTO {
 	private String staticPath;
 	
 	private String uploadType;
+	
+	private String headerPosition;
+	
+	private String timesheetMode;
 
 	private List<FileInfo> fileInfo;
 
@@ -100,7 +104,7 @@ public class DataMigrationDTO extends CommonDTO {
 	private String totalHours;
 	private String billableHours;
 	private String nonBillableHours;
-	private String weeekComments;
+	private String weekComments;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -229,29 +233,18 @@ public class DataMigrationDTO extends CommonDTO {
 		this.nonBillableHours = nonBillableHours;
 	}
 
-	public String getWeeekComments() {
-		return weeekComments;
-	}
-
-	public void setWeeekComments(String weeekComments) {
-		this.weeekComments = weeekComments;
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/*Timesheets*/
 	
 	
+	public String getWeekComments() {
+		return weekComments;
+	}
+
+	public void setWeekComments(String weekComments) {
+		this.weekComments = weekComments;
+	}
+
 	public String getStaticPath() {
 		return staticPath;
 	}
@@ -266,6 +259,26 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setUploadType(String uploadType) {
 		this.uploadType = uploadType;
+	}
+
+	public String getHeaderPosition()
+	{
+		return headerPosition;
+	}
+
+	public void setHeaderPosition(String headerPosition)
+	{
+		this.headerPosition = headerPosition;
+	}
+
+	public String getTimesheetMode()
+	{
+		return timesheetMode;
+	}
+
+	public void setTimesheetMode(String timesheetMode)
+	{
+		this.timesheetMode = timesheetMode;
 	}
 
 	public List<FileInfo> getFileInfo() {

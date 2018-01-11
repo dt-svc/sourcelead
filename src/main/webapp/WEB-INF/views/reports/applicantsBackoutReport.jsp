@@ -21,14 +21,14 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant(s) Backout</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants(s) backOut </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicant(s) BackOut </div>
    
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-2 pull-left reqListBtn">
-       		 <a href="${appPath}/applicantsBackoutReport" title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+       		 <a href="${appPath}/applicantsBackoutReport" title="Graphical View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
               <a href="${appPath}/applicantBackoutReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-6 ReqRepHead-chosen">
@@ -96,19 +96,6 @@ $(window).load(function() {
             
           </div>
         </div>
-      
-            <nav class="clearfix">
-              <ul id="paging" class="pagination pull-right">
-                <li><a href="#">Previous</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-            </nav>
-            
             
           </div>
   
@@ -158,7 +145,18 @@ $(window).load(function() {
 				   	type: "GET",
 				   	url: sourceleadUrl+"/getApplicantBackoutReport?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 				    success: function(json) {
-		        		 loadApplicantBackoutChart(json);
+				  	  var total = (json.currentCompany + json.compensation + json.betterOffer + json.coldFeet +json.personal + json.other);
+						if(total > 0 ){
+							loadApplicantBackoutChart(json);
+						}else{
+							var result = '';
+			 	   			result = result+"<div class='dataTables_empty'>"; 
+			 	   			result = result+"</div> ";
+			 	   	        $("#backoutReason").empty();
+			                $("#backoutReason").append(result);
+						}
+				  	  
+		        		 
 		        		 
 				},
 		error: function(e){

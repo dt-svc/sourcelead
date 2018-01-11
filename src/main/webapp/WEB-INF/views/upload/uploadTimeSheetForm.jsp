@@ -33,16 +33,19 @@
 			&raquo; Import Timesheets
 		</div>
 	</section>
-	<div class="content-area clearfix" id="jobFileImportDiv">
-		<div
-			class="clearfix form-area form-horizontal toggle-div remove-div mt">
+	<div class="content-area clearfix" id="dataFileImportDiv">
+		<form:form id="upload_timesheet_form" name="upload_timesheet_form" method="post" enctype="multipart/form-data">
+		<div id="loading"></div>
+		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 					<!-- Download File button -->
 					<div class="clearfix mb row">
 					<div class="col-xs-3 col-md-3">
-						<div id="timesheetModeDiv">
-							<select class="selectpicker form-control" id="timesheetMode" name="timesheetMode">
+						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
+					</div>
+					<div class="col-xs-3 col-md-3 paddingLeft">
+							<select class="selectpicker form-control" id="timesheetMode" name="timesheetMode" field-name="Upload mode" data-validation="required" >
 								<option value="" disabled selected>--- Select Mode ---</option>
 								<option value="BiMonthly">Bi-Monthly</option>
 								<option value="Monthly">Monthly</option>
@@ -50,14 +53,13 @@
 								<option value="Weekly">Weekly</option>
 							</select>
 					</div>
-					</div>
-						<div class="col-xs-6 col-md-6">
+						<div class="col-xs-3 col-md-3 paddingLeft">
 							<a href="#"
-								class="btn btn-success btn-block"> <i class="fa fa-download"></i>&nbsp;&nbsp;Download
-								Timesheets Template
+								class="btn btn-success btn-block" title="Download Timesheet Template"> <i class="fa fa-download"></i>&nbsp;&nbsp;
+								Template
 							</a>
 						</div>
-						<div class="col-xs-3 col-md-3">
+						<div class="col-xs-3 col-md-3 paddingLeft">
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
 									<input type="button" class="btn btn-primary" id="upload_button"
@@ -73,14 +75,12 @@
 					</div>
 					<!-- Attach File button -->
 
-					
-
 					<div class="dropzone">
 						<div class="clearfix"></div>
 						<div class="file-upload clearfix text-center">
 							<div class="col-md-12" id="">
 								<label class="bg-default"> <i aria-hidden="true"
-									class="fa fa-paperclip" title="Attach file" onclick="alertDialog();"></i> <br /> <input
+									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
 									data-validation="required validate_importFile">
@@ -125,6 +125,7 @@
 				</div>
 			</div>
 		</div>
+		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none">
 	</div>
@@ -145,37 +146,34 @@ function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
 	var timesheetMode = $("#timesheetMode").val();
 	var uploadType = "timesheetUpload";
-	if(fileUrl != "" && fileUrl != null && fileUrl != 'undefined' && timesheetMode != "" && timesheetMode != null && timesheetMode != 'undefined'){
-		$('#timesheetModeDiv').find('p.jquery_form_error_message').remove();
-		$.ajax({
-			type: "POST",
-		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&timesheetMode="+timesheetMode, 
-		    success: function(data) {
-		    	$("#jobFileImportDiv").attr("style","display:none");
-		    	$('#dataFieldsDiv').removeAttr("style");
-		    	$('#dataFieldsDiv').append(data);
-		    },
-		});
-	}else{
-		$('#timesheetModeDiv').find('p.jquery_form_error_message').remove();
-		if(fileUrl == "" || fileUrl == null || fileUrl == 'undefined'){
-			$('#newUploadFile').html("<p class='jquery_form_error_message'>File selection is required</p>");
-		}
-		if(timesheetMode == "" || timesheetMode == null || timesheetMode == 'undefined'){
-			$('#timesheetModeDiv').append("<p class='jquery_form_error_message'>Timesheet Mode is required</p>");
-		}
-	}
-	
+	var headerPosition = $("#headerPosition").val();
+        if (($('#upload_timesheet_form').validate(false, validationSettings))){
+      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+          	$.ajax({
+    			type: "POST",
+    			url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&timesheetMode="+timesheetMode+"&headerPosition="+headerPosition, 
+    		    success: function(data) {
+    		    	$("#dataFileImportDiv").attr("style","display:none");
+    		    	$('#dataFieldsDiv').removeAttr("style");
+    		    	$('#dataFieldsDiv').append(data);
+    		    },
+    		});
+        }
+        else{
+      	  return false;	
+        }
 }
+
+$('body').on('blur', '#upload_timesheet_form', function() {
+	$("#upload_timesheet_form").showHelpOnFocus();
+	$("#upload_timesheet_form").validateOnBlur(false, validationSettings);
+	
+});
 </script>
 
 <script type="text/javascript">
 function cancelFileImport(){
 	location.replace(sourceleadUrl+"/uploadTimesheet");
-}
-
-function alertDialog(){
-	alert('Should maintain top row as header');
 }
 </script>
 

@@ -395,7 +395,11 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		    			 var td = cacheLastJson.data;
 		    			 for(var i in td)
 		    			 {
-		    				 map[td[i].candidateId] = td[i].firstName + td[i].lastName;
+		    				 if(td[i].lastName != null && td[i].lastName !='' && td[i].lastName !='undefined'){
+		    				     map[td[i].candidateId] = td[i].firstName +" "+ td[i].lastName;
+		    				 }else{
+		    					 map[td[i].candidateId] = td[i].firstName;
+		    				 }
 		    			 }
 		    			 $("input[name='compareCandListMap']").val(JSON.stringify(map));
 		    		 }
