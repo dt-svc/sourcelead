@@ -1025,9 +1025,6 @@ function deleteSelectedContactsGroup(groupId){
 <script>
 function addLabelPop(){
 	addContactsGroup();
-	alert("jj")
-	$(".manageLables-div").popup('close');
-	//movefolder-popdiv
 };
 function maskFade(){
 	 $(".comMask").fadeOut();
