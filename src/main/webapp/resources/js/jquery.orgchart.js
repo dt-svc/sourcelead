@@ -699,8 +699,13 @@
       if (opts.nodeTemplate) {
         $nodeDiv.append(opts.nodeTemplate(nodeData));
       } else {
+    	  var subeles = "";
+    	  var flags = nodeData.relationship || '';
+    	  if(Number(flags.substr(2,1))) {
+   	        	subeles = "<img src='"+(sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png")+"' class='orgchart hassub'/>"
+	        }
         $nodeDiv.append('<div class="content_div"><div class="title"><a target="_blank" href="'+sourceleadUrl+'/userSummaryDetails?userId='+nodeData[opts.nodeId]+'">' + nodeData[opts.nodeTitle] + '</a></div>' +
-        		(typeof opts.nodeContent !== 'undefined' ? '<div class="content">' + (nodeData[opts.nodeContent] || '') + '</div> </div>' : ''));
+        		(typeof opts.nodeContent !== 'undefined' ? '<div class="content">' + (nodeData[opts.nodeContent] || '') + '</div>'+subeles+'</div>' : ''));
       }
       // append 4 direction arrows or expand/collapse buttons
       var flags = nodeData.relationship || '';

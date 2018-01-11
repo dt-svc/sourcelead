@@ -110,12 +110,18 @@ function filterNodes(keyWord) {
 	    			obj.id = ds[i].id;
 	    			obj.name = ds[i].name;
 	    			obj.designation = ds[i].designation;
-	          	obj.avatar = sourceleadUrl+'/displayUserImage/'+ds[i].id;
-	          	data = obj;
+	    			if(ds[i].fileURL && ds[i].fileURL !== "")
+	          			obj.avatar = sourceleadUrl.replace("/app", "")+ds[i].fileURL;
+	    			else 
+	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
+	          		data = obj;
 		    		obj.children = [];
 	    			$.each(ds, function(j) {
 	    				if(ds[j].parentId == obj.id) {
-	    					ds[j].avatar = sourceleadUrl+'/displayUserImage/'+ds[j].id;
+							if(ds[j].fileURL && ds[j].fileURL !== "")	    					
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    					else
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
 	    					obj.children.push(ds[j]);
 	    				}
 	    			});
@@ -123,7 +129,10 @@ function filterNodes(keyWord) {
 	    			ds[i].children = [];
 	    			$.each(ds, function(j) {
 	    				if(ds[i].id == ds[j].parentId) {
-	    					ds[j].avatar = sourceleadUrl+'/displayUserImage/'+ds[j].id;
+	    					if(ds[j].fileURL && ds[j].fileURL !== "")	    					
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    					else
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png";
 	    					ds[i].children.push(ds[j]);
 	    				}
 	    			});
