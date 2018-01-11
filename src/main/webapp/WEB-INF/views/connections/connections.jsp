@@ -122,13 +122,13 @@ $("#searchFindConnId").keydown(function(e) {
 	 				var user = json[i];
 	 				var state = null;
 	 				if(user.userState == 'Request_sent'){
-	 					state = '<a href="#/" onclick="getWithdrawConnections(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a>';
+	 					state = '<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a>';
 	 				}else if(user.userState == 'Request_received'){
-	 					state = '<a href="#/" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="#" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
+	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
 	 				}else if(user.userState == 'connected'){
-	 					state = '<a href="#/" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a>';
+	 					state = '<a href="javascript:void(0)" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a>';
 	 				}else{
-	 					state = '<a href="#/" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Connect</a>';
+	 					state = '<a href="javascript:void(0)" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Connect</a>';
 	 				}
 	 				var mutCountStatus = null;
 	 				if(user.mutualCount != 0){
@@ -199,7 +199,7 @@ function getConnection(userCode,userName){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	    			$("#connectionState"+userCode).empty();
-	    			$("#connectionState"+userCode).append('<a href="#/" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>');
+	    			$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>');
 	            	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
             },
          error: function(e){
@@ -222,7 +222,7 @@ function getWithdrawConnections(userCode,userName){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	    			$("#connectionState"+userCode).empty();
-	            	$("#connectionState"+userCode).append('<a href="#/" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+	            	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	            	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");
          },
          error: function(e){
@@ -242,9 +242,11 @@ function ignoreConnection(userCode,userName){
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
          	success: function(json) {
+         		alert("ignored")
 	        	$("#selector4").removeAttr("style");
 	 			$("#selector4").css({ display: "block" });
-	         	$("#connectionState"+userCode).append('<a href="#/" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+	 			$("#connectionState"+userCode).empty();
+	         	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	         	eduMsgFadeinFunction(userName+"'\s invitation removed");
       },
       error: function(e){
@@ -265,7 +267,8 @@ function acceptConnection(userCode,userName){
         success: function(json) {
 	        	$("#selector4").removeAttr("style");
 				$("#selector4").css({ display: "block" });
-	        	$("#connectionState"+userCode).append('<a href="#/" onclick="getDisconnectConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink red">Disconnect</a>');
+				$("#connectionState"+userCode).empty();
+	        	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getDisconnectConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink red">Disconnect</a>');
 	        	eduMsgFadeinFunction("You're connected with "+userName);
      },
      error: function(e){
@@ -288,7 +291,7 @@ function getDisconnectConnection(userCode,userName){
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
 	    			$("#connectionState"+userCode).empty();
-	            	$("#connectionState"+userCode).append('<a href="#/" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
+	            	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
          error: function(e){
