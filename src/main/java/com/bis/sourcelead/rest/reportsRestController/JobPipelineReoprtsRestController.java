@@ -377,7 +377,11 @@ public class JobPipelineReoprtsRestController {
 		    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum)*100));
 		    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum)*100));
 		    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum)*100));
-		    	report.setOfferedMove(Math.round((((double)offeredSum/(double)interviewsSum)*100)/offeredSum));
+		    	if(interviewsSum<offeredSum) {
+			    	report.setOfferedMove(Math.round((((double)offeredSum/(double)interviewsSum)*100)/offeredSum));
+		    	}else {
+			    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum)*100));
+		    	}
 		    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum)*100));
 		    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum)*100));
 		    	
