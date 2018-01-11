@@ -45,6 +45,8 @@ public interface RequirementInterviewDao {
 			Long locationId, Date startUTCDate, Date endUTCDate);
 
 	RequirementInterview getinterviewBySubmissionId(Long submissionId);
+	
+	List<Date> getInterviewDatesForCalendarEvent(Long userId,Long orgLocationId) throws Exception;
 
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 

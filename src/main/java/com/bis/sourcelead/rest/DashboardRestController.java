@@ -941,6 +941,23 @@ public class DashboardRestController {
 
 		}
 		
+		
+		@RequestMapping(value = "/getInterviewsTaskDates")
+		public List<String> getInterviewsTaskDates(String dateRange, HttpServletRequest request) throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<Date> datesList = new ArrayList<>();
+			List<String> interviewDatesList = new ArrayList<>();
+			datesList = requirementInterviewService.getInterviewDatesForCalendarEvent(user.getId(), loginOrgLocations.getId());
+			if(datesList != null) {
+				for(Date dates : datesList) {
+					String interviewDate = Constants.DF_STD.format(dates);
+					interviewDatesList.add(interviewDate);
+				}
+			}
+			return interviewDatesList;
+		}
+		
 		@RequestMapping(value = "/getInterviewsandTasks")
 		public String getInterviewsandTasks(String dateRange, HttpServletRequest request) throws Exception {
 			

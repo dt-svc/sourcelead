@@ -98,7 +98,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:<span class="text-danger">*</span></strong></label>
+                                      <label><strong>Due before:<span class="text-danger">*</span></strong></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       

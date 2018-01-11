@@ -53,13 +53,43 @@ width: 75px; padding: 0 !important;
 <script type="text/javascript">
 window.onload = function() { 
 	getInterviewsandTasks();
+	getInterviewsDates();
 	}
+</script>
+
+<script>
+function getInterviewsDates(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var dates = {}
+	 $.ajax({
+		type: "POST",
+        url: sourceleadUrl+"/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+       	 if(data.length > 0){
+       		 for(var i=0; i<data.length; i++){
+       			dates[new Date(data[i]).getTime()]='visible';
+       		 }
+       		eventCalendar(dates);
+       	 }
+        }
+	}); 
+	
+	    
+	  
+
+}
 </script>
 
 <script type="text/javascript">
 	function getInterviewsandTasks() {
 		var sourceleadUrl ='${sourceleadUrl}';
+		var date = '';
 		var date = $("#eventCalendar").val();
+		if(date == null || date == '' || date == 'undefined'){
+			date = new Date(); 
+			date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+		}
+		
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getInterviewsandTasks?${_csrf.parameterName}=${_csrf.token}&dateRange="+date,
@@ -826,7 +856,7 @@ function cancelAddInterviewDiv(){
 </script>
 	
   <script>
-  $(function() {
+  function eventCalendar(dates) {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEDashboardeventCalendar = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -838,20 +868,34 @@ function cancelAddInterviewDiv(){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
 	  }
+	  
     $("#eventCalendar" ).datepicker({
 	  changeMonth: true,
       changeYear: true,
       dateFormat : finalDateFormatEDashboardeventCalendar,
       onSelect : function(selected) {
   		getInterviewsandTasks();
-	   }
+	   },
+	    beforeShowDay: function(date) {
+	  	  var hlText = dates[date.getTime()];
+	        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
+	  	}
     });
-  });
+  } 
       
-      $(function(){
+ $(function(){
    $('#example').timepicker(); 
 });
-  </script> 	
+  </script>  
+ 
+  <style>
+  .Highlighted a{
+	   background-color : #FFA07A !important;
+	   font-weight:bold !important;
+	   font-size: 12pt;
+}
+  </style>
+  	
  <!-- <script>
  function personalInfo(){
      $(".userdetails").toggle();
