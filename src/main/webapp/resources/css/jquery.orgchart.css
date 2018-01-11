@@ -316,7 +316,7 @@
 .OrgChBtn.OrgChBtnAct:before {
     content: "\f066"; font-family: FontAwesome; color: #454545; font-size: 22px;
 }
-.orgchart.hassub{
+orgchart.hassub{
        width: 20px;
     height: 20px;
     position: absolute;
@@ -324,4 +324,8 @@
     right: 8px;padding: 0px;
     min-width: 20px;
     min-height: 20px;
+}
+.hasUsers {
+	    position: absolute; bottom: 8px; right: 5px; color: #606060;
+}
 }

@@ -512,10 +512,7 @@ public class Constants {
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
-			"Serial Number", "Make", "Model", "Location", "City",	"State", "Country", "Zip Code",	
-			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
-			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
+			"Serial Number", "Make", "Model", "Memory", "CPU",	"Hard Disk", "Description", "Shift1 User","Shift2 User"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };

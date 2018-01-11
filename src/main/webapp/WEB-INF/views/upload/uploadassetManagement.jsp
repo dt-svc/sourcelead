@@ -45,11 +45,11 @@
 						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
 					</div>
 					
-						<div class="col-xs-5 col-md-5">
+						 <div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadDataImportTemplateForAsset'/>"
 								class="btn btn-success btn-block" title="Download Asset Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Asset Template
 							</a>
-						</div>
+						</div> 
 						<div class="col-xs-4 col-md-4">
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
