@@ -140,9 +140,9 @@ var count = 0;
 	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="#/" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a></div></div></div>';
 	   		    }
 	 			$('#findConnectionListId').append(result);
-        		if(json.length <= 18){
+        		if(json.length < 18){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
-	 			}else if(json.length > 18){
+	 			}else if(json.length >= 18){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}
 	   		}else if(type === 'manual' && json == null){

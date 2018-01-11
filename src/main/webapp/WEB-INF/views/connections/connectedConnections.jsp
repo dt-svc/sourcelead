@@ -139,9 +139,9 @@ var count = 0;
 	   		    }
 	 			
 	 			$('#findConnectionListId').append(result);
-        		if(json.length <= 18){
+        		if(json.length < 18){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
-	 			}else if(json.length > 18){
+	 			}else if(json.length >= 18){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}
 	   		}else if(type === 'manual' && json == null){
