@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -97,6 +99,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private AssetCategoryService assetCategoryService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -1236,4 +1241,46 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			private static double getMinutes1(double val) {
 			return Math.floor(val) + (Math.floor(((val-Math.floor(val)) * 60))/100);
 			}
+			
+			
+			
+		public void dataValidationForAssets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
+			{
+				
+				if(dataMigrationDTOJsonCopy.getString("category").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("category"))) {
+					errorSet.put("category", "Category is missing");
+				}
+				if(dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
+					errorSet.put("workingStatus", "Working Status is missing");
+				}
+				if(dataMigrationDTOJsonCopy.getString("sno").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
+					errorSet.put("sno", "Serial Number is missing");
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("category").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("category"))) {
+					AssetCategory  category= assetCategoryService.getAssetCategoryListByLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("category").trim());
+					if(category == null){
+						errorSet.put("category", dataMigrationDTOJsonCopy.getString("category")+" is Not Exist");
+					}else{
+						dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
+					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
+					if(status.equalsIgnoreCase("working") || status.equalsIgnoreCase("out of service")){
+						status = status.substring(0, 1).toUpperCase()+status.substring(1, status.length());
+						dataMigrationDTOJsonCopy.put("workingStatus", status);
+					}else{
+						errorSet.put("workingStatus", dataMigrationDTOJsonCopy.getString("workingStatus")+" is invalid Working Status");
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("sno").equals("sno") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
+					String serialNo = dataMigrationDTOJsonCopy.getString("sno");
+						dataMigrationDTOJsonCopy.put("sno", serialNo);
+				}
+				
+			}
+
 	}
