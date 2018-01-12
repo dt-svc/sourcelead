@@ -2078,6 +2078,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		tempHTML.append("</table>");
 		return tempHTML;
 	}
+
+
+	@Override
+	public List<Date> getInterviewDatesForCalendarEvent(Long userId, Long orgLocationId) throws Exception {
+		return requirementInterviewDao.getInterviewDatesForCalendarEvent(userId, orgLocationId);
+	}
 	
 	
 	/*@Override

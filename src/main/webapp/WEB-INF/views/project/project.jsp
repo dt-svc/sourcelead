@@ -253,7 +253,7 @@ function validateShortCode(){
 						</div>
 
 
-						<div class="form-group">
+						<div class="form-group" id="flatPercentageDivId">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="input-group">
@@ -265,7 +265,7 @@ function validateShortCode(){
 									</div>
 									<input type="number" min="0" max="100" step="0.5" value="0"
 										id="flatPercentage" name="flatPercentage" maxlength="5"
-										class="form-control" data-validation-optional="true" onblur="">
+										class="form-control" data-validation-optional="true" onkeyup="flatPercentageType();" onblur="">
 								</div>
 							</div>
 						</div>
@@ -413,7 +413,7 @@ function validateShortCode(){
 								      <input type="text" class="pull-left btn btn-primary btn-block" value="%" readonly>
 					                </div>
 									<input type="text" value="" id="notifyBudgetAt" name="notifyBudgetAt" class="form-control"
-										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" >
+										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" onkeyup="recSelectType();" >
 								</div>
 							</div>
 						</div>
@@ -524,6 +524,7 @@ function removeFrequencyValidation(){
 }
 
 function allowOverTime(){
+	
 	if ($('#isAllowOverTime').is(":checked"))
 	{
 		$('#flatPercentageId').attr('style','visibility:visible');
@@ -531,6 +532,11 @@ function allowOverTime(){
 	}else{
 		$('#flatPercentageId').attr('style','visibility:hidden');
 		$('#flatPercentage').attr('style','visibility:hidden');
+		
+		$('#flatPercentage').val('');
+		$('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove(); 
+		$("#save_project").removeAttr("disabled");
+		
 	}
 	
 }
@@ -680,7 +686,7 @@ function getStatus(){
 		    	formData["estimatedHours"] = "0";
 		    } */
 		    
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -724,7 +730,7 @@ function getProjectDetails(){
 	if(projectId){
 		$("#FileUploadContainer").empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
@@ -1240,6 +1246,49 @@ function validateProjectName(){
 }
 </script>
  
+ 
+ 
+ <script type="text/javascript">
+function recSelectType(){
+	 var canScore = document.getElementById("notifyBudgetAt").value;
+	 $('#EstimatedBudgetDiv').parent().find('p.jquery_form_error_message').remove(); 
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(canScore.match(floatNum)){
+			  $("#save_project").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+				$("input#notifyBudgetAt").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+				 $("#save_project").attr("disabled", "disabled");
+				return false; 
+		 	 }
+
+	 
+	
+		 }
+	  
+</script>
+
+ <script type="text/javascript">
+function flatPercentageType(){
+	 var flatPercentage = document.getElementById("flatPercentage").value;
+	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove(); 
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(flatPercentage.match(floatNum)){
+			  $("#save_project").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+				$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+				 $("#save_project").attr("disabled", "disabled");
+				return false; 
+		 	 }
+
+	 
+	
+		 }
+	  
+</script>
 <!--  <script>
  function clearStartDate(){
 	$("#startDate").val("");

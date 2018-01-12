@@ -33,10 +33,10 @@
 			<ul class="clearfix">
 				<li><a href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
 				<li class="current"><a
-					href="<c:url value='${appPath}/loadConnectedList'/>">Connected</a></li>
-				<li><a href="${appPath}/loadSentConnections">Sent</a></li>
+					href="<c:url value='${appPath}/loadConnectedList'/>">Connected(<i id="connectedCountVal"></i>)</a></li>
+				<li><a href="${appPath}/loadSentConnections">Sent(<i id="sentCountVal"></i>)</a></li>
 				<li><a
-					href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
+					href="<c:url value='${appPath}/loadReceivedConnections'/>">Received(<i id="receivedCountVal"></i>)</a></li>
 			</ul>
 			<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
 		</div>
@@ -92,6 +92,7 @@ var count = 0;
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {
 			if(data === "YES") {
+				var connectedCount = 0;
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -118,6 +119,7 @@ var count = 0;
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
+	 				connectedCount++;
 		 			if(user.mutualCount != 0){
 		 				mutCountStatus = user.mutualCount + " Mutual Connections";
 		 			}else{
@@ -147,6 +149,10 @@ var count = 0;
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
+	        localStorage.setItem("connectedCount", connectedCount);
+	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 			 },
 	        error: function(e){
 	        }
@@ -167,6 +173,12 @@ function getDisconnectConnection(userCode,userName){
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
+	    			var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
+	    			connectedCount = connectedCount-1;
+	    			localStorage.setItem("connectedCount", connectedCount);
+	    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 	    			$("#connectionState"+userCode).empty();
 	            	$("#connectionState"+userCode).append('<b class="connlink gray">Disconnected</b>');
 	            	eduMsgFadeinFunction(userName+" removed from your connections");

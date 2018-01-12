@@ -203,6 +203,31 @@ public  class CalendarUtil {
 		return startEndDate;
    }*/
 	
+	
+	public static String getDateStrForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+		    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    String dateStr = utcFormat.format(dateWithTime);
+	        utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	        DateFormat currentTFormat = new SimpleDateFormat(dateFormat);
+	        currentTFormat.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+	        String converted_date = null;
+			try {
+				converted_date = currentTFormat.format(utcFormat.parse(dateStr));
+			} catch (ParseException e) {}
+		
+		    return converted_date;
+	}
+	
+	public static Date getDateForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+		String converted_dateStr = getDateStrForGivenTimeZone(timeZoneId, dateWithTime, dateFormat);
+		DateFormat df = new SimpleDateFormat(dateFormat);
+		Date converted_date = null;
+		try {
+			converted_date = df.parse(converted_dateStr);
+		}catch (Exception e) {}
+	    return converted_date;
+	}
+	
 	public static String getTimesheetHoursDisplayFormat(Float hours2){
 		float cthHours = 0;
 		float cthHoursValue = (int) cthHours;
@@ -981,7 +1006,7 @@ public  class CalendarUtil {
 	    return count;
 	}
 
- public  List<Date> getListOfDaysBetweenTwoDates(Date assignDate, Date terminatedDate) {
+ public static List<Date> getListOfDaysBetweenTwoDates(Date assignDate, Date terminatedDate) {
     List<Date> result = new ArrayList<Date>();
     Calendar start = Calendar.getInstance();
     start.setTime(assignDate);

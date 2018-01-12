@@ -886,11 +886,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px; margin:0px;'>";
 		tempHTML = tempHTML +  "<tbody>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +   "<td align='left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
+		tempHTML = tempHTML +   "<td align='left' class='text-left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
 		tempHTML = tempHTML +     " <br></td>";
 		tempHTML = tempHTML +   " </tr>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +    " <td align='left'><p>"+jobListEmailCampaignDTO.getBodytext()+"</p></td>";
+		tempHTML = tempHTML +    " <td align='left'  class='text-left'><p class='text-left'>"+jobListEmailCampaignDTO.getBodytext()+"</p></td>";
 		tempHTML = tempHTML +   "  </tr>";
 		tempHTML = tempHTML +    "</tbody>";
 		tempHTML = tempHTML + "</table>";
