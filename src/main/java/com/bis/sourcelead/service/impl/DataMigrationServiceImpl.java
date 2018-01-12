@@ -36,13 +36,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.DataMigrationDao;
+import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
@@ -68,6 +71,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	private AssetService assetService;
 	
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception
@@ -151,7 +157,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
 				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
-				
 				Iterator<?> keys = dataMigrationDTOJson.keys();
 	
 				while( keys.hasNext() ) {
@@ -167,11 +172,13 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 							}
 						}
 				}
-				
+				String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 				switch(dataMigrationDTO.getUploadType()){  
 			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
-			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
-			    }
+			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
+			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
+
+				}
 				
 				
 				if(errorSet.isEmpty()){
@@ -246,6 +253,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 				Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
 		    break;
+		    
+		    	case "assetUpload": 
+		    	AssetDTO assetDTO = new AssetDTO();
+		    	ObjectMapper mapper1 = new ObjectMapper();
+				mapper1.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+				mapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				assetDTO = mapper1.readValue(dataMigrationDTOJsonCopy, AssetDTO.class);
+				Asset asset = assetService.saveAssetDetails(assetDTO, null, user, orgLocation);
+		    	break;
 		    
 		    case "timesheetUpload": 
 		    	System.out.println("Time Sheet block");	    
