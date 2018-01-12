@@ -720,7 +720,11 @@ public class UsersListRestController {
 		 
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
+		 
+		 if(countries !=null) {
+			 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
+		 }
+		 
 		 
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
