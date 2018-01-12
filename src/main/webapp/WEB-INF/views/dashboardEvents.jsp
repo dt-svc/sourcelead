@@ -87,7 +87,19 @@ function getInterviewsDates(){
 		var date = $("#eventCalendar").val();
 		if(date == null || date == '' || date == 'undefined'){
 			date = new Date(); 
-			date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+			
+			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
+					date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatEDashboardeventCalendar = 'mm-dd-yy'; 
+				  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  date = date.getFullYear()+"-"+date.getDate()+"-"+date.getMonth()+1;
+			  }
 		}
 		
 		$.ajax({
@@ -890,7 +902,7 @@ function cancelAddInterviewDiv(){
  
   <style>
   .Highlighted a{
-	   background-color : #FFA07A !important;
+	   background-color : #9ACD32 !important;
 	   font-weight:bold !important;
 	   font-size: 12pt;
 }

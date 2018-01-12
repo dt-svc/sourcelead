@@ -258,7 +258,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Date> getInterviewDatesForCalendarEvent(Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " select interview.dateOfInterview from RequirementInterview interview where "
+		String query = " select interview.startTime from RequirementInterview interview where "
 				+ " interview.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id = :userId) "
 				+ " and interview.submissionId.orgLocations.id = :orgLocationId " ;
 		List<Date> interviewDates =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
