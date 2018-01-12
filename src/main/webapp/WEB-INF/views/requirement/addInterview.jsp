@@ -493,7 +493,7 @@ function validateTimeZone(){
 	    	getUpdatedShortListCandidates();
 	    }); */ 
 	    
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	/* 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -514,7 +514,7 @@ function validateTimeZone(){
 			  onSelect : function(selected) {
 				checkAvailability();
 		 	  }
-		    });
+		    }); */
 		    
 		    
 				
@@ -998,18 +998,93 @@ function showCal(id){
 	document.getElementById("button_id").value = id;
 	
 	 var result1 ="";
-		result1 = result1 + ' <div class="row">                                            ';
-		result1 = result1 + '	<div class="dataTables_empty">                                     ';
-		result1 = result1 + '	</div>                                                      ';
-		result1 = result1 + ' </div>                                                      ';
+		result1 = result1 + ' <div class="row">';
+		result1 = result1 + '	<div class="dataTables_empty">';
+		result1 = result1 + '	</div>';
+		result1 = result1 + ' </div>';
 		  $("#interviewer").empty();
 		  $("#interviewer").append(result1);
 		  $("#applicant").empty();
 		  $("#applicant").append(result1);
 		  $("#selectedDate").append("Please select the date to check available slots");
+		  
+		  
+		  
+		    var bid = document.getElementById("button_id").value;
+			bid = bid.replace("Avail", "");
+			var applicantSubId = '';
+			var interviewerIds = '';
+			
+			if($("#"+bid+"applicant").val() != null && $("#"+bid+"applicant").val() != '' && $("#"+bid+"applicant").val() != 'undefined'){
+				applicantSubId = $("#"+bid+"applicant").val();
+			}
+			
+			if($("#"+bid+"interviewer").val() != null && $("#"+bid+"interviewer").val() != '' && $("#"+bid+"interviewer").val() != 'undefined'){
+				interviewerIds = $("#"+bid+"interviewer").val(); 
+			}
+			
+			var sourceleadUrl ='${sourceleadUrl}';
+			 $.ajax({
+				type: "POST",
+		        url: sourceleadUrl+"/getInterviewSlotDates?${_csrf.parameterName}=${_csrf.token}&applicantSubmissionIds="+applicantSubId+"&interviewerIds="+interviewerIds,
+		        success: function(data) {
+		        	var dates = {};
+		       	 if(data.length > 0){
+		       		 for(var i=0; i<data.length; i++){
+		       			dates[new Date(data[i]).getTime()]='visible';
+		       		 }
+		       	 }
+		       	 eventCalendar(dates);
+	       		 checkAvailability();
+		        }
+			}); 
 }
 
 </script>
+
+
+  <script>
+  function eventCalendar(dates) {
+	  
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+		  $( "#scheduleCalendar" ).datepicker('destroy');
+		$( "#scheduleCalendar" ).datepicker({
+			  changeMonth: true,
+		      changeYear: true,
+		      dateFormat : finalDateFormatProjectSave,
+		      minDate: 0  ,
+			  onSelect : function(selected) {
+				checkAvailability();
+		 	  },
+		 	  beforeShowDay: function(date) {
+		 		  if(dates && dates[date.getTime()])
+			  		 var hlText = dates[date.getTime()];
+				     return (hlText)?[true, "Highlighted", '']: [true, '', ''];
+		 		 
+			  	}
+		    });
+
+  } 
+
+  </script> 
+  
+ <style>
+  .Highlighted a{
+	   background-color : #9ACD32 !important;
+	   font-weight:bold !important;
+	   font-size: 12pt;
+}
+  </style> 
 
 <!-- <script>
     $( "#scheduleCalendar" ).datepicker({
@@ -1027,7 +1102,25 @@ function checkAvailability(){
 	 $('.fullCount').hide();
 		$('.particalCount').hide();
 	var timezone = '${timezone}';
+	
+	
+	
 	var date = $("#scheduleCalendar").val();
+	
+	if(date == null || date == '' || date == 'undefined'){
+		date = new Date(); 
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  if(locationDate.match("yyyy-MM-dd")){
+			date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  date = date.getFullYear()+"-"+date.getDate()+"-"+date.getMonth()+1;
+		  }
+	}
+	
 	var bid = document.getElementById("button_id").value;
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	bid = bid.replace("Avail", "");
