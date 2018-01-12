@@ -17,7 +17,16 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String userState;
 	private String loginUserRole;
 	private String roleId;
+	private String fileURL;
 	
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
+	}
+
 	public long getId()
 	{
 		return id;

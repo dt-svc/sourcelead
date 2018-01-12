@@ -121,7 +121,7 @@ function compareRecommendedUsersdiv(data,requirementId){
 	var result = '';
     result = result +'<div class="comMask" style="display: block; z-index:9999;"></div>';
     result = result +'<div class="compare_resume">';
-    result = result +'    <a onclick="closeCompare();" class="close_btn text-danger pull-right btn btn-danger btn-sm">X</a>';
+    result = result +'    <a onclick="closeCompare();" class="close_btn danger pull-right btn btn-danger btn-sm">X</a>';
     
     result = result +'<div class="profilecompareLeft">';
     result = result +'<div class="listHeadr clearfix">';
