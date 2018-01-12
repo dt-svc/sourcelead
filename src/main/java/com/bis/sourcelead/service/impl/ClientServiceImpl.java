@@ -363,6 +363,10 @@ public class ClientServiceImpl implements ClientService {
 			saveOrgBasedRoles(org, clientOrgLocations, user);
 			newlyRegistred = "Y";
 		} else {
+			
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				clientOrgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			}
 			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
 			clientOrgLocations.setOrgRelationsList(orgRelationsList);

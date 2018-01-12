@@ -61,7 +61,8 @@
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
 				</c:if>
-				
+				<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice</a></li>
+				<li><a href='${appPath}/missingBillReport'>Missing Bill</a></li>
 				<!-- <li><a href="#">Profit &amp; Loss</a></li>
 				<li><a href="#">Balance Sheet</a></li>
 				<li><a href="#">Client Balance</a></li>
