@@ -66,6 +66,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -939,6 +940,29 @@ public class DashboardRestController {
 		 resultJson = commonUtil.toJSON(requirementSubmissionList);
 		 return resultJson;
 
+		}
+		
+		
+		@RequestMapping(value = "/getInterviewsTaskDates")
+		public List<String> getInterviewsTaskDates(String dateRange, HttpServletRequest request) throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<Date> datesList = new ArrayList<>();
+			List<String> interviewDatesList = new ArrayList<>();
+			datesList = requirementInterviewService.getInterviewDatesForCalendarEvent(user.getId(), loginOrgLocations.getId());
+			Timezone timezone = null;
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			if(datesList != null) {
+				for(Date date : datesList) {
+					    String converted_dateStr =  CalendarUtil.getDateStrForGivenTimeZone(timezone.getTimeZoneId(), date, "yyyy/MM/dd");
+					    if(StringUtils.isNotEmpty(converted_dateStr)) {
+					    	 interviewDatesList.add(converted_dateStr);
+					    }
+				}
+			}
+			return interviewDatesList;
 		}
 		
 		@RequestMapping(value = "/getInterviewsandTasks")

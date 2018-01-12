@@ -1146,7 +1146,8 @@ function calculateTaxDiscount(){
 <script>
 function saveInvoice(saveType){
          
-         if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
+         if ($('#project_payable_invoice_form').validate(false, validationSettings)){
+        	 $("#clientProjectIdHidden").val('');
         	var  pmIdValueClient = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
   			$("#clientProjectIdHidden").val(pmIdValueClient);
   			
