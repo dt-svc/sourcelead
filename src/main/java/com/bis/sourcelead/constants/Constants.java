@@ -506,11 +506,13 @@ public class Constants {
 	public static final String YEARLY = "Yearly";
 	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
-			"Min Experience", "Max Experience", "Rate", "Location", "City",	"State", "Country", "Zip Code",	
-			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", 
-			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Manager", "Approver", "Assign To",
-			"Application Form", "Client Name", "Client Contact Name", "Client Contact Email", "Client Submission Form",
-			"Status"};
+			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
+			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
+			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
+			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
+	
+	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
+			"Serial Number", "Make", "Model", "Memory", "CPU",	"Hard Disk", "Description", "Shift1 User","Shift2 User"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
@@ -850,7 +852,7 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 
-	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home","SystemTaskBillable","SystemTaskNonBillable"};
+	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home","System Task Billable","System Task NonBillable"};
 	public static final String BIS_CHECKS = "BIS_CHECKS";
 
 
@@ -996,6 +998,8 @@ public class Constants {
 	public static final String GENERAL = "General";
 	public static final Long TaskStatusID = 1069L;
 
+	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
+	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
 
 
 }

@@ -121,7 +121,7 @@
 
 	}
 	
-	
+
 	//get the document list
 	function getdocumentListById(folderId,folderName){
 		if(folderName != null && folderName != "" && folderName != 'undefined'){
@@ -205,7 +205,7 @@
 						result = result + '	 										Download                                                                                       ';
 						result = result + '	 										</a></li>                                                                                  ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
+						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');">                                                              ';
 						result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
 						result = result + '	 										</a></li>                                                                                  ';
 						
@@ -224,7 +224,7 @@
 						result = result + '	 										Download                                                                                       ';
 						result = result + '	 										</a></li>                                                                                  ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileContentType+'\');">                                                              ';
+						result = result + '	 										<a href="javascript:void(0)" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.fileType+'\');">                                                              ';
 						result = result + '	 										<i class="fa fa-eye"></i> <br> View   ';
 						result = result + '	 										</a></li>                                                                                  ';
 						

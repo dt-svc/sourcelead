@@ -18,9 +18,9 @@ $(window).load(function() {
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Applicant Decline</h2>
+        <h2>Applicant(S) Decline</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants Decline </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; Applicant(S) Decline </div>
    
     </section>
     <!-- hiring Process  -->
@@ -29,8 +29,11 @@ $(window).load(function() {
     <div class="ReqRepHead clearfix">
     	
     	<div class="col-md-2 pull-left reqListBtn">
-        <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
-          <a href="${appPath}/applicantDeclineList" title="List View" id="LView" class="btn btn-default" ><i class="fa fa-list"></i></a>
+<%--     	 <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a> --%>
+<%--         <a href="${appPath}/applicantDeclineList" title="List View" id="LView" class="btn btn-default rAct" ><i class="fa fa-list"></i></a> --%>
+        
+        <a  title="Graphical View"  id="graphView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+          <a   title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>
         </div>
     
 		<div class="col-md-6 ReqRepHead-chosen">
@@ -64,13 +67,13 @@ $(window).load(function() {
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
                 <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getDeclineApplicants();"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getDeclineApplicants();getDeclineApplicantList();"><i class="fa fa-search"></i></button>
             </div>
           </div>
           </div>
                   
           <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getDeclineApplicants();">Run</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="getDeclineApplicants();getDeclineApplicantList();">Run</button>
 		</div>
         </div>
         
@@ -78,25 +81,16 @@ $(window).load(function() {
      <!-- Decline Reasons -->
      <div class="row" id="applicantDeclineGraph" style="display:block">
         <div class="col-md-12 mt">
-        <div class="clients_wrap_table dashboard-widget">
- <div id="applicantDecline" style="width: 100%; height: 250px; overflow: hidden; text-align: left;"></div>
+        <div class="clients_wrap_table dashboard-widget" id="applicantDeclineReportDivId" style="display:block">
+              <div id="applicantDecline" style="width: 100%; height: 250px; overflow: hidden; text-align: left;"></div>
         </div>
         </div>
-			 </div>
-      </
+	</div>
       <!-- Decline Reasons -->
      
-    <!-- Best recruiters  -->
-    <div class="clearfix dashboard-widget mt col-md-12" id="applicantDeclineGraphList" style="display:none">
-          <div class="clearfix">
-          <h4 class="pull-left"></h4>
+        <div class="clearfix tableStyles mt datatable_filter" id="applicantDeclineListDivId" style="display:none">
+          <div id="applicantDeclineListDiv" class="clearfix dashboard-widget col-md-12 dataTablesFilter-relative dataTablesFilter-relative-top"></div>
           </div>
-          <div class="clearfix tableStyles mt datatable_filter">
-          <div id="applicantDeclineListDiv"></div>
-             
-            
-          </div>
-        </div>
     <!-- Best recruiters Ends  --> 
     </div>
       
@@ -105,9 +99,6 @@ $(window).load(function() {
 <script type="text/javascript">
 
 function getDeclineApplicants(){
-	
-	document.getElementById("applicantDeclineGraphList").style.display="none";
-	document.getElementById("applicantDeclineGraph").style.display="block";
 	  var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
@@ -144,8 +135,41 @@ function getDeclineApplicants(){
 			   	url: sourceleadUrl+"/getDeclinedApplicantsCount?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 			    success: function(data) {
 			    	var total=data.skillsCount + data.unsuitableCount + data.badfitCount + data.interviewCount + data.salaryCount + data.otherCount;
-			    	if(total>0){
+			    	
+			    	var listView = document.getElementById("listView");
+		        	 listView.addEventListener("click", function() {
+		        		 getDeclineApplicantList();
+		        		 document.getElementById("applicantDeclineGraph").style.display="none";
+					    	document.getElementById("applicantDeclineListDivId").style.display="block";
+					    	var element = document.getElementById("listView");
+					    	var grid = document.getElementById("graphView");
+					    	element.classList.add("rAct");
+					    	grid.classList.remove("rAct");
+					    	
+					  });
+		        	 
+		        	 var graphicView = document.getElementById("graphView");
+		        	 graphicView.addEventListener("click", function() {
+		        		 if(total>0){
+		        			 getAplicantDeclineAmChart(data);
+		        		 }else{
+		        			 var result = '';
+		 	 	   			result = result+"<div class='dataTables_empty'>"; 
+		 	 	   			result = result+"</div> ";
+		 	 	   	        $("#applicantDecline").empty();
+		 	                $("#applicantDecline").append(result);
+		        		 }
+		        		 document.getElementById("applicantDeclineGraph").style.display="block";
+					    	document.getElementById("applicantDeclineListDivId").style.display="none";
+					    	
+					    	var element = document.getElementById("listView");
+					    	var grid = document.getElementById("graphView");
+					    	element.classList.remove("rAct");
+					    	grid.classList.add("rAct");
+					  });
+			    if(total>0){
 			    	getAplicantDeclineAmChart(data);
+			    	
 			    }
 			   	else{
 			   		var result = '';
@@ -162,6 +186,109 @@ function getDeclineApplicants(){
 	  
 }
 	  
+</script>
+
+
+<script type="text/javascript">
+
+function getDeclineApplicantList(){
+	 var flag = true;
+	  var jobIds = $("#jobIds").val();
+	  if(jobIds == null){
+		  jobIds = '';
+	  }
+	  var dateSelection = $("#dateSelection").val(); 
+	  var fromDate = '';
+	  var toDate = '';
+	  if(dateSelection == 'custom'){
+		   fromDate = $("#fromDate").val();
+		   toDate = $("#toDate").val();
+		  
+		  if(fromDate == '' || toDate == ''){
+			  flag = false;
+			  if(fromDate == ''){
+				  document.getElementById("fromDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+			  }
+			  if(toDate == ''){
+				  document.getElementById("toDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+		  }else{
+			  document.getElementById("fromDateDiv").style.display="none";
+			  document.getElementById("toDateDiv").style.display="none";
+		  }
+		  
+	  }
+	  
+	  if(flag){
+		  
+		  $.ajax({ 
+			   	type: "GET",
+			   	url: sourceleadUrl+"/getDeclinedApplicantsList?${_csrf.parameterName}=${_csrf.token}&jobIds="+jobIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
+			    success: function(data) {
+	           	 var result = "";
+	             result  = result + '    <table class="table table-bordered" id="applicantDeclinePagenationId">     ';
+				 result  = result + '     <thead>                                 ';
+				 result  = result + '       <tr>                                  ';
+				 result  = result + '         <th>Jobs</th>                       ';
+				 result  = result + '         <th>Skills</th>                     ';
+				 result  = result + '         <th>Over Qualified</th>             ';
+				 result  = result + '         <th>Bad Fit</th>                    ';
+				 result  = result + '         <th>Interview</th>                  ';
+				 result  = result + '         <th>Salary</th>                     ';
+				 result  = result + '         <th>Other</th>                      ';
+				 result  = result + '         <th>Total</th>                      ';
+				 result  = result + '       </tr>                                 ';
+				 result  = result + '       </thead>                              ';
+				 result  = result + '       <tbody>                               ';
+				 for (var i = 0; i < data.length; i++) { 
+					 var report = data[i];
+					 
+					 if(report.totalCount>0){
+						 result  = result + '       <tr>                                  ';	
+					 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
+					 result  = result + '         <td><div>'+report.skillsCount+'</div></td>               ';
+					 result  = result + '         <td><div>'+report.unsuitableCount+'</div></td>               ';
+					 result  = result + '         <td><div>'+report.badfitCount+'</div></td>               ';
+					 result  = result + '         <td><div>'+report.interviewCount+'</div></td>               ';
+					 result  = result + '         <td><div>'+report.salaryCount+'</div></td>               ';
+					 result  = result + '         <td><div>'+report.otherCount+'</div></td>               ';
+					 result  = result + '         <td><div>'+report.totalCount+'</div></td>               ';
+					 result  = result + '         </tr>                               ';
+					 
+				 }
+					
+				 }
+				
+				 
+				 result  = result + '     </tbody>                                ';
+				 result  = result + '   </table>                                  ';
+				 $("#applicantDeclineListDiv").empty();
+				 $("#applicantDeclineListDiv").append(result);
+				 applicantDeclineListPagination();
+			    	
+			    }
+			 });
+		  
+	  }
+	  
+}
+function applicantDeclineListPagination(){
+	$('#applicantDeclinePagenationId').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
 </script>
 
 <script>

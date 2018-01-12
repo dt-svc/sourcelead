@@ -350,12 +350,12 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-6 positionRelative">';
-		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
+		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From"';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
 		result  = result + '                   <div class="col-md-6 positionRelative">';
-		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To" ';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To"';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
