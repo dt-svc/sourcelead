@@ -319,7 +319,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Country</label>';
-								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" field-name="Country" data-placeholder="Select Country" disabled data-validation="required" >';
+								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" disabled field-name="Country" data-placeholder="Select Country" disabled data-validation="required" >';
 								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
 								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
 								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
@@ -341,7 +341,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Zip Code</label>';
-								result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+								result = result + '<input type="text"  class="chosen-select form-control" readonly="readonly" name="zipcode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 								result = result + '</div> ';
 																							
 						}else{
@@ -388,7 +388,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Zip Code</label>';
-								result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+								result = result + '<input type="text"  class="chosen-select form-control" readonly="readonly" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 								result = result + '</div> ';
 								
 						}
@@ -409,7 +409,7 @@
                         result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Street Address</label>';
 						if(json.address != null && json.address !='' && json.address != 'undefined'){
-						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
+						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" readonly="readonly" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
 						}else{
 							result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
 						}
