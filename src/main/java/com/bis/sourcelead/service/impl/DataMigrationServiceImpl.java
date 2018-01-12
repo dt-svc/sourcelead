@@ -151,7 +151,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
 				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
-				
 				Iterator<?> keys = dataMigrationDTOJson.keys();
 	
 				while( keys.hasNext() ) {
@@ -167,10 +166,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 							}
 						}
 				}
-				
+				String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 				switch(dataMigrationDTO.getUploadType()){  
 			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
-			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation);break;  
+			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
 			    }
 				
 				
