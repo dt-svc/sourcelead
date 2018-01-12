@@ -120,7 +120,7 @@ public class AssetServiceImpl implements AssetService{
 	
 	
 	@Override
-	public void saveAssetDetails(AssetDTO assetDTO,String assetId, User user, OrgLocations orgLocations) throws Exception {
+	public Asset saveAssetDetails(AssetDTO assetDTO,String assetId, User user, OrgLocations orgLocations) throws Exception {
 		
 		Asset asset ;
 		if(assetId != null && !"".equals(assetId)){
@@ -256,7 +256,10 @@ public class AssetServiceImpl implements AssetService{
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
 		 
-		 assetDao.saveAsset(asset);		 
+		 assetDao.saveAsset(asset);		
+		 
+		 return asset;
 	}
+	
 
 }
