@@ -981,7 +981,7 @@ public  class CalendarUtil {
 	    return count;
 	}
 
- public  List<Date> getListOfDaysBetweenTwoDates(Date assignDate, Date terminatedDate) {
+ public static List<Date> getListOfDaysBetweenTwoDates(Date assignDate, Date terminatedDate) {
     List<Date> result = new ArrayList<Date>();
     Calendar start = Calendar.getInstance();
     start.setTime(assignDate);
