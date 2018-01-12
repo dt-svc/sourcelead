@@ -231,8 +231,8 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
       
           <footer class="form-footer">
               <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT');">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
+                  <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveBill('DRAFT');">Save</button>
+                  <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveBill('SENT')">Send</button>
                  <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/payablesList'/>'">Cancel</button>
               </div>
           </footer>
@@ -438,12 +438,16 @@ function populateInlineItemsGrid(data){
         document.getElementById("bottomGrid").style.display="block";
         document.getElementById("lineItemAddRows").style.display="block";
         document.getElementById("tableBody").style.display="block";
+        document.getElementById("saveInvoice").disabled = false;
+        document.getElementById("sendInvoice").disabled = false;
         addTaxDivs();    
         addConversionDiv();
     }else{
         document.getElementById("bottomGrid").style.display="none";
         document.getElementById("lineItemAddRows").style.display="none";
         document.getElementById("tableBody").style.display="none";
+        document.getElementById("saveInvoice").disabled = true;
+        document.getElementById("sendInvoice").disabled = true;
 //         alert("No MembersFound");
 		alertMessageInPayable()
     }
@@ -1144,9 +1148,10 @@ function calculateTaxDiscount(){
 </script>
 
 <script>
-function saveInvoice(saveType){
+function saveBill(saveType){
          
-         if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
+         if ($('#project_payable_invoice_form').validate(false, validationSettings)){
+        	 $("#clientProjectIdHidden").val('');
         	var  pmIdValueClient = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
   			$("#clientProjectIdHidden").val(pmIdValueClient);
   			

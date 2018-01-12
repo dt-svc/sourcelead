@@ -39,6 +39,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
@@ -1247,13 +1249,15 @@ public class ExpensesServiceImpl implements ExpensesService{
 		List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
 		for(ExpensesEntries entries : entriesList){
-			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
-			expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
-			expensesEntriesDTO.setEntryDescription(entries.getDescription());
-			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
-			expensesEntriesDTO.setAmount(entries.getAmount());
-			expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
-			expensesEntriesDTOList.add(expensesEntriesDTO);
+			if(Submission_Status.APPROVED == entries.getExpensesId().getExpenseStatus()) {
+				ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
+				expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+				expensesEntriesDTO.setEntryDescription(entries.getDescription());
+				expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+				expensesEntriesDTO.setAmount(entries.getAmount());
+				expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
+				expensesEntriesDTOList.add(expensesEntriesDTO);
+			}
 		}
 		return expensesEntriesDTOList;
 	}

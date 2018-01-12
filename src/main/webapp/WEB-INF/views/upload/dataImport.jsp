@@ -62,7 +62,11 @@
 			</c:if>
 			<c:if test="${!empty timesheetMode}">
 				<jsp:include page="dataImportTimeSheetFormFields.jsp"></jsp:include>
+			</c:if>  
+			<c:if test="${uploadType eq 'assetUpload'}">
+			<jsp:include page="dataImportAssetFormFields.jsp"/>
 			</c:if>
+			
 			
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">

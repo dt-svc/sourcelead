@@ -32,15 +32,14 @@
 	<div class="conneWrapHead clearfix">
 		<ul class="clearfix">
 			<li><a href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
-			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected</a></li>
-			<li><a href="${appPath}/loadSentConnections">Sent</a></li>
-			<li  class="current"><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
+			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected(<i id="connectedCountVal"></i>)</a></li>
+			<li><a href="${appPath}/loadSentConnections">Sent(<i id="sentCountVal"></i>)</a></li>
+			<li  class="current"><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received(<i id="receivedCountVal"></i>)</a></li>
 		</ul>
-		<span><input class="immigraTabSerach" type="text" id="searchFindConnId"></span>
+		<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
 	</div>
 	<div class="conHeadgap"></div>
-	<div class="conneWrapInn" id="findConnectionListId"></div>
-	<div class="clearfix"></div>
+	<div class="conneWrapInn clearfix" id="findConnectionListId"></div>
 	<div id="loadMoreDiv"></div> 	
 </div>
 			
@@ -86,6 +85,7 @@ var count = 0;
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {
 			if(data === "YES") {
+				var receivedCount = 0;
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -111,6 +111,7 @@ var count = 0;
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
+	 				receivedCount++;
 		 			if(user.mutualCount != 0){
 		 				mutCountStatus = user.mutualCount + " Mutual Connections";
 		 			}else{
@@ -127,7 +128,7 @@ var count = 0;
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn id="connectionState'+user.userCode+'"><a href="#/" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="#" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a></div></div></div>';
 	   		    }
 	 			$('#findConnectionListId').append(result);
         		if(json.length < 18){
@@ -139,6 +140,10 @@ var count = 0;
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
+	        localStorage.setItem("receivedCount", receivedCount);
+	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 			 },
 	        error: function(e){
 	        }
@@ -160,6 +165,12 @@ function ignoreConnection(userCode,userName){
 	         success: function(json) {
 		        	 $("#selector4").removeAttr("style");
 		 			$("#selector4").css({ display: "block" });
+		 			var receivedCount =  parseInt(localStorage.getItem("receivedCount"));
+	    			receivedCount = receivedCount-1;
+	    			localStorage.setItem("receivedCount", receivedCount);
+	    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 		 			$("#connectionState"+userCode).empty();
 	            	$("#connectionState"+userCode).append('<b class="connlink gray">Ignored</b>');
 		         	eduMsgFadeinFunction(userName+"'\s invitation removed");
@@ -181,6 +192,15 @@ function acceptConnection(userCode,userName){
 		        	success: function(json) {
 				        	$("#selector4").removeAttr("style");
 							$("#selector4").css({ display: "block" });
+							var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
+			    			connectedCount = connectedCount+1;
+			    			localStorage.setItem("connectedCount", connectedCount);
+			    			var receivedCount =  parseInt(localStorage.getItem("receivedCount"));
+			    			receivedCount = receivedCount-1;
+			    			localStorage.setItem("receivedCount", receivedCount);
+			    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+			    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+			    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 							$("#connectionState"+userCode).empty();
 			            	$("#connectionState"+userCode).append('<b class="connlink gray">Accepted</b>');
 				        	eduMsgFadeinFunction("You're connected with "+userName);

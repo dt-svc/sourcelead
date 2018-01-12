@@ -36,15 +36,14 @@
 <div class="conneWrapHead clearfix">
 		<ul class="clearfix">
 			<li><a  href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
-			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected</a></li>
-			<li class="current"><a href="${appPath}/loadSentConnections">Sent</a></li>
-			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
+			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected(<i id="connectedCountVal"></i>)</a></li>
+			<li class="current"><a href="${appPath}/loadSentConnections">Sent(<i id="sentCountVal"></i>)</a></li>
+			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received(<i id="receivedCountVal"></i>)</a></li>
 		</ul>
-		<span><input class="immigraTabSerach" id="searchFindConnId" type="text"></span>
+		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Company" type="text"></span>
 	</div>
 	<div class="conHeadgap"></div>
-	<div class="conneWrapInn" id="findConnectionListId"></div>
-	<div class="clearfix"></div>
+	<div class="conneWrapInn clearfix" id="findConnectionListId"></div>
 	<div id="loadMoreDiv"></div> 
 </div>
 			
@@ -105,6 +104,7 @@ var count = 0;
 	    		$("#orgOffset").val(0);
 	   		    offset = 0;
 	    	} 
+			var sentCount = 0;
 		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
@@ -121,6 +121,7 @@ var count = 0;
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
+	 				sentCount++;
 		 			if(user.mutualCount != 0){
 		 				mutCountStatus = user.mutualCount + " Mutual Connections";
 		 			}else{
@@ -137,7 +138,7 @@ var count = 0;
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="#/" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a></div></div></div>';
 	   		    }
 	 			$('#findConnectionListId').append(result);
         		if(json.length < 18){
@@ -148,7 +149,11 @@ var count = 0;
 	   		}else if(type === 'manual' && json == null){
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
-	   		}	
+	   		}
+	        localStorage.setItem("sentCount", sentCount);
+	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 			 },
 	        error: function(e){
 	        }
@@ -169,6 +174,12 @@ function getConnection(userCode,userName){
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
+	    			var sentCount =  parseInt(localStorage.getItem("sentCount"));
+	    			sentCount = sentCount-1;
+	    			localStorage.setItem("sentCount", sentCount);
+	    	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 	    			$("#connectionState"+userCode).empty();
 	            	$("#connectionState"+userCode).append('<b class="connlink gray">Withdrawn</b>');
 	            	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");

@@ -112,7 +112,7 @@
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();">
+					  <input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -164,7 +164,7 @@
 	             <div class="form-group">
 	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner Name"  data-validation="required">
 	                 <c:forEach var="user" items="${userList}">
 		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach> 

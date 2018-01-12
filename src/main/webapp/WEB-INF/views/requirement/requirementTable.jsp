@@ -45,6 +45,17 @@ function requirementList(searchType,sourceleadUrl){
 				filterClients.push($(this).val());
 		    });
 			
+			var filterPriority = [];
+			$('input:checkbox[name=requirementPriority]:checked').each(function() 
+		    {
+				filterPriority.push($(this).val());
+		    });
+			
+			var filterJobType = [];
+			$('input:checkbox[name=requirementType]:checked').each(function() 
+		    {
+				filterJobType.push($(this).val());
+		    });
 			
 			
 			
@@ -58,7 +69,7 @@ function requirementList(searchType,sourceleadUrl){
 	  		searchValue = searchValue ? searchValue : "";
 	  		$("#requirementList").empty();
 			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue;
+	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType;
 	  		 url += "&"+$($('#requirement_form')[0]).serialize();
 			
 			

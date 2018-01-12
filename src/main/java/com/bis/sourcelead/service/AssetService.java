@@ -37,5 +37,5 @@ public interface AssetService {
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	
-	public void saveAssetDetails(AssetDTO assetDTO,String assetId, User user,OrgLocations orgLocations) throws Exception;
+	public Asset saveAssetDetails(AssetDTO assetDTO,String assetId, User user,OrgLocations orgLocations) throws Exception;
 }
