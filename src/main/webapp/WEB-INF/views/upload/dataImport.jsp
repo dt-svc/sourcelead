@@ -62,7 +62,9 @@
 			</c:if>
 			<c:if test="${!empty timesheetMode}">
 				<jsp:include page="dataImportTimeSheetFormFields.jsp"></jsp:include>
-			</c:if>
+			</c:if>  
+			<jsp:include page="dataImportAssetFormFields.jsp"/>
+			
 			
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">

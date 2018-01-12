@@ -128,8 +128,8 @@ public class CampaignDaoImpl implements CampaignDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CampaignList> cpnList = null;
 		ResponseList<CampaignList> response = new ResponseList<>();
-		String query = "from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.status = 1";
-		String countQuery = "from CampaignList cpnList  where cpnList.orgLocation.id = :orgLocationId and cpnList.createdBy.id = :userId and cpnList.status = 1";
+		String query = "from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.createdBy.id = :userId and cpnList.orgLocation.id = :orgLocationId and cpnList.campaignType = :campaignType and cpnList.status = 1";
+		String countQuery = "from CampaignList cpnList  where cpnList.orgLocation.id = :orgLocationId and cpnList.createdBy.id = :userId and cpnList.campaignType = :campaignType and cpnList.status = 1";
 		
 		StringBuilder query1 = new StringBuilder("");
 			if(campaignListDTO.getSearchValue() !=null && !"".equalsIgnoreCase(campaignListDTO.getSearchValue())) {
@@ -140,12 +140,12 @@ public class CampaignDaoImpl implements CampaignDao {
 			if (campaignListDTO != null || campaignListDTO.getLength() > 0) {
 				queryObj.setFirstResult(campaignListDTO.getStart());
 				queryObj.setMaxResults(campaignListDTO.getLength());
-				queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+				queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", Integer.parseInt(campaignListDTO.getTypeOfCampaign())).setCacheable(false).list();
 			}
 			cpnList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", Integer.parseInt(campaignListDTO.getTypeOfCampaign())).setCacheable(false).list();
 
 			if (countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
@@ -153,7 +153,7 @@ public class CampaignDaoImpl implements CampaignDao {
 			response.setRecordsTotal(count);
 			if (campaignListDTO != null) {
 
-				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).list();
+				List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", Integer.parseInt(campaignListDTO.getTypeOfCampaign())).list();
 
 				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
