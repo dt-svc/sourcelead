@@ -5,7 +5,14 @@ import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,13 +27,13 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
+
 
 	public static void main(String[] args) {
 		
@@ -39,6 +46,7 @@ public  class CalendarUtil {
 		System.out.println(hours.toString()+":"+actualMinutes.toString());
 		
 	}
+
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -203,6 +211,33 @@ public  class CalendarUtil {
 		return startEndDate;
    }*/
 	
+<<<<<<< HEAD
+	    public static String getDateStrForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+	    	    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    	    String dateStr = utcFormat.format(dateWithTime);
+	            utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	            DateFormat currentTFormat = new SimpleDateFormat(dateFormat);
+	            currentTFormat.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+	            String converted_date = null;
+				try {
+					converted_date = currentTFormat.format(utcFormat.parse(dateStr));
+				} catch (ParseException e) {}
+			
+			    return converted_date;
+		}
+	    
+	    public static Date getDateForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+	    	String converted_dateStr = getDateStrForGivenTimeZone(timeZoneId, dateWithTime, dateFormat);
+	    	DateFormat df = new SimpleDateFormat(dateFormat);
+	    	Date converted_date = null;
+	    	try {
+	    		converted_date = df.parse(converted_dateStr);
+	    	}catch (Exception e) {}
+		    return converted_date;
+	   }
+	    
+	   public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
+=======
 	public static String getTimesheetHoursDisplayFormat(Float hours2){
 		float cthHours = 0;
 		float cthHoursValue = (int) cthHours;
@@ -233,6 +268,7 @@ public  class CalendarUtil {
 
 	
 	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
+>>>>>>> 591fbcf802d6bac0a4d0ee353ced0478e9b8df06
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
 	      LinkedHashSet<String> monthString = new LinkedHashSet<>();
 	      Calendar Q1StartDate=Calendar.getInstance();
