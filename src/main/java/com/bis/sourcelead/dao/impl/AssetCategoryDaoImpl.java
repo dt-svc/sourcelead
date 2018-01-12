@@ -16,6 +16,7 @@ import com.bis.sourcelead.dao.AssetCategoryDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -100,6 +101,21 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
          	isCategoryFound = true;
          }
          return isCategoryFound;
+	}
+
+
+
+	@Override
+	@Transactional
+	public AssetCategory getAssetCategoryListByLocationIdAndName(Long orgLocationId, String name)throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssetCategory ac where ac.orgLocations.id =:orgLocationId and ac.status = '1' and ac.categoryName =:name or (ac.defaultCategory = '1')";
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		AssetCategory category = null;
+		if (assetCategoryList != null && assetCategoryList.size() > 0) {
+			category = (AssetCategory) assetCategoryList.iterator().next();
+		}
+		return category;
 	}
 
 

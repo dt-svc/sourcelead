@@ -68,6 +68,8 @@
 </div>
 </c:if>
 
+ <span class="mt5 pull-left" title="TImesheet Import"><a href="<c:url value='${appPath}/uploadTimesheet'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></span>
+
 <div class="remove_search">
        		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">
 </div>

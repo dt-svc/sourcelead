@@ -17,13 +17,13 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -196,12 +196,16 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 					 ProjectMembers projectMember = expensesApproverHierarchy.getExpenseId().getProjectMembers();
 					 ProjectMembers pmWithUser =projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
 					if (null !=projectMember.getProjectMemberCandidteId()) {
-							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getDesignationType())){
 								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 									OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
-									expensesApproverHierarchy.setExpenseEmpUserType(empType);
+									if(orgRelation !=  null && orgRelation.getResponderLocationId() != null && StringUtils.isNotBlank(orgRelation.getResponderLocationId().getOrgLocationName())) {
+										expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
+										expensesApproverHierarchy.setExpenseEmpUserType(empType);
+									}else{
+										expensesApproverHierarchy.setExpenseEmpUserType("--");
+									}
 								 }else{
 									 expensesApproverHierarchy.setExpenseEmpUserType(empType);
 								 }

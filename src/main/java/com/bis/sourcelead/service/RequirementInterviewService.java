@@ -71,6 +71,8 @@ public interface RequirementInterviewService {
 
 	RequirementInterview getinterviewBySubmissionId(Long submissionId);
 	
+	List<Date> getInterviewDatesForCalendarEvent(Long userId,Long orgLocationId) throws Exception;
+	
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 
