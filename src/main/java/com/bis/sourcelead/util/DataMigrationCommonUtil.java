@@ -129,7 +129,7 @@ public class DataMigrationCommonUtil {
 	private TimeSheetDayEntriesDao timesheetDayEntriesDao;
 	
 	@SuppressWarnings("unchecked")
-	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation) throws Exception
+	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
 	{
 		logger.debug("In dataValidationForJobs method...");
 		    
@@ -457,6 +457,37 @@ public class DataMigrationCommonUtil {
 			}else {
 				dataMigrationDTOJsonCopy.put("requirementSubmissionStatus", REQUIREMENT_SUBMISSION_STATUS.OPEN);
 			}
+			
+			
+			if(!dataMigrationDTOJsonCopy.getString("projectClientID").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("projectClientID"))) {
+				Projects projects = projectsService.getProjectByOrgLocationsIdAndProjectName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("projectClientID").trim());
+				if(projects != null) {
+					dataMigrationDTOJsonCopy.put("projectClientID", projects.getId().toString());
+				}else{
+					errorSet.put("projectClientID", dataMigrationDTOJsonCopy.getString("projectClientID")+" is invalid Project");
+				}
+			}
+			
+			
+			/*if(!dataMigrationDTOJsonCopy.getString("fileURL").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("fileURL"))) {
+				File source = new File("C:/Users/VenkatKesav/Documents/cv");
+				File dest = new File("C:/Users/VenkatKesav/Desktop/vc");
+				
+				String fileName = source.getName().replace("&", "").replace("%", "").replace("?", "");
+				String extenstion = fileName.substring(fileName.lastIndexOf("."));
+				fileName = fileName.substring(0, fileName.lastIndexOf("."));
+				long time = new Date().getTime();
+				String url = dataMigrationDTOJsonCopy.getString("staticPath").substring(dataMigrationDTOJsonCopy.getString("staticPath").lastIndexOf("/")) + "/" + orgLocation.getOrg() + "/" + orgLocation.getId() + "/" + fileType
+						+ "/" + fileName + time + extenstion;
+				
+				
+				try {
+				    FileUtils.copyDirectory(source, dest);
+				} catch (IOException e) {
+				    e.printStackTrace();
+				}
+			}*/
+			
 	}
 			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation) throws Exception
 			{
