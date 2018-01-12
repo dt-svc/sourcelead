@@ -218,6 +218,7 @@ function updateReuqirementStatusAccept(status,requirementId){
          				 $("#selector4").removeAttr("style");
 		            			$("#selector4").css({ display: "block" });
 	            				$("#eduMsgDiv").html("Approved");
+	            				
 		               			eduMsgFadeinFunction();
 		               				 
          				 
