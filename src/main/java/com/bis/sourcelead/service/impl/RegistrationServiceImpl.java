@@ -447,9 +447,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName().trim()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
-
-	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
-	    	
 	    	
 	    	Calendar cal = Calendar.getInstance();
 	    	cal.add(Calendar.MONTH, -2);

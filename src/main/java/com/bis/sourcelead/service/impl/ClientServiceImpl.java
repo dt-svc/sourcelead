@@ -363,6 +363,10 @@ public class ClientServiceImpl implements ClientService {
 			saveOrgBasedRoles(org, clientOrgLocations, user);
 			newlyRegistred = "Y";
 		} else {
+			
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				clientOrgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			}
 			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
 			clientOrgLocations.setOrgRelationsList(orgRelationsList);
@@ -592,8 +596,6 @@ public class ClientServiceImpl implements ClientService {
 	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName().trim()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
 
-	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
-	    	
 	    	Calendar cal = Calendar.getInstance();
 	    	cal.add(Calendar.MONTH, -2);
 	    	Date startDate = cal.getTime();

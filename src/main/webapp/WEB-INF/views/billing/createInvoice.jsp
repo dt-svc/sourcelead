@@ -345,7 +345,7 @@ function errRemoveClientContact(){
          result = result +'  </select>';
          result = result +'  </div>';
          result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
-         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -1579,7 +1579,7 @@ function calculateDiscount(){
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
-			class="form-control input-sm" value=""
+			class="form-control input-sm allownumericwithdecimal" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
 			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
