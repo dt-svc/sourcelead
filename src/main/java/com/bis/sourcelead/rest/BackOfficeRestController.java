@@ -542,7 +542,7 @@ public class BackOfficeRestController {
 			StringBuilder name = new StringBuilder();
 			User user = userService.getUserByUserCode(assetCategory.getCreatedBy());
 			assetCategory.setCreatedUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			//assetCategory.setOrgLocationId(assetCategory.getOrgLocations().getId());
+			assetCategory.setOrgLocationId(assetCategory.getOrgLocations().getId());
 			 if(assetCategory.getUpdatedDate() != null){
 				 assetCategory.setDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),assetCategory.getUpdatedDate()));
 			    }
