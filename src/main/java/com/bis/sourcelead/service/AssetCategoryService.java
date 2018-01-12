@@ -13,6 +13,8 @@ public interface AssetCategoryService {
 	AssetCategory addAssetCategory(JSONObject jsonObj, OrgLocations orgLocation, User user, String categoryId, String catLocationId) throws Exception;
 	
 	List<AssetCategory> getAssetCategoryListByLocationId(Long orgLocationId) throws Exception;
+	
+	AssetCategory getAssetCategoryListByLocationIdAndName(Long orgLocationId,String Name) throws Exception;
 
 	AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId);
 
