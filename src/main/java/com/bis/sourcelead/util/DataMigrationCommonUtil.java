@@ -191,25 +191,20 @@ public class DataMigrationCommonUtil {
 				
 				if(!dataMigrationDTOJsonCopy.getString("travelAllowance").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("travelAllowance"))) {
 					String percent = dataMigrationDTOJsonCopy.getString("travelAllowance");
-					int incr = 0;
-					for(String percentage :Constants.PERCENTAGES) {
-						if(percentage.equalsIgnoreCase(percent)){
-							incr++;
-							dataMigrationDTOJsonCopy.put("travelAllowance", percent);
-						}
-					}
-					if(incr==0){
-						errorSet.put("travelAllowance", dataMigrationDTOJsonCopy.getString("travelAllowance")+" is invalid Travel Allowance");
+					if(ArrayUtils.contains(Constants.PERCENTAGES, percent.toLowerCase())) {
+						dataMigrationDTOJsonCopy.put("travelAllowance", percent);
+					}else {
+						dataMigrationDTOJsonCopy.put("travelAllowance", "0%");
 					}
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("priority").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("priority"))) {
 					String jobPriority = dataMigrationDTOJsonCopy.getString("priority").toLowerCase();
-					if(jobPriority.equalsIgnoreCase("medium") || jobPriority.equalsIgnoreCase("low") || jobPriority.equalsIgnoreCase("high") || jobPriority.equalsIgnoreCase("urgent")){
+					if(ArrayUtils.contains(Constants.PRIORITIES, jobPriority)) {
 						jobPriority = jobPriority.substring(0, 1).toUpperCase()+jobPriority.substring(1, jobPriority.length());
 						dataMigrationDTOJsonCopy.put("priority", jobPriority);
-					}else{
-						errorSet.put("priority", dataMigrationDTOJsonCopy.getString("priority")+" is invalid Priority");
+					}else {
+						dataMigrationDTOJsonCopy.put("priority", Constants.DEFAULTPRIORITY);
 					}
 				}
 				
@@ -296,12 +291,15 @@ public class DataMigrationCommonUtil {
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("coolingOff").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("coolingOff"))) {
-					String coolingOff = dataMigrationDTOJsonCopy.getString("coolingOff");
-					String[] coolingOffSet = {"0 Days","1 Week","2 Weeks","3 Weeks","1 Month","2 Months","3 Months","4 Months","5 Months","6 Months","7 Months","8 Months","9 Months","10 Months","11 Months","1 Year"};
-					if(ArrayUtils.contains( coolingOffSet, coolingOff)){
-						dataMigrationDTOJsonCopy.put("coolingOff", coolingOff);
-					}else{
-						errorSet.put("coolingOff", dataMigrationDTOJsonCopy.getString("coolingOff")+" is invalid cooling-off period");
+					String coolingOff = dataMigrationDTOJsonCopy.getString("coolingOff").toLowerCase();
+					if(ArrayUtils.contains(Constants.COOLINGOFFSET, coolingOff)) {
+						String[] coolingOffPart = coolingOff.split(" ");
+						coolingOffPart[1] = coolingOffPart[1].substring(0, 1).toUpperCase()+coolingOffPart[1].substring(1, coolingOffPart[1].length());
+						dataMigrationDTOJsonCopy.put("coolingOff", coolingOffPart[0]+" "+coolingOffPart[1]);
+					}else if(StringUtils.isNotEmpty(orgLocation.getCoolingOffPeriod())){
+						dataMigrationDTOJsonCopy.put("coolingOff", orgLocation.getCoolingOffPeriod());
+					}else {
+						dataMigrationDTOJsonCopy.put("coolingOff", Constants.DEFAULT_COOLINGOFF_PERIOD);
 					}
 				}
 				
@@ -481,14 +479,14 @@ public class DataMigrationCommonUtil {
 			}
 			
 			
-		/*if (!dataMigrationDTOJsonCopy.getString("docFile").equals("null")
+		if (!dataMigrationDTOJsonCopy.getString("docFile").equals("null")
 				&& StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("docFile"))) {
 			File source = new File(dataMigrationDTOJsonCopy.getString("docFile"));
 			if (source.exists()) {
 				String fileName = source.getName().replace("&", "").replace("%", "").replace("?", "");
 				String extenstion = null;
-				String[] extensionArr = { "doc", "pdf", "txt", "docx", "jpeg", "jpg", "gif",
-						"png" };
+				String[] extensionArr = { ".doc", ".pdf", ".txt", ".docx", ".jpeg", ".jpg", ".gif",
+						".png" };
 				try {
 					extenstion = fileName.substring(fileName.lastIndexOf("."));
 					if (!ArrayUtils.contains(extensionArr, extenstion.toLowerCase())) {
@@ -501,10 +499,14 @@ public class DataMigrationCommonUtil {
 								+ orgLocation.getId() + "/" + "requirementDocuments" + "/"
 								+ fileName + time + extenstion;
 						File dest = new File(url);
-						if (!dest.exists())
+						/*if (!dest.exists()) {
 							dest.mkdirs();
+						}*/
+							
 						try {
 							Files.copy(source.toPath(), dest.toPath());
+							dataMigrationDTOJsonCopy.put("fileURL", dest.toPath());
+							dataMigrationDTOJsonCopy.put("fileName", fileName + time + extenstion);
 						} catch (IOException e) {
 							errorSet.put("docFile", "Error occured while importing attachemt");
 						}
@@ -516,7 +518,7 @@ public class DataMigrationCommonUtil {
 			else if (!source.exists()) {
 				errorSet.put("docFile", "Invalid file path for attachment");
 			}
-		}*/
+		}
 	}
 			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation, String timeFrequency) throws Exception
 			{
