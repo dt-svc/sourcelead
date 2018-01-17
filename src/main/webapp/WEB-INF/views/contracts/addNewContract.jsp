@@ -2311,6 +2311,7 @@ function refreshVendorList(){
 	        	$("#orgRelationId").empty();
 		        $("#orgRelationId").append(output);
 		        $('#orgRelationId').trigger("chosen:updated");
+		        getVendorContacts();
 	        }
 		 });
 } 
@@ -2341,6 +2342,7 @@ function refreshClientList(autoPopClientId){
 	        	$("#clientOrgRelationId").empty();
 		        $("#clientOrgRelationId").append(output);
 		        $('#clientOrgRelationId').trigger("chosen:updated");
+		        getClientContacts();
 	        }
 		 });
 		 
