@@ -24,6 +24,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -1313,7 +1314,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
 					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
 					if(status.equalsIgnoreCase("working") || status.equalsIgnoreCase("out of service")){
-						status = status.substring(0, 1).toUpperCase()+status.substring(1, status.length());
+						status=	WordUtils.capitalizeFully(status);
 						dataMigrationDTOJsonCopy.put("workingStatus", status);
 					}else{
 						errorSet.put("workingStatus", dataMigrationDTOJsonCopy.getString("workingStatus")+" is invalid Working Status");
