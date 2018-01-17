@@ -2084,6 +2084,19 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public List<Date> getInterviewDatesForCalendarEvent(Long userId, Long orgLocationId) throws Exception {
 		return requirementInterviewDao.getInterviewDatesForCalendarEvent(userId, orgLocationId);
 	}
+
+
+	@Override
+	public List<Date> getInterviewDatesForInterviewrsInterviewSlots(List<Long> interivewerIds, Long orgLocationId)
+			throws Exception {
+		return requirementInterviewDao.getInterviewDatesForInterviewrsInterviewSlots(interivewerIds, orgLocationId);
+	}
+
+
+	@Override
+	public List<Date> getInterviewDatesForCandidateInterviewSlots(List<Long> applicantSubmissionIds) throws Exception {
+		return requirementInterviewDao.getInterviewDatesForCandidateInterviewSlots(applicantSubmissionIds);
+	}
 	
 	
 	/*@Override

@@ -138,6 +138,8 @@ public class DataMigrationCommonUtil {
 	@Autowired
 	private TimeSheetDayEntriesDao timesheetDayEntriesDao;
 	
+	
+	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
 	{
@@ -1287,6 +1289,24 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						errorSet.put("category", dataMigrationDTOJsonCopy.getString("category")+" is Not Exist");
 					}else{
 						dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftAEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmployee"))) {
+					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmployee"), orgLocation.getId());
+					if(user1 == null){
+					errorSet.put("shiftAEmployee", dataMigrationDTOJsonCopy.getString("shiftAEmployee")+" is Not Exist");	
+					}else{
+						dataMigrationDTOJsonCopy.put("shiftAEmployee", user1.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftBEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftBEmployee"))) {
+					User user2= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftBEmployee"), orgLocation.getId());
+					if(user2 == null){
+						errorSet.put("shiftBEmployee", dataMigrationDTOJsonCopy.getString("shiftBEmployee")+" is Not Exist");	
+					}else{
+						dataMigrationDTOJsonCopy.put("shiftBEmployee", user2.getId().toString());	
 					}
 				}
 				
