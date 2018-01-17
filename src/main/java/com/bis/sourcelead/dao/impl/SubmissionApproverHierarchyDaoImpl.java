@@ -30,6 +30,7 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -1841,7 +1842,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString())
 				.setLong("projectId", projectId)
-				.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
+				.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(false).list();
 		LinkedList<SubmissionApproverHierarchy> finalSahList = new LinkedList<>();
 		if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
 			Long projectMemberId = 0l;
@@ -1945,7 +1946,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }) 
-	public void updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long submissionHierarchyId,String invoiceType, String status) throws Exception {
+	public void updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long submissionHierarchyId,String invoiceType, String status,Invoice invoice) throws Exception {
 		SubmissionApproverHierarchy sah = getSubmissionApproverHierarchy(submissionHierarchyId.toString());
 		
 		java.sql.Date sqlStartDate = null;
@@ -1968,8 +1969,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			for(SubmissionApproverHierarchy subSah : sahList){
 				if(Constants.PAYABLES.equalsIgnoreCase(invoiceType)){
 					subSah.setBillingStatus(status);
+					subSah.setBillId(invoice);
+					subSah.setBillDate(invoice.getInvoiceDate());
 				}else{
 					subSah.setInvoiceStatus(status);
+					subSah.setInvoiceId(invoice);
+					subSah.setInvoiceDate(invoice.getInvoiceDate());
 				}
 			}
 			saveAllSubmissionApproverHierarchy(sahList);
