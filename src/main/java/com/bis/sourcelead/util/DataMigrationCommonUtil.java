@@ -1,7 +1,10 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,16 +27,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -49,6 +54,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -74,6 +80,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class DataMigrationCommonUtil {
 	private static final Logger logger = LoggerFactory.getLogger(DataMigrationCommonUtil.class);
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	private UserService userService;
 	
@@ -99,16 +109,16 @@ public class DataMigrationCommonUtil {
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
+	private AssetCategoryService assetCategoryService;
+	
+	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@Autowired
-	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
-	
-	@Autowired
-	private ProjectTasksDao tasksDao;
+	/*@Autowired
+	private CalendarUtil calendarUtil;*/
 	
 	@Autowired
 	private ProjectTasksService  projectTasksService;
@@ -128,6 +138,8 @@ public class DataMigrationCommonUtil {
 	@Autowired
 	private TimeSheetDayEntriesDao timesheetDayEntriesDao;
 	
+	
+	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
 	{
@@ -135,9 +147,6 @@ public class DataMigrationCommonUtil {
 		    
 				Boolean flag;
 				
-				if(dataMigrationDTOJsonCopy.getString("manager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
-					errorSet.put("manager", "Manager field is missing");
-				}
 				if(dataMigrationDTOJsonCopy.getString("priority").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("priority"))) {
 					errorSet.put("priority", "Priority field is missing");
 				}
@@ -309,10 +318,12 @@ public class DataMigrationCommonUtil {
 				if(!dataMigrationDTOJsonCopy.getString("manager").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
 					User approverList = userService.getTabAccessOwnersByOrgLocationIdEmailAndTabId(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("manager"), Long.valueOf(Constants.TAB_REQUIREMENT));
 					if(approverList == null){
-						errorSet.put("manager", dataMigrationDTOJsonCopy.getString("manager")+" is invalid Email");
+						errorSet.put("manager", dataMigrationDTOJsonCopy.getString("manager")+" is invalid manager Email");
 					}else{
 						dataMigrationDTOJsonCopy.put("manager", approverList.getId().toString());
 					}
+				}else if(dataMigrationDTOJsonCopy.getString("manager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
+					dataMigrationDTOJsonCopy.put("manager", user.getId().toString());
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
@@ -469,27 +480,44 @@ public class DataMigrationCommonUtil {
 			}
 			
 			
-			/*if(!dataMigrationDTOJsonCopy.getString("fileURL").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("fileURL"))) {
-				File source = new File("C:/Users/VenkatKesav/Documents/cv");
-				File dest = new File("C:/Users/VenkatKesav/Desktop/vc");
-				
+		/*if (!dataMigrationDTOJsonCopy.getString("docFile").equals("null")
+				&& StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("docFile"))) {
+			File source = new File(dataMigrationDTOJsonCopy.getString("docFile"));
+			if (source.exists()) {
 				String fileName = source.getName().replace("&", "").replace("%", "").replace("?", "");
-				String extenstion = fileName.substring(fileName.lastIndexOf("."));
-				fileName = fileName.substring(0, fileName.lastIndexOf("."));
-				long time = new Date().getTime();
-				String url = dataMigrationDTOJsonCopy.getString("staticPath").substring(dataMigrationDTOJsonCopy.getString("staticPath").lastIndexOf("/")) + "/" + orgLocation.getOrg() + "/" + orgLocation.getId() + "/" + fileType
-						+ "/" + fileName + time + extenstion;
-				
-				
+				String extenstion = null;
+				String[] extensionArr = { "doc", "pdf", "txt", "docx", "jpeg", "jpg", "gif",
+						"png" };
 				try {
-				    FileUtils.copyDirectory(source, dest);
-				} catch (IOException e) {
-				    e.printStackTrace();
+					extenstion = fileName.substring(fileName.lastIndexOf("."));
+					if (!ArrayUtils.contains(extensionArr, extenstion.toLowerCase())) {
+						errorSet.put("docFile", "Invalid file format, should accept only .doc,pdf,txt,docx,jpeg,jpg,gif,png");
+					}
+					else {
+						fileName = fileName.substring(0, fileName.lastIndexOf("."));
+						long time = new Date().getTime();
+						String url = staticPath + "/" + orgLocation.getOrg().getId() + "/"
+								+ orgLocation.getId() + "/" + "requirementDocuments" + "/"
+								+ fileName + time + extenstion;
+						File dest = new File(url);
+						if (!dest.exists())
+							dest.mkdirs();
+						try {
+							Files.copy(source.toPath(), dest.toPath());
+						} catch (IOException e) {
+							errorSet.put("docFile", "Error occured while importing attachemt");
+						}
+					}
+				} catch (Exception e) {
+					errorSet.put("docFile", "Invalid file path, should provide along with extension (doc,pdf,txt,docx,jpeg,jpg,gif,png)");
 				}
-			}*/
-			
+			}
+			else if (!source.exists()) {
+				errorSet.put("docFile", "Invalid file path for attachment");
+			}
+		}*/
 	}
-			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation) throws Exception
+			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation, String timeFrequency) throws Exception
 			{
 				logger.debug("In dataValidationForTimesheets method...");
 				Projects project = null;
@@ -514,61 +542,12 @@ public class DataMigrationCommonUtil {
 							}
 						}
 						
-						if (!dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("undefined")) {
-					         /*Boolean validateDate = validateDateFormatFromExcel(dataMigrationDTOJsonCopy.get("actualStartDate").toString()); 
-					         if(validateDate == true) {*/
-					        	 String monthYear = getMothNumberFromMonthName(dataMigrationDTOJsonCopy.get("actualStartDate").toString());
-						         if(monthYear != null && StringUtils.isNotBlank(monthYear) &&  !monthYear.equalsIgnoreCase("0")) {
-						        	 
-						         } 
-					         }
-					         else {
-					        	 errorSet.put("actualStartDate", "please provide proper month year format"); 
-					         }
-						/*}*/
-						Pattern patternWeekCheck = Pattern.compile("^\\d{0,2}(\\.\\d{1,2})?$");
-						
-						if (!dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week1").toString());
-							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week1").toString()) < 120L)) {
-								dataMigrationDTOJsonCopy.put("week1",dataMigrationDTOJsonCopy.get("week1").toString());
-							}else {
-								errorSet.put("week1", "week1 hours cannot be more then 120Hrs");
-							}
+						if(timeFrequency.equalsIgnoreCase("MonthlyWeekWise")) {
+							validateTimesheetMonthWeeklyFrequency(dataMigrationDTOJsonCopy,errorSet);
 						}
-						if (!dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week2").toString());
-							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week2").toString()) < 120L)) {
-								dataMigrationDTOJsonCopy.put("week2",dataMigrationDTOJsonCopy.get("week2").toString());
-							}else {
-								errorSet.put("week2", "week2 hours cannot be more then 120Hrs");
-							}
+						if(timeFrequency.equalsIgnoreCase("Weekly")) {
+							validateTimesheetWeeklyFrequency(dataMigrationDTOJsonCopy,errorSet);
 						}
-						if (!dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week3").toString());
-							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week3").toString()) < 120L)) {
-								dataMigrationDTOJsonCopy.put("week3",dataMigrationDTOJsonCopy.get("week3").toString());
-							}else {
-								errorSet.put("week3", "week3 hours cannot be more then 120Hrs");
-							}
-						}
-						if (!dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week4").toString());
-							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week4").toString()) < 120L)) {
-								dataMigrationDTOJsonCopy.put("week4",dataMigrationDTOJsonCopy.get("week4").toString());
-							}else {
-								errorSet.put("week4", "week4 hours cannot be more then 120Hrs");
-							}
-						}
-						if (!dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week5").toString());
-							if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week5").toString()) < 120L)) {
-								dataMigrationDTOJsonCopy.put("week5",dataMigrationDTOJsonCopy.get("week5").toString());
-							}else {
-								errorSet.put("week5","week5 hours cannot be more then 120Hrs");
-							}
-						}
-						
 						Pattern patternWeekTotalCheck = Pattern.compile("^\\d{0,3}(\\.\\d{1,2})?$");
 						if (!dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("undefined")) {
 							Matcher matcherWeek = patternWeekTotalCheck.matcher(dataMigrationDTOJsonCopy.get("billableHours").toString());
@@ -601,9 +580,6 @@ public class DataMigrationCommonUtil {
 						if (!dataMigrationDTOJsonCopy.get("weekComments").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("weekComments").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("weekComments").toString().equalsIgnoreCase("undefined")) {
 								dataMigrationDTOJsonCopy.put("weekComments",dataMigrationDTOJsonCopy.get("weekComments").toString());
 						}
-						
-						
-					
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -624,64 +600,34 @@ public class DataMigrationCommonUtil {
 								 HashMap<String,Date> memberFrequency = projectMembersHistoryService.getAssignDateandEndDateByProjectMemberId(projectMember.getId());
 								 Date assignDate = memberFrequency.get("STARTDATE");
 								 Date terminatedDate = memberFrequency.get("ENDDATE");
-								 if(importTimeSheet.getActualStartDate() != null) {
-									String[] year = importTimeSheet.getActualStartDate().split("-");
+								 if(importTimeSheet.getMonthYear() != null) {
+									 String[] year = null;
+									if(importTimeSheet.getMonthYear()!= null && StringUtils.isNotBlank(importTimeSheet.getMonthYear())) { 
+										 year = importTimeSheet.getMonthYear().split("-");
+									}
+								 
 									if(year[1] != null) {
-										 String month = getMothNumberFromMonthName(importTimeSheet.getActualStartDate());
+										 String month = getMothNumberFromMonthName(importTimeSheet.getMonthYear());
 										 if(month != null && StringUtils.isNotBlank(month) && !month.equalsIgnoreCase("0")) {
 											 Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year[1]);
 											 Date monthStartDate = dateList.get("STARTDATE");
 											 Date monthEndDate = dateList.get("ENDDATE");
-											 Boolean vaidateProjectMemberStartDate = null;
-											 Boolean vaidateProjectMemberEndDate = null;
-											 if(terminatedDate != null) {
-												  vaidateProjectMemberStartDate = CalendarUtil.isDateBetweenTwoDates(assignDate,terminatedDate, dateList.get("STARTDATE"));
-											 }else {
-												 vaidateProjectMemberStartDate =  (dateList.get("STARTDATE").after(assignDate) || dateList.get("STARTDATE").equals(assignDate));
-											 }
-											 if(terminatedDate != null) {
-												 vaidateProjectMemberEndDate = CalendarUtil.isDateBetweenTwoDates(assignDate,terminatedDate, dateList.get("ENDDATE"));
-											 }else {
-												 vaidateProjectMemberEndDate =  (dateList.get("ENDDATE").after(assignDate) || dateList.get("STARTDATE").equals(assignDate));
-											 }
-											 
-												 
-											 if(vaidateProjectMemberStartDate == true && vaidateProjectMemberEndDate == true) {
-												 Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),dateList.get("STARTDATE")), commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),dateList.get("ENDDATE")),orgLocation.getDateFormat());
-												 SimpleDateFormat format = new SimpleDateFormat(orgLocation.getDateFormat());
-												 int count = 1;
-												 if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
-														for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
-															 Date  key = format.parse(entry.getKey());
-															 Date  value = format.parse(entry.getValue());
-															 Date frequencyStartDate = null;
-															 Date frequencyEndDate = null;
-												    		  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
-												    		  //avgHours
-												    		   if(project.getInvoiceFrequency().equalsIgnoreCase("Monthly")) {
-												    			   frequencyStartDate = monthStartDate;
-												    			   frequencyEndDate = monthEndDate;
-												    		   }else {
-												    			   frequencyStartDate = key;
-												    			   frequencyEndDate = value;
-												    		   }
-												    		   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours);
-												    		   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
-												    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet);
-												    		   
-												    		  count++;
-														}
-													}
-											 }else {
-												 errorSet.put(dataMigrationDTOJsonCopy.getString("Month-Year"),"not in assgined project member Date"); 
-											 }
+											 timeSheetImportMonthSaving(importTimeSheet,assignDate,terminatedDate,year,orgLocation,project,projectMember,projectTask,errorSet,dataMigrationDTOJsonCopy,user,monthStartDate,monthEndDate,dateList,timeFrequency);
 										 }
+									}else {
+										 errorSet.put("actualStartDate","please provide month to add records."); 
+									 }
+									}else if(importTimeSheet.getActualStartDate() != null && importTimeSheet.getActualEndDate() != null) {
+										 Map<String,Date> dateList = new HashMap<>();
+										 Date weekStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),"1-1-2018" /*importTimeSheet.getActualStartDate()*/);
+										 Date weekEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),"7-1-2018"/*importTimeSheet.getActualEndDate()*/);
+										 dateList.put("STARTDATE", weekStartDate);
+										 dateList.put("ENDDATE", weekEndDate);
+										 timeSheetImportMonthSaving(importTimeSheet,assignDate,terminatedDate,null,orgLocation,project,projectMember,projectTask,errorSet,dataMigrationDTOJsonCopy,user,weekStartDate,weekEndDate,dateList,timeFrequency);
+										
 									}else {
 										errorSet.put("actualStartDate","please provide proper month and Year to add records."); 
 									}
-								 }else {
-									 errorSet.put("actualStartDate","please provide month to add records."); 
-								 }
 							 }else {
 								 errorSet.put(dataMigrationDTOJsonCopy.getString("employeeEmail"),"not a valid peoject member.");
 							 }
@@ -697,180 +643,381 @@ public class DataMigrationCommonUtil {
 				}
 			}
 			
+			
+			
 
-		private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUID,ProjectMembers projectMember, Date actualStartDate, Date actualEndDate, float averageHours, User loginUser, OrgLocations orgLocation, Date frequencyStartDate, Date frequencyEndDate, ImportTimesheetDTO importTimeSheet) throws Exception {
-			 TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
-		 	if(timesheetSubmissions == null){
-		 		timesheetSubmissions =  new TimesheetSubmissions();
-			    	timesheetSubmissions.setStartDate(actualStartDate);
-			    	timesheetSubmissions.setEndDate(actualEndDate);
-			    	timesheetSubmissions.setProjectMembers(projectMember);
-			    	timesheetSubmissions.setProjects(projectMember.getProjects());
-			    	timesheetSubmissions.setMasterCandidateId(projectMember.getMasterCandidateId());
-			    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
-			    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
-			    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
-			    	timesheetSubmissions.setWeekcomments("");
-		 	}
-		 	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
-		 	timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
-		 	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
-		 	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
-		 	HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
-		     if(hierarchyList != null && !hierarchyList.isEmpty()){
-						for(ProjectApproverHierarchy hierarchy : hierarchyList){
-							SubmissionApproverHierarchy saHierarchy = null;
-							if(timesheetSubmissions != null && timesheetSubmissions.getId() != null) {
-								saHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(timesheetSubmissions.getId(), hierarchy.getApproverUserId().getId());
-							}
-						    if(saHierarchy == null){
-						    	saHierarchy = new SubmissionApproverHierarchy();
-								saHierarchy.setHeirarchyId(hierarchy);
-								saHierarchy.setSubmissionId(timesheetSubmissions);
-								if(frequencyStartDate != null)
-									saHierarchy.setFrequencyStartDate(frequencyStartDate);
-								if(frequencyEndDate != null)
-							    saHierarchy.setFrequencyEndDate(frequencyEndDate);
-								saHierarchy.setSubmissionStatus(Submission_Status.DRAFT);
-								saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
-								saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
-								saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
-								saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
-								saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
-								saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-						    }
-							saHierarchyList.add(saHierarchy);
-						}
-						timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
-				}
-				timesheetSubmissionsList.add(timesheetSubmissions);
-				timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-				
-				 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-				 cal.setLenient(false);
-				 cal.setTime(actualStartDate);
-				 Calendar startMonday = null;
-				 Calendar endSunday = null;
-				 Date weekStartDate = null;
-				 Date weekEndDate = null;
-				SimpleDateFormat sf = new SimpleDateFormat("E"); 
-				if(sf.format(actualStartDate).equalsIgnoreCase("SUN")) {
-					startMonday = CalendarUtil.getPreviousWeekDayByCalendar(cal, "MON",orgLocation.getDateFormat());
-					endSunday= CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "SUN",orgLocation.getDateFormat());
-				}else {
-					startMonday = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "MON",orgLocation.getDateFormat());
-					endSunday= CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "SUN",orgLocation.getDateFormat());
-				}
-				weekStartDate = startMonday.getTime();
-				weekEndDate = endSunday.getTime();
-					
-					
-				Long total = 0l;
-				Long totalBillableHours = 0l;
-				Long totalNonBillableHours = 0l;
-				while(weekStartDate.before(weekEndDate) || weekStartDate.equals(weekEndDate)){
-						  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(projectTaskUUID);
-						  TimeSheetDayEntries  timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), weekStartDate);
-						  if(timesheetDayEntries == null){
-							 timesheetDayEntries = new TimeSheetDayEntries();
-							 timesheetDayEntries.setBillableHours("00:00");
-							 timesheetDayEntries.setNonBillableHours("00:00");
-							 timesheetDayEntries.setTotalHours("00:00");
-							 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
-						    }
-						  	
-							String taskType =projectTasks.getBillableType();
-							timesheetDayEntries.setProjectTask(projectTasks);
-							String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours).replace(".", ":");
-							SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
-					    	 String day_Of_Date = simpleDateformat.format(weekStartDate);
-							if(CalendarUtil.isDateBetweenTwoDates(actualStartDate,actualEndDate, weekStartDate) && (!day_Of_Date.equals("Sat") && !day_Of_Date.equals("Sun"))){
-		         			timesheetDayEntries.setIsManuallyAdded(Constants.YES);
-		         			total = getTotalHoursFormDayHours(hours, total);
-		         			   if(taskType.equalsIgnoreCase("Billable")) {
-				         				//timesheetDayEntries.setComments(comments);
-				             			timesheetDayEntries.setBillableHours(hours);
-				     					timesheetDayEntries.setNonBillableHours("00:00");
-				     					timesheetDayEntries.setTotalHours(hours);
-					        				totalBillableHours = getTotalHoursFormDayHours(hours,totalBillableHours);
-		             			}else{
-				             			//timesheetDayEntries.setComments(comments);
-				             			timesheetDayEntries.setBillableHours("00:00");
-				     					timesheetDayEntries.setNonBillableHours(hours);
-				     					timesheetDayEntries.setTotalHours(hours);
-				     					totalNonBillableHours = getTotalHoursFormDayHours(hours,totalNonBillableHours);
-		             			}
-							}else{
-			         			total = getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours(), total);
-			         			totalBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getBillableHours(),totalBillableHours);
-			         			totalNonBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getNonBillableHours(),totalNonBillableHours);
-							}
-							
-							if(StringUtils.isEmpty(timesheetDayEntries.getBillableHours())) {
-								timesheetDayEntries.setBillableHours("00:00");
-							}
-							
-							if(StringUtils.isEmpty(timesheetDayEntries.getNonBillableHours())) {
-								timesheetDayEntries.setNonBillableHours("00:00");
-							}
-							
-							if(StringUtils.isEmpty(timesheetDayEntries.getTotalHours())) {
-								timesheetDayEntries.setTotalHours("00:00");
-							}
-							
-							
-							timesheetDayEntries.setTaskType(taskType);
-							timesheetDayEntries.setTimesheetSubmissions(timesheetSubmissions);
-							timesheetDayEntries.setTimesheetDate(weekStartDate);
-							timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
-							timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
-						
-						
-						timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
-						timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
-						timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);
-						weekStartDate = CalendarUtil.getNextDate(weekStartDate);
-				}
-				
-				if(total != null){
-					/**
-					 * Total Hours Calculation
-					 */
-		         int actualHours = (int) (total / 60);
-		         int actualMinutes =   (int)(total % 60);
-		         String actualMinutesStr = ""+actualMinutes;
-		         String startWithZero = "";
-		         if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
-		         	startWithZero ="0";	
-		         	String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
-					timesheetSubmissions.setTotalHours(actualTimeString);
-					
-					/**
-					 * Billable Hours Calculation
-					 */
-					int actualBillableHours = (int) (totalBillableHours / 60);
-					int actualBillableMinutes =   (int)(totalBillableHours % 60);
-		         String actualBillableMinutesStr = ""+actualBillableMinutes;
-		         String billableStartWithZero = "";
-		         if(StringUtils.isNotEmpty(actualBillableMinutesStr) && actualBillableMinutesStr.length()==1)
-		         	billableStartWithZero ="0";	
-		         	String actualBillableTimeString =  actualBillableHours+"."+billableStartWithZero+actualBillableMinutes;
-					timesheetSubmissions.setBillableHours(actualBillableTimeString);
-					timesheetSubmissions.setWeekcomments(importTimeSheet.getWeekComments());
-					/**
-					 * Non-Billable Hours Calculation
-					 */
-					int actualNonBillableHours = (int) (totalNonBillableHours / 60);
-		         int actualNonBillableMinutes =   (int)(totalNonBillableHours % 60);
-		         String actualNonBillableMinutesStr = ""+actualNonBillableMinutes;
-		         String nonBillableStartWithZero = "";
-		         if(StringUtils.isNotEmpty(actualNonBillableMinutesStr) && actualNonBillableMinutesStr.length()==1)
-		         	nonBillableStartWithZero ="0";	
-		         String actualNonBillableTimeString =  actualNonBillableHours+"."+nonBillableStartWithZero+actualNonBillableMinutes;
-					timesheetSubmissions.setNonBillableHours(actualNonBillableTimeString);
-					timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
-				}
+private void validateTimesheetWeeklyFrequency(JSONObject dataMigrationDTOJsonCopy,HashMap<String, String> errorSet) throws JSONException {
+		Pattern patternWeekCheck = Pattern.compile("^\\d{0,2}(\\.\\d{1,2})?$");
+		if (!dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("undefined")) {
+	        	 String monthYear = getMothNumberFromMonthName(dataMigrationDTOJsonCopy.get("actualStartDate").toString());
+		         if(monthYear != null && StringUtils.isNotBlank(monthYear) &&  !monthYear.equalsIgnoreCase("0")) {
+		        	 
+		         } 
+	         }
+	         else {
+	        	 errorSet.put("actualStartDate", "please provide proper month year format"); 
+	         }
+		
+		if (!dataMigrationDTOJsonCopy.get("actualEndDate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("actualEndDate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("actualEndDate").toString().equalsIgnoreCase("undefined")) {
+        	 String monthYear = getMothNumberFromMonthName(dataMigrationDTOJsonCopy.get("actualEndDate").toString());
+	         if(monthYear != null && StringUtils.isNotBlank(monthYear) &&  !monthYear.equalsIgnoreCase("0")) {
+	        	 
+	         } 
+         }
+         else {
+        	 errorSet.put("actualEndDate", "please provide proper month year format"); 
+         }
+		if (!dataMigrationDTOJsonCopy.get("mon").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("mon").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("mon").toString().equalsIgnoreCase("undefined")) {
+			Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("mon").toString());
+			if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("mon").toString()) < 24L)) {
+				dataMigrationDTOJsonCopy.put("mon",dataMigrationDTOJsonCopy.get("mon").toString());
+			}else {
+				errorSet.put("mon", "Mon hours cannot be more then 24Hrs");
+			}
 		}
+		if (!dataMigrationDTOJsonCopy.get("tue").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("tue").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("tue").toString().equalsIgnoreCase("undefined")) {
+			Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("tue").toString());
+			if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("tue").toString()) < 24L)) {
+				dataMigrationDTOJsonCopy.put("tue",dataMigrationDTOJsonCopy.get("tue").toString());
+			}else {
+				errorSet.put("tue", "tue hours cannot be more then 24Hrs");
+			}
+		}
+		if (!dataMigrationDTOJsonCopy.get("wed").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("wed").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("wed").toString().equalsIgnoreCase("undefined")) {
+			Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("wed").toString());
+			if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("wed").toString()) < 24L)) {
+				dataMigrationDTOJsonCopy.put("wed",dataMigrationDTOJsonCopy.get("wed").toString());
+			}else {
+				errorSet.put("wed", "Wed hours cannot be more then 24Hrs");
+			}
+		}
+		if (!dataMigrationDTOJsonCopy.get("thu").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("thu").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("thu").toString().equalsIgnoreCase("undefined")) {
+			Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("thu").toString());
+			if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("thu").toString()) < 24L)) {
+				dataMigrationDTOJsonCopy.put("thu",dataMigrationDTOJsonCopy.get("thu").toString());
+			}else {
+				errorSet.put("thu", "Thu hours cannot be more then 24Hrs");
+			}
+		}
+		if (!dataMigrationDTOJsonCopy.get("fri").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("fri").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("fri").toString().equalsIgnoreCase("undefined")) {
+			Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("fri").toString());
+			if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("fri").toString()) < 24L)) {
+				dataMigrationDTOJsonCopy.put("fri",dataMigrationDTOJsonCopy.get("fri").toString());
+			}else {
+				errorSet.put("fri", "Fri hours cannot be more then 24Hrs");
+			}
+		}
+		if (!dataMigrationDTOJsonCopy.get("sat").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("sat").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("sat").toString().equalsIgnoreCase("undefined")) {
+			Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("sat").toString());
+			if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("sat").toString()) < 24L)) {
+				dataMigrationDTOJsonCopy.put("sat",dataMigrationDTOJsonCopy.get("sat").toString());
+			}else {
+				errorSet.put("sat", "Sat hours cannot be more then 24Hrs");
+			}
+		}
+		if (!dataMigrationDTOJsonCopy.get("sun").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("sun").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("sun").toString().equalsIgnoreCase("undefined")) {
+			Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("sun").toString());
+			if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("sun").toString()) < 24L)) {
+				dataMigrationDTOJsonCopy.put("sun",dataMigrationDTOJsonCopy.get("sun").toString());
+			}else {
+				errorSet.put("sun", "Sun hours cannot be more then 24Hrs");
+			}
+		}
+		
+}
+
+
+private void validateTimesheetMonthWeeklyFrequency(JSONObject dataMigrationDTOJsonCopy, HashMap<String, String> errorSet) throws JSONException {
+	if (dataMigrationDTOJsonCopy.get("monthYear") != null && !dataMigrationDTOJsonCopy.get("monthYear").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("monthYear").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("monthYear").toString().equalsIgnoreCase("undefined")) {
+    	 String monthYear = getMothNumberFromMonthName(dataMigrationDTOJsonCopy.get("monthYear").toString());
+         if(monthYear != null && StringUtils.isNotBlank(monthYear) &&  !monthYear.equalsIgnoreCase("0")) {
+        	 
+         } 
+     }
+     else {
+    	 errorSet.put("monthYear", "please provide proper month year format"); 
+     }
+	Pattern patternWeekCheck = Pattern.compile("^\\d{0,2}(\\.\\d{1,2})?$");
+	
+	if (!dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week1").toString().equalsIgnoreCase("undefined")) {
+		Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week1").toString());
+		if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week1").toString()) < 120L)) {
+			dataMigrationDTOJsonCopy.put("week1",dataMigrationDTOJsonCopy.get("week1").toString());
+		}else {
+			errorSet.put("week1", "week1 hours cannot be more then 120Hrs");
+		}
+	}
+	if (!dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week2").toString().equalsIgnoreCase("undefined")) {
+		Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week2").toString());
+		if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week2").toString()) < 120L)) {
+			dataMigrationDTOJsonCopy.put("week2",dataMigrationDTOJsonCopy.get("week2").toString());
+		}else {
+			errorSet.put("week2", "week2 hours cannot be more then 120Hrs");
+		}
+	}
+	if (!dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week3").toString().equalsIgnoreCase("undefined")) {
+		Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week3").toString());
+		if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week3").toString()) < 120L)) {
+			dataMigrationDTOJsonCopy.put("week3",dataMigrationDTOJsonCopy.get("week3").toString());
+		}else {
+			errorSet.put("week3", "week3 hours cannot be more then 120Hrs");
+		}
+	}
+	if (!dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week4").toString().equalsIgnoreCase("undefined")) {
+		Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week4").toString());
+		if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week4").toString()) < 120L)) {
+			dataMigrationDTOJsonCopy.put("week4",dataMigrationDTOJsonCopy.get("week4").toString());
+		}else {
+			errorSet.put("week4", "week4 hours cannot be more then 120Hrs");
+		}
+	}
+	if (!dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("undefined")) {
+		Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week5").toString());
+		if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week5").toString()) < 120L)) {
+			dataMigrationDTOJsonCopy.put("week5",dataMigrationDTOJsonCopy.get("week5").toString());
+		}else {
+			errorSet.put("week5","week5 hours cannot be more then 120Hrs");
+		}
+	}
+	
+}
+
+private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date assignDate, Date terminatedDate, String[] year, OrgLocations orgLocation, Projects project, ProjectMembers projectMember, ProjectTasks projectTask, HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, Date startDate, Date endaDate, Map<String, Date> dateList, String timeFrequency) throws Exception {
+		 Date monthStartDate = dateList.get("STARTDATE");
+		 Date monthEndDate = dateList.get("ENDDATE");
+		 Boolean vaidateProjectMemberStartDate = null;
+		 Boolean vaidateProjectMemberEndDate = null;
+		 if(terminatedDate != null) {
+			  vaidateProjectMemberStartDate = CalendarUtil.isDateBetweenTwoDates(assignDate,terminatedDate, dateList.get("STARTDATE"));
+		 }else {
+			 vaidateProjectMemberStartDate =  (dateList.get("STARTDATE").after(assignDate) || dateList.get("STARTDATE").equals(assignDate));
+		 }
+		 if(terminatedDate != null) {
+			 vaidateProjectMemberEndDate = CalendarUtil.isDateBetweenTwoDates(assignDate,terminatedDate, dateList.get("ENDDATE"));
+		 }else {
+			 vaidateProjectMemberEndDate =  (dateList.get("ENDDATE").after(assignDate) || dateList.get("STARTDATE").equals(assignDate));
+		 }
+		 
+			 
+		 if(vaidateProjectMemberStartDate == true && vaidateProjectMemberEndDate == true) {
+			 Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),dateList.get("STARTDATE")), commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),dateList.get("ENDDATE")),orgLocation.getDateFormat());
+			 SimpleDateFormat format = new SimpleDateFormat(orgLocation.getDateFormat());
+			 int count = 1;
+			 if(timeFrequency.equalsIgnoreCase("MonthlyWeekWise")) {
+				 if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+						for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+							 Date  key = format.parse(entry.getKey());
+							 Date  value = format.parse(entry.getValue());
+				    		 int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+				    		  //avgHours
+				    		 Date frequencyStartDate = monthStartDate;
+							 Date frequencyEndDate = monthEndDate;
+				    		 float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+				    		 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+				    		 System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+				    		 count++;
+						}
+					}
+			 }else if(timeFrequency.equalsIgnoreCase("Weekly")) {
+				/* int weekCount = 1;
+				 List<Date> weekdateList = CalendarUtil.getListOfDaysBetweenTwoDates(startDate,endaDate);
+				 for(Date weekList:weekdateList) {*/
+					  /* Date frequencyStartDate =startDate;
+					   Date frequencyEndDate = endaDate;
+		    		   float averageHours = getAverageHours(weekCount,importTimeSheet,0,timeFrequency);*/
+		    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,startDate,endaDate,0f,user,orgLocation,startDate,endaDate,importTimeSheet,timeFrequency);
+		    		  /* System.out.println(projectMember.getProjectMemberCandidteId().getFullName());*/
+		    		   /*weekCount++;
+				 }*/
+			 }
+		 }else {
+			 errorSet.put(dataMigrationDTOJsonCopy.getString("Month-Year"),"not in assgined project member Date"); 
+		 }
+	}
+
+		
+
+private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUID,ProjectMembers projectMember, Date actualStartDate, Date actualEndDate,float averageHours, User loginUser, OrgLocations orgLocation, Date frequencyStartDate, Date frequencyEndDate, ImportTimesheetDTO importTimeSheet, String timeFrequency) throws Exception {
+	 TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+ 	if(timesheetSubmissions == null){
+ 		timesheetSubmissions =  new TimesheetSubmissions();
+	    	timesheetSubmissions.setStartDate(actualStartDate);
+	    	timesheetSubmissions.setEndDate(actualEndDate);
+	    	timesheetSubmissions.setProjectMembers(projectMember);
+	    	timesheetSubmissions.setProjects(projectMember.getProjects());
+	    	timesheetSubmissions.setMasterCandidateId(projectMember.getMasterCandidateId());
+	    	timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE+"");
+	    	timesheetSubmissions.setCreatedDate(CommonUtil.currentDate());
+	    	timesheetSubmissions.setCreatedBy(loginUser.getUserCode());
+	    	timesheetSubmissions.setWeekcomments("");
+ 	}
+ 	timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
+ 	timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
+ 	ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
+ 	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId());
+ 	HashSet<SubmissionApproverHierarchy> saHierarchyList = new HashSet<SubmissionApproverHierarchy>();
+     if(hierarchyList != null && !hierarchyList.isEmpty()){
+				for(ProjectApproverHierarchy hierarchy : hierarchyList){
+					SubmissionApproverHierarchy saHierarchy = null;
+					if(timesheetSubmissions != null && timesheetSubmissions.getId() != null) {
+						saHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyForApprover(timesheetSubmissions.getId(), hierarchy.getApproverUserId().getId());
+					}
+				    if(saHierarchy == null){
+				    	saHierarchy = new SubmissionApproverHierarchy();
+						saHierarchy.setHeirarchyId(hierarchy);
+						saHierarchy.setSubmissionId(timesheetSubmissions);
+						if(frequencyStartDate != null)
+							saHierarchy.setFrequencyStartDate(frequencyStartDate);
+						if(frequencyEndDate != null)
+					    saHierarchy.setFrequencyEndDate(frequencyEndDate);
+						saHierarchy.setSubmissionStatus(Submission_Status.DRAFT);
+						saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+						saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+						saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
+						saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
+						saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
+						saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+				    }
+					saHierarchyList.add(saHierarchy);
+				}
+				timesheetSubmissions.setApproverHierarchyList(saHierarchyList);
+		}
+		timesheetSubmissionsList.add(timesheetSubmissions);
+		timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+		
+		 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		 cal.setLenient(false);
+		 cal.setTime(actualStartDate);
+		 Calendar startMonday = null;
+		 Calendar endSunday = null;
+		 Date weekStartDate = null;
+		 Date weekEndDate = null;
+		 
+		 
+		SimpleDateFormat sf = new SimpleDateFormat("E"); 
+		if(sf.format(actualStartDate).equalsIgnoreCase("SUN")) {
+			startMonday = CalendarUtil.getPreviousWeekDayByCalendar(cal, "MON",orgLocation.getDateFormat());
+			endSunday= CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "SUN",orgLocation.getDateFormat());
+		}else {
+			startMonday = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "MON",orgLocation.getDateFormat());
+			endSunday= CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(cal, "SUN",orgLocation.getDateFormat());
+		}
+		weekStartDate = startMonday.getTime();
+		weekEndDate = endSunday.getTime();
+			
+			
+		Long total = 0l;
+		Long totalBillableHours = 0l;
+		Long totalNonBillableHours = 0l;
+		int weekCount = 1;
+		while(weekStartDate.before(weekEndDate) || weekStartDate.equals(weekEndDate)){
+				
+				  if(timeFrequency.equalsIgnoreCase("Weekly")) {
+					averageHours = getAverageHours(weekCount,importTimeSheet,0,timeFrequency);
+				  }
+				  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(projectTaskUUID);
+				  TimeSheetDayEntries  timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), weekStartDate);
+				  if(timesheetDayEntries == null){
+					 timesheetDayEntries = new TimeSheetDayEntries();
+					 timesheetDayEntries.setBillableHours("00:00");
+					 timesheetDayEntries.setNonBillableHours("00:00");
+					 timesheetDayEntries.setTotalHours("00:00");
+					 timesheetDayEntries.setIsManuallyAdded(Constants.NO);
+				    }
+				  	
+					String taskType =projectTasks.getBillableType();
+					timesheetDayEntries.setProjectTask(projectTasks);
+					String hours =CalendarUtil.getTimesheetHoursDisplayFormat(averageHours).replace(".", ":");
+					SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
+			    	 String day_Of_Date = simpleDateformat.format(weekStartDate);
+					if(CalendarUtil.isDateBetweenTwoDates(actualStartDate,actualEndDate, weekStartDate) && (!day_Of_Date.equals("Sat") && !day_Of_Date.equals("Sun"))){
+         			timesheetDayEntries.setIsManuallyAdded(Constants.YES);
+         			total = getTotalHoursFormDayHours(hours, total);
+         			   if(taskType.equalsIgnoreCase("Billable")) {
+		         				//timesheetDayEntries.setComments(comments);
+		             			timesheetDayEntries.setBillableHours(hours);
+		     					timesheetDayEntries.setNonBillableHours("00:00");
+		     					timesheetDayEntries.setTotalHours(hours);
+			        				totalBillableHours = getTotalHoursFormDayHours(hours,totalBillableHours);
+             			}else{
+		             			//timesheetDayEntries.setComments(comments);
+		             			timesheetDayEntries.setBillableHours("00:00");
+		     					timesheetDayEntries.setNonBillableHours(hours);
+		     					timesheetDayEntries.setTotalHours(hours);
+		     					totalNonBillableHours = getTotalHoursFormDayHours(hours,totalNonBillableHours);
+             			}
+					}else{
+	         			total = getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours(), total);
+	         			totalBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getBillableHours(),totalBillableHours);
+	         			totalNonBillableHours = getTotalHoursFormDayHours(timesheetDayEntries.getNonBillableHours(),totalNonBillableHours);
+					}
+					
+					if(StringUtils.isEmpty(timesheetDayEntries.getBillableHours())) {
+						timesheetDayEntries.setBillableHours("00:00");
+					}
+					
+					if(StringUtils.isEmpty(timesheetDayEntries.getNonBillableHours())) {
+						timesheetDayEntries.setNonBillableHours("00:00");
+					}
+					
+					if(StringUtils.isEmpty(timesheetDayEntries.getTotalHours())) {
+						timesheetDayEntries.setTotalHours("00:00");
+					}
+					
+					
+					timesheetDayEntries.setTaskType(taskType);
+					timesheetDayEntries.setTimesheetSubmissions(timesheetSubmissions);
+					timesheetDayEntries.setTimesheetDate(weekStartDate);
+					timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
+					timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
+				
+				
+				timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
+				timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
+				timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);
+				weekStartDate = CalendarUtil.getNextDate(weekStartDate);
+				weekCount++;
+		}
+		
+		if(total != null){
+			/**
+			 * Total Hours Calculation
+			 */
+         int actualHours = (int) (total / 60);
+         int actualMinutes =   (int)(total % 60);
+         String actualMinutesStr = ""+actualMinutes;
+         String startWithZero = "";
+         if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
+         	startWithZero ="0";	
+         	String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
+			timesheetSubmissions.setTotalHours(actualTimeString);
+			
+			/**
+			 * Billable Hours Calculation
+			 */
+			int actualBillableHours = (int) (totalBillableHours / 60);
+			int actualBillableMinutes =   (int)(totalBillableHours % 60);
+         String actualBillableMinutesStr = ""+actualBillableMinutes;
+         String billableStartWithZero = "";
+         if(StringUtils.isNotEmpty(actualBillableMinutesStr) && actualBillableMinutesStr.length()==1)
+         	billableStartWithZero ="0";	
+         	String actualBillableTimeString =  actualBillableHours+"."+billableStartWithZero+actualBillableMinutes;
+			timesheetSubmissions.setBillableHours(actualBillableTimeString);
+			timesheetSubmissions.setWeekcomments(importTimeSheet.getWeekComments());
+			/**
+			 * Non-Billable Hours Calculation
+			 */
+			int actualNonBillableHours = (int) (totalNonBillableHours / 60);
+         int actualNonBillableMinutes =   (int)(totalNonBillableHours % 60);
+         String actualNonBillableMinutesStr = ""+actualNonBillableMinutes;
+         String nonBillableStartWithZero = "";
+         if(StringUtils.isNotEmpty(actualNonBillableMinutesStr) && actualNonBillableMinutesStr.length()==1)
+         	nonBillableStartWithZero ="0";	
+         String actualNonBillableTimeString =  actualNonBillableHours+"."+nonBillableStartWithZero+actualNonBillableMinutes;
+			timesheetSubmissions.setNonBillableHours(actualNonBillableTimeString);
+			timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
+		}
+}
 
 
 		private Long getTotalHoursFormDayHours(String dayHours,Long total){
@@ -888,8 +1035,9 @@ public class DataMigrationCommonUtil {
 			return total;
 		}
 
-			private float getAverageHours(int count, ImportTimesheetDTO importTimeSheet, int noOfBillableHours) throws ParseException {
+			private float getAverageHours(int count, ImportTimesheetDTO importTimeSheet, int noOfBillableHours,String type) throws ParseException {
 				Double AverageHours = null;
+				if(type.equalsIgnoreCase("MonthlyWeekWise")) {
 				switch (count) {
 				case 1:
 					if(importTimeSheet.getWeek1() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek1())) {
@@ -901,7 +1049,7 @@ public class DataMigrationCommonUtil {
 					}
 					 
 				case 2:
-					if(importTimeSheet.getWeek1() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek2())) {
+					if(importTimeSheet.getWeek2() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek2())) {
 					 AverageHours = calculateHoursAndMin(Double.parseDouble(importTimeSheet.getWeek2()),noOfBillableHours);
 					 break;
 					}else {
@@ -909,7 +1057,7 @@ public class DataMigrationCommonUtil {
 						break;
 					}
 				case 3:
-					if(importTimeSheet.getWeek1() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek3())) {
+					if(importTimeSheet.getWeek3() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek3())) {
 					 AverageHours = calculateHoursAndMin(Double.parseDouble(importTimeSheet.getWeek3()),noOfBillableHours);
 					 break;
 					}else {
@@ -917,7 +1065,7 @@ public class DataMigrationCommonUtil {
 						break;
 					}
 				case 4:
-					if(importTimeSheet.getWeek1() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek4())) { 
+					if(importTimeSheet.getWeek4() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek4())) { 
 					AverageHours = calculateHoursAndMin(Double.parseDouble(importTimeSheet.getWeek4()),noOfBillableHours);
 					 break;
 					}else {
@@ -925,7 +1073,7 @@ public class DataMigrationCommonUtil {
 						break;
 					}
 				case 5:
-					if(importTimeSheet.getWeek1() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek5())) {
+					if(importTimeSheet.getWeek5() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek5())) {
 					 AverageHours = calculateHoursAndMin(Double.parseDouble(importTimeSheet.getWeek5()),noOfBillableHours);
 					 break;
 					}else {
@@ -933,6 +1081,67 @@ public class DataMigrationCommonUtil {
 						break;
 					}
 				}
+			}else if(type.equalsIgnoreCase("Weekly")) {
+				switch (count) {
+				case 1:
+					if(importTimeSheet.getMon() != null && StringUtils.isNotEmpty(importTimeSheet.getMon())) {
+						AverageHours = Double.parseDouble(importTimeSheet.getMon());
+						 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
+					 
+				case 2:
+					if(importTimeSheet.getTue() != null && StringUtils.isNotEmpty(importTimeSheet.getTue())) {
+						AverageHours = Double.parseDouble(importTimeSheet.getTue());
+					 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
+				case 3:
+					if(importTimeSheet.getWed() != null && StringUtils.isNotEmpty(importTimeSheet.getWed())) {
+						AverageHours = Double.parseDouble(importTimeSheet.getWed());
+					 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
+				case 4:
+					if(importTimeSheet.getThu() != null && StringUtils.isNotEmpty(importTimeSheet.getThu())) { 
+						AverageHours = Double.parseDouble(importTimeSheet.getThu());
+					 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
+				case 5:
+					if(importTimeSheet.getFri() != null && StringUtils.isNotEmpty(importTimeSheet.getFri())) {
+						AverageHours = Double.parseDouble(importTimeSheet.getFri());
+					 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
+				case 6:
+					if(importTimeSheet.getSat() != null && StringUtils.isNotEmpty(importTimeSheet.getSat())) {
+						AverageHours = Double.parseDouble(importTimeSheet.getSat());
+					 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
+				case 7:
+					if(importTimeSheet.getSun() != null && StringUtils.isNotEmpty(importTimeSheet.getSun())) {
+						AverageHours = Double.parseDouble(importTimeSheet.getSun());
+					 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
+				}
+			}
 				BigDecimal bd = new BigDecimal(AverageHours);
 			    bd = bd.setScale(2, RoundingMode.HALF_UP);
 				return bd.floatValue();
@@ -1058,4 +1267,64 @@ public class DataMigrationCommonUtil {
 			private static double getMinutes1(double val) {
 			return Math.floor(val) + (Math.floor(((val-Math.floor(val)) * 60))/100);
 			}
+			
+			
+			
+		public void dataValidationForAssets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
+			{
+				
+				if(dataMigrationDTOJsonCopy.getString("category").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("category"))) {
+					errorSet.put("category", "Category is missing");
+				}
+				if(dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
+					errorSet.put("workingStatus", "Working Status is missing");
+				}
+				if(dataMigrationDTOJsonCopy.getString("sno").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
+					errorSet.put("sno", "Serial Number is missing");
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("category").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("category"))) {
+					AssetCategory  category= assetCategoryService.getAssetCategoryListByLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("category").trim());
+					if(category == null){
+						errorSet.put("category", dataMigrationDTOJsonCopy.getString("category")+" is Not Exist");
+					}else{
+						dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftAEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmployee"))) {
+					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmployee"), orgLocation.getId());
+					if(user1 == null){
+					errorSet.put("shiftAEmployee", dataMigrationDTOJsonCopy.getString("shiftAEmployee")+" is Not Exist");	
+					}else{
+						dataMigrationDTOJsonCopy.put("shiftAEmployee", user1.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftBEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftBEmployee"))) {
+					User user2= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftBEmployee"), orgLocation.getId());
+					if(user2 == null){
+						errorSet.put("shiftBEmployee", dataMigrationDTOJsonCopy.getString("shiftBEmployee")+" is Not Exist");	
+					}else{
+						dataMigrationDTOJsonCopy.put("shiftBEmployee", user2.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
+					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
+					if(status.equalsIgnoreCase("working") || status.equalsIgnoreCase("out of service")){
+						status = status.substring(0, 1).toUpperCase()+status.substring(1, status.length());
+						dataMigrationDTOJsonCopy.put("workingStatus", status);
+					}else{
+						errorSet.put("workingStatus", dataMigrationDTOJsonCopy.getString("workingStatus")+" is invalid Working Status");
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("sno").equals("sno") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
+					String serialNo = dataMigrationDTOJsonCopy.getString("sno");
+						dataMigrationDTOJsonCopy.put("sno", serialNo);
+				}
+				
+			}
+
 	}

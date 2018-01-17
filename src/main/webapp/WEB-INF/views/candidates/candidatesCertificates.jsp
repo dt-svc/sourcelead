@@ -540,7 +540,7 @@ function addCertification(candidateId) {
 								if(json.description !=null && json.description!='undefined'&& json.description !=''){
 								result  = result + '                   <div class="col-md-12">';
 								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+json.description+ '"  placeholder="Description" id="candidateDescription"';
-								result  = result + '                     data-validation-optional="true" data-validation="required">';
+								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length2-250">';
 								result  = result + '                   </div>';
 								}else{
 									result  = result + '                   <div class="col-md-12">';

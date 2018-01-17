@@ -80,7 +80,7 @@ public class DataMigrationCommonRestController {
 		List<SourceleadFormFields> formFields = null;
 		
 		switch(dataMigrationCommonDTO.getUploadType()){  
-	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;  
+	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;
 	    //case "timesheetUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(1l, 1);break;  
 	    }
 		

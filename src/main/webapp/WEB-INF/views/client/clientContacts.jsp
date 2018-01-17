@@ -74,7 +74,6 @@ function clientContacts(orgRelationID,clientLocationId){
  					$("#clientMsgDiv").append(opt);
  				} */
 	      
-    		if(json.data.length != null && json.data.length != ''){
     			$("#clientContactList").empty();
 				var result = "";
 				result = result +"<table id='clientContactsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -215,23 +214,8 @@ function clientContacts(orgRelationID,clientLocationId){
 			    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 			    result = result + '</div>';
 			    $("#clientContactList").append(result); 
-	    	    contactPagination();
 	    	    clientMsgFadein();
-    		}else{
-    			 var result ="";
-	    	     result = result+"   <div class='row'>"; 
-				 result = result+"	<div class='col-lg-12'>"; 
-				 result = result+"		<div class='content-area clearfix'>"; 
-				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				 result = result+"			        <p>No Contacts Found</p>";
-				 result = result+"			 </div>";
-				 result = result+"		</div>"; 
-				 result = result+"	</div>"; 
-				 result = result+"  </div> "; 
-				$("#clientContactList").empty();
-			    $("#clientContactList").append(result); 
-       		 }
+ 				contactPagination();
     		$("#tab-4").empty();  
     		$("#tab-2-addContact").empty();  
     	    $("#tab-2-addContact").append(res);

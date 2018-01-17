@@ -436,7 +436,7 @@ function getCustomDates(){
 			"trendLines": [],
 			"graphs": [
 				{
-					"balloonText": "[[value]]%",
+					"balloonText": "",
 					"colorField": "color",
 					"fillAlphas": 1,
 					"id": "AmGraph-1",

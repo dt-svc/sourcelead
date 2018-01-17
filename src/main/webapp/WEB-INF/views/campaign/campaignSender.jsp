@@ -6,6 +6,14 @@
     
     	var tokenParamName = "${_csrf.parameterName}";
     var tokenValue = "${_csrf.token}";
+    var senderId =  "${sender.id}";
+    if(senderId !=null && senderId != '' && senderId != 'undefined'){
+    	$("#editSender").show();
+    	$("#addSender").hide();
+    }else{
+    	$("#editSender").hide();
+    	$("#addSender").show();
+    }
  </script>
 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
@@ -15,7 +23,8 @@
      </div>
 		<form:form id="capn_add_sender" name="capn_add_sender" method="post">
 		<div class="popupHead">
-			<h2>Add Sender</h2><a onclick="senderClose();" href="javascript:void(0)" class="fa fa-close"></a>
+			<h2 id="addSender">Add Sender</h2><a onclick="senderClose();"  href="javascript:void(0)" class="fa fa-close"></a>
+			<h2 id="editSender">Edit Sender</h2><a onclick="senderClose();"  href="javascript:void(0)" class="fa fa-close"></a>
 		</div>
 		<div id="loading"></div>
 		<div class="popupMid clearfix">

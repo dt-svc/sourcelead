@@ -223,8 +223,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
-		String table =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
-		
+		String str =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
+		String table = str.replace("\"","\'");
 		JobListEmailCampaignDTO jobListEmailCampaignDTO = new JobListEmailCampaignDTO();
 		 jobListEmailCampaignDTO.setSenderIdentity(hotListEmailCampaignDTO.getSenderIdentity());
 		 jobListEmailCampaignDTO.setSubject(hotListEmailCampaignDTO.getSubject());
@@ -736,7 +736,8 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 }
 			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
-			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+			 String str =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+			 String table = str.replace("\"","\'");
 			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table,otherReciListId);
 			 if (createCampaignRes != null) {
 					JSONObject jObject = new JSONObject(createCampaignRes);
@@ -886,11 +887,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "<table width='650px'style='border-spacing:0; font-family:sans-serif; font-size: 14px; padding:20px 0; line-height: 22px; margin:0px;'>";
 		tempHTML = tempHTML +  "<tbody>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +   "<td align='left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
+		tempHTML = tempHTML +   "<td align='left' class='text-left'>"+jobListEmailCampaignDTO.getSaluation()+",<br>";
 		tempHTML = tempHTML +     " <br></td>";
 		tempHTML = tempHTML +   " </tr>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +    " <td align='left'><p>"+jobListEmailCampaignDTO.getBodytext()+"</p></td>";
+		tempHTML = tempHTML +    " <td align='left'  class='text-left'><p class='text-left'>"+jobListEmailCampaignDTO.getBodytext()+"</p></td>";
 		tempHTML = tempHTML +   "  </tr>";
 		tempHTML = tempHTML +    "</tbody>";
 		tempHTML = tempHTML + "</table>";

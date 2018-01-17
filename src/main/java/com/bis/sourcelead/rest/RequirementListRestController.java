@@ -1690,6 +1690,30 @@ public class RequirementListRestController {
 			} 
 		}
 			
+		//visa type
+				if(StringUtils.isNotEmpty(search.getVisaType())){
+					ArrayList<String> immigrationTypeArray = getSearchKeywordsFromChosenSelectField(search.getVisaType());
+					if(immigrationTypeArray != null && !immigrationTypeArray.isEmpty()){
+						BoolQueryBuilder immigrationTypeBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : immigrationTypeArray){
+							immigrationTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("visaTypes", keywd));
+						}
+						boolQueryBuilder.must(immigrationTypeBoolQueryBuilder);
+					} 
+				}
+				
+				//Skills
+				if(StringUtils.isNotEmpty(search.getRequirementSkills())){
+					ArrayList<String> skillsArray = getSearchKeywordsFromChosenSelectField(search.getRequirementSkills());
+					if(skillsArray != null && !skillsArray.isEmpty()){
+						BoolQueryBuilder skillsBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : skillsArray){
+							skillsBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("skills", keywd));
+						}
+						boolQueryBuilder.must(skillsBoolQueryBuilder);
+					} 
+				}
+				
 	    //requirementStatus
 		if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 			String status = "";
@@ -1713,6 +1737,53 @@ public class RequirementListRestController {
 			} 
 		}
 			
+
+		  //requirementPriority
+				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+					String priority = "";
+					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
+						priority = search.getRequirementStatus();
+					}
+					else{
+						priority = search.getFilterPriority();
+					}
+					ArrayList<String> requirementPriorityArray = getSearchKeywordsFromChosenSelectField(priority);
+					if(requirementPriorityArray != null && !requirementPriorityArray.isEmpty()){
+						BoolQueryBuilder reqPriorityBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : requirementPriorityArray){
+							reqPriorityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("priority", keywd));
+						}
+						
+						boolQueryBuilder.must(reqPriorityBoolQueryBuilder);
+						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+							boolQueryBuilderForCount.must(reqPriorityBoolQueryBuilder);
+						}
+					} 
+				}
+				
+				//requirementPriority
+				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+					String jobType = "";
+					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
+						jobType = search.getRequirementStatus();
+					}
+					else{
+						jobType = search.getFilterJobType();
+					}
+					ArrayList<String> requirementJobTypeyArray = getSearchKeywordsFromChosenSelectField(jobType);
+					if(requirementJobTypeyArray != null && !requirementJobTypeyArray.isEmpty()){
+						BoolQueryBuilder reqJobTypeBoolQueryBuilder = new BoolQueryBuilder();
+						for(String keywd : requirementJobTypeyArray){
+							reqJobTypeBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("jobType", keywd));
+						}
+						
+						boolQueryBuilder.must(reqJobTypeBoolQueryBuilder);
+						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
+						}
+					} 
+				}
+				
 			
 		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
 			String updatedOn = search.getUpdatedOn();

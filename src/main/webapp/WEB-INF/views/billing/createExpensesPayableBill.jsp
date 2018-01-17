@@ -68,6 +68,7 @@ function checkBox(){
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
        <div id="invoiceLoading"></div>
+       <div id="expenseAlertPopUp"></div>
        <form:form id="project_payable_invoice_form"  name="project_payable_invoice_form" method="post"  enctype='multipart/form-data'> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -1558,7 +1559,7 @@ function getExpensesDetails(expId){
 function populateExpensesEntriesGrid(data){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
-           var subTotal = '0';
+           var subTotal = 0;
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
@@ -1574,7 +1575,7 @@ function populateExpensesEntriesGrid(data){
             if(data !=null && data !=''){
             	 for(var i=0;i < data.length;i++){
                  	  var opt = data[i];
-                 	  subTotal = opt.amount;
+                 	  subTotal += opt.amount;
                  	  result = result +'   <tr>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">'+(i+1)+'</div>';
@@ -1613,6 +1614,8 @@ function populateExpensesEntriesGrid(data){
          		      result = result +' </tr>';
          		      
                  }	
+            }else{
+            	alertMessageInExpense();
             }
            
             
@@ -1635,6 +1638,29 @@ function populateExpensesEntriesGrid(data){
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
+}
+</script>
+
+<script type="text/javascript">
+function alertMessageInExpense(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>No Members Found</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelPayableAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPayableAlert();'></b>";
+	result = result +"	</div>";
+	$("#expenseAlertPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelPayableAlert(){
+	$("#expenseAlertPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -1832,6 +1858,33 @@ function editExpensesDetailsEdit(data){
 function attachFile(id){
 	fileUpload(""+id+"invoicedocFile", "invoiceDocuments", "project_payable_invoice_form","fileInfo");
 }
+</script>
+
+<script>
+function maskme(){
+
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hhh:Mm"); 
+	
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+}
+</script>
+
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
 </script>
 
 <script>

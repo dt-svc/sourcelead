@@ -365,7 +365,6 @@ function getExpensesDetails(expId){
 function populateExpensesDetailsGrid(data){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
-           var subTotal = '0';
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
@@ -383,7 +382,7 @@ function populateExpensesDetailsGrid(data){
             	 for(var i=0;i < data.length;i++){
                  	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
-                 	 var  subTotal = subTotal + opt.amount;
+                 	  subTotal += opt.amount;
                  	  result = result +'   <tr>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">'+i+'</div>';

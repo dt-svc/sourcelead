@@ -126,6 +126,7 @@ public class CampaignController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("joblistMail");
+ 			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
 			 model.addObject("contactsGroupList", contactsGroupList);

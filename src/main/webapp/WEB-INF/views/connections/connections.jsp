@@ -26,7 +26,7 @@ window.onload = function () {
 <div class="success_pop" id="selector4" style="display: none;">
 	<i class="fa fa-check-circle"></i><span id="inviteMessage"></span>
 </div>
-
+<div id="loading"></div>
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
@@ -40,20 +40,19 @@ window.onload = function () {
 <input type="hidden" id="noOrgsList" name="noOrgsList"/>
  <input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
 	<div class="conneWrapHead clearfix">
-		<ul class="clearfix">
+		<ul class="clearfix connection-count">
 			<li class="current"><a href="#" onclick="getConnectionListOnClick()">Find</a></li>
-			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected</a></li>
-			<li><a href="${appPath}/loadSentConnections">Sent</a></li>
-			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
+			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected <i id="connectedCountVal"></i></a></li>
+			<li><a href="${appPath}/loadSentConnections">Sent<i id="sentCountVal"></i></a></li>
+			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received<i id="receivedCountVal"></i></a></li>
 		</ul>
-		<span><input class="immigraTabSerach" id="searchFindConnId" type="text"></span>
+		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Org" type="text"></span>
 	</div>
 	<div class="conHeadgap"></div>
 	
 	<h5 class="connHeadText">People You May Know</h5>
 	<div class="conneWrapInn clearfix" id="mutualConnList"></div>
 	
-	<h5 class="connHeadText">Others</h5>
 	<div class="conneWrapInn clearfix" id="findConnectionListId">
 	</div>
 	<div id="loadMoreDiv"></div> 
@@ -66,13 +65,11 @@ $(document).scroll(function(e){
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
     offset = $("#orgOffset").val();
-    /* var UsersCount = $("#totalUsersCount").val();  */
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
-    	//searchUser("scroll");
     	 getConnectionsList("scroll");
     }
     
@@ -88,13 +85,16 @@ $("#searchFindConnId").keydown(function(e) {
 });
 	function getConnectionListOnClick(){
 		getConnectionsList('manual')
-		/* $('#findConnectionListId').empty(); */
 	}
 	var count = 0;
 	var userName = null;
-	function getConnectionsList(type){
-		$.post("check-session", {}, function(data) {
-			if(data === "YES") {
+	
+function getConnectionsList(type){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
+		var sentCount = 0;
+		var receivedCount = 0;
+		var connectedCount = 0;
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type === "scroll"){
@@ -105,13 +105,15 @@ $("#searchFindConnId").keydown(function(e) {
 			$("#findConnectionListId").empty();
     		$("#orgOffset").val(0);
    		    offset = 0;
-    	} 
+    	}
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "POST",
 			url : sourceleadUrl+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
             success: function(json) {
 	        var result = "";
 	        var mutualResult = "";
+	        
 	        if(json !=null && json.length>0){
 	        	count++;
 	        }
@@ -119,14 +121,28 @@ $("#searchFindConnId").keydown(function(e) {
 	   		{
 	    		 $('#loadMoreDiv').empty();
 	 			for(var i=0; i<json.length; i++){
+	 				
 	 				var user = json[i];
+	 				if(user.sentCount != null){
+	 					localStorage.setItem("sentCount", user.sentCount);
+	 				}
+	 				if(user.receivedCount != null){
+	 		        	localStorage.setItem("receivedCount", user.receivedCount);
+	 				}
+	 				if(user.connectedCount != null){
+	 		        	localStorage.setItem("connectedCount", user.connectedCount);
+	 				}
 	 				var state = null;
 	 				if(user.userState == 'Request_sent'){
 	 					state = '<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a>';
+	 					sentCount++;
 	 				}else if(user.userState == 'Request_received'){
+	 					receivedCount++;
 	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
 	 				}else if(user.userState == 'connected'){
-	 					state = '<a href="javascript:void(0)" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a>';
+	 					connectedCount++;
+	 					continue;
+	 					/* state = '<a href="javascript:void(0)" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a>'; */
 	 				}else{
 	 					state = '<a href="javascript:void(0)" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Connect</a>';
 	 				}
@@ -155,6 +171,8 @@ $("#searchFindConnId").keydown(function(e) {
 	   		    }
 	 			if(mutualResult !== ""){
  					$("#mutualConnList").append(mutualResult);
+ 				}else{
+ 					/* $("#mutualConnList").hide(); */
  				}
 	 			if(result !== ""){
         			$("#findConnectionListId").append(result);
@@ -168,6 +186,10 @@ $("#searchFindConnId").keydown(function(e) {
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
+	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
+	        $("#loading").removeAttr("style"); 
 			 },
 	        error: function(e){
 	        }
@@ -176,7 +198,7 @@ $("#searchFindConnId").keydown(function(e) {
 		location.href='/login';
 	}
 	});
-	}
+}
 </script>	
 
 
@@ -192,15 +214,24 @@ function eduMsgFadeinFunction(message) {
 function getConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/addNewConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
+	    			var sentCount = parseInt(localStorage.getItem("sentCount"));
+	    			sentCount = sentCount+1;
+	    			localStorage.setItem("sentCount", sentCount);
+	    			$("#loading").removeAttr("style");
+	    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount")); 
 	    			$("#connectionState"+userCode).empty();
 	    			$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>');
 	            	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
+	            	
             },
          error: function(e){
 	        }
@@ -215,15 +246,24 @@ function getConnection(userCode,userName){
 function getWithdrawConnections(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=withdraw",
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
+	    			$("#loading").removeAttr("style");
+	    			var sentCount =  parseInt(localStorage.getItem("sentCount"));
+	    			sentCount = sentCount-1;
+	    			localStorage.setItem("sentCount", sentCount);
+	    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 	    			$("#connectionState"+userCode).empty();
 	            	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	            	eduMsgFadeinFunction(userName+"'\s invitation withdrawn ");
+	            	
          },
          error: function(e){
 	        }
@@ -238,13 +278,20 @@ function getWithdrawConnections(userCode,userName){
 function ignoreConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
          	success: function(json) {
-         		alert("ignored")
 	        	$("#selector4").removeAttr("style");
 	 			$("#selector4").css({ display: "block" });
+	 			$("#loading").removeAttr("style");
+	 			var receivedCount =  parseInt(localStorage.getItem("receivedCount"));
+    			receivedCount = receivedCount-1;
+    			localStorage.setItem("receivedCount", receivedCount);
+    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 	 			$("#connectionState"+userCode).empty();
 	         	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	         	eduMsgFadeinFunction(userName+"'\s invitation removed");
@@ -261,14 +308,25 @@ function ignoreConnection(userCode,userName){
 function acceptConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
-        success: function(json) {
+       		success: function(json) {
 	        	$("#selector4").removeAttr("style");
 				$("#selector4").css({ display: "block" });
+				$("#loading").removeAttr("style");
+				var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
+    			connectedCount = connectedCount+1;
+    			localStorage.setItem("connectedCount", connectedCount);
+    			var receivedCount =  parseInt(localStorage.getItem("receivedCount"));
+    			receivedCount = receivedCount-1;
+    			localStorage.setItem("receivedCount", receivedCount);
+    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 				$("#connectionState"+userCode).empty();
-	        	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getDisconnectConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink red">Disconnect</a>');
+	        	$("#connectionState"+userCode).append('<b class="connlink gray">Connected</b>');
 	        	eduMsgFadeinFunction("You're connected with "+userName);
      },
      error: function(e){
@@ -284,18 +342,25 @@ function acceptConnection(userCode,userName){
 function getDisconnectConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
+	    			$("#loading").removeAttr("style");
+	    			var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
+	    			connectedCount = connectedCount-1;
+	    			localStorage.setItem("connectedCount", connectedCount);
+	    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
 	    			$("#connectionState"+userCode).empty();
 	            	$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getConnection(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink">Connect</a>');
 	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
          error: function(e){
-				location.href='/login';
 	        }
 	 });  
     }
