@@ -204,7 +204,7 @@ public class MailBoxController {
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("hotlistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
- 			
+ 			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
 			 model.addObject("contactsGroupList", contactsGroupList);
  			return model;

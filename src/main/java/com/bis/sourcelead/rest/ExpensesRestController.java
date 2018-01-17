@@ -563,7 +563,12 @@ public class ExpensesRestController {
 	{
 		ExpensesDTO expensesDTO = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(elDTO.getExpenseLocationCode());
-		Expenses expenses = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(), orgLocations.getId());
+		// Expenses expenses = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(), orgLocations.getId());
+		Expenses expen = expensesService.getExpenseById(Long.parseLong(elDTO.getExpenseId()));
+		 Expenses expenses= null;
+		 if(expen !=null){
+			 expenses = expensesService.getExpenseByExpenseUniqueId(expen.getExpenseId(), orgLocations.getId());
+		 }
 		//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 		if (expenses != null) {
 			expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);

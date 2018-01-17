@@ -16,7 +16,6 @@
 		       <div class="pull-left"><h2>Timesheet approval</h2></div>
 		            <div class="pull-right brud-crum"><a href="">Home</a> » Timesheet approval</div>
 		       <div class="clearfix"></div>
-		       <%-- <span><a href="<c:url value='${appPath}/uploadTimesheet'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></span> --%>
 		   </section>
 		    <div  id="loadTimeHead"></div>
 		   <div id="timesheetApprovalDiv" class="datatable_filter">
