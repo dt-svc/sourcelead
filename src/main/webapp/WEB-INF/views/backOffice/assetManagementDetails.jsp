@@ -270,7 +270,7 @@ function editAssetManagement(assetId){
 			result = result + '<div class="form-horizontal clearfix">';
 			
 			result = result + '<div class="col-md-6">';
-			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.sno+'" field-name="Serial Number/ Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200" placeholder="Serial Number/ Port Number *">';
+			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200" placeholder="Serial / Port Number *">';
 			result = result + '</div>';
 			
 			result = result + '<div class="assetaddpop-ul col-md-6" id="workingStatusDiv">';

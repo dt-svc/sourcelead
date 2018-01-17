@@ -58,8 +58,8 @@ $(document).ready(function(){
               
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
-           <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-         <!-- Add Asset Popup -->
+<%--            <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+ --%>         <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
@@ -87,7 +87,7 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number/ Port Number *" field-name="Serial Number/ Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial / Port Number *" field-name="Serial / Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200">
                   </div>
                   <div class="col-md-6" id="makeDiv">
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
@@ -333,7 +333,7 @@ var validationSettings = {
 	   	        	var result = "";
 	   	        	result = result +'<thead>';
 	   	        	result = result +'<tr>';
-	   	        	result = result +'	<th>S.No</th>';
+	   	        	result = result +'	<th>Serial / Port Number</th>';
 	   	        	result = result +'  <th>Category</th>';
 	   	        	result = result +'  <th>Model</th>';
 	   	        	result = result +'  <th>Shift-A</th>';
