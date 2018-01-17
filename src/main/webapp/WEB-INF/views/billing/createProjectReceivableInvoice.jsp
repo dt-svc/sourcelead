@@ -412,7 +412,7 @@ function populateInlineItemsGrid(data){
             result = result +' <tr>';
             result = result +' <th>Date</th>';
             result = result +' <th>Associate</th>';
-            result = result +' <th>Description</th>;'
+            result = result +' <th>Description</th>';
             result = result +' <th>SOW / PO</th>';
             result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
@@ -428,7 +428,7 @@ function populateInlineItemsGrid(data){
              result = result +'<div class="inputCustom">';
              result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="lineItems['+i+'].invoiceStartDate" placeholder="Start Date" value='+opt.startDate+' type="text" readonly>';
              result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="lineItems['+i+'].invoiceEndDate" placeholder="End Date" value='+opt.endDate+' type="text" readonly>';
-             result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="lineItems['+i+'].submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
+             result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="lineItems['+i+'].submissionApproverHierarchyId" name="lineItems['+i+'].submissionApproverHierarchyId">';
              result = result +'</div>';
              result = result +' </td>';
              result = result +'<td>';
