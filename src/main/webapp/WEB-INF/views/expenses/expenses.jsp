@@ -14,6 +14,7 @@
 				$("#expensesListDiv").empty();
 	       		$("#expensesListDiv").append(localStorage.getItem("myExpensesListGrid"));
 	       		/* localStorage.removeItem("myExpensesListGrid"); */
+	       		expensesPagination();
 	       		localStorage.setItem("myExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
 	       		if("draft" == $("#countType").val()){
