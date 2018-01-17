@@ -87,7 +87,7 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required validate_Space validate_length length2-200">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial / Port Number *" field-name="Serial / Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200">
                   </div>
                   <div class="col-md-6" id="makeDiv">
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
@@ -110,7 +110,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   <div class="col-md-4 mb10" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="MotherBoard" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">
@@ -333,7 +333,7 @@ var validationSettings = {
 	   	        	var result = "";
 	   	        	result = result +'<thead>';
 	   	        	result = result +'<tr>';
-	   	        	result = result +'	<th>S.No</th>';
+	   	        	result = result +'	<th>Serial / Port Number</th>';
 	   	        	result = result +'  <th>Category</th>';
 	   	        	result = result +'  <th>Model</th>';
 	   	        	result = result +'  <th>Shift-A</th>';
@@ -504,10 +504,7 @@ function removeAssetManagement(assetId){
    <script>
   function assetCategory(category){
 	  var selectedCategory = category.value;
-	  if(selectedCategory){
-		  var  assestCategory = selectedCategory.split(",");
-		
-		   if(assestCategory[0] == 'Desktop'){
+	    if(selectedCategory == '2'){
 			  document.getElementById("monitor").style.display="";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memory").style.display="";
@@ -516,7 +513,7 @@ function removeAssetManagement(assetId){
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  
-		  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
+		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
 			  document.getElementById("monitor").style.display="none";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memory").style.display="";
@@ -540,7 +537,6 @@ function removeAssetManagement(assetId){
 			  $("#harddisk").val('');
 			 
 		  } 
-	  }
   }
   </script>
   
