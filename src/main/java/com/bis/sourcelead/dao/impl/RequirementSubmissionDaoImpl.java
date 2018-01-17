@@ -461,9 +461,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String subQuery = "";
     		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
     			if(dateRange != null && "today".equals(dateRange)){
-    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}else if(dateRange != null && "previous".equals(dateRange)){
-    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and rsh.submissionId.requirement IS NOT NULL and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
     			}
     			params.put("orgLocationsId",orgLocationsId);
     			params.put("startDate",startUTCDate);
@@ -494,10 +494,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         	List<Long> reqSubmsCount = null;
         	String query = "";
         	if(dateRange != null && "today".equals(dateRange)){
-                query ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+                query ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
                  reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
      		}else if(dateRange != null && "previous".equals(dateRange)){
-     			query ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate";
+     			query ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate < :startDate";
      			 reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
      		}
         	
@@ -2586,10 +2586,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		        	List<RequirementSubmissionHistory> reqSubmsHistoryList = null;
 		        	String query = "";
 		        	if(dateRange != null && "today".equals(dateRange)){
-		                query =" from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+		                query =" from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
 		                reqSubmsHistoryList =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
 		     		}else if(dateRange != null && "previous".equals(dateRange)){
-		     			query =" from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate";
+		     			query =" from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate < :startDate";
 		     			reqSubmsHistoryList =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 		     		}
 		        	

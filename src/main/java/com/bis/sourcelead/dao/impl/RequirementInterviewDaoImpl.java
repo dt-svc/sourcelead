@@ -254,6 +254,39 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		return interview;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Date> getInterviewDatesForCalendarEvent(Long userId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " select interview.startTime from RequirementInterview interview where "
+				+ " interview.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id = :userId) "
+				+ " and interview.submissionId.orgLocations.id = :orgLocationId " ;
+		List<Date> interviewDates =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+		return interviewDates;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Date> getInterviewDatesForInterviewrsInterviewSlots(List<Long> interivewerIds, Long orgLocationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " select interview.startTime from RequirementInterview interview where "
+				+ " interview.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id IN (:interivewerIds) ) "
+				+ " and interview.submissionId.orgLocations.id = :orgLocationId " ;
+		List<Date> interviewDates =session.createQuery(query).setParameterList("interivewerIds", interivewerIds).setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+		return interviewDates;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Date> getInterviewDatesForCandidateInterviewSlots(List<Long> applicantSubmissionIds) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " select interview.startTime from RequirementInterview interview where interview.submissionId.id IN (:applicantSubmissionIds) " ;
+		List<Date> interviewDates =session.createQuery(query).setParameterList("applicantSubmissionIds", applicantSubmissionIds).setCacheable(true).list(); 
+		return interviewDates;
+	}
+
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {

@@ -501,8 +501,8 @@ public class TimeSheetPdfUtil {
 		        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
-		        sbPipeHearder.append(orgLocations.getOrgLocationName()).append(" ").append("TimeSheet");
-	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).append(" TimeSheet").toString(),boldFont);
+		        sbPipeHearder.append(orgLocations.getOrgLocationName());/*.append(" ").append("TimeSheet")*/
+	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).toString(),boldFont);/*.append(" TimeSheet")*/
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            para.add("\n\n");
 	            document.add(para);

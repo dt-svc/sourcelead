@@ -11,7 +11,7 @@
   </div>
   <div class="pull-right brud-crum">Home &raquo; Jobs &raquo; Jobs Import</div>
 </section> -->
-<div class="content-area content-new clearfix" id="importFieldsDiv">
+<div class="content-area content-new clearfix" id="dataFieldsDiv">
 
 	<div class="col-xs-12 col-md-12 col-lg-12 mt">
 		<div class="well">
@@ -62,11 +62,16 @@
 			</c:if>
 			<c:if test="${!empty timesheetMode}">
 				<jsp:include page="dataImportTimeSheetFormFields.jsp"></jsp:include>
+			</c:if>  
+			<c:if test="${uploadType eq 'assetUpload'}">
+			<jsp:include page="dataImportAssetFormFields.jsp"/>
 			</c:if>
+			
 			
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">
 				<input type="hidden"  readonly id="headerPosition" name="headerPosition" value="${headerPosition}">
+				<input type="hidden"  readonly id="timesheetMode" name="timesheetMode" value="${timesheetMode}">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>
@@ -86,10 +91,10 @@
 				url : sourceleadUrl + "/getDataByMatchedFields?"
 						+ tokenParamName + "=" + tokenValue,
 				success : function(data) {
-					$("#jobFileImportDiv").attr("style","display:none");
-			    	$('#jobFieldsDiv').removeAttr("style");
-			    	$('#jobFieldsDiv').empty();
-			    	$('#jobFieldsDiv').append(data);
+					$("#dataFileImportDiv").attr("style","display:none");
+			    	$('#dataFieldsDiv').removeAttr("style");
+			    	$('#dataFieldsDiv').empty();
+			    	$('#dataFieldsDiv').append(data);
 				}
 			});
 		}

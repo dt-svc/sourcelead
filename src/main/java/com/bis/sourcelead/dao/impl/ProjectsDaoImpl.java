@@ -577,14 +577,25 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.projectStatus like '%" + projectsDTO.getSearchValue() + "%' ")
 				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue() + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue() + "' ) ")
 				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
 				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue() + "%' ");
 		 
-			    if(sqlDate != null) {
-			    	query1.append("OR ps.startDate like '%" + sqlDate + "%' OR ps.endDate like '%" + sqlDate + "%' ");
-				}
+			 if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-progress") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in progress") 
+					 || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("inprogress")) {
+				 query1.append("OR ps.projectStatus like '%INPROGRESS%' ");
+			 }else if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on-hold") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on hold") 
+					 || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("onhold")) {
+				 query1.append("OR ps.projectStatus like '%ONHOLD%' ");
+			 }else if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("not started") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("notstarted")) {
+				 query1.append("OR ps.projectStatus like '%NOTSTARTED%' ");
+			 }else {
+				 query1.append("OR ps.projectStatus like '%" + Project_Status.getNameByValue(projectsDTO.getSearchValue()) + "%' ");
+			 }
+			 
+		     if(sqlDate != null) {
+		    	query1.append("OR ps.startDate like '%" + sqlDate + "%' OR ps.endDate like '%" + sqlDate + "%' ");
+			 }
 			
 					
 		}

@@ -188,16 +188,13 @@ public class CampaignRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCampaignRecipientList")
-	public @ResponseBody List<CampaignListDTO> getCampaignRecipientList(CampaignListDTO campaignListDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "user", required = false) Long userId, HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<CampaignListDTO> getCampaignRecipientList(CampaignListDTO campaignListDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "user", required = false) Long userId, HttpServletRequest request) throws Exception
 	{
 		List<CampaignListDTO> campaignList = null;
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.valueOf(orgLocationId));
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user, orgLocation, campaignListDTO);
-		if (cpnDtoList.getData() != null) {
-			campaignList = cpnDtoList.getData();
-		}
-		return campaignList;
+		return cpnDtoList;
 	}
 	
 	
