@@ -1725,6 +1725,7 @@ function hideCommonSOWFields(){
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
+	              	  refreshClientList(json[json.length-1].orgRelationId);
 	              }else{
 	            	  var result = "";
 	            	  result = result + '<option value="">Select Applicant</option>';
@@ -2087,6 +2088,7 @@ function refreshVendorList(){
 	        	$("#orgRelationId").empty();
 		        $("#orgRelationId").append(output);
 		        $('#orgRelationId').trigger("chosen:updated");
+		        getVendorContacts();
 	        }
 		 });
 } 
@@ -2114,6 +2116,7 @@ function refreshClientList(){
 	        	$("#clientOrgRelationId").empty();
 		        $("#clientOrgRelationId").append(output);
 		        $('#clientOrgRelationId').trigger("chosen:updated");
+		        getClientContacts();
 	        }
 		 });
 		 
