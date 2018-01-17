@@ -102,7 +102,9 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					+ " where connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus ";
 		}
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.getNameByValue(connectionStatus).toString()).setCacheable(true).list();
+			int countValue = 0;
 			if(connectionsList != null && connectionsList.size() > 0) {
+				
 				for(Connections connections : connectionsList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
@@ -140,12 +142,19 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						}else {
 							userOrgName = userRole.getOrgLocations().getOrgLocationName();
 						}
+						countValue++;
 						userRoleDTO.setOrgName(userOrgName);
 						userRoleDTO.setUserId(userRole.getUser().getId());
 						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
 						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
 						userRoleDTOList.add(userRoleDTO);
 					}
+					if(status.equals("sent")) {
+						userRoleDTOList.get(0).setSentCount(countValue);
+					}else {
+						userRoleDTOList.get(0).setReceivedCount(countValue);
+					}
+					
 				}
 				if(userRoleDTOList.size() >= offset){
 					if(userRoleDTOList.size() > offset + 18){
@@ -210,6 +219,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					+ " where (connections.toUser.id =:userId or connections.fromUser.id =:userId1) and connections.connectionStatus = :connectionStatus ";
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", id).setLong("userId1", id).setString("connectionStatus", ConnectionStatus.getNameByValue(status).toString()).setCacheable(true).list();
 			if(connectionsList != null && connectionsList.size() > 0) {
+				int countValue = 0;
 				for(Connections connections : connectionsList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
@@ -249,12 +259,14 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						}else {
 							userOrgName = userRole.getOrgLocations().getOrgLocationName();
 						}
+						countValue++;
 						userRoleDTO.setOrgName(userOrgName);
 						userRoleDTO.setUserId(userRole.getUser().getId());
 						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
 						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
 						userRoleDTOList.add(userRoleDTO);
 					}
+					userRoleDTOList.get(0).setConnectedCount(countValue);
 				}
 				if(userRoleDTOList.size() >= offset){
 					if(userRoleDTOList.size() > offset + 18){

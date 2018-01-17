@@ -10,6 +10,8 @@ public interface AssetCategoryDao {
 	AssetCategory addAssetCategory(AssetCategory assetCategory) throws Exception;
 	
 	List<AssetCategory> getAssetCategoryListByLocationId(Long orgLocationId) throws Exception;
+	
+	AssetCategory getAssetCategoryListByLocationIdAndName(Long orgLocationId, String name) throws Exception;
 
 	AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId);
 

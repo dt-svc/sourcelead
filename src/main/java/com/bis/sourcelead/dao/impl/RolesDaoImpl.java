@@ -134,7 +134,7 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Roles> roles = new ArrayList<Roles>();
 		logger.debug("Roles start");
-		roles = session.createQuery("from Roles role where role.id = :id" ).setLong( "id", id ).setCacheable(true).list();
+		roles = session.createQuery("from Roles role left join fetch role.roleHierarchy where role.id = :id" ).setLong( "id", id ).setCacheable(true).list();
 		logger.debug("Roles end");
 		if (roles.size() > 0) {
 			return roles.get(0);
