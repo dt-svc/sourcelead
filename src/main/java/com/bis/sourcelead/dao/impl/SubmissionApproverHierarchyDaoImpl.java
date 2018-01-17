@@ -1969,12 +1969,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			for(SubmissionApproverHierarchy subSah : sahList){
 				if(Constants.PAYABLES.equalsIgnoreCase(invoiceType)){
 					subSah.setBillingStatus(status);
-					subSah.setBillId(invoice);
-					subSah.setBillDate(invoice.getInvoiceDate());
+//					subSah.setBillId(invoice);
+//					subSah.setBillDate(invoice.getInvoiceDate());
 				}else{
 					subSah.setInvoiceStatus(status);
-					subSah.setInvoiceId(invoice);
-					subSah.setInvoiceDate(invoice.getInvoiceDate());
+//					subSah.setInvoiceId(invoice);
+//					subSah.setInvoiceDate(invoice.getInvoiceDate());
 				}
 			}
 			saveAllSubmissionApproverHierarchy(sahList);
