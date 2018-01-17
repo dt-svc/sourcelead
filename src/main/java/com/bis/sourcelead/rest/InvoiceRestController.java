@@ -270,7 +270,7 @@ public class InvoiceRestController {
 		
 		if(null !=invoice){
 			if(null != invoice.getProjectID()){
-				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency(),invoiceType);
+				invoiceService.updateSubmissionApproverHiearachy(invoice,invoiceType);
 			}
 			invoiceSaved = "success";
 		}
@@ -1713,8 +1713,7 @@ public class InvoiceRestController {
 		}
 		if (null != invoice) {
 			if (null != invoice.getProjectID()) {
-				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),
-						invoice.getInvoiceFrequency(), invoiceType);
+				invoiceService.updateSubmissionApproverHiearachy(invoice, invoiceType);
 			}
 			invoiceSaved = "success";
 		}

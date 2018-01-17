@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -184,7 +185,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 globalVarsMap.put("reason",reason);
 				 
 				 if(clientProjectMember.getProjectMemberCandidteId() !=null && !"".equalsIgnoreCase(clientProjectMember.getProjectMemberCandidteId().getFullName())){
-					 StringBuilder builder=new StringBuilder();
+					 StringBuilder invoice=new StringBuilder();
 					 globalVarsMap.put("employeeName",clientProjectMember.getProjectMemberCandidteId().getFullName());
 				 }
 				 globalVarsMap.put("projectName", clientProjectMember.getProjects().getProjectName());
@@ -496,8 +497,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 
 	@Override
-	public void updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long submissionHierarchyId,String invoiceType,String status) throws Exception {
-		 submissionApproverHierarchyDao.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(submissionHierarchyId,invoiceType,status);
+	public void updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long submissionHierarchyId,String invoiceType,String status,Invoice invoice) throws Exception {
+		 submissionApproverHierarchyDao.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(submissionHierarchyId,invoiceType,status,invoice);
 	}
 
 	@Override

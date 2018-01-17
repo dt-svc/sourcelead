@@ -64,6 +64,23 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Column(name = "BILLING_STATUS")
     private String billingStatus;
 	
+	@Column(name = "INVOICE_DATE")
+	private Date invoiceDate;
+	
+	@Column(name = "BILL_DATE")
+	private Date billDate;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.EAGER)
+   	@JoinColumn(name = "INVOICE_ID", nullable = false)
+	private Invoice invoiceId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.EAGER)
+   	@JoinColumn(name = "BILL_ID", nullable = false)
+	private Invoice billId;
+	
 	@Column(name = "FREQUENCY_START_DATE")
     private Date frequencyStartDate;
 	
@@ -507,6 +524,42 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	public void setBillingStatus(String billingStatus)
 	{
 		this.billingStatus = billingStatus;
+	}
+
+	public Date getInvoiceDate() {
+		return invoiceDate;
+	}
+
+	public void setInvoiceDate(Date invoiceDate) {
+		this.invoiceDate = invoiceDate;
+	}
+
+	public Date getBillDate() {
+		return billDate;
+	}
+
+	public void setBillDate(Date billDate) {
+		this.billDate = billDate;
+	}
+
+	public Invoice getInvoiceId() {
+		return invoiceId;
+	}
+
+	public void setInvoiceId(Invoice invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+
+	public Invoice getBillId() {
+		return billId;
+	}
+
+	public void setBillId(Invoice billId) {
+		this.billId = billId;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 

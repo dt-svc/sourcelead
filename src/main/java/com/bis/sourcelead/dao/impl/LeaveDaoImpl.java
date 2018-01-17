@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.bouncycastle.asn1.x509.RoleSyntax;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,9 +29,13 @@ import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RoleHierarchy;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.RoleHierarchyService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -52,6 +57,11 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Autowired
 	ProjectTasksService projectTasksService;
 
+	@Autowired
+	RoleHierarchyService roleHierarchyService;
+	
+	@Autowired
+	RolesService roleService;
 	
 	@Override
 	@Transactional
@@ -590,16 +600,17 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception
 	{
-		UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(loginUserId, locationId);
+		Roles role = roleService.getRolesById(roleId);
+		RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(role.getRoleHierarchy().getId());
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
-		if("Admin".equalsIgnoreCase(role.getUserType()))
+		if(roleHierarchy.getHierarchyLevel() == 1)
 			subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId ";
 		else
 			subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel < (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId ";
 		
 		String query = "from User user where user.id IN (select "+subQuery+" )  ";
-	    List<User> userRoleList = session.createQuery(query).setLong("roleId", role.getRoles().getId()).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).setCacheable(true).list();
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).setCacheable(true).list();
         return userRoleList;
 	}
 
