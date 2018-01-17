@@ -95,6 +95,8 @@ public class DataMigrationDTO extends CommonDTO {
 	private String fileName;
 	
 	private String projectClientID;
+	
+	private String docFile;
 
 	/*Timesheets*/
 	
@@ -775,6 +777,16 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setProjectClientID(String projectClientID)
 	{
 		this.projectClientID = projectClientID;
+	}
+
+	public String getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(String docFile)
+	{
+		this.docFile = docFile;
 	}
 
 	public String getSno() {

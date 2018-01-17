@@ -16,6 +16,7 @@
 <div class="success_pop" id="selector4" style="display: none;">
 	<i class="fa fa-check-circle"></i><span id="inviteMessage"></span>
 </div>
+<div id="loading"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
@@ -30,13 +31,13 @@
 	<input type="hidden" id="noOrgsList" name="noOrgsList"/>
  	<input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
 		<div class="conneWrapHead clearfix">
-			<ul class="clearfix">
+			<ul class="clearfix connection-count">
 				<li><a href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
 				<li class="current"><a
-					href="<c:url value='${appPath}/loadConnectedList'/>">Connected(<i id="connectedCountVal"></i>)</a></li>
-				<li><a href="${appPath}/loadSentConnections">Sent(<i id="sentCountVal"></i>)</a></li>
+					href="<c:url value='${appPath}/loadConnectedList'/>">Connected<i id="connectedCountVal"></i></a></li>
+				<li><a href="${appPath}/loadSentConnections">Sent<i id="sentCountVal"></i></a></li>
 				<li><a
-					href="<c:url value='${appPath}/loadReceivedConnections'/>">Received(<i id="receivedCountVal"></i>)</a></li>
+					href="<c:url value='${appPath}/loadReceivedConnections'/>">Received<i id="receivedCountVal"></i></a></li>
 			</ul>
 			<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
 		</div>
@@ -92,7 +93,7 @@ var count = 0;
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {
 			if(data === "YES") {
-				var connectedCount = 0;
+				
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -119,7 +120,9 @@ var count = 0;
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
-	 				connectedCount++;
+	 				if(user.connectedCount != null){
+	 					localStorage.setItem("connectedCount", user.connectedCount);
+	 				}
 		 			if(user.mutualCount != 0){
 		 				mutCountStatus = user.mutualCount + " Mutual Connections";
 		 			}else{
@@ -149,10 +152,10 @@ var count = 0;
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
-	        localStorage.setItem("connectedCount", connectedCount);
 	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
 	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
 	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
+	        $("#loading").removeAttr("style");
 			 },
 	        error: function(e){
 	        }
@@ -167,12 +170,14 @@ var count = 0;
 function getDisconnectConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
+	    			$("#loading").removeAttr("style");
 	    			var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
 	    			connectedCount = connectedCount-1;
 	    			localStorage.setItem("connectedCount", connectedCount);

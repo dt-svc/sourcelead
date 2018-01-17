@@ -565,7 +565,6 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
             if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
                 event.preventDefault();
         });
-    });
 </script>
 
 <script>
