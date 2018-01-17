@@ -111,21 +111,15 @@ window.onload = function() {
                   </div>
               </div>
             </div>
-<!--             <p class="form-control-static clearfix"><strong>Approval</strong></p> -->
+            
             <div class="form-group">
               <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
                   <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
-<%--                 	<c:forEach var="user" items="${approverList}"> --%>
-<%-- 	                	<c:if test="${user.id != SourceLeadWeb_userId}"> --%>
-<%-- 	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option> --%>
-<%-- 	                	</c:if> --%>
-<%--                 	</c:forEach> --%>
+
                   </select>
               </div>
             </div>
-              
-              
               
               
           </div>
