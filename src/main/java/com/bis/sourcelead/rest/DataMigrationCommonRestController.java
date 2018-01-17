@@ -105,10 +105,6 @@ public class DataMigrationCommonRestController {
 				formFields.add(field);
 			}
 		}
-		if("assettUpload".equalsIgnoreCase(dataMigrationCommonDTO.getUploadType())) {
-			
-		}
-		
 		
 		model.setViewName("upload/dataImport");
 		model.addObject("sourceleadUrl", sourceleadUrl);
