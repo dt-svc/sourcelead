@@ -270,7 +270,18 @@ public class SubmissionsRestController {
 		return requirement.getSubmissionTemplateJsonString();
 
 	}
+	
+	@RequestMapping(value = "/getGuestUserRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
+	public String getGuestUserRequirmentOrgSubmissionTemplate(@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
 
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+
+		return requirement.getSubmissionTemplateJsonString();
+
+	}
+
+
+	
 	@RequestMapping(value = "/getInterviewrsViewFeedbackList", method = RequestMethod.GET)
 	public String getInterviewFeedbackTemplate(@RequestParam(value = "templateId", required = false) Long templateId)
 			throws Exception {
@@ -305,6 +316,55 @@ public class SubmissionsRestController {
 		   //updating total number of applicants for requrement
 			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
 //			totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
+			if(totalApplicatsCountForRequirement > 0){
+				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
+				requirementService.updateRequirement(requirement);
+			}else{
+				requirement.setTotalApplicants(0); 
+			}
+			
+			// pass dto as parameter
+			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
+		}
+		return "success";
+
+	}
+	
+	/**
+	 * @author Pradeep
+	 * @param json
+	 * @param con
+	 * @param request
+	 * @param locationMapFileData
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveGuestAddApplicant", method = RequestMethod.POST)
+	public String saveGuestAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
+			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
+			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)
+			throws Exception {
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(jsonObj,user, orgLocations, con, loginUserRole);
+
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setFromStage("NEW");
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		Requirement requirement = requirementSubmission.getRequirement();
+		
+		if(null != requirement){
+			Integer totalApplicatsCountForRequirement = 0;
+		   //updating total number of applicants for requrement
+			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
 			if(totalApplicatsCountForRequirement > 0){
 				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
 				requirementService.updateRequirement(requirement);
