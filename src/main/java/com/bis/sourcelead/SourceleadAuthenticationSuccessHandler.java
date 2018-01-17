@@ -82,7 +82,7 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 			}
 			
 			String ipAddress = getClientIpAddr(request);
-			boolean validIp = whiteListIpAddressService.validateIPAddress(ipAddress, userRole);
+			boolean validIp = whiteListIpAddressService.validateIPAddress(ipAddress, userRole,null);
 		      if(!validIp){
 		    	  response.sendRedirect("/login?allowed=false");
 		      }else{
