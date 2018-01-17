@@ -223,8 +223,8 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
-		String table =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
-		
+		String str =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
+		String table = str.replace("\"","\'");
 		JobListEmailCampaignDTO jobListEmailCampaignDTO = new JobListEmailCampaignDTO();
 		 jobListEmailCampaignDTO.setSenderIdentity(hotListEmailCampaignDTO.getSenderIdentity());
 		 jobListEmailCampaignDTO.setSubject(hotListEmailCampaignDTO.getSubject());
@@ -736,7 +736,8 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 }
 			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
-			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+			 String str =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+			 String table = str.replace("\"","\'");
 			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table,otherReciListId);
 			 if (createCampaignRes != null) {
 					JSONObject jObject = new JSONObject(createCampaignRes);
