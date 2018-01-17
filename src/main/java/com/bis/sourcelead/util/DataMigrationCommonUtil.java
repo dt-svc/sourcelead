@@ -1292,21 +1292,21 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("shiftAEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmployee"))) {
-					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmployee"), orgLocation.getId());
+				if(!dataMigrationDTOJsonCopy.getString("shiftAEmp").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmp"))) {
+					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmp"), orgLocation.getId());
 					if(user1 == null){
-					errorSet.put("shiftAEmployee", dataMigrationDTOJsonCopy.getString("shiftAEmployee")+" is Not Exist");	
+					errorSet.put("shiftAEmp", dataMigrationDTOJsonCopy.getString("shiftAEmp")+" is Not Exist");	
 					}else{
-						dataMigrationDTOJsonCopy.put("shiftAEmployee", user1.getId().toString());	
+						dataMigrationDTOJsonCopy.put("shiftAEmp", user1.getId().toString());	
 					}
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("shiftBEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftBEmployee"))) {
-					User user2= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftBEmployee"), orgLocation.getId());
+				if(!dataMigrationDTOJsonCopy.getString("shiftBEmp").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftBEmp"))) {
+					User user2= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftBEmp"), orgLocation.getId());
 					if(user2 == null){
-						errorSet.put("shiftBEmployee", dataMigrationDTOJsonCopy.getString("shiftBEmployee")+" is Not Exist");	
+						errorSet.put("shiftBEmp", dataMigrationDTOJsonCopy.getString("shiftBEmp")+" is Not Exist");	
 					}else{
-						dataMigrationDTOJsonCopy.put("shiftBEmployee", user2.getId().toString());	
+						dataMigrationDTOJsonCopy.put("shiftBEmp", user2.getId().toString());	
 					}
 				}
 				

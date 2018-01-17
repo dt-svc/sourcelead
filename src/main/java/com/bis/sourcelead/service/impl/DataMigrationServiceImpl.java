@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.AssetsDataImportDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Asset;
@@ -256,10 +257,23 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		    
 		    	case "assetUpload": 
 		    	AssetDTO assetDTO = new AssetDTO();
+		    	AssetsDataImportDTO assetMigDTO = new AssetsDataImportDTO();
 		    	ObjectMapper mapper1 = new ObjectMapper();
 				mapper1.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 				mapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-				assetDTO = mapper1.readValue(dataMigrationDTOJsonCopy, AssetDTO.class);
+				assetMigDTO = mapper1.readValue(dataMigrationDTOJsonCopy, AssetsDataImportDTO.class);
+				assetDTO.setCategory(assetMigDTO.getCategory());
+				assetDTO.setWorkingStatus(assetMigDTO.getWorkingStatus());
+				assetDTO.setCpu(assetMigDTO.getCpu());
+				assetDTO.setSno(assetMigDTO.getSno());
+				assetDTO.setMemory(assetMigDTO.getMemory());
+				assetDTO.setModel(assetMigDTO.getModel());
+				assetDTO.setMake(assetMigDTO.getMake());
+				assetDTO.setShiftAEmp(assetMigDTO.getShiftAEmp());
+				assetDTO.setShiftBEmp(assetMigDTO.getShiftBEmp());
+				assetDTO.setDescription(assetMigDTO.getDescription());
+				assetDTO.setHarddisk(assetMigDTO.getHarddisk());
+				
 				Asset asset = assetService.saveAssetDetails(assetDTO, null, user, orgLocation);
 		    	break;
 		    
