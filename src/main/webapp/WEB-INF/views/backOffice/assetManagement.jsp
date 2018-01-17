@@ -58,8 +58,8 @@ $(document).ready(function(){
               
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
-           <%-- <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-        --%>  <!-- Add Asset Popup -->
+<%--            <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+ --%>         <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
@@ -69,7 +69,7 @@ $(document).ready(function(){
 				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
 				<option selected value="">-Select Category-</option>
 					<c:forEach var="option" items="${assetCategoriesList}">
-							<option value="${option.categoryName},${option.id}">${option.categoryName}</option>
+							<option value="${option.id}">${option.categoryName}</option>
 					</c:forEach>
 				</select>	
             </div>
