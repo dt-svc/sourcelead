@@ -172,7 +172,7 @@ function getConnectionsList(type){
 	 			if(mutualResult !== ""){
  					$("#mutualConnList").append(mutualResult);
  				}else{
- 					$("#mutualConnList").hide();
+ 					/* $("#mutualConnList").hide(); */
  				}
 	 			if(result !== ""){
         			$("#findConnectionListId").append(result);
