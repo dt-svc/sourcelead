@@ -18,6 +18,9 @@ public class UserRoleDTO {
 	private String orgName;
 	private Long mutualCount;
 	private Date createdDate;
+	private Integer sentCount;
+	private Integer receivedCount;
+	private Integer connectedCount;
 	
 	
 	public Long getId() {
@@ -110,5 +113,22 @@ public class UserRoleDTO {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
-	
+	public Integer getSentCount() {
+		return sentCount;
+	}
+	public void setSentCount(Integer sentCount) {
+		this.sentCount = sentCount;
+	}
+	public Integer getReceivedCount() {
+		return receivedCount;
+	}
+	public void setReceivedCount(Integer receivedCount) {
+		this.receivedCount = receivedCount;
+	}
+	public Integer getConnectedCount() {
+		return connectedCount;
+	}
+	public void setConnectedCount(Integer connectedCount) {
+		this.connectedCount = connectedCount;
+	}
 }

@@ -247,8 +247,8 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
       
           <footer class="form-footer">
               <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveInvoice('DRAFT');">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveInvoice('SENT')">Send</button>
+                  <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveInvoiceTest('DRAFT');">Save</button>
+                  <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveInvoiceTest('SENT')">Send</button>
                  <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
               </div>
           </footer>
@@ -1265,7 +1265,7 @@ function calculateTaxDiscount(){
 
 <!-- Saving Project Invoice --> 
 <script>
-function saveInvoice(saveType){
+function saveInvoiceTest(saveType){
          
          if ($('#project_invoice_form').validate(false, validationSettings)){  
         	 
