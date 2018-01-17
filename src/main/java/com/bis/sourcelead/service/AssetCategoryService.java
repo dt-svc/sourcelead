@@ -17,6 +17,8 @@ public interface AssetCategoryService {
 	AssetCategory getAssetCategoryListByLocationIdAndName(Long orgLocationId,String Name) throws Exception;
 
 	AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId);
+	
+	AssetCategory getAssetCategoryByCategoryId(Long categoryId);
 
 	Boolean validateCategoryName(String categoryName, Long orgLocationId);
 
