@@ -39,6 +39,7 @@ import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -249,9 +250,18 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 						if(submissionTempletes != null) {
 							reqDTO.setApplicationFrom(submissionTempletes.getId().toString());
 						}
-						
 					}
 				}
+				if (reqDTO.getFileURL() != null && !reqDTO.getFileURL().isEmpty()) {
+					List<FileInfo> fileInfoList = new ArrayList<>();
+					FileInfo fileInfo = new FileInfo();
+					fileInfo.setFileName(reqDTO.getFileName());
+					fileInfo.setFileURL(reqDTO.getFileURL());
+					fileInfo.setContentType(reqDTO.getFileContentType());
+					fileInfoList.add(fileInfo);
+					reqDTO.setFileInfo(fileInfoList);
+				}
+				
 				Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
 		    break;
 		    
