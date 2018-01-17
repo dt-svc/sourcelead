@@ -1,7 +1,10 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,6 +32,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
@@ -76,6 +80,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class DataMigrationCommonUtil {
 	private static final Logger logger = LoggerFactory.getLogger(DataMigrationCommonUtil.class);
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	private UserService userService;
 	
@@ -130,6 +138,8 @@ public class DataMigrationCommonUtil {
 	@Autowired
 	private TimeSheetDayEntriesDao timesheetDayEntriesDao;
 	
+	
+	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
 	{
@@ -137,9 +147,6 @@ public class DataMigrationCommonUtil {
 		    
 				Boolean flag;
 				
-				if(dataMigrationDTOJsonCopy.getString("manager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
-					errorSet.put("manager", "Manager field is missing");
-				}
 				if(dataMigrationDTOJsonCopy.getString("priority").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("priority"))) {
 					errorSet.put("priority", "Priority field is missing");
 				}
@@ -311,10 +318,12 @@ public class DataMigrationCommonUtil {
 				if(!dataMigrationDTOJsonCopy.getString("manager").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
 					User approverList = userService.getTabAccessOwnersByOrgLocationIdEmailAndTabId(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("manager"), Long.valueOf(Constants.TAB_REQUIREMENT));
 					if(approverList == null){
-						errorSet.put("manager", dataMigrationDTOJsonCopy.getString("manager")+" is invalid Email");
+						errorSet.put("manager", dataMigrationDTOJsonCopy.getString("manager")+" is invalid manager Email");
 					}else{
 						dataMigrationDTOJsonCopy.put("manager", approverList.getId().toString());
 					}
+				}else if(dataMigrationDTOJsonCopy.getString("manager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
+					dataMigrationDTOJsonCopy.put("manager", user.getId().toString());
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
@@ -471,25 +480,42 @@ public class DataMigrationCommonUtil {
 			}
 			
 			
-			/*if(!dataMigrationDTOJsonCopy.getString("fileURL").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("fileURL"))) {
-				File source = new File("C:/Users/VenkatKesav/Documents/cv");
-				File dest = new File("C:/Users/VenkatKesav/Desktop/vc");
-				
+		/*if (!dataMigrationDTOJsonCopy.getString("docFile").equals("null")
+				&& StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("docFile"))) {
+			File source = new File(dataMigrationDTOJsonCopy.getString("docFile"));
+			if (source.exists()) {
 				String fileName = source.getName().replace("&", "").replace("%", "").replace("?", "");
-				String extenstion = fileName.substring(fileName.lastIndexOf("."));
-				fileName = fileName.substring(0, fileName.lastIndexOf("."));
-				long time = new Date().getTime();
-				String url = dataMigrationDTOJsonCopy.getString("staticPath").substring(dataMigrationDTOJsonCopy.getString("staticPath").lastIndexOf("/")) + "/" + orgLocation.getOrg() + "/" + orgLocation.getId() + "/" + fileType
-						+ "/" + fileName + time + extenstion;
-				
-				
+				String extenstion = null;
+				String[] extensionArr = { "doc", "pdf", "txt", "docx", "jpeg", "jpg", "gif",
+						"png" };
 				try {
-				    FileUtils.copyDirectory(source, dest);
-				} catch (IOException e) {
-				    e.printStackTrace();
+					extenstion = fileName.substring(fileName.lastIndexOf("."));
+					if (!ArrayUtils.contains(extensionArr, extenstion.toLowerCase())) {
+						errorSet.put("docFile", "Invalid file format, should accept only .doc,pdf,txt,docx,jpeg,jpg,gif,png");
+					}
+					else {
+						fileName = fileName.substring(0, fileName.lastIndexOf("."));
+						long time = new Date().getTime();
+						String url = staticPath + "/" + orgLocation.getOrg().getId() + "/"
+								+ orgLocation.getId() + "/" + "requirementDocuments" + "/"
+								+ fileName + time + extenstion;
+						File dest = new File(url);
+						if (!dest.exists())
+							dest.mkdirs();
+						try {
+							Files.copy(source.toPath(), dest.toPath());
+						} catch (IOException e) {
+							errorSet.put("docFile", "Error occured while importing attachemt");
+						}
+					}
+				} catch (Exception e) {
+					errorSet.put("docFile", "Invalid file path, should provide along with extension (doc,pdf,txt,docx,jpeg,jpg,gif,png)");
 				}
-			}*/
-			
+			}
+			else if (!source.exists()) {
+				errorSet.put("docFile", "Invalid file path for attachment");
+			}
+		}*/
 	}
 			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, FormulaEvaluator objFormulaEvaluator, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation, String timeFrequency) throws Exception
 			{
@@ -1263,6 +1289,24 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						errorSet.put("category", dataMigrationDTOJsonCopy.getString("category")+" is Not Exist");
 					}else{
 						dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftAEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmployee"))) {
+					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmployee"), orgLocation.getId());
+					if(user1 == null){
+					errorSet.put("shiftAEmployee", dataMigrationDTOJsonCopy.getString("shiftAEmployee")+" is Not Exist");	
+					}else{
+						dataMigrationDTOJsonCopy.put("shiftAEmployee", user1.getId().toString());	
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("shiftBEmployee").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftBEmployee"))) {
+					User user2= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftBEmployee"), orgLocation.getId());
+					if(user2 == null){
+						errorSet.put("shiftBEmployee", dataMigrationDTOJsonCopy.getString("shiftBEmployee")+" is Not Exist");	
+					}else{
+						dataMigrationDTOJsonCopy.put("shiftBEmployee", user2.getId().toString());	
 					}
 				}
 				

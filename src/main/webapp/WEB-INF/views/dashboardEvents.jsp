@@ -69,8 +69,8 @@ function getInterviewsDates(){
        		 for(var i=0; i<data.length; i++){
        			dates[new Date(data[i]).getTime()]='visible';
        		 }
-       		eventCalendar(dates);
        	 }
+       	eventCalendar(dates);
         }
 	}); 
 	
@@ -90,12 +90,10 @@ function getInterviewsDates(){
 			
 			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 			  if(locationDate.match("yyyy-MM-dd")){
-				  finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
-					date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
+			      date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
 			  }if(locationDate.match("dd-MM-yyyy")){
 				  date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
 			  }if(locationDate.match("MM-dd-yyyy")){
-				  finalDateFormatEDashboardeventCalendar = 'mm-dd-yy'; 
 				  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
 			  }if(locationDate.match("yyyy-dd-MM")){
 				  date = date.getFullYear()+"-"+date.getDate()+"-"+date.getMonth()+1;
