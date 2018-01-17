@@ -58,8 +58,8 @@ $(document).ready(function(){
               
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
-<%--            <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
- --%>         <!-- Add Asset Popup -->
+           <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+         <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
@@ -87,7 +87,7 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required validate_Space validate_length length2-200">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number/ Port Number *" field-name="Serial Number/ Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200">
                   </div>
                   <div class="col-md-6" id="makeDiv">
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
@@ -110,7 +110,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   <div class="col-md-4 mb10" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="MotherBoard" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">
@@ -504,10 +504,7 @@ function removeAssetManagement(assetId){
    <script>
   function assetCategory(category){
 	  var selectedCategory = category.value;
-	  if(selectedCategory){
-		  var  assestCategory = selectedCategory.split(",");
-		
-		   if(assestCategory[0] == 'Desktop'){
+	    if(selectedCategory == '2'){
 			  document.getElementById("monitor").style.display="";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memory").style.display="";
@@ -516,7 +513,7 @@ function removeAssetManagement(assetId){
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  
-		  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
+		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
 			  document.getElementById("monitor").style.display="none";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memory").style.display="";
@@ -540,7 +537,6 @@ function removeAssetManagement(assetId){
 			  $("#harddisk").val('');
 			 
 		  } 
-	  }
   }
   </script>
   

@@ -100,7 +100,11 @@ function assetDetails(assetId) {
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}
-					
+					if(json.monitor != null && json.monitor != '' && json.monitor != 'undefined'){
+					result = result + ' <div class="require_wrap_details_cta"> <b>MotherBoard:</b> <span>'+json.monitor+'</span>';
+					result = result + ' <div class="clearfix"></div>';
+					result = result + '</div>';
+					}
 					result = result + ' <div class="require_wrap_details_cta"> <b>Description:</b> <span>'+description+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
@@ -266,7 +270,7 @@ function editAssetManagement(assetId){
 			result = result + '<div class="form-horizontal clearfix">';
 			
 			result = result + '<div class="col-md-6">';
-			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.sno+'" field-name="Sl No" data-validation="required validate_Space validate_length length2-200" placeholder="Serial Number *">';
+			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.sno+'" field-name="Serial Number/ Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200" placeholder="Serial Number/ Port Number *">';
 			result = result + '</div>';
 			
 			result = result + '<div class="assetaddpop-ul col-md-6" id="workingStatusDiv">';
@@ -301,7 +305,7 @@ function editAssetManagement(assetId){
 				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 					result = result + ' <div class="col-md-6">';
-					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Monitor">';
+					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="MotherBoard">';
 					result = result + '</div>';
 				}
 				
