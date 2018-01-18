@@ -1805,7 +1805,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }) 
-	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId, Date frequencyStartDate, Date frequencyEndDate,String invoiceType)
+	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId,Long orgLocationsId,Date frequencyStartDate, Date frequencyEndDate,String invoiceType)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
@@ -1826,22 +1826,22 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 
 		// Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.level = '1' ";
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationsId ";
 		String query =  "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy  left join fetch hierarchy.projectClientsId pc "
 				+ " left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projects projects "
 				+ " left join fetch ts.masterCandidateId mc left join fetch ts.projectMembers pm  left join fetch pm.employee emp left join fetch emp.user "
-				+ " where projects.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and "+statusSubQuery+" and ts.status = '1' and pc.level = '1'"
+				+ " where projects.id = :projectId and pc.orgLocationsId.id = :orgLocationsId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and "+statusSubQuery+" and ts.status = '1'"
 				/*
 				 * For getting approved timesheet hours list
 				 */
 
 				+ " and ( hierarchy.level IN(" + subQueryForMaxLevel
-				+ ")) and pc.level = '1' order by pm.id";
+				+ ")) and pc.orgLocationsId.id = :orgLocationsId order by pm.id";
 		
 		
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString())
-				.setLong("projectId", projectId)
+				.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId)
 				.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(false).list();
 		LinkedList<SubmissionApproverHierarchy> finalSahList = new LinkedList<>();
 		if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
