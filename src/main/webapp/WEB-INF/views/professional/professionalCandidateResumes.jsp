@@ -123,7 +123,7 @@ function addResume(candidateId) {
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_Space validate_Description validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
+	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -142,8 +142,6 @@ function addResume(candidateId) {
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  
 	
-	
-	
 	result = result+'	                  <div class="clearfix mb10" id="resumeNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
 	result = result+'	                      <label id="resumeName" name="resumeName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
@@ -153,12 +151,6 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mr mt" id="resumeUpdateButton" style="display: none;">';
 	result = result+'	                    <button type="button" id="update_resume" class="btn btn-sm btn-primary pull-right">Update</button>';
 	result = result+'	                  </div>';
-	
-	
-	
-	
-	
-	
 	
 	result = result+'	                  <div class="clearfix mr mt" id="resumeAddButton">';
 	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+',null);">Add</button>';
