@@ -124,6 +124,8 @@ public interface ProjectsService {
 		
 		List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
 		
+		Projects makeInternalProjectAsClientProject(Projects projects,Long orgRelationId,Long clientOrgLocationId,OrgLocations loginOrgLocation) throws Exception;
+		
 //		public String getProjectId(OrgLocations orgLocations);
 		
 }

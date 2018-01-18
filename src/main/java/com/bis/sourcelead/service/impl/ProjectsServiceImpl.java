@@ -35,9 +35,12 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -47,11 +50,13 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -74,8 +79,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
@@ -206,6 +213,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private ProjectTasksDao tasksDao;
+	 
+	 @Autowired
+	 OrgSpocDao orgSpocDao;
+	 
+	 @Autowired
+	 CandidateService candidateService;
+	 
+	 @Autowired
+	 MasterCandidateService masterCandidateService;
 	 
 	 
 /*	 @Override
@@ -382,7 +398,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	}
     	
     	projects.setProjectName(projectsDTO.getProjectName().trim());
-    	projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
+    	if(!isNullOrEmpty(projectsDTO.getProjectSequeneNumber())) {
+    		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
+    	}
     	
     	if(!isNullOrEmpty(projectsDTO.getProjectDescription())){
     	projects.setDescription(projectsDTO.getProjectDescription());
@@ -1693,6 +1711,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 /*
 	    		 * Updating Project data as ElasticSearch Documents
 	    		 */
+			    
+			    if(projectDTO.getClientlocationId() != null && !projectDTO.getClientlocationId().isEmpty()) {
+			    	
+			    	String[] clientDetails = projectDTO.getClientlocationId().split(",");
+			    	makeInternalProjectAsClientProject(projects, Long.parseLong(clientDetails[0]),Long.parseLong(clientDetails[1]),loginOrgLocation);
+			    }
+			    
 	    		saveOrUpdateProjectElkDocument(projects);
 
 	    		
@@ -2508,6 +2533,139 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,
 					String projectClientUUID) throws Exception {
 				return projectsDao.getAllProjectsByOrgLocationIdAndStatusForTransfer(orgLocationId, projectClientUUID);
+			}
+
+			@Override
+			public Projects makeInternalProjectAsClientProject(Projects projects, Long orgRelationId,Long clientOrgLocationId,OrgLocations loginOrgLocation)
+					throws Exception {
+				
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+				OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(clientOrgLocationId);
+				if(clientOrgLocations != null && orgRelations != null) {
+					projects.setOrgLocationsId(clientOrgLocations);
+					updateProject(projects);
+					List<ProjectClients> projectClientsList = projectClientService.getProjectClientsListByProjectId(projects.getId());
+					if(projectClientsList != null && projectClientsList.size() > 0) {
+						for(ProjectClients projectClients : projectClientsList) {
+							if(projectClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId()) && projectClients.getOrgRelationId() == null) {
+								projectClients.setOrgRelationId(orgRelations);
+							}
+							if(projectClients.getLevel() != null) {
+								Integer level = projectClients.getLevel();
+								projectClients.setLevel(level+1);
+							}
+							projectClients.setIsEndClient(null);
+							projectClientService.storeProjectClients(projectClients);
+						}
+					}
+					
+					ProjectClients projectClients = new ProjectClients();
+					OrgSpoc orgSpoc = orgSpocDao.getGusetClientOrgSpocByOrgRelationId(orgRelationId);
+					projectClients.setProjectId(projects);
+					projectClients.setOrgLocationsId(clientOrgLocations);
+					projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+					projectClients.setStatus(1);
+					projectClients.setLevel(1);
+					projectClients.setIsEndClient(Constants.YES);
+					projectClients.setCreatedDate(projects.getCreatedDate());
+					projectClients.setUpdatedDate(projects.getUpdatedDate());
+					projectClients.setCreatedBy(orgSpoc.getClientUser());
+					projectClients.setUpdatedBy(orgSpoc.getClientUser());
+					projectClients = projectClientService.storeProjectClients(projectClients);
+					
+					ProjectApproverHierarchy projectApproverHierarchy = new ProjectApproverHierarchy();
+					projectApproverHierarchy.setProjectId(projects);
+					projectApproverHierarchy.setProjectClientsId(projectClients);
+					projectApproverHierarchy.setApproverUserId(orgSpoc.getClientUser());
+					projectApproverHierarchy.setLevel(1);
+					projectApproverHierarchy.setStatus("1");
+					projectApproverHierarchyService.saveProjectApproverHierarchy(projectApproverHierarchy);
+					
+					ProjectBudget projectBudget = projectBudgetService.getProjectBudgetsByProjectId(projects.getId());
+					if(projectBudget != null) {
+						projectBudget.setApproverUserId(orgSpoc.getClientUser());
+						projectBudgetService.saveProjectBudget(projectBudget);
+					}
+					
+					
+					ProjectClients loginOrgProjectClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocation.getId());
+					if(loginOrgProjectClient != null) {
+						List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectClientId(loginOrgProjectClient.getId());
+						if(projectMembersList != null && projectMembersList.size() > 0) {
+							for(ProjectMembers projectMembers : projectMembersList) {
+								Candidate candidate = null;
+								candidate = candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), clientOrgLocationId);
+								CandidateDTO candidateDTO = new CandidateDTO();
+								candidateDTO.setEmail(projectMembers.getProjectMemberCandidteId().getEmail());
+								candidateDTO.setMobilePhone(projectMembers.getProjectMemberCandidteId().getMobilePhone());
+								candidateDTO.setFirstName(projectMembers.getProjectMemberCandidteId().getFirstName());
+								candidateDTO.setLastName(projectMembers.getProjectMemberCandidteId().getLastName());
+								MasterCandidate masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+								if(candidate == null) {
+									candidate = new Candidate();
+									if(null == masterCandidate){
+										masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, orgSpoc.getClientUser());
+									}
+									
+									candidate.setMasterCandidateId(masterCandidate);
+									candidate.setFirstName(projectMembers.getProjectMemberCandidteId().getFirstName());
+									candidate.setLastName(projectMembers.getProjectMemberCandidteId().getLastName());
+									candidate.setEmail(projectMembers.getProjectMemberCandidteId().getEmail());
+									candidate.setOrgRelationId(orgRelations);
+									candidate.setSpocId(orgSpoc);
+									candidate.setParentCandidateId(projectMembers.getProjectMemberCandidteId());
+									candidate.setDesignationType("C2C");
+									candidate.setIsAssociate(Constants.NO);
+									candidate.setOrgLocationId(clientOrgLocations);
+									candidateService.addCandidate(candidate);
+									candidateService.saveOrUpdateCandidateElkDocument(candidate);
+								}
+								
+								ProjectMembers clientProjectMembers = new ProjectMembers();
+								clientProjectMembers.setProjects(projects);
+								clientProjectMembers.setProjectClientsId(projectClients);
+								clientProjectMembers.setProjectMemberCandidteId(candidate);
+								clientProjectMembers.setMasterCandidateId(masterCandidate);
+								clientProjectMembers.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
+								clientProjectMembers.setProjectEndDate(projectMembers.getProjectEndDate());
+								clientProjectMembers.setCurrentBillRate(projectMembers.getCurrentBillRate());
+								clientProjectMembers.setRateType(projectMembers.getRateType());
+								clientProjectMembers.setBillRateCurrency(projectMembers.getBillRateCurrency());
+								clientProjectMembers.setStatus(projectMembers.getStatus());
+								clientProjectMembers.setIsManuallyTerminated(projectMembers.getIsManuallyTerminated());
+								clientProjectMembers.setCreatedDate(projectMembers.getCreatedDate());
+								clientProjectMembers.setCreatedBy(projectMembers.getCreatedBy());
+								clientProjectMembers.setUpdatedBy(projectMembers.getUpdatedBy());
+								clientProjectMembers.setUpdatedDate(projectMembers.getUpdatedDate());
+								clientProjectMembers.setTerminateReason(projectMembers.getTerminateReason());
+								clientProjectMembers.setPayRateCurrency(projectMembers.getPayRateCurrency());
+								clientProjectMembers.setPayRate(projectMembers.getPayRate());
+								clientProjectMembers.setPayRateType(projectMembers.getPayRateType());
+								clientProjectMembers.setEstimatedHours(projectMembers.getEstimatedHours());
+								clientProjectMembers.setEstimatedBudget(projectMembers.getEstimatedBudget());
+								clientProjectMembers = projectMembersService.saveProjectMember(clientProjectMembers);
+								
+								ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersAllHistoryByProjectMemberId(projectMembers.getId());
+								if(projectMembersHistory != null) {
+									ProjectMembersHistory clientProjectMembersHistory = new ProjectMembersHistory();
+									clientProjectMembersHistory.setProjectMemberId(clientProjectMembers);
+									clientProjectMembersHistory.setProjectAssignedDate(projectMembersHistory.getProjectAssignedDate());
+									clientProjectMembersHistory.setProjectTerminationDate(projectMembersHistory.getProjectTerminationDate());
+									clientProjectMembersHistory.setStatus(projectMembersHistory.getStatus());
+									clientProjectMembersHistory.setCreatedDate(projectMembersHistory.getCreatedDate());
+									clientProjectMembersHistory.setCreatedBy(projectMembersHistory.getCreatedBy());
+									clientProjectMembersHistory.setUpdatedBy(projectMembersHistory.getUpdatedBy());
+									clientProjectMembersHistory.setUpdatedDate(projectMembersHistory.getUpdatedDate());
+									projectMembersHistoryService.updateProjectMembersHistory(clientProjectMembersHistory);
+								}
+								
+							}
+						}
+					}
+					
+					
+				}
+				return projects;
 			}
 
 

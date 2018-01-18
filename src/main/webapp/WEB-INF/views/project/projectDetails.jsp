@@ -454,10 +454,30 @@
 
 						result = result + '</select>';
 						result = result + '</div>';
+						
+						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Project name<span	class="text-danger">*</span></label>';
 						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" onblur="validateProjectName(\''+json.projectUUID+'\');" data-validation="required validate_Space validate_length length2-250" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 						result = result + '</div>';
+						
+						
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
+						result = result + '	<label>Client</label>';
+						result = result + '<div class="row">';
+					    result = result + '<div class="col-md-12" id="levelone-select">';
+						result = result	+ '<select class="form-control chosen-select" id="clientlocationId" name="clientlocationId" >';
+						result = result	+ '<option value="">Select Client</option>';
+						 for (var k = 0; k < json.clientsList.length; k++) {
+							var client = json.clientsList[k];
+							result = result	+ "<option value="+client.orgRelationId+","+client.orgLocationId+" >"+ client.orgName + " </option>";
+						} 
+						result = result + '</select>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
+						
+						
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 						result = result + '<div class="row">';
@@ -737,6 +757,22 @@
 				                }
 							}
 						});
+						
+						
+					    var config = {
+						  		  '.chosen-select'           : {},
+						  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+						  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+						  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+						  		  '.chosen-select-width'     : {width:"95%"}
+						  		}
+						  		for (var selector in config) {
+						  		  $(selector).chosen(config[selector]);
+						  		}
+						  		$('.chosen-select').each(function() {
+						  			var $this = $(this);
+						  			$this.next().css({'width': '100%'});
+						           });
 
 					},
 					
