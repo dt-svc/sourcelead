@@ -6,9 +6,209 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<script>
+function assetNotes(assetId){
+		var result = "";
+		result = result  +'<div class="clearfix timesheetHead">';
+		result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
+		result  = result + '<div class="success_pop" id="clientNotesSelector" style="display: none;">';
+	    result  = result + '<i class="fa fa-check-circle"></i><span id="clientNotesMsgDiv"></span>';
+	    result  = result + '</div>';
+		result = result + '<ul class="padding_right">';
+		result = result  +'    	<a href="javascript:void(0)" onClick="addAssetNotesNew('+assetId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		result = result  +'  <div class="clearfix"></div> ';
+		result = result + '</ul>';
+		result = result  +'  <div class="clearfix"></div> ';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="asetsNotesListDiv" ></div>';
+		result  = result + '   </div>'; 
+		result = result+'	    </div>';
+		result = result+'	    </div>'; 
+	    //$("#tab-1").empty();
+	    $("#tab-1").empty(); 
+	    $("#tab-2").empty();
+	    $("#tab-2").append(result);  
+	    assetNotesList(assetId);    
+}
+</script>
+<script>
+function addAssetNotesNew(assetId) {	
+	var result = "";
+	result = result  +'          <form role="form"  id="notes_Asset" name="notes_Asset" method="post" > ';
+	result = result  +'          <input type="hidden" id="assetId" name="assetId" value="'+assetId+'"> ';
+	result = result  +'          <input type="hidden" id="noteType" name="noteType" value="Asset"> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
+	
+	result = result  +'                <div class="row clearfix"> ';
+	result = result+'	                  <div class="col-md-12">';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
+	result = result+'	                  </div>';
+	result = result+' <div class="col-md-9 checkBox"> ';
+	result = result+'   <input type="checkbox" class="pull-left" value= "Y" id="allowAll" name = "allowAll" checked="checked">';
+	result = result + '	                    <p class="pull-left mt5">Allow all users</p>';
+	result = result  +'                  </div>';     
+	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
+	result = result  +'                  <div class="pull-right mt5"> ';
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeReqNotes('+assetId+');" />'; 
+	result = result  +'                  </div> ';
+	result = result  +'                  </div> ';
+	result = result  +'                </div>';
+	
+	result = result  +'                </form>';
+	$("#popUpDiv").empty();
+	$("#popUpDiv").append(result);
+	
+	var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+			
+			$(".edit-details").toggleClass("edit-details-active");
+			 $(".close-div").click(function(){ 
+				 $(this).parent("div.edit-details").removeClass("edit-details-active");
+				 });
+			 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details, .ui-datepicker-prev, .ui-datepicker-next").click(function(e){
+				 e.stopPropagation();
+			 });
+	
+	}
+</script>
+<script>
+function closeDocPopup(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
+<script>
+function assetNotesList(assetId){
+	var urlForm = "";
+	    urlForm = "/getAssetNotes?"+tokenParamName+"="+tokenValue+"&assetId="+assetId;
+		
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+urlForm,        
+         success :function(data) {
+		var output = "";
+	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	    	var json = JSON.parse(data);
+	    output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+	    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+     	for(var i=0;i<json.length;i++){
+       	var report = json[i];
+    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
+   	    output = output+'    <div class="commentsimg">';
+   	    output = output+'    <i class="fa fa-comments"></i>';
+   	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
+   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+   	    }
+   	    output = output+'        </div>';
+   	    output = output+'    </div>';
+   	    output = output+'     <div class="comments-content">';
+   	    output = output+'         <div class="commentsNotes_inner">';
+   	    output = output+'         <p class="comment-by">';
+   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	    if(report.assetName !=null && report.assetName != 'undefined'){
+   		 output = output+'          Serial / Port Number: <span class="text-danger" title = "'+report.assetName+'"> '+report.assetName+'</span>';
+   	    }
+   	    
+   	    else if(report.contactName !=null && report.contactName != 'undefined'){
+   	    output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
+   	    }
+   	 	else if(report.contract !=null && report.contract != 'undefined'){
+   		output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
+   	    }
+   	    
+   	    else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
+   		output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
+   	    }
+   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
+   	    output = output+'         </div>';
+   	    output = output+'     </div>';
+   	    output = output+'</div>';
+    	}
+     }
+	}else{
+		var output ="";
+     output = output+"   <div class='dataTables_empty'>"; 
+	 output = output+"  </div> ";
+}
+	output  = output + '              </div>';
+	output  = output + '        </div>';
+	$("#asetsNotesListDiv").empty(); 
+    $("#asetsNotesListDiv").append(output);
+ },
+      });
+}
+</script>
+
+
+<script type="text/javascript">
+	function storeReqNotes(assetId){
+		if ($('#notes_Asset').validate(false, validationSettings)){
+				var frm = $('#notes_Asset').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				//con = con.replace(/[{}]/g, "");
+				var form = $('#notes_Asset')[0];
+	      		var formData = new FormData(form);
+	      		formData.append("json",con);
+	      		
+	      		var userId = '${SourceLeadWeb_user.id}';
+	      		formData.append("userId",userId);
+	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
+	      	    formData.append("locationCode",locationCode);
+	      	    
+				
+				$("#save_note").attr("disabled", "disabled");
+         		$("#save_note" ).addClass('button').val('Processing..');
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
+						success : function(result) {
+							closeDocPopup();
+							assetNotesList(assetId);
+							
+						},
+					});
+					$('.add-comment').toggle(200);
+					return true;
+		}else {
+			return false;	
+		}
+		}
+		$('body').on('blur', '#notes_Asset', function() {
+		$("#notes_Asset").showHelpOnFocus();
+		$("#notes_Asset").validateOnBlur(false, validationSettings);
+		
+	});
+</script>
 <script>
 function assetDetails(assetId) {
-		$.ajax({
+	$.ajax({
 			type : "POST",
 			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetId="+ assetId,
 			success : function(json) {
@@ -93,6 +293,7 @@ function assetDetails(assetId) {
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
 						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
+		           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.fileUrl+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"title="preview"></a>';		           						          
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}else{
@@ -142,6 +343,7 @@ function assetDetails(assetId) {
 						
 						if (json.shiftAFileUrl != null && json.shiftAFileUrl != '' && json.shiftAFileUrl != 'undefined') {
 							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A Attched File:</b> <span>'+json.shiftAFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftAFileUrl+'\" download title="Download"></a>';
+			           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.shiftAFileUrl+'\',\''+json.shiftAFileName+'\',\''+json.shiftAFileContentType+'\');"title="preview"></a>';		           						          
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
@@ -161,6 +363,7 @@ function assetDetails(assetId) {
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '  </div>';
 					$("#tab-1").empty();
+					$("#tab-2").empty();
 					$("#tab-1").append(result);
 					$("#tab-1").show();
 			}
@@ -292,7 +495,7 @@ function editAssetManagement(assetId){
 			if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
 			
 				result = result + ' <div class="col-md-6">';
-				result = result + '  <input type="text" class="form-control input-sm" name="memory" value="'+memory+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-50" placeholder="Memory">';
+				result = result + '  <input type="text" class="form-control input-sm" name="memory" value="'+memory+'" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50" placeholder="Memory">';
 				result = result + '</div>';
 				
 				result = result + '<div class="col-md-6">';
@@ -300,7 +503,7 @@ function editAssetManagement(assetId){
 				result = result + ' </div>';
 				
 				result = result + ' <div class="col-md-6">';
-				result = result + '<input type="text" class="form-control input-sm" name="harddisk" value="'+hardDisk+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Hard Disk">';
+				result = result + '<input type="text" class="form-control input-sm" name="harddisk" value="'+hardDisk+'" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100" placeholder="Hard Disk">';
 				result = result + '</div>';
 				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {

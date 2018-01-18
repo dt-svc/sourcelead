@@ -1280,7 +1280,7 @@ function reqNotes(requirementId){
          success :function(data) {
 		var output = "";
 	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
-    	var json = JSON.parse(data);
+	    	var json = JSON.parse(data);
 	    output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
 	    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
      	for(var i=0;i<json.length;i++){
@@ -1323,12 +1323,14 @@ function reqNotes(requirementId){
     	}
      }
 	}else{
+		alert("oooooooooooooo")
      var output ="";
      output = output+"   <div class='dataTables_empty'>"; 
 	 output = output+"  </div> ";
 }
 	output  = output + '              </div>';
 	output  = output + '        </div>';
+	alert("rrrrrrrrrrrr")
 	$("#clientNotesListDiv").empty(); 
     $("#clientNotesListDiv").append(output);
  },
