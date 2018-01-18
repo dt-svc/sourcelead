@@ -53,10 +53,10 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 	}
 
 	@Override
-	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId)
+	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId, Long whiteListIpId)
 	{
 		List<WhiteListIPAddressDTO> ipDtoList = new ArrayList<>();
-		List<WhiteListIPAddress> ipList = whiteListIpAddressDao.getWhiteListIpsByLocationId(locationId);
+		List<WhiteListIPAddress> ipList = whiteListIpAddressDao.getWhiteListIpsByLocationId(locationId,whiteListIpId);
 		if(ipList != null){
 			for(WhiteListIPAddress ip : ipList){
 				WhiteListIPAddressDTO wlIpDto = new WhiteListIPAddressDTO();
@@ -88,9 +88,9 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 	}
 
 	@Override
-	public boolean validateIPAddress(String ipAddress,UserRole userRole)
+	public boolean validateIPAddress(String ipAddress,UserRole userRole,Long whiteListIpId)
 	{
-		List<WhiteListIPAddressDTO> ipList = getWhiteListIpsByLocationId(userRole.getOrgLocations().getId());
+		List<WhiteListIPAddressDTO> ipList = getWhiteListIpsByLocationId(userRole.getOrgLocations().getId(),whiteListIpId);
 		String[] currentIp = ipAddress.split("\\.");
 		boolean matched = false;
 		if(ipList.size() > 0){
@@ -120,7 +120,11 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 				}
 			}
 		}else{
-			matched = true;
+			if(whiteListIpId != null){
+				matched = false;
+			}else{
+				matched = true;
+			}
 		}
 		return matched;
 	}

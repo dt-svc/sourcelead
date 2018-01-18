@@ -228,9 +228,15 @@ public class PdfUtil {
 			   userArray[8] = userRoles.getRoles().getDisplayName();
 		   }else{
 			   userArray[8] = "--";
-		   }
+		   }StringBuilder fullName=new StringBuilder();
 		   if(userRoles.getReportingManager() !=null){
-			   userArray[9] = userRoles.getReportingManager().getFirstName();
+			   if(userRoles.getReportingManager().getLastName()!=null)
+			   {
+			   userArray[9] = fullName.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getReportingManager().getLastName()).toString();
+			   }else
+			   {
+				   userArray[9] = userRoles.getReportingManager().getFirstName();
+			   }
 		   }else{
 			   userArray[9] = "--";
 		   }
