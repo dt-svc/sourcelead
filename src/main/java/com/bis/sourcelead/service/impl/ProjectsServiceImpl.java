@@ -2619,6 +2619,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 									candidate.setOrgLocationId(clientOrgLocations);
 									candidateService.addCandidate(candidate);
 									candidateService.saveOrUpdateCandidateElkDocument(candidate);
+								}else {
+									candidate.setOrgRelationId(orgRelations);
+									candidate.setSpocId(orgSpoc);
+									candidate.setParentCandidateId(projectMembers.getProjectMemberCandidteId());
+									candidateService.addCandidate(candidate);
+									candidateService.saveOrUpdateCandidateElkDocument(candidate);
 								}
 								
 								ProjectMembers clientProjectMembers = new ProjectMembers();
