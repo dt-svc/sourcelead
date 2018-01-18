@@ -583,6 +583,7 @@ function updateReuqirementStatus(status){
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
           			   }
+          			$("#selector11").fadeOut(3000);
           			sideBar(requirementId);
              			msgFadein();
                	 }
@@ -654,6 +655,7 @@ function updateReuqirementStatusReject(status){
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
           			   }
+          			$("#selector11").fadeOut(3000);
           			$("#rejectRequirementAlert").empty();
           			$(".project_inn_mask").fadeOut(200);
           			$(".remove_user_pop").hide();
