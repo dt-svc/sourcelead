@@ -18,7 +18,7 @@ $(document).ready(function() {
 	  <div class="pull-left">
 	    <h2>Asset Management Summary</h2>
 	  </div>
-	  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
+	  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Asset Summary</div>
 	</section>
 
 	<!-- Asset Management Summary tabs starts here  -->
