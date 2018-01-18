@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,6 +29,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,7 @@ import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 @Service
 public class DataMigrationServiceImpl implements DataMigrationService {
@@ -154,23 +157,48 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}
 			if(nextRow.getRowNum()+1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
 				HashMap< String, String> errorSet = new HashMap< String, String>();
-				JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
+				Gson gson = new Gson();
+				String gsonOutput = gson.toJson(dataMigrationDTO);
+				JSONObject dataMigrationDTOJson = new JSONObject(gsonOutput);
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
 				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
 				Iterator<?> keys = dataMigrationDTOJson.keys();
 	
 				while( keys.hasNext() ) {
-				    String k = (String)keys.next();
-				    	Iterator<Cell> cellIterator = nextRow.cellIterator();
-						while (cellIterator.hasNext()) {
-							Cell cell = cellIterator.next();
-							if (dataMigrationDTOJson.get((String) k) != null) {
-								if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
-									dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
-									//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+				     String k = (String)keys.next();
+				      if(StringUtils.isNotEmpty(k) && !k.equalsIgnoreCase("days")) {
+				    	  Iterator<Cell> cellIterator = nextRow.cellIterator();
+				    	  while (cellIterator.hasNext()) {
+								Cell cell = cellIterator.next();
+								if (dataMigrationDTOJson.get((String) k) != null) {
+									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+										dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+										//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+									}
 								}
 							}
-						}
+				      }else {
+				    	  JSONArray ja = dataMigrationDTOJson.getJSONArray("days");
+				    	  LinkedList<String> days = new LinkedList<>();
+				    	  if(ja != null && ja.length() >0) {
+				    		  for(int j=0; j<ja.length(); j++) {
+				    			     Iterator<Cell> cellIterator = nextRow.cellIterator();
+									 String dayKey =  ja.getString(j);
+									 if (StringUtils.isNotEmpty(dayKey)) {
+										 while (cellIterator.hasNext()) {
+										        Cell cell = cellIterator.next();
+												if (dayKey.toString().replaceAll("\\d", "").equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+													days.add(objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+												}
+										  } 
+									 }else {
+										 days.add(dayKey);
+									 }
+									  
+				    		  }
+				    	  }
+				    	  dataMigrationDTOJsonCopy.put((String) k, days);
+				      }
 				}
 				String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 				switch(dataMigrationDTO.getUploadType()){  
