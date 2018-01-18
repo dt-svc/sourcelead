@@ -20,7 +20,9 @@
 <link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+
 
 <script type="text/javascript">
 window.onload = function () {
@@ -91,7 +93,8 @@ right: 15px;
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
+<%-- 			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith"> --%>
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
@@ -376,6 +379,20 @@ right: 15px;
  </section>
 </section> 
 </div>
+
+<div class="authenticationMask" >
+  <div class="signWrapOtp">
+  	<div id="directtwoStepAuthDiv">
+  		<jsp:include page="../otpVerification.jsp"/>
+  	</div>
+  </div>
+  </div>
+  
+  <!--  Alert message for Switching Locaction -->
+  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> Your are not allowded to access this Location.
+  </div>
 	
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
@@ -408,6 +425,82 @@ right: 15px;
 </script> 
  
 <script src="/resources/js/formvalidator.js"></script>
+
+<script type="text/javascript">
+ var hasLocationAccess = "";
+ function checkAuth(locationId,roleId,orgSecurity){
+	 checkLocationAccess(locationId,roleId,orgSecurity);
+	 
+ }
+ function otpClose(){
+	 $(".authenticationMask").fadeOut(); 
+ }
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+ })
+
+ function getUserDetailsbyroleId(roleId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		 type : "GET",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
+	       success :function(data) {
+	    	   if(data != null){
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
+	    		   $("#gobackBtn").hide();
+	    		   $(".otpBackNew").show();
+	    		   $("#otpBackNewId").val("switchOtp");
+	    		   $("#resendOTP").attr("style","display:none");
+	    		   $("#sendOTP").attr("style","display:block");
+	    	   }
+	       },						     
+	}); 
+ }
+ 
+ function checkLocationAccess(locationId,roleId,orgSecurity){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
+	       success :function(result) {
+	    	   if(result == true){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
+	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+	    				 $(".authenticationMask").fadeIn();
+	    				 getUserDetailsbyroleId(roleId);
+	    			 }else{
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
+	    			 }
+	    		 }else{
+	    			 $(".location-alert").fadeIn();
+	    			 $(".location-alert").fadeOut(5000);
+	    		 }
+	    	   
+	      },
+	  });
+ }
+ </script>
+ 
+  
+ <!--  <script>
+	$('.sopcSwith, .authenticationMask').each(function() {
+		var $this = $(this);
+		$this.on("contextmenu",function(e){
+			  return false;
+		});
+		
+		$(document).keydown(function (event) {
+			if (event.keyCode == 123) { // Prevent F12
+		        return false;
+		    }else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I        
+		        return false;
+		    }
+		});
+		 
+	})
+  </script> -->
 
 <script>
 function getBusinessTypeValue(){
