@@ -178,14 +178,12 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 
 	@Override
 	@Transactional
-	public int deleteConnection(User user, User toUser, String status) {
+	public int deleteConnection(String connectionUUID) {
 		logger.debug("deleteConnection");
 		Session session = this.sessionFactory.getCurrentSession();
 		Query qry = null;
-		String queryGet = "from Connections connections where (connections.fromUser.id = :fromUser and connections.toUser.id = :toUser) or (connections.fromUser.id = :toUser and connections.toUser.id = :fromUser) and connections.connectionStatus = :status";
-		Connections connections = (Connections) session.createQuery(queryGet).setLong("fromUser", user.getId()).setLong("toUser", toUser.getId()).setString("status", ConnectionStatus.getNameByValue(status).toString()).uniqueResult();
-		String query = "delete from Connections connections where connections.id =:id";
-    	qry = session.createQuery(query).setLong("id", connections.getId());
+		String query = "delete from Connections connections where connections.connectionUID = :connectionUID";
+    	qry = session.createQuery(query).setString("connectionUID", connectionUUID);
     	int i = qry.executeUpdate();
     	return i;
 	}
@@ -267,6 +265,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTO.setUserId(userRole.getUser().getId());
 						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
 						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
 					userRoleDTOList.get(0).setConnectedCount(countValue);

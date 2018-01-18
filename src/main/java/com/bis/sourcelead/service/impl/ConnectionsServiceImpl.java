@@ -31,8 +31,8 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 
 
 	@Override
-	public int deleteConnection(User user, User toUser, String value) {
-		return connectionsDao.deleteConnection(user, toUser, value);
+	public int deleteConnection(String connectionUUID) {
+		return connectionsDao.deleteConnection(connectionUUID);
 		
 	}
 
@@ -66,7 +66,5 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 		return connectionsDao.checkUserInContacts(fromUid, toUid);
 	}
 
-
-	
 
 }

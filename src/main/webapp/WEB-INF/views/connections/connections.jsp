@@ -134,11 +134,11 @@ function getConnectionsList(type){
 	 				}
 	 				var state = null;
 	 				if(user.userState == 'Request_sent'){
-	 					state = '<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a>';
+	 					state = '<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a>';
 	 					sentCount++;
 	 				}else if(user.userState == 'Request_received'){
 	 					receivedCount++;
-	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
+	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
 	 				}else if(user.userState == 'connected'){
 	 					connectedCount++;
 	 					continue;
@@ -229,7 +229,7 @@ function getConnection(userCode,userName){
 	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
 	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount")); 
 	    			$("#connectionState"+userCode).empty();
-	    			$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>');
+	    			$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\',\''+json+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>');
 	            	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
             },
          error: function(e){
@@ -242,13 +242,13 @@ function getConnection(userCode,userName){
 }
 </script>
 <script>
-function getWithdrawConnections(userCode,userName){
+function getWithdrawConnections(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
-			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=withdraw",
+			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
@@ -274,13 +274,13 @@ function getWithdrawConnections(userCode,userName){
 	}
 </script>
 <script>
-function ignoreConnection(userCode,userName){
+function ignoreConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
-			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
+			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
          	success: function(json) {
 	        	$("#selector4").removeAttr("style");
 	 			$("#selector4").css({ display: "block" });
@@ -338,7 +338,7 @@ function acceptConnection(userCode,userName,connectionUUID){
 		}
 </script>
 <script>
-function getDisconnectConnection(userCode,userName){
+/* function getDisconnectConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -367,7 +367,7 @@ function getDisconnectConnection(userCode,userName){
 			location.href='/login';
 		}
 		});
-		}
+		} */
 </script>
 </section>
 

@@ -142,7 +142,7 @@ var sentCount = 0;
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a></div></div></div>';
 	   		    }
 	 			$('#findConnectionListId').append(result);
         		if(json.length < 18){
@@ -169,13 +169,13 @@ var sentCount = 0;
 		}
 </script>
 <script>
-function getConnection(userCode,userName){
+function getConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
-			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=withdraw",
+			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });

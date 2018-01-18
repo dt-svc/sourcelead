@@ -81,7 +81,7 @@ public class ConnectionsRestController {
 	public String addNewConnection(@RequestParam(value = "userCode", required = false) String userCode, HttpServletRequest request){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		String result = "invalid";
+		String result = null;
 		try {
 			User toUser = userService.getUserByUserCode(userCode);
 			Connections connections = new Connections();
@@ -89,11 +89,12 @@ public class ConnectionsRestController {
 			connections.setToUser(toUser);
 			connections.setConnectionStatus(ConnectionStatus.REQUEST_SENT);
 			connections.setStatus(Constants.RECORD_ACTIVE);
-			connections.setConnectionUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			String connectionUUID = SourceLeadRandomCodeHelper.generateRandomUUID();
+			connections.setConnectionUID(connectionUUID);
 			connections.setCreatedDate(new Timestamp(new Date().getTime()));
 			connectionsService.saveConnection(connections);
 			connectionInvitationMailToUser(user,toUser,loginOrgLocation.getId(),connections.getConnectionUID());
-			result = "success";
+			result = connectionUUID;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -149,19 +150,12 @@ public class ConnectionsRestController {
 	}
 	
 	@RequestMapping(value="/withdrawConnection")
-	public String withdrawConnection(@RequestParam(value = "userCode", required = false) String userCode,@RequestParam(value = "statusCode", required = false) String statusCode, HttpServletRequest request){
+	public String withdrawConnection(@RequestParam(value = "connectionUUID", required = false) String connectionUUID, HttpServletRequest request){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		String result = "invalid";
 		try {
-			User toUser = userService.getUserByUserCode(userCode);
 			int resultValue = 0;
-			if(statusCode.equals("withdraw")) {
-				resultValue = connectionsService.deleteConnection(user, toUser, ConnectionStatus.REQUEST_SENT.getValue());
-			}else if(statusCode.equals("ignore")) {
-				resultValue = connectionsService.deleteConnection(toUser, user, ConnectionStatus.REQUEST_SENT.getValue());
-			}else {
-				resultValue = connectionsService.deleteConnection(user, toUser, ConnectionStatus.CONNECTED.getValue());
-			}
+				resultValue = connectionsService.deleteConnection(connectionUUID);
 			if(resultValue != 0) {
 				result = "success";
 			}
