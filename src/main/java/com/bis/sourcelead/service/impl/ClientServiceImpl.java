@@ -1062,12 +1062,7 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getCountry())) {
-				orgLocations.setCountry(clientDTO.getCountry());
-			} else {
-
-				orgLocations.setCountry("");
-			}
+			
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
 			}else if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
