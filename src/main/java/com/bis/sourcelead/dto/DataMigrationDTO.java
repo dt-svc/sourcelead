@@ -120,6 +120,7 @@ public class DataMigrationDTO extends CommonDTO {
 	private String thu;
 	private String fri;
 	private String sat;
+	private List<String> days;
 	private String totalHours;
 	private String billableHours;
 	private String nonBillableHours;
@@ -353,6 +354,15 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setSat(String sat) {
 		this.sat = sat;
+	}
+	
+
+	public List<String> getDays() {
+		return days;
+	}
+
+	public void setDays(List<String> days) {
+		this.days = days;
 	}
 
 	public String getBillableHours() {

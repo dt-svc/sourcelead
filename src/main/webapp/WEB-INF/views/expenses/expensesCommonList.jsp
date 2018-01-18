@@ -6,7 +6,6 @@
 
 <script type="text/javascript">
 function myExpensesListByStage(expenseStatus){
-	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  expensesReqListDate = 'YYYY-MM-DD';

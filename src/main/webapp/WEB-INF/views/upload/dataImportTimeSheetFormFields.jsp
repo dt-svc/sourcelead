@@ -108,7 +108,8 @@
 	</div>
 </div> 
 </c:if>
-<c:forEach var="field" items="${fields}">
+<c:if test="${timesheetMode != 'Monthly' and timesheetMode != 'BiMonthly'}">
+    <c:forEach var="field" items="${fields}">
 	<div class="form-group">
 		<label class="col-md-4 text-right mt5">${field.labelName}</label>
 		<div class="col-md-8 dropdown-select">
@@ -120,7 +121,26 @@
 			</select>
 		</div>
 	</div>
-</c:forEach>
+   </c:forEach>
+</c:if>
+
+<c:if test="${timesheetMode == 'Monthly' or timesheetMode == 'BiMonthly' }">
+	<c:forEach var="field" items="${fields}" varStatus="fieldStatus">
+	<div class="form-group">
+		<label class="col-md-4 text-right mt5">${field.labelName}</label>
+		<div class="col-md-8 dropdown-select">
+			<select class="chosen-select form-control" name="days[${fieldStatus.index}]" field-name="${field.labelName}">
+			<option value="">- - - Select - - -</option>
+			<c:forEach var="map" items="${dataWithCellId}">
+				<option value="${map.key}">${map.value}(column-${map.key})</option>
+			</c:forEach>
+			</select>
+		</div>
+	</div>
+   </c:forEach>
+
+</c:if>
+
 
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Total Hrs</label>
