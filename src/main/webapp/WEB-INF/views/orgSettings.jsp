@@ -607,13 +607,13 @@ function cancelOrgImg(){
          <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
            <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
-           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('fromIpAddr');">
            </div>
            </div>
            <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
            <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
-           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('toIpAddr');">
            </div>
            </div>
         
@@ -2895,8 +2895,36 @@ function ValidateIPaddress()
 				$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
 			}
 		}
-		
 	}  
+	
+	
+function validateDuplicateIpAddress(fromType){
+	var ipAddress;
+	if(fromType == "fromIpAddr"){
+		ipAddress = $("#fromIpAddress").val();
+	}else{
+		ipAddress = $("#toIpAddress").val();
+	}
+	var userRoleId = '${SourceLeadWeb_userRoleId}';
+	var whiteListId = $("#whiteListId").val();
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&ipAddress="+ipAddress+"&whiteListId="+whiteListId,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 document.getElementById("saveWhiteListbtn").disabled = true;
+	    		 if(fromType == "fromIpAddr"){
+	 	 			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+	  				$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>"+ipAddress+" already exists.</p>");
+	    		 }else{
+	 	 			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+	  				$("input#toIpAddress").after( "<p class='jquery_form_error_message'>"+ipAddress+" already exists.</p>");
+	    		 }
+	    		
+	    	 }
+	      },
+	  });
+}
 </script>
 
 

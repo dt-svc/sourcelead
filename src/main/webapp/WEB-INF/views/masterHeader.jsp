@@ -848,6 +848,7 @@ function preventTabkey(e){
 	    			 }
 	    		 }else{
 	    			 $(".location-alert").fadeIn();
+	    			 $(".location-alert").fadeOut(5000);
 	    		 }
 	    	   
 	      },
