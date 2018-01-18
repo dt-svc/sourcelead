@@ -9,7 +9,7 @@
 <jsp:include page="assetManagementDetails.jsp" />
 <script>
 $(document).ready(function() {
-	assetDetails(assetId);
+	assetDetails('${asset.id}');
 });	
 </script>
 
