@@ -10,6 +10,7 @@
 </c:if>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
+<link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <link
 	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
@@ -76,6 +77,35 @@
 	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+
+
+<!--  Modal Pop for apply Jobs -->
+  <!-- Modal -->
+  <div class="comMask"></div>
+  <div class="modal modalApplyjob" id="applyModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+        <div id="gustLoginId"></div>
+          <button type="button" class="close" onclick="closeApplyJob();">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="clearfix"></div>
+          <div class="clearfix mt">
+          	<jsp:include page="../SignIn.jsp"></jsp:include>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="closeApplyJob();">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+<!--  Modal Ends -->
 
 <script type="text/javascript">
 window.onload = function () {
@@ -833,7 +863,7 @@ a.alertBtn {
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+            <b>Â© 2016 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
@@ -1077,6 +1107,8 @@ function getOpenJobsELKList(orgLocationId){
 	var offset = '${offset}';
 	if(offset == ''){
 		offset = 0;
+	}else{
+		$("#openJobsOffset").val(offset)
 	}
 	
 	
@@ -1105,7 +1137,10 @@ function getOpenJobsELKList(orgLocationId){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length >= 10){
+				var newOffset = parseInt(offset) + 10;
+	    		if(json[0].noOfSearchHits < newOffset){
+	    			$("#loadMoreReq").css("display", "none");
+	    		}else{
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,offset);
@@ -1278,7 +1313,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-				result = result +'   <a href="/login?requirementUUID='+requirements.requirementUUID+'">Apply</a>';
+				result = result +'   <a onClick="applyJob(\''+requirements.requirementUUID+'\');">Apply</a>';
 				result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 				result = result +'	</div>';
 				result = result +'	</div>';
@@ -3000,8 +3035,48 @@ Please mail us at </p>
 		<a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a>
 		<span>We will get back to you As soon as possible</span>
     </div>    
-</section> 
+</section>
+
+<script>
+function applyJob(requirementUUID){
+	$(".modal.modalApplyjob").fadeIn();
+	$(".comMask").fadeIn();
+	loginPopup(requirementUUID)
+	
+}
+function closeApplyJob(){
+	$(".modal.modalApplyjob").fadeOut();
+	$(".comMask").fadeOut();
+}
+</script>
  
- <!--   Free trial pop   -->  
+ <!--   Free trial pop   --> 
+ <script>
+function forgotPassword(){
+	$(".signWrap").removeClass("orgOutWrap");
+	$(".signWrap").addClass("forPassOut");
+	$("#signinDiv").removeAttr("style");
+	$("#signinDiv").attr("style","display:none");
+	$("#forgotPasswordDiv").removeAttr("style");
+	$(".ForPasSlide").attr("style","display:block");
+}
+</script>
+ <script>
+ function loginPopup(requirementUUID){
+	 var result = "";
+	 result = result +'<div class="pull-left">';
+	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply as Guest User</button>';
+	 result = result +'</div>';
+	 $("#gustLoginId").empty();
+	 $("#gustLoginId").append(result);
+ } 
+ </script>
+ <script>
+ function guestUserRest(requirementUUID){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		window.location.href = "/guestApplyToJob?&requirementUUID="+requirementUUID;
+ }
+ </script>
+  
 
 <jsp:include page="../socialinviterscripts.jsp" />

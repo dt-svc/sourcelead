@@ -69,7 +69,7 @@
 	</div>
 </div>
 
-<div class="form-group">
+<%-- <div class="form-group">
 	<label class="col-md-4 text-right mt5">Name</label>
 	<div class="col-md-8 dropdown-select">
 		<select class="chosen-select form-control" name="name" field-name="Name">
@@ -79,13 +79,25 @@
 			</c:forEach>
 		</select>
 	</div>
-</div>
+</div> --%>
 
 
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Memory</label>
 	<div class="col-md-8 dropdown-select">
 		<select class="chosen-select form-control" name="memory" field-name="Memory">
+			<option value="">- - - Select - - -</option>
+			<c:forEach var="map" items="${dataWithCellId}">
+				<option value="${map.key}">${map.value}(column-${map.key})</option>
+			</c:forEach>
+		</select>
+	</div>
+</div>
+
+<div class="form-group">
+	<label class="col-md-4 text-right mt5">Cpu</label>
+	<div class="col-md-8 dropdown-select">
+		<select class="chosen-select form-control" name="cpu" field-name="CPU">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -137,7 +149,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Shift A</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="chosen-select form-control" name="shiftAEmployee" field-name="Memory">
+		<select class="chosen-select form-control" name="shiftAEmp" field-name="ShiftA Employee">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
@@ -149,7 +161,7 @@
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Shift B</label>
 	<div class="col-md-8 dropdown-select">
-		<select class="chosen-select form-control" name="shiftBEmployee" field-name="Memory">
+		<select class="chosen-select form-control" name="shiftBEmp" field-name="ShiftB Employee">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>
