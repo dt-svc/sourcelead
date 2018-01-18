@@ -116,9 +116,13 @@ input.signin_fild:-webkit-autofill {
 	vertical-align: middle; margin: 10px 10px 0px 10px; border-radius: 50%; box-sizing: border-box;
 /*	background-image: url(../images/office-image.jpg); background-repeat: no-repeat; background-position: center;
 	background-size: cover;*/
+	white-space: nowrap;
+}
+.orgCta span:before {
+    content: ""; display: inline-block; height: 100%; vertical-align: middle;
 }
 .orgCta span img {
-	width: 100%; max-width: 48px; max-height: 48px; border-radius: 50%;
+	width: 100%; max-width: 48px; max-height: 48px; border-radius: 50%; vertical-align: middle;
 }
 .orgtext {
 	position: relative; width: 65%; float: left; margin: 0px 0px 0px 5px; padding: 0px 0px 6px 0px;
