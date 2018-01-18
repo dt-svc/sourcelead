@@ -1663,8 +1663,20 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
 	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
 	    		 if(StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())){
-	    			 float weekTotalHours =Float.parseFloat(sah.getSubmissionId().getTotalHours());
-	    			 weekTotalsMap.put(sah.getSubmissionId().getStartDate(),weekTotalHours);
+	    			 List<TimeSheetDayEntries> tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(sah.getSubmissionId().getId(), sah.getSubmissionId().getStartDate(), sah.getSubmissionId().getEndDate());
+	 	    	 	 float weekTotalHours            = 0f;
+	 	    		  if(tdeList != null && !tdeList.isEmpty()){
+	 	    			 for(TimeSheetDayEntries tde : tdeList){
+	 	    				 float totalHours = 0f;
+	 	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
+	 	    					 totalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+	 		    			 }
+	 		    			 weekTotalHours = weekTotalHours+totalHours;
+	 		    			 
+	 	    			 }
+	 	    		}
+	 	    		 weekTotalsMap.put(sah.getSubmissionId().getStartDate(),weekTotalHours);
+	 	    		
 	    		 }
 			     else{
 			    	 weekTotalsMap.put(sah.getSubmissionId().getStartDate(),0f);
