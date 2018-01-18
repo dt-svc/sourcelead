@@ -605,9 +605,14 @@ this script is for remove Resume in edit mode to upload new resume
 1.usage     : onclick
 --%>
 function removeResumeNameDiv(){
+	var resTitle = $("#title").val();
+	var resDocName =  $("#resumeName").text();
 	$("#resumeNameDiv").hide();
 	$("#uploadResumeDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
+	if(resTitle == resDocName){
+		$("#title").val("");
+	}
 }
 
 
