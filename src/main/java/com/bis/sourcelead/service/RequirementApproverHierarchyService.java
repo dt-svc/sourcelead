@@ -25,5 +25,7 @@ public interface RequirementApproverHierarchyService {
 
 	public RequirementApproverHierarchy getApproverHierarchyByRequirementId(Long requirementId);
 	
+	public RequirementApproverHierarchy getRejectedApproverHierarchyByRequirementId(Long requirementId);
+	
 	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementIdExcludingApproverHierarchyId(Long requirementApproverHierarchyId,Long requirementId) throws Exception;
 }
