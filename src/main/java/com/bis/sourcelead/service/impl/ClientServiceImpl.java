@@ -932,7 +932,7 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-s
+
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
 			} else {
