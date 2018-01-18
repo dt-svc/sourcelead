@@ -917,13 +917,13 @@ function clearSearchKey() {
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
 		
-		var scoreType = document.getElementById("scoreEducationType").value; 
+		var scoreType = document.getElementById("scoreType").value; 
 		 if(scoreType != null && scoreType != ""){
-			 $('#candidateEducationScore').removeAttr('data-validation-optional');
-			 $('#candidateEducationScore').attr("data-validation","required"); 
+			 $('#candidateScore').removeAttr('data-validation-optional');
+			 $('#candidateScore').attr("data-validation","required"); 
 		 }else{
-			 $('#candidateEducationScore').removeAttr('data-validation');
-			 $('#candidateEducationScore').attr("data-validation-optional","true"); 
+			 $('#candidateScore').removeAttr('data-validation');
+			 $('#candidateScore').attr("data-validation-optional","true"); 
 		 }
 		 
 		if ($('#education_form').validate(false,validationSettings)) {

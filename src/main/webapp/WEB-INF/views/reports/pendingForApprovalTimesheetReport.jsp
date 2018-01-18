@@ -153,13 +153,45 @@ function getPendingForApprovalTimesheetReports(){
 		       for (var i=0; i<data.length; i++)
    				{
 		    	   var report = data[i];
+		    	   var employeName="";
+	        		  if(report.employeName != null && report.employeName != '' && report.employeName != 'undefined'){
+	        			  employeName = report.employeName;
+	        		  }else{
+	        			  employeName = "--";
+	        		  }
+	        		  if(report.employeType != null && report.employeType != '' && report.employeType != 'undefined'){
+	        			  employeType = report.employeType;
+	        		  }else{
+	        			  employeType = "--";
+	        		  }
+	        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+	        			  projectName = report.projectName;
+	        		  }else{
+	        			  projectName = "--";
+	        		  }
+	        		  if(report.frequency != null && report.frequency != '' && report.frequency != 'undefined'){
+	        			  frequency = report.frequency;
+	        		  }else{
+	        			  frequency = "--";
+	        		  }
+	        		  if(report.managerName != null && report.managerName != '' && report.managerName != 'undefined'){
+	        			  managerName = report.managerName;
+	        		  }else{
+	        			  managerName = "--";
+	        		  }
+	        		  if(report.dueDays != null && report.dueDays != '' && report.dueDays != 'undefined'){
+	        			  dueDays = report.dueDays;
+	        		  }else{
+	        			  dueDays = "--";
+	        		  }
+		    	   
 		    	  result = result	+ '<tr>';
-				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+report.employeName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.employeType+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.projectName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+report.frequency+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.managerName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+report.dueDays+'  Days</div></td>';
+				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeName+'</div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+managerName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
    				}
 		        result = result +'</tbody>';
