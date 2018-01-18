@@ -79,6 +79,8 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -2663,6 +2665,32 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 									clientProjectMembersHistory.setUpdatedBy(projectMembersHistory.getUpdatedBy());
 									clientProjectMembersHistory.setUpdatedDate(projectMembersHistory.getUpdatedDate());
 									projectMembersHistoryService.updateProjectMembersHistory(clientProjectMembersHistory);
+								}
+								
+								List<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(projectMembers.getId());
+								if(timesheetSubmissionsList != null && timesheetSubmissionsList.size() > 0) {
+									for(TimesheetSubmissions submissions : timesheetSubmissionsList){
+										if(projectApproverHierarchy != null) {
+											SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(submissions.getId());
+											SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+											saHierarchy.setHeirarchyId(projectApproverHierarchy);
+											saHierarchy.setSubmissionId(submissions);
+					    			        saHierarchy.setFrequencyStartDate(sah.getFrequencyStartDate());
+										    saHierarchy.setFrequencyEndDate(sah.getFrequencyEndDate());
+											saHierarchy.setSubmissionStatus(sah.getSubmissionStatus());
+											saHierarchy.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											saHierarchy.setCreatedDate(sah.getCreatedDate());
+											saHierarchy.setCreatedBy(sah.getCreatedBy());
+											saHierarchy.setActionPerformedBy(sah.getActionPerformedBy());
+											saHierarchy.setRejectedReason(sah.getRejectedReason());
+											saHierarchy.setReopenedUser(sah.getReopenedUser());
+											saHierarchy.setReopenRejectedReason(sah.getReopenRejectedReason());
+											saHierarchy.setUpdatedDate(sah.getUpdatedDate());
+											saHierarchy.setUpdatedBy(sah.getUpdatedBy());
+											saHierarchy.setStatus(sah.getStatus());
+											submissionApproverHierarchyService.addSubmissionApproverHierarchy(saHierarchy);
+										}
+									}
 								}
 								
 							}
