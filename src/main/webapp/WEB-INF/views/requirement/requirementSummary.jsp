@@ -583,7 +583,7 @@ function updateReuqirementStatus(status){
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
           			   }
-          			sideBar(requirementId)
+          			sideBar(requirementId);
              			msgFadein();
                	 }
             }
@@ -657,7 +657,7 @@ function updateReuqirementStatusReject(status){
           			$("#rejectRequirementAlert").empty();
           			$(".project_inn_mask").fadeOut(200);
           			$(".remove_user_pop").hide();
-          			sideBar(requirementId)
+          			sideBar(requirementId);
              			msgFadein();
                	 }
             }
