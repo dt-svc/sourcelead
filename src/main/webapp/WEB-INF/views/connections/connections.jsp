@@ -138,7 +138,7 @@ function getConnectionsList(type){
 	 					sentCount++;
 	 				}else if(user.userState == 'Request_received'){
 	 					receivedCount++;
-	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
+	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
 	 				}else if(user.userState == 'connected'){
 	 					connectedCount++;
 	 					continue;
@@ -211,7 +211,7 @@ function eduMsgFadeinFunction(message) {
 }
 
 
-function getConnection(userCode,userName){
+function getConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -231,7 +231,6 @@ function getConnection(userCode,userName){
 	    			$("#connectionState"+userCode).empty();
 	    			$("#connectionState"+userCode).append('<a href="javascript:void(0)" onclick="getWithdrawConnections(\''+userCode+'\', \''+userName+'\')" id="connection'+userCode+'" class="connlink orange">Withdraw</a>');
 	            	eduMsgFadeinFunction("Invitation successfully sent to "+userName);
-	            	
             },
          error: function(e){
 	        }
