@@ -1303,8 +1303,9 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
 
-// 				result = result +'  <div class="addthis_inline_share_toolbox" data-url='+link+' data-title='+title+'></div>';
-			    result = result +' <div class="addthis_inline_share_toolbox" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" data-title=""></div>';
+				result = result +'	<div class="share">';			  
+				result = result +' <div class="addthis_inline_share_toolbox" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title = "'+requirements.jobTitle+' data-title="'+requirements.jobTitle+'" addthis:description = "'+requirements.jobTitle+' data-description="'+requirements.jobTitle+'"></div>';
+				result = result +'	</div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
@@ -1321,6 +1322,7 @@ function prepareOpenJobsElkList(data,offset){
 				$("#openJobsRequirementsList").empty();
 				$("#openJobsRequirementsList").append(result); 
 			}
+			alert("1")
 			addthis.toolbox(".addthis_inline_share_toolbox");
 			addthis.init(".addthis_inline_share_toolbox");
 			addthis.layers.refresh();
@@ -3075,5 +3077,5 @@ function forgotPassword(){
 		window.location.href = "/guestApplyToJob?&requirementUUID="+requirementUUID;
  }
  </script>
-   <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
+   <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
 <jsp:include page="../socialinviterscripts.jsp" />
