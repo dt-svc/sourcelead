@@ -211,7 +211,7 @@ function eduMsgFadeinFunction(message) {
 }
 
 
-function getConnection(userCode,userName,connectionUUID){
+function getConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -304,13 +304,13 @@ function ignoreConnection(userCode,userName){
 	});
 	}
  
-function acceptConnection(userCode,userName){
+function acceptConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
-			url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
+			url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
        		success: function(json) {
 	        	$("#selector4").removeAttr("style");
 				$("#selector4").css({ display: "block" });

@@ -334,6 +334,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 
 
 	@Override
+	@Transactional
 	public Long checkUserInContacts(Long fromUid, Long toUid) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select count(referContacts) from ReferContacts referContacts where referContacts.referFromUser.id = :fromUid and referContacts.contactUser.id = :toUid";
