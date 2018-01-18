@@ -179,7 +179,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="button" onclick="addApplicantForm();" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -560,10 +560,9 @@ function discordApplicant(){
 
 <!-- For add New Applicant -->
 <script type="text/javascript">
-$('body').on('submit', '#addApplicant_form', function(e){
-
+function addApplicantForm(){
 	  var requirementId = $("#requirementId").val();
-	  if ($(this).validate(false, validationSettings)){
+	  if ($('#addApplicant_form').validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#addApplicant_form').serializeFormJSON();
       var frm = $('#addApplicant_form').serializeFormJSON();
@@ -698,9 +697,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
     else{
     	return false;	
        }
-  });
-
-    
+  }    
    	$('body').on('blur', '#addApplicant_form', function() {
 		$("#addApplicant_form").showHelpOnFocus();
 		$("#addApplicant_form").validateOnBlur(false, validationSettings);

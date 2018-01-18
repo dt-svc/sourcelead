@@ -100,6 +100,8 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setPolicyName(leaveTypeDTO.getPolicyName());
 		if (leaveTypeDTO.getVisibilityToAllUsers() != null)
 			leaveType.setVisibilityToAllUsers(leaveTypeDTO.getVisibilityToAllUsers());
+		else
+			leaveType.setVisibilityToAllUsers(Constants.NO);
 		if (leaveTypeDTO.getLeavePolicyDescription() != null)
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
 		if(leaveType !=null && "0".equals(leaveType.getStatus())) {
