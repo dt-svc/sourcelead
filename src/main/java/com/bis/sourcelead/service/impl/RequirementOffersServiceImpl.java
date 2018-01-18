@@ -286,7 +286,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								
 								
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
-					           
+					           String submissionStatus = "";
 					           if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES)){
 					        	   if(requirementSubmission.getSourceSubmission() != null) {
 					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
@@ -297,7 +297,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           }else {
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           }
-					          
+					           submissionStatus = requirementSubmission.getSubmissionStatus().getValue();
 					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
@@ -350,7 +350,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        	   }
 					        	  
 	                            	
-					           }else {
+					           }else if(requirementSubmission.getSourceSubmission() == null){
 						        	   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
 				        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
@@ -373,7 +373,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.NO)  && requirementSubmission.getSourceSubmission() !=null){
 					        		   if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty() && sourcesubmission != null){
 					        			   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-								           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+								           requirementSubmissionHistory.setFromStage(submissionStatus);
 					        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
 					        			   requirementSubmissionHistory.setCreatedBy(loginUser.getUserCode());
 					       				   requirementSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
