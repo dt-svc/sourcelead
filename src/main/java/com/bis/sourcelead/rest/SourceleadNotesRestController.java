@@ -133,4 +133,14 @@ public class SourceleadNotesRestController {
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}
+	
+	@RequestMapping(value = "/getAssetNotes", method = RequestMethod.POST)
+	public @ResponseBody String getAssetNotes(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception
+	{
+		String notesList;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByAssetId(assetId,orgLocation.getId());
+		notesList = commonUtil.toJSON(list);
+		return notesList;
+	}
 }
