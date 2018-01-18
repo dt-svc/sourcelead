@@ -27,8 +27,8 @@ $(document).ready(function(){
     <div class="clearfix">
       <div class="ReqRepHead clearfix">
     		      <div class="col-md-2 pull-left reqListBtn">
-          <a href="missingBills-graph.html" title="List View" id="GView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
-          <a href="missingBilling-list.html" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
+          <a href='${appPath}/missingBillGraphReport' title="List View" id="GView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+          <a href='${appPath}/missingBillReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        

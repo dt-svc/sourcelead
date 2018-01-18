@@ -216,9 +216,11 @@ public class ClientsReportRestController {
 							clientDto.setTotalPaidAmount(paidTotalAmount);
 						}
 					}
+					if(clientDto.getTotalPaidAmount() != 0)
+					clientDtoList.add(clientDto);
 				}
 				
-				clientDtoList.add(clientDto);
+				
 			}
 		}
 		
@@ -311,10 +313,10 @@ public class ClientsReportRestController {
 							clientDto.setTotalPaidAmount(paidTotalAmount);
 						}
 					}
-
+					if(clientDto.getTotalPaidAmount() != 0)
+					clientDtoList.add(clientDto);
 				}
 				
-				clientDtoList.add(clientDto);
 			}
 		}
 		

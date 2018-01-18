@@ -61,8 +61,8 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   <option id="ven"  value ="releaseByVendors" selected="selected">Release By Vendors</option>
                 </select> -->
                 <div class="pull-left mt10">
-                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="ven" onchange="listChange(this);" value="releaseByVendors" checked> Release By Vendors</label>
-                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="cont" onchange="listChange(this);" value="releaseByContact"> Release By Contact</label>
+                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="ven" onchange="listChange(this);" value="releaseByVendors" checked> Release to Vendor</label>
+                	<label class="mr"><input class="myCheckbox valid" type="radio" name="group1" id="cont" onchange="listChange(this);" value="releaseByContact"> Release to Contact</label>
               	</div>
               </div>
               <div class="timesheet_head">

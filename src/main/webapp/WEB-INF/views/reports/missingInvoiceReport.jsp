@@ -11,7 +11,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	missingInvoiceReportData();
 });
 </script>
 
@@ -106,7 +106,8 @@ $(document).ready(function(){
           
           
           <div class="clearfix tableStyles mt5">
-            <table class="table table-bordered noMar">
+         <div id="missingInvoiceData"></div>
+          <!--   <table class="table table-bordered noMar">
               <thead>          
                 <tr>
                   <th>Refer ID</th>
@@ -160,7 +161,7 @@ $(document).ready(function(){
                   </tr>                                                                        
               </tbody>
             </table>
-            <!-- Pagenation -->
+            Pagenation
             <nav class="clearfix">
               <ul id="paging" class="pagination pull-right">
                 <li><a href="#">Previous</a></li>
@@ -171,7 +172,7 @@ $(document).ready(function(){
                 <li><a href="#">5</a></li>
                 <li data-page="last"><a href="#">Next</a></li>
               </ul>
-            </nav>
+            </nav> -->
           </div>
           
         </div>
@@ -180,5 +181,169 @@ $(document).ready(function(){
       
   </section>
   <!-- Content Area Ends--> 
+  
+  
+  
+  <script>
+function missingInvoiceReportData(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue;
+		prepareMissingInvoiceData(url);
+	    /* $.post(sourceleadUrl+"/vendorapAging?"+tokenParamName+"="+tokenValue+"&apagingType="+apagingType, function(data) {
+			prepareApagingList();
+		});  */
+}
+</script>
+<script>
+function prepareMissingInvoiceData(url){
+	   $("#missingInvoiceData").empty();
+ 	    var result = "";
+ 	    /* result = result +" <div class='remove_search'>";
+ 	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
+ 	    result = result +"</div>"; */
+ 	    result = result +"<table id='missingInvoicePagination' class='display' cellspacing='0' width='100%' >"; 
+        result = result +"<thead>"; 
+        result = result + '<tr>';
+        result = result + '<th>Refer Id</th>';
+		result = result + '<th>Client Name</th>';
+		result = result + '<th>Project Name</th>';
+		result = result + '<th>Date</th>';
+		result = result + '<th>Total Amount</th>';
+		result = result + '</tr>';
+        result = result +"</thead>";
+        result = result +"<tbody>"; 
+        result = result +" </tbody>";
+        result = result +"</table>";
+      $("#missingInvoiceData").append(result);
+      missingInvoice(url); 
+}
+</script>
+
+<script>
+function missingInvoice(url){
+	var colIndex = 0;
+	var apagingTotal = 0;
+    $('#missingInvoicePagination').DataTable( { 
+    		"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+        	{ "data": "orgName" },
+            { "data": "tenDays" },
+            { "data": "fifteenDays"},
+            { "data": "thirtyDays"},
+            { "data": "sixtyDays" },
+            { "data": "nintyDays"},
+            { "data": "oneeightyDays" },
+            { "data": "threeSixtyFiveDays" },
+            { "data": "above365Days"},
+            { "data": "total"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "orgName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+					result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "tenDays",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+						result = result + ' <td><div class="tblminwidth-75">'+opt.tenDays.toFixed(2)+'</div></td>';
+	              return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "fifteenDays",
+            "render": function ( data, type, opt, meta ) {
+            	return  '<td><div class="tblminwidth-75">'+opt.fifteenDays.toFixed(2)+'</div></td>';
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "thirtyDays",
+              "render": function ( data, type, opt, meta ) {
+            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "sixtyDays",
+                "render": function ( data, type, opt, meta ) {
+                		var result = "";
+							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.sixtyDays.toFixed(2)+'</div></td>';
+    	              return result;
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "nintyDays",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+					result = result + '<td><div class="tblminwidth-50">'+opt.nintyDays.toFixed(2)+'</div></td>';
+  	              return result;
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "oneeightyDays",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
+	    	  		return result;
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "threeSixtyFiveDays",
+                  "render": function ( data, type, opt, meta ) {
+                	  return '<td><div class="tblminwidth-75">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
+                  }
+                },{
+                    "targets": colIndex++,
+                    "data": "above365Days",
+                    "render": function ( data, type, opt, meta ) {
+                    	return '<td><div class="tblminwidth-75">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
+                    }
+                  },{
+                      "targets": colIndex++,
+                      "data": "total",
+                      "render": function ( data, type, opt, meta ) {
+                    	    apagingTotal = parseFloat(apagingTotal)+parseFloat(opt.total);
+                      	   $("#apagingTotal").html(apagingTotal.toFixed(2));
+                    	  return ' <td><div class="tblminwidth-75">'+opt.total.toFixed(2)+'</div></td>';
+                    	  
+                      }
+                    } ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[0,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#apagingPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#dataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   vendorapAging();
+    	   }
+    	});
+    
+	
+}
+</script>
+  
 
 <jsp:include page="../masterFooter.jsp" />

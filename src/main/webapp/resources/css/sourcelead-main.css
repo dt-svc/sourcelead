@@ -5,7 +5,7 @@
 	margin: 0; padding: 0;
 }
 body {
-	font-size: 14px; color: #333; min-height: 100%; background-color: #f1f1f1 !important;
+	font-size: 14px; color: #333; min-height: 100%; background-color: #e0e0e0 !important;
     font-weight: 400 !important; font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
@@ -435,9 +435,9 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 }
 /*sidebar menu styles  */
 .side-bar {
-background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 0; width: 190px; z-index: 810;
-padding-top: 50px; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
--webkit-transition: 0.3s ease-in-out;*/ overflow-x:hidden; overflow-y:auto;
+background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 50px; width: 190px; z-index: 810;
+padding-top: 0px; overflow-x:hidden; overflow-y:auto; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
+-webkit-transition: 0.3s ease-in-out;*/ 
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -5767,7 +5767,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; max-height: 600px; overflow-y: auto; padding-bottom: 10px;
+    position: relative; max-height: 575px; overflow-y: auto; padding-bottom: 10px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;
@@ -6011,6 +6011,9 @@ box-shadow: 0px 0px 3px #999;  padding: 10px 15px; position: relative; box-sizin
 /* datafilter Newstyle */
 .dataTablesFilter-relative .dataTables_filter {
        position: relative !important; top:0 !important; margin-top: 15px;
+}
+.dataTablesFilter-relative-top .dataTables_filter {
+margin-top: 0px !important;
 }
 /* Timeline Styels */
 .timeline {
@@ -7419,6 +7422,9 @@ min-height: 40px;
 .minHeight80{
 min-height:80px;
 }
+.minHeight50{
+    min-height: 50px;
+}
 .tableStyles {
 	position: relative; /*border: 1px solid #ddd;*/
 	overflow-y: auto;
@@ -7537,7 +7543,7 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
-.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal {
+.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal, .modal.modalApplyjob {
 	display: none;
 }
 .location-alert {
@@ -9858,4 +9864,12 @@ z-index: -800;
 .slideOutUp {
   animation-name: slideOutUp;
 }
+.ratetype-right p.jquery_form_error_message {
+bottom: -14px; left: -30px !important; position: absolute;    
+}
+
+
 /* Animated Ends */
+
+
+

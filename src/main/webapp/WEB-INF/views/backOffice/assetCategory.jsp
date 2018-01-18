@@ -24,7 +24,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Category</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Asset Management</a> &raquo; Category</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Category</div>
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
@@ -89,10 +89,10 @@ $(document).ready(function(){
 		   	     	    
 			    	    result = result+'<tr id="category'+report.id+'">';
 			   	     	result = result +'<td>';
-				   	    result = result +'<div class="tbldata-dotdot-vsm"> <span class="tbldata-dotdot-sm">'+report.categoryName+'</span></div>';
+				   	    result = result +'<div class="tbldata-dotdot-vsm"> <span class="tbldata-dotdot-sm" title = "'+report.categoryName+'">'+report.categoryName+'</span></div>';
 					   	result = result +'</td>';
-					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+description+'</div></td>';
-					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.createdUser+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-vsm" title = "'+description+'">'+description+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-vsm" title = "'+report.createdUser+'">'+report.createdUser+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm" title="'+report.dateStr+'">'+report.dateStr+'</div></td>';
 					   	result = result +'<td><div>';
 					   	if(report.defaultCategory !=1){

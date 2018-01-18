@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.AmexUploadFile;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoPaymentTypes;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
@@ -87,6 +89,9 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@Autowired
 	AssetCategoryService assetCategoryService;
+	
+	@Autowired
+	private AssetService assetService;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -225,6 +230,36 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		
 	}
 	
+	
+	@RequestMapping(value = "/assetManagementSummary")
+	public ModelAndView assetManagementSummary(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
+	
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		ModelAndView model = new ModelAndView();
+		model.setViewName("backOffice/assetManagementSummary");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		model.addObject("assetCategoriesList", assetCategoriesList);
+		
+		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+		model.addObject("employeesList", employeesList);
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.AssetManagement);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		Asset asset = assetService.getAssetById(assetId);
+		model.addObject("asset",asset);
+		
+		return model;
+		
+	}
 	
 	  @RequestMapping(value = "/getAssetCategories")
 	    public String getAssetCategories(HttpServletRequest request) throws Exception {

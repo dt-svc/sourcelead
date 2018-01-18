@@ -1013,6 +1013,11 @@ jQueryFormUtils.validateDateFormat = function(val) {
 jQueryFormUtils.validateNumberAlphabet = function(val) {
     return val.trim().match(/^[0-9][A-Z a-z 0-9]*[0-9a-zA-Z]$/) !== null;
 };
+
+//******************Validate Alphanumeric ******
+jQueryFormUtils.validateNumberAndAlphabet = function(val) {
+    return val.trim().match(/^[a-zA-Z0-9]*$/) !== null;
+};
 //******************Validate Alphanumeric and must start with Alphabet******
 jQueryFormUtils.validateAlphaNumber = function(val) {
 	return val.trim().match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
@@ -1284,6 +1289,9 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_NumberAlphabet') > -1 && !jQueryFormUtils.validateNumberAlphabet(value)) {
             return validationErrorMsg || language.badNumberAlphabet;
         }
+        else if (validationRules.indexOf('validate_NumberAndAlphabet') > -1 && !jQueryFormUtils.validateNumberAndAlphabet(value)) {
+            return validationErrorMsg || language.badNumberAndAlphabet;
+        }
 // Validate if  Must start with Alphabet - Alphanumeric allowed
         else if (validationRules.indexOf('validate_AlphaNumber') > -1 && !jQueryFormUtils.validateAlphaNumber(value)) {
             return validationErrorMsg || language.badAlphaNumber;
@@ -1396,6 +1404,7 @@ jQueryFormUtils.LANG =  {
 	badPassword: 'Must Contain at least one special character',
 	badPassLength:'Password length must be greater than 6 characters',
 	badNumberAlphabet:'Allows Only Alphanumeric and must start with a Number',
+	badNumberAndAlphabet:'Allows Only Alphanumeric',
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
 	badAlphaNumericSpecialChar:'Allows Alphanumeric and Special Characters and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',

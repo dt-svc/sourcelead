@@ -83,4 +83,10 @@ public class AssetCategoryServiceImpl implements AssetCategoryService{
 		return assetCategoryDao.getAssetCategoryListByLocationIdAndName(orgLocationId, name);
 	}
 
+	@Override
+	public AssetCategory getAssetCategoryByCategoryId(Long categoryId) {
+		// TODO Auto-generated method stub
+		return assetCategoryDao.getAssetCategoryByCategoryId(categoryId);
+	}
+
 }

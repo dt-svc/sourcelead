@@ -81,7 +81,7 @@ $(document).ready(function(){
 		         result += '    <td>';
 		         if(report.name != null && report.name != '' && report.name != 'undefined'){
 		        	 result += '      <div class="proj_show tbldata-dotdot-big" onclick="openLeaveTypeSummary(\''+report.id+'\');">';
-		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.name+'" onclick="openLeaveTypeSummary(\''+report.id+'\');">'+report.name+'</div>';
+		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.name+'" >'+report.name+'</div>';
 		        	 result += '          <i class="fa fa-binoculars pull-right"></i>';
 			         result += '      </div>';
 		         } 
@@ -495,7 +495,7 @@ function openLeaveTypeSummary(typeId){
 			result +='              </div>';
 			}
 			
-			if(report.policyName != null && report.policyName != '' && report.policyName != 'undefined'){
+			if(report.leavePolicy != null && report.leavePolicy != '' && report.leavePolicy != 'undefined'){
 			result +='              <div class="clearfix"></div>';
 			result +='             <div class="col-md-12 mb">';
 			result +='                  <h4>Leave Policies</h4>';
