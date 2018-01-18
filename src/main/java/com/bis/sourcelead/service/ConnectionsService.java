@@ -11,6 +11,8 @@ public interface ConnectionsService {
 
 	
 	Connections saveConnection(Connections connections) throws Exception;
+	
+	Connections updateConnection(Connections connections) throws Exception;
 
 	List<UserRoleDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String connectionStatus, String status) throws Exception;
 
@@ -21,5 +23,9 @@ public interface ConnectionsService {
 	List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String status);
 
 	Long getConnectionReceivedCount(Long id);
+	
+	Connections getConnectionByUUID(String connectionUUID) throws Exception;
+
+	Long checkUserInContacts(Long fromUid, Long toUid);
 
 }

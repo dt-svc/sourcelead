@@ -21,12 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ConnectionsDao;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.model.ConnectionBean;
 import com.bis.sourcelead.util.CommonUtil;
+import com.sun.jersey.api.representation.Form;
 
 @Repository
 public class ConnectionsDaoImpl implements ConnectionsDao {
@@ -147,6 +149,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTO.setUserId(userRole.getUser().getId());
 						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
 						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
 					if(status.equals("sent")) {
@@ -289,6 +292,52 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select count(connections) from Connections connections where connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus";
 		Long count = (Long) session.createQuery(query).setLong("userId", id).setString("connectionStatus", ConnectionStatus.REQUEST_SENT.toString()).uniqueResult();
+		return count;
+	}
+
+
+	@Override
+	@Transactional
+	public Connections getConnectionByUUID(String connectionUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Connections> connections = new ArrayList<Connections>();
+		logger.debug("getConnectionByUUID start");
+		connections = session
+				.createQuery(
+						"from Connections connections left join fetch connections.fromUser left join fetch connections.toUser where connections.connectionUID = :connectionUUID")
+				.setString("connectionUUID", connectionUUID).setCacheable(true).list();
+		logger.debug("getConnectionByUUID end");
+		if (connections.size() > 0) {
+			return connections.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public Connections updateConnection(Connections connections) throws Exception {
+		logger.debug("updateConnection");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (connections != null) {
+				session.update(connections);
+			}
+			logger.debug("connections updated Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CONNECTIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+		}
+		return connections;
+	}
+
+
+	@Override
+	public Long checkUserInContacts(Long fromUid, Long toUid) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(referContacts) from ReferContacts referContacts where referContacts.referFromUser.id = :fromUid and referContacts.contactUser.id = :toUid";
+		Long count = (Long) session.createQuery(query).setLong("fromUid", fromUid).setLong("toUid", toUid).uniqueResult();
 		return count;
 	}
 

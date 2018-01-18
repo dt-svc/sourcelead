@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.service.ConnectionsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -72,6 +74,9 @@ public class ConnectionsRestController {
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
+	@Autowired
+	ReferContactsService referContactsService;
+	
 	@RequestMapping(value="/addNewConnection")
 	public String addNewConnection(@RequestParam(value = "userCode", required = false) String userCode, HttpServletRequest request){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -84,9 +89,10 @@ public class ConnectionsRestController {
 			connections.setToUser(toUser);
 			connections.setConnectionStatus(ConnectionStatus.REQUEST_SENT);
 			connections.setStatus(Constants.RECORD_ACTIVE);
+			connections.setConnectionUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			connections.setCreatedDate(new Timestamp(new Date().getTime()));
 			connectionsService.saveConnection(connections);
-			connectionInvitationMailToUser(user,toUser,loginOrgLocation.getId());
+			connectionInvitationMailToUser(user,toUser,loginOrgLocation.getId(),connections.getConnectionUID());
 			result = "success";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,31 +173,32 @@ public class ConnectionsRestController {
 	
 	
 	@RequestMapping(value="/ws/acceptConnection")
-	public ModelAndView addAcceptConnection(@RequestParam(value = "userCode", required = false) String userCode,@RequestParam(value = "fromUser", required = false) String fromUser, HttpServletRequest request){
-		User user=null;
+	public ModelAndView addAcceptConnection(@RequestParam(value = "connectionUUID", required = false) String connectionUUID, HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getPrincipal() != null) {
-			
-			if(fromUser ==null){
-			 user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-			}
-			
+			Connections connections = null;
 			String result = "invalid";
 			try {
-				User toUser = userService.getUserByUserCode(userCode);
-				if(fromUser !=null){
-				user = userService.getUserByUserCode(fromUser);
+				if(StringUtils.isNotBlank(connectionUUID)){
+					 connections = connectionsService.getConnectionByUUID(connectionUUID);
 				}
-				int resultValue = 0;
-					resultValue = connectionsService.acceptConnection(user, toUser, ConnectionStatus.CONNECTED.getValue());
-				if(resultValue != 0) {
+					
+				if(connections != null){
+					connections.setConnectionStatus(ConnectionStatus.CONNECTED);
+					connectionsService.updateConnection(connections);
+					Long count = connectionsService.checkUserInContacts(connections.getFromUser().getId(),connections.getToUser().getId());
+					if(count == 0) {
+						referContactsService.saveuserContactsFromConnections(connections.getFromUser(),connections.getToUser());
+						referContactsService.saveuserContactsFromConnections(connections.getToUser(),connections.getFromUser());
+					}
 					result = "success";
 				}
+				
 			} catch (Exception e) {
 			e.printStackTrace();
 			}
-			if(fromUser !=null && result == "success"){
+			if(result == "success"){
 				return new ModelAndView("redirect:/app/loadConnectedList");
 			}else{
 				model.setViewName("login");
@@ -227,7 +234,7 @@ public class ConnectionsRestController {
 		return userRoleDTOList;
 	}
 	
-	private void connectionInvitationMailToUser(User loginUser, User toUser, Long locationId) throws Exception
+	private void connectionInvitationMailToUser(User loginUser, User toUser, Long locationId,String connectionUUID) throws Exception
 	{
 		OrgLocations locations = orgLocationService.getOrgLocations(locationId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(toUser.getId(), locationId);
@@ -249,7 +256,7 @@ public class ConnectionsRestController {
 		StringBuilder loginBuilder = new StringBuilder();
 		globalVarsMap.put("loginLink", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
 		globalVarsMap.put("receiverEmail", toUser.getEmail());
-		StringBuilder connectionsBuilder = sendEmailToInvitationUserTable(loginUser, toUser, locations);
+		StringBuilder connectionsBuilder = sendEmailToInvitationUserTable(loginUser, toUser, locations,connectionUUID);
 		globalVarsMap.put("profilePicUrl", connectionsBuilder.toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -280,7 +287,7 @@ public class ConnectionsRestController {
 	}
 	
 	
-	public StringBuilder sendEmailToInvitationUserTable(User loginUser, User toUser, OrgLocations locations) throws Exception
+	public StringBuilder sendEmailToInvitationUserTable(User loginUser, User toUser, OrgLocations locations,String connectionUUID) throws Exception
 	{
 		StringBuilder tempHTML = new StringBuilder();
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), locations.getId());
@@ -305,7 +312,7 @@ public class ConnectionsRestController {
 		// connections</p>");
 		tempHTML.append("		</div>");
 		tempHTML.append("   	<div style='float: right; padding: 5px;'>");
-		tempHTML.append("<a href='").append(sourceleadUrl).append("/ws/acceptConnection?userCode=").append(loginUser.getUserCode()).append("&fromUser=").append(toUser.getUserCode()).append(" ' style='display: block; background-color: #1176d4; color: #fff; text-decoration: none; padding: 4px 15px 6px; border-radius: 2px; font-size: 14px; line-height: 20px;' href='javascript:void(0)'>Accept </a>");
+		tempHTML.append("<a href='").append(sourceleadUrl).append("/ws/acceptConnection?connectionUUID=").append(connectionUUID).append(" ' style='display: block; background-color: #1176d4; color: #fff; text-decoration: none; padding: 4px 15px 6px; border-radius: 2px; font-size: 14px; line-height: 20px;' href='javascript:void(0)'>Accept </a>");
 		tempHTML.append("   	</div>");
 		tempHTML.append("   	<div style='clear:both'></div>");
 		tempHTML.append("	</div>");

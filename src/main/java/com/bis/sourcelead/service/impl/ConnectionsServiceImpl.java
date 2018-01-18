@@ -51,6 +51,21 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 		return connectionsDao.getConnectionReceivedCount(id);
 	}
 
+	@Override
+	public Connections getConnectionByUUID(String connectionUUID) throws Exception {
+		return connectionsDao.getConnectionByUUID(connectionUUID);
+	}
+
+	@Override
+	public Connections updateConnection(Connections connections) throws Exception {
+		return connectionsDao.updateConnection(connections);
+	}
+
+	@Override
+	public Long checkUserInContacts(Long fromUid, Long toUid) {
+		return connectionsDao.checkUserInContacts(fromUid, toUid);
+	}
+
 
 	
 

@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,7 +33,6 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProposeTimeService;
@@ -44,9 +45,9 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Prasanna Vadla
@@ -468,7 +469,58 @@ public class RequirementInterviewRestController {
 	 
 	 
 	 
-	 
+	 @RequestMapping(value = "/app/getInterviewSlotDates")
+		public List<String> getInterviewSlotDates(@RequestParam(value = "applicantSubmissionIds", required = false) String applicantSubmissionIds,
+				@RequestParam(value = "interviewerIds", required = false) String interviewerIds,
+				 HttpServletRequest request) throws Exception {
+		 
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<String> interviewDatesList = new ArrayList<>();
+			List<Long> interviewUserIdList = new ArrayList<>();
+			List<Long> submissionsList = new ArrayList<>();
+			List<Date> interviewerDatesList = new ArrayList<>();
+			List<Date> candidatesDatesList = new ArrayList<>();
+			Set<Date> datesList = new LinkedHashSet<>();
+			
+			if(interviewerIds != null && !interviewerIds.isEmpty()) {
+				String[] interviewerUserIds = interviewerIds.split(",");
+				for(int i=0;i<interviewerUserIds.length;i++) {
+					interviewUserIdList.add(Long.valueOf(interviewerUserIds[i]));
+				}
+				interviewerDatesList = requirementInterviewService.getInterviewDatesForInterviewrsInterviewSlots(interviewUserIdList, loginOrgLocations.getId());
+			}
+			
+			if(applicantSubmissionIds != null && !applicantSubmissionIds.isEmpty()) {
+				String[] submissionIds = applicantSubmissionIds.split(",");
+				for(int i=0;i<submissionIds.length;i++) {
+					submissionsList.add(Long.valueOf(submissionIds[i]));
+				}
+				candidatesDatesList = requirementInterviewService.getInterviewDatesForCandidateInterviewSlots(submissionsList);
+			}
+			
+			if(interviewerDatesList != null && interviewerDatesList.size() > 0) {
+				datesList.addAll(interviewerDatesList);
+			}
+			
+			if(candidatesDatesList != null && candidatesDatesList.size() > 0) {
+				datesList.addAll(candidatesDatesList);
+			}
+			
+			Timezone timezone = null;
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			if(datesList != null && datesList.size() > 0) {
+				for(Date date : datesList) {
+					    String converted_dateStr =  CalendarUtil.getDateStrForGivenTimeZone(timezone.getTimeZoneId(), date, "yyyy/MM/dd");
+					    if(StringUtils.isNotEmpty(converted_dateStr)) {
+					    	 interviewDatesList.add(converted_dateStr);
+					    }
+				}
+			}
+			return interviewDatesList;
+		}
+		
 	 
 	 
 	 @RequestMapping(value = "/app/getInterviewerAndApplicantsDetails")
