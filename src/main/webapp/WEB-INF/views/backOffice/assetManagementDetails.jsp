@@ -247,9 +247,8 @@ function assetDetails(assetId) {
 					if (json.workingStatus != null && json.workingStatus != '' && json.workingStatus != 'undefined') {
 						workingStatus = json.workingStatus;
 					}
-					
-					if (json.hardDisk != null && json.hardDisk != '' && json.hardDisk != 'undefined') {
-						hardDisk = json.hardDisk;
+					if (json.harddisk != null && json.harddisk != '' && json.harddisk != 'undefined') {
+						hardDisk = json.harddisk;
 					}
 					
 					if (json.monitor != null && json.monitor != '' && json.monitor != 'undefined') {
@@ -275,61 +274,58 @@ function assetDetails(assetId) {
 					result = result + '<h1>'+json.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
 					result = result + '<div class="require_one">';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b>Category Name:</b> <span>'+json.categoryName+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Category Name:</strong></b> <span>'+json.categoryName+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b>S. No.:</b> <span>'+json.sno+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Serial Number:</strong></b> <span>'+json.sno+'</span>';
 					result = result + '<div class="clearfix"></div>';
 					result = result + ' </div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b>Make:</b> <span>'+make+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Make:</strong></b> <span>'+make+'</span>';
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '</div>';
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b>Model:</b> <span>'+model+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span>'+model+'</span>';
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
-						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class="tbldata-dotdot-me">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
 		           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.fileUrl+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"title="preview"></a>';		           						          
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}else{
-						result = result + ' <div class="require_wrap_details_cta"> <b>Attched File:</b> <span>NO DATA</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span>NO DATA</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 					}
 					if(json.monitor != null && json.monitor != '' && json.monitor != 'undefined'){
-					result = result + ' <div class="require_wrap_details_cta"> <b>MotherBoard:</b> <span>'+json.monitor+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>MotherBoard:</strong></b> <span>'+json.monitor+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
 					}
-					result = result + ' <div class="require_wrap_details_cta"> <b>Description:</b> <span>'+description+'</span>';
-					result = result + ' <div class="clearfix"></div>';
-					result = result + '</div>';
 					
-					result = result + '<div class="require_wrap_details_cta"> <b>Working Status:</b> <span>'+workingStatus+'</span>';
+					result = result + '<div class="require_wrap_details_cta"> <b><strong>Working Status:</strong></b> <span>'+workingStatus+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
 					//this block not visible to others category assets
-					if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && (json.assetCategory.id == 1 || json.assetCategory.id ==2)) {
-						result = result + '<div class="require_wrap_details_cta"> <b>Memory:</b> <span>'+memory+'</span>';
+					if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>Memory:</strong></b> <span>'+memory+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="require_wrap_details_cta"> <b>CPU:</b> <span>'+cpu+'</span>';
+						result = result + '<div class="require_wrap_details_cta"> <b><strong>CPU:</strong></b> <span>'+cpu+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
-						result = result + ' <div class="require_wrap_details_cta"> <b>Hard Disk:</b> <span>'+hardDisk+'</span>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span>'+hardDisk+'</span>';
 						result = result + ' <div class="clearfix"></div>';
 						result = result + ' </div>';
 						
-						if (json.assetCategory != null && json.assetCategory != '' && json.assetCategory != 'undefined' && json.assetCategory.id == 2) {
-							result = result + ' <div class="require_wrap_details_cta"> <b>Monitor:</b> <span>'+monitor+'</span>';
+						if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span>'+monitor+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
@@ -337,26 +333,30 @@ function assetDetails(assetId) {
 					}
 					//this block not visible to others category assets
 					
-					result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A:</b> <span>'+shiftAEmpName+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Shfit A:</strong></b> <span>'+shiftAEmpName+'</span>';
 						result = result + '  <div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						if (json.shiftAFileUrl != null && json.shiftAFileUrl != '' && json.shiftAFileUrl != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit A Attched File:</b> <span>'+json.shiftAFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftAFileUrl+'\" download title="Download"></a>';
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Shfit A Attched File:</strong></b> <span class="tbldata-dotdot-me">'+json.shiftAFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftAFileUrl+'\" download title="Download"></a>';
 			           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.shiftAFileUrl+'\',\''+json.shiftAFileName+'\',\''+json.shiftAFileContentType+'\');"title="preview"></a>';		           						          
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
 						
-						result = result + '  <div class="require_wrap_details_cta"> <b>Shfit B:</b> <span>'+shiftBEmpName+'</span>';
+						result = result + '  <div class="require_wrap_details_cta"> <b><strong>Shfit B:</strong></b> <span>'+shiftBEmpName+'</span>';
 						result = result + '   <div class="clearfix"></div>';
 						result = result + '  </div>';
 						
 						if (json.shiftBFileUrl != null && json.shiftBFileUrl != '' && json.shiftBFileUrl != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b>Shfit B Attched File:</b> <span>'+json.shiftBFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftBFileUrl+'\" download title="Download"></a>';
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Shfit B Attched File:</strong></b> <span class="tbldata-dotdot-me">'+json.shiftBFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftBFileUrl+'\" download title="Download"></a>';
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
+						
+						result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span>'+description+'</span>';
+						result = result + ' <div class="clearfix"></div>';
+						result = result + '</div>';
 					
 					result = result + '  <div class="clearfix"></div>';
 					result = result + '<div class="user_summary_edit client_summary_edit" id="editUserDiv" ></div>';
@@ -431,8 +431,8 @@ function editAssetManagement(assetId){
 				workingStatus = json.workingStatus;
 			}
 			
-			if (json.hardDisk != null && json.hardDisk != '' && json.hardDisk != 'undefined') {
-				hardDisk = json.hardDisk;
+			if (json.harddisk != null && json.harddisk != '' && json.harddisk != 'undefined') {
+				hardDisk = json.harddisk;
 			}
 			
 			if (json.description != null && json.description != '' && json.description != 'undefined') {
@@ -472,11 +472,11 @@ function editAssetManagement(assetId){
 			result = result + '<div class="clearfix" id="laptop-edit">';
 			result = result + '<div class="form-horizontal clearfix">';
 			
-			result = result + '<div class="col-md-6">';
+			result = result + '<div class="col-md-3 minHeight50">';
 			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200" placeholder="Serial / Port Number *">';
 			result = result + '</div>';
 			
-			result = result + '<div class="assetaddpop-ul col-md-6" id="workingStatusDiv">';
+			result = result + '<div class="assetaddpop-ul col-md-3 minHeight50" id="workingStatusDiv">';
 			result = result + '<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">';
 			result = result + '<option selected value="">-Select Working Status-</option>';
 			result = result + ' <option '+selected1+'>Working</option>';
@@ -484,30 +484,31 @@ function editAssetManagement(assetId){
 			result = result + '</select>';	
 			result = result + ' </div>';
 			
-			result = result + '<div class="col-md-6">';
+			result = result + '<div class="col-md-3 minHeight50">';
 			result = result + '  <input type="text" class="form-control input-sm" name="make" value="'+make+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Make">';
 			result = result + '</div>';
 			
-			result = result + ' <div class="col-md-6">';
+			result = result + ' <div class="col-md-3 minHeight50">';
 			result = result + '  <input type="text" class="form-control input-sm" name="model" value="'+model+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Model">';
 			result = result + ' </div>';
 			//this block not visible to others category assets
+			
 			if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
 			
-				result = result + ' <div class="col-md-6">';
+				result = result + ' <div class="col-md-3 minHeight50">';
 				result = result + '  <input type="text" class="form-control input-sm" name="memory" value="'+memory+'" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50" placeholder="Memory">';
 				result = result + '</div>';
 				
-				result = result + '<div class="col-md-6">';
+				result = result + '<div class="col-md-3 minHeight50">';
 				result = result + ' <input type="text" class="form-control input-sm" name="cpu" value="'+cpu+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="CPU">';
 				result = result + ' </div>';
 				
-				result = result + ' <div class="col-md-6">';
+				result = result + ' <div class="col-md-3 minHeight50">';
 				result = result + '<input type="text" class="form-control input-sm" name="harddisk" value="'+hardDisk+'" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100" placeholder="Hard Disk">';
 				result = result + '</div>';
 				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
-					result = result + ' <div class="col-md-6">';
+					result = result + ' <div class="col-md-3">';
 					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="MotherBoard">';
 					result = result + '</div>';
 				}
@@ -516,9 +517,9 @@ function editAssetManagement(assetId){
 			//this block not visible to others category assets
 			
 			result = result + '<div class="clearfix">';
-				result = result + '<h4 class="col-md-12">Shift A</h4>';
+				result = result + '<h4 class="col-md-12 margin-top0">Shift A</h4>';
 				result = result + '</div>';
-				result = result + '<div class="col-md-6">';
+				result = result + '<div class="col-md-3">';
 				result = result + ' <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">';
 				result = result + '<option selected value="">-Select Employee-</option>';
 					for (var i=0; i<json.employeesList.length; i++)
@@ -534,7 +535,7 @@ function editAssetManagement(assetId){
 				result = result + '   </select>';
 				result = result + ' </div>';
 				
-				 result = result + '<div class="col-md-6" id="shiftAFileAttachmentDiv">';
+				 result = result + '<div class="col-md-4 minHeight50" id="shiftAFileAttachmentDiv">';
 				 result = result + ' <div class="input-group attachfile-error">';
 				 result = result + '   <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftAUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 				 result = result + '     <input type="file" style="display: none;" multiple name="uploadBtn-dskA" id="uploadBtnShiftA" class="upload">';
@@ -543,7 +544,7 @@ function editAssetManagement(assetId){
 				 result = result + ' </div>';
 				 result = result + '</div>';
 				 var blockA = "A";
-				 result = result+'  <div class="col-md-6" id="shiftADocNameDiv" style="display: none;">';
+				 result = result+'  <div class="col-md-4 minHeight50" id="shiftADocNameDiv" style="display: none;">';
 				 result = result+'  <label id="shiftADocumentName" name="shiftADocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftAFileName+'" >'+shiftAFileName+'</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeDoc('+assetId+',\''+json.shiftAFileUrl+'\',\''+blockA+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftAExisitngFile" name="shiftAExisitngFile" value="'+shiftAFileName+'">';
 				 result = result+'  </div>';
@@ -552,7 +553,7 @@ function editAssetManagement(assetId){
 				result = result + '<div class="clearfix">';
 				result = result + ' <h4 class="col-md-12">Shift B</h4>';
 				result = result + '</div>';
-				result = result + '<div class="col-md-6">';
+				result = result + '<div class="col-md-3 minHeight50">';
 				result = result + '<select class="form-control chosen-select" id="shiftBEmp" name="shiftBEmp">';
 				result = result + '<option selected value="">-Select Employee-</option>';
 					for (var i=0; i<json.employeesList.length; i++)
@@ -567,7 +568,7 @@ function editAssetManagement(assetId){
 				result = result + '</select>';
 				result = result + '</div>';
 				
-				result = result + '<div class="col-md-6" id="shiftBFileAttachmentDiv">';
+				result = result + '<div class="col-md-4 minHeight50" id="shiftBFileAttachmentDiv">';
 				result = result + ' <div class="input-group attachfile-error">';
 				result = result + '   <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftBUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 				result = result + '     <input type="file" style="display: none;" name="uploadBtn-dskB" id="uploadBtnShiftB" class="upload">';
@@ -576,16 +577,16 @@ function editAssetManagement(assetId){
 				result = result + '</div>';
 				result = result + '</div>';
 				var blockB = "B";
-				 result = result+'  <div class="col-md-6" id="shiftBDocNameDiv" style="display: none;">';
+				 result = result+'  <div class="col-md-4" id="shiftBDocNameDiv" style="display: none;">';
 				 result = result+'  <label id="shiftBDocumentName" name="shiftBDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftBFileName+'" ></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeDoc('+assetId+',\''+json.shiftBFileUrl+'\',\''+blockB+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftBExisitngFile" name="shiftBExisitngFile" value="'+shiftBFileName+'">';
 				 result = result+'  </div>';
 				 result = result+'  </div>';
-			result = result + ' <div class="col-md-6">';
+			result = result + ' <div class="col-md-8">';
 			result = result + '  <textarea class="form-control" rows="2" name="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space">'+description+'</textarea>';
 			result = result + ' </div>';
 			
-			result = result + ' <div class="col-md-6" id="fileAttachmentDiv">';
+			result = result + ' <div class="col-md-4" id="fileAttachmentDiv">';
 			result = result + '<div class="input-group attachfile-error" >';
 			result = result + '<label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 			result = result + ' <input type="file" name="attachment" id="fileAttachment" style="display: none;" class="upload">';
@@ -594,7 +595,7 @@ function editAssetManagement(assetId){
 			result = result + ' </div>';
 			result = result + ' </div>';
 			var blockC = "C";
-			result = result+'  <div class="col-md-6" id="docNameDiv" style="display: none;">';
+			result = result+'  <div class="col-md-4" id="docNameDiv" style="display: none;">';
 			result = result+'  <label id="documentName"  class="text-primary tbldata-dotdot-vsm pull-left" title="'+fileName+'" ></label>&nbsp;&nbsp;<span id="delete_file" onclick="removeDoc('+assetId+',\''+json.fileUrl+'\',\''+blockC+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 			result = result	+ '<input type="hidden" id="generalExisitingFile" name="generalExisitingFile" value="'+fileName+'">';
 			result = result+'  </div>';
