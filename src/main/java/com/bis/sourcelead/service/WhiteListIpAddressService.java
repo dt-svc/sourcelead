@@ -12,10 +12,10 @@ public interface WhiteListIpAddressService {
 	
 	public WhiteListIPAddress addWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, OrgLocations orgLocations, User user) throws Exception;
 
-	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId);
+	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId,Long whiteListIpId);
 
 	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId);
 
-	public boolean validateIPAddress(String ipAddress, UserRole userRole);
+	public boolean validateIPAddress(String ipAddress, UserRole userRole, Long whiteListId, String accessingType);
 
 }

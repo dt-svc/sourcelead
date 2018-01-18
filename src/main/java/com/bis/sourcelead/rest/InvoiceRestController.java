@@ -270,7 +270,7 @@ public class InvoiceRestController {
 		
 		if(null !=invoice){
 			if(null != invoice.getProjectID()){
-				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency(),invoiceType);
+				invoiceService.updateSubmissionApproverHiearachy(invoice,invoiceType);
 			}
 			invoiceSaved = "success";
 		}
@@ -765,7 +765,7 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getAllProjectAssignedMembers", method = RequestMethod.GET)
 	public @ResponseBody String getAllProjectAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId, 
 			@RequestParam(value = "frequency", required = false) String frequency, 
-			@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
+			@RequestParam(value = "orgRelationId", required = true) Long orgRelationId,
 			@RequestParam(value = "contractType", required = false) String contractType,HttpServletRequest request) throws Exception
 	{
 		
@@ -781,59 +781,63 @@ public class InvoiceRestController {
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId && !"".equalsIgnoreCase(projectId)) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate,contractType);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId),orgLocation.getId(), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
-				projectMember.setSubmissionApproverHierarchyId(sah.getId());
-				StringBuilder candidateName = new StringBuilder();
-				if (null != projectMember.getProjectMemberCandidteId().getFirstName()
-						&& null != projectMember.getProjectMemberCandidteId().getLastName()) {
-					candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
-				}
-				else {
-					candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName());
-				}
-				projectMember.setCandidateName(candidateName.toString());
-				projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
-				if (null != projectMember.getProjectMemberCandidteId().getId()) {
-//					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
-					if(null != projectMember.getProjectMemberCandidteId()){
-						projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
-						List<Contracts> contractList = getSowContract(projectMember.getProjectMemberCandidteId().getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
-						if(null != contractList && contractList.size() >0){
-							projectMember.setContractsList(contractList);
-						}	
-					}
-					
-				}
-				projectMember.setStartDate(startDateStr);
-				projectMember.setEndDate(endDateStr);
-				StringBuilder sb = new StringBuilder();
-				if(null != sah.getBillableHours()){
-					String billableHours = String.valueOf(sah.getBillableHours());;
-					String arr[] = billableHours.split("\\.");
-					if (arr[0].length() == 2) {
-						sb.append("0").append(arr[0]);
-					}else if(arr[0].length() == 3){
-						sb.append(arr[0]);
-					}
-					else if (arr[0].length() == 1) {
-						sb.append("00").append(arr[0]);
-					}
-					if (arr[1].length() == 1) {
-						sb.append(":").append("0").append(arr[1]);
+				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
+				if(candidate != null){
+					projectMember.setSubmissionApproverHierarchyId(sah.getId());
+					StringBuilder candidateName = new StringBuilder();
+					if (null != projectMember.getProjectMemberCandidteId().getFirstName()
+							&& null != projectMember.getProjectMemberCandidteId().getLastName()) {
+						candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
 					}
 					else {
-						sb.append(":").append(arr[1]);
+						candidateName.append(projectMember.getProjectMemberCandidteId().getFirstName());
 					}
+					projectMember.setCandidateName(candidateName.toString());
+					projectMember.setUserId(String.valueOf(projectMember.getProjectMemberCandidteId().getId()));
+					if (null != projectMember.getProjectMemberCandidteId().getId()) {
+//						Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
+						if(null != projectMember.getProjectMemberCandidteId()){
+							projectMember.setCandidateId(projectMember.getProjectMemberCandidteId().getId());
+							List<Contracts> contractList = getSowContract(projectMember.getProjectMemberCandidteId().getId(),orgLocation,orgRelationId,contractType);
+							if(null != contractList && contractList.size() >0){
+								projectMember.setContractsList(contractList);
+							}	
+						}
+						
+					}
+					projectMember.setStartDate(startDateStr);
+					projectMember.setEndDate(endDateStr);
+					StringBuilder sb = new StringBuilder();
+					if(null != sah.getBillableHours()){
+						String billableHours = String.valueOf(sah.getBillableHours());;
+						String arr[] = billableHours.split("\\.");
+						if (arr[0].length() == 2) {
+							sb.append("0").append(arr[0]);
+						}else if(arr[0].length() == 3){
+							sb.append(arr[0]);
+						}
+						else if (arr[0].length() == 1) {
+							sb.append("00").append(arr[0]);
+						}
+						if (arr[1].length() == 1) {
+							sb.append(":").append("0").append(arr[1]);
+						}
+						else {
+							sb.append(":").append(arr[1]);
+						}
+						
+					}else{
+						sb.append("0");
+					}
+					projectMember.setTotalHours(sb.toString());
+					projectMembersList.add(projectMember);
 					
-				}else{
-					sb.append("0");
 				}
-				projectMember.setTotalHours(sb.toString());
-				projectMembersList.add(projectMember);
 			}
 			if(projectMembersList.size() >0){
 				resultJson = commonUtil.toJSON(projectMembersList);
@@ -863,14 +867,14 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getAllProjectVendorAssignedMembers", method = RequestMethod.GET)
 	public @ResponseBody String getAllProjectVendorAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,
 			@RequestParam(value = "frequency", required = false) String frequency,
-			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "orgRelationId", required = true) Long orgRelationId,
 			@RequestParam(value = "contractType", required = false) String contractType,HttpServletRequest request) throws Exception {
 		
 		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
-		String endDateStr = frequencyArray[1];
+		  String endDateStr = frequencyArray[1];
 		//String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
@@ -879,11 +883,13 @@ public class InvoiceRestController {
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if(null != projectId && !"".equalsIgnoreCase(projectId)){
-		sahList =submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate,contractType);
+		sahList =submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId),orgLocation.getId(), startDate, endDate,contractType);
 		}
 		if(null !=sahList && sahList.size() >0){
 			for(SubmissionApproverHierarchy sah : sahList){
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
+				if(candidate != null) {
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 				/*Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
@@ -931,7 +937,7 @@ public class InvoiceRestController {
 					
 					filteredMembersList.add(projectMember);
 				}
-				
+			}
 			}
 			if(filteredMembersList.size() >0){
 				resultJson =  commonUtil.toJSON(filteredMembersList);
@@ -1713,8 +1719,7 @@ public class InvoiceRestController {
 		}
 		if (null != invoice) {
 			if (null != invoice.getProjectID()) {
-				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),
-						invoice.getInvoiceFrequency(), invoiceType);
+				invoiceService.updateSubmissionApproverHiearachy(invoice, invoiceType);
 			}
 			invoiceSaved = "success";
 		}

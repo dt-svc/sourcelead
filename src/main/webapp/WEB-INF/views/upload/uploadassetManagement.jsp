@@ -29,7 +29,7 @@
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="#">Home</a> &raquo; <a href="${appPath}/jobs">Assets List</a>
+			<a href="#">Home</a> &raquo; <a href="${appPath}/assetManagement">Assets List</a>
 			&raquo; Import Assets
 		</div>
 	</section>
@@ -59,7 +59,7 @@
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/assetManagement'/>'">
 								</div>
 							</div>
 						</div>

@@ -985,18 +985,23 @@ public class RegistrationRestController {
 	}
 	
 	@RequestMapping(value = "/app/ws/validateWhitelistIp", method = RequestMethod.GET)
-	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "name", required = false) String userName,HttpServletRequest request) throws Exception
+	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,
+			@RequestParam(value = "name", required = false) String userName,
+			@RequestParam(value = "ipAddress", required = false) String ipAddress,
+			@RequestParam(value = "whiteListId", required = false) Long whiteListId,
+			@RequestParam(value = "accessingType", required = false) String accessingType,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = null;
-		if(userRoleId > 0)
+		if (userRoleId > 0)
 			userRole = userRoleService.getUserRoleById(userRoleId);
-		else{
+		else {
 			User user = userService.findByUserName(userName);
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
-		
-		String ipAddress = userLoginHelper.getClientIpAddr(request);
-		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole);
+		if ("".equalsIgnoreCase(ipAddress) || ipAddress == null) {
+			ipAddress = userLoginHelper.getClientIpAddr(request);
+		}
+		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId,accessingType);
 	}
 	
 	

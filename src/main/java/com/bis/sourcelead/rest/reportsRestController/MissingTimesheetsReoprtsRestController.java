@@ -140,7 +140,8 @@ public class MissingTimesheetsReoprtsRestController {
 					            	MissingTimesheetResultRepotDTO mtr = new MissingTimesheetResultRepotDTO();
 					            	mtr.setProjectName(pm.getProjects().getProjectName());
 					            	mtr.setEmployeName(pm.getProjectMemberCandidteId().getFullName());
-					            	mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignation());
+					            	//mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignation());
+					            	mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignationType());
 					            	mtr.setFrequency(unfilledFrequency);
 					            	mtr.setDueDays(CalendarUtil.getNumberOfDays(currentCal.getTime(),frequencyEndDate));
 					            	List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(pm.getProjects().getId(),orgLocations.getId()) ;

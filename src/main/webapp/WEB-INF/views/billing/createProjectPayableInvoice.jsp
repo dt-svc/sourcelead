@@ -192,13 +192,13 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();">
+                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();validateDiscount();">
                         <option value="percentage">Discount %</option>
                         <option value="flat">Discount Value</option>
                       </select>
                     </div>
-                    <div class="col-md-5 paddingLeft">
-                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" name="discountValue" placeholder="Flat / Discount" type="text" onblur="calculateDisCount();">
+                    <div class="col-md-5 paddingLeft" id="discountValueDiv">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" name="discountValue" placeholder="Flat / Discount" type="text" onblur="calculateDisCount();" onkeyup="validateDiscount();">
                     </div>
                   </div>
                 </div>
@@ -256,7 +256,7 @@ function getProjectsList(projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
+	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(json) {
 	//var json = JSON.parse(data);
 	var output = "";
@@ -905,7 +905,46 @@ function calculateSum(){
  <!-- Calculationg Total Discount With Sub Total --> 
 <script type="text/javascript">
 function calculateDisCount(){
+	
+	var discountType = $("#disCount").val();
+	var subTotal = $("#subTotal").val();
 	var discountValue = $("#discountValue").val();
+	var total ='';
+	if(discountType == 'flat'){
+		if(discountValue && subTotal > 0){
+			total = subTotal-discountValue;
+			$("#discountTotal").val(discountValue);
+			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
+		}else{
+			$("#discountTotal").val("00.00");
+			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
+	}
+	if(discountType == 'percentage'){
+		if(discountValue && subTotal > 0){
+			var perCentValue = (subTotal * discountValue)/100;
+			total = subTotal - perCentValue;
+			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
+		}else{
+			$("#discountTotal").val("00.00");
+			$("#conversionFrom").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
+	}
+	 calculateTaxDiscount();
+	 conversion();
+	
+	
+/* 	var discountValue = $("#discountValue").val();
 	if(discountValue !='' && discountValue !='undefined' ){
 		var subTotal = $("#subTotal").val();
 		var disCountType = $("#disCount").val();
@@ -928,7 +967,8 @@ function calculateDisCount(){
 
 					 	 calculateTaxDiscount();
 					 	conversion();
-}
+} */
+
 }
 </script>
 
@@ -947,7 +987,7 @@ function calculateDisCount(){
 
   <div id="divTaxTd2" style="display: none; float: left;">
 	 <div class="btn-group tblminwidth-75">
-	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount();">
+	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount();validateRowDiscount(REPLACEROWID);">
 		 <option value="percentage">Percentage</option>
 		 <option value="flat">Flat</option>
  		  </select>
@@ -955,8 +995,8 @@ function calculateDisCount(){
   </div>
   
   <div id="divTaxTd3" style="display: none; float: left;">
-     <div class="tblminwidth-75">
-        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();">
+     <div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
+        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();" onkeyup="validateRowDiscount(REPLACEROWID);">
     </div>
   </div>
   
@@ -1681,6 +1721,68 @@ function creatProPayInvoiceEmptyVendorContact(){
 		 var vid =  $("#vendorOrgRelationId").val();
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
+</script>
+
+<script>
+function validateDiscount() {
+	$('#discountValueDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 var selectedTextInvoice = document.getElementById("disCount").value;
+	 var enteredValue = document.getElementById("discountValue").value;
+	 
+	 if(selectedTextInvoice =='percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(enteredValue.match(floatNum)){
+			  $("#saveInvoice").removeAttr("disabled", "disabled");
+				$("#sendInvoice").removeAttr("disabled", "disabled");
+			   return true;
+		  }		  
+		 else{
+				$("input#discountValue").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+				$("#saveInvoice").attr("disabled", "disabled");
+				$("#sendInvoice").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }if(selectedTextInvoice =='flat'){
+			  $("#saveInvoice").removeAttr("disabled", "disabled");
+			  $("#sendInvoice").removeAttr("disabled", "disabled");
+		  }		  
+}
+</script>
+
+<script>
+function validateRowDiscount(maxRowNum) {
+$('#'+maxRowNum+'discountRowDiv').parent().find('p.jquery_form_error_message').remove();
+var selectedTextInvoice = $("#"+maxRowNum+"taxdiscountType").val();
+var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
+
+if(selectedTextInvoice =='percentage'){
+	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	  if(enteredValue.match(floatNum)){
+		  $("#saveInvoice").removeAttr("disabled", "disabled");
+			$("#sendInvoice").removeAttr("disabled", "disabled");
+		   return true;
+	  }		  
+	 else{
+			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+			$("#saveInvoice").attr("disabled", "disabled");
+			$("#sendInvoice").attr("disabled", "disabled");
+			return false; 
+	 	 }
+}if(selectedTextInvoice =='flat'){
+	/* var floatNum = /^[0-9]*$/
+		if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+			   return false;
+		  }
+		else{ */
+			$("#saveInvoice").removeAttr("disabled", "disabled");
+			  $("#sendInvoice").removeAttr("disabled", "disabled");
+// 		}
+	  }		
+	  
+ 
+}
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	
