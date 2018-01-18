@@ -58,8 +58,8 @@ $(document).ready(function(){
               
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
-<%--            <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
- --%>         <!-- Add Asset Popup -->
+           <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+         <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
@@ -101,7 +101,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   <div class="col-md-4 mb10" id="memoryDiv">
-                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-50">
+                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50">
                   </div>
                   <div class="col-md-4 mb10" id="cpuDiv">
                     <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
@@ -110,7 +110,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   <div class="col-md-4 mb10" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="MotherBoard" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="MotherBoard" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">
@@ -376,7 +376,8 @@ var validationSettings = {
 
 						result = result+'<tr id="asset'+report.id+'">';
 			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
+	       		       	result = result +"<a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a>";
+					   	//result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
 						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
@@ -928,5 +929,6 @@ function uploadFileShiftB(){
 	fileUpload("uploadBtn-dskB", "assetDocuments", "addAsset_form","uploadBtndskBUpload");
 }
 </script>
-<jsp:include page="assetManagementDetails.jsp" />
+<%-- <jsp:include page="assetManagementDetails.jsp" />
+<jsp:include page="assetManagementSummary.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

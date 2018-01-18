@@ -71,14 +71,14 @@ function reloadFunction(){
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
                 <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getMissingTimesheetReports();"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getPendingForApprovalTimesheetReports();"><i class="fa fa-search"></i></button>
             </div>
           </div>
       </div>
 
         </div>
      <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getMissingTimesheetReports();">Run</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPendingForApprovalTimesheetReports();">Run</button>
 		</div>
       <div class="col-md-1 noPad">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">

@@ -658,7 +658,7 @@ public class RequirementController {
 		Boolean isLoginUserAsApprover = false;
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		if(isAdmin || isManager){
-			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirement.getId());
+			requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
 		}else{
 			requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
 		}
