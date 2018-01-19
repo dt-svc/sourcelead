@@ -89,10 +89,10 @@ $(document).ready(function(){
 		   	     	    
 			    	    result = result+'<tr id="category'+report.id+'">';
 			   	     	result = result +'<td>';
-				   	    result = result +'<div class="tbldata-dotdot-vsm"> <span class="tbldata-dotdot-sm">'+report.categoryName+'</span></div>';
+				   	    result = result +'<div class="tbldata-dotdot-vsm"> <span class="tbldata-dotdot-sm" title = "'+report.categoryName+'">'+report.categoryName+'</span></div>';
 					   	result = result +'</td>';
-					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+description+'</div></td>';
-					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.createdUser+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-vsm" title = "'+description+'">'+description+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-vsm" title = "'+report.createdUser+'">'+report.createdUser+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm" title="'+report.dateStr+'">'+report.dateStr+'</div></td>';
 					   	result = result +'<td><div>';
 					   	if(report.defaultCategory !=1){
