@@ -141,6 +141,7 @@ var count = 0;
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}
 	   		}else if(type === 'manual' && json == null){
+	   			localStorage.setItem("receivedCount", 0);
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
