@@ -4453,7 +4453,7 @@ font-size: 14px; font-weight: normal;
 	width: 680px;
 }
 table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
-    padding: 0px 15px !important; background-size: 15px;
+    padding: 0px 15px !important; background-size: 15px; min-height: 40px;
 }
 .form-footer.custom_formfooter {
     min-height: 45px; line-height: 45px;
