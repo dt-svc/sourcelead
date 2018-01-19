@@ -562,7 +562,7 @@ function cancelOrgImg(){
                                 </div>
                              </div>
                             
-                            <div class="tableStyles datatable_filter mt40">
+                            <div class="clients_wrap_table datatable_filter mt40">
                 				<div id="whiteListIpsDiv"></div>   
                 			</div>
                 			
@@ -760,7 +760,7 @@ function WhiteListIpTablePagination(){
 	$('#WhiteListIpTable').DataTable({ 
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2909,7 +2909,7 @@ function validateDuplicateIpAddress(fromType){
 	var whiteListId = $("#whiteListId").val();
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&ipAddress="+ipAddress+"&whiteListId="+whiteListId,        
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&ipAddress="+ipAddress+"&whiteListId="+whiteListId+"&accessingType=settings",        
 	       success :function(result) {
 	    	 if(result == true){
 	    		 document.getElementById("saveWhiteListbtn").disabled = true;
