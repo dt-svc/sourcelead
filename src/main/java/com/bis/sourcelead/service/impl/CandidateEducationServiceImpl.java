@@ -140,22 +140,23 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		
 		
-		if(StringUtils.isNotBlank(candidateEducationDTO.getGrade())){
+		if(StringUtils.isNotBlank(candidateEducationDTO.getScore())){
 			if(candidateEducation != null && candidateEducation.getGrade() != null){
 				activitySummary.append("Grade").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGrade()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScore()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidateEducation.setGrade(candidateEducationDTO.getGrade());
+			candidateEducation.setGrade(candidateEducationDTO.getScore());
 		}else{
 			candidateEducation.setGrade("");
 		}
-		if(StringUtils.isNotBlank(candidateEducationDTO.getGradeType())){
+		if(StringUtils.isNotBlank(candidateEducationDTO.getScoreType())){
 			if(candidateEducation != null && candidateEducation.getGradeType() != null){
 				activitySummary.append("Grade Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGradeType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScoreType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidateEducation.setGradeType(candidateEducationDTO.getGradeType());
+			candidateEducation.setGradeType(candidateEducationDTO.getScoreType());
 		}else{
 			candidateEducation.setGradeType("");
 		}
+		
 		if(StringUtils.isNotBlank(candidateEducationDTO.getInstitute())){
 			if(candidateEducation != null && candidateEducation.getInstitute() != null){
 				activitySummary.append("Institute").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getInstitute()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getInstitute()).append(Constants.NEW_VALUE_TAG_END).append(" ");

@@ -141,7 +141,7 @@ function candidateEducationList(candidateId){
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
 	                    	 }
-	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.gradeType  != 'undefined'){
 			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
 			                 }else{
 			                 result  = result + '<td><div><span>----</span></div></td>'; 
@@ -285,7 +285,7 @@ function addEducation(candidateId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-5 dropdown-select positionRelative paddingRight">';
-	result = result  +'	                     <select class="form-control"  name="scoreType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="form-control"  name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -293,7 +293,7 @@ function addEducation(candidateId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
+	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -510,7 +510,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -530,7 +530,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -901,7 +901,14 @@ function clearSearchKey() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		
+		var scoreType = document.getElementById("scoreType").value; 
+		 if(scoreType != null && scoreType != ""){
+			 $('#candidateScore').removeAttr('data-validation-optional');
+			 $('#candidateScore').attr("data-validation","required"); 
+		 }else{
+			 $('#candidateScore').removeAttr('data-validation');
+			 $('#candidateScore').attr("data-validation-optional","true"); 
+		 }
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
