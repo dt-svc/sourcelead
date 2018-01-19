@@ -325,7 +325,7 @@ function emptyRecordsList(){
 		      				var startDateText = "";
 		    				var cell3 = row.insertCell(3);
 		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate"  >';
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate"  >';
 		    				startDateText = startDateText+'</div>';
 		    				cell3.innerHTML = startDateText;
 		    				
@@ -333,7 +333,7 @@ function emptyRecordsList(){
 		    				var endDateText = "";
 		    				var cell4 = row.insertCell(4);
 		    				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" >';
+		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" >';
 		    				endDateText = endDateText+'</div>';
 		    				cell4.innerHTML = endDateText;
 		    				
@@ -366,7 +366,7 @@ function emptyRecordsList(){
 		    										dt.setDate(dt.getDate() + 1);
 		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 		    						                removeStartDateValidation(maxRowNum);
-		    										getEstimatedHours(maxRowNum)
+		    										//getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 
@@ -381,7 +381,7 @@ function emptyRecordsList(){
 		    										dt.setDate(dt.getDate() - 1);
 		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
 		    										 
-		    						                getEstimatedHours(maxRowNum)
+		    						               // getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 		    								
@@ -398,7 +398,7 @@ function emptyRecordsList(){
 		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 		    										 
 		    						                removeStartDateValidation(maxRowNum);
-		    										getEstimatedHours(maxRowNum)
+		    										//getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 
@@ -411,7 +411,7 @@ function emptyRecordsList(){
 		    							        	var dt = $(this).datepicker('getDate', '-1d');
 		    										dt.setDate(dt.getDate() - 1);
 		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-		    						                getEstimatedHours(maxRowNum)
+		    						                //getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 		    							}
@@ -1014,7 +1014,7 @@ function removeStartDateValidation(rowId){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -1022,7 +1022,7 @@ function removeStartDateValidation(rowId){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" >';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
@@ -1054,7 +1054,7 @@ function removeStartDateValidation(rowId){
 									dt.setDate(dt.getDate() + 1);
 									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 					                removeStartDateValidation(maxRowNum);
-									getEstimatedHours(maxRowNum)
+									//getEstimatedHours(maxRowNum)
 								}
 							});
 
@@ -1068,7 +1068,7 @@ function removeStartDateValidation(rowId){
 						        	 var dt = $(this).datepicker('getDate', '-1d');
 										dt.setDate(dt.getDate() - 1);
 										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-					                getEstimatedHours(maxRowNum)
+					                //getEstimatedHours(maxRowNum)
 								}
 							});
 							
@@ -1083,7 +1083,7 @@ function removeStartDateValidation(rowId){
 									dt.setDate(dt.getDate() + 1);
 									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 					                removeStartDateValidation(maxRowNum);
-									getEstimatedHours(maxRowNum)
+									//getEstimatedHours(maxRowNum)
 								}
 							});
 
@@ -1097,7 +1097,7 @@ function removeStartDateValidation(rowId){
 										dt.setDate(dt.getDate() - 1);
 										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
 									 
-					                getEstimatedHours(maxRowNum)
+					                //getEstimatedHours(maxRowNum)
 								}
 							});
 						}
