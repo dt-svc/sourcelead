@@ -988,7 +988,8 @@ public class RegistrationRestController {
 	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,
 			@RequestParam(value = "name", required = false) String userName,
 			@RequestParam(value = "ipAddress", required = false) String ipAddress,
-			@RequestParam(value = "whiteListId", required = false) Long whiteListId, HttpServletRequest request) throws Exception
+			@RequestParam(value = "whiteListId", required = false) Long whiteListId,
+			@RequestParam(value = "accessingType", required = false) String accessingType,HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = null;
 		if (userRoleId > 0)
@@ -1000,7 +1001,7 @@ public class RegistrationRestController {
 		if ("".equalsIgnoreCase(ipAddress) || ipAddress == null) {
 			ipAddress = userLoginHelper.getClientIpAddr(request);
 		}
-		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId);
+		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId,accessingType);
 	}
 	
 	

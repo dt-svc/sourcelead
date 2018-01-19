@@ -65,6 +65,11 @@ public class SourceleadNotes {
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoicdeId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="ASSET_ID", nullable=false )     
+	private Asset assetId;
+	
 	@Transient
 	private Long commentAuthorUserId;
 	
@@ -115,6 +120,9 @@ public class SourceleadNotes {
 	
 	@Transient
 	private Long userIdStr;
+	
+	@Transient
+	private String assetName;
 	
 	@Transient
 	private String updatedDateString;
@@ -376,6 +384,22 @@ public class SourceleadNotes {
 
 	public void setCommentAuthorImage(String commentAuthorImage) {
 		this.commentAuthorImage = commentAuthorImage;
+	}
+
+	public Asset getAssetId() {
+		return assetId;
+	}
+
+	public void setAssetId(Asset assetId) {
+		this.assetId = assetId;
+	}
+
+	public String getAssetName() {
+		return assetName;
+	}
+
+	public void setAssetName(String assetName) {
+		this.assetName = assetName;
 	}
 	
 	
