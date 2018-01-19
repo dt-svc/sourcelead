@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 /**
  * @author BIS115
  *
@@ -32,6 +34,7 @@ public class ImportTimesheetDTO {
 	private String thu;
 	private String fri;
 	private String sat;
+	private List<String> days;
 	private String weekComments;
 	private String monthYear;
 	private String timeFrequencyType;
@@ -209,6 +212,12 @@ public class ImportTimesheetDTO {
 	}
 	public void setTimeFrequencyType(String timeFrequencyType) {
 		this.timeFrequencyType = timeFrequencyType;
+	}
+	public List<String> getDays() {
+		return days;
+	}
+	public void setDays(List<String> days) {
+		this.days = days;
 	}
 	
 	

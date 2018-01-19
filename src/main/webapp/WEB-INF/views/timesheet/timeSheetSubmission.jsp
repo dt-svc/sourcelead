@@ -836,8 +836,10 @@ function addTimeSheetRow(projectId) {
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
 			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+			   setTotals(); 
 		   }else{
 			   $("#" + projectTaskId + "BillableTypeId").html(""); 
+			   setTotals(); 
 		   }
 		   
 		   var avilableProjectTaskIds = [];

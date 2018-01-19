@@ -65,9 +65,11 @@
   <!-- <!--   Popup Code  -->
  
  
-  <form id="saveAddForm_form" name="saveAddForm_form">
+   <!-- <!--   Popup Code  -->
   <div class="popMaskCustom popMask-zindex"></div>
 	<div class="cusFielPopup cusFiel-popup " id="popUpDataCustom">
+	 <form id="saveAddForm_form" name="saveAddForm_form">
+	    <input name="id" id="customFieldId" value="${customFormPopDetails.id}" type="hidden"/>
 		<div class="popupHead">
 			<h2>Add New Field</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
@@ -109,7 +111,7 @@
 			  
 			  <div class="col-sm-12 noPad mt clearfix">
 				  	  <div class="col-md-3 noPad labHeight">Is Required? <span class="text-danger paddingLeft">*</span></div>
-					  <div class="col-md-6"><input name="isRequired" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" type="checkbox" data-validation="required"></div>
+					  <div class="col-md-6"><input name="isRequired" value="${empty customFormPopDetails.isRequired ? '0' : customFormPopDetails.isRequired}" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" type="checkbox" data-validation="required"></div>
 				</div>
 			  
 				<div class="clearfix"></div>
@@ -186,11 +188,12 @@
 		
 		
 		<div class="immiPopFoot">
-            <input value="Add" class="" name="save" id="saveNewField"  type="button" onclick="saveAddFormField();">
+            <input value="Add" class="" name="save" id="saveNewField"  type="button" onclick="saveAddFormField('${customFormPopDetails.id}');">
             <input value="Cancel" class="popCan" name = "cancel" type="button">
-          </div>		
+          </div>	
+          </form>	
 		</div>
-</form>
+
 <!--   Popup Code  -->
  
  <script>
@@ -347,7 +350,7 @@ function getSelectedFieldDetails(){
  </script>
  
  <script>
- function saveAddFormField(){
+ function saveAddFormField(customRowId){
 	 if ($('#saveAddForm_form').validate(false, validationSettings)){
 	    var formData = getFormData1("saveAddForm_form");
 	    var selectedSectionID = $("#addFieldSection").val();
@@ -358,10 +361,17 @@ function getSelectedFieldDetails(){
 		     contentType:false, 
 			 url : sourceleadUrl+"/storeNewCustomFormField",
 			 	 	success : function(data) {
-			 	 			$("#cusFielTable"+selectedSectionID).append(data);
-			 	 			$(".popMaskCustom").fadeOut(200);
-			 				$(".cusFielPopup").fadeOut(100);
-							flushPopupData();
+			 	 		   if(customRowId != null && customRowId != '' && customRowId !='undefined'){
+			 	 			 var obj = $("#custom"+customRowId);
+			 	 			 obj.empty();
+			 	 			 obj.after(data);
+			 	 			 obj.remove();
+			 	 		   }else{
+			 	 			 $("#cusFielTable"+selectedSectionID).append(data);
+			 	 		   }
+		 	 			  $(".popMaskCustom").fadeOut(200);
+		 				  $(".cusFielPopup").fadeOut(100);
+						  flushPopupData();
 			},
 		});
 	 }
@@ -374,6 +384,9 @@ function getSelectedFieldDetails(){
 
 <script>
 function flushPopupData(){
+	$("#customFieldId").val('');
+	$("#saveNewField").removeAttr('onclick');
+	$("#saveNewField").attr('onclick','saveAddFormField("")');
 	$("#labelName").val('');
 	$("#isRequired").val('');
 	$('#isRequired').removeAttr('checked');
@@ -412,7 +425,7 @@ var validationSettings = {
 		 type : "POST",
 		 url : sourceleadUrl+"/deleteCustomField?&customID="+customRowId,
 		 	 	success : function(data) {
-		 	 		$("#custom"+customRowId).hide();
+		 	 		$("#custom"+customRowId).remove();
 		},
 	});
  }
