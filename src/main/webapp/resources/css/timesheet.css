@@ -7424,4 +7424,20 @@ font-weight: 500;
   	color: #ccc; font-weight: 400;
 }
 
+.cheBoxOut {
+	background-color: #fff; width: auto; margin: 15px 15px; padding: 10px 0px;
+}
+.payRoTabs {
+	padding: 0px 0px 0px 5px;
+}
+.payRoTabs a {
+	padding: 8px 30px; font-size: 15px; display: inline-block; background-color: #eef1fc; font-weight: 400; color: #666;
+	border-top: 2px #eef1fc solid; border-radius:8px 8px 0px 0px;
+}
+.payRoTabs a.active {
+	border-top: 2px #368ee0 solid; background-color: #fff; color: #368ee0;
+}
+.headingText {
+	padding: 10px 15px 15px; margin: 0px 0px !important; font-size: 17px; color: #545454; font-weight: 400;
+}
 
