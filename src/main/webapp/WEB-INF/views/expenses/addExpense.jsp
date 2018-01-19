@@ -16,7 +16,7 @@
 
  <script type="text/javascript">
 		window.onload = function () {
-			getClientBasedOnSelectedProject();
+			//getClientBasedOnSelectedProject();
 			
 			var entrySize = '${expenses.expenseEntry.size()}';
 			if(entrySize>0){
@@ -86,7 +86,7 @@
 				 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="expensePurposeId" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" autocomplete="off"   name="expensePurpose" value="${expenses.expensePurpose}" id="expensePurposeId" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div> 
 					

@@ -325,15 +325,6 @@ public class DataMigrationCommonUtil {
 					dataMigrationDTOJsonCopy.put("manager", user.getId().toString());
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
-					OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("selectClient"));
-					if(orgRelations == null){
-						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
-					}else{
-						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
-					}
-				}
-				
 				if(!dataMigrationDTOJsonCopy.getString("selectContact").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectContact"))) {
 					if(dataMigrationDTOJsonCopy.get("selectClient") != null){
 						OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.get("selectClient").toString());
@@ -383,6 +374,15 @@ public class DataMigrationCommonUtil {
 						}else{
 							errorSet.put("clientSubmissionForm", dataMigrationDTOJsonCopy.getString("clientSubmissionForm")+" is invalid Submission Form");
 						}
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
+					OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("selectClient"));
+					if(orgRelations == null){
+						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
+					}else{
+						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
 					}
 				}
 				
