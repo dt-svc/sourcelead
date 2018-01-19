@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
-import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,7 +33,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
@@ -55,6 +52,8 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -79,11 +78,11 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -186,6 +185,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 private TimesheetSubmissionsService timesheetSubmissionsService;
 	 
 	 @Autowired
+	 private ExpensesService expensesService;
+	 
+	 @Autowired
 	 private ProjectsIndexHelper projectsIndexHelper;
 	 
 	 @Autowired
@@ -224,6 +226,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 MasterCandidateService masterCandidateService;
+	 
+	 @Autowired
+	 ExpensesApprovalService expensesApprovalService;
 	 
 	 
 /*	 @Override
@@ -2667,7 +2672,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 									projectMembersHistoryService.updateProjectMembersHistory(clientProjectMembersHistory);
 								}
 								
-								List<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getTimeSheetSubmissionByProjectMemberId(projectMembers.getId());
+								List<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getTimesheetSubmissionsByProjectIdAndMasterCandidateId(projects.getId(),masterCandidate.getId());
 								if(timesheetSubmissionsList != null && timesheetSubmissionsList.size() > 0) {
 									for(TimesheetSubmissions submissions : timesheetSubmissionsList){
 										if(projectApproverHierarchy != null) {
@@ -2693,6 +2698,28 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 									}
 								}
 								
+								
+								List<Expenses> expList  = expensesService.getExpensesByProjectIdAndMasterCandidateId(projects.getId(),masterCandidate.getId());
+								if(expList != null && !expList.isEmpty()) {
+									for(Expenses expense : expList){
+										ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expense.getId());
+										ExpensesApproverHierarchy eaHierarchy = new ExpensesApproverHierarchy();
+										eaHierarchy.setHierarchyId(projectApproverHierarchy);
+										eaHierarchy.setExpenseId(expense);
+										eaHierarchy.setExpenseStatus(eah.getExpenseStatus());
+										eaHierarchy.setExpenseApprovalStatus(eah.getExpenseApprovalStatus());
+										eaHierarchy.setCreatedDate(eah.getCreatedDate());
+										eaHierarchy.setCreatedBy(eah.getCreatedBy());
+										eaHierarchy.setUpdatedDate(eah.getUpdatedDate());
+										eaHierarchy.setUpdatedBy(eah.getUpdatedBy());
+										eaHierarchy.setStatus(eah.getStatus());
+										eaHierarchy.setActionPerformedBy(eah.getActionPerformedBy());
+										eaHierarchy.setRejectedReason(eah.getRejectedReason());
+										eaHierarchy.setReopenedUser(eah.getReopenedUser());
+										eaHierarchy.setReopenRejectedReason(eah.getReopenRejectedReason());
+										expensesApprovalService.saveExpensesApproverHierarchy(eaHierarchy);
+									}
+								}
 							}
 						}
 					}
