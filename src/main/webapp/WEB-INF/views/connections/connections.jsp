@@ -102,6 +102,7 @@ function getConnectionsList(type){
 			offset = $("#orgOffset").val();
     	}
 		if(type === "manual"){
+			$("#mutualConnList").hide();
 			$("#mutualConnList").empty();
 			$("#findConnectionListId").empty();
     		$("#orgOffset").val(0);
@@ -171,6 +172,7 @@ function getConnectionsList(type){
 	 				}
 	   		    }
 	 			if(mutualResult !== ""){
+	 				$("#mutualConnList").show();
  					$("#mutualConnList").append(mutualResult);
  				}else{
  					/* $("#mutualConnList").hide(); */
