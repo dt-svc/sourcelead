@@ -69,9 +69,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 				     $("#timesheetDivByFrequency").append(data);
 				     if($("#timesheet_form input[data-id*=docFile]").length > 0) {
 				 		$("#timesheet_form input[data-id*=docFile]").remove();
-				 		}
-				 	 setTotals();
-				     maskme();
+				 	 }
 				     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
 				     $(".side_mask").fadeIn(200); 
 				     $("body").css('overflow-y', 'hidden');
@@ -85,6 +83,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 			    	        $(".project_tabs_inn").not(tab).css("display", "none");
 			    	        $(tab).fadeIn();
 			    	  });
+				     maskme();
 		      }
 	    }); 
 } 
