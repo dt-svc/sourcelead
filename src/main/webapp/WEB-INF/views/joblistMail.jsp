@@ -55,11 +55,10 @@ display: none;
        <form:form id="joblistCampaign_form" name="joblistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
-           <div class="col-md-9">
+           <div class="col-md-9 clearfix mailFromRefreBtn">
             <%-- <input type="text" value="${createSender.fromMail}" class="form-control input-sm" readonly> --%>
-				<div class="input-group errorInptgroup">
-				 <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender"></select>  						 
-				
+            <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender"></select>  
+				<div class="input-group">
 				<span class="input-group-addon cursorPointer bg-blue" onclick="getSenders();"><i class="fa fa-refresh "></i></span>
 				<!-- <a class="input-group-addon" onclick="campaignSender('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a> -->
 				</div>   
@@ -81,8 +80,8 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
             
-			<div class="input-group errorInptgroup col-md-12 noPad">
-  				<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList"  data-validation-optional="true" name="Toemails"></select>
+			<div class="input-group  col-md-12 noPad">
+  				<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
             	<span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span>
                <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->    	 
 				<!-- <a class="input-group-addon" onclick="campaignRecipient('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a> -->

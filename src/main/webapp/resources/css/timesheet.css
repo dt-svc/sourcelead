@@ -158,6 +158,9 @@ a { cursor:pointer;}
 .timesheet_table table tr td b.proj_process { background-color:#ff9800;}
 .timesheet_table table tr td b.proj_draft { background-color:#656565;} 
 .timesheet_table table tr td b.proj_withdraw { background-color:#8c1fde; cursor:pointer;}
+.timesheet_table table tr td b a {
+	color: #fff !important;
+}
        
 .pname {
     border-top:1px solid #ededed; padding:0px 5px !important;
@@ -631,7 +634,10 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_wrap_table table tr td div b.proj_active { background-color:#34c244;}
 .project_wrap_table table tr td div b.proj_deactivate { background-color:#ef4c4c;}
 .project_wrap_table table tr td div b.proj_process { background-color:#d98f47;}
-       
+ 
+.project_wrap_table table tr td div b a {
+	color: #fff !important;
+}
 .proj_show { cursor: pointer; color:#333;}                 
 .proj_show i {
     font-size:12px; color:#375d81; float:right; padding:4px 0px 0px 0px; visibility:hidden; opacity:0;
@@ -957,6 +963,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .clients_side_wrap table tr td div b.proj_active { background-color:#34c244;}
 .clients_side_wrap table tr td div b.proj_closed { background-color:#d94747;}
 .clients_side_wrap table tr td div b.proj_process { background-color:#d98f47;}
+.clients_side_wrap table tr td div b a {
+	color: #fff !important;
+}
 .clients_side_wrap .fa-edit {
     padding:0px 0px 0px 7px; color:#333;
     }      
@@ -1170,6 +1179,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 }
 .remove_user_pop  p {
     padding:5px 15px; margin:0px; width:auto; float:none; text-align:left; font-size:13px; color:#666;
+	word-wrap:break-word;
 }
 .remove_user_pop  b {display:block; text-align:center;}
 .remove_user_pop input {
@@ -1507,7 +1517,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 9px !important; height:40px; border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }  
 .require_wrap_table table tr td {
-    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
+    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px; min-height: 35px;
     }  
 .require_wrap_table table tr td div {
     /*position:relative;*/
@@ -1550,7 +1560,10 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }  
 .require_wrap_table table tr td div b.proj_active { background-color:#34c244;}
 .require_wrap_table table tr td div b.proj_closed { background-color:#d94747;}
-.require_wrap_table table tr td div b.proj_process { background-color:#d98f47;}    
+.require_wrap_table table tr td div b.proj_process { background-color:#d98f47;}   
+.require_wrap_table table tr td div b a {
+	color: #fff !important;
+}
 .require_wrap_table .fa-bullhorn {
     font-size:16px; color:#545454;
     }
@@ -1688,6 +1701,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .clients_wrap_table table tr td div b.proj_active { background-color:#34c244;}
 .clients_wrap_table table tr td div b.proj_closed { background-color:#d94747;}
 .clients_wrap_table table tr td div b.proj_process { background-color:#d98f47;}
+.clients_wrap_table table tr td div b a {
+	color: #fff !important;
+}
 .clients_wrap_table select {
     appearance: none; -webkit-appearance: none; border: none; padding: 3px 20px 3px 0px; width: auto;
     background: url("../images/arrow-d-g.png") no-repeat right center; background-size: 10px;
@@ -2257,7 +2273,10 @@ margin-bottom:15px !important;
 .timeNewSe b.proj_deactivate { background-color:#ef4c4c; border: 1px solid #d72b2b;}
 .timeNewSe b.proj_process { background-color:#d98f47; border: 1px solid #c3762b;}
 .timeNewSe b.proj_withdraw { background-color:#0f9fa1; border: 1px solid  #0f9fa1; cursor:pointer;}
-     
+.timeNewSe b a {
+	color: #fff !important; 
+}
+
 .timeNewSe i {
     font-size: 15px; color: #666; display: inline-block; padding: 5px 5px; margin: 0px 0px 0px 5px;
     cursor: pointer; position: relative;
@@ -4108,6 +4127,9 @@ position: relative; padding: 0px 0px 5px 0px;
 .timesheetRepTab table tr td b.proj_closed { background-color:#d94747;}
 .timesheetRepTab table tr td b.proj_process { background-color:#ff9800;}
 .timesheetRepTab table tr td b.action { background-color:#368ee0;}
+.timesheetRepTab table tr td b a {
+	color: #fff !important;
+}
 
 .timesheetRepTab.expensestable table div.week {
 width: auto; min-width: 70px;
@@ -6095,7 +6117,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 .comLogInn {
     width:1000px; margin: 10px auto; position: relative;
 }
-.comLogHead {
+.comLogHead, .comLogHeadNew {
     background-color: rgba(255,255,255,1); border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 }
 .comLogLogoText {
@@ -6104,13 +6126,16 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	background-color: #fff;
 }
 .comLogHead ul {
-    margin: 0px; padding: 0px; border-top: 1px solid #dedede;
+    margin: 0px; padding: 0px;
 }
 .comLogHead ul li {
 	float:left; list-style-type: none; text-align: center; width: 16.5%; z-index: 100; cursor: default;
 	display:block; background-color: #fff; margin: 0px auto; position: relative; 
-	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
-	border-right: 1px solid #fff;
+	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878;
+	border-right: 1px solid #fff; border-bottom: 1px solid #dedede; border-top: 1px solid #dedede;
+}
+.comLogHeadNew ul li {
+	width: 20% !important;  border-bottom: 1px solid #dedede; border-top: 1px solid #dedede;
 }
 .comLogHead ul li.hoverLi {
     background-color: #f6f6f6; color: #368ee0; border-bottom: 1px solid #368ee0; border-top: 1px solid #368ee0;
@@ -6131,6 +6156,12 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 .comLogContent h3 {
 	padding: 10px 0px 10px 0px; margin: 0px 0px 10px; font-size: 17px; color: #545454; font-weight: 400;
 }
+.comLogContent h4 {
+	padding: 5px 0px 8px 0px; margin: 0px 0px 5px 0px; font-size: 16px; color: #545454; font-weight: 400;
+}
+.comLogContent strong {
+	font-weight: 500; color: #454545;
+}
 .comProImg {
 	padding: 12px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
 	margin: 0px 0px 15px 0px; min-height: 180px;
@@ -6147,10 +6178,10 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
     line-height: 22px; border-radius: 5px;
 }
 .heihelp {
-	padding: 30px 0px 0px; position: relative;
+	padding: 0px 0px 0px; position: relative;
 }
 .comHeplWrap {
-	position: absolute; left: 104%;  top: 13px; display: none;
+	position: absolute; left: 104%;  top: -17px; display: none;
 }
 .comHeplinn {
 	position: relative; width: 300px; border:1px solid #ccc; border-radius: 2px;
@@ -6267,11 +6298,23 @@ position: absolute;
 	padding: 0px 15px 15px 0px !important;
 }
 .locaPadding .btn-default {
-background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%); background-repeat: repeat-x; border-color: #ccc;
-text-shadow: 0 1px 0 #fff;
+	background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%); background-repeat: repeat-x; border-color: #ccc;
+	text-shadow: 0 1px 0 #fff;
 }
 .locaPadding .fa-map-marker {
 	padding: 0px 10px 0px 0px;
+}
+
+.mailFromRefreBtn {
+}
+.mailFromRefreBtn .chosen-container-single {
+	padding: 0px 36px 0px 0px;
+}
+.mailFromRefreBtn .input-group {
+	position: absolute; top: 0px; right: 5px; width: 36px; height: 34px; border-radius: 2px;
+}
+.compose-mail .chosen-choices .search-field {
+	width: 100% !important;
 }
 
 /*  Immigration CSS */
@@ -6932,6 +6975,10 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .conneWrapHead {
 	background-color: #fff; box-shadow: 0px 0px 2px rgba(0,0,0,0.2); border-radius: 3px;
 }
+.conneWrapHeadFixed {
+	position: fixed; top: 52px; z-index: 1000; width: auto; right: 30px; left: 220px; border-radius: 1px;
+	box-shadow: 0px 3px 2px rgba(0,0,0,0.2); 
+}
 .conneWrapHead ul {
     margin:0px 0px; padding:0px 5px; float: left;
     }
@@ -6942,13 +6989,16 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
     position:relative; background-color:#fff; z-index:5; border-bottom:2px solid #368ee0;
     }
 .conneWrapHead ul li a {
-    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:block; height: 42px;
+    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:inline-block; height: 42px;
     }
 .conneWrapHead ul li.current a{
     color:#1d6cb5;
     }
 .conneWrapHead span {
 	float: right; padding: 6px 10px; 
+}
+.connHeadText {
+   padding:15px 0px 0px 3px; margin:0px 0px; font-size:15px; font-weight:400; color:#454545;
 }
 .conneWrapInn {
 	width: auto; padding: 10px 0px ;
@@ -6995,18 +7045,21 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	text-align: center; border-top: 1px solid #ededed;
 }
 .connlink {
-	display: inline-block; padding: 8px 16px; font-size: 14px; border-radius: 2px; font-weight: 400;
-	color: #368ee0;
+	display: inline-block; padding: 8px 16px; font-size: 14px; border-radius: 2px; font-weight: 400; color: #368ee0;
 }
 .connlink.red {
-	color: #999;
+	color: #c44b4b;
 }
-.connlink.red:hover {
-	color: #e7594e;
+.connlink.green {
+	color: #98c229;
+}
+.connlink.gray {
+	color: #98c229;
 }
 .connlink.orange {
 	color: #e07906;
 }
+
 .conUnder {}
 .conUnder:hover {
 	text-decoration: underline; color: #999;
@@ -7363,5 +7416,40 @@ font-weight: 500;
 	z-index: 1550000 !important;
 }
 
+.connection-count li {
+	position: relative; padding: 0 15px;
+}
+.connection-count li i {
+	font-style: normal !important; position: relative; right: -5px; top: -5px; border: 1px solid #e5e5e5;
+	padding: 2px 4px; border-radius:2px; background-color: #fff; font-size: 11px; float: right;
+}
+.conneWrapHead  ::-webkit-input-placeholder { 
+ 	color: #ccc; font-weight: 400;
+}
+.conneWrapHead ::-moz-placeholder {
+  	color: #ccc; font-weight: 400;
+}
+.conneWrapHead :-ms-input-placeholder { 
+  	color: #ccc; font-weight: 400;
+}
+.conneWrapHead :-moz-placeholder { 
+  	color: #ccc; font-weight: 400;
+}
 
+.cheBoxOut {
+	background-color: #fff; width: auto; margin: 15px 15px; padding: 10px 0px;
+}
+.payRoTabs {
+	padding: 0px 0px 0px 5px;
+}
+.payRoTabs a {
+	padding: 8px 30px; font-size: 15px; display: inline-block; background-color: #eef1fc; font-weight: 400; color: #666;
+	border-top: 2px #eef1fc solid; border-radius:8px 8px 0px 0px;
+}
+.payRoTabs a.active {
+	border-top: 2px #368ee0 solid; background-color: #fff; color: #368ee0;
+}
+.headingText {
+	padding: 10px 15px 15px; margin: 0px 0px !important; font-size: 17px; color: #545454; font-weight: 400;
+}
 

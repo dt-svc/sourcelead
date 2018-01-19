@@ -14,36 +14,62 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveTypeDao;
+import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class LeaveTypeServiceImpl implements LeaveTypeService {
 	private static final Logger logger = LoggerFactory.getLogger(LeaveTypeServiceImpl.class);
+	
 	@Autowired
 	LeaveTypeDao leaveTypeDao;
+	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
 	@Autowired
 	DepartmentService departmentService;
+	
 	@Autowired
 	RolesService rolesService;
+	
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired 
 	LeaveService leaveService;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private ProjectTasksDao projectTasksDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public LeaveType addLeaveType(LeaveTypeDTO leaveTypeDTO) throws Exception
@@ -51,6 +77,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(leaveTypeDTO.getOrgLocationId()));
 		User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
 		LeaveType leaveType = null;
+		boolean flag = false;
 		if(leaveTypeDTO.getLeaveTypeId() != null && !"".equalsIgnoreCase(leaveTypeDTO.getLeaveTypeId())){
 			leaveType = leaveTypeDao.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
 			leaveType.setUpdatedBy(user.getUserCode());
@@ -59,6 +86,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType = new LeaveType();
 			leaveType.setCreatedBy(user.getUserCode());
 			leaveType.setCreatedDate(new Date());
+			flag = true;
 		}
 		
 		leaveType.setOrgLocations(orgLocation);
@@ -100,6 +128,8 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setPolicyName(leaveTypeDTO.getPolicyName());
 		if (leaveTypeDTO.getVisibilityToAllUsers() != null)
 			leaveType.setVisibilityToAllUsers(leaveTypeDTO.getVisibilityToAllUsers());
+		else
+			leaveType.setVisibilityToAllUsers(Constants.NO);
 		if (leaveTypeDTO.getLeavePolicyDescription() != null)
 			leaveType.setPolicyDescription(leaveTypeDTO.getLeavePolicyDescription());
 		if(leaveType !=null && "0".equals(leaveType.getStatus())) {
@@ -180,11 +210,42 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		   }else{
 				leaveType.setMinDays(0);
 			}
-//		    
-			
          
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
+		
+		if(flag == true) {
+			
+			List<Projects> projectsList = projectsService.getAllProjectByOrgLocationsId(orgLocation.getId());
+			if(projectsList != null && projectsList.size() > 0) {
+				for(Projects projects : projectsList) {
+					ProjectTasks  tasks  = new ProjectTasks();
+					LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
+					tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+					tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					tasks.setTaskName(leaveTypeDTO.getName());
+					tasks.setDescription(leaveTypeDTO.getName());
+					if(leaveTypeDTO.getBillingType().equalsIgnoreCase("Non Billable")) {
+						tasks.setBillableType("Non-Billable");
+					}else {
+						tasks.setBillableType("Billable");
+					}
+					tasks.setProjectId(projects);
+					tasks.setTaskType(taskType);
+					
+					LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
+					tasks.setTaskStatus(taskStatus);
+					tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+					tasks.setCreatedBy(user.getUserCode());
+					tasks.setCreatedDate(new Date());
+					tasks.setUpdatedBy(user.getUserCode());
+					tasks.setUpdatedDate(new Date());
+					projectTasksDao.addTasks(tasks);
+					
+				}
+			}
+		}
+		
 		return leaveType;
 	}
 	 

@@ -11,7 +11,7 @@ a { cursor:pointer;}
 }
 .signWrap {
     background-color: #fff; width: 380px; box-shadow: 5px 5px 1px rgba(0,0,0,0.2); border-radius: 4px;
-    float: right; margin: 5% 10% 2% 0px; 
+    float: right; margin: 5% 10% 2% 0px; position: relative; min-height: 400px;
     background-image:url("/resources/images/loading.gif"); background-position:center;
     background-repeat:no-repeat; background-size:75px;
 }
@@ -116,9 +116,13 @@ input.signin_fild:-webkit-autofill {
 	vertical-align: middle; margin: 10px 10px 0px 10px; border-radius: 50%; box-sizing: border-box;
 /*	background-image: url(../images/office-image.jpg); background-repeat: no-repeat; background-position: center;
 	background-size: cover;*/
+	white-space: nowrap;
+}
+.orgCta span:before {
+    content: ""; display: inline-block; height: 100%; vertical-align: middle;
 }
 .orgCta span img {
-	width: 100%; max-width: 48px; max-height: 48px; border-radius: 50%;
+	width: 100%; max-width: 48px; max-height: 48px; border-radius: 50%; vertical-align: middle;
 }
 .orgtext {
 	position: relative; width: 65%; float: left; margin: 0px 0px 0px 5px; padding: 0px 0px 6px 0px;
@@ -245,7 +249,12 @@ color:#666; position: absolute; right: -15px; top: -15px; padding: 5px; display:
 .otpBackNew a:hover {
 color: #cb6060;
 }
-
+.modalApplyjob .signin_wrap {
+padding: 30px; border: 1px solid #ededed; box-shadow:none;
+}
+.modalApplyjob .signin_wrap img {
+max-height: 75px;
+}
 @media screen and (max-width: 590px){
 	.signWrap {
 		width: 90%; margin: 12% 5% 5%; box-sizing: border-box;

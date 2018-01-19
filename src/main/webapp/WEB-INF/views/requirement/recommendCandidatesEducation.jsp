@@ -916,14 +916,16 @@ function clearSearchKey() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		/* var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		}; */
 		
-		
+		var scoreType = document.getElementById("scoreType").value; 
+		 if(scoreType != null && scoreType != ""){
+			 $('#candidateScore').removeAttr('data-validation-optional');
+			 $('#candidateScore').attr("data-validation","required"); 
+		 }else{
+			 $('#candidateScore').removeAttr('data-validation');
+			 $('#candidateScore').attr("data-validation-optional","true"); 
+		 }
+		 
 		if ($('#education_form').validate(false,validationSettings)) {
 
 			var formData = getFormData('education_form');

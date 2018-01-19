@@ -53,10 +53,10 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 	}
 
 	@Override
-	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId)
+	public List<WhiteListIPAddressDTO> getWhiteListIpsByLocationId(Long locationId, Long whiteListIpId)
 	{
 		List<WhiteListIPAddressDTO> ipDtoList = new ArrayList<>();
-		List<WhiteListIPAddress> ipList = whiteListIpAddressDao.getWhiteListIpsByLocationId(locationId);
+		List<WhiteListIPAddress> ipList = whiteListIpAddressDao.getWhiteListIpsByLocationId(locationId,whiteListIpId);
 		if(ipList != null){
 			for(WhiteListIPAddress ip : ipList){
 				WhiteListIPAddressDTO wlIpDto = new WhiteListIPAddressDTO();
@@ -88,27 +88,42 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 	}
 
 	@Override
-	public boolean validateIPAddress(String ipAddress,UserRole userRole)
+	public boolean validateIPAddress(String ipAddress,UserRole userRole,Long whiteListIpId,String accessingType)
 	{
-		List<WhiteListIPAddressDTO> ipList = getWhiteListIpsByLocationId(userRole.getOrgLocations().getId());
+		List<WhiteListIPAddressDTO> ipList = getWhiteListIpsByLocationId(userRole.getOrgLocations().getId(),whiteListIpId);
 		String[] currentIp = ipAddress.split("\\.");
 		boolean matched = false;
-		if(ipList.size() > 0){
-			for(WhiteListIPAddressDTO wlipDto : ipList){
-				String fromip = wlipDto.getFromIpAddress();
-				String toip = wlipDto.getToIpAddress();
-				
-				String[] fromipaddr = fromip.split("\\.");
-				String[] toipaddr = toip.split("\\.");
-				
-				if((Integer.parseInt(currentIp[3]) >= Integer.parseInt(fromipaddr[3])) && (Integer.parseInt(currentIp[3]) <= Integer.parseInt(toipaddr[3]))){
-					if(Integer.parseInt(currentIp[2]) >= Integer.parseInt(fromipaddr[2]) && (Integer.parseInt(currentIp[2]) <= Integer.parseInt(toipaddr[2]))){
-						if(Integer.parseInt(currentIp[1]) >= Integer.parseInt(fromipaddr[1]) && (Integer.parseInt(currentIp[1]) <= Integer.parseInt(toipaddr[1]))){
-							if(Integer.parseInt(currentIp[0]) >= Integer.parseInt(fromipaddr[0]) && (Integer.parseInt(currentIp[0]) <= Integer.parseInt(toipaddr[0]))){
-								matched = true;
-							}else{
-								matched = false;
-							}
+		if("settings".equalsIgnoreCase(accessingType)){
+			if(ipList.size() > 0){
+				matched = validateEnteredIpAddress(ipList,currentIp);
+			}else{
+				matched = false;
+			}
+		}else{
+			if(ipList.size() > 0){
+				matched = validateEnteredIpAddress(ipList,currentIp);
+			}else{
+				matched = true;
+			}
+		}
+		
+		return matched;
+	}
+	
+	private boolean validateEnteredIpAddress(List<WhiteListIPAddressDTO> ipList, String[] currentIp){
+		boolean matched = false;
+		for(WhiteListIPAddressDTO wlipDto : ipList){
+			String fromip = wlipDto.getFromIpAddress();
+			String toip = wlipDto.getToIpAddress();
+			
+			String[] fromipaddr = fromip.split("\\.");
+			String[] toipaddr = toip.split("\\.");
+			
+			if((Integer.parseInt(currentIp[3]) >= Integer.parseInt(fromipaddr[3])) && (Integer.parseInt(currentIp[3]) <= Integer.parseInt(toipaddr[3]))){
+				if(Integer.parseInt(currentIp[2]) >= Integer.parseInt(fromipaddr[2]) && (Integer.parseInt(currentIp[2]) <= Integer.parseInt(toipaddr[2]))){
+					if(Integer.parseInt(currentIp[1]) >= Integer.parseInt(fromipaddr[1]) && (Integer.parseInt(currentIp[1]) <= Integer.parseInt(toipaddr[1]))){
+						if(Integer.parseInt(currentIp[0]) >= Integer.parseInt(fromipaddr[0]) && (Integer.parseInt(currentIp[0]) <= Integer.parseInt(toipaddr[0]))){
+							matched = true;
 						}else{
 							matched = false;
 						}
@@ -118,11 +133,10 @@ public class WhiteListIpAddressServiceImpl implements WhiteListIpAddressService 
 				}else{
 					matched = false;
 				}
+			}else{
+				matched = false;
 			}
-		}else{
-			matched = true;
 		}
 		return matched;
 	}
-	
 }
