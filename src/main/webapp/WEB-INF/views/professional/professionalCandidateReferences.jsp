@@ -607,7 +607,7 @@
 										result = result
 												+ '<div class="col-md-12" id="EmailIdDiv">';
 										result = result
-												+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateEditReferenceEmail('+candidateId+','+json.id+');">';
+												+ '<input type="text" name="email" field-name="Email" id="referenceEmail"  value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
 										result = result + '</div>';
 										result = result + '</div>';
 
