@@ -139,7 +139,7 @@ function getConnectionsList(type){
 	 					sentCount++;
 	 				}else if(user.userState == 'Request_received'){
 	 					receivedCount++;
-	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
+	 					state = '<a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a>';
 	 				}else if(user.userState == 'connected'){
 	 					connectedCount++;
 	 					continue;
