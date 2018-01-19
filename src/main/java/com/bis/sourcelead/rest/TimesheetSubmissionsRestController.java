@@ -361,9 +361,9 @@ public class TimesheetSubmissionsRestController {
 			 }else{
 				 globalVarsMap.put("vendorcontactname",approver.getApproverUserId().getFirstName());
 			 }
-			 globalVarsMap.put("projectname",loginOrgLocation.getOrgLocationName());
+			 globalVarsMap.put("projectname", projectMember.getProjects().getProjectName());
 			 globalVarsMap.put("frequency",startDateStr+" to "+endDateStr);
-			 globalVarsMap.put("clientName",loginUser.getFirstName()+(loginOrgLocation.getOrgLocationName()));
+			 globalVarsMap.put("clientName",loginUser.getFullName()+","+(loginOrgLocation.getOrgLocationName()));
 			 globalVarsMap.put("reason",rejectedReason);
 			 
 			 //setting the Recipient information
