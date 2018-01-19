@@ -256,7 +256,7 @@ function getProjectsList(projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
+	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(json) {
 	//var json = JSON.parse(data);
 	var output = "";

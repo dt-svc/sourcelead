@@ -61,9 +61,6 @@ public class TimeApprovalRedefinedRestController {
 	private String sourceleadUrl;
 	 
 	@Autowired
-	public TimesheetEntriesService timesheetEntriesService;
-	
-	@Autowired
 	public ProjectsService projectsService;
 	
 	@Autowired
@@ -598,6 +595,7 @@ public class TimeApprovalRedefinedRestController {
 				    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
 				    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey())));
 				    	 }else{
+				    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(0f));
 				    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal));
 				    	 }
 				    	 
