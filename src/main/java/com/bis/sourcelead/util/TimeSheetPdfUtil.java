@@ -144,8 +144,9 @@ public class TimeSheetPdfUtil {
         
 		
 		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
-		Submission_Status submissionStatus = sah.getSubmissionStatus();
-		String submissionStatusStr = submissionStatus.getValue();
+		//Submission_Status submissionStatus = sah.getSubmissionStatus();
+		//String submissionStatusStr = submissionStatus.getValue();
+		String submissionStatusStr = sah.getStatus();
 		
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
 		if(tabFrequency != null && !tabFrequency.isEmpty()){

@@ -166,8 +166,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Date employeeEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyEndDate.replaceAll("/", "-"));
 		
 		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
-		Submission_Status submissionStatus = sah.getSubmissionStatus();
-		String submissionStatusStr = submissionStatus.getValue();
+		/*Submission_Status submissionStatus = sah.getSubmissionStatus();
+		String submissionStatusStr = submissionStatus.getValue();*/
+		String submissionStatusStr = sah.getStatus();
 		int count = 9;
 		//int lastRow = 0;
 	     Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
