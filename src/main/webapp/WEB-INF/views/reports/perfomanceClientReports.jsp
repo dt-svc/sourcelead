@@ -734,12 +734,13 @@ function topTenClientReports(){
                            report = data[i];
                            opt += '<option value='+report.orgRelationUUID+'>'+report.clientName+'</option>';
                        }
-                       
+
                        $("#topTenClientList").empty();
                        $("#topTenClientList").show();
                        $("#topTenClientContactList").hide();
                        $("#topClientloadingDiv").removeAttr('style');
                        $("#topTenClientList").append(result);
+                    $("#topTenClientSelect").empty();
                     $("#topTenClientSelect").append(opt);
                     $("#clientSelectDiv").show();
                     $("#clientContactSelectDiv").hide();
@@ -1007,6 +1008,7 @@ function topTenClientContactReports(){
                        $("#topTenClientList").hide();
                        $("#topClientloadingDiv").removeAttr('style');
                        $("#topTenClientContactList").append(result);
+                       $("#topTenClientContactSelect").empty();
                        $("#topTenClientContactSelect").append(opt);
                        $("#clientSelectDiv").hide();
                     $("#clientContactSelectDiv").show();
