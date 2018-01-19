@@ -1325,14 +1325,14 @@ function reqNotes(requirementId){
     	}
      }
 	}else{
-		alert("oooooooooooooo")
+		
      var output ="";
      output = output+"   <div class='dataTables_empty'>"; 
 	 output = output+"  </div> ";
 }
 	output  = output + '              </div>';
 	output  = output + '        </div>';
-	alert("rrrrrrrrrrrr")
+	
 	$("#clientNotesListDiv").empty(); 
     $("#clientNotesListDiv").append(output);
  },

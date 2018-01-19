@@ -382,10 +382,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		ResponseList<SubmissionApproverHierarchy> list = new ResponseList<SubmissionApproverHierarchy>();
 		
          if(status != null){
- 			//if("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_APPROVER".equalsIgnoreCase(userRole)   ||  "ROLE_TEAM_LEAD".equalsIgnoreCase(userRole)){
- 				/*
- 				 *  New  Timesheet List  as  per new User Story 
- 				 */
  				 if("APPROVED".equalsIgnoreCase(status)){
      				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId,  status,search,start,length);
   				}
@@ -398,29 +394,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
                  if("DRAFT".equalsIgnoreCase(status)){
      				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length);
   				}
- 				
-                 /*}else if("ROLE_USER".equalsIgnoreCase(userRole)  ){
- 				
- 				
- 				if("APPROVED".equalsIgnoreCase(status)){
-    				list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,  status);
- 				}
-                if("REJECTED".equalsIgnoreCase(status)){
-    				list = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, status);
- 				}
-                if("SUBMITTED".equalsIgnoreCase(status)){
-    				list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, status);
- 				}
-                if("DRAFT".equalsIgnoreCase(status)){
-    				list = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, status);
- 				}
-
- 				
- 			}*/
-
  		}
-     	
-         
          return list;
 	}
 
