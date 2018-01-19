@@ -5,7 +5,7 @@
 	margin: 0; padding: 0;
 }
 body {
-	font-size: 14px; color: #333; min-height: 100%; background-color: #f1f1f1 !important;
+	font-size: 14px; color: #333; min-height: 100%; background-color: #e0e0e0 !important;
     font-weight: 400 !important; font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
@@ -7422,6 +7422,9 @@ min-height: 40px;
 .minHeight80{
 min-height:80px;
 }
+.minHeight50{
+    min-height: 50px;
+}
 .tableStyles {
 	position: relative; /*border: 1px solid #ddd;*/
 	overflow-y: auto;
@@ -7540,7 +7543,7 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
-.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal {
+.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal, .modal.modalApplyjob {
 	display: none;
 }
 .location-alert {

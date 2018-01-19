@@ -16,6 +16,6 @@ public interface WhiteListIpAddressService {
 
 	public WhiteListIPAddress getWhiteListIpsById(Long whiteListIpId);
 
-	public boolean validateIPAddress(String ipAddress, UserRole userRole, Long whiteListId);
+	public boolean validateIPAddress(String ipAddress, UserRole userRole, Long whiteListId, String accessingType);
 
 }

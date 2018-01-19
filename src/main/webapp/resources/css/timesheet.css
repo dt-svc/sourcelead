@@ -6117,7 +6117,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 .comLogInn {
     width:1000px; margin: 10px auto; position: relative;
 }
-.comLogHead {
+.comLogHead, .comLogHeadNew {
     background-color: rgba(255,255,255,1); border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 }
 .comLogLogoText {
@@ -6126,13 +6126,16 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	background-color: #fff;
 }
 .comLogHead ul {
-    margin: 0px; padding: 0px; border-top: 1px solid #dedede;
+    margin: 0px; padding: 0px;
 }
 .comLogHead ul li {
 	float:left; list-style-type: none; text-align: center; width: 16.5%; z-index: 100; cursor: default;
 	display:block; background-color: #fff; margin: 0px auto; position: relative; 
-	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878; border-bottom: 1px solid #dedede;
-	border-right: 1px solid #fff;
+	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878;
+	border-right: 1px solid #fff; border-bottom: 1px solid #dedede; border-top: 1px solid #dedede;
+}
+.comLogHeadNew ul li {
+	width: 20% !important;  border-bottom: 1px solid #dedede; border-top: 1px solid #dedede;
 }
 .comLogHead ul li.hoverLi {
     background-color: #f6f6f6; color: #368ee0; border-bottom: 1px solid #368ee0; border-top: 1px solid #368ee0;
@@ -6153,6 +6156,12 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 .comLogContent h3 {
 	padding: 10px 0px 10px 0px; margin: 0px 0px 10px; font-size: 17px; color: #545454; font-weight: 400;
 }
+.comLogContent h4 {
+	padding: 5px 0px 8px 0px; margin: 0px 0px 5px 0px; font-size: 16px; color: #545454; font-weight: 400;
+}
+.comLogContent strong {
+	font-weight: 500; color: #454545;
+}
 .comProImg {
 	padding: 12px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
 	margin: 0px 0px 15px 0px; min-height: 180px;
@@ -6169,10 +6178,10 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
     line-height: 22px; border-radius: 5px;
 }
 .heihelp {
-	padding: 30px 0px 0px; position: relative;
+	padding: 0px 0px 0px; position: relative;
 }
 .comHeplWrap {
-	position: absolute; left: 104%;  top: 13px; display: none;
+	position: absolute; left: 104%;  top: -17px; display: none;
 }
 .comHeplinn {
 	position: relative; width: 300px; border:1px solid #ccc; border-radius: 2px;
@@ -6968,7 +6977,7 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
     position:relative; background-color:#fff; z-index:5; border-bottom:2px solid #368ee0;
     }
 .conneWrapHead ul li a {
-    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:block; height: 42px;
+    padding:11px 20px 0px; text-decoration:none; font-size:15px; color:#666; display:inline-block; height: 42px;
     }
 .conneWrapHead ul li.current a{
     color:#1d6cb5;
@@ -7414,6 +7423,5 @@ font-weight: 500;
 .conneWrapHead :-moz-placeholder { 
   	color: #ccc; font-weight: 400;
 }
-
 
 
