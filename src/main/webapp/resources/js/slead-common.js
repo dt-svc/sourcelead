@@ -158,24 +158,36 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	var invalidFiles = false;
 	var count = 0;
 	for(var e in files) {
 		if(!$.isNumeric(e))
 			continue;
-		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
-			continue;
-		data.append('file', files[e]);
-		count ++;
+		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar")) {
+			invalidFiles = true;
+			break;
+		}
+		var size = files[e].size;
+		size = size/1024/1024;
+		if(size <= 2) {
+			data.append('file', files[e]);
+			count ++;
+		} else {
+			invalidFiles = true;
+			break;
+		}
 	}
-	if(count === 0) {
+	if(count === 0 || invalidFiles) {
+		document.getElementById(id).value = "";
+		document.getElementById(id.indexOf("Btn") === -1 ? id+"File" : id.replace("Btn", "File")).value = "";
 		$(".file_mask").hide();
-		alert("Please select valid file (zip files and rar files are not allowed)");
+		alert("Please select valid file (zip files and rar files are not allowed and file size should lessthan 2MB)");
 		return;
 	}
 	data.append('orgId', orgId);
 	data.append('orgLocationId', orgLocationId);
 	$.ajax({ 
-		url: sourceleadUrl+(url ? url : "/upload/"+type), 
+		url: sourceleadUrl+"/ws"+(url ? url : "/upload/"+type), 
 		data: data, 
 		processData: false, 
 		type: 'POST', 
