@@ -62,6 +62,8 @@ public class OpenJobsController {
 		ModelAndView model = new ModelAndView();
 		Requirement req = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		model.addObject("reqId", req.getId());
+		model.addObject("orgId", req.getOrgLocationId().getOrg().getId());
+		model.addObject("locationId", req.getOrgLocationId().getId());
 		model.addObject("reqName", req.getJobTitle());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("openJobs/guestApplyToJob");

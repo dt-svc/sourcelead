@@ -58,16 +58,26 @@ public class CandidateActivityCommonUtil {
 		
 		candidateTimelineActivity.setCandidate(candidate);
 		candidateTimelineActivity.setOrgLocationId(orgLocations);
+		if(user !=null){
 		candidateTimelineActivity.setActionBy(user.getFullName());
+		candidateTimelineActivity.setCreatedUser(user);
+		candidateTimelineActivity.setCreatedBy(user.getUserCode());
+		candidateTimelineActivity.setUpdatedBy(user.getUserCode());
+
+
+		}
+		else{
+			candidateTimelineActivity.setActionBy(null);
+			candidateTimelineActivity.setCreatedUser(null);
+			candidateTimelineActivity.setCreatedBy(null);
+			candidateTimelineActivity.setUpdatedBy(null);
+		}
 		candidateTimelineActivity.setActionOn(actionOn);
 		candidateTimelineActivity.setActionDesc(actionDesc);
 		candidateTimelineActivity.setActionSummary(actionSummary);
 		candidateTimelineActivity.setActionIcon(actionIcon);
-		candidateTimelineActivity.setCreatedUser(user);
 		candidateTimelineActivity.setStatus(Constants.RECORD_ACTIVE);
-		candidateTimelineActivity.setCreatedBy(user.getUserCode());
 		candidateTimelineActivity.setCreatedDate(commonUtil.currentDate());
-		candidateTimelineActivity.setUpdatedBy(user.getUserCode());
 		candidateTimelineActivity.setUpdatedDate(commonUtil.currentDate());
 		
 		candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
@@ -116,7 +126,12 @@ public class CandidateActivityCommonUtil {
 		candidateHistory.setIsAssociate(candidate.getIsAssociate());
 		candidateHistory.setStatus(candidate.getStatus());
 		candidateHistory.setCreatedUser(user);
+		if(user != null){
 		candidateHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateHistory.setCreatedBy(null);	
+		}
 		candidateHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateHistory(candidateHistory);
 		storeCandidateEducationListHistory(candidate.getCandidateEducation(), user);
@@ -254,8 +269,15 @@ public class CandidateActivityCommonUtil {
 		candidateResumesHistory.setResumeStatus(candidateResumes.getResumeStatus());
 		candidateResumesHistory.setResumeUUID(candidateResumes.getResumeUUID());
 		candidateResumesHistory.setStatus(candidateResumes.getStatus());
+		if(user !=null){
 		candidateResumesHistory.setCreatedUser(user);
 		candidateResumesHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateResumesHistory.setCreatedUser(null);
+			candidateResumesHistory.setCreatedBy(null);
+			
+		}
 		candidateResumesHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateResumesHistory(candidateResumesHistory);
 	}

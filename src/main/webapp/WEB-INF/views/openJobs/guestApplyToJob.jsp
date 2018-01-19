@@ -13,6 +13,7 @@
 <script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
 <script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
  
@@ -67,9 +68,10 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 var result = "";
 		var result = "";
-		result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
+		result = result + '<form id="guestApplicant_form" name="guestApplicant_form" enctype="multipart/form-data" method="post">';
 		result = result + '<h3>Application Form</h3>';
 		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
+		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 		
 		result = result + '<div class="row">';
 		result = result + '<div class="venk clearfix">';
@@ -172,6 +174,21 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '</div>'; 
 		
 		result = result + '</div>';
+		
+		
+		result = result + '<div class="row">';
+		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv">';
+		result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
+		result = result + '		<div class="col-md-8">';
+		result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
+		result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '                   <input type="file" style="display: none;"  id="newUploadBtns"  class="upload">';
+		result = result + '			          </span> </label>';
+		result = result + '			          <input type="text" class="form-control" readonly id="newUploadFiles" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
+		result = result + '			    </div>';
+		result = result + '		 </div>';
+		result = result + '	 </div>';
+		
 		
 		result = result + '<div class="form-footer clearfix mt">';
 		result = result + '<div class="pull-right mr">';
@@ -282,16 +299,35 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
 	
+	document.getElementById("newUploadBtn123").onchange = function () {
+		$('#newUploadFile123').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	};
+	
 }
+
+
 </script>
 
 <script>
+/* function importGuestAddApplicantDoc(){
+	fileUpload("uploadBtn", "addApplicants", "guestApplicant_form");
+} */
 function importGuestAddApplicantDoc(){
-	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
+	fileUpload("uploadBtn", "addApplicants", "guestApplicant_form");
+	var uploadfiles = $("#uploadBtn").val();
+	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
-
 </script>
-
+<script type="text/javascript">
+var sourceleadUrl ='${sourceleadUrl}';
+</script>
+<script>
+function uploadAddApplicantCandidateDoc(){
+	fileUpload("newUploadBtns", "addApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
+	var uploadfiles = $("#newUploadBtns").val();
+	$('#newUploadFiles').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
+}
+</script>
 <script>
  $(document.body).on('change', '#uploadBtn' ,function(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
@@ -325,7 +361,7 @@ function importGuestAddApplicantDoc(){
    		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
  	 
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var form = $('#addApplicant_form')[0];
+		var form = $('#guestApplicant_form')[0];
   		var formData = new FormData(form); 
 		   $.ajax({
 				    type: "POST",
@@ -392,23 +428,48 @@ function importGuestAddApplicantDoc(){
 
 </script> 
 
+  <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+ 
+
 <script type="text/javascript">
 function addApplicantSubmission(){
 	var requirementId = '${reqId}';
-	if ($('#addApplicant_form').validate(false, validationSettings)) {
-		alert("2")
-    var frm = $('#addApplicant_form').serializeFormJSON();
-		alert("3")
+	if ($('#guestApplicant_form').validate(false, validationSettings)) {
+    var frm = $('#guestApplicant_form').serializeFormJSON();
     var con1 = JSON.stringify(frm);
-		alert("4")
     con1= con1.replace(/[{}]/g, "");
-		alert("5")
     var jsonData = encodeURIComponent(con1);
-    alert("6")
-    var form = $('#addApplicant_form')[0];
+    var form = $('#guestApplicant_form')[0];
     var formData = new FormData(form); 
     //Loop through fields and save field data to array
-    alert("7")
     var fields = [];
     $('.sjfb-field').each(function() { 
     	  var $this = $(this); 
@@ -521,7 +582,7 @@ function addApplicantSubmission(){
 	        processData: false,
 	        contentType:false,
 	        dataType : 'json',
-	    	url : "/saveGuestAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	window.location.href = "/jobs";
 	        	 window.location = "http://localhost:8080/jobs"
@@ -533,9 +594,9 @@ function addApplicantSubmission(){
   	return false;	
      } 
 }
-$('body').on('blur', '#addApplicant_form', function() {
-	$("#addApplicant_form").showHelpOnFocus();
-	$("#addApplicant_form").validateOnBlur(false, validationSettings);
+$('body').on('blur', '#guestApplicant_form', function() {
+	$("#guestApplicant_form").showHelpOnFocus();
+	$("#guestApplicant_form").validateOnBlur(false, validationSettings);
 });
   
 </script>
