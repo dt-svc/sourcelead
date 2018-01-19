@@ -16,7 +16,6 @@
 <div class="success_pop" id="selector4" style="display: none;">
 	<i class="fa fa-check-circle"></i><span id="inviteMessage"></span>
 </div>
-<div id="loading"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
@@ -24,6 +23,7 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
+			<div id="loading"></div>
 	</section>
 
 
@@ -104,7 +104,7 @@ var count = 0;
     		$("#orgOffset").val(0);
    		    offset = 0;
     	} 
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/getConnectedList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
@@ -170,7 +170,7 @@ var count = 0;
 function getDisconnectConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
