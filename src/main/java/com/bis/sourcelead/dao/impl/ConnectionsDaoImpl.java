@@ -130,25 +130,26 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userIdValue = connections.getFromUser().getId();
 					}
 					userRoleDTO.setUserName(userName.toString());
-					UserRole userRole = (UserRole) session.createQuery(query2).setLong("userId", userIdValue).setCacheable(true).uniqueResult();
-					if(userRole != null) {
+					List<UserRole> userRoles = new ArrayList<>();
+					userRoles = session.createQuery(query2).setLong("userId", userIdValue).setCacheable(true).list();
+					if(userRoles.size() != 0) {
 						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.fromUser.id <> :loginUserId and connections.toUser.id <> :loginUserId and connections.connectionStatus = :connectionStatus";
 						Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", userId).setLong("userId", userIdValue).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 						userRoleDTO.setMutualCount(count);
-						userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
+						userRoleDTO.setUserRoleName(userRoles.get(0).getRoles().getDisplayName());
 						String userOrgName = null;
-						if(userRole.getRoles().getId() == 10) {
+						if(userRoles.get(0).getRoles().getId() == 10) {
 							userOrgName = "";
-						}else if(userRole.getRoles().getId() == 11) {
+						}else if(userRoles.get(0).getRoles().getId() == 11) {
 							userOrgName = "";
 						}else {
-							userOrgName = userRole.getOrgLocations().getOrgLocationName();
+							userOrgName = userRoles.get(0).getOrgLocations().getOrgLocationName();
 						}
 						countValue++;
 						userRoleDTO.setOrgName(userOrgName);
-						userRoleDTO.setUserId(userRole.getUser().getId());
-						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
-						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+						userRoleDTO.setUserId(userRoles.get(0).getUser().getId());
+						userRoleDTO.setUserCode(userRoles.get(0).getUser().getUserCode());
+						userRoleDTO.setFileUrl(userRoles.get(0).getUser().getFileUrl());
 						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
@@ -245,26 +246,26 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTO.setUserName(userName.toString());
 						userId = connections.getToUser().getId();
 					}
-					UserRole userRole = null;
-					userRole = (UserRole) session.createQuery(queryRole).setLong("userId", userId).setCacheable(true).uniqueResult();
-					if(userRole != null) {
+					List<UserRole> userRoles = new ArrayList<>();
+					userRoles = session.createQuery(queryRole).setLong("userId", userId).setCacheable(true).list();
+					if(userRoles.size() != 0) {
 						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.fromUser.id <> :loginUserId and connections.toUser.id <> :loginUserId and connections.connectionStatus = :connectionStatus";
 						Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", id).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 						userRoleDTO.setMutualCount(count);
-						userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
+						userRoleDTO.setUserRoleName(userRoles.get(0).getRoles().getDisplayName());
 						String userOrgName = null;
-						if(userRole.getRoles().getId() == 10) {
+						if(userRoles.get(0).getRoles().getId() == 10) {
 							userOrgName = "";
-						}else if(userRole.getRoles().getId() == 11) {
+						}else if(userRoles.get(0).getRoles().getId() == 11) {
 							userOrgName = "";
 						}else {
-							userOrgName = userRole.getOrgLocations().getOrgLocationName();
+							userOrgName = userRoles.get(0).getOrgLocations().getOrgLocationName();
 						}
 						countValue++;
 						userRoleDTO.setOrgName(userOrgName);
-						userRoleDTO.setUserId(userRole.getUser().getId());
-						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
-						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+						userRoleDTO.setUserId(userRoles.get(0).getUser().getId());
+						userRoleDTO.setUserCode(userRoles.get(0).getUser().getUserCode());
+						userRoleDTO.setFileUrl(userRoles.get(0).getUser().getFileUrl());
 						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
