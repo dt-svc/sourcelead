@@ -5,8 +5,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>.::Guest Apply to Job::.</title>
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
- <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
@@ -14,12 +18,12 @@
 <script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-
- <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
- 
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 <style>
 .viewTemplate {
@@ -66,7 +70,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	  var finalDateFormatScript = 'dd-mm-yy'; 
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	 var result = "";
 		var result = "";
 		result = result + '<form id="guestApplicant_form" name="guestApplicant_form" enctype="multipart/form-data" method="post">';
 		result = result + '<h3>Application Form</h3>';
@@ -85,7 +88,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '------- ( OR ) -------';
 		result = result + '</div>';
 		
-		result = result + '<div class="col-md-5 pull-right">';
+	/* 	result = result + '<div class="col-md-5 pull-right">';
 		result = result + '<div class="col-md-12" id="browseDiv"  style="display: block;">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
 		result = result + '<label class="input-group-btn" onchange="importGuestAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -94,7 +97,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 		result = result + '</div>';
 		result = result + '</div>';	
-		result = result + '</div>';
+		result = result + '</div>'; */
 		
 		result = result + '</div>';
 		
@@ -108,7 +111,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		
 		
 		result = result + '<div class="row">';
-	    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
+	    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" >';
 		result = result + '<label class="col-md-4">Skills</label>';
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
@@ -203,7 +206,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	$("#submitDetailsDiv").empty();
 	$("#applytoJobDiv").empty();
 	$("#applytoJobDiv").append(result);
- 
+	test();
 	   var config = {
 				  '.chosen-select'           : {},
 				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -229,7 +232,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	    $("#candidateSkills").chosen().change(function(event) {
 	    	var allSkills = $(event.target).val();
 	   
-	    	
 	    	$.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
@@ -267,14 +269,14 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 			                }
 					       
 		    	         }
-	    	});
+	    	}); 
 	    //Adding Customized Skills to the list
 			
-	$("#candidateSkills").val('').trigger("chosen:updated");
+	$("#candidateSkills").trigger("chosen:updated");
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
-	$("body").css('overflow-y', 'hidden');
+/* 	$("body").css('overflow-y', 'hidden'); */
 	
 	var selectedFile = document.getElementById("uploadBtn");
 	selectedFile.addEventListener("change", function() {
@@ -304,8 +306,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	};
 	
 }
-
-
 </script>
 
 <script>
@@ -427,6 +427,18 @@ function uploadAddApplicantCandidateDoc(){
  });
 
 </script> 
+
+<script>
+function test(){
+	$(".DatePicker").datepicker({
+	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true, 
+	onSelect : function(selected) {
+	}
+	})
+}
+</script>
 
   <script type="text/javascript">
         var validationSettings = {
@@ -710,4 +722,22 @@ function zipcodeMask(country,zipCodeId){
 		     
 }
 </script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $("#DOB").datepicker();
+  </script>
+  
+ <script type="text/javascript">
+ var staticTime='${staticTime}';
+ var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+</script>
+
+  
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>

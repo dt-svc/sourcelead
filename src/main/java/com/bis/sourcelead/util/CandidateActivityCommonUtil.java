@@ -59,12 +59,10 @@ public class CandidateActivityCommonUtil {
 		candidateTimelineActivity.setCandidate(candidate);
 		candidateTimelineActivity.setOrgLocationId(orgLocations);
 		if(user !=null){
-		candidateTimelineActivity.setActionBy(user.getFullName());
-		candidateTimelineActivity.setCreatedUser(user);
-		candidateTimelineActivity.setCreatedBy(user.getUserCode());
-		candidateTimelineActivity.setUpdatedBy(user.getUserCode());
-
-
+			candidateTimelineActivity.setActionBy(user.getFullName());
+			candidateTimelineActivity.setCreatedUser(user);
+			candidateTimelineActivity.setCreatedBy(user.getUserCode());
+			candidateTimelineActivity.setUpdatedBy(user.getUserCode());
 		}
 		else{
 			candidateTimelineActivity.setActionBy(null);
@@ -228,8 +226,15 @@ public class CandidateActivityCommonUtil {
 		candidateEducationHistory.setInstitute(candidateEducation.getInstitute());
 		candidateEducationHistory.setAddress(candidateEducation.getAddress());
 		candidateEducationHistory.setStatus(candidateEducation.getStatus());
+		if(user !=null){
 		candidateEducationHistory.setCreatedUser(user);
 		candidateEducationHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateEducationHistory.setCreatedUser(null);
+			candidateEducationHistory.setCreatedBy(null);	
+			
+		}
 		candidateEducationHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateEducationHistory(candidateEducationHistory);
 	}
@@ -250,8 +255,14 @@ public class CandidateActivityCommonUtil {
 		candidateEmployersHistory.setEndMonth(candidateEmployers.getEndMonth());
 		candidateEmployersHistory.setEndYear(candidateEmployers.getEndYear());
 		candidateEmployersHistory.setStatus(candidateEmployers.getStatus());
-		candidateEmployersHistory.setCreatedUser(user);
-		candidateEmployersHistory.setCreatedBy(user.getUserCode());
+		if(user != null){
+			candidateEmployersHistory.setCreatedUser(user);
+			candidateEmployersHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateEmployersHistory.setCreatedUser(null);
+			candidateEmployersHistory.setCreatedBy(null);
+		}
 		candidateEmployersHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateEmployersHistory(candidateEmployersHistory);
 	}

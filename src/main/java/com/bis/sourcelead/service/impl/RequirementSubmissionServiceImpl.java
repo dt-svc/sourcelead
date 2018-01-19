@@ -498,7 +498,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 							candidateEducation.setCandidateId(candidate);
 							candidateEducation.setOrglocationId(orgLocations);
 							candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
+							if(user != null){
 							candidateEducation.setCreatedBy(user.getUserCode());
+							}
+							else{
+								candidateEducation.setCreatedBy(null);
+
+							}
 							candidateEducation.setCreatedDate(new Date());
 							candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
 							candidateEducationDao.storeCandidateEducation(candidateEducation);
@@ -513,7 +519,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidateEmployers.setName(jsonObj.getString("Current/LastCompany"));
 						 candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
 						 candidateEmployers.setCreatedDate(new Date());
-						 candidateEmployers.setCreatedBy(user.getUserCode());
+						 if(user != null){
+							 candidateEmployers.setCreatedBy(user.getUserCode());
+
+						 }
+						 else{
+						 candidateEmployers.setCreatedBy(null);
+						 }
 						 candidateEmployers.setUpdatedDate(new Date());
 						 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
 						 candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);

@@ -65,6 +65,8 @@ public class OpenJobsController {
 		model.addObject("orgId", req.getOrgLocationId().getOrg().getId());
 		model.addObject("locationId", req.getOrgLocationId().getId());
 		model.addObject("reqName", req.getJobTitle());
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("openJobs/guestApplyToJob");
 		return model;
