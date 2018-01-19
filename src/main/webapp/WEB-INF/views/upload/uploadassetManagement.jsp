@@ -33,9 +33,9 @@
 			&raquo; Import Assets
 		</div>
 	</section>
+	<div id="loading"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_asset_form" name="upload_asset_form" method="post" enctype="multipart/form-data">
-		<div id="loading"></div>
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -95,6 +95,7 @@
 						</div>
 						<!--  Downloaded File show here -->
 					</div>
+					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 					<div class="bgInfo bg-info clearfix text-center">
@@ -120,6 +121,10 @@
 	<div id="dataFieldsDiv" style="display: none"></div>
 	
 </section>
+<div class="success_pop" id="selector11" style="display: none;">
+    <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+</div>
+
 
 
 <script type="text/javascript">
@@ -145,6 +150,7 @@ function fetchFieldsWithMatchedColumn(){
     		    	$('#dataFieldsDiv').append(data);
     		    },
     		});
+          	$('#loading').removeAttr("style");
         }
         else{
       	  return false;	
