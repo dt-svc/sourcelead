@@ -291,7 +291,7 @@ function assetDetails(assetId) {
 					result = result + ' </div>';
 					
 					if (json.fileName != null && json.fileName != '' && json.fileName != 'undefined') {
-						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class="tbldata-dotdot-me">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
+						result = result + ' <div class="require_wrap_details_cta"> <b><strong>Attched File:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.fileUrl+'\" download title="Download"></a>';
 		           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.fileUrl+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"title="preview"></a>';		           						          
 						result = result + ' <div class="clearfix"></div>';
 						result = result + '</div>';
@@ -338,8 +338,8 @@ function assetDetails(assetId) {
 						result = result + '</div>';
 						
 						if (json.shiftAFileUrl != null && json.shiftAFileUrl != '' && json.shiftAFileUrl != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Shfit A Attched File:</strong></b> <span class="tbldata-dotdot-me">'+json.shiftAFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftAFileUrl+'\" download title="Download"></a>';
-			           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.shiftAFileUrl+'\',\''+json.shiftAFileName+'\',\''+json.shiftAFileContentType+'\');"title="preview"></a>';		           						          
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Shfit A Attched File:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.shiftAFileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.shiftAFileUrl+'\" download title="Download"></a>';
+							result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.shiftAFileUrl+'\',\''+json.shiftAFileName+'\',\''+json.shiftAFileContentType+'\');"title="preview"></a>';		           						          
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
@@ -349,7 +349,8 @@ function assetDetails(assetId) {
 						result = result + '  </div>';
 						
 						if (json.shiftBFileUrl != null && json.shiftBFileUrl != '' && json.shiftBFileUrl != 'undefined') {
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Shfit B Attched File:</strong></b> <span class="tbldata-dotdot-me">'+json.shiftBFileName+'</span><a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+json.shiftBFileUrl+'\" download title="Download"></a>';
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Shfit B Attched File:</strong></b> <span class="tbldata-dotdot-me mr10">'+json.shiftBFileName+'</span><a download class="glyphicon glyphicon-download-alt mr10" target="_blank" href=\"'+json.shiftBFileUrl+'\" download title="Download"></a>';
+			           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+json.shiftBFileUrl+'\',\''+json.shiftBFileName+'\',\''+json.shiftBFileContentType+'\');"title="preview"></a>';		           						          
 							result = result + '   <div class="clearfix"></div>';
 							result = result + '  </div>';
 						}
