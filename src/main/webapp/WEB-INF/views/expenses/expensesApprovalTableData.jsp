@@ -32,18 +32,8 @@
 <c:if test="${empty expApproverHierarchy.expensesApproverHierarchyPurpose}">
 		 <td><div class="sm" title="--">--</div></td>	
 </c:if>
-	  		
-<td><div class="sm" title="${expApproverHierarchy.expenseStartDateString}">${expApproverHierarchy.expenseStartDateString}</div></td>
-	    	  		
-<td><div class="sm" title="${expApproverHierarchy.expenseEndDateString}">${expApproverHierarchy.expenseEndDateString}</div></td>	
 
-<c:if test="${empty expApproverHierarchy.expensesApproverHierarchyPurpose}">
-	 	<td><div class="sm" title="--">--</div></td>
-</c:if>
-	    	  		
-<td><div class="sm">${expApproverHierarchy.noOfExpenses}</div></td>
-	    	  		
- <td><div class="sm" title="${expApproverHierarchy.totalAmount}">
+<td><div class="sm" title="${expApproverHierarchy.totalAmount}">
 <sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">
 	<a  href="addApprovalExpense?expenseId=${expApproverHierarchy.expenseId}&expenseLocationCode=${expApproverHierarchy.locationsCode}&type=view" class="ExpAmount">${expApproverHierarchy.totalAmount}</a>
 </sec:authorize>
@@ -88,6 +78,18 @@
 		            	<a  href="/addApprovalExpense?expenseId=${expApproverHierarchy.expId}&expenseLocationCode=${expApproverHierarchy.locationsCode}&type=view" class="ExpAmount"></a>
 		            	</sec:authorize> 
 		           	</c:if>
-		           </td>
+</td>
+	  		
+<td><div class="sm" title="${expApproverHierarchy.expenseStartDateString}">${expApproverHierarchy.expenseStartDateString}</div></td>
+	    	  		
+<td><div class="sm" title="${expApproverHierarchy.expenseEndDateString}">${expApproverHierarchy.expenseEndDateString}</div></td>	
+
+<c:if test="${empty expApproverHierarchy.expensesApproverHierarchyPurpose}">
+	 	<td><div class="sm" title="--">--</div></td>
+</c:if>
+	    	  		
+<td><div class="sm">${expApproverHierarchy.noOfExpenses}</div></td>
+	    	  		
+ 
 </tr>
 </c:forEach>		              

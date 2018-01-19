@@ -25,7 +25,7 @@
 				<li>Click on Import to start the importing.</li>
 			</ul>
 			
-			<c:choose>
+			<%-- <c:choose>
 			  <c:when test="${importStatus == 'success'}">
 			    <span class="text-green">Data imported successfully</span>
 			  </c:when>
@@ -34,7 +34,7 @@
 					<span class="colorRed">Some data is failed to import <a download class="colorRed glyphicon glyphicon-download-alt" target="_blank" href="${importStatus}" title="Download error file"></a></span>
 				</c:if>
 			  </c:otherwise>
-			</c:choose>
+			</c:choose> --%>
 			
 			
 		</div>
@@ -72,6 +72,7 @@
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">
 				<input type="hidden"  readonly id="headerPosition" name="headerPosition" value="${headerPosition}">
 				<input type="hidden"  readonly id="timesheetMode" name="timesheetMode" value="${timesheetMode}">
+				<input type="hidden"  readonly id="importStatus" name="importStatus" value="${importStatus}">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>
@@ -83,6 +84,7 @@
 	function saveDataFields() {
 		if ($('#dataMigration_form').validate(false, validationSettings)) {
 			var formData = getFormData1("dataMigration_form");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 				type : "POST",
 				data : formData,
@@ -95,6 +97,33 @@
 			    	$('#dataFieldsDiv').removeAttr("style");
 			    	$('#dataFieldsDiv').empty();
 			    	$('#dataFieldsDiv').append(data);
+			    	var importStatus = $('#importStatus').val();
+			    	if(importStatus == "success"){
+			    		$('#selector11').removeClass('bg-red').addClass('success_pop');
+          				$("#msgDiv").html("Data imported successfully");
+          				$('#errorDownloadDiv').removeAttr("style");
+          				$('#errorDownloadDiv').prepend("<span class='text-green'>Data imported successfully</span>");
+          			}else if(importStatus != ''){
+          				$('#selector11').removeClass('success_pop').addClass('bg-red');
+          				$("#msgDiv").html("Some data is failed to import");
+          				$('#errorDownloadDiv').removeAttr("style");
+          				$('#errorDownloadDiv').prepend("<span class='colorRed'>Some data is failed to import <a download class='colorRed glyphicon glyphicon-download-alt' target='_blank' href='"+importStatus+"' title='Download error file'></a></span>");
+          			}
+			    	$('#newUploadFile').text('');
+			    	
+			    	var uploadType = $('#uploadType').val();
+			    	if(uploadType == 'jobUpload'){
+			    		$('#upload_job_form')[0].reset();
+			    	}if(uploadType == 'assetUpload'){
+			    		$('#upload_asset_form')[0].reset();
+			    	}if(uploadType == 'timesheetUpload'){
+			    		$('#upload_timesheet_form')[0].reset();
+			    	}
+			    	$('#dataFieldsDiv').removeAttr("style");
+			    	$('#dataFieldsDiv').empty();
+			    	$("#dataFileImportDiv").removeAttr("style");
+			    	$('#loading').removeAttr("style");
+			    	$("#selector11").fadeOut(3000);
 				}
 			});
 		}

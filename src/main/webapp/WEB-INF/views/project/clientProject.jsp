@@ -58,10 +58,10 @@
 								<option value="">-- Select Client --</option>
 								<c:forEach var="report" items="${clientsList}">
 								 <c:if test="${report.locationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.responderLocationId.id}">${report.responderLocationId.org.orgName}</option>
+								    <option value="${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
 								 </c:if>
 								 <c:if test="${report.responderLocationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.locationId.id}">${report.locationId.org.orgName}</option>
+								    <option value="${report.locationId.id}">${report.locationId.orgLocationName}</option>
 								 </c:if>
 								</c:forEach>
 							</select> 
