@@ -1302,9 +1302,8 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
-
 				result = result +'	<div class="share">';			  
-				result = result +' <div class="addthis_inline_share_toolbox" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title = "'+requirements.jobTitle+' data-title="'+requirements.jobTitle+'" addthis:description = "'+requirements.jobTitle+' data-description="'+requirements.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
@@ -1665,9 +1664,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:</label>--</div>';
 				}
 
-// 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 				result = result +'	<div class="share">';
-				result = result +' <div class="addthis_inline_share_toolbox"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_8xlj" data-url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1676,10 +1674,16 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</section>'; 
 				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
+				alert("1")
+				addthis.toolbox(".addthis_inline_share_toolbox");
+				addthis.init(".addthis_inline_share_toolbox");
+				addthis.layers.refresh();
 				$("#openJobsRequirementsSummary").append(result);
 				if(requirementUUID != null){
 				$("#noResultsDiv").css("display", "block");
 				}
+				
+				
 	   	   	   }
 	   	   	}
 		});  
@@ -1803,9 +1807,7 @@ function openJobSearchRequirement(){
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 
 										result = result +'	<div class="share">';
-										result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+										result = result +' <div class="addthis_inline_share_toolbox" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
@@ -3074,6 +3076,6 @@ function forgotPassword(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		window.location.href = "/guestApplyToJob?&requirementUUID="+requirementUUID;
  }
- </script>
-   <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
+ </script>                                                                                     
+   <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
 <jsp:include page="../socialinviterscripts.jsp" />
