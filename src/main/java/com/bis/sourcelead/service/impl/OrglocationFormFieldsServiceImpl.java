@@ -37,12 +37,15 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 	
 	@Override
 	public OrglocationFormFields saveNewCustomFormFields(OrglocationFormFieldsDTO orgLocFormFieldsDTO, OrgLocations orgLocation,Org org,User loginUser) throws Exception {
-		OrglocationFormFields savedOrGLocFormField = null;
+		OrglocationFormFields orgLocFormFields = null;
 		if(orgLocFormFieldsDTO.getId() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getId().toString())) {
-			savedOrGLocFormField = getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
+			orgLocFormFields = getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
 		}else {
-			OrglocationFormFields orgLocFormFields = new OrglocationFormFields();
-		
+			 orgLocFormFields = new OrglocationFormFields();
+			 orgLocFormFields.setStatus(1);
+			 orgLocFormFields.setCreatedBy(loginUser);
+		  	 orgLocFormFields.setCreatedDate(new Date());
+		}
 		if(orgLocFormFieldsDTO.getSectionId() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getSectionId().toString())) {
 			SourceleadFormSections sourceleadFormSections = new SourceleadFormSections();
 			sourceleadFormSections.setId(orgLocFormFieldsDTO.getSectionId());
@@ -61,6 +64,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		orgLocFormFields.setFieldDesc(orgLocFormFieldsDTO.getFieldDescription());
 		orgLocFormFields.setPlaceHolder(orgLocFormFieldsDTO.getPlaceHolder());
 		orgLocFormFields.setIsFieldRequired(orgLocFormFieldsDTO.getIsRequired());
+		orgLocFormFields.setStatus(orgLocFormFieldsDTO.getStatus());
 		if(orgLocFormFieldsDTO.getSlDependedntField() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getSlDependedntField().toString())) {
 			SourceleadFormFields sourceLeadDependantField = new SourceleadFormFields();
 			sourceLeadDependantField.setId(orgLocFormFieldsDTO.getSlDependedntField());
@@ -79,33 +83,24 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 			orgLocFormFields.setMaxDate(orgLocFormFieldsDTO.getMaxDate());
 		}
 		
-		orgLocFormFields.setStatus(1);
 		
-		orgLocFormFields.setCreatedBy(loginUser);
-		orgLocFormFields.setCreatedDate(new Date());
 		orgLocFormFields.setUpdatedBy(loginUser);
 		orgLocFormFields.setUpdatedDate(new Date());
 		
-		savedOrGLocFormField =  orglocationFormFieldsDao.saveOrglocationFormField(orgLocFormFields);
+		  orglocationFormFieldsDao.saveOrglocationFormField(orgLocFormFields);
 		if(orgLocFormFieldsDTO.getOptionData() != null && !orgLocFormFieldsDTO.getOptionData().isEmpty()) {
 			for(OrglocationFormSubFieldsDTO optionData:orgLocFormFieldsDTO.getOptionData()) {
 				if(optionData != null && StringUtils.isNotBlank(optionData.getOption())) {
 				OrglocationFormSubFields subFields = new OrglocationFormSubFields();
-				subFields.setFormField(savedOrGLocFormField);
+				subFields.setFormField(orgLocFormFields);
 				subFields.setLabelName(optionData.getOption());
 				subFields.setStatus(1);
 				orglocationFormSubFieldsDao.saveOrglocationFormSubField(subFields);
 				}
 			}
 			
-		}
-		if(savedOrGLocFormField != null) {
-			return savedOrGLocFormField;
-		}else {
-			return null;
-		}
-		}
-		return savedOrGLocFormField;
+		  }
+		return orgLocFormFields;
 	  }
 
 	@Override
