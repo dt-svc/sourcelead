@@ -221,6 +221,7 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		
 		referContacts.setReferFromUser(fromUser);
 		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+		referContacts.setContactUserEmail(toUser.getEmail());
 		referContacts.setContactUserUUID(contactUUID);
 		referContacts.setCreatedDate(new Date());
 		referContacts.setUpdatedDate(new Date());
@@ -229,7 +230,6 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		referContacts.setContactSource(Contact_Source.SELF);
 		referContactsDao.addReferContacts(referContacts);
 		
-		sendEmailToReferedContact(fromUser,referContactsDTO,contactUUID);
 		
 	}
 
