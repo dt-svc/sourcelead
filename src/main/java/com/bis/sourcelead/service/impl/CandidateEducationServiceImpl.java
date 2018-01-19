@@ -140,19 +140,19 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		
 		
-		if(StringUtils.isNotBlank(candidateEducationDTO.getScore())){
+		if(StringUtils.isNotBlank(candidateEducationDTO.getGrade())){
 			if(candidateEducation != null && candidateEducation.getGrade() != null){
-				activitySummary.append("Grade").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGrade()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScore()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				activitySummary.append("Grade").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGrade()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getGrade()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidateEducation.setGrade(candidateEducationDTO.getScore());
+			candidateEducation.setGrade(candidateEducationDTO.getGrade());
 		}else{
 			candidateEducation.setGrade("");
 		}
-		if(StringUtils.isNotBlank(candidateEducationDTO.getScoreType())){
+		if(StringUtils.isNotBlank(candidateEducationDTO.getGradeType())){
 			if(candidateEducation != null && candidateEducation.getGradeType() != null){
-				activitySummary.append("Grade Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGradeType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getScoreType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				activitySummary.append("Grade Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGradeType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getGradeType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
-			candidateEducation.setGradeType(candidateEducationDTO.getScoreType());
+			candidateEducation.setGradeType(candidateEducationDTO.getGradeType());
 		}else{
 			candidateEducation.setGradeType("");
 		}
