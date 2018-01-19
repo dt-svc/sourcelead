@@ -1716,10 +1716,17 @@ function hideCommonSOWFields(){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
 	            	  result = result + '<option value="">Select Applicant</option>';
-	                  for (var i = 0; i < json.length; i++) {
-	                 	 var opt = json[i]; 
-	                 	result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
-	                  }
+	            	  if(sowType == "Vendor SOW"){
+	            		  for (var i = 0; i < json.length; i++) {
+	 	                 	 var opt = json[i]; 
+	 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
+	 	                  }  
+	            	  }else{
+	            		  for (var i = 0; i < json.length-1; i++) {
+	 	                 	 var opt = json[i]; 
+	 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
+	 	                  }
+	            	  }
 	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
@@ -2095,9 +2102,12 @@ function refreshVendorList(){
 
 </script>
 <script>
-function refreshClientList(){
+function refreshClientList(autoPopClientId){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
+		 if(selectedOrgId == null || selectedOrgId == '' || selectedOrgId == 'undefined'){
+			 selectedOrgId = autoPopClientId;
+		 }
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshClientList",       
