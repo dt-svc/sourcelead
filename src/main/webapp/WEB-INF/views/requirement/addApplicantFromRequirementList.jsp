@@ -563,7 +563,7 @@ function discordApplicant(){
 function addApplicantForm(){
 	  var requirementId = $("#requirementId").val();
 	  if ($('#addApplicant_form').validate(false, validationSettings)){
-      e.preventDefault();
+      //e.preventDefault();
       var frm = $('#addApplicant_form').serializeFormJSON();
       var frm = $('#addApplicant_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
