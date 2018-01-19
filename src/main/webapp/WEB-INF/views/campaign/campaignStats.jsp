@@ -17,11 +17,9 @@
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='hotListCampaigns'/>">Bank Office</a> &raquo; Campaigns Stats</div>
     </section>
-      <div class="clearfix">
-          <div class="clearfix tableStyles">
+          <div class="clearfix vendor_wrap">
           <div id="campaignStatsDev" class="datatable_filter"></div>
         </div>
-      </div>
       <div id="popUp"></div>   
   </section>
        
@@ -45,6 +43,7 @@ function prepareCampaignStatsList(url){
 	 	result = result +" <input type='text' placeholder='Search' id='campaignStatsTableSearch'/>";
 	 	result = result +"</div>";
 	 	result = result +"</div>";
+	 	result = result +"<div class='require_wrap_table'>";
  	    result = result +"<table id='campaignStatsPagination' class='display table table-bordered' cellspacing='0' width='99.9%' >"; 
  	    result = result + '<thead>';
 		result = result + '<tr>';
@@ -59,6 +58,7 @@ function prepareCampaignStatsList(url){
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
+        result = result +"</div>";
       $("#campaignStatsDev").append(result);
       campaignStatsPagination(url); 
 }
@@ -157,12 +157,7 @@ function campaignStatsPagination(url){
 	    	  		var result = "";
 	    	  		result = result +'  <td>';                                                                                                                  
 	    	           result = result +'    <div class="action-div tblminwidth-50 text-center">';
-	    	           result = result +'    <i class="fa fa-ellipsis-h cursorPointer"></i>';
-	    	           result = result +'    <div class="action-inner">';
-	    	           result = result +'    <ul>';
-	    	           result = result +'          <li><div title="Delete"><i class="fa fa-trash-o text-danger cursorPointer" onclick="deleteCampaignStas(\''+report.categoryName+'\');"></i></div></li>';  
-	    	           result = result +'    </ul>';
-	    	           result = result +'    </div>';
+	    	           result = result +'    <i class="fa fa-trash-o text-danger cursorPointer" onclick="deleteCampaignStas(\''+report.categoryName+'\');"></i>';
 	    	           result = result +'    </div>';                                                                                                              
 	    	           result = result +'  </td>';
 	    	  		return result;

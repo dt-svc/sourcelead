@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -560,6 +561,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(loginUser.getUserCode());
+		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+		user.setUrlSentTime(new Date());
+		user.setIsVerified(Constants.NO);
 		user.setCreatedDate(commonUtil.currentDate());
 		user.setRegistrationType("Newly Registered");
 		return user;

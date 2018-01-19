@@ -38,6 +38,8 @@ public interface ExpensesService {
 	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType)throws Exception;
 
 	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId)throws Exception;
+	
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
 
 	
 }

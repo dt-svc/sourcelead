@@ -1517,7 +1517,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     background-color:#375d81 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 9px !important; height:40px; border-right:1px solid #4576a4 !important; -moz-border-right:1px solid #4576a4;
     }  
 .require_wrap_table table tr td {
-    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px;
+    color:#333; padding:0px 10px !important; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; font-weight:400; height:35px; min-height: 35px;
     }  
 .require_wrap_table table tr td div {
     /*position:relative;*/
@@ -6298,11 +6298,23 @@ position: absolute;
 	padding: 0px 15px 15px 0px !important;
 }
 .locaPadding .btn-default {
-background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%); background-repeat: repeat-x; border-color: #ccc;
-text-shadow: 0 1px 0 #fff;
+	background-image: linear-gradient(to bottom, #fff 0px, #e0e0e0 100%); background-repeat: repeat-x; border-color: #ccc;
+	text-shadow: 0 1px 0 #fff;
 }
 .locaPadding .fa-map-marker {
 	padding: 0px 10px 0px 0px;
+}
+
+.mailFromRefreBtn {
+}
+.mailFromRefreBtn .chosen-container-single {
+	padding: 0px 36px 0px 0px;
+}
+.mailFromRefreBtn .input-group {
+	position: absolute; top: 0px; right: 5px; width: 36px; height: 34px; border-radius: 2px;
+}
+.compose-mail .chosen-choices .search-field {
+	width: 100% !important;
 }
 
 /*  Immigration CSS */
