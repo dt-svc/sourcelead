@@ -412,6 +412,7 @@
 						
 
 						var result = "";
+						result = result	+ '<div id="projectEditDetailsLoading"></div>';
 						result = result	+ ' <form id="editProject_form"  name="editProject_form" method="post">';
 						result = result	+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="ProjectIdDiv">';
 						result = result + '	<label>Project Id</label>';
@@ -869,8 +870,8 @@ function projectStatus(){
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		var ee = $("#txtEditor1").val($('.Editor-editor').html()); 
-
-		if ($('#editProject_form').validate(false, validationSettings)) {
+		$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 if ($('#editProject_form').validate(false, validationSettings)) {
 			var formData = getFormData("editProject_form");
 			$.ajax({
 						type : "POST",
@@ -894,7 +895,7 @@ function projectStatus(){
 			return true;
 		} else {
 			return false;
-		}
+		} 
 
 	}
 	$('body').on('blur', '#editProject_form', function() {
