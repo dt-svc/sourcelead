@@ -95,6 +95,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	List<ProjectMembersDTO> projectMembersList;
 	
+	List<ClientOrgRelationsDTO> clientsList;
+	
 	private String reStartDate;
 	
 	private String reEndDate;
@@ -152,6 +154,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private String overtimeRateType;
 	
 	private Long orgLocationId;
+	
+	private String clientlocationId;
 	
 	private String manager1Name;
 	
@@ -803,6 +807,22 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 		this.customFormData = customFormData;
+	}
+
+	public List<ClientOrgRelationsDTO> getClientsList() {
+		return clientsList;
+	}
+
+	public void setClientsList(List<ClientOrgRelationsDTO> clientsList) {
+		this.clientsList = clientsList;
+	}
+
+	public String getClientlocationId() {
+		return clientlocationId;
+	}
+
+	public void setClientlocationId(String clientlocationId) {
+		this.clientlocationId = clientlocationId;
 	}
 
 	

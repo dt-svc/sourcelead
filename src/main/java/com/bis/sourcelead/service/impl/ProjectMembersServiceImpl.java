@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -705,10 +706,24 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		List<ProjectMembers> projectMembersList = null;
+		List<ProjectMembers> projectMembList = new ArrayList<>();
 		if(projectClients != null){
 			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status,roleIds);
+			
+			if(projectMembersList != null && projectMembersList.size() > 0) {
+				for(ProjectMembers projectMembers : projectMembersList) {
+					if(projectMembers.getProjectAssignedDate() == null) {
+						ProjectMembersHistory history = projectMembersHistoryDao.getProjectMembersAllHistoryByProjectMemberId(projectMembers.getId());
+						if(history.getProjectAssignedDate() != null) {
+							SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+							projectMembers.setProjectAssignedDateStr(dateFormat.format(history.getProjectAssignedDate()));
+						}
+					}
+					projectMembList.add(projectMembers);
+				}
+			}
 		}
-		return projectMembersList;
+		return projectMembList;
 	}
 
 	@Override
@@ -1107,6 +1122,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembers.setPayRate(projectMembersDTO.getPayRate());
 			projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
 			projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
+		}else {
+			projectMembers.setPayRate(null);
+			projectMembers.setPayRateCurrency(null);
+			projectMembers.setPayRateType(null);
 		}
 		
 		if(projectMembersDTO.getBillRate() != null){
@@ -1564,6 +1583,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId, Long projectClientsId)
 			throws Exception {
 		return projectMembersDao.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClientsId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception {
+		return projectMembersDao.getAllProjectMembersByProjectClientId(projectClientsId);
 	}
 
 }
