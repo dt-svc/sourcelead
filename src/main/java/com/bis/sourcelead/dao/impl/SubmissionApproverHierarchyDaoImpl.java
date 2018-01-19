@@ -281,7 +281,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    	 submissionApproverHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
 	    	 submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 	    }
-	    submissionApproverHierarchy.setStatus(submissionApproverHierarchy.getSubmissionStatus().getValue().toUpperCase());
+		
 		return submissionApproverHierarchy;
 	}
 	
