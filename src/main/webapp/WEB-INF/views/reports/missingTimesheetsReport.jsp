@@ -154,7 +154,6 @@ function getMissingTimesheetReports(){
 		       for (var i=0; i<data.length; i++)
    				{
 		    	   var report = data[i];
-		    	   alert(report.employeType)
 		    	   var employeName="";
 	        		  if(report.employeName != null && report.employeName != '' && report.employeName != 'undefined'){
 	        			  employeName = report.employeName;

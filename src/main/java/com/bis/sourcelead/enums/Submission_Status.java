@@ -2,11 +2,11 @@ package com.bis.sourcelead.enums;
 
 public enum Submission_Status {
 	
-	NEW("new"),
-	DRAFT("draft"),
-	SUBMITTED("submitted"),
-	APPROVED("approved"),
-	REJECTED("rejected");
+	NEW("New"),
+	DRAFT("Draft"),
+	SUBMITTED("Submitted"),
+	APPROVED("Approved"),
+	REJECTED("Rejected");
 	
 	
     private String value;
