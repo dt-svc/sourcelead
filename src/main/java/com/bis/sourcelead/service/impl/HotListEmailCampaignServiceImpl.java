@@ -134,7 +134,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				CampaignList campaignList = campaignService.getRecipientListByListId(listId,0);
 				if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 					String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
-					toRecipantsEmailsList.append(reciEmail);
+					toRecipantsEmailsList.append(reciEmail).append(",");
 				}
 			}			
 			
@@ -154,7 +154,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 //		    	 }
 		    	 
 		    	 emails = toRecipantsEmailsList.toString();
-//		    	 emails = emails.substring(0,emails.length()-1);
+		    	 emails = emails.substring(0,emails.length()-1);
 		}
 		
 		String otherRecilistId = null;
@@ -657,7 +657,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 					CampaignList campaignList = campaignService.getRecipientListByListId(listId,1);
 					if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 						String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
-						toRecipantsEmailsList.append(reciEmail);
+						toRecipantsEmailsList.append(reciEmail).append(",");
 					}
 				}
 				
@@ -677,7 +677,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 //			    	 }
 			    	 
 			    	 emails = toRecipantsEmailsList.toString();
-//			    	 emails = emails.substring(0,emails.length()-1);
+			    	 emails = emails.substring(0,emails.length()-1);
 			}
 			
 			String otherReciListId = null; 
