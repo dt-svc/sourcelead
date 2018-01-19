@@ -861,8 +861,8 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getToReciEmails(Set<CampaignRecipient> campaignRecipient)
 	{
 		List<String> reciList = new ArrayList<>();
-		for(String email : reciList) {
-			reciList.add(email);
+		for (CampaignRecipient campaignEmail : campaignRecipient) {
+			reciList.add(campaignEmail.getEmail());
 		}
 		String reciEmail = String.join(",", reciList);
 		return reciEmail;
