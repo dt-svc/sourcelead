@@ -1274,7 +1274,7 @@ public class CrowdSourcingRequirementsRestController {
 
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			referContactsService.saveuserContacts(user, orgLocations, referContactsDTO);
+			referContactsService.saveuserContacts(user, referContactsDTO);
 						
 			return "success";
 

@@ -173,6 +173,7 @@ function validateShortCode(){
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
 										<input type="text" class="form-control calendar" value="" id="endDate" name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
+									<div class="clearDate" onClick="clearProjectEndDate();"></div>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -1288,6 +1289,12 @@ function flatPercentageType(){
 	
 		 }
 	  
+</script>
+
+<script>
+function clearProjectEndDate(){
+	$("#endDate").val("");
+	};
 </script>
 <!--  <script>
  function clearStartDate(){

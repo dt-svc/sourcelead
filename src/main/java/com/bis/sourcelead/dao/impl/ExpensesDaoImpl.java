@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 @SuppressWarnings("rawtypes")
 @Repository
@@ -260,6 +261,15 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		return expense;
 	}
 
+	@Override
+	@Transactional
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession(); 
+		String query = "from Expenses  expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where projects.id = :projectId and mc.id = :masterCandidateId ";  
+		List<Expenses> expenses = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId", projectId).list();
+		return expenses;
+	}
+	
 	@Override
 	@Transactional
 	public List getExpensesByProjectMemberId(Long projectMemberId,String invoiceType) {

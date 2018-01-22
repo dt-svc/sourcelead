@@ -373,7 +373,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 					</div> 
 					<div class="col-md-12 mt10 clearfix">            
 					<div class="pull-right">
-					  <input type="submit" value="Add Contact" id="add_contact"  class="btn btn-primary">
+					  <input type="submit" value="Add Contact" id="add_contact" onclick="saveReferContacts();" class="btn btn-primary">
 					  <input type="button" value="Cancel" onclick="flushContactDetails()" class="btn btn-default ml10 canBtn">
 					</div>    
 					</div> 
@@ -720,13 +720,33 @@ function validateContactEmail(){
 
 
 <script type="text/javascript">
+function saveReferContacts(){
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
 	   };  
-         $('body').on('submit', '#addcontact_form', function(e){
+	if ($('#addcontact_form').validate(false, validationSettings)){
+  		$("#add_contact").attr("disabled", "disabled");
+  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	     var formData = getFormData1("addcontact_form");
+		$.ajax({
+					type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+					success : function(result) {
+						location.replace(sourceleadUrl+ "/referRequirementList");
+					},
+				});
+    
+	    return true;
+}
+}
+	
+         /* $('body').on('submit', '#addcontact_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
 	          		
 	          		$("#add_contact").attr("disabled", "disabled");
@@ -748,7 +768,7 @@ function validateContactEmail(){
             else{
             	return false;	
                }
-            });
+            }); */
          $('#addcontact_form').showHelpOnFocus();
          $('#addcontact_form').validateOnBlur(false, validationSettings); 
             
