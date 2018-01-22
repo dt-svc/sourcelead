@@ -413,7 +413,7 @@ function validateShortCode(){
 								      <input type="text" class="pull-left btn btn-primary btn-block" value="%" readonly>
 					                </div>
 									<input type="text" value="" id="notifyBudgetAt" name="notifyBudgetAt" class="form-control"
-										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" onkeyup="recSelectType();" >
+										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" onkeyup="recSelectType();" >
 								</div>
 							</div>
 						</div>
