@@ -86,7 +86,7 @@ public class UploadController {
 		}
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
-		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a associates");
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New Associate Created");
 		return "redirect:/app/usersList";
 	}
 /**

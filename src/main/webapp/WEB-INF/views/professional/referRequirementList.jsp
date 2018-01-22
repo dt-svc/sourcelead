@@ -514,6 +514,8 @@ var contactsList = {};
 function checkContactList(ele){
 	if($(ele).is(":checked")) {
 		contactsList[$(ele).data("id")] = $(ele).val();
+	}else {
+		delete contactsList[$(ele).val()];
 	}
 }
 </script>

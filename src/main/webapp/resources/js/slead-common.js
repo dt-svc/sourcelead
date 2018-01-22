@@ -158,6 +158,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	var invalidFiles = false;
 	var count = 0;
 	for(var e in files) {
 		if(!$.isNumeric(e))
@@ -175,7 +176,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	data.append('orgId', orgId);
 	data.append('orgLocationId', orgLocationId);
 	$.ajax({ 
-		url: sourceleadUrl+(url ? url : "/upload/"+type), 
+		url: sourceleadUrl+(url ? url : "/ws/upload/"+type), 
 		data: data, 
 		processData: false, 
 		type: 'POST', 
