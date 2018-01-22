@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,6 +29,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,7 @@ import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 @Service
 public class DataMigrationServiceImpl implements DataMigrationService {
@@ -127,6 +130,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String importStatus = null;
+		String finalImportStatus = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		FileInputStream inputStream = new FileInputStream(new File(ac
 				+ dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
@@ -156,32 +160,58 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}
 			if(nextRow.getRowNum()+1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
 				HashMap< String, String> errorSet = new HashMap< String, String>();
-				JSONObject dataMigrationDTOJson = new JSONObject(dataMigrationDTO);
+				Gson gson = new Gson();
+				String gsonOutput = gson.toJson(dataMigrationDTO);
+				JSONObject dataMigrationDTOJson = new JSONObject(gsonOutput);
 				DataMigrationDTO dataMigrationDTOCopy = new DataMigrationDTO();
 				JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
 				Iterator<?> keys = dataMigrationDTOJson.keys();
 	
 				while( keys.hasNext() ) {
-				    String k = (String)keys.next();
-				    	Iterator<Cell> cellIterator = nextRow.cellIterator();
-						while (cellIterator.hasNext()) {
-							Cell cell = cellIterator.next();
-							if (dataMigrationDTOJson.get((String) k) != null) {
-								if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
-									dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
-									//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+				     String k = (String)keys.next();
+				      if(StringUtils.isNotEmpty(k) && !k.equalsIgnoreCase("days")) {
+				    	  Iterator<Cell> cellIterator = nextRow.cellIterator();
+				    	  while (cellIterator.hasNext()) {
+								Cell cell = cellIterator.next();
+								if (dataMigrationDTOJson.get((String) k) != null) {
+									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+										dataMigrationDTOJsonCopy.put((String) k, objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+										//dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, (String) k, objFormulaEvaluator, objDefaultFormat, user, orgLocation);
+									}
 								}
 							}
-						}
+				      }else {
+				    	  JSONArray ja = dataMigrationDTOJson.getJSONArray("days");
+				    	  LinkedList<String> days = new LinkedList<>();
+				    	  if(ja != null && ja.length() >0) {
+				    		  for(int j=0; j<ja.length(); j++) {
+				    			     Iterator<Cell> cellIterator = nextRow.cellIterator();
+									 String dayKey =  ja.getString(j);
+									 if (StringUtils.isNotEmpty(dayKey)) {
+										 while (cellIterator.hasNext()) {
+										        Cell cell = cellIterator.next();
+												if (dayKey.toString().replaceAll("\\d", "").equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+													days.add(objDefaultFormat.formatCellValue(cell, objFormulaEvaluator).toString().trim());
+												}
+										  } 
+									 }else {
+										 days.add(dayKey);
+									 }
+									  
+				    		  }
+				    	  }
+				    	  dataMigrationDTOJsonCopy.put((String) k, days);
+				      }
 				}
-				String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
+				
 				switch(dataMigrationDTO.getUploadType()){  
 			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
-			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
+			    case "timesheetUpload": 
+			    	String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
+			    	dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
 			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
 
 				}
-				
 				
 				if(errorSet.isEmpty()){
 					mapToEntities(dataMigrationDTOJsonCopy.toString(), user, orgLocation, dataMigrationDTO.getUploadType());
@@ -205,13 +235,19 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				        FileOutputStream outputStream = new FileOutputStream(new File(ac + dataMigrationDTO.getExportFilePath()));
 				        workbook.write(outputStream);
 				        //outputStream.close();
-				        importStatus = dataMigrationDTO.getExportFilePath();
+				        //importStatus = dataMigrationDTO.getExportFilePath();
+				        finalImportStatus = dataMigrationDTO.getExportFilePath();
 				}
 			}
 		}
 		workbook.close();
 		inputStream.close();
-		return importStatus;
+		if(finalImportStatus != null) {
+			return finalImportStatus;
+		}else {
+			return importStatus;
+		}
+		
 	}
 	
 	private void mapToEntities(String dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation, String uploadType) throws Exception

@@ -58,18 +58,12 @@ display: none;
        <form:form id="hotlistCampaign_form" name="hotlistCampaign_form"  >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
-          <div class="col-md-9">
-           <%--  <input type="text" value="${SourceLeadWeb_user.email}" class="form-control input-sm" readonly> --%>
-<!--              <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
-			</select>  --> 
-			
-<div class="input-group errorInptgroup">
-<select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
+          <div class="col-md-9 clearfix mailFromRefreBtn">
+          <select class="chosen-select form-control" id="senderIdentity" name="senderIdentity" data-validation="required" field-name="Sender">             
 			</select>	
-<span class="input-group-addon cursorPointer bg-blue" onclick="getSenders();"><i class="fa fa-refresh "></i></span>					 
-<!-- <a class="input-group-addon" onclick="campaignSender('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a> -->
-</div>			
-			
+		<div class="input-group">
+		<span class="input-group-addon cursorPointer bg-blue" onclick="getSenders();"><i class="fa fa-refresh "></i></span>	
+		</div>			
           </div>
 
           <div class="col-md-1">
@@ -81,8 +75,8 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
           
-<div class="input-group errorInptgroup positionRelative col-md-12 noPad">
-<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation-optional="true" data-validation-optional="true" name="Toemails"></select>
+<div class="input-group positionRelative col-md-12 noPad">
+<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
 <span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 					 
 <!-- <a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a> -->
 <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->

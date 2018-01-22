@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -548,6 +549,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setUserName(userImport.getEmailId());
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+	 		user.setUrlSentTime(new Date());
+	 		user.setIsVerified(Constants.NO);
 			userRole.setIsPrimary(1);
 			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
@@ -1316,8 +1320,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		HSSFRow roleRow = rolehidden.createRow(0);
 		for (int i = 0, length= rolesList.length; i < length; i++) {
 		   String name = rolesList[i];
+		   try {
 		   HSSFCell cell = roleRow.createCell(i);
 		   cell.setCellValue(name);
+		   }catch (Exception e) {
+		    }
 		 }
 		 Name namedRoleCel = wb.createName();
 		 namedRoleCel.setNameName("rolehidden");
@@ -1334,8 +1341,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			HSSFRow userRow = userhidden.createRow(0);
 			for (int i = 0, length= usersList.length; i < length; i++) {
 			   String name = usersList[i];
+			   try {
 			   HSSFCell cell = userRow.createCell(i);
 			   cell.setCellValue(name);
+			   }catch (Exception e) {
+				
+			    }
 			 }
 			 Name namedUserCel = wb.createName();
 			 namedUserCel.setNameName("userhidden");

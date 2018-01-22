@@ -325,15 +325,6 @@ public class DataMigrationCommonUtil {
 					dataMigrationDTOJsonCopy.put("manager", user.getId().toString());
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
-					OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("selectClient"));
-					if(orgRelations == null){
-						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
-					}else{
-						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
-					}
-				}
-				
 				if(!dataMigrationDTOJsonCopy.getString("selectContact").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectContact"))) {
 					if(dataMigrationDTOJsonCopy.get("selectClient") != null){
 						OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.get("selectClient").toString());
@@ -383,6 +374,15 @@ public class DataMigrationCommonUtil {
 						}else{
 							errorSet.put("clientSubmissionForm", dataMigrationDTOJsonCopy.getString("clientSubmissionForm")+" is invalid Submission Form");
 						}
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
+					OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("selectClient"));
+					if(orgRelations == null){
+						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
+					}else{
+						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
 					}
 				}
 				
@@ -551,6 +551,10 @@ public class DataMigrationCommonUtil {
 						if(timeFrequency.equalsIgnoreCase("Weekly")) {
 							validateTimesheetWeeklyFrequency(dataMigrationDTOJsonCopy,errorSet);
 						}
+						if(timeFrequency.equalsIgnoreCase("Monthly") || timeFrequency.equalsIgnoreCase("BiMonthly")) {
+							validateTimesheetMonthlyAndByMonthlyFrequency(dataMigrationDTOJsonCopy,errorSet);
+						}
+						
 						Pattern patternWeekTotalCheck = Pattern.compile("^\\d{0,3}(\\.\\d{1,2})?$");
 						if (!dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("billableHours").toString().equalsIgnoreCase("undefined")) {
 							Matcher matcherWeek = patternWeekTotalCheck.matcher(dataMigrationDTOJsonCopy.get("billableHours").toString());
@@ -623,7 +627,7 @@ public class DataMigrationCommonUtil {
 									}else if(importTimeSheet.getActualStartDate() != null && importTimeSheet.getActualEndDate() != null) {
 										 Map<String,Date> dateList = new HashMap<>();
 										 Date weekStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),"1-1-2018" /*importTimeSheet.getActualStartDate()*/);
-										 Date weekEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),"7-1-2018"/*importTimeSheet.getActualEndDate()*/);
+										 Date weekEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),"15-1-2018"/*importTimeSheet.getActualEndDate()*/);
 										 dateList.put("STARTDATE", weekStartDate);
 										 dateList.put("ENDDATE", weekEndDate);
 										 timeSheetImportMonthSaving(importTimeSheet,assignDate,terminatedDate,null,orgLocation,project,projectMember,projectTask,errorSet,dataMigrationDTOJsonCopy,user,weekStartDate,weekEndDate,dateList,timeFrequency);
@@ -648,6 +652,33 @@ public class DataMigrationCommonUtil {
 			
 			
 			
+
+private void validateTimesheetMonthlyAndByMonthlyFrequency(JSONObject dataMigrationDTOJsonCopy,	HashMap<String, String> errorSet) throws JSONException {
+	if (!dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("actualStartDate").toString().equalsIgnoreCase("undefined")) {
+   	 String monthYear = getMothNumberFromMonthName(dataMigrationDTOJsonCopy.get("actualStartDate").toString());
+        if(monthYear != null && StringUtils.isNotBlank(monthYear) &&  !monthYear.equalsIgnoreCase("0")) {
+       	 
+        } 
+    }
+    else {
+   	 errorSet.put("actualStartDate", "please provide proper month year format"); 
+    }
+
+	if (!dataMigrationDTOJsonCopy.get("actualEndDate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("actualEndDate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("actualEndDate").toString().equalsIgnoreCase("undefined")) {
+		 String monthYear = getMothNumberFromMonthName(dataMigrationDTOJsonCopy.get("actualEndDate").toString());
+	    if(monthYear != null && StringUtils.isNotBlank(monthYear) &&  !monthYear.equalsIgnoreCase("0")) {
+	   	 
+	    } 
+	}
+	else {
+		 errorSet.put("actualEndDate", "please provide proper month year format"); 
+	}
+	if (!dataMigrationDTOJsonCopy.get("days").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("days").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("days").toString().equalsIgnoreCase("undefined")) {
+	
+	}
+	
+}
+
 
 private void validateTimesheetWeeklyFrequency(JSONObject dataMigrationDTOJsonCopy,HashMap<String, String> errorSet) throws JSONException {
 		Pattern patternWeekCheck = Pattern.compile("^\\d{0,2}(\\.\\d{1,2})?$");
@@ -822,17 +853,45 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 						}
 					}
 			 }else if(timeFrequency.equalsIgnoreCase("Weekly")) {
-				/* int weekCount = 1;
-				 List<Date> weekdateList = CalendarUtil.getListOfDaysBetweenTwoDates(startDate,endaDate);
-				 for(Date weekList:weekdateList) {*/
-					  /* Date frequencyStartDate =startDate;
-					   Date frequencyEndDate = endaDate;
-		    		   float averageHours = getAverageHours(weekCount,importTimeSheet,0,timeFrequency);*/
 		    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,startDate,endaDate,0f,user,orgLocation,startDate,endaDate,importTimeSheet,timeFrequency);
-		    		  /* System.out.println(projectMember.getProjectMemberCandidteId().getFullName());*/
-		    		   /*weekCount++;
-				 }*/
+			 }else if(timeFrequency.equalsIgnoreCase("Monthly") || timeFrequency.equalsIgnoreCase("BiMonthly")) {
+				 int flag = 0;
+				 if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
+						for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
+							 Date  key = format.parse(entry.getKey());
+							 Date  value = format.parse(entry.getValue());
+				    		 Date frequencyStartDate = monthStartDate;
+							 Date frequencyEndDate = monthEndDate;
+							 Date weekStartDate = key;
+							 Date weekEndDate = value;
+							 while(weekStartDate.before(weekEndDate) || weekStartDate.equals(weekEndDate)){
+								 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
+						    	 String day_Of_Date = simpleDateformat.format(weekStartDate);
+								 
+								 if(day_Of_Date.equalsIgnoreCase("sun")) {
+									 importTimeSheet.setSun(importTimeSheet.getDays().get(flag));
+								 }else if(day_Of_Date.equalsIgnoreCase("mon")) {
+									 importTimeSheet.setMon(importTimeSheet.getDays().get(flag));
+								 }else if(day_Of_Date.equalsIgnoreCase("tue")) {
+									 importTimeSheet.setTue(importTimeSheet.getDays().get(flag));
+								 }else if(day_Of_Date.equalsIgnoreCase("wed")) {
+									 importTimeSheet.setWed(importTimeSheet.getDays().get(flag));
+								 }else if(day_Of_Date.equalsIgnoreCase("thu")) {
+									 importTimeSheet.setThu(importTimeSheet.getDays().get(flag));
+								 } else if(day_Of_Date.equalsIgnoreCase("fri")) {
+									 importTimeSheet.setFri(importTimeSheet.getDays().get(flag));
+								 }else if(day_Of_Date.equalsIgnoreCase("sat")) {
+									 importTimeSheet.setSat(importTimeSheet.getDays().get(flag));
+								 }
+								 weekStartDate = CalendarUtil.getNextDate(weekStartDate);
+								 flag++;
+							 }
+							 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,0f,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+				    		 System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+						}
+					}
 			 }
+			 
 		 }else {
 			 errorSet.put(dataMigrationDTOJsonCopy.getString("Month-Year"),"not in assgined project member Date"); 
 		 }
@@ -915,7 +974,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		int weekCount = 1;
 		while(weekStartDate.before(weekEndDate) || weekStartDate.equals(weekEndDate)){
 				
-				  if(timeFrequency.equalsIgnoreCase("Weekly")) {
+				  if(timeFrequency.equalsIgnoreCase("Weekly") ||timeFrequency.equalsIgnoreCase("Monthly") || timeFrequency.equalsIgnoreCase("BiMonthly")) {
 					averageHours = getAverageHours(weekCount,importTimeSheet,0,timeFrequency);
 				  }
 				  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(projectTaskUUID);
@@ -1084,7 +1143,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						break;
 					}
 				}
-			}else if(type.equalsIgnoreCase("Weekly")) {
+			}else if(type.equalsIgnoreCase("Weekly") || type.equalsIgnoreCase("Monthly") || type.equalsIgnoreCase("BiMonthly")) {
 				switch (count) {
 				case 1:
 					if(importTimeSheet.getMon() != null && StringUtils.isNotEmpty(importTimeSheet.getMon())) {
@@ -1316,6 +1375,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
 					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
 					if(status.equalsIgnoreCase("working") || status.equalsIgnoreCase("out of service")){
+						// capitalize the words starting letter
 						status=	WordUtils.capitalizeFully(status);
 						dataMigrationDTOJsonCopy.put("workingStatus", status);
 					}else{
