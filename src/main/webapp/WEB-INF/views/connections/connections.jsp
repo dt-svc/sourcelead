@@ -185,11 +185,12 @@ function getConnectionsList(type){
 	 			}
 	 			if(json.length < 18){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
-	 			}else if(json.length >= 18){
+	 			}else if(json != null && json.length >= 18 && json.length != 0 ){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}
-	   		}else if(type === 'manual' && json.length == 0){
+	   		}else if(type === 'manual' && json == null){
 	   			$('.connHeadText').empty();
+	   			$('#loadMoreDiv').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
 	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
