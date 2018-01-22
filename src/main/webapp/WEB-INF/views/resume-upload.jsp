@@ -420,9 +420,9 @@ $(function() {
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-export-failed", {uploadid: uploadid}, function(data) {
-			if(data !== "" && data.indexOf("files found") === -1)
+			if(data !== "" && data.indexOf("Resumes Found") === -1)
 				location.href = '/app/downloadFile.html?file='+data;
-			else if(data !== "" && data.indexOf("files found") !== -1)
+			else if(data !== "" && data.indexOf("Resumes Found") !== -1)
 				alert(data);
 			else
 				alert("Unable to locate logs for this upload");
@@ -433,9 +433,9 @@ $(function() {
 		if(uploadid == 0)
 			return;
 		$.post("bulk-resume-import-export-duplicate", {uploadid: uploadid}, function(data) {
-			if(data !== "" && data.indexOf("files found") === -1)
+			if(data !== "" && data.indexOf("Resumes Found") === -1)
 				location.href = '/app/downloadFile.html?file='+data;
-			else if(data !== "" && data.indexOf("files found") !== -1)
+			else if(data !== "" && data.indexOf("Resumes Found") !== -1)
 				alert(data);
 			else
 				alert("Unable to locate logs for this upload");
