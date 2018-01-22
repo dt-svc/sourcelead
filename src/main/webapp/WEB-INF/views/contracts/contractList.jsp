@@ -2299,7 +2299,7 @@ function preparedContractListFinalize(json){
 		         if(report.typeOfContract == "New" || report.typeOfContract == "Custom"){
 		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></i></a></div>';
 		         }else{
-		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
+		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 		         }
 		         '</sec:authorize>';
 		         result = result + '</td>';
@@ -2392,7 +2392,7 @@ function preparedContractListFinalize(json){
 	         if(output.typeOfContract == "New" || output.typeOfContract == "Custom"){
 	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></i></a></div>';
 	         }else{
-     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
+     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
 	         }
      		 '</sec:authorize>';
      		 opt = opt + '</td>';
@@ -2705,11 +2705,11 @@ function preparedContractListExpired(json){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		         if(report.typeOfContract == "New"){
+// 		         if(report.typeOfContract == "New"){
 		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>'; 
-		         }else{
-		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
-		         }
+// 		         }else{
+// 		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
+// 		         }
 		     		 '</sec:authorize>';
 			         result = result + '</div></td>';
 		     	 
@@ -2783,11 +2783,11 @@ function preparedContractListExpired(json){
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	         if(output.typeOfContract == "New"){
+// 	         if(output.typeOfContract == "New"){
 	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
-	         }else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
-	         }
+// 	         }else{
+// 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
+// 	         }
 	         '</sec:authorize>';
 	     		 opt = opt + '</div></td>';
 	     	

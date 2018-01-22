@@ -37,6 +37,8 @@ public interface ExpensesApprovalService {
 	
 	ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId);
 	
+	ExpensesApproverHierarchy saveExpensesApproverHierarchy(ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception;
+	
 	void updateExpenseStatusByExpenseId(Long expenseId,String status);
 
 	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, OrgLocations orgLoc, User loginUser) throws IOException, Exception;

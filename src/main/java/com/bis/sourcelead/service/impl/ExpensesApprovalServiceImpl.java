@@ -785,5 +785,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 
 		}
 
+
+	@Override
+	public ExpensesApproverHierarchy saveExpensesApproverHierarchy(
+			ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception{
+		return expensesApprovalDao.saveExpensesApproverHierarchy(expensesApproverHierarchy);
+	}
+
 	
 }

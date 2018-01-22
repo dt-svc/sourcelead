@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.OrgLocationService;
 
@@ -650,6 +651,22 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			eah = sahMainList.iterator().next();
 		}
 		return eah;
+	}
+
+	@Override
+	@Transactional
+	public ExpensesApproverHierarchy saveExpensesApproverHierarchy(ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception{
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (expensesApproverHierarchy != null) {
+				session.saveOrUpdate(expensesApproverHierarchy);
+			}
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ExpensesApproverHierarchy"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return expensesApproverHierarchy;
 	}
 
 
