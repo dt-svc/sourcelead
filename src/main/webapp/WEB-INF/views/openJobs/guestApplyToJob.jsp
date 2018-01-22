@@ -4,6 +4,12 @@
  
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>.::Guest Apply to Job::.</title>
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -88,16 +94,16 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '------- ( OR ) -------';
 		result = result + '</div>';
 		
-	/* 	result = result + '<div class="col-md-5 pull-right">';
-		result = result + '<div class="col-md-12" id="browseDiv"  style="display: block;">';
+		result = result + '<div class="col-md-5 pull-right">';
+		result = result + '<div class="col-md-12" id="browseDiv">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
-		result = result + '<label class="input-group-btn" onchange="importGuestAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 		result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
 		result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 		result = result + '</div>';
 		result = result + '</div>';	
-		result = result + '</div>'; */
+		result = result + '</div>';
 		
 		result = result + '</div>';
 		
@@ -143,7 +149,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '</div>';
 		result = result + '</div>'; 
 		
-		
 	    result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="employmentOtherTypeDiv" style="display: none;">';
 	    result = result + '<label class="col-md-4"></label>';
@@ -179,7 +184,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '</div>';
 		
 		
-		result = result + '<div class="row">';
+/* 		result = result + '<div class="row">';
 		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv">';
 		result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
 		result = result + '		<div class="col-md-8">';
@@ -191,7 +196,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '			    </div>';
 		result = result + '		 </div>';
 		result = result + '	 </div>';
-		
+		 */
 		
 		result = result + '<div class="form-footer clearfix mt">';
 		result = result + '<div class="pull-right mr">';
@@ -206,7 +211,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	$("#submitDetailsDiv").empty();
 	$("#applytoJobDiv").empty();
 	$("#applytoJobDiv").append(result);
-	test();
 	   var config = {
 				  '.chosen-select'           : {},
 				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -307,9 +311,16 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	
 }
 </script>
-
 <script>
-/* function importGuestAddApplicantDoc(){
+function importAddApplicantDoc(){
+	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form");
+	var uploadfiles = $("#uploadBtn").val();
+	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
+}
+</script>
+<!-- <script>
+/*  function importGuestAddApplicantDoc(){
+	 alert("uploadFile")
 	fileUpload("uploadBtn", "addApplicants", "guestApplicant_form");
 } */
 function importGuestAddApplicantDoc(){
@@ -317,19 +328,24 @@ function importGuestAddApplicantDoc(){
 	var uploadfiles = $("#uploadBtn").val();
 	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
-</script>
+</script> -->
 <script type="text/javascript">
 var sourceleadUrl ='${sourceleadUrl}';
 </script>
-<script>
+<!-- <script>
 function uploadAddApplicantCandidateDoc(){
 	fileUpload("newUploadBtns", "addApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
 	var uploadfiles = $("#newUploadBtns").val();
 	$('#newUploadFiles').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
-</script>
+</script> -->
 <script>
  $(document.body).on('change', '#uploadBtn' ,function(){
+	 var sourceleadUrl = '${sourceleadUrl}';
+		if(sourceleadUrl.indexOf("/app")!=-1){
+			sourceleadUrl = sourceleadUrl.split("/app")[0];
+		}
+ 
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -337,12 +353,11 @@ function uploadAddApplicantCandidateDoc(){
  		 var docSize = this.files[0].size;
 	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
-	    	  
 	    	  $("input[name=FirstName]").val('');
 	        	 $("input[name=LastName]").val('');
 	        	 $("input[name=EmailId]").val('');
 	        	 $("input[name=PhoneNumber]").val('');
-	        	 $("#candidateSkills").empty();
+// 	        	 $("#candidateSkills").empty();
 	        	 
 	        	 $("#candidateSkills").append('');
 	        	 $("#candidateSkills").trigger("chosen:updated");
@@ -357,6 +372,7 @@ function uploadAddApplicantCandidateDoc(){
 			 	
 			  
 	      }else{
+	    	  
 	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
    		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
  	 
@@ -371,7 +387,7 @@ function uploadAddApplicantCandidateDoc(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : "/parseResume?"+tokenParamName+"="+tokenValue+"",
+		   	     url : sourceleadUrl+"/parseResume",
 					success : function(data) {
 						var json = JSON.parse(data);
 						var name = json.name;
@@ -416,10 +432,10 @@ function uploadAddApplicantCandidateDoc(){
  						$("#candidateSkills").append(internalOutput);
  		        		$("#candidateSkills").trigger("chosen:updated");
   						
-			        	 
+ 		        		 $("#loading").removeAttr("style");
 						 validateSubmissionCandidateEmail();
 						 getUserByUserEmail();
-						 $("#loading").removeAttr("style");
+						
 					},
 				});
  	 }
@@ -427,19 +443,23 @@ function uploadAddApplicantCandidateDoc(){
  });
 
 </script> 
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
 
-<script>
-function test(){
-	$(".DatePicker").datepicker({
-	dateFormat : 'dd-mm-yy',
-	changeMonth: true,
-	changeYear: true, 
-	onSelect : function(selected) {
-	}
-	})
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
 }
 </script>
-
   <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -586,20 +606,28 @@ function addApplicantSubmission(){
     
      $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
+    
+     /* $.post(sourceleadUrl + "/saveGuestAddApplicant", formData, function(result) {
+    	 window.location.href = "/jobs";
+    	 window.location = "http://localhost:8080/jobs";
+     }); */
+     
+     
+     
 	     $.ajax({
-	    	type: "POST",
-	    	data: formData,
-	        contentType : 'application/json; charset=utf-8',
-	        enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-	        dataType : 'json',
+	    	 type: "POST",
+	    	 data: formData,
+		     contentType : 'application/json; charset=utf-8',
+		     enctype: 'multipart/form-data',
+		     processData: false,
+		     contentType:false,
+		     dataType : 'json',
 	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	window.location.href = "/jobs";
 	        	 window.location = "http://localhost:8080/jobs"
 	        },
-	    }); 
+	    });  
     return true; 
    }
   else{
@@ -722,11 +750,6 @@ function zipcodeMask(country,zipCodeId){
 		     
 }
 </script>
- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-  $("#DOB").datepicker();
-  </script>
-  
  <script type="text/javascript">
  var staticTime='${staticTime}';
  var config = {

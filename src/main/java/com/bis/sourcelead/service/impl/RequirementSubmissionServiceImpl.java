@@ -576,8 +576,15 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 else{
 				 candidateResumes.setOrgLocationId(guestOrglocation);
 				 }
+				 if(orgLocations != null){
 				 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 }
+				 else{
+					 
+					 FileUploadUtil.moveFile(staticPath, fileInfo, "guestAddApplicants");
+					 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 }
 				 if(user !=null){
 				 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, user);
 				 }
@@ -735,8 +742,16 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 				try {
+					if(orgLocations != null){
 					   templateFields.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
-					} catch (Exception e) {
+					
+					}
+					else{
+						   templateFields.setDateOfBirth(commonUtil.orgLocationDateFormat(guestOrglocation.getDateFormat(),jsonObj.getString("DOB")));
+					}
+				}
+					catch (Exception e) {
+					
 					  e.printStackTrace();
 					}
 			}

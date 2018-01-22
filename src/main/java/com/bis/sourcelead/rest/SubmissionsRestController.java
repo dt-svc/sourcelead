@@ -348,7 +348,7 @@ public class SubmissionsRestController {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
-
+			
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
