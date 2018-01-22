@@ -1685,6 +1685,7 @@ public class CandidateOnBoardRestController {
 						submission.setReqReleaseAllJobUserStatus(submission.getRequirement().getReleaseJobToAllUsers());
 					}
 					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
+					System.out.println(submission.getId());
 					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
 					submission.setPositionType(requirementOffers.getPositionType());
 					submission.setRate(requirementOffers.getAmount());
