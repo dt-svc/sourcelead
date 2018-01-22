@@ -148,6 +148,7 @@ function getFormData1(formId) {
 
 
 function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
+	alert("kkkk")
 	$(".file_mask").show();
 	if(name == null || name == 'undefined' || name == ''){
 		name = 'fileInfo';
@@ -158,6 +159,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		orgLocationId = 0;
 	var data = new FormData();
 	var files = document.getElementById(id).files;
+	var invalidFiles = false;
 	var count = 0;
 	for(var e in files) {
 		if(!$.isNumeric(e))

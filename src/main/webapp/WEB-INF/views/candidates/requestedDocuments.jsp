@@ -120,7 +120,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 		   	</table>
 		   	<div class="clearfix mt mb">
 		   	<div class="pull-right">
-		   		<button type="submit" id="submit_docs" class="btn btn-primary">Upload</button>
+		   		<button type="button" id="submit_docs" onclick="requestDocSave();" class="btn btn-primary">Upload</button>
 		   	</div>
 		   	</div>
 		   </div>
@@ -136,40 +136,38 @@ var sourceleadUrl ='${sourceleadUrl}';
     </c:if>
    
    <script type="text/javascript">
+   function requestDocSave(){
    var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
         }; 
-$('body').on('submit', '#requestForDocs_form', function(e){
-	
+
 	  if ($("#requestForDocs_form").validate(false, validationSettings)){
-      e.preventDefault();
-     
+    
 	  var requestDocUUID = '${requestDocUUID}';
+	 
 	    var formData = getFormData1("requestForDocs_form");
 		$("#submit_docs").attr("disabled", "disabled");
 		$("#submit_docs" ).addClass('button').val('Processing..');
+		
 		$.ajax({
 				 type : "POST",
 				 data: formData,
 		         processData: false,
 		         contentType:false, 
-			url : sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
+			url : sourceleadUrl+"/ws/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
 			success : function(data) {
 				 location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
 
 			},
 		});
-		
-      return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
-
+		return true;
+    }else{
+		return false;
+	  }
+	}
 	$('body').on('blur', '#requestForDocs_form', function() {
 		$("#requestForDocs_form").showHelpOnFocus();
 		$("#requestForDocs_form").validateOnBlur(false, validationSettings);
