@@ -148,6 +148,7 @@ function getFormData1(formId) {
 
 
 function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
+	alert("kkkk")
 	$(".file_mask").show();
 	if(name == null || name == 'undefined' || name == ''){
 		name = 'fileInfo';
@@ -176,7 +177,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	data.append('orgId', orgId);
 	data.append('orgLocationId', orgLocationId);
 	$.ajax({ 
-		url: sourceleadUrl+"/ws"+(url ? url : "/upload/"+type), 
+		url: sourceleadUrl+(url ? url : "/upload/"+type), 
 		data: data, 
 		processData: false, 
 		type: 'POST', 
