@@ -650,7 +650,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 							    /**
 							     * checking whether prior 6th week monday date is greaterthan employee startdate or not
 						         */
-							     if(empStartDate.before(previousMondayDate)){
+							     if(empStartDate.before(previousMondayDate) && (empEndDate == null || (empEndDate != null && empEndDate.after(previousMondayDate)))){
 							    	 empStartDate = previousMondayDate;
 							     }
 								   

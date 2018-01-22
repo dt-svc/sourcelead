@@ -1154,6 +1154,18 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setString("uuid", projectClientUUID).setCacheable(true).list();
 		return projectsList;
 	}
+
+	@Override
+	@Transactional
+	public List<Projects> getAllProjectByOrgLocationsId(Long orgLocationId) throws Exception {
+	
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setCacheable(true).list();
+		
+		return projectsList;
+	}
 	
 	
 	 

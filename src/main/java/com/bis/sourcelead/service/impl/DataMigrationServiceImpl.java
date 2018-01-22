@@ -130,6 +130,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String importStatus = null;
+		String finalImportStatus = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		FileInputStream inputStream = new FileInputStream(new File(ac
 				+ dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
@@ -202,14 +203,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				    	  dataMigrationDTOJsonCopy.put((String) k, days);
 				      }
 				}
-				String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
+				
 				switch(dataMigrationDTO.getUploadType()){  
 			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
-			    case "timesheetUpload": dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
+			    case "timesheetUpload": 
+			    	String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
+			    	dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
 			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
 
 				}
-				
 				
 				if(errorSet.isEmpty()){
 					mapToEntities(dataMigrationDTOJsonCopy.toString(), user, orgLocation, dataMigrationDTO.getUploadType());
@@ -233,13 +235,19 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				        FileOutputStream outputStream = new FileOutputStream(new File(ac + dataMigrationDTO.getExportFilePath()));
 				        workbook.write(outputStream);
 				        //outputStream.close();
-				        importStatus = dataMigrationDTO.getExportFilePath();
+				        //importStatus = dataMigrationDTO.getExportFilePath();
+				        finalImportStatus = dataMigrationDTO.getExportFilePath();
 				}
 			}
 		}
 		workbook.close();
 		inputStream.close();
-		return importStatus;
+		if(finalImportStatus != null) {
+			return finalImportStatus;
+		}else {
+			return importStatus;
+		}
+		
 	}
 	
 	private void mapToEntities(String dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation, String uploadType) throws Exception

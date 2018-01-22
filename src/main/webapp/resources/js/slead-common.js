@@ -455,5 +455,6 @@ function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 		} else if($(ele).val().endsWith("\r")) {
 			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
 		}
-	}	
+	}
+	 return ele;
 }
