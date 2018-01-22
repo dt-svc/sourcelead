@@ -2833,7 +2833,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					}
 					 
 			        Map<String, Object> params = new HashMap<String,Object>();
-					String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate  left join fetch reqSub.candidateResumes "; 
+					String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate reqSubCandidate  left join fetch reqSub.candidateResumes "; 
 					String subQuery = "";
 					
 					
