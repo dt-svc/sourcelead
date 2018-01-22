@@ -17,13 +17,14 @@
 <div class="success_pop" id="selector4" style="display: none;">
 	<i class="fa fa-check-circle"></i><span id="inviteMessage"></span>
 </div>
-<div id="loading"></div>
+
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
     <h2>Connections</h2>
   </div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
+  <div id="loading"></div>
 </section>
 
 
@@ -32,10 +33,11 @@
  <input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
 	<div class="conneWrapHead clearfix">
 		<ul class="clearfix connection-count" >
-			<li><a href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
+			
 			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected<i id="connectedCountVal"></i></a></li>
 			<li><a href="${appPath}/loadSentConnections">Sent<i id="sentCountVal"></i></a></li>
 			<li  class="current"><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received<i id="receivedCountVal"></i></a></li>
+			<li><a href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
 	</div>
@@ -93,11 +95,18 @@ var count = 0;
 			offset = $("#orgOffset").val();
     	}
 		if(type == "manual"){
+			localStorage.setItem("receivedCount", 0);
+			if(isNaN(localStorage.getItem("sentCount"))){
+				localStorage.setItem("sentCount", 0);	
+			}
+			if(isNaN(localStorage.getItem("connectedCount"))){
+				localStorage.setItem("connectedCount", 0);
+			}
 			$('#findConnectionListId').empty();
     		$("#orgOffset").val(0);
    		    offset = 0;
     	} 
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/getConnectionsList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset+"&status=received",
@@ -131,7 +140,7 @@ var count = 0;
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="acceptConnection(\''+user.userCode+'\',\''+user.connectionUUID+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink green">Accept</a><a href="javascript:void(0)" onclick="ignoreConnection(\''+user.userCode+'\', \''+user.userName+'\',\''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Ignore</a></div></div></div>';
 	   		    }
 	 			$('#findConnectionListId').append(result);
         		if(json.length < 18){
@@ -159,13 +168,13 @@ var count = 0;
 	}
 </script>
 <script>
-function ignoreConnection(userCode,userName){
+function ignoreConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type : "GET",
-				url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=ignore",
+				url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
 	         success: function(json) {
 		        	 $("#selector4").removeAttr("style");
 		 			$("#selector4").css({ display: "block" });
@@ -188,13 +197,13 @@ function ignoreConnection(userCode,userName){
 	}); 
  }
  
-function acceptConnection(userCode,userName){
+function acceptConnection(userCode,connectionUUID,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type : "GET",
-					url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
+					url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
 		        	success: function(json) {
 				        	$("#selector4").removeAttr("style");
 							$("#selector4").css({ display: "block" });

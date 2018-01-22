@@ -21,6 +21,7 @@ public class UserRoleDTO {
 	private Integer sentCount;
 	private Integer receivedCount;
 	private Integer connectedCount;
+	private String connectionUUID;
 	
 	
 	public Long getId() {
@@ -130,5 +131,11 @@ public class UserRoleDTO {
 	}
 	public void setConnectedCount(Integer connectedCount) {
 		this.connectedCount = connectedCount;
+	}
+	public String getConnectionUUID() {
+		return connectionUUID;
+	}
+	public void setConnectionUUID(String connectionUUID) {
+		this.connectionUUID = connectionUUID;
 	}
 }

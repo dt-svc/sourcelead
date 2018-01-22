@@ -1261,5 +1261,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 		}
 		return expensesEntriesDTOList;
 	}
+
+	@Override
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId, Long masterCandidateId)
+			throws Exception {
+		return expensesDao.getExpensesByProjectIdAndMasterCandidateId(projectId, masterCandidateId);
+	}
 	
 }

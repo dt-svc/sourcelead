@@ -1099,7 +1099,7 @@ function getChangeRole(userId,userRoleId){
                             success: function(result) {
                             	 $("#selectoruser").removeAttr("style");
 	                       		  $("#selectoruser").css({ display: "block" });
-	                       		  $("#userMsgDiv").html("Success!! User Details Updated");
+	                       		  $("#userMsgDiv").html("Success!! associate details updated");
                                userDetails(userId);
                                userMsgFadein();
                                 
@@ -1135,7 +1135,7 @@ function getChangeRole(userId,userRoleId){
                                   success: function(result) {
                                 	  $("#selectoruser").removeAttr("style");
                             		  $("#selectoruser").css({ display: "block" });
-                            		  $("#userMsgDiv").html("Success!! User Details Updated");
+                            		  $("#userMsgDiv").html("Success!! associate details updated");
                                       userDetails(userId);
                                       userMsgFadein();
                                       
@@ -1160,7 +1160,7 @@ function getChangeRole(userId,userRoleId){
                       success: function(result) {
                     	  $("#selectoruser").removeAttr("style");
                 		  $("#selectoruser").css({ display: "block" });
-                		  $("#userMsgDiv").html("Success!! User Details Updated");
+                		  $("#userMsgDiv").html("Success!! associate details updated");
                           userDetails(userId);
                           userMsgFadein();
                           

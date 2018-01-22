@@ -715,5 +715,20 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
     		}
     		return count;
 		}
+
+		@Override
+		@Transactional
+		public OrgSpoc getGusetClientOrgSpocByOrgRelationId(Long orgRelationId) {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations left join fetch spoc.clientUser left join fetch spoc.vendorUser "
+					+ " where spoc.orgRelations.id = :orgRelationId and spoc.status = '1' ");
+			List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+			OrgSpoc orgSpoc = null;
+			if(spocsList != null && spocsList.size() > 0){
+				orgSpoc = spocsList.get(0);
+			}
+			return orgSpoc;
+		}
 	 
 }
