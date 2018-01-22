@@ -172,7 +172,10 @@ function validateShortCode(){
 										<input type="text" class="form-control calendar" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > 
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
+									<div class="input-group errorInptgroup">
 										<input type="text" class="form-control calendar" value="" id="endDate" name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
+										 <span class="input-group-addon" onClick="clearProjectEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -1289,12 +1292,14 @@ function flatPercentageType(){
 		 }
 	  
 </script>
-<!--  <script>
- function clearStartDate(){
+
+
+  <script>
+ /* function clearStartDate(){
 	$("#startDate").val("");
-	}; 
-function clearEndDate(){
+	}; */ 
+function clearProjectEndDate(){
 	$("#endDate").val("");
 	};
 	
-</script> -->
+</script> 
