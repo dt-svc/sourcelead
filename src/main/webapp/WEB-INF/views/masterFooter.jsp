@@ -92,7 +92,7 @@ $( this ).addClass( feedback.vertical )
 	<link href="/resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
 </c:if>
 
-<script src="/resources/js/cropper.min.js?static=1"></script>
+<script src="/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/cropper.min.css" type="text/css" />
 <div id='imagecrop' class='post_popup'></div>
 <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>

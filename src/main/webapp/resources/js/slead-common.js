@@ -163,25 +163,14 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	for(var e in files) {
 		if(!$.isNumeric(e))
 			continue;
-		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar")) {
-			invalidFiles = true;
-			break;
-		}
-		var size = files[e].size;
-		size = size/1024/1024;
-		if(size <= 2) {
-			data.append('file', files[e]);
-			count ++;
-		} else {
-			invalidFiles = true;
-			break;
-		}
+		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+			continue;
+		data.append('file', files[e]);
+		count ++;
 	}
-	if(count === 0 || invalidFiles) {
-		document.getElementById(id).value = "";
-		document.getElementById(id.indexOf("Btn") === -1 ? id+"File" : id.replace("Btn", "File")).value = "";
+	if(count === 0) {
 		$(".file_mask").hide();
-		alert("Please select valid file (zip files and rar files are not allowed and file size should lessthan 2MB)");
+		alert("Please select valid file (zip files and rar files are not allowed)");
 		return;
 	}
 	data.append('orgId', orgId);
