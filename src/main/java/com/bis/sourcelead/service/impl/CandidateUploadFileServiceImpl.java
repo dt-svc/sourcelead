@@ -521,7 +521,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		}
 		else {
 			//jsonObj.put("designationType", "C2C");
-			candidateDTO.setDesignationType("C2C");
+			candidateDTO.setDesignationType("W-2");
 		}
 		if (null != candidate.getExperience()) {
 			if (candidate.getExperience().matches("[-a-zA-Z]+")) {

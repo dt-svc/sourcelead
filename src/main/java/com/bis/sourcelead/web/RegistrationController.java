@@ -230,6 +230,7 @@ public class RegistrationController {
 						}
 					}
 					orgService.addOrganization(org);
+					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
 		    	}
