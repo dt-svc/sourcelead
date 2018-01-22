@@ -430,8 +430,10 @@ public class RequirementServiceImpl implements RequirementService {
 			FileInfo fileInfo = requirementDTO.getFileInfo().get(0);
 			requirement.setFileName(fileInfo.getFileName());
 			requirement.setFileContentType(fileInfo.getContentType());
-			requirement.setFileURL(fileInfo.getFileURL());;
-			FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "requirementDocuments");
+			requirement.setFileURL(fileInfo.getFileURL());
+			if(!fileInfo.getFileURL().contains("requirementDocuments")) {
+				FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "requirementDocuments");
+			}
 		}
 		else {
 			if (StringUtils.isNotBlank(requirementDTO.getTemplateId())) {
@@ -616,8 +618,34 @@ public class RequirementServiceImpl implements RequirementService {
 			if (StringUtils.isNotBlank(requirementDTO.getSequentialApprover1())) {
 				User approverUser = userService.getUserById(Long.parseLong(approverNames));
 				RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+				
+				
 				// to remove the unselected approvers in Dropdown
 				removedApproversInRequirementForSequential(approverUser, requirement, Constants.LEVEL1);
+				if (requirement.getId() != null) {
+					rah = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), approverUser.getId());
+					if(rah == null){
+						rah = new RequirementApproverHierarchy();
+						User approverUserId = new User();
+						approverUserId.setId(Long.parseLong(requirementDTO.getSequentialApprover1()));
+						rah.setApproverUserId(approverUserId);
+						rah.setRequirementId(requirement);
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+						rah.setLevel(1);
+						rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
+						rah.setCreatedDate(commonUtil.currentDate());
+						rah.setCreatedBy(user.getUserCode());
+						rah.setUpdatedBy(user.getUserCode());
+						rah.setUpdatedDate(commonUtil.currentDate());
+						
+					}else{
+						rah.setCreatedDate(commonUtil.currentDate());
+						rah.setCreatedBy(user.getUserCode());
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+						rah.setUpdatedBy(user.getUserCode());
+						rah.setUpdatedDate(commonUtil.currentDate());
+					}
+				}else{
 				User approverUserId = new User();
 				approverUserId.setId(Long.parseLong(requirementDTO.getSequentialApprover1()));
 				rah.setApproverUserId(approverUserId);
@@ -629,14 +657,40 @@ public class RequirementServiceImpl implements RequirementService {
 				rah.setCreatedBy(user.getUserCode());
 				rah.setUpdatedBy(user.getUserCode());
 				rah.setUpdatedDate(commonUtil.currentDate());
+				}
 				requirementApproverHierarchyList.add(rah);
 			}
-			String approverNames2 = requirementDTO.getSequentialApprover2();
+			
 			if (StringUtils.isNotBlank(requirementDTO.getSequentialApprover2())) {
+				String approverNames2 = requirementDTO.getSequentialApprover2();
 				User approverUsersabc = userService.getUserById(Long.parseLong(approverNames2));
 				RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
 				// to remove the unselected approvers in Dropdown
 				removedApproversInRequirementForSequential(approverUsersabc, requirement, Constants.LEVEL2);
+				if (requirement.getId() != null) {
+					rah = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), approverUsersabc.getId());
+					if(rah == null){
+						rah = new RequirementApproverHierarchy();
+						User approverUserId = new User();
+						approverUserId.setId(Long.parseLong(requirementDTO.getSequentialApprover2()));
+						rah.setApproverUserId(approverUserId);
+						rah.setRequirementId(requirement);
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+						rah.setLevel(2);
+						rah.setHierarchyType(HIERARCHY_TYPE.SEQUENTIAL);
+						rah.setCreatedDate(commonUtil.currentDate());
+						rah.setCreatedBy(user.getUserCode());
+						rah.setUpdatedBy(user.getUserCode());
+						rah.setUpdatedDate(commonUtil.currentDate());
+						
+					}else{
+						rah.setCreatedDate(commonUtil.currentDate());
+						rah.setCreatedBy(user.getUserCode());
+						rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.NEW);
+						rah.setUpdatedBy(user.getUserCode());
+						rah.setUpdatedDate(commonUtil.currentDate());
+					}
+				}else{
 				User approverUserId = new User();
 				approverUserId.setId(Long.parseLong(requirementDTO.getSequentialApprover2()));
 				rah.setApproverUserId(approverUserId);
@@ -648,6 +702,8 @@ public class RequirementServiceImpl implements RequirementService {
 				rah.setCreatedBy(user.getUserCode());
 				rah.setUpdatedBy(user.getUserCode());
 				rah.setUpdatedDate(commonUtil.currentDate());
+				
+				}
 				requirementApproverHierarchyList.add(rah);
 			}
 		}
@@ -2915,8 +2971,7 @@ public class RequirementServiceImpl implements RequirementService {
 			List<RequirementApproverHierarchy> requirementApproverHierarchies = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
 			if (requirementApproverHierarchies != null) {
 				for (RequirementApproverHierarchy rah : requirementApproverHierarchies) {
-					if (approver.getId() != rah.getApproverUserId().getId()
-							&& level.equals(rah.getLevel())) {
+					if (approver.getId() != rah.getApproverUserId().getId()	&& level.equals(rah.getLevel())) {
 						requirementApproverHierarchyDao.deleteTheRequirementApproverByRequirementIdAndApproverId(rah);
 					}
 				}

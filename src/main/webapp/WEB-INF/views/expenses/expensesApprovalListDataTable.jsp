@@ -13,13 +13,14 @@
 			<th>Employee</th>                                                                      
 			<th>EmploymentType</th>                                                                
 			<th>Project</th>                                                                       
-			<th>Purpose</th>                                                                       
+			<th>Purpose</th> 
+            <th>Amount</th>                                                                        
+			<th>Status</th>                                                                        
+			<th>Action</th>                                                          
 			<th>Start Date<br>(<small class="custom-small">${orgLocationDateFormat}</small>)</th> 
 			<th>End Date<br>(<small class="custom-small">${orgLocationDateFormat}</small>)</th>   
 			<th>No of Items</th>                                                                   
-			<th>Amount</th>                                                                        
-			<th>Status</th>                                                                        
-			<th>Action</th>                                                                        
+			                                                                       
 		</tr>                                                                                  
 	</thead>                                                                               
 			<tbody>                                                                                

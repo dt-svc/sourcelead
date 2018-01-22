@@ -60,13 +60,13 @@
 		<i class="glyphicon glyphicon-export"></i>
 	</p>
 	<ul id="exporrt">
-		<li onclick="exportTimeSheetToPdfOrExcel('pdf');">
-			<i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
-		<li onclick="exportTimeSheetToPdfOrExcel('excel');">
-			<i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
+	<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
+	<li onclick="exportTimeSheetToPdfOrExcel('excel');"title="Excel"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
 	</ul>
 </div>
 </c:if>
+
+ <span class="mt5 pull-left" title="TImesheet Import"><a href="<c:url value='${appPath}/uploadTimesheet'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></span>
 
 <div class="remove_search">
        		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">

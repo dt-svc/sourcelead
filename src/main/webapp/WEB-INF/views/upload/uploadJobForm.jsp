@@ -33,18 +33,21 @@
 			&raquo; Import Jobs
 		</div>
 	</section>
-	<div class="content-area clearfix" id="jobFileImportDiv">
+	<div id="loading"></div>
+	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_job_form" name="upload_job_form" method="post" enctype="multipart/form-data">
-		<div id="loading"></div>
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 					<!-- Download File button -->
 					<div class="clearfix mb row">
-						<div class="col-xs-8 col-md-8">
-							<a href="#"
-								class="btn btn-success btn-block"> <i class="fa fa-download"></i>&nbsp;&nbsp;Download
-								Job Template
+					<div class="col-xs-3 col-md-3">
+						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
+					</div>
+					
+						<div class="col-xs-5 col-md-5">
+							<a href="<c:url value='${appPath}/downloadDataImportTemplate'/>"
+								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Job Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -56,11 +59,12 @@
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadJobs'/>'">
 								</div>
 							</div>
 						</div>
 					</div>
+					
 					<!-- Attach File button -->
 
 					<div class="dropzone">
@@ -68,7 +72,7 @@
 						<div class="file-upload clearfix text-center">
 							<div class="col-md-12" id="">
 								<label class="bg-default"> <i aria-hidden="true"
-									class="fa fa-paperclip" title="Attach file" onclick="alertDialog();"></i> <br /> <input
+									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
 									data-validation="required validate_importFile">
@@ -91,6 +95,8 @@
 						</div>
 						<!--  Downloaded File show here -->
 					</div>
+					
+					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 					<div class="bgInfo bg-info clearfix text-center">
@@ -114,11 +120,13 @@
 		</div>
 		</form:form>
 	</div>
-	<div id="jobFieldsDiv" style="display: none">
-	</div>
-	<%-- <jsp:include page="importJobs.jsp"></jsp:include> --%>
+	<div id="dataFieldsDiv" style="display: none"></div>
 	
 </section>
+
+<div class="success_pop" id="selector11" style="display: none;">
+    <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+</div>
 
 
 <script type="text/javascript">
@@ -132,17 +140,19 @@ document.getElementById("uploadBtn").onchange = function () {
 function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
 	var uploadType = "jobUpload";
+	var headerPosition = $("#headerPosition").val();
         if (($('#upload_job_form').validate(false, validationSettings))){
       	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           	$.ajax({
     			type: "POST",
-    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType, 
+    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
     		    success: function(data) {
-    		    	$("#jobFileImportDiv").attr("style","display:none");
-    		    	$('#jobFieldsDiv').removeAttr("style");
-    		    	$('#jobFieldsDiv').append(data);
+    		    	$("#dataFileImportDiv").attr("style","display:none");
+    		    	$('#dataFieldsDiv').removeAttr("style");
+    		    	$('#dataFieldsDiv').append(data);
     		    },
     		});
+          	$('#loading').removeAttr("style");
         }
         else{
       	  return false;	
@@ -162,10 +172,6 @@ function cancelFileImport(){
 	$('#jobFileImportDiv').removeAttr("style");
 	$('#jobFieldsDiv').empty(); */
 	location.replace(sourceleadUrl+"/uploadJobs");
-}
-
-function alertDialog(){
-	alert('Should maintain top row as header');
 }
 </script>
 

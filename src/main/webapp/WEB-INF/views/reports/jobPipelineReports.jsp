@@ -47,15 +47,15 @@ function getJobsReportCustomDates(){
       <div class="pull-left">
         <h2>Jobs Pipeline</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Jobs Pipeline Report</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard</a>&raquo;Jobs Pipeline Report
        </div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">
       <div class="ReqRepHead clearfix">
     		      <div class="col-md-2 pull-left reqListBtn">
-          <a href="${appPath}/jobPipelineReports" title="Reports View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-          <a href="${appPath}/jobPipelineReportsList" title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
+                    <a title="Reports View" id="GraphView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+                    <a  title="List View" id="ListView" class="btn btn-default"><i class="fa fa-list"></i></a>
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
@@ -110,9 +110,205 @@ function getJobsReportCustomDates(){
       </div>
     </div>
     
-    <div class="dashboard-widget clearfix mt amchartTitile-hide"> 
+    <div class="dashboard-widget clearfix mt amchartTitile-hide" id="jobPipelineReportDivId" style="display:block"> 
        <div id="jobspipline" style="width: 100%; height: 350px;"></div>
     </div>
+    
+    
+    
+    
+    <div class="vendor_wrap clearfix mt" id="jobPipelineListDivId" style="display:none">
+        <div class="clearfix"></div>
+        <div class="clerfix jobpipline-count col-md-8 col-md-offset-2">
+          <ul class="list-unstyled list-inline">
+            <li> <a href="javascript:void(0)"><span id="allJobsCount"></span></a> <span>All</span> </li>
+            <li> <a href="javascript:void(0)"><span id="openJobsCount"></span></a> <span>Open</span> </li>
+            <li> <a href="javascript:void(0)"><span id="closedJobsCount"></span></a> <span>Closed</span> </li>
+            <li> <a href="javascript:void(0)"><span id="onHoldJobsCount"></span></a> <span>Onhold</span> </li>
+            <li> <a href="javascript:void(0)"><span id="cancelledJobsCount"></span></a> <span>Cancelled</span> </li>
+          </ul>
+        </div>
+        <div class="clearfix"></div>
+        
+        <div class="clearfix mt5">
+        	
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	 <div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Applicants:
+        	 	<span class="text-right" id="applicantCount"></span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted">Moved forward :</label>
+        	    	<span>100 %</span>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="applicantCountDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	<div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Request Sent:
+        	 	<span class="text-right" id="requestSentCount"></span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted">Moved forward :</label>
+        	    	<span>100 %</span>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="requestSentDays"></span><span class="paddingLeft"> days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	<div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Shortlisted:
+        	 	<span class="text-right" id="shortListedCount"></span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="shortListedMove"></span><span class="paddingLeft">%</span></div>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="shortListedDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	<div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Submit to Client:
+        	 	<span class="text-right" id="submitToClientCount">60</span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="submitToClientMove"></span><span class="paddingLeft">%</span></div>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="submitToClientDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	<div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Interview:
+        	 	<span class="text-right" id="interviewCount"></span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="interviewMove"></span><span class="paddingLeft">%</span></div>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="interviewDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	<div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Offer:
+        	 	<span class="text-right" id="offerCount">20</span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerMove"></span><span class="paddingLeft">%</span></div>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	<div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Offer Accepted:
+        	 	<span class="text-right" id="offerAcceptedCount"></span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerAcceptedMove"></span><span class="paddingLeft">%</span></div>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="offerAcceptedDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	 <div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Backout:
+        	 	<span class="text-right" id="backoutCount"></span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="backoutMove"></span><span class="paddingLeft">%</span></div>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="backoutDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	
+        	<div class="col-md-4 mb">
+        	<div class="cardModel-widget">
+        	<div class="clearfix row cardModelwidget-header">
+        		<h4 class="col-md-12 text-center">Rejected:
+        	 	<span class="text-right" id="rejectedCount"></span>
+        	 	</h4>
+        	 </div>
+        	    <div class="clearfix row">
+        	    <div class="col-md-6 paddingRight">
+        	    	<label class="text-muted pull-left">Moved forward :</label>
+        	    	<div class="pull-left paddingLeft"><span id="rejectedMove"></span><span class="paddingLeft">%</span></div>
+        	    </div>
+        	     <div class="col-md-6 paddingLeft">
+        	    	<label class="text-muted pull-left">Avg TTF :</label>
+        	    	<div class="pull-left paddingLeft"><span id="rejectedDays"></span><span class="paddingLeft">days</span></div>
+        	    </div>
+				</div>
+        	</div>
+        	</div>
+        	
+        </div>
+        <div class="clearfix mt mb"></div>
+      </div>
     
   </section>
 <script>
@@ -160,6 +356,21 @@ function getJobPipelineReports(){
 		    success: function(data) {
 		    	if(data.applicantsCount>0){
 		    		getJobsPipelineAmcahrt(data);
+		    		getJobPipelineReportsList(data);
+		    		var listView = document.getElementById("ListView");
+		        	 listView.addEventListener("click", function() {
+		        		 getJobPipelineReportsList(data);
+		        		 document.getElementById("jobPipelineListDivId").style.display="block";
+		        		 document.getElementById("jobPipelineReportDivId").style.display="none";
+					  });
+		        	 
+		        	 var graphicView = document.getElementById("GraphView");
+		        	 graphicView.addEventListener("click", function() {
+		        		 getJobsPipelineAmcahrt(data);
+		        		 document.getElementById("jobPipelineListDivId").style.display="none";
+		        		 document.getElementById("jobPipelineReportDivId").style.display="block";
+		        	 });
+		        	 
 		    	}else{
 		    		var result = '';
 	 	   			result = result+"<div class='dataTables_empty'>"; 
@@ -171,7 +382,58 @@ function getJobPipelineReports(){
 		 });
 	  }	  
 }
-
+function getJobPipelineReportsList(data){
+	//Aplicant Details
+	$("#applicantCount").text(data.applicantsCount);
+	$("#applicantCountDays").text(data.applicantsDays);
+	
+	//request sent details
+	$("#requestSentCount").text(data.requestSentCount);
+	$("#requestSentDays").text(0);
+	 
+	//shortlisted details
+	$("#shortListedCount").text(data.shortlistedCount);
+	$("#shortListedDays").text(data.shortlistedDays);
+	$("#shortListedMove").text(data.shortlistedMove);
+	
+	//interview details
+	$("#interviewCount").text(data.interviewsCount);
+	$("#interviewMove").text(data.interviewsMove);
+	$("#interviewDays").text(data.interviewsDays);
+	
+	
+	//submit to client
+	$("#submitToClientCount").text(data.submitToClientCount);
+	$("#submitToClientMove").text(data.submitToClientMove);
+	$("#submitToClientDays").text(data.submitToClientDays)
+	
+	//offer details
+	$("#offerCount").text(data.offeredCount)
+	$("#offerDays").text(data.offeredDays)
+	$("#offerMove").text(data.offeredMove)
+	
+	//offer Accepted details
+	$("#offerAcceptedCount").text(data.offeredAcceptedCount)
+	$("#offerAcceptedDays").text(data.offeredAcceptedDays)
+	$("#offerAcceptedMove").text(data.offeredAcceptedMove)
+	
+	//backout details
+	$("#backoutCount").text(data.backoutCount);
+	$("#backoutDays").text(data.backoutDays);
+	$("#backoutMove").text(data.backoutMove);
+	
+	//rejected details
+	$("#rejectedCount").text(data.rejectedCount);
+	$("#rejectedMove").text(data.rejectedMove);
+	$("#rejectedDays").text(data.rejectedDays);
+	
+	//jobs count
+	$("#allJobsCount").text(data.allJobsCount);
+	$("#openJobsCount").text(data.openJobsCount);
+	$("#closedJobsCount").text(data.closedJonbsCount);
+	$("#onHoldJobsCount").text(data.onHoldJobsCount);
+	$("#cancelledJobsCount").text(data.cancelledjobsCount);
+}
 </script>
 <script>
   $( function() {

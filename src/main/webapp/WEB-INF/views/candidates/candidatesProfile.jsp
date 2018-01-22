@@ -3,7 +3,7 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -11,50 +11,6 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-<style>
- /*   .pac-container {
-   z-index: 1000000000 !important;
-   } */
-	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
-	width:100px;
-	}
-	.er .btn-default{
-	background:#337ab7;
-	border:1px solid #ccc;
-	color:#fff;
-	text-shadow: none;
-	}
-	.clsDatePicker {
-		z-index: 100000 !important;
-	}
-	#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.selp-custom-min .btn-default{
-	/* z-index: -55 !important; */
-	-webkit-border-radius:0 3px 3px 0;
-	-moz-border-radius:0 3px 3px 0;
-	-ms-border-radius:0 3px 3px 0;
-	border-radius:0 3px 3px 0;
-	}
-	/* .selp-custom-min .open {
-	z-index: 999999999 !important;
-	} */
-	.ratetype p {
-	bottom: -14px;
-	left:0px !important;
-	position: absolute;
-	}
-	
-	.pras.req-title p{
-	bottom:-14px;
-	}
-	.exprience .select-field select{
-	background-position: 96% center !important;
-	}
-	</style>
 	
 	<script>
 	function candUpdateMsgFadeinFunction() {
@@ -69,11 +25,6 @@
 	 </div>
 </c:if>
 
-<style type="text/css">
-.require_wrap_details{
-text-align:left;
-}
-</style>
 <script>
 function editCandidate(candidateId){
 	
@@ -306,7 +257,7 @@ function editCandidate(candidateId){
 							
 			                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype-right select-field">';
 							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
@@ -341,7 +292,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<div class="input-group-btn tblminwidth-75 ratetype-right select-field">';
 							result = result + '<select class="selct-picker" id="expectedRateType" name="rateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
@@ -463,7 +414,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10 mt">';
 							result = result + '<div class="col-md-12">';
-							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
+							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
 							result = result + '</div>';

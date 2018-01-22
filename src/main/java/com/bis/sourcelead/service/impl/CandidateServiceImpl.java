@@ -1535,7 +1535,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				}
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			candidate.setGeneratedId(getCandidateId(orgLocations));
+			if(orgLocations.getGeneratedUserId() != null && !orgLocations.getGeneratedUserId().isEmpty()) {
+				candidate.setGeneratedId(getCandidateId(orgLocations));
+			}
 			Date date= new Date();
 			candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));

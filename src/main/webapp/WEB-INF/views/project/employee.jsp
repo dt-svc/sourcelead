@@ -184,7 +184,7 @@ function resourceRequestsTab(){
 	    		
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
 		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
-		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
+		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Associate Request</a></li>';
 	    		 '</sec:authorize>';
 	    		
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_REQUEST_ASSOCIATE\')">';
@@ -343,10 +343,11 @@ function getOrgLocationProjects(){
 	    });
 	
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 var projectClientUUID = '${projectClientUUID}';
 	 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations, 
+	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations+"&projectClientUUID="+projectClientUUID, 
 	        success: function(json) {
 	        
 	        	var output = "";

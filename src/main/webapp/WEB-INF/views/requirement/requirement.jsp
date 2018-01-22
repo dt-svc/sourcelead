@@ -77,7 +77,7 @@ $(document).ready(function() {
  <script>
 		$(document).ready(function() {
 			document.getElementById("requirement_form").reset();
-			getIsClientVal();
+			
 			var requirementStatus = '${requirement.requirementSubmissionStatus}';
 			if(requirementStatus == "OPEN" ||  requirementStatus == "ONHOLD"){
 				$(function() {
@@ -184,8 +184,7 @@ $(document).ready(function () {
 				 $("#apprverReq").prop('checked', false); 
 			}
 	}
-    
-    
+	getIsClientVal();
 });    
 </script>
     
@@ -331,10 +330,10 @@ $(document).ready(function () {
                 <c:forEach var="projectClient" items="${projectList}">
 								 <%-- 	<c:if test="${report.id == loginOrgLocId}">   --%>
 								<c:if test="${! empty projectClient.clientName}">
-		                           <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id  ? 'selected' : ''} >${projectClient.projectId.projectName} (${projectClient.clientName})</option>
+		                           <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.id  ? 'selected' : ''} >${projectClient.projectId.projectName} (${projectClient.clientName})</option>
 								 </c:if>
 								 <c:if test="${empty projectClient.clientName}">
-								 <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.projectId.id ? 'selected' : ''} >${projectClient.projectId.projectName} </option>
+								 <option value="${projectClient.id}" ${projectClient.id  == requirement.projectClientID.id ? 'selected' : ''} >${projectClient.projectId.projectName} </option>
 								 </c:if>
 				                    	
 				                 <%--    </c:if>   --%>
@@ -1559,7 +1558,6 @@ function validate_fileupload(fileName)
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
-		
 		checkTemplateforDouplicate();
 		validateJobId();
 		$('#addClient').empty();
@@ -1622,29 +1620,8 @@ function validate_fileupload(fileName)
 			 $('#rateType').removeAttr('data-validation');
 			 $('#rateType').attr("data-validation-optional","true"); 
 		 }
-		 var existingValue = document.getElementById('isClientJob').value;
-		 if(existingValue == 'Y'){
- 		/*  var clientRateType = document.getElementById("clientRateType").value; 
- 		 if(clientRateType != null && clientRateType != ""){
- 			 $('#clientRate').removeAttr('data-validation-optional');
- 			 $('#clientRate').attr("data-validation","required"); 
- 			 
- 		 }else{
- 			 $('#clientRate').removeAttr('data-validation');
- 			 $('#clientRate').attr("data-validation-optional","true");
- 			 
- 		 }
- 		 
- 		 var clientRate = document.getElementById("clientRate").value; 
- 		 if(clientRate != null && clientRate != ""){
- 			 $('#clientRateType').removeAttr('data-validation-optional');
- 			 $('#clientRateType').attr("data-validation","required"); 
- 		 }else{
- 			 $('#clientRateType').removeAttr('data-validation');
- 			 $('#clientRateType').attr("data-validation-optional","true"); 
- 		 } */
-		 }
-		   if ($('#requirement_form').validate(false, validationSettings)){   
+		 
+		   if ($('#requirement_form').validate(false, validationSettings)){ 
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -2658,22 +2635,20 @@ function getEditRequirementDetails(requirementId){
 
 <script type="text/javascript">
  function validateTeamName() {
-	 var name = $('#candidateName').val(); 
+	 var teamName = $('#nameOfCandidate').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
-	 if(name != null && name != ""){
+	 if(teamName != null && teamName != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+name, 
+		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+teamName, 
 		        success: function(data) {
 		        	if(data == 'true'){
-						  
-		        		  $("input#candidateName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+		        		  $("input#nameOfCandidate").after("<p class='jquery_form_error_message'>"+teamName+" is Already Existed</span>");
 						  $("#add_team").attr("disabled", "disabled");
 						  $("#add_team").addClass('button').val('Processing..');
 		        	}
 		        	else{
-		        		
-		        		 $('input#candidateName').removeAttr("record-exist record-exist-errormsg");
+		        		 $('input#nameOfCandidate').removeAttr("record-exist record-exist-errormsg");
 		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_team" ).addClass('button').val('Save');
                          $("#add_team").removeAttr("disabled");
@@ -2721,12 +2696,10 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-$(function() {
 	$("#uploadBtn").change(function() {
 		fileUpload("uploadBtn", "requirementDocuments", "requirement_form");
 		$(".clearUpload").show();
 	});
- }); 
 </script>
 
 

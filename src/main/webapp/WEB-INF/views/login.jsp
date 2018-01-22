@@ -10,7 +10,7 @@
  
  <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
@@ -32,7 +32,7 @@ window.onload = function() {
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
  
  <div class="signWrap">
- <div id="loading"></div>
+<!--  <div id="loading"></div> -->
  <c:if test="${!empty login_2_Step_Process_Enabled}">
   <jsp:include page="twoStepVerification.jsp"></jsp:include>
 </c:if>
@@ -77,7 +77,7 @@ function directLoginValidateWhiteListIp(userRoleId,userName,password){
 	var password = '${password}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = 0;
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+// 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&name="+userName,        
@@ -89,7 +89,7 @@ function directLoginValidateWhiteListIp(userRoleId,userName,password){
 	    	 }else{
 	    		$('#loginWhiteListDiv').find('p.jquery_form_error_message').remove();
 	 			$("#loginWhiteListDiv").append( "<p class='jquery_form_error_message'>You are not allowed to access this location</span>");
-	 			$("#loading").removeAttr('style');
+// 	 			$("#loading").removeAttr('style');
 	    	 }
 	      },
 	  }); 
@@ -141,7 +141,7 @@ function logout(url){
         		var form = $('#forgetPassword_form').serializeFormJSON();
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
-        		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+//         		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
                 $.ajax({
             	      type: "POST",
             	      data :JSON.stringify(form),
@@ -156,7 +156,7 @@ function logout(url){
 	             				 document.getElementById("email").setAttribute('pass-exist','yes');
 	             				 document.getElementById("email").setAttribute('pass-exist-errorMsg', ' Invalid User Name'); 
 	             				 $("input#email").removeAttr("style");
-	             				 $("#loading").removeAttr("style");
+// 	             				 $("#loading").removeAttr("style");
     			        	}
                     		else if(json.status == 'login'){
     			        		  location.replace("/login"); 

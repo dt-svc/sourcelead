@@ -306,7 +306,7 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group mt">
+							<div class="form-group mt" id="generatedUserIdDiv">
 							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
@@ -562,7 +562,7 @@ function cancelOrgImg(){
                                 </div>
                              </div>
                             
-                            <div class="tableStyles datatable_filter mt40">
+                            <div class="clients_wrap_table datatable_filter mt40">
                 				<div id="whiteListIpsDiv"></div>   
                 			</div>
                 			
@@ -607,13 +607,13 @@ function cancelOrgImg(){
          <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
            <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
-           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('fromIpAddr');">
            </div>
            </div>
            <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
            <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
            <div class="col-md-9">
-           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress()">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('toIpAddr');">
            </div>
            </div>
         
@@ -760,7 +760,7 @@ function WhiteListIpTablePagination(){
 	$('#WhiteListIpTable').DataTable({ 
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2895,8 +2895,36 @@ function ValidateIPaddress()
 				$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
 			}
 		}
-		
 	}  
+	
+	
+function validateDuplicateIpAddress(fromType){
+	var ipAddress;
+	if(fromType == "fromIpAddr"){
+		ipAddress = $("#fromIpAddress").val();
+	}else{
+		ipAddress = $("#toIpAddress").val();
+	}
+	var userRoleId = '${SourceLeadWeb_userRoleId}';
+	var whiteListId = $("#whiteListId").val();
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&ipAddress="+ipAddress+"&whiteListId="+whiteListId+"&accessingType=settings",        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 document.getElementById("saveWhiteListbtn").disabled = true;
+	    		 if(fromType == "fromIpAddr"){
+	 	 			$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
+	  				$("input#fromIpAddress").after( "<p class='jquery_form_error_message'>"+ipAddress+" already exists.</p>");
+	    		 }else{
+	 	 			$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
+	  				$("input#toIpAddress").after( "<p class='jquery_form_error_message'>"+ipAddress+" already exists.</p>");
+	    		 }
+	    		
+	    	 }
+	      },
+	  });
+}
 </script>
 
 

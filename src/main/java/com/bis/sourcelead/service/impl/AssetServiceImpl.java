@@ -2,15 +2,10 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
@@ -21,6 +16,7 @@ import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -120,7 +116,7 @@ public class AssetServiceImpl implements AssetService{
 	
 	
 	@Override
-	public void saveAssetDetails(AssetDTO assetDTO,String assetId, User user, OrgLocations orgLocations) throws Exception {
+	public Asset saveAssetDetails(AssetDTO assetDTO,String assetId, User user, OrgLocations orgLocations) throws Exception {
 		
 		Asset asset ;
 		if(assetId != null && !"".equals(assetId)){
@@ -192,9 +188,8 @@ public class AssetServiceImpl implements AssetService{
 		 }
 		 
 		 if(StringUtils.isNotBlank(assetDTO.getCategory())){
-			 String[] category = assetDTO.getCategory().split(",");
 			 AssetCategory assetCategory = new AssetCategory();
-			 assetCategory.setId(Long.valueOf(category[1]));
+			 assetCategory.setId(Long.parseLong(assetDTO.getCategory()));
 			 asset.setAssetCategory(assetCategory);
 		 }
 		 
@@ -256,7 +251,10 @@ public class AssetServiceImpl implements AssetService{
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
 		 
-		 assetDao.saveAsset(asset);		 
+		 assetDao.saveAsset(asset);		
+		 
+		 return asset;
 	}
+	
 
 }

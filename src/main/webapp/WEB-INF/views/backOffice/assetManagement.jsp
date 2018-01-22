@@ -58,7 +58,8 @@ $(document).ready(function(){
               
         <li>
           <a href="javascript:void(0)" class="addcon-pop"><i class="fa fa-plus"></i>Add Asset</a> 
-          <!-- Add Asset Popup -->
+           <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+         <!-- Add Asset Popup -->
           <div class="collapse-div-adduser pop-div col-md-12 assetaddpop">
           <div id="loading"></div>
           <form:form id="addAsset_form"  name="addAsset_form"> 
@@ -68,7 +69,7 @@ $(document).ready(function(){
 				<select class="chosen-select" id="category" name="category" onChange="assetCategory(this);" data-validation="required" field-name="Asset Category">
 				<option selected value="">-Select Category-</option>
 					<c:forEach var="option" items="${assetCategoriesList}">
-							<option value="${option.categoryName},${option.id}">${option.categoryName}</option>
+							<option value="${option.id}">${option.categoryName}</option>
 					</c:forEach>
 				</select>	
             </div>
@@ -86,7 +87,7 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial Number *" field-name="Sl No" data-validation="required validate_Space validate_length length2-200">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial / Port Number *" field-name="Serial / Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200">
                   </div>
                   <div class="col-md-6" id="makeDiv">
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
@@ -100,7 +101,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   <div class="col-md-4 mb10" id="memoryDiv">
-                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-50">
+                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50">
                   </div>
                   <div class="col-md-4 mb10" id="cpuDiv">
                     <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
@@ -109,7 +110,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   <div class="col-md-4 mb10" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="MotherBoard" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">
@@ -332,7 +333,7 @@ var validationSettings = {
 	   	        	var result = "";
 	   	        	result = result +'<thead>';
 	   	        	result = result +'<tr>';
-	   	        	result = result +'	<th>S.No</th>';
+	   	        	result = result +'	<th>Serial / Port Number</th>';
 	   	        	result = result +'  <th>Category</th>';
 	   	        	result = result +'  <th>Model</th>';
 	   	        	result = result +'  <th>Shift-A</th>';
@@ -375,7 +376,8 @@ var validationSettings = {
 
 						result = result+'<tr id="asset'+report.id+'">';
 			   	        result = result+'<td><a href="javascript:void(0)" class="tbldata-dotdot-sm">';
-					   	result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
+	       		       	result = result +"<a href='<c:url value='/app/assetManagementSummary?assetId="+report.id+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a>";
+					   	//result = result+'<div class="proj_show" onclick="assetSideBar('+report.id+');" title="'+report.slno+'"> <span class="tbldata-dotdot-100">'+report.slno+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result+'</a></td>';
 					   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
 						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
@@ -503,10 +505,7 @@ function removeAssetManagement(assetId){
    <script>
   function assetCategory(category){
 	  var selectedCategory = category.value;
-	  if(selectedCategory){
-		  var  assestCategory = selectedCategory.split(",");
-		
-		   if(assestCategory[0] == 'Desktop'){
+	    if(selectedCategory == '2'){
 			  document.getElementById("monitor").style.display="";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memory").style.display="";
@@ -515,7 +514,7 @@ function removeAssetManagement(assetId){
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  
-		  }else if((assestCategory[0] != 'Desktop' && assestCategory[0] == 'Laptop') || category == 'Laptop'){
+		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
 			  document.getElementById("monitor").style.display="none";
 			  document.getElementById("name").style.display="";
 			  document.getElementById("memory").style.display="";
@@ -539,7 +538,6 @@ function removeAssetManagement(assetId){
 			  $("#harddisk").val('');
 			 
 		  } 
-	  }
   }
   </script>
   
@@ -931,5 +929,6 @@ function uploadFileShiftB(){
 	fileUpload("uploadBtn-dskB", "assetDocuments", "addAsset_form","uploadBtndskBUpload");
 }
 </script>
-<jsp:include page="assetManagementDetails.jsp" />
+<%-- <jsp:include page="assetManagementDetails.jsp" />
+<jsp:include page="assetManagementSummary.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

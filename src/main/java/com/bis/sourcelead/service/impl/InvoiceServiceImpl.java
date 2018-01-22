@@ -1125,12 +1125,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceDao.getInvoicetByParentInvoiceId(parentInvoiceId);
 	}
 	@Override
-	public void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType) throws Exception
+	public void updateSubmissionApproverHiearachy(Invoice invoice ,String invoiceType) throws Exception
 	{
-		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
+		if(null != invoice.getSubmissionApproverHierarchyIds() && invoice.getSubmissionApproverHierarchyIds().size() >0){
+			List<String> submissionApproverHierarchyIds = invoice.getSubmissionApproverHierarchyIds();//invoice.getInvoiceFrequency()
 			for(String id :submissionApproverHierarchyIds){
 				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
-					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT,invoice);
 				}
 			}
 		}
@@ -1399,12 +1400,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				
 			}
 			}
-			List<Projects> projectsList = null;
-			if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+			List<Projects> projectsList = projectsService.getClientProjectsByOrgRelationId(client.getId(),orgLocation.getId());
+			/*if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
 				projectsList = projectsService.getClientProjectsByOrgRelationId(client.getId(),orgLocation.getId());
 			}else{
 				projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocation.getId());
-			}
+			}*/
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
   			if(null != projectsList && projectsList.size() >0){
   				for(Projects project : projectsList){
@@ -1446,7 +1447,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
   	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
-  	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
+  	  		  		        updateSubmissionApproverHierachy(savedInvoice,invoiceType);
   	  		  		        if(savedInvoice !=null){
   	  		  		         count++;
   	  		  		        }
@@ -1468,13 +1469,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @param invoiceType
 	 * @throws Exception
 	 */
-	private void updateSubmissionApproverHierachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency, String invoiceType) throws Exception
+	private void updateSubmissionApproverHierachy(Invoice invoice, String invoiceType) throws Exception
 	{
 		
-		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
+		if(null != invoice.getSubmissionApproverHierarchyIds() && invoice.getSubmissionApproverHierarchyIds().size() >0){
+			List<String> submissionApproverHierarchyIds  = invoice.getSubmissionApproverHierarchyIds();//,invoice.getInvoiceFrequency()
 			for(String id :submissionApproverHierarchyIds){
 				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
-					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT,invoice);
 				}
 			}
 		}
@@ -1646,7 +1648,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<SubmissionApproverHierarchy> sahList = null;
 		invoice.setInvoiceFrequency(frequency);
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,orgLocation.getId(), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -1730,7 +1732,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, orgLocation.getId(),startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -2353,7 +2355,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 							 if(invoice.getSubmissionApproverHierarchyId() !=null){
 								 String[] subIds = invoice.getSubmissionApproverHierarchyId().split(",");
 								 for(String sIds :subIds ){
-									 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(sIds), invoiceType, null); 
+									 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(sIds), invoiceType, null,invoice); 
 								 }
 								 	 
 							 }

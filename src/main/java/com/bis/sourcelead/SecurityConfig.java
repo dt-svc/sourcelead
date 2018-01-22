@@ -103,8 +103,11 @@ public class SecurityConfig  {
     			.antMatchers("/app/ws/**").permitAll()
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/submissionRate.jsp").permitAll() 
-    			.antMatchers("/jobs/**").permitAll()  
+    			.antMatchers("/jobs/**").permitAll()
+    			.antMatchers("/job/**").permitAll()
     			.antMatchers("/openJobs").permitAll() 
+    			.antMatchers("/ws/displayOrgImageInMail/**").permitAll() 
+    			.antMatchers("/app/ws/displayOrgImageInMail/**").permitAll() 
     			.antMatchers("/openJobsPublicPage").permitAll()
     			.antMatchers("/app/getActionHistoryList/**").permitAll()
     			.anyRequest().authenticated()                                                   
@@ -117,6 +120,7 @@ public class SecurityConfig  {
     			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
     			.and().exceptionHandling().accessDeniedPage("/403")
+    			//.and().requiresChannel().anyRequest().requiresSecure()
     			.and().csrf().disable();
     			
     			

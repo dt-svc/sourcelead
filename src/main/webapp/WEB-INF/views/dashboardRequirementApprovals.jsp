@@ -217,7 +217,8 @@ function updateReuqirementStatusAccept(status,requirementId){
          				 
          				 $("#selector4").removeAttr("style");
 		            			$("#selector4").css({ display: "block" });
-	            				$("#eduMsgDiv").html("Accepted");
+	            				$("#eduMsgDiv").html("Approved");
+	            				
 		               			eduMsgFadeinFunction();
 		               				 
          				 
@@ -292,7 +293,7 @@ function rejectRequirementAlertMessage(status,requirementId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDasbordDiv'/>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+"\",\""+requirementId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlertDashboard();'></b>";

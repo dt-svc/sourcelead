@@ -720,7 +720,11 @@ public class UsersListRestController {
 		 
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
+		 
+		 if(countries !=null) {
+			 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
+		 }
+		 
 		 
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
@@ -1369,7 +1373,17 @@ public class UsersListRestController {
 			 globalVarsMap.put("assignedUser", assignedUserName.append(req.getManagerUserId().getFirstName()).toString());
 		 }
 		 globalVarsMap.put("reqCount", requirementsCountAsManager2.toString());
-		 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+		 
+		 StringBuilder terminatedUserName = new StringBuilder();
+		 
+		 if(termentaedUserName.getLastName() != null) {
+			 globalVarsMap.put("terminatedUser", terminatedUserName.append(termentaedUserName.getFirstName()).append(" ").append(termentaedUserName.getLastName()).toString());
+		 }else {
+			 globalVarsMap.put("terminatedUser", terminatedUserName.append(termentaedUserName.getFirstName()).toString());
+		 }
+		 
+		// globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+		 
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	  

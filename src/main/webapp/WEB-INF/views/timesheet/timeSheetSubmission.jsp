@@ -185,8 +185,7 @@
 									           <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
 									        </div>
 									      </td>
-									       <c:forEach var="te" items="${entry.value}">
-									          <c:if test="${te.dayOfTheDate == 'Mon'}">
+									       <c:forEach var="te" items="${entry.value}" varStatus="teStatus">
 										          <td> 
 										           <div>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
@@ -196,11 +195,11 @@
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay1Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
+										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 										               <div class='timesheet_comm'>
 										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment1Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment1Id'>
+										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment${teStatus.index+1}Id");'></i>
+										                       <span class='teskcomment' id='${entryCount.index+1}comment${teStatus.index+1}Id'>
 										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
                                                                </span>
 										                   </c:if>
@@ -211,165 +210,7 @@
 										            </div>
 										              <c:set var="entryIndex" value="${entryIndex+1}"/>
 										           </td>
-									          </c:if>
-									          <c:if test="${te.dayOfTheDate == 'Tue'}">
-									              <td> 
-									               <div>
-									                  <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-									                   
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-									                 <input onblur="editMe(this);" ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay2Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-									                  <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment2Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment2Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                    <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-									                 </div>
-									                 <c:set var="entryIndex" value="${entryIndex+1}"/>
-									               </td>
-									          </c:if>
-									          <c:if test="${te.dayOfTheDate == 'Wed'}">
-									             <td> 
-									                <div>
-									                   
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-									                   
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-									                   <input onblur="editMe(this);" ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay3Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-									                   <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment3Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment3Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                    <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-									               </div>
-									               <c:set var="entryIndex" value="${entryIndex+1}"/>
-									            </td>
-									          </c:if>
-									          <c:if test="${te.dayOfTheDate == 'Thu'}">
-									               <td> 
-									                <div>
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-									                  
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-									                   <input onblur="editMe(this);" ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay4Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-									                    <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment4Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment4Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                    <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-									                 </div>
-									                 <c:set var="entryIndex" value="${entryIndex+1}"/>
-									             </td>
-									          </c:if>
-									          <c:if test="${te.dayOfTheDate == 'Fri'}">
-									              <td> 
-									                <div>
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-									                  
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-									                   <input onblur="editMe(this);" ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay5Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-									                    <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment5Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment5Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                    <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-									                </div>
-									                <c:set var="entryIndex" value="${entryIndex+1}"/>
-									             </td>
-									          </c:if>
-									          <c:if test="${te.dayOfTheDate == 'Sat'}">
-									              <td> 
-									                 <div>
-									                    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-									                    
-									                    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										                <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										                <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-									                    <input onblur="editMe(this);" ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay6Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-									                     <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment6Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment6Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                    <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-									                </div>
-									                <c:set var="entryIndex" value="${entryIndex+1}"/>
-									            </td>
-									          </c:if>
-									          <c:if test="${te.dayOfTheDate == 'Sun'}">
-									               <td> 
-									                 <div>
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-									                   
-									                   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-									                   <input onblur="editMe(this);" ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay7Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-									                    <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment7Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment7Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                    <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-									                 </div>
-									                 <c:set var="entryIndex" value="${entryIndex+1}"/>
-									              </td>
-									         </c:if>
-									       </c:forEach>
+								        </c:forEach>
 									    </tr>
 									</c:forEach>
 								    <tr class="last_child">
@@ -782,7 +623,6 @@ function addTimeSheetRow(projectId) {
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "timesheetRow"+maxRowNum);
 			
-			
 		    var previousMaxRowNum =parseInt(rowNum-1);
 		    
 		    var entryIndex = $("#entryIndexValue").val();
@@ -794,8 +634,6 @@ function addTimeSheetRow(projectId) {
 			/* cell0.setAttribute("class", "pname");*/
 			cell0.innerHTML = divadttTd0Str;
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
-			
-			
 			
 			var cell1 = row.insertCell(1);
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
@@ -998,8 +836,10 @@ function addTimeSheetRow(projectId) {
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
 			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+			   setTotals(); 
 		   }else{
 			   $("#" + projectTaskId + "BillableTypeId").html(""); 
+			   setTotals(); 
 		   }
 		   
 		   var avilableProjectTaskIds = [];

@@ -263,11 +263,11 @@ z-index: 1;
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableClientContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
             </div>
           </div>
@@ -359,7 +359,9 @@ z-index: 1;
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
 		     	  <table id="clientList" class="display" cellspacing="0" width="100%"> </table>
-		     	 <table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
+		     	  <div class="overflow_Auto width100percnt">
+		     	 	<div id="vendorContactList" class="display" cellspacing="0" width="100%"> </div>
+		     	 </div> 
 				</div>
 				<div id="popUp"></div>
 			</div>

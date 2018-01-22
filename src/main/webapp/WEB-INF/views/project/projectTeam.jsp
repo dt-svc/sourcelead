@@ -361,32 +361,32 @@ function filterStatus() {
 		        		if(opt.projectEndDateStr != null && opt.projectEndDateStr != ''){
 		        			projectEndDateStr = opt.projectEndDateStr;
 		        		}else{
-		        			projectEndDateStr = "--"
+		        			projectEndDateStr = "-----";
 		        		}
 		        		
 		        		
 		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
 		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
 		        		}else{
-		        			billRate = "-----"
+		        			billRate = "-----";
 		        		}
 		        		
 		        		if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
 		        			payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
 		        		}else{
-		        			payRate = "-----"
+		        			payRate = "-----";
 		        		}
 		        		
 		        		if(opt.estimatedHours != null && opt.estimatedHours != 'undefined' && opt.estimatedHours != ''){
 		        			estimatedHours = opt.estimatedHours;
 		        		}else{
-		        			estimatedHours = "------"
+		        			estimatedHours = "------";
 		        		}
 		        		
 		        		if(opt.estimatedBudget != null && opt.estimatedBudget != 'undefined' && opt.estimatedBudget != ''){
 		        			estimatedBudget = opt.estimatedBudget;
 		        		}else{
-		        			estimatedBudget = "------"
+		        			estimatedBudget = "------";
 		        		}
 		        		
 		        		result = result + '	 <tr>';
@@ -608,15 +608,15 @@ function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){
 	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Terminate reason' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTeamTermination();"></b>';
 	result = result +"	</div>";
-	$("#popUp").append(result);
+	$("#teampopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
-function cancelTermination(){
-	$("#popUp").empty();
+function cancelTeamTermination(){
+	$("#teampopUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
 	 $(".vendor_wrap_mask").fadeOut(200);
 }
@@ -637,7 +637,7 @@ function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
 				   	type: "POST",
 				    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&projectId="+projectId+"&reason="+jsonData,
 		   		    success: function(data) {
-		   		    	$("#popUp").empty();
+		   		    	$("#teampopUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
 		   				$("#selector3").removeAttr("style");
 		 				$("#selector3").css({ display: "block" });
@@ -694,7 +694,7 @@ function exportToPdf(projectId){
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='empCancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
 		result = result +"	</div>";
-		$("#popUp").append(result);
+		$("#teampopUp").append(result);
 		$("#client_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 	}
@@ -703,7 +703,7 @@ function exportToPdf(projectId){
 </script>
 <script type="text/javascript">
 function empCancelTermination(){
-	$("#popUp").empty();
+	$("#teampopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$("#exportPop").toggle();
 	$(".export_pipline").slideUp();
@@ -733,7 +733,7 @@ function exportToExcel(projectId){
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='empCancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
 		result = result +"	</div>";
-		$("#popUp").append(result);
+		$("#teampopUp").append(result);
 		$("#client_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 	}

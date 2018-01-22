@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProfileDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -39,10 +41,14 @@ public class UserProfileController {
 	@Autowired
 	UserRoleService userRoleService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 
     @RequestMapping(value = "/userProfile")
- 	 public ModelAndView userProfile() {
+ 	 public ModelAndView userProfile(HttpServletRequest request) {
  			ModelAndView model = new ModelAndView();
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
  			model.setViewName("userProfile");
  			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;

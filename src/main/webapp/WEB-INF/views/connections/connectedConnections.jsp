@@ -23,6 +23,7 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
+			<div id="loading"></div>
 	</section>
 
 
@@ -30,18 +31,18 @@
 	<input type="hidden" id="noOrgsList" name="noOrgsList"/>
  	<input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
 		<div class="conneWrapHead clearfix">
-			<ul class="clearfix">
+			<ul class="clearfix connection-count">
 				<li><a href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
 				<li class="current"><a
-					href="<c:url value='${appPath}/loadConnectedList'/>">Connected</a></li>
-				<li><a href="${appPath}/loadSentConnections">Sent</a></li>
+					href="<c:url value='${appPath}/loadConnectedList'/>">Connected<i id="connectedCountVal"></i></a></li>
+				<li><a href="${appPath}/loadSentConnections">Sent<i id="sentCountVal"></i></a></li>
 				<li><a
-					href="<c:url value='${appPath}/loadReceivedConnections'/>">Received</a></li>
+					href="<c:url value='${appPath}/loadReceivedConnections'/>">Received<i id="receivedCountVal"></i></a></li>
 			</ul>
-			<span><input class="immigraTabSerach" type="text" id="searchFindConnId"></span>
+			<span><input class="immigraTabSerach" type="text" id="searchFindConnId" placeholder="Name/Email/Role/Company"></span>
 		</div>
-		<div class="conneWrapInn" id="findConnectionListId"></div>
-	<div class="clearfix"></div>
+		<div class="conHeadgap"></div>
+		<div class="conneWrapInn clearfix" id="findConnectionListId"></div>
 	<div id="loadMoreDiv"></div> 
 	</div>
 
@@ -59,7 +60,7 @@ $(document).scroll(function(e){
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#orgOffset").val();
     	
-    	avilableCount = parseInt(avilableCount) + parseInt(6); 
+    	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	//searchUser("scroll");
     	 getConnectionsList("scroll");
@@ -88,7 +89,11 @@ function eduMsgFadeinFunction(message) {
 	$("#inviteMessage").text(message);
     $('#selector4').delay(1000).fadeOut('slow');
 }
+var count = 0;
 	function getConnectionsList(type){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
+				
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var searchValue = $("#searchFindConnId").val();
 		 if(type == "scroll"){
@@ -99,22 +104,25 @@ function eduMsgFadeinFunction(message) {
     		$("#orgOffset").val(0);
    		    offset = 0;
     	} 
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/getConnectedList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
             success: function(json) {
 	        var result = "";
 	        var flag = false;
-	        if(json.length>0){
-	        	flag = true;
+	        if(json != null && json.length>0){
+	        	count++;
 	        }
-	        if(json.length > 0)
+	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
+	 				if(user.connectedCount != null){
+	 					localStorage.setItem("connectedCount", user.connectedCount);
+	 				}
 		 			if(user.mutualCount != 0){
 		 				mutCountStatus = user.mutualCount + " Mutual Connections";
 		 			}else{
@@ -131,44 +139,78 @@ function eduMsgFadeinFunction(message) {
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn"><a href="#" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\')" id="connection'+user.userCode+'" class="connlink">Disconnect</a></div></div></div>';
+	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a></div></div></div>';
 	   		    }
 	 			
-	 			if(type == "manual"){
-            		$('#findConnectionListId').append(result);
-            	}else{
-            		$('#findConnectionListId').append(result);
-            	}
-	 			$("#noOrgsList").val("")
-	   		}else if(type == "scroll" && flag == true){
-            	$('#loadMoreDiv').empty();
-	         	result = result + '<div class="loadWrap"> No More Records..</div>';
-	         	$('#loadMoreDiv').append(result);
-            }else if(type === 'manual' && flag == false){
-            	$("#loadMoreDiv").empty(); 
-            	$('#findConnectionListId').hide();
-	         	result = result + '<div class="noDate"></div>';
-	         	$('#loadMoreDiv').append(result);
-            }
+	 			$('#findConnectionListId').append(result);
+        		if(json.length < 18){
+	 				$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
+	 			}else if(json.length >= 18){
+	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
+	 			}
+	   		}else if(type === 'manual' && json == null){
+	   			localStorage.setItem("connectedCount", 0);
+	   			$('.connHeadText').empty();
+	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
+	   		}
+	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
+	        $("#loading").removeAttr("style");
 			 },
 	        error: function(e){
 	        }
 	    });  
+	}else {
+		location.href='/login';
 	}
+});
+}
 </script>
 <script>
-function getDisconnectConnection(userCode,userName){
+function getDisconnectConnection(userCode,userName,connectionUUID){
+	$.post("check-session", {}, function(data) {
+		if(data === "YES") {
+			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
-			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
+			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
             success: function(json) {
-            	$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-            	getConnectionsList("manual");
-            	eduMsgFadeinFunction(userName+" removed from your connections");
+	            	$("#selector4").removeAttr("style");
+	    			$("#selector4").css({ display: "block" });
+	    			$("#loading").removeAttr("style");
+	    			var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
+	    			connectedCount = connectedCount-1;
+	    			localStorage.setItem("connectedCount", connectedCount);
+	    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
+	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
+	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
+	    			$("#connectionState"+userCode).empty();
+	            	$("#connectionState"+userCode).append('<b class="connlink gray">Disconnected</b>');
+	            	eduMsgFadeinFunction(userName+" removed from your connections");
          },
+         error: function(e){
+	        }
 	 });  
-    }
+    }else {
+		location.href='/login';
+	}
+});
+}
+
+</script>
+<script>
+$(document).ready(function(){
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 50) {
+            $('.conneWrapHead').addClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "44px");
+        } else {
+               $('.conneWrapHead').removeClass('conneWrapHeadFixed');
+            $(".conHeadgap").css("height", "0px");
+        }
+    });
+});
 </script>
 </body>
 </html>

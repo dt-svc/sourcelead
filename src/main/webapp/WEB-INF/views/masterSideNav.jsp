@@ -52,7 +52,7 @@
  		</c:if>
         
              
-         <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile"><span><i class="fa fa-id-card-o"></i></span><i class="subMenu">Profile</i></a></li> 
+        <%--  <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile"><span><i class="fa fa-id-card-o"></i></span><i class="subMenu">Profile</i></a></li> --%> 
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
@@ -113,7 +113,7 @@
 							        <%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
 							  	     
-							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets">TimeSheets</a></li>
+							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval">Approval</a></li>
 							  </ul>
 							  </c:if>
@@ -359,4 +359,19 @@
 
  
   </aside>
-  <!-- Side Nav Bar --> 
+  <!-- Side Nav Bar -->
+  
+  <script>
+$(function(){
+	resizeFunction();
+});
+function resizeFunction() {
+	var sidenavHeight = $(window).innerHeight();
+	$(".sidenav_inner").height(sidenavHeight-75);
+}
+$(window).resize(function(){
+	resizeFunction();
+});
+</script>
+  
+  

@@ -266,7 +266,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
     <div class="pull-left">
-      <h2><a href="#" id="contactsListId">Contacts List</a></h2>
+      <h2>Contacts List</h2>
       </div> 
     <div class="pull-right brud-crum" id="contactsListUrl"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contacts List</div>
   </section>
@@ -311,7 +311,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 					<span title="Manage Group" class="paddingRight" onClick="getContactsGroupList();showLable();"><strong>Manage Group
 					 <i class="paddingLeft fa fa-caret-right"></i></strong></span> |
 			  	<!-- ManageLabels div -->
-			  	<div class="manageLables-div">
+			  	<div class="manageLables-div" id="add_group_Div">
        			<div class="clearfix">
        			<button type="button" class="btn btn-sm btn-primary" onClick="addLabelPop();">
        				<i class="fa fa-plus paddingRight"></i>Add
@@ -333,7 +333,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 				<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">
 				<ul class="checkBox" role="menu" aria-labelledby="menu1">
                     	  <c:forEach var="report" items="${contactsGroupList}">
-                        	<li><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"><label for="">${report.groupName}</label></li>
+                        	<li><label class="tbldata-dotdot-big" title="${report.groupName}"><input   name="groupsFilter" value ="${report.id}"  onclick="refercontactList();"  type="checkbox"> ${report.groupName}</label></li>
 						  </c:forEach>
 				</ul>
 				</div>
@@ -373,7 +373,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 					</div> 
 					<div class="col-md-12 mt10 clearfix">            
 					<div class="pull-right">
-					  <input type="submit" value="Add Contact" id="add_contact"  class="btn btn-primary">
+					  <input type="submit" value="Add Contact" id="add_contact" onclick="saveReferContacts();" class="btn btn-primary">
 					  <input type="button" value="Cancel" onclick="flushContactDetails()" class="btn btn-default ml10 canBtn">
 					</div>    
 					</div> 
@@ -405,7 +405,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 	<a class="close">&times;</a>
 	<ul class="list-unstyled">
 	<c:forEach var="conGroup" items="${contactsGroupList}">
-		<li><input type="radio" name="groupName" id="consGroup${conGroup.id}" value="${conGroup.id}"> ${conGroup.groupName}</li>
+		<li class="tbldata-dotdot-big" title="${conGroup.groupName}"><input type="radio" name="groupName" id="consGroup${conGroup.id}" value="${conGroup.id}"> ${conGroup.groupName}</li>
    </c:forEach>
    </ul>
    <div class="clearfix mt5">
@@ -447,8 +447,10 @@ function addContactsGroup(){
 	 $("#addGroupDiv").empty();
      $("#groupEditDiv").empty();
 	 $("#addGroupDiv").append(result)
+	 
 	 $(".comMask").fadeIn();
 	 $(".createLabel-popdiv").fadeIn();
+	 $('#addcontacttogroup_form').reset();
 }
 
 </script>
@@ -465,7 +467,7 @@ function refercontactList(){
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix">';
-  		result = result +'<table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%"  >';
+  		result = result +'<table id="example" class="display" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result +'<th><input type="checkbox" id="checkReferContacts" onclick="toggleContactsGroup(this);"></th>';
@@ -718,13 +720,33 @@ function validateContactEmail(){
 
 
 <script type="text/javascript">
+function saveReferContacts(){
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
 	   };  
-         $('body').on('submit', '#addcontact_form', function(e){
+	if ($('#addcontact_form').validate(false, validationSettings)){
+  		$("#add_contact").attr("disabled", "disabled");
+  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	     var formData = getFormData1("addcontact_form");
+		$.ajax({
+					type : "POST",
+					 data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+					success : function(result) {
+						location.replace(sourceleadUrl+ "/referRequirementList");
+					},
+				});
+    
+	    return true;
+}
+}
+	
+         /* $('body').on('submit', '#addcontact_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
 	          		
 	          		$("#add_contact").attr("disabled", "disabled");
@@ -746,7 +768,7 @@ function validateContactEmail(){
             else{
             	return false;	
                }
-            });
+            }); */
          $('#addcontact_form').showHelpOnFocus();
          $('#addcontact_form').validateOnBlur(false, validationSettings); 
             
@@ -908,7 +930,7 @@ function getContactsGroupList(){
 	                    	 result = result +"<tr id='deleteGroup"+opt.id+"'>";
 				             
 				             if(opt.groupName != null && opt.groupName != '' && opt.groupName != 'undefined'){
-				             result = result +"<td><div class='tbldata-dotdot-sm'>"+opt.groupName+"</div></td>";
+				             result = result +"<td><div class='tbldata-dotdot-sm' title='"+opt.groupName+"'>"+opt.groupName+"</div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
@@ -920,6 +942,7 @@ function getContactsGroupList(){
 	                     result = result +"</table>"; 
 	                     $("#groupList").empty();
 	                     $("#groupList").append(result); 
+	                    
           },
             
        }); 
@@ -943,17 +966,18 @@ function editContactsGroup(groupId,groupName){
 	        	outPut = outPut+ '<div class="form-group">';
 	        	outPut = outPut+ '<div class="pull-right">';
 	        	outPut = outPut+ '<button type="button" class="btn mr btn-default btn-sm" onClick="maskFade();">Cancel</button>';
-	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" class="btn btn-sm btn-primary">Save</button>';
-	        	outPut = outPut+ '</div>';
+	        	outPut = outPut+ '	<button type="submit" value="Save" id="edit_contactgroup" onclick= "contactgrp();" class="btn btn-sm btn-primary">Save</button>';
+				outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</div>';
 	        	outPut = outPut+ '</form>';
 	        	
 	            $("#addGroupDiv").empty();
 	            $("#groupEditDiv").empty();
-	        	$("#groupEditDiv").append(outPut); 
+	        	$("#groupEditDiv").append(outPut);
 	        	$(".comMask").fadeIn();
 	        	$(".createLabel-popdiv").fadeIn();
-	         
+	        	 
+	        	$('#addcontacttogroup_form').reset();
 }
 </script>
 
@@ -970,6 +994,7 @@ function deleteContactsGroup(groupId,groupNmae){
 	$("#deleteGroupPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+	$('#addcontacttogroup_form').reset();
 	
 }
 </script>  
@@ -1176,6 +1201,8 @@ function selectedContactList(){
  function movefolderPop() {
 	 $(".movefolder-popdiv").fadeIn();
 	 $(".sideMask").fadeIn();
+	 $("#add_group_Div").hide();
+	 
  }
  $(".close").click(function(){
 	 $(".movefolder-popdiv").fadeOut();

@@ -514,7 +514,7 @@ function getSearchResultsForAll(searchType,searchValue){
 				            	 if(report.searchType=="User"){
 				            		 	if((report.searchType=="User") && j == 0){
 				            		 		result = result+'  <div class="clearfix">';
-						            		 result = result+'   <h4>Users</h4>';
+						            		 result = result+'   <h4>Associates</h4>';
 						            		result = result+'  </div>'; 
 						            	 }
 				            			result = result+'  <div class="srchresult clearfix">';

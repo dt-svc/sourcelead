@@ -1099,7 +1099,7 @@ function getChangeRole(userId,userRoleId){
                             success: function(result) {
                             	 $("#selectoruser").removeAttr("style");
 	                       		  $("#selectoruser").css({ display: "block" });
-	                       		  $("#userMsgDiv").html("Success!! User Details Updated");
+	                       		  $("#userMsgDiv").html("Success!! associate details updated");
                                userDetails(userId);
                                userMsgFadein();
                                 
@@ -1135,7 +1135,7 @@ function getChangeRole(userId,userRoleId){
                                   success: function(result) {
                                 	  $("#selectoruser").removeAttr("style");
                             		  $("#selectoruser").css({ display: "block" });
-                            		  $("#userMsgDiv").html("Success!! User Details Updated");
+                            		  $("#userMsgDiv").html("Success!! associate details updated");
                                       userDetails(userId);
                                       userMsgFadein();
                                       
@@ -1160,7 +1160,7 @@ function getChangeRole(userId,userRoleId){
                       success: function(result) {
                     	  $("#selectoruser").removeAttr("style");
                 		  $("#selectoruser").css({ display: "block" });
-                		  $("#userMsgDiv").html("Success!! User Details Updated");
+                		  $("#userMsgDiv").html("Success!! associate details updated");
                           userDetails(userId);
                           userMsgFadein();
                           
@@ -2953,7 +2953,7 @@ function profileDetails(candidateId){
 						result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor Contact</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title = '+json.vendorContactName+'>'+json.vendorContactName+'</span></li>';
 		         		}
 			             
-			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
+			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
 			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+json.experienceYears+' Year(s) '+experienceMonths+'</span></li>';
               		       }else{
                 		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  

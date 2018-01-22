@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,6 +78,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -230,6 +232,9 @@ public class LeaveManagementRestController {
 		   ModelAndView model = new ModelAndView();
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocations.getId(),Constants.RECORD_ACTIVE.toString());
+		   
+		   LinkedHashSet<String> yearsList = CalendarUtil.getYearsListFromCurrentDate(1, 10);
+		   model.addObject("yearsList", yearsList);
 		   model.addObject("departmentList",departmentList);
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("leavemanagement/leaveManagementReports");
@@ -254,36 +259,6 @@ public class LeaveManagementRestController {
 		   List<User> usersList = userService.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(loginUser.getId(), roleId, orgLocations.getId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.addObject("usersLis", usersList);
-		   
-		   List<User> appUser = new ArrayList<>();
-		   List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(loginUser.getId(), roleId, orgLocations.getId());
-			if(approversList !=null) {
-				for (User user : approversList) {
-					boolean flag = false;
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-					if(userRole != null){
-						String roles = userRole.getRoles().getActionId();
-						String[] sa = roles.split(",");
-						for (String s : sa) {
-							if("238".equalsIgnoreCase(s)) {
-								flag = true;
-								break;
-							}
-						}
-						StringBuilder sb = new StringBuilder();
-						if(StringUtils.isNotBlank(user.getLastName())){
-							sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-						}else{
-							sb.append(user.getFirstName());
-						}
-						user.setFullName(user.getFullName().toString());
-						user.setUserType(userRole.getUserType());
-						if(flag)
-							appUser.add(user);
-					}
-				}
-				 model.addObject("approverList", appUser);
-			}
 		   model.setViewName("leavemanagement/applyLeave");
 	       return model;
 	}

@@ -46,10 +46,8 @@ public class OrglocationFormFieldsRestController {
     
 	@RequestMapping(value="/editNewCustomFormField",method = RequestMethod.POST)
     public ModelAndView editNewCustomFormField(OrglocationFormFieldsDTO orgLocFormFieldsDTO,HttpServletRequest request,@RequestParam (value="actionId") Long actionId) throws Exception {
-    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		OrglocationFormFields orglocationFormFields = orglocationFormFieldsService.saveNewCustomFormFields(orgLocFormFieldsDTO,orgLocation,org,user);
+		OrglocationFormFields orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
 		OrglocationFormFieldsDTO orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, null);
 		ModelAndView model = new ModelAndView();
 		List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());

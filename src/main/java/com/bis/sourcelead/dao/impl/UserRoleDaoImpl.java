@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.mchange.v1.util.StringTokenizerUtils;
@@ -822,13 +823,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
 			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
 			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.reportingManager.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.reportingManager.lastName like '%" + userDTO.getSearchValue() + "' ")
-			   .append("OR (concat(userRole.reportingManager.firstName,userRole.reportingManager.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
-			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%')  ")
-			   .append("OR userRole.userState like '%" + userDTO.getSearchValue() + "%' )");
+			   /*.append("OR ((userRole.reportingManager IS NULL) OR (userRole.reportingManager IS NOT NULL and (userRole.reportingManager.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.reportingManager.lastName like '%" + userDTO.getSearchValue() + "'))) ")
+			   .append("OR ((userRole.reportingManager IS NULL) OR (userRole.reportingManager IS NOT NULL and concat(userRole.reportingManager.firstName,userRole.reportingManager.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%'))" )*/
+			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
 					
 		}
-//		role.getReportingManager().getFirstName()
+		
 		if(roleId != null) {
 			 subQuery = " and userRole.roles.id = :roleId ";
 			params.put("roleId",roleId);
@@ -904,32 +904,37 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
-				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString()+"  ";
+				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString();
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		
-		if(userRoleList.size() >= offset){
-			if(userRoleList.size() > offset + 6){
-				userRoleList = userRoleList.subList(offset, (offset+6));
+		/*if(userRoleList.size() >= offset){
+			if(userRoleList.size() > offset + 18){
+				userRoleList = userRoleList.subList(offset, (offset+18));
 			}else{
 				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
 			}
-			
+			*/
 			if(userRoleList != null && userRoleList.size() > 0) {
+				int requestSentCount = 0;
+				int requestReceivedCount = 0;
+				int connectedCount = 0;
 				for(UserRole userRole : userRoleList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					String queryForStatus = "from Connections connections where (connections.fromUser.id = :fromId and connections.toUser.id = :toId) or (connections.fromUser.id = :toId and connections.toUser.id = :fromId)";
 					Connections connections = (Connections) session.createQuery(queryForStatus).setLong("fromId", userId).setLong("toId", userRole.getUser().getId()).uniqueResult();
-					boolean flag = false;
 					if(connections != null) {
-						flag = true;
 						if(connections.getToUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {
 							userRoleDTO.setUserState("Request_received");
+							requestReceivedCount++;
 						}else if(connections.getFromUser().getId().equals(userId) && connections.getConnectionStatus().toString().equals(ConnectionStatus.REQUEST_SENT.toString())) {
+							requestSentCount++;
 							userRoleDTO.setUserState("Request_sent");
 						}else {
+							connectedCount++;
 							userRoleDTO.setUserState("connected");
 						}
 						userRoleDTO.setCreatedDate(connections.getCreatedDate());
+						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 					}
 					StringBuilder userName = new StringBuilder();
 					if(userRole.getUser().getLastName() != null) {
@@ -956,10 +961,28 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
 					userRoleDTOList.add(userRoleDTO);
 				}
+				userRoleDTOList.get(0).setSentCount(requestSentCount);
+				userRoleDTOList.get(0).setReceivedCount(requestReceivedCount);
+				userRoleDTOList.get(0).setConnectedCount(connectedCount);
+				
+				Collections.sort(userRoleDTOList,new Comparator<UserRoleDTO>() {
+				    @Override
+				    public int compare(UserRoleDTO a, UserRoleDTO b) {
+				        return (int) (b.getMutualCount()-a.getMutualCount());
+				    }
+				});
+				if(userRoleDTOList.size() >= offset){
+					if(userRoleDTOList.size() > offset + 18){
+						userRoleDTOList = userRoleDTOList.subList(offset, (offset+18));
+					}else{
+						userRoleDTOList = userRoleDTOList.subList(offset, (  offset + (userRoleDTOList.size() - offset)));
+					}
+				return  userRoleDTOList;
+			}else{
+				return  null;
 			}
-			return  userRoleDTOList;
 		}else{
-			return  userRoleDTOList;
+			return  null;
 		}
 		
 	}

@@ -340,13 +340,13 @@ function errRemoveVendorContact(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();"">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
          result = result +'  </div>';
          result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
-         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();" onkeyup="validateDiscount();">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();" onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -1536,7 +1536,7 @@ function calculateDiscount(){
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
-			class="form-control input-sm" value=""
+			class="form-control input-sm allownumericwithdecimal" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
 			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
@@ -2138,19 +2138,19 @@ function validateDiscount() {
 	 if(selectedTextInvoice =='percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(enteredValue.match(floatNum)){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-				$("#sendButtonId").removeAttr("disabled", "disabled");
+			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+				$("#sendInvoiceId").removeAttr("disabled", "disabled");
 			   return true;
 		  }		  
 		 else{
 				$("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
-				$("#saveButtonId").attr("disabled", "disabled");
-				$("#sendButtonId").attr("disabled", "disabled");
+				$("#saveInvoiceId").attr("disabled", "disabled");
+				$("#sendInvoiceId").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
+			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
 		  }		  
 }
 </script>
@@ -2164,14 +2164,14 @@ var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
 if(selectedTextInvoice =='percentage'){
 	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 	  if(enteredValue.match(floatNum)){
-		  $("#saveButtonId").removeAttr("disabled", "disabled");
-			$("#sendButtonId").removeAttr("disabled", "disabled");
+		  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+			$("#sendInvoiceId").removeAttr("disabled", "disabled");
 		   return true;
 	  }		  
 	 else{
 			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
-			$("#saveButtonId").attr("disabled", "disabled");
-			$("#sendButtonId").attr("disabled", "disabled");
+			$("#saveInvoiceId").attr("disabled", "disabled");
+			$("#sendInvoiceId").attr("disabled", "disabled");
 			return false; 
 	 	 }
 }if(selectedTextInvoice =='flat'){
@@ -2182,8 +2182,8 @@ if(selectedTextInvoice =='percentage'){
 			   return false;
 		  }
 		else{ */
-			$("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
+			$("#saveInvoiceId").removeAttr("disabled", "disabled");
+			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
 // 		}
 	  }		
 	  

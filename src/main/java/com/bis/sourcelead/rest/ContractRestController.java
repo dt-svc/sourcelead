@@ -523,40 +523,42 @@ public class ContractRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 		List<RequirementSubmission> requirementSubmissionsList = new ArrayList<>();
-		
-		Requirement req = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 		if(!"".equalsIgnoreCase(requirementId)){
-			requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
-		}
-		else{
-			 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
-		}
-		
-		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
-		if(requirementSubmissionsList.size() > 0){
-			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
-				StringBuffer candidateName = new StringBuffer(); 
-				if(null != requirementSubmission.getCandidate() && StringUtils.isNotBlank(requirementSubmission.getCandidate().getLastName())){
-					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString());
-				}else{
-					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
+			Requirement req = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+			if(!"".equalsIgnoreCase(requirementId)){
+				requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
+			}
+			else{
+				 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+			}
+			
+			//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+			if(requirementSubmissionsList.size() > 0){
+				for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
+					StringBuffer candidateName = new StringBuffer(); 
+					if(null != requirementSubmission.getCandidate() && StringUtils.isNotBlank(requirementSubmission.getCandidate().getLastName())){
+						requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString());
+					}else{
+						requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
+					}
+					if(null != requirementSubmission.getVendorLocationId()){
+						requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+					}
+					if(null != requirementSubmission.getRequirement()){
+						requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+					}
+					
+					
 				}
-				if(null != requirementSubmission.getVendorLocationId()){
-					requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
-				}
-				if(null != requirementSubmission.getRequirement()){
-					requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
-				}
-				
-				
+			}
+			
+			if (req.getClientId() != null) {
+				RequirementSubmission reqSub = new RequirementSubmission();
+				reqSub.setOrgRelationId(req.getClientId().getId());
+				requirementSubmissionsList.add(reqSub);
 			}
 		}
 		
-		if (req.getClientId() != null) {
-			RequirementSubmission reqSub = new RequirementSubmission();
-			reqSub.setOrgRelationId(req.getClientId().getId());
-			requirementSubmissionsList.add(reqSub);
-		}
 		
 		return commonUtil.toJSON(requirementSubmissionsList);
 	}

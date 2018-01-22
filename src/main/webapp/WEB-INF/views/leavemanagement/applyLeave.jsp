@@ -111,21 +111,15 @@ window.onload = function() {
                   </div>
               </div>
             </div>
-<!--             <p class="form-control-static clearfix"><strong>Approval</strong></p> -->
+            
             <div class="form-group">
               <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9 dropdown-select">
                   <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
-<%--                 	<c:forEach var="user" items="${approverList}"> --%>
-<%-- 	                	<c:if test="${user.id != SourceLeadWeb_userId}"> --%>
-<%-- 	                		<option value="${user.id}">${user.firstName} ${user.lastName} (${user.userType})</option> --%>
-<%-- 	                	</c:if> --%>
-<%--                 	</c:forEach> --%>
+
                   </select>
               </div>
             </div>
-              
-              
               
               
           </div>
@@ -187,13 +181,13 @@ window.onload = function() {
 			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true,
-			minDate: 0,
+// 			minDate: 0,
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate());
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
-			getLeaveDetails();
+			getLeaveDetails(finalDateFormatEndDate);
 			
 			}
 		});
@@ -453,7 +447,7 @@ $(".close").click(function(){
 </script>
 
 <script>
-function getLeaveDetails(){
+function getLeaveDetails(finalDateFormatEndDate){
 	var leaveTypeId = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
@@ -498,7 +492,7 @@ function getLeaveDetails(){
 		    	}
 		    	
 		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
-		    		validatePriorDays(report.priorDays);
+		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
 		    		
 		    	}
 		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
@@ -545,13 +539,14 @@ function validateOverDrawLeaves(leaveTypeName){
 </script>
 <script>
 var errorMessage = "";
-function validatePriorDays(priorDays){
+function validatePriorDays(priorDays,finalDateFormatEndDate){
 	var currentDate = new Date();
-    var fromDate = $("#fromDate").val();
-    var convertedCurrentDate = parseInt(currentDate.getDate());
-    var convertedFromDate = parseInt(fromDate);
-    var dayDiff= (convertedFromDate - convertedCurrentDate);
-    if(priorDays >= dayDiff){
+	
+	$( "#fromDate" ).datepicker({ dateFormat: finalDateFormatEndDate });
+	var start = $('#fromDate').datepicker('getDate');
+    var diffDays = parseInt((start - currentDate) / (1000 * 60 * 60 * 24)); 
+    
+    if(priorDays > diffDays){
     	errorMessage += "You need to apply this Leave Type "+priorDays+" earlier.";
     }
 }

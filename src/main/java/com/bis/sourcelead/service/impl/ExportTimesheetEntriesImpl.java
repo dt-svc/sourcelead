@@ -36,17 +36,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.beans.TimesheetHours;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
-import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -54,6 +53,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -138,6 +138,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	@Autowired
 	private ProjectsService projectsService;
 	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 	
 	@Autowired
 	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
@@ -165,7 +167,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		
 		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
 		Submission_Status submissionStatus = sah.getSubmissionStatus();
-		String submissionStatusStr = submissionStatus.getValue();
+		String submissionStatusStr = submissionStatus.getValue().toUpperCase();
+		
 		int count = 9;
 		//int lastRow = 0;
 	     Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
@@ -448,9 +451,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getProjectMemberCandidteId(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
 						 if(projectMember.getMasterCandidateId() != null) {
 							 if(projectMember.getMasterCandidateId().getLastName() != null) {
-							     file = new File(fileName.append(projectMember.getMasterCandidateId().getFirstName()).append(projectMember.getMasterCandidateId().getLastName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString()); 
+							     file = new File(fileName.append(orgLocations.getOrgLocationName()).append(projectMember.getMasterCandidateId().getLastName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString()); 
 							 }else {
-								 file = new File(fileName.append(projectMember.getMasterCandidateId().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
+								 file = new File(fileName.append(orgLocations.getOrgLocationName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
 							 }
 						 }
 						FileOutputStream fos = new FileOutputStream(file);
@@ -734,7 +737,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
-		    		 String  k = entry.getKey();
+		    		 String  k = entry.getKey(); 
 		    		 String  v = entry.getValue();
 				        Date weekStartDate;
 				        Date weekEndDate;
@@ -784,7 +787,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
              PdfPTable table = new PdfPTable(headers.length);
             com.itextpdf.text.Font font = new com.itextpdf.text.Font(FontFamily.HELVETICA, 14, com.itextpdf.text.Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
-	        cell1.setColspan(12);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
 	        
@@ -811,7 +814,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        java.util.List<String[]> timesheetApproval = new ArrayList<>();
 	        for(ProjectMembers proMembers : freshProjectMembers){
 	        	document =  prepareHeadres(orgLocations,proMembers,file);
-	        	timesheetApproval.add(prepareTimesheetPdfToArray(proMembers,client,timesheetFrequency,stage,user,startDate,endDate, proMembers));
+	        	timesheetApproval.add(prepareTimesheetPdfToArray(proMembers,client,timesheetFrequency,stage,user,startDate,endDate, proMembers,orgLocations));
 	        }
 	        
 	        for (String[] reqArray: timesheetApproval) {
@@ -852,7 +855,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return headerListString;
 	}
 
-	private String[] prepareTimesheetPdfToArray(ProjectMembers projMembers,String client,String timesheetFrequency,String Stage,User user,Date startDate, Date endDate, ProjectMembers projectMember) throws Exception {
+	private String[] prepareTimesheetPdfToArray(ProjectMembers projMembers,String client,String timesheetFrequency,String Stage,User user,Date startDate, Date endDate, ProjectMembers projectMember, OrgLocations loginOrgLocations) throws Exception {
 		String[] timeSheetApprovalArray;
 			Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
@@ -886,10 +889,12 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			String[] headersList = Constants.TIMESHEET_APPROVAL_MECHANISM_HEADER;
 			String [] timeSheetApproval = getHeaders(headersList,StDateAndEndDate.toString());
 			timeSheetApprovalArray =new String[timeSheetApproval.length];
-			
-	if(projectMember.getProjectMemberCandidteId().getFirstName() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getFirstName())){
-		timeSheetApprovalArray[0] = projMembers.getProjectMemberCandidteId().getFirstName();
-	}else{
+			StringBuilder name = new StringBuilder();		
+	if(projectMember.getProjectMemberCandidteId().getLastName() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getLastName())){
+		timeSheetApprovalArray[0] = name.append(projMembers.getProjectMemberCandidteId().getFirstName()).append(" ").append(projMembers.getProjectMemberCandidteId().getLastName()).toString();
+	}else if(projectMember.getProjectMemberCandidteId().getFirstName() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getFirstName())){
+		timeSheetApprovalArray[0] = name.append(projMembers.getProjectMemberCandidteId().getFirstName()).toString();
+	}else {
 		timeSheetApprovalArray[0] = "--";
 	}
 	if(projectMember.getProjectMemberCandidteId().getEmail() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getEmail())){
@@ -902,11 +907,24 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}else{
 		timeSheetApprovalArray[2] = "--";
 	}
-	if(projMembers.getProjectMemberCandidteId().getOrgRelationId() != null){
-		timeSheetApprovalArray[3] = projMembers.getProjectMemberCandidteId().getOrgRelationId().getResponderLocationId().getOrgLocationName();
-	}else{
-		timeSheetApprovalArray[3] = "--";
+	
+	if(null != projectMember.getProjectClientsId().getOrgRelationId()){
+   	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+  	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(orgRelations.getResponderLocationId() != null){
+					timeSheetApprovalArray[3] = orgRelations.getResponderLocationId().getOrgLocationName();
+					
+				}
+			}
+			if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+				if(orgRelations.getLocationId() != null){
+					timeSheetApprovalArray[3] = orgRelations.getLocationId().getOrgLocationName();
+				}
+			}
+    }else{
+	   timeSheetApprovalArray[3] = "--";
 	}
+
 	if(projMembers.getProjects().getProjectName() != null){
 		timeSheetApprovalArray[4] = projMembers.getProjects().getProjectName();
 	}else{
@@ -1066,7 +1084,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int column = 0;
 		for (ProjectMembers proMembers : projectMembers.getData()) {
 			writeRow = createExcelsheet.createRow(column + 5);
-			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations.getId(), proMembers);
+			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations, proMembers);
 			column++;
 		}
 		// output the file using file output stream.
@@ -1083,10 +1101,18 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return file;
 	}
 	// creating excel sheet data here depending upon input frequency.
-	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,Long locationsId, ProjectMembers projectMember) throws Exception {
+	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,OrgLocations loginOrg, ProjectMembers projectMember) throws Exception {
 		Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
-		if (projectMember.getProjectMemberCandidteId().getFirstName() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getFirstName())) {
-			writeRow.createCell(0).setCellValue(projectMember.getProjectMemberCandidteId().getFirstName());
+		
+		StringBuilder fullname=	new StringBuilder();
+        if(projectMember.getProjectMemberCandidteId().getLastName() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getLastName()))
+        {
+    	   writeRow.createCell(0).setCellValue(fullname.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
+			createExcelsheet.setColumnWidth(0, 10000);
+        }
+		else
+    	   {
+    	   writeRow.createCell(0).setCellValue(projectMember.getProjectMemberCandidteId().getFirstName());
 			createExcelsheet.setColumnWidth(0, 10000);
 		}
 		if (projectMember.getProjectMemberCandidteId().getEmail() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getEmail())) {
@@ -1097,11 +1123,22 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			writeRow.createCell(2).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			createExcelsheet.setColumnWidth(2, 10000);
 		}
+		if(projectMember.getProjectClientsId().getOrgRelationId()!= null){
+		   	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+		  	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == loginOrg.getId().longValue()){
+						if(orgRelations.getResponderLocationId() != null){
+							writeRow.createCell(3).setCellValue( orgRelations.getResponderLocationId().getOrgLocationName());
+							createExcelsheet.setColumnWidth(3, 10000);
+						}
+					}
+					if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrg.getId().longValue()){
+						if(orgRelations.getLocationId() != null){
+							writeRow.createCell(3).setCellValue( orgRelations.getLocationId().getOrgLocationName());
+							createExcelsheet.setColumnWidth(3, 10000);
+						}
+					}
+		          }
 		
-		if (projMembers.getProjects().getOrgRelationId() != null) {
-			writeRow.createCell(3).setCellValue(projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName());
-			createExcelsheet.setColumnWidth(3, 10000);
-		}
 		if (projMembers.getProjects().getProjectName() != null) {
 			writeRow.createCell(4).setCellValue(projMembers.getProjects().getProjectName());
 			createExcelsheet.setColumnWidth(4, 10000);
@@ -1110,7 +1147,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate,projects.getOrgLocationsId().getDateFormat());
 				Float totalHours = 0f;
 				Float estimatedTotalHours = 0f;
-				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),locationsId, startDate, endDate);
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),orgLocations.getId(), startDate, endDate);
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 						for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {

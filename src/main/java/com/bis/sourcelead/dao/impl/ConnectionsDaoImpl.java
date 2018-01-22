@@ -21,12 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ConnectionsDao;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.model.ConnectionBean;
 import com.bis.sourcelead.util.CommonUtil;
+import com.sun.jersey.api.representation.Form;
 
 @Repository
 public class ConnectionsDaoImpl implements ConnectionsDao {
@@ -102,14 +104,9 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					+ " where connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus ";
 		}
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.getNameByValue(connectionStatus).toString()).setCacheable(true).list();
-		
-		if(connectionsList.size() >= offset){
-			if(connectionsList.size() > offset + 6){
-				connectionsList = connectionsList.subList(offset, (offset+6));
-			}else{
-				connectionsList = connectionsList.subList(offset, (  offset + (connectionsList.size() - offset)));
-			}
+			int countValue = 0;
 			if(connectionsList != null && connectionsList.size() > 0) {
+				
 				for(Connections connections : connectionsList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
@@ -133,45 +130,61 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userIdValue = connections.getFromUser().getId();
 					}
 					userRoleDTO.setUserName(userName.toString());
-					UserRole userRole = (UserRole) session.createQuery(query2).setLong("userId", userIdValue).setCacheable(true).uniqueResult();
-					if(userRole != null) {
+					List<UserRole> userRoles = new ArrayList<>();
+					userRoles = session.createQuery(query2).setLong("userId", userIdValue).setCacheable(true).list();
+					if(userRoles.size() != 0) {
 						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.fromUser.id <> :loginUserId and connections.toUser.id <> :loginUserId and connections.connectionStatus = :connectionStatus";
 						Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", userId).setLong("userId", userIdValue).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 						userRoleDTO.setMutualCount(count);
-						userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
+						userRoleDTO.setUserRoleName(userRoles.get(0).getRoles().getDisplayName());
 						String userOrgName = null;
-						if(userRole.getRoles().getId() == 10) {
+						if(userRoles.get(0).getRoles().getId() == 10) {
 							userOrgName = "";
-						}else if(userRole.getRoles().getId() == 11) {
+						}else if(userRoles.get(0).getRoles().getId() == 11) {
 							userOrgName = "";
 						}else {
-							userOrgName = userRole.getOrgLocations().getOrgLocationName();
+							userOrgName = userRoles.get(0).getOrgLocations().getOrgLocationName();
 						}
+						countValue++;
 						userRoleDTO.setOrgName(userOrgName);
-						userRoleDTO.setUserId(userRole.getUser().getId());
-						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
-						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+						userRoleDTO.setUserId(userRoles.get(0).getUser().getId());
+						userRoleDTO.setUserCode(userRoles.get(0).getUser().getUserCode());
+						userRoleDTO.setFileUrl(userRoles.get(0).getUser().getFileUrl());
+						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
+					if(status.equals("sent")) {
+						userRoleDTOList.get(0).setSentCount(countValue);
+					}else {
+						userRoleDTOList.get(0).setReceivedCount(countValue);
+					}
+					
 				}
+				if(userRoleDTOList.size() >= offset){
+					if(userRoleDTOList.size() > offset + 18){
+						userRoleDTOList = userRoleDTOList.subList(offset, (offset+18));
+					}else{
+						userRoleDTOList = userRoleDTOList.subList(offset, (  offset + (userRoleDTOList.size() - offset)));
+					}
+				return  userRoleDTOList;
+			}else{
+				return  null;
 			}
-			return  userRoleDTOList;
-		}else{
-			return  userRoleDTOList;
-		}
+			}else {
+				return null;
+			}
+			
 	}
 
 
 	@Override
 	@Transactional
-	public int deleteConnection(User user, User toUser, String status) {
+	public int deleteConnection(String connectionUUID) {
 		logger.debug("deleteConnection");
 		Session session = this.sessionFactory.getCurrentSession();
 		Query qry = null;
-		String queryGet = "from Connections connections where (connections.fromUser.id = :fromUser and connections.toUser.id = :toUser) or (connections.fromUser.id = :toUser and connections.toUser.id = :fromUser) and connections.connectionStatus = :status";
-		Connections connections = (Connections) session.createQuery(queryGet).setLong("fromUser", user.getId()).setLong("toUser", toUser.getId()).setString("status", ConnectionStatus.getNameByValue(status).toString()).uniqueResult();
-		String query = "delete from Connections connections where connections.id =:id";
-    	qry = session.createQuery(query).setLong("id", connections.getId());
+		String query = "delete from Connections connections where connections.connectionUID = :connectionUID";
+    	qry = session.createQuery(query).setString("connectionUID", connectionUUID);
     	int i = qry.executeUpdate();
     	return i;
 	}
@@ -207,13 +220,8 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		String query = "from Connections connections left join fetch connections.fromUser left join fetch connections.toUser "
 					+ " where (connections.toUser.id =:userId or connections.fromUser.id =:userId1) and connections.connectionStatus = :connectionStatus ";
 		List<Connections> connectionsList = session.createQuery(query.toString()).setLong("userId", id).setLong("userId1", id).setString("connectionStatus", ConnectionStatus.getNameByValue(status).toString()).setCacheable(true).list();
-		if(connectionsList.size() >= offset){
-			if(connectionsList.size() > offset + 6){
-				connectionsList = connectionsList.subList(offset, (offset+6));
-			}else{
-				connectionsList = connectionsList.subList(offset, (  offset + (connectionsList.size() - offset)));
-			}
 			if(connectionsList != null && connectionsList.size() > 0) {
+				int countValue = 0;
 				for(Connections connections : connectionsList) {
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
@@ -238,36 +246,45 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTO.setUserName(userName.toString());
 						userId = connections.getToUser().getId();
 					}
-					UserRole userRole = null;
-					userRole = (UserRole) session.createQuery(queryRole).setLong("userId", userId).setCacheable(true).uniqueResult();
-					if(userRole != null) {
+					List<UserRole> userRoles = new ArrayList<>();
+					userRoles = session.createQuery(queryRole).setLong("userId", userId).setCacheable(true).list();
+					if(userRoles.size() != 0) {
 						String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.fromUser.id <> :loginUserId and connections.toUser.id <> :loginUserId and connections.connectionStatus = :connectionStatus";
 						Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", id).setLong("userId", userId).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
 						userRoleDTO.setMutualCount(count);
-						userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
+						userRoleDTO.setUserRoleName(userRoles.get(0).getRoles().getDisplayName());
 						String userOrgName = null;
-						if(userRole.getRoles().getId() == 10) {
+						if(userRoles.get(0).getRoles().getId() == 10) {
 							userOrgName = "";
-						}else if(userRole.getRoles().getId() == 11) {
+						}else if(userRoles.get(0).getRoles().getId() == 11) {
 							userOrgName = "";
 						}else {
-							userOrgName = userRole.getOrgLocations().getOrgLocationName();
+							userOrgName = userRoles.get(0).getOrgLocations().getOrgLocationName();
 						}
+						countValue++;
 						userRoleDTO.setOrgName(userOrgName);
-						userRoleDTO.setUserId(userRole.getUser().getId());
-						userRoleDTO.setUserCode(userRole.getUser().getUserCode());
-						userRoleDTO.setFileUrl(userRole.getUser().getFileUrl());
+						userRoleDTO.setUserId(userRoles.get(0).getUser().getId());
+						userRoleDTO.setUserCode(userRoles.get(0).getUser().getUserCode());
+						userRoleDTO.setFileUrl(userRoles.get(0).getUser().getFileUrl());
+						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
+					userRoleDTOList.get(0).setConnectedCount(countValue);
 				}
+				if(userRoleDTOList.size() >= offset){
+					if(userRoleDTOList.size() > offset + 18){
+						userRoleDTOList = userRoleDTOList.subList(offset, (offset+18));
+					}else{
+						userRoleDTOList = userRoleDTOList.subList(offset, (  offset + (userRoleDTOList.size() - offset)));
+					}
+				return  userRoleDTOList;
+			}else{
+				return  null;
 			}
-			return  userRoleDTOList;
-		}else{
-			return  userRoleDTOList;
-		}
-		
+			}else {
+				return null;
+			}
 	}
-
 
 	@Override
 	@Transactional
@@ -275,6 +292,53 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select count(connections) from Connections connections where connections.toUser.id = :userId and connections.connectionStatus = :connectionStatus";
 		Long count = (Long) session.createQuery(query).setLong("userId", id).setString("connectionStatus", ConnectionStatus.REQUEST_SENT.toString()).uniqueResult();
+		return count;
+	}
+
+
+	@Override
+	@Transactional
+	public Connections getConnectionByUUID(String connectionUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Connections> connections = new ArrayList<Connections>();
+		logger.debug("getConnectionByUUID start");
+		connections = session
+				.createQuery(
+						"from Connections connections left join fetch connections.fromUser left join fetch connections.toUser where connections.connectionUID = :connectionUUID")
+				.setString("connectionUUID", connectionUUID).setCacheable(true).list();
+		logger.debug("getConnectionByUUID end");
+		if (connections.size() > 0) {
+			return connections.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public Connections updateConnection(Connections connections) throws Exception {
+		logger.debug("updateConnection");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (connections != null) {
+				session.update(connections);
+			}
+			logger.debug("connections updated Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CONNECTIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+		}
+		return connections;
+	}
+
+
+	@Override
+	@Transactional
+	public Long checkUserInContacts(Long fromUid, Long toUid) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(referContacts) from ReferContacts referContacts where referContacts.referFromUser.id = :fromUid and referContacts.contactUser.id = :toUid";
+		Long count = (Long) session.createQuery(query).setLong("fromUid", fromUid).setLong("toUid", toUid).uniqueResult();
 		return count;
 	}
 

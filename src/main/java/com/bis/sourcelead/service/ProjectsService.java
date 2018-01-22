@@ -26,6 +26,8 @@ public interface ProjectsService {
 		
 		List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 		
+		List<Projects> getAllProjectByOrgLocationsId(Long orgLocationId) throws Exception;
+		
 		List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
@@ -121,6 +123,10 @@ public interface ProjectsService {
 		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
 		ResponseList<ProjectsDTO> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole,Long candidateId) throws Exception;
+		
+		List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
+		
+		Projects makeInternalProjectAsClientProject(Projects projects,Long orgRelationId,Long clientOrgLocationId,OrgLocations loginOrgLocation) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

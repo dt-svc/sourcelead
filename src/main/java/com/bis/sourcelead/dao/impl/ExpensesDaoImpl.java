@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 @SuppressWarnings("rawtypes")
 @Repository
@@ -133,14 +134,16 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where projects.id IN( Select pm.projects.id from ProjectMembers pm where pm.masterCandidateId.id = :masterCandidateId and pm.projectClientsId.orgLocationsId = :locationId) and  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
 		params.put("masterCandidateId",masterCandidateId);
+		  params.put("locationId", orgloc.getId());
 		
 		
 		String countFrom = "";
 		if(length>0) {
-			countFrom = "Select count(*) from Expenses expenses   where  expenses.projectMembers.masterCandidateId.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
+			countFrom = "Select count(*) from Expenses expenses   where  expenses.projectMembers.projects.id IN( Select pm.projects.id from ProjectMembers pm where pm.masterCandidateId.id = :masterCandidateId and pm.projectClientsId.orgLocationsId = :locationId) and  expenses.projectMembers.masterCandidateId.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
 		   params.put("masterCandidateId",masterCandidateId);
+		   params.put("locationId", orgloc.getId());
 		}
 		
 		Query query = session.createQuery(from);
@@ -160,6 +163,11 @@ public class ExpensesDaoImpl implements ExpensesDao {
 				query.setParameter( str, (Date) params.get(str) );
 				if(countQuery != null)
 				countQuery.setParameter(str, (Date) params.get(str));
+			}
+			if(str.equalsIgnoreCase("locationId")){
+				query.setLong( str, (Long) params.get(str) );
+				if(countQuery != null)
+				countQuery.setLong(str, (Long) params.get(str));
 			}
 			if(str.equalsIgnoreCase("endDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
@@ -253,6 +261,15 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		return expense;
 	}
 
+	@Override
+	@Transactional
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession(); 
+		String query = "from Expenses  expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where projects.id = :projectId and mc.id = :masterCandidateId ";  
+		List<Expenses> expenses = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId", projectId).list();
+		return expenses;
+	}
+	
 	@Override
 	@Transactional
 	public List getExpensesByProjectMemberId(Long projectMemberId,String invoiceType) {

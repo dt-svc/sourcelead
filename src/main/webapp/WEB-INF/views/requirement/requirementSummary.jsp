@@ -583,7 +583,8 @@ function updateReuqirementStatus(status){
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
           			   }
-          			sideBar(requirementId)
+          			$("#selector11").fadeOut(3000);
+          			sideBar(requirementId);
              			msgFadein();
                	 }
             }
@@ -654,10 +655,11 @@ function updateReuqirementStatusReject(status){
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
           			   }
+          			$("#selector11").fadeOut(3000);
           			$("#rejectRequirementAlert").empty();
           			$(".project_inn_mask").fadeOut(200);
           			$(".remove_user_pop").hide();
-          			sideBar(requirementId)
+          			sideBar(requirementId);
              			msgFadein();
                	 }
             }
@@ -1280,7 +1282,7 @@ function reqNotes(requirementId){
          success :function(data) {
 		var output = "";
 	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
-    	var json = JSON.parse(data);
+	    	var json = JSON.parse(data);
 	    output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
 	    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
      	for(var i=0;i<json.length;i++){
@@ -1323,12 +1325,14 @@ function reqNotes(requirementId){
     	}
      }
 	}else{
+		
      var output ="";
      output = output+"   <div class='dataTables_empty'>"; 
 	 output = output+"  </div> ";
 }
 	output  = output + '              </div>';
 	output  = output + '        </div>';
+	
 	$("#clientNotesListDiv").empty(); 
     $("#clientNotesListDiv").append(output);
  },
@@ -1909,7 +1913,7 @@ function clientSideBar(candidateId,recScore){
 		         		}
 			             
 			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
-			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+json.experienceYears+' Year(s) '+experienceMonths+'</span></li>';
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+json.experienceYears+' Year(s) '+json.experienceMonths+' Month(s)</span></li>';
               		       }else{
                 		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
               		       }

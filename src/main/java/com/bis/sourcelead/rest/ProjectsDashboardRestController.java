@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,6 +46,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.GenericDao;
+import com.bis.sourcelead.dto.ClientOrgRelationsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -60,6 +60,7 @@ import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -72,7 +73,6 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -247,7 +247,7 @@ public class ProjectsDashboardRestController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 
-				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "projectMode", "projectDate", "client","status"};
+				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "projectDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
 				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {
@@ -275,7 +275,7 @@ public class ProjectsDashboardRestController {
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		   
+		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
 		   SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT);
 			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocations.getId());
 			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
@@ -300,6 +300,34 @@ public class ProjectsDashboardRestController {
 				 	}
 				 }
 			 }
+			 
+			 List<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId());
+				List<OrgRelations> clientList = new ArrayList<>();
+				if(clientsList != null & clientsList.size() > 0) {
+					for(OrgRelations orgRelations : clientsList) {
+						OrgLocations clientOrgLoc = null;
+						if(orgRelations.getLocationId().getId().equals(loginOrgLocations.getId())) {
+							clientOrgLoc = orgRelations.getResponderLocationId();
+						}else {
+							clientOrgLoc = orgRelations.getLocationId();
+						}
+						
+						if(StringUtils.isNotBlank(clientOrgLoc.getOrg().getOrgType()) && clientOrgLoc.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+							ClientOrgRelationsDTO clientDTO = new ClientOrgRelationsDTO();
+							clientDTO.setOrgRelationId(orgRelations.getId());
+							if(orgRelations.getLocationId().getId().equals(loginOrgLocations.getId())) {
+								clientDTO.setOrgLocationId(orgRelations.getResponderLocationId().getId());
+								clientDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+							}else {
+								clientDTO.setOrgLocationId(orgRelations.getLocationId().getId());
+								clientDTO.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+							}
+							clientsDTOList.add(clientDTO);
+						}
+						
+					}
+				}
+				ProjectDetails.setClientsList(clientsDTOList);
 		   
 		   return ProjectDetails;
 	  }

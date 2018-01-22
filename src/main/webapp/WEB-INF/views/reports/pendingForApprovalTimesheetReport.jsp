@@ -34,7 +34,7 @@ function reloadFunction(){
       <div class="pull-left">
         <h2>Pending for Approval</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Pending for Approval</a></div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard </a>&raquo; Pending for Approval</div>
     </section>
 
     <div class="ReqRepHead clearfix">
@@ -71,14 +71,14 @@ function reloadFunction(){
                 <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
                 <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
-              <button type="button" class="btn btn-primary btn-sm" onclick="getMissingTimesheetReports();"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getPendingForApprovalTimesheetReports();"><i class="fa fa-search"></i></button>
             </div>
           </div>
       </div>
 
         </div>
      <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getMissingTimesheetReports();">Run</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPendingForApprovalTimesheetReports();">Run</button>
 		</div>
       <div class="col-md-1 noPad">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
@@ -153,13 +153,45 @@ function getPendingForApprovalTimesheetReports(){
 		       for (var i=0; i<data.length; i++)
    				{
 		    	   var report = data[i];
+		    	   var employeName="";
+	        		  if(report.employeName != null && report.employeName != '' && report.employeName != 'undefined'){
+	        			  employeName = report.employeName;
+	        		  }else{
+	        			  employeName = "--";
+	        		  }
+	        		  if(report.employeType != null && report.employeType != '' && report.employeType != 'undefined'){
+	        			  employeType = report.employeType;
+	        		  }else{
+	        			  employeType = "--";
+	        		  }
+	        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+	        			  projectName = report.projectName;
+	        		  }else{
+	        			  projectName = "--";
+	        		  }
+	        		  if(report.frequency != null && report.frequency != '' && report.frequency != 'undefined'){
+	        			  frequency = report.frequency;
+	        		  }else{
+	        			  frequency = "--";
+	        		  }
+	        		  if(report.managerName != null && report.managerName != '' && report.managerName != 'undefined'){
+	        			  managerName = report.managerName;
+	        		  }else{
+	        			  managerName = "--";
+	        		  }
+	        		  if(report.dueDays != null && report.dueDays != '' && report.dueDays != 'undefined'){
+	        			  dueDays = report.dueDays;
+	        		  }else{
+	        			  dueDays = "--";
+	        		  }
+		    	   
 		    	  result = result	+ '<tr>';
-				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+report.employeName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.employeType+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.projectName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+report.frequency+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.managerName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+report.dueDays+'  Days</div></td>';
+				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeName+'</div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+managerName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
    				}
 		        result = result +'</tbody>';

@@ -600,7 +600,7 @@
 							
 					<div class="row">		
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
-						<h5>Description</h5>
+						<h5>Description<span class="text-danger">&nbsp;*</span></h5>
 						<textarea id="txtEditor" name="leavePolicyDescription"   
 						value="" field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>

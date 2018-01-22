@@ -2,11 +2,17 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.Employees;
+
 public class DataMigrationDTO extends CommonDTO {
 
 	private String staticPath;
 	
 	private String uploadType;
+	
+	private String headerPosition;
+	
+	private String timesheetMode;
 
 	private List<FileInfo> fileInfo;
 
@@ -81,6 +87,16 @@ public class DataMigrationDTO extends CommonDTO {
 	private String experienceLevel;
 	
 	private String applicationFrom;
+	
+	private String fileURL;
+	
+	private String fileContentType;
+	
+	private String fileName;
+	
+	private String projectClientID;
+	
+	private String docFile;
 
 	/*Timesheets*/
 	
@@ -97,10 +113,82 @@ public class DataMigrationDTO extends CommonDTO {
 	private String week3;
 	private String week4;
 	private String week5;
+	private String sun;
+	private String mon;
+	private String tue;
+	private String wed;
+	private String thu;
+	private String fri;
+	private String sat;
+	private List<String> days;
 	private String totalHours;
 	private String billableHours;
 	private String nonBillableHours;
-	private String weeekComments;
+	private String weekComments;
+	private String monthYear;
+	private String timeFrequencyType;
+	
+	/*Asset Uploads Start*/
+	
+	private String sno;
+	
+	private String make;
+	
+	private String model;
+	
+	private String name;
+	
+	private String memory;
+	
+	private String cpu;
+	
+	private String harddisk;
+	
+	private String monitor;
+	
+	private String category;
+	
+	private String workingStatus;
+	
+	private String shiftAEmp;
+	
+	private String shiftBEmp;
+	
+	private List<FileInfo> attachmentUpload;
+	
+	private List<FileInfo> uploadBtndskAUpload;
+	
+	private List<FileInfo> uploadBtndskBUpload;
+	
+	private String fileUrl;
+	
+	private String shiftAFileContentType;
+	
+	private String shiftAFileUrl;
+	
+	private String shiftAFileName;
+	
+	private String shiftBFileContentType;
+	
+	private String shiftBFileUrl;
+	
+	private String shiftBFileName;
+	
+	private List<Employees> employeesList;
+	
+	private String shiftAEmpName;
+	
+	private String shiftBEmpName;
+	
+	private String categoryName;
+	
+	private String categoryId;
+	
+	private String shiftAEmployee;
+	
+	private String shiftBEmployee;
+	
+	/*Asset Uploads End*/
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -212,6 +300,70 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setWeek5(String week5) {
 		this.week5 = week5;
 	}
+	public String getSun() {
+		return sun;
+	}
+
+	public void setSun(String sun) {
+		this.sun = sun;
+	}
+
+	public String getMon() {
+		return mon;
+	}
+
+	public void setMon(String mon) {
+		this.mon = mon;
+	}
+
+	public String getTue() {
+		return tue;
+	}
+
+	public void setTue(String tue) {
+		this.tue = tue;
+	}
+
+	public String getWed() {
+		return wed;
+	}
+
+	public void setWed(String wed) {
+		this.wed = wed;
+	}
+
+	public String getThu() {
+		return thu;
+	}
+
+	public void setThu(String thu) {
+		this.thu = thu;
+	}
+
+	public String getFri() {
+		return fri;
+	}
+
+	public void setFri(String fri) {
+		this.fri = fri;
+	}
+
+	public String getSat() {
+		return sat;
+	}
+
+	public void setSat(String sat) {
+		this.sat = sat;
+	}
+	
+
+	public List<String> getDays() {
+		return days;
+	}
+
+	public void setDays(List<String> days) {
+		this.days = days;
+	}
 
 	public String getBillableHours() {
 		return billableHours;
@@ -228,29 +380,30 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setNonBillableHours(String nonBillableHours) {
 		this.nonBillableHours = nonBillableHours;
 	}
-
-	public String getWeeekComments() {
-		return weeekComments;
+	public String getMonthYear() {
+		return monthYear;
 	}
 
-	public void setWeeekComments(String weeekComments) {
-		this.weeekComments = weeekComments;
+	public void setMonthYear(String monthYear) {
+		this.monthYear = monthYear;
+	}
+	public String getWeekComments() {
+		return weekComments;
+	}
+	
+	public String getTimeFrequencyType() {
+		return timeFrequencyType;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void setTimeFrequencyType(String timeFrequencyType) {
+		this.timeFrequencyType = timeFrequencyType;
+	}
+
+	public void setWeekComments(String weekComments) {
+		this.weekComments = weekComments;
+	}
+
 	/*Timesheets*/
-	
 	
 	public String getStaticPath() {
 		return staticPath;
@@ -266,6 +419,26 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setUploadType(String uploadType) {
 		this.uploadType = uploadType;
+	}
+
+	public String getHeaderPosition()
+	{
+		return headerPosition;
+	}
+
+	public void setHeaderPosition(String headerPosition)
+	{
+		this.headerPosition = headerPosition;
+	}
+
+	public String getTimesheetMode()
+	{
+		return timesheetMode;
+	}
+
+	public void setTimesheetMode(String timesheetMode)
+	{
+		this.timesheetMode = timesheetMode;
 	}
 
 	public List<FileInfo> getFileInfo() {
@@ -574,6 +747,288 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setApplicationFrom(String applicationFrom)
 	{
 		this.applicationFrom = applicationFrom;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public String getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(String projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(String docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public String getSno() {
+		return sno;
+	}
+
+	public void setSno(String sno) {
+		this.sno = sno;
+	}
+
+	public String getMake() {
+		return make;
+	}
+
+	public void setMake(String make) {
+		this.make = make;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getMemory() {
+		return memory;
+	}
+
+	public void setMemory(String memory) {
+		this.memory = memory;
+	}
+
+	public String getCpu() {
+		return cpu;
+	}
+
+	public void setCpu(String cpu) {
+		this.cpu = cpu;
+	}
+
+	public String getHarddisk() {
+		return harddisk;
+	}
+
+	public void setHarddisk(String harddisk) {
+		this.harddisk = harddisk;
+	}
+
+	public String getMonitor() {
+		return monitor;
+	}
+
+	public void setMonitor(String monitor) {
+		this.monitor = monitor;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getWorkingStatus() {
+		return workingStatus;
+	}
+
+	public void setWorkingStatus(String workingStatus) {
+		this.workingStatus = workingStatus;
+	}
+
+	public String getShiftAEmp() {
+		return shiftAEmp;
+	}
+
+	public void setShiftAEmp(String shiftAEmp) {
+		this.shiftAEmp = shiftAEmp;
+	}
+
+	public String getShiftBEmp() {
+		return shiftBEmp;
+	}
+
+	public void setShiftBEmp(String shiftBEmp) {
+		this.shiftBEmp = shiftBEmp;
+	}
+
+	public List<FileInfo> getAttachmentUpload() {
+		return attachmentUpload;
+	}
+
+	public void setAttachmentUpload(List<FileInfo> attachmentUpload) {
+		this.attachmentUpload = attachmentUpload;
+	}
+
+	public List<FileInfo> getUploadBtndskAUpload() {
+		return uploadBtndskAUpload;
+	}
+
+	public void setUploadBtndskAUpload(List<FileInfo> uploadBtndskAUpload) {
+		this.uploadBtndskAUpload = uploadBtndskAUpload;
+	}
+
+	public List<FileInfo> getUploadBtndskBUpload() {
+		return uploadBtndskBUpload;
+	}
+
+	public void setUploadBtndskBUpload(List<FileInfo> uploadBtndskBUpload) {
+		this.uploadBtndskBUpload = uploadBtndskBUpload;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public String getShiftAFileContentType() {
+		return shiftAFileContentType;
+	}
+
+	public void setShiftAFileContentType(String shiftAFileContentType) {
+		this.shiftAFileContentType = shiftAFileContentType;
+	}
+
+	public String getShiftAFileUrl() {
+		return shiftAFileUrl;
+	}
+
+	public void setShiftAFileUrl(String shiftAFileUrl) {
+		this.shiftAFileUrl = shiftAFileUrl;
+	}
+
+	public String getShiftAFileName() {
+		return shiftAFileName;
+	}
+
+	public void setShiftAFileName(String shiftAFileName) {
+		this.shiftAFileName = shiftAFileName;
+	}
+
+	public String getShiftBFileContentType() {
+		return shiftBFileContentType;
+	}
+
+	public void setShiftBFileContentType(String shiftBFileContentType) {
+		this.shiftBFileContentType = shiftBFileContentType;
+	}
+
+	public String getShiftBFileUrl() {
+		return shiftBFileUrl;
+	}
+
+	public void setShiftBFileUrl(String shiftBFileUrl) {
+		this.shiftBFileUrl = shiftBFileUrl;
+	}
+
+	public String getShiftBFileName() {
+		return shiftBFileName;
+	}
+
+	public void setShiftBFileName(String shiftBFileName) {
+		this.shiftBFileName = shiftBFileName;
+	}
+
+	public List<Employees> getEmployeesList() {
+		return employeesList;
+	}
+
+	public void setEmployeesList(List<Employees> employeesList) {
+		this.employeesList = employeesList;
+	}
+
+	public String getShiftAEmpName() {
+		return shiftAEmpName;
+	}
+
+	public void setShiftAEmpName(String shiftAEmpName) {
+		this.shiftAEmpName = shiftAEmpName;
+	}
+
+	public String getShiftBEmpName() {
+		return shiftBEmpName;
+	}
+
+	public void setShiftBEmpName(String shiftBEmpName) {
+		this.shiftBEmpName = shiftBEmpName;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public String getShiftAEmployee() {
+		return shiftAEmployee;
+	}
+
+	public void setShiftAEmployee(String shiftAEmployee) {
+		this.shiftAEmployee = shiftAEmployee;
+	}
+
+	public String getShiftBEmployee() {
+		return shiftBEmployee;
+	}
+
+	public void setShiftBEmployee(String shiftBEmployee) {
+		this.shiftBEmployee = shiftBEmployee;
 	}
 
 	
