@@ -102,6 +102,12 @@ function getConnectionsList(type){
 			offset = $("#orgOffset").val();
     	}
 		if(type === "manual"){
+			localStorage.setItem("sentCount", 0);
+			
+			localStorage.setItem("receivedCount", 0);
+			
+			localStorage.setItem("connectedCount", 0);
+			
 			$("#mutualConnList").hide();
 			$("#mutualConnList").empty();
 			$("#findConnectionListId").empty();
