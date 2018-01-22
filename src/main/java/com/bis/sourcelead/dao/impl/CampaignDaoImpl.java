@@ -400,7 +400,6 @@ public class CampaignDaoImpl implements CampaignDao {
 				
 				
 			}
-		System.out.println(sb.toString());	
 		String listName = sb.toString();
 		if(!"".equalsIgnoreCase(listName)) {
 			listName = listName.substring(0, listName.length() - 1);

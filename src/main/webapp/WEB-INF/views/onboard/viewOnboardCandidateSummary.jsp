@@ -414,14 +414,15 @@ function getTemplateContractsDocumentsDetails(){
 							
 							
 							if(report.documentStatus == 'NEW'){
-								result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+								result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
 							}
 							else if(report.documentStatus == 'PENDING'){
-								result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+								result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
 							}else if(report.documentStatus == 'ACCEPTED'){
-								result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+								result = result +'<i class="fa fa-check text-success permission"></i></a>';
 								
 							}
+							result = result +'    </div>                                                                 ';
 							result = result +'    </div>                                                                 ';
 			        	}
 		        	}else{
@@ -469,14 +470,15 @@ function getTemplateFormsDocumentsDetails(){
 							}
 							
 							if(report.documentStatus == 'NEW'){
-								result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+								result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
 							}
 							else if(report.documentStatus == 'PENDING'){
-								result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+								result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
 							}else if(report.documentStatus == 'ACCEPTED'){
-								result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+								result = result +'<i class="fa fa-check text-success permission"></i></a>';
 								
 							}
+							result = result +'    </div>';
 							result = result +'    </div>';
 			        	}
 		        	}else{
@@ -516,14 +518,15 @@ function getTemplatePolicyDocumentsDetails(){
 								result = result +'      <a target="_blank" href=\"'+report.fileURL+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 								result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
 								if(report.documentStatus == 'NEW'){
-									result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+									result = result +'<i class="fa fa-arrow-right text-info permission"></i></a>';
 								}
 								else if(report.documentStatus == 'PENDING'){
-									result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+									result = result +'<i class="fa fa-clock-o text-info permission"></i></a>';
 								}else if(report.documentStatus == 'ACCEPTED'){
-									result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+									result = result +'<i class="fa fa-check text-success permission"></i></a>';
 									
 								}
+								result = result +'    </div>                                                                 ';
 								result = result +'    </div>                                                                 ';
 				        	}
 		        	}else{
