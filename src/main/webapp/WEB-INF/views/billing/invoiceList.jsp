@@ -754,6 +754,7 @@ function invoicePagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "action",
+                        "sortable": false,
                         "render": function ( data, type, report, meta ) {
                         	var result = "";
                         	result = result +'         <td> ';
@@ -811,7 +812,7 @@ function invoicePagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[4,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
