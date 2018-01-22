@@ -51,6 +51,9 @@ public class Connections {
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "CONNECTION_UID")
+	private String connectionUID;
+	
 	@Column(name = "CREATED_DATE")
 	private Timestamp createdDate;
 	
@@ -99,6 +102,12 @@ public class Connections {
 	}
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+	public String getConnectionUID() {
+		return connectionUID;
+	}
+	public void setConnectionUID(String connectionUID) {
+		this.connectionUID = connectionUID;
 	}
 	
 	
