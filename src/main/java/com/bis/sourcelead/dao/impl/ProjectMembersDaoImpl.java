@@ -1369,6 +1369,22 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<ProjectMembers> pmList = null;
+		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
+        	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+ 					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
+ 					+ "where pm.projectClientsId = :projectClientsId");
+        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+	        	 projectsMembersList.addAll(pmList);
+	      
+	        return projectsMembersList;
+	}
 	
 	
 }

@@ -90,5 +90,7 @@ public interface TimesheetSubmissionsService {
 	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception;
 	
 	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception;
+	
+	public List<TimesheetSubmissions> getTimesheetSubmissionsByProjectIdAndMasterCandidateId(Long  projectId,Long masterCandidateId) throws Exception;
 
 }

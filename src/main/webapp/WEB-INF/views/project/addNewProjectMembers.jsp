@@ -83,7 +83,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
@@ -272,6 +272,14 @@ function emptyRecordsList(){
 		        		
 		        		for(var i=0; i<json.length; i++){
 		        			var opt = json[i];
+		        			var startDateStr = '';
+		        			
+		        			if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		        				startDateStr = opt.startDateStr;
+		        			}else{
+		        				startDateStr = opt.projectAssignedDateStr;
+		        			}
+		        			
 		        			
 	        			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
 		      				var tbl = document.getElementById("addRequestTbl");
@@ -321,11 +329,10 @@ function emptyRecordsList(){
 		      				}
 		      				
 		      				
-		      				
 		      				var startDateText = "";
 		    				var cell3 = row.insertCell(3);
 		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate"  >';
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberStartDate" value="'+startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate"  >';
 		    				startDateText = startDateText+'</div>';
 		    				cell3.innerHTML = startDateText;
 		    				
@@ -359,7 +366,7 @@ function emptyRecordsList(){
 		    									dateFormat : finalDateFormatAssignEmpUpdate,
 		    									changeMonth: true,
 		    									changeYear: true, 
-		    									minDate:opt.startDateStr,
+		    									minDate:startDateStr,
 		    									maxDate:opt.endDateStr,
 		    							        onClose : function(selected) {
 		    							        	var dt = $(this).datepicker('getDate', '+1d');
@@ -390,7 +397,7 @@ function emptyRecordsList(){
 		    									dateFormat : finalDateFormatAssignEmpUpdate,
 		    									changeMonth: true,
 		    									changeYear: true, 
-		    									minDate:opt.startDateStr,
+		    									minDate:startDateStr,
 		    									 
 		    							        onClose : function(selected) {
 		    							        	var dt = $(this).datepicker('getDate', '+1d');

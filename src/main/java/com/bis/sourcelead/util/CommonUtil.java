@@ -1752,5 +1752,36 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocations.getId());
 	return sections;
 	}
+	
+	
+	
+	
+	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
+		Integer generatedIdcount = 0;
+		Long number = 1L;
+		String requirementId = null;
+	
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(projects.getProjectShortCode());
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Integer checkNumber = tasksDao.getProjectTasksCountByProjectId(projects.getId()); 
+		if (checkNumber == null) {
+			requirementId = number.toString();
+		} else {
+			Integer reqId = checkNumber + 1;
+			requirementId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+		
+		return sbuilder.append(convetredRequirementsId).toString();
+	}
 		
 }
