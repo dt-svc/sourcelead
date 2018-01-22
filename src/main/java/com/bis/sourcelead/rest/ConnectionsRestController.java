@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
@@ -181,11 +182,16 @@ public class ConnectionsRestController {
 				if(connections != null){
 					connections.setConnectionStatus(ConnectionStatus.CONNECTED);
 					connectionsService.updateConnection(connections);
-					Long count = connectionsService.checkUserInContacts(connections.getFromUser().getId(),connections.getToUser().getId());
-					if(count == 0) {
+					ReferContacts refercontacts1 = referContactsService.getReferContactsByFromUserIdAndToUserId(connections.getFromUser().getId(),connections.getToUser().getId());
+					if(refercontacts1 == null) {
 						referContactsService.saveuserContactsFromConnections(connections.getFromUser(),connections.getToUser());
+					}
+					
+					ReferContacts refercontacts2 = referContactsService.getReferContactsByFromUserIdAndToUserId(connections.getToUser().getId(),connections.getFromUser().getId());
+					if(refercontacts2 == null) {
 						referContactsService.saveuserContactsFromConnections(connections.getToUser(),connections.getFromUser());
 					}
+					
 					result = "success";
 				}
 				
