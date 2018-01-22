@@ -534,7 +534,7 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
 								result = result  +'<div class="col-md-12 mt">' ;
 							    
-							    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();" class="form-control">';
+							    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onchange="validateExpenseCategoryType();"  class="form-control">';
 							    
 								result = result  +'</div>';
 								result = result  +'</div>';

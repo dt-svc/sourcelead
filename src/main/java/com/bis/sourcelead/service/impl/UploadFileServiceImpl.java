@@ -1320,8 +1320,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		HSSFRow roleRow = rolehidden.createRow(0);
 		for (int i = 0, length= rolesList.length; i < length; i++) {
 		   String name = rolesList[i];
+		   try {
 		   HSSFCell cell = roleRow.createCell(i);
 		   cell.setCellValue(name);
+		   }catch (Exception e) {
+		    }
 		 }
 		 Name namedRoleCel = wb.createName();
 		 namedRoleCel.setNameName("rolehidden");
@@ -1338,8 +1341,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			HSSFRow userRow = userhidden.createRow(0);
 			for (int i = 0, length= usersList.length; i < length; i++) {
 			   String name = usersList[i];
+			   try {
 			   HSSFCell cell = userRow.createCell(i);
 			   cell.setCellValue(name);
+			   }catch (Exception e) {
+				
+			    }
 			 }
 			 Name namedUserCel = wb.createName();
 			 namedUserCel.setNameName("userhidden");
