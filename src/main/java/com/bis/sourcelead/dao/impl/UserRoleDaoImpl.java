@@ -934,6 +934,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 							userRoleDTO.setUserState("connected");
 						}
 						userRoleDTO.setCreatedDate(connections.getCreatedDate());
+						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 					}
 					StringBuilder userName = new StringBuilder();
 					if(userRole.getUser().getLastName() != null) {
