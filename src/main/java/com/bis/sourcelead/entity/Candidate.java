@@ -50,11 +50,11 @@ public class Candidate implements Serializable{
     private MasterCandidate masterCandidateId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="PARENT_CANDIDATE_ID")        
     private Candidate parentCandidateId;
 	
-
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;

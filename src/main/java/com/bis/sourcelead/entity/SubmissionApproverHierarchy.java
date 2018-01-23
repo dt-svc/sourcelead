@@ -64,7 +64,7 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Column(name = "BILLING_STATUS")
     private String billingStatus;
 	
-	/*@Column(name = "INVOICE_DATE")
+	@Column(name = "INVOICE_DATE")
 	private Date invoiceDate;
 	
 	@Column(name = "BILL_DATE")
@@ -79,7 +79,7 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "BILL_ID", nullable = false)
-	private Invoice billId;*/
+	private Invoice billId;
 	
 	@Column(name = "FREQUENCY_START_DATE")
     private Date frequencyStartDate;
@@ -526,15 +526,15 @@ public class SubmissionApproverHierarchy implements  Serializable{
 		this.billingStatus = billingStatus;
 	}
 
-/*	public Date getInvoiceDate() {
+	public Date getInvoiceDate() {
 		return invoiceDate;
 	}
 
 	public void setInvoiceDate(Date invoiceDate) {
 		this.invoiceDate = invoiceDate;
-	}*/
+	}
 
-	/*public Date getBillDate() {
+	public Date getBillDate() {
 		return billDate;
 	}
 
@@ -557,7 +557,7 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	public void setBillId(Invoice billId) {
 		this.billId = billId;
 	}
-*/
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

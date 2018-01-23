@@ -153,7 +153,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 //		    		 }
 //		    	 }
 		    	 
-			 emails = toRecipantsEmailsList.substring(0,otherEmails.length()-1).toString();
+			 emails = toRecipantsEmailsList.toString();
 //		    	 emails = emails.substring(0,emails.length()-1);
 		}
 		
@@ -657,7 +657,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 					CampaignList campaignList = campaignService.getRecipientListByListId(listId,1);
 					if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 						String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
-						toRecipantsEmailsList.append(reciEmail).append(",");
+						toRecipantsEmailsList.append(reciEmail);
 					}
 				}
 				
@@ -675,7 +675,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 //			    			 toRecipantsEmailsList.append(",");
 //			    		 }
 //			    	 }
-			    	 emails = toRecipantsEmailsList.substring(0,otherEmails.length()-1).toString();
+			    	 emails = toRecipantsEmailsList.toString();
 //			    	 emails = emails.substring(0,emails.length()-1);
 			}
 			

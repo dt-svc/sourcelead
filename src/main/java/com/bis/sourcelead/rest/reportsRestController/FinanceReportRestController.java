@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
+import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -257,6 +258,20 @@ public class FinanceReportRestController {
 	public ModelAndView missingInvoiceReportJsp(HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			if(null != clientList){
+				for (OrgRelations orgRelations : clientList) {
+					String orgName = "";
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getLocationId().getOrgLocationName();
+					}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					}
+					orgRelations.setOrgName(orgName);
+				}
+			}
+		 model.addObject("clientList", clientList);
 		 model.setViewName("reports/missingInvoiceReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
@@ -287,6 +302,22 @@ public class FinanceReportRestController {
 	public ModelAndView missingBillReportJsp(HttpServletRequest request) throws Exception
 	{
 		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+//			if(null != vendorList){
+//				for (OrgRelations orgRelations : vendorList) {
+//					String orgName = "";
+//					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+//						orgName = orgRelations.getLocationId().getOrgLocationName();
+//					}
+//					if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+//						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+//					}
+//					orgRelations.setOrgName(orgName);
+//				}
+//			}
+			
+		 model.addObject("vendorList", vendorList);
 		 model.setViewName("reports/missingBillReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
@@ -305,5 +336,36 @@ public class FinanceReportRestController {
 		 model.setViewName("reports/missingBillGraphReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
+	}
+	
+	/**
+	 * Missing invoice Data
+	 * 
+	 * @param missingInvoiceDto
+	 * @param request
+	 * @param response
+	 * @return ResponseList<MissingInvoiceDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/missingInvoiceData", "/rest/missingInvoiceData" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<MissingInvoiceDTO> missingInvoiceData(MissingInvoiceDTO missingInvoiceDto,HttpServletRequest request, HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return financeService.getMissingInvoiceData(missingInvoiceDto, orgLocation);
+	}
+	
+	
+	/**
+	 * Missing invoice Data Graph
+	 * 
+	 * @param missingInvoiceDto
+	 * @param request
+	 * @param response
+	 * @return ResponseList<MissingInvoiceDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/missingInvoiceDataGraph", "/rest/missingInvoiceDataGraph" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<MissingInvoiceDTO> missingInvoiceDataGraph(MissingInvoiceDTO missingInvoiceDto,HttpServletRequest request, HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return financeService.getMissingInvoiceGraphData(missingInvoiceDto, orgLocation);
 	}
 }

@@ -1291,7 +1291,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("getCandidateByParentCandidateId start");
-		candidate = session.createQuery("from Candidate candidate  left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setCacheable(true).setLong( "parentCandidateId", parentCandidateId ).setCacheable(true).list();
+		candidate = session.createQuery("from Candidate candidate  left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setCacheable(false).setLong( "parentCandidateId", parentCandidateId ).setCacheable(false).list();
 		logger.debug("getCandidateByParentCandidateId end");
 		if (candidate.size() > 0) {
 			return candidate.get(0);

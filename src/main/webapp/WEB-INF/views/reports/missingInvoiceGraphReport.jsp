@@ -11,7 +11,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	missingInvoiceDataGraph();
 });
 </script>
 
@@ -271,52 +271,52 @@ var config = {
 	],
 	"dataProvider": [
 		{
-			"date": "2017-01",
+			"date": "2017-01-12",
 			"column-1": "100",
 		},
 		{
-			"date": "2017-02",
+			"date": "2017-02-10",
 			"column-1": "80",
 		},
 		{
-			"date": "2017-03",
+			"date": "2017-03-10",
 			"column-1": "60",
 		},
 		{
-			"date": "2017-04",
+			"date": "2017-04-10",
 			"column-1": "40",
 		},
 		{
-			"date": "2017-05",
+			"date": "2017-05-10",
 			"column-1": "30",
 		},
 		{
-			"date": "2017-06",
+			"date": "2017-06-10",
 			"column-1": "20",
 		},
 		{
-			"date": "2017-07",
+			"date": "2017-07-10",
 			"column-1": "10",
 		},
 		{
-			"date": "2017-08",
+			"date": "2017-08-10",
 			"column-1": "5",
 		},
 		{
-			"date": "2017-09",
+			"date": "2017-09-10",
 			"column-1": "15",
 		},
 		{
-			"date": "2017-10",
+			"date": "2017-10-10",
 			"column-1": "25",
 		},
 		{
-			"date": "2017-11",
+			"date": "2017-11-10",
 			"column-1": "35",
 		},
 		{
-			"date": "2017-12",
-			"column-1": "45",
+			"date": "2017-12-10",
+			"column-1": "450",
 		}
 	]
 }
@@ -856,6 +856,18 @@ var config = {
 	]
 }
 );
+</script>
+
+<script>
+function missingInvoiceDataGraph(){
+	     var invoiceType = 'invoice';
+		 var sourceleadUrl ='${sourceleadUrl}';
+	
+	       $.post(sourceleadUrl+"/missingInvoiceDataGraph?"+tokenParamName+"="+tokenValue+"&invoiceType"+invoiceType, function(json) {
+	    	
+	    	prepareapagingGraph(json);
+		});  
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
