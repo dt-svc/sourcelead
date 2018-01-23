@@ -17,11 +17,12 @@
         </section>
         
 		<!-- Timesheet -->
-
+<div class="success_pop" id="selector10" style="display: none;">
+<i class="fa fa-check-circle"></i><span id="expMsgDiv"></span>
+</div>
 <div class="timesheet_out">
 
 <div class="project_wrap">
-
 	<div class="timesheet_head candidateHead">
 	  <ul class="mt10">
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE')">
@@ -297,6 +298,12 @@ var validationSettings = {
 </script>
 <script>
 function storeExpensesCategory(){
+	var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
 	  if ($('#expenseCategory_form').validate(false, validationSettings)) {
 		  
 			 var frm = $('#expenseCategory_form').serializeFormJSON();
@@ -318,13 +325,18 @@ function storeExpensesCategory(){
 				               			 location.replace(sourceleadUrl+"/errorPage");
 				               		}
 				               		else{
-				               		    $("#popUpDiv").removeClass("edit-details-active");
-			            				$("#eduMsgDiv").html("Success!! New Expenses Category added");
+				               			closePopup();
+				   		        	  $("#popUpDiv").removeClass("edit-details-active");
+				   					 $("#selector10").removeAttr("style");
+				   					 $("#selector10").css({display : "block"	});
+				               		  $("#expMsgDiv").html("Success!! New Expenses Category added");
 			            				expenseCategoryList();
 				               			eduMsgFadeinFunction();
+				               			
 							    	}
 				                 }   
 				      }, 
+				     
 		    });
 			return true; 
 		} else {
@@ -339,7 +351,13 @@ $('body').on('blur', '#expenseCategory_form', function() {
 
 </script>            
           
-
+<script>
+	function eduMsgFadeinFunction() {
+		$("#selector10").fadeIn(200);
+		$('#selector10').delay(2000).fadeOut('slow');
+	}
+</script>
+<!-- End -->
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -437,6 +455,13 @@ function getTaxPercentageValue(){
 
 <script>
 function deleteExpenseCategory(categoryId){
+	var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+	
 	  $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
@@ -448,7 +473,13 @@ function deleteExpenseCategory(categoryId){
 			    	}else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
-             			expenseCategoryList()
+             			 closePopup();
+	   		        	  $("#popUpDiv").removeClass("edit-details-active");
+	   					 $("#selector10").removeAttr("style");
+	   					 $("#selector10").css({display : "block"	});
+	               		  $("#expMsgDiv").html("Success!! Expenses Category Deleted");
+           				expenseCategoryList();
+           				eduMsgFadeinFunction();
 			    	}
                } 
         },
@@ -460,11 +491,24 @@ function deleteExpenseCategory(categoryId){
 
 <script>
 function reActiveExpenseCategory(categoryId){
+	var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
 	  $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
           success :function(data) {
-        	  expenseCategoryList()
+        	  closePopup();
+	        	  $("#popUpDiv").removeClass("edit-details-active");
+				 $("#selector10").removeAttr("style");
+				 $("#selector10").css({display : "block"	});
+       		  $("#expMsgDiv").html("Success!! Expenses Category Re-Activated");
+				expenseCategoryList();
+				eduMsgFadeinFunction();
+        	 
         },
           
      }); 
@@ -654,6 +698,12 @@ function reActiveExpenseCategory(categoryId){
  
  <script type="text/javascript">
 	function updateExpenseCategory(categoryId) {
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
 		
 		if ($('#expenseCategory_form').validate(false,
 				validationSettings)) {
@@ -669,8 +719,14 @@ function reActiveExpenseCategory(categoryId){
 						url : sourceleadUrl
 								+ "/upDateExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&categoryId="+categoryId,
 						success : function(result) {
-							closePopup();
-							expenseCategoryList();
+							 closePopup();
+		   		        	  $("#popUpDiv").removeClass("edit-details-active");
+		   					 $("#selector10").removeAttr("style");
+		   					 $("#selector10").css({display : "block"	});
+		               		  $("#expMsgDiv").html("Success!! Expenses Category details updated");
+	            				expenseCategoryList();
+	            				eduMsgFadeinFunction();
+							
 						},
 					});
 			return true;
