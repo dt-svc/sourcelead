@@ -4,12 +4,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +22,6 @@ import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.InvoiceDataDao;
-import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -63,7 +61,13 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InvoiceData> invoiceDetailsList = null;
 		ResponseList<InvoiceData> response = new ResponseList<>();
-		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId";
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(invoiceDetailsDTO.getSortColumn())) {
+			qry = " order by ind."+ invoiceDetailsDTO.getSortColumn() +" "+invoiceDetailsDTO.getSortOrder();
+		}
+		
+		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId"+qry;
 		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId";
 		
 		if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
