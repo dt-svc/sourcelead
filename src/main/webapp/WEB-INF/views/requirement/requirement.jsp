@@ -213,7 +213,12 @@ $(document).ready(function () {
 				</c:if>
 				<c:if test="${!empty requirementUUID}">
 				<li class="current"><a href="<c:url value='${appPath}/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
-				<li><a href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
+				<c:if test="${requirementStatus == 'OPEN'}">
+					<li><a href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
+				</c:if>
+				<c:if test="${requirementStatus != 'OPEN'}">
+					<li><a href="#tab-b" data-toggle="tab" id="jobRelease">Job Release</a></li>
+				</c:if>
 				</c:if>
 				<div class="clearfix mb"></div>
 			  </ul>
@@ -1405,13 +1410,14 @@ $(document).ready(function () {
         	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
          <c:if test="${requirement.requirementSubmissionStatus == 'OPEN'}">
-       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+       			  <!-- <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >  -->  
+       			   <input type="button" value="Save & Continue" id="save" onclick="storeRequirement('saveAndContinue');" class="btn btn-primary ml" >  
          </c:if>
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
-       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+       			  <!-- <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >  -->  
+       			   <input type="button" value="Save & Continue" id="save" onclick="storeRequirement('saveAndContinue');" class="btn btn-primary ml" >  
          </c:if>
          
-         <input type="button" value="Save And Continue" id="saveAndContinue" onclick="storeRequirement('saveAndContiune');" class="btn btn-primary ml" >   
          
         <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'" class="btn btn-default ml">
       </div>
@@ -1643,15 +1649,13 @@ function validate_fileupload(fileName)
 		 }
 		 
 			 var jobSaveType = '';
-			 if(saveType = "saveAndContinue"){
+			 if(saveType == 'saveAndContinue'){
 				 jobSaveType = 'save';
 			 }else{
 				 jobSaveType = saveType;
 			 }
 			 
-			
-			 
-		    if ($('#requirement_form').validate(false, validationSettings)){ 
+		     if ($('#requirement_form').validate(false, validationSettings)){ 
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -1690,7 +1694,7 @@ function validate_fileupload(fileName)
 			return true;
 		   }else{ 
 				return false;
-		 }  
+		 }   
 	} 
 	
 	$('body').on('blur', '#requirement_form', function() {
