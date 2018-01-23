@@ -223,7 +223,7 @@ public class RequirementRestController {
 				StringBuilder reqUpdateMs5 = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
 			}
-			return "success";
+			return requirement.getRequirementUUID();
 		}
 		else
 			return "MissingData";
