@@ -1671,25 +1671,16 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<div class="share">';
 				    var sourceleadShareUrl = sourceleadUrl ;
 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
-					alert("Before temp "+temp)
-					var temp = json.jobTitle;
-					temp.replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase();
-					alert("After temp "+temp)
-					if (jobTitle.startsWith("-")){
+					var jobTitle = json.jobTitle;
+					jobTitle = jobTitle.replace(/[^a-zA-Z0-9]+/gi, '-').toLowerCase();
+					 if (jobTitle.startsWith("-")){
 						jobTitle = jobTitle.substring(1);
 				    }
 					if (jobTitle.endsWith("-")){
 						jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
-				    }
-					requirement.setUrl(jobTitle);
+				    } 
 					
-					
-					
-					
-					
-					
-					
-				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+json.jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+json.jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
