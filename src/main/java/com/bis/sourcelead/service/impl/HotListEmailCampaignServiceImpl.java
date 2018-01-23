@@ -134,7 +134,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 				CampaignList campaignList = campaignService.getRecipientListByListId(listId,0);
 				if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 					String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
-					toRecipantsEmailsList.append(reciEmail);
+					toRecipantsEmailsList.append(reciEmail).append(",");
 				}
 			}			
 			
@@ -154,7 +154,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 //		    	 }
 		    	 
 		    	 emails = toRecipantsEmailsList.toString();
-//		    	 emails = emails.substring(0,emails.length()-1);
+		    	 emails = emails.substring(0,emails.length()-1);
 		}
 		
 		String otherRecilistId = null;
@@ -367,6 +367,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getHotListCandidatesTable(String[] hotlistedCandidates,HotListEmailCampaignDTO hotListEmailCampaignDTO, String signature) throws Exception{
 		
 		String tempHTML = "";
+		String bodyText = "";
+		String bText = hotListEmailCampaignDTO.getBodytext();
+		if(StringUtils.isNotBlank(bText)) {
+			bodyText = bText.replace("\"","\'");
+		}
 		
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		
@@ -388,7 +393,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "    <br></td>";
 		tempHTML = tempHTML + "   </tr>";
 		tempHTML = tempHTML + "  <tr>";
-		tempHTML = tempHTML + "<td align='left'><p>"+hotListEmailCampaignDTO.getBodytext()+"</p></td>";
+		tempHTML = tempHTML + "<td align='left'><p>"+bodyText+"</p></td>";
 		tempHTML = tempHTML + "    </tr>";
 		tempHTML = tempHTML + "   </tbody>";
 		tempHTML = tempHTML + "  </table>";
@@ -652,7 +657,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 					CampaignList campaignList = campaignService.getRecipientListByListId(listId,1);
 					if(campaignList.getCampaignRecipient() !=null && campaignList.getCampaignRecipient().size() >0) {
 						String reciEmail = getToReciEmails(campaignList.getCampaignRecipient());
-						toRecipantsEmailsList.append(reciEmail);
+						toRecipantsEmailsList.append(reciEmail).append(",");
 					}
 				}
 				
@@ -672,7 +677,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 //			    	 }
 			    	 
 			    	 emails = toRecipantsEmailsList.toString();
-//			    	 emails = emails.substring(0,emails.length()-1);
+			    	 emails = emails.substring(0,emails.length()-1);
 			}
 			
 			String otherReciListId = null; 
@@ -736,8 +741,8 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 			 }
 			String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 			 String UUID = SourceLeadRandomCodeHelper.generateUUID();
-			 String str =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
-			 String table = str.replace("\"","\'");
+			 String table =  getJobListCampaignsTable(campaignJobs,UUID,jobListEmailCampaignDTO,signature); 
+//			 String table = str.replace("\"","\'");
 			 String createCampaignRes = campaignUtil.createCampaign(jobListEmailCampaignDTO, table,otherReciListId);
 			 if (createCampaignRes != null) {
 					JSONObject jObject = new JSONObject(createCampaignRes);
@@ -861,8 +866,8 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getToReciEmails(Set<CampaignRecipient> campaignRecipient)
 	{
 		List<String> reciList = new ArrayList<>();
-		for(String email : reciList) {
-			reciList.add(email);
+		for(CampaignRecipient campaignEmail : campaignRecipient) {
+			reciList.add(campaignEmail.getEmail());
 		}
 		String reciEmail = String.join(",", reciList);
 		return reciEmail;
@@ -872,6 +877,11 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 	private String getJobListCampaignsTable(String[] campaignJobs, String UUID, JobListEmailCampaignDTO jobListEmailCampaignDTO, String signature) throws Exception
 	{
 		String tempHTML = "";
+		String bodyText = "";
+		String bText = jobListEmailCampaignDTO.getBodytext();
+		if(StringUtils.isNotBlank(bText)) {
+			bodyText = bText.replace("\"","\'");
+		}
 		String imageUrl = sourceleadUrl+"/resources/images/logo-sourceld.png";
 		tempHTML = tempHTML + "<table width='650px' cellpadding='0' cellspacing='0' style='background-color:#fff; font-family:verdana, arial; margin:0px;'>";
 		tempHTML = tempHTML + " <tr>";
@@ -891,7 +901,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML +     " <br></td>";
 		tempHTML = tempHTML +   " </tr>";
 		tempHTML = tempHTML +   "<tr>";
-		tempHTML = tempHTML +    " <td align='left'  class='text-left'><p class='text-left'>"+jobListEmailCampaignDTO.getBodytext()+"</p></td>";
+		tempHTML = tempHTML +    " <td align='left'  class='text-left'><p class='text-left'>"+bodyText+"</p></td>";
 		tempHTML = tempHTML +   "  </tr>";
 		tempHTML = tempHTML +    "</tbody>";
 		tempHTML = tempHTML + "</table>";

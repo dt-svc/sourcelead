@@ -114,4 +114,6 @@ public interface ProjectMembersDao {
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 
 	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception;
 }

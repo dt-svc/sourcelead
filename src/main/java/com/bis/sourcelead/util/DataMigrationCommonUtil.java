@@ -317,21 +317,12 @@ public class DataMigrationCommonUtil {
 				if(!dataMigrationDTOJsonCopy.getString("manager").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
 					User approverList = userService.getTabAccessOwnersByOrgLocationIdEmailAndTabId(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("manager"), Long.valueOf(Constants.TAB_REQUIREMENT));
 					if(approverList == null){
-						errorSet.put("manager", dataMigrationDTOJsonCopy.getString("manager")+" is invalid manager Email");
+						dataMigrationDTOJsonCopy.put("manager", user.getId().toString());
 					}else{
 						dataMigrationDTOJsonCopy.put("manager", approverList.getId().toString());
 					}
 				}else if(dataMigrationDTOJsonCopy.getString("manager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
 					dataMigrationDTOJsonCopy.put("manager", user.getId().toString());
-				}
-				
-				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
-					OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("selectClient"));
-					if(orgRelations == null){
-						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
-					}else{
-						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
-					}
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("selectContact").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectContact"))) {
@@ -383,6 +374,15 @@ public class DataMigrationCommonUtil {
 						}else{
 							errorSet.put("clientSubmissionForm", dataMigrationDTOJsonCopy.getString("clientSubmissionForm")+" is invalid Submission Form");
 						}
+					}
+				}
+				
+				if(!dataMigrationDTOJsonCopy.getString("selectClient").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("selectClient"))) {
+					OrgRelations orgRelations = orgRelationsService.getClientsByOrgLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("selectClient"));
+					if(orgRelations == null){
+						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
+					}else{
+						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
 					}
 				}
 				
@@ -498,6 +498,9 @@ public class DataMigrationCommonUtil {
 						String url = staticPath + "/" + orgLocation.getOrg().getId() + "/"
 								+ orgLocation.getId() + "/" + "requirementDocuments" + "/"
 								+ fileName + time + extenstion;
+						String fileUrl = "/slead-static" + "/" + orgLocation.getOrg().getId() + "/"
+								+ orgLocation.getId() + "/" + "requirementDocuments" + "/"
+								+ fileName + time + extenstion;
 						File dest = new File(url);
 						/*if (!dest.exists()) {
 							dest.mkdirs();
@@ -505,7 +508,7 @@ public class DataMigrationCommonUtil {
 							
 						try {
 							Files.copy(source.toPath(), dest.toPath());
-							dataMigrationDTOJsonCopy.put("fileURL", dest.toPath());
+							dataMigrationDTOJsonCopy.put("fileURL", fileUrl);
 							dataMigrationDTOJsonCopy.put("fileName", fileName + time + extenstion);
 						} catch (IOException e) {
 							errorSet.put("docFile", "Error occured while importing attachemt");

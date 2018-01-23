@@ -361,32 +361,32 @@ function filterStatus() {
 		        		if(opt.projectEndDateStr != null && opt.projectEndDateStr != ''){
 		        			projectEndDateStr = opt.projectEndDateStr;
 		        		}else{
-		        			projectEndDateStr = "--"
+		        			projectEndDateStr = "-----";
 		        		}
 		        		
 		        		
 		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
 		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
 		        		}else{
-		        			billRate = "-----"
+		        			billRate = "-----";
 		        		}
 		        		
 		        		if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
 		        			payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
 		        		}else{
-		        			payRate = "-----"
+		        			payRate = "-----";
 		        		}
 		        		
 		        		if(opt.estimatedHours != null && opt.estimatedHours != 'undefined' && opt.estimatedHours != ''){
 		        			estimatedHours = opt.estimatedHours;
 		        		}else{
-		        			estimatedHours = "------"
+		        			estimatedHours = "------";
 		        		}
 		        		
 		        		if(opt.estimatedBudget != null && opt.estimatedBudget != 'undefined' && opt.estimatedBudget != ''){
 		        			estimatedBudget = opt.estimatedBudget;
 		        		}else{
-		        			estimatedBudget = "------"
+		        			estimatedBudget = "------";
 		        		}
 		        		
 		        		result = result + '	 <tr>';
