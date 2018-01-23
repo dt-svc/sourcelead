@@ -168,6 +168,8 @@ public class RequirementDTO extends CommonDTO {
 	private String fileContentType;
 	
 	private String fileName;
+	
+	private List<RequirementLocationsDTO> locationInfo;
 
 	
 	/*
@@ -1292,6 +1294,14 @@ public class RequirementDTO extends CommonDTO {
 	public void setFileName(String fileName)
 	{
 		this.fileName = fileName;
+	}
+
+	public List<RequirementLocationsDTO> getLocationInfo() {
+		return locationInfo;
+	}
+
+	public void setLocationInfo(List<RequirementLocationsDTO> locationInfo) {
+		this.locationInfo = locationInfo;
 	}
 	
 }

@@ -29,6 +29,7 @@
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
+	//addLocationAuto('addlocation','0');
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
@@ -37,6 +38,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 		window.onload = function () {
 			getNoticePeriodList();
+			getJobLocations();
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
@@ -1193,11 +1195,32 @@ $(document).ready(function () {
           </div>
         </div>
       </div>
+      
+      
+        <!-- Locations -->
+        
+          <div class="clearfix">
+		        <div class="col-lg-12">
+		          <h3>Job Locations</h3>
+		        </div>
+		       <div class="col-md-6">
+				 <label class="col-md-12">Job Locations<span class="text-danger paddingLeft">*</span>&nbsp;<i class='fa fa-info-circle' title='Location must be in city,state,country format'></i></label>
+				 <div class="clearfix"></div>
+					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
+		                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
+						        <span class="uploadAttachments"> 
+					              <div id="jobLocationsList"></div>
+						        </span>
+		                      </div>
+		                      </div>
+					
+				</div>
+          </div>
 
        <!-- Internal Details html -->
       <div class="clearfix">
         <div class="col-lg-12">
-          <h3>Internal Details</h3>
+          <h3 class="margin-top0">Internal Details</h3>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12  myForm">
 
@@ -1482,8 +1505,26 @@ $(document).ready(function () {
   </div>
 </section>
 
+<div id="divLocTd1" style="display: none; float: left;">
+    <div class='positionRelative'>
+		 <input type="text"  placeholder="Location" onclick="addLocationAuto('REPLACEROWIDaddlocation','REPLACEROWID','REPLACEROWIDlongitude','REPLACEROWIDlatitude')" class="form-control joblocinput" id="REPLACEROWIDaddlocation" name="locationInfo[REPLACEROWID].locationName"  data-validation="required" field-name="Location" > 
+	     <div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation('REPLACEROWID');"></div>
+	     <input type="hidden"  name="locationInfo[REPLACEROWID].country" id="REPLACEROWIDcountry">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].state" id="REPLACEROWIDstate">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].city" id="REPLACEROWIDcity">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].zipcode" id="REPLACEROWIDzipcode">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].longitude" id="REPLACEROWIDlongitude">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].latitude" id="REPLACEROWIDlatitude">
+	 </div>
+</div>
+
+<div id="divLocTd2" style="display: none; float: left;">
+   <i class="fa fa-times" onclick="removeLocationRow(REPLACEROWID);"></i> 
+</div> 
+
 <script>
 function getCustomDependentField(sectionId){
+	
 	 $.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
@@ -2843,6 +2884,157 @@ function refreshRequirementClientContactList(){
 	if(valueArray[0] != ""){
 		clientContactList(valueArray[0],valueArray[1]);
 	}
+}
+</script>
+
+
+<script>
+function getJobLocations(){
+	var result = "";
+	var addlocation = 'addlocation0'
+	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
+     result = result +"<input type='hidden' id='locationsRowCount' value='1' />";
+	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0'>";
+	 result = result +"<tr id='divAttachmentTsRow0'>";
+	 result = result +"<td>";
+	 result = result +"<div class='positionRelative'>";
+	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="locationInfo[0].locationName">';
+	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation(0);"></div>';
+	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
+	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
+	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
+	 result = result +'<input type="hidden"  name="locationInfo[0].zipcode" id="0zipcode">';
+	 result = result +'<input type="hidden"  name="locationInfo[0].longitude" id="0longitude">';
+	 result = result +'<input type="hidden"  name="locationInfo[0].latitude" id="0latitude">';
+	 result = result +"</td>";
+	 result = result +"</div>";
+	 result = result +"<td><i class='fa fa-plus' id='addLocRow' onclick='addNewLocation()'></i></td>";
+	 result = result +"</tr>";
+	 result = result +"</table>";
+	
+	 $("#jobLocationsList").empty();
+	 $("#jobLocationsList").append(result);
+	 
+	 
+	
+}
+</script>
+
+<script>
+function addNewLocation(){
+	
+	var checkMaxTsRowNum = $("#locationsMaxRowNumber").val();
+	var tbl = document.getElementById("locationTable");
+	var maxRowNum = parseInt($("input[name = 'locationsMaxRowNumber']").val());
+	$("input[name = 'locationsMaxRowNumber']").val(maxRowNum + 1);
+	$("input[id = 'locationsRowCount']").val(maxRowNum + 1);
+	
+	var row = tbl.insertRow(maxRowNum);
+	row.setAttribute("id", "divLocationRow" + maxRowNum);
+	
+	
+	
+	var cell0 = row.insertCell(0);
+	var divDocTypeTdStr = document.getElementById("divLocTd1").innerHTML;
+	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell0.innerHTML = divDocTypeTdStr;
+	
+	var cell2 = row.insertCell(1);
+	var divDocCheckTdStr = document.getElementById("divLocTd2").innerHTML;
+	divDocCheckTdStr = divDocCheckTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell2.innerHTML = divDocCheckTdStr;
+}
+</script>
+
+
+<script>
+function removeLocationRow(rowId){
+	
+	var addedDocumentsRowCount = document.getElementById("locationsRowCount").value;
+	 $("input[id = 'locationsRowCount']").val(parseInt(addedDocumentsRowCount) - 1);
+	 
+	 var documentsRow = document.getElementById("locationsRowCount").value;
+	 
+	 document.getElementById("divLocationRow"+rowId).style.display = 'none';
+	 document.getElementById("divLocationRow"+rowId).value= '';
+	 var  rId = "locationsRowCount"+rowId;
+	  var r = document.getElementById("locationsRowCount").rows[rId];
+     var count = 2*(r.cells.length);
+	    for(i=0;i<=count;i++){
+	        r.deleteCell(0);
+	    } 
+}
+</script>
+
+<script>
+function refreshLocation(rowId){
+	  $("#"+rowId+"addlocation").val('');
+	  $("#"+rowId+"country").val('');
+	  $("#"+rowId+"state").val('');
+	  $("#"+rowId+"city").val('');
+	  $("#"+rowId+"zipcode").val('');
+
+}
+</script>
+
+
+<script>
+function addLocationAuto(locationId,rowId,longtitudeId,latitudeId) {
+	initialize1(locationId,rowId);
+    geolocate1(latitudeId,longtitudeId,rowId);
+}
+function initialize1(locationId,rowId) {
+	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+		types: ['geocode'],
+  
+    });
+   
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+       case "route":
+    	 address.name=place.address_components[i].long_name;
+    	 break;
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+ 
+  $("#"+rowId+"country").val(address.country).change();
+  $("#"+rowId+"state").val(address.state).change();
+  $("#"+rowId+"city").val(address.city).change();
+  $("#"+rowId+"zipcode").val(address.zipcode).change();
+  
+});
+}
+function geolocate1(latitudeId,longtitudeId,rowId) {
+	if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
+            	  $("#"+rowId+"latitude").val(latitudeId);
+            }
+            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
+                  $("#"+rowId+"longitude").val(longtitudeId);
+            }
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
 }
 </script>
 <jsp:include page="../masterFooter.jsp" />

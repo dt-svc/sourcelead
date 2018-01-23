@@ -7876,6 +7876,10 @@ padding-left: 15px !important;
 .uploaded_file.uploaded_wizet {
 min-height: 125px;
 }
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.joblocinput {
+	background-color: #fff; color: #333; border: 1px solid #ddd; width: 350px !important;
+	margin-right: 15px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
