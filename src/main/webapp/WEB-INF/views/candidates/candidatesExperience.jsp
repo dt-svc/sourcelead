@@ -524,7 +524,7 @@ function closeCertificatePopup(){
 								result = result	+ '	               <div class="clearfix mr">';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateEmpId+'" id="candidateEmpId"  name="candidateEmployeeId" >';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-								result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
+								result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Update</button>';
 								result = result + '	               </div>';
 								result = result + '	             </div>';
 								result = result + '	        </form> ';
