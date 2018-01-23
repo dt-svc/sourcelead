@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -105,7 +106,13 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Checks> checksList = null;
 		ResponseList<Checks> response = new ResponseList<>();
-		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(checksDTO.getSortColumn())) {
+			qry = " order by checks."+ checksDTO.getSortColumn() +" "+checksDTO.getSortOrder();
+		}
+		
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId"+qry;
 		String countQuery = "from Checks checks  where checks.orgLocationId.id =:orgLocationId";
 		
 		StringBuilder query1 = new StringBuilder("");
