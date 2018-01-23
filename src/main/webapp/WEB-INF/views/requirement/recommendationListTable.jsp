@@ -8,6 +8,7 @@
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
 
+<div id="popUp" ></div>
 <script>
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
@@ -428,7 +429,7 @@ function compareCandidateCheck(ele) {
 	        compareCandidates[compareCandidates.length] = $(ele).val();
 	    }else{
 		   $(ele).prop('checked', false)
-		   alert("Allowed only 4");
+		   maxAlertMessage();
 	    }
 	} else {
 		var d = [];
@@ -442,6 +443,26 @@ function compareCandidateCheck(ele) {
 		
 		compareCandidates = d;
 	}
+}
+</script>
+
+<script>
+function maxAlertMessage(){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Allowed only 4</p>";
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
 
