@@ -119,9 +119,14 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(invoiceDTO.getSortColumn())) {
+			qry = " order by invoice."+ invoiceDTO.getSortColumn() +" "+invoiceDTO.getSortOrder();
+		}
 
 		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
-		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC"+qry;
 		String countQuery = "";
 		if(invoiceDTO.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
 			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
@@ -163,7 +168,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			}
 			}
 		}
-		Query queryObj = session.createQuery(query + query1.toString() + "  ORDER BY invoice.id DESC");
+		Query queryObj = session.createQuery(query + query1.toString());
 		if (invoiceDTO != null && invoiceDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDTO.getStart());
 			queryObj.setMaxResults(invoiceDTO.getLength());
