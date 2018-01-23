@@ -1703,7 +1703,7 @@ public class TimesheetRestController {
 		            LinkedList<TimeSheetDayEntries> entriesDayList = new LinkedList<>();
 		            if(tsDTO.getTimesheetEntries() !=null && !tsDTO.getTimesheetEntries().isEmpty()){
 		            	for(TimesheetEntriesDTO teDTO : tsDTO.getTimesheetEntries()){
-		            		if(StringUtils.isEmpty(teDTO.getHours()) || (StringUtils.isNotEmpty(teDTO.getHours()) && teDTO.getHours().equalsIgnoreCase("00:00")) || ((teDTO.getTimesheetTaskDTO() == null) || (teDTO.getTimesheetTaskDTO() == null && teDTO.getTimesheetTaskDTO().getId() == null)))
+		            		if(StringUtils.isEmpty(teDTO.getHours()) || ((teDTO.getTimesheetTaskDTO() == null) || (teDTO.getTimesheetTaskDTO() == null && teDTO.getTimesheetTaskDTO().getId() == null)))
 		            			continue;
 		            		   ProjectTasks projectTasks = projectTasksService.getTasksId(teDTO.getTimesheetTaskDTO().getId().toString());
 		            			String taskType = teDTO.getTimesheetTaskDTO().getTaskType();
