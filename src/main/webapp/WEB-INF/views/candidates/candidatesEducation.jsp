@@ -311,7 +311,7 @@ function addEducation(candidateId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -560,7 +560,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	

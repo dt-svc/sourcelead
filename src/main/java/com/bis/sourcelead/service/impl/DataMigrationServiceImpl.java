@@ -276,7 +276,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				if(reqDTO.getCoolingOff() == null || reqDTO.getCoolingOff() == "" || reqDTO.getCoolingOff() == "null"){
 					reqDTO.setCoolingOff(orgLocation.getCoolingOffPeriod());
 				}
-				
+				reqDTO.setImportValue("Y");
 				if(StringUtils.isNotEmpty(reqDTO.getClientSubmissionForm()) && StringUtils.isNotEmpty(reqDTO.getSelectContact()) && StringUtils.isNotEmpty(reqDTO.getSelectClient())){
 					reqDTO.setIsClient("Y");
 					reqDTO.setApplicationFrom(null);

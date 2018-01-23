@@ -187,8 +187,8 @@ function compareRecommendedUsersdiv(data,requirementId){
     
 	$("#candidateCompare").empty();
 	$("#candidateCompare").append(result);
-	prepareCandidateGrid(data,requirementId);
 	prepareCompareCandidateList();
+	prepareCandidateGrid(data,requirementId);
 	
 	$("#compareCandidateList1").chosen();
 	$("#compareCandidateList2").chosen();
@@ -382,21 +382,29 @@ function prepareCandidateGrid(data,requirementId){
 		    	    	$("#profileDiv1").empty();
 // 		    	    	$("#noRecords1").hide();
 		    	    	$("#profileDiv1").append(opt);
+		    	    	$("#compareCandidateList1").val(report.candidateId);
+		    	    	$("#compareCandidateList1").trigger('chosen:update');
 		    	    }
 		    	    if(count==2){
 		    	    	$("#profileDiv2").empty();
 // 		    	    	$("#noRecords2").hide();
 		    	    	$("#profileDiv2").append(opt);
+		    	    	$("#compareCandidateList2").val(report.candidateId);
+		    	    	$("#compareCandidateList2").trigger('chosen:update');
 		    	    }
 		    	    if(count==3){
 		    	    	$("#profileDiv3").empty();
 // 		    	    	$("#noRecords3").hide();
 		    	    	$("#profileDiv3").append(opt);
+		    	    	$("#compareCandidateList3").val(report.candidateId);
+		    	    	$("#compareCandidateList3").trigger('chosen:update');
 		    	    }
 		    	    if(count==4){
 		    	    	$("#profileDiv4").empty();
 // 		    	    	$("#noRecords4").hide();
 		    	    	$("#profileDiv4").append(opt);
+		    	    	$("#compareCandidateList4").val(report.candidateId);
+		    	    	$("#compareCandidateList4").trigger('chosen:update');
 		    	    }
 		 }else{
 			 break;
