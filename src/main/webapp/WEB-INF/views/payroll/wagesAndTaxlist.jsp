@@ -100,6 +100,7 @@ function wagesTaxpagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "fromDate",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		 if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
@@ -112,6 +113,7 @@ function wagesTaxpagination(url){
 	      },{
 	    	  "targets": colIndex++,
               "data": "toDate",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
@@ -137,6 +139,7 @@ function wagesTaxpagination(url){
             }, {
                 "targets": colIndex++,
                 "data": "ssnNumber",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		if(opt.ssnNumber !=null && opt.ssnNumber !='' && opt.ssnNumber !='undefined'){
@@ -161,6 +164,7 @@ function wagesTaxpagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "checkNo",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.checkNo != null && opt.checkNo !='' && opt.checkNo != 'undefined'){
@@ -173,48 +177,56 @@ function wagesTaxpagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "gross",
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	  return '<td><div class="tblminwidth-75">'+opt.gross.toFixed(2)+'</div></td>';
                   }
                 },{
                     "targets": colIndex++,
                     "data": "fwt",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                     	return '<td><div class="tblminwidth-75">'+opt.fwt.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
                       "data": "ssec",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  return ' <td><div class="tblminwidth-75">'+opt.ssec.toFixed(2)+'</div></td>';
                       }
                     },{
                         "targets": colIndex++,
                         "data": "med",
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                         	return '<td><div class="tblminwidth-75">'+opt.med.toFixed(2)+'</div></td>';
                         }
                       },{
                           "targets": colIndex++,
                           "data": "swt",
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                         	 return' <td><div class="tblminwidth-75">'+opt.swt.toFixed(2)+'</div></td>';
                           }
                         },{
                             "targets": colIndex++,
                             "data": "sdiSui",
+                            "sortable": false,
                             "render": function ( data, type, opt, meta ) {
                             	return '<td><div class="tblminwidth-75">'+opt.sdiSui.toFixed(2)+'</div></td>';
                             }
                           },{
                               "targets": colIndex++,
                               "data": "local",
+                              "sortable": false,
                               "render": function ( data, type, opt, meta ) {
                             	  return '<td><div class="tblminwidth-75">'+opt.local.toFixed(2)+'</div></td>';
                               }
                             },{
                                 "targets": colIndex++,
                                 "data": "deds",
+                                "sortable": false,
                                 "render": function ( data, type, opt, meta ) {
                                 	var result = "";
                                 	result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds.toFixed(2)+'</div>';
@@ -224,6 +236,7 @@ function wagesTaxpagination(url){
                               },{
                                   "targets": colIndex++,
                                   "data": "net",
+                                  "sortable": false,
                                   "render": function ( data, type, opt, meta ) {
                                 	 return '<td><div class="tblminwidth-75">'+opt.net.toFixed(2)+'</div></td>';
                                   }
@@ -243,7 +256,7 @@ function wagesTaxpagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[0,'desc']],
+	    	"aaSorting": [[3,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
