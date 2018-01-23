@@ -192,6 +192,7 @@ public class RequirementController {
 	    
 		if(null != requirementUUID && !requirementUUID.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
+			model.addObject("requirementUUID", requirementUUID);
 
 			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
 
