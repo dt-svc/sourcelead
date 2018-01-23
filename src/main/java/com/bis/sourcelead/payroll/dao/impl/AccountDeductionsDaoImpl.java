@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -67,7 +68,13 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AccountDeductions> accountDeductionsList = null;
 		ResponseList<AccountDeductions> response = new ResponseList<>();
-		String query = "from AccountDeductions acd  left join fetch acd.orgLocationId where acd.orgLocationId.id =:orgLocationId";
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(accountDeductionsDTO.getSortColumn())) {
+			qry = " order by acd."+ accountDeductionsDTO.getSortColumn() +" "+accountDeductionsDTO.getSortOrder();
+		}
+		
+		String query = "from AccountDeductions acd  left join fetch acd.orgLocationId where acd.orgLocationId.id =:orgLocationId"+qry;
 		String countQuery = "from AccountDeductions acd  where acd.orgLocationId.id =:orgLocationId";
 		
 		
@@ -148,14 +155,14 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 				}
 				
 			}
-			Collections.sort(accountDeductionsList, new Comparator() {  
-	            @Override  
-	            public int compare(Object obj1, Object obj2) {  
-	            	AccountDeductions accountDeductions1 = (AccountDeductions)obj1;  
-	            	AccountDeductions accountDeductions2 = (AccountDeductions)obj2; 
-	            	return accountDeductions1.getEmployeeName().compareToIgnoreCase(accountDeductions2.getEmployeeName());  
-	            }  
-	        });
+//			Collections.sort(accountDeductionsList, new Comparator() {  
+//	            @Override  
+//	            public int compare(Object obj1, Object obj2) {  
+//	            	AccountDeductions accountDeductions1 = (AccountDeductions)obj1;  
+//	            	AccountDeductions accountDeductions2 = (AccountDeductions)obj2; 
+//	            	return accountDeductions1.getEmployeeName().compareToIgnoreCase(accountDeductions2.getEmployeeName());  
+//	            }  
+//	        });
 			return accountDeductionsList;
 		
 	}

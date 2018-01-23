@@ -153,10 +153,12 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
-					if(status.equals("sent")) {
-						userRoleDTOList.get(0).setSentCount(countValue);
-					}else {
-						userRoleDTOList.get(0).setReceivedCount(countValue);
+					if(userRoleDTOList.size() != 0) {
+						if(status.equals("sent")) {
+							userRoleDTOList.get(0).setSentCount(countValue);
+						}else {
+							userRoleDTOList.get(0).setReceivedCount(countValue);
+						}
 					}
 					
 				}
@@ -269,7 +271,9 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 						userRoleDTOList.add(userRoleDTO);
 					}
-					userRoleDTOList.get(0).setConnectedCount(countValue);
+					if(userRoleDTOList.size() != 0) {
+						userRoleDTOList.get(0).setConnectedCount(countValue);
+					}
 				}
 				if(userRoleDTOList.size() >= offset){
 					if(userRoleDTOList.size() > offset + 18){
