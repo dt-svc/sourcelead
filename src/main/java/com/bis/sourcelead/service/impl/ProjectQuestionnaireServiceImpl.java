@@ -256,7 +256,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			   if(projectMembersList != null && projectMembersList.size() > 0){
 				   teamMembersTable = getTeamMembersTable(projectMembersList);
 			   }else{
-				   teamMembersTable = "-----";
+				   teamMembersTable = "";
 			   }
 			   List<ProjectApproverHierarchy> projectApproverHierarchiesList = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			   if(projectApproverHierarchiesList != null && projectApproverHierarchiesList.size() > 0){

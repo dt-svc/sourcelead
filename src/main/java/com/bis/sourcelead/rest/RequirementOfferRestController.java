@@ -208,6 +208,9 @@ public class RequirementOfferRestController {
 		RequirementOffers  requirementOffers =null;
 		
 		List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(submissionId, orgLocations.getId());
+		for(RequirementOfferHistory offers : offersList) {
+			offers.setSubmissionStatusStr(offers.getSubmissionId().getSubmissionStatus().toString());
+		}
 		return resultJson = commonUtil.toJSON(offersList);
 		
 		/*requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
