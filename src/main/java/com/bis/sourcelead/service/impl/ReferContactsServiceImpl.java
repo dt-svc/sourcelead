@@ -204,17 +204,14 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		if(StringUtils.isNoneBlank(toUser.getFirstName())){
 			referContacts.setFirstName(toUser.getFirstName());
 		}
-		
 		if(StringUtils.isNoneBlank(toUser.getLastName())){
 			referContacts.setLastName(toUser.getLastName());
 		}
-		
+
 		referContacts.setContactUser(toUser);
-		
 		if(StringUtils.isNoneBlank(toUser.getMobilePhone())){
 			referContacts.setContactUserPhone(toUser.getMobilePhone());
 		}
-		
 		referContacts.setReferFromUser(fromUser);
 		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
 		referContacts.setContactUserEmail(toUser.getEmail());

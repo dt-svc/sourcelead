@@ -13,12 +13,11 @@ $(document).ready(function(){
           <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs &nbsp;&nbsp;</a> </h4>
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Current</a></li>
-              <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');" href="#prev-req">Previous</a></li>
+              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Current</a></li>
+              <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">Previous</a></li>
                    <input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
             </ul>
             <div class="tab-content clearfix">
-              <div id="today-req" class="tab-pane fade in active">
                 <div class="db-widget-sm row">
                 <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
@@ -26,6 +25,7 @@ $(document).ready(function(){
                         <p class="info-box-number"><span id="applicantsCount" onclick="loadRequirementApplicants();"></span></p>
                         <p class="info-box-text">Applicants</p>
                       </div>
+                      <div id ="applicantsCountLoading"></div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
@@ -34,6 +34,7 @@ $(document).ready(function(){
                         <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
                         <p class="info-box-text">Submissions</p>
                       </div>
+                      <div id ="submissionsCountLoading"></div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
@@ -42,6 +43,7 @@ $(document).ready(function(){
                         <p class="info-box-number"><span id="interviewsCount" onclick="loadRequirementInterviews();"></span></p>
                         <p class="info-box-text">Interviews</p>
                       </div>
+                      <div id ="interviewsCountLoading"></div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
@@ -50,10 +52,10 @@ $(document).ready(function(){
                         <p class="info-box-number"><span id="offersCount" onclick="loadRequirementOffers();"></span></p>
                         <p class="info-box-text">Offers</p>
                       </div>
+                      <div id ="offersCountLoading"></div>
                     </div>
                   </div>
                 </div>
-              </div>
               
             </div>
           </div>
@@ -89,14 +91,15 @@ function loadRequirementOffers(){
 </script>     
 <script type="text/javascript">
 function requirementSubmissionsCount(daterange){
-	$("#dateActiveTab").val(daterange); 
+	$("#dateActiveTab").val(daterange);
+	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
     var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getRequirementSubmissionsCount?${_csrf.parameterName}=${_csrf.token}&daterange="+daterange, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	 
+		        	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").removeAttr("style");
 		        	 var  submissionsCount = json.submissionCount;
 		        	 var  applicantsCount =json.applicantsCount;
 		        	 var  interviewsCount =json.interviewsCount;

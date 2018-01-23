@@ -42,10 +42,10 @@ window.onload = function () {
  <input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
 	<div class="conneWrapHead clearfix">
 		<ul class="clearfix connection-count">
-			<li class="current"><a href="#" onclick="getConnectionListOnClick()">Find</a></li>
 			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected <i id="connectedCountVal"></i></a></li>
 			<li><a href="${appPath}/loadSentConnections">Sent<i id="sentCountVal"></i></a></li>
 			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received<i id="receivedCountVal"></i></a></li>
+			<li class="current"><a href="#" onclick="getConnectionListOnClick()">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Org" type="text"></span>
 	</div>
@@ -102,6 +102,9 @@ function getConnectionsList(type){
 			offset = $("#orgOffset").val();
     	}
 		if(type === "manual"){
+			localStorage.setItem("sentCount", 0);
+			localStorage.setItem("receivedCount", 0);
+			localStorage.setItem("connectedCount", 0);
 			$("#mutualConnList").hide();
 			$("#mutualConnList").empty();
 			$("#findConnectionListId").empty();
@@ -182,11 +185,12 @@ function getConnectionsList(type){
 	 			}
 	 			if(json.length < 18){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
-	 			}else if(json.length >= 18){
+	 			}else if(json != null && json.length >= 18 && json.length != 0 ){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}
-	   		}else if(type === 'manual' && json.length == 0){
+	   		}else if(type === 'manual' && json == null){
 	   			$('.connHeadText').empty();
+	   			$('#loadMoreDiv').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
 	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
