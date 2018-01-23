@@ -124,7 +124,7 @@ public class DataMigrationCommonRestController {
 		ModelAndView model = new ModelAndView();
 		String importStatus = dataMigrationService.validateImportedFormData(dataMigrationDTO, request);
 		
-		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
+		/*String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationDTO.getExportFilePath().replace("/dataMigration/", "/temp/"), dataMigrationDTO.getHeaderPosition());
 		List<SourceleadFormFields> formFields = null;
@@ -152,16 +152,16 @@ public class DataMigrationCommonRestController {
 				}
 				formFields.add(field);
 			}
-		}
+		}*/
 		
-		model.addObject("dataWithCellId", dataWithCellId);
-		model.addObject("fields", formFields);
+		/*model.addObject("dataWithCellId", dataWithCellId);
+		model.addObject("fields", formFields);*/
 		model.setViewName("upload/dataImport");
 		model.addObject("importStatus", importStatus);
-		model.addObject("exportFilePath", dataMigrationDTO.getExportFilePath());
+		/*model.addObject("exportFilePath", dataMigrationDTO.getExportFilePath());*/
 		model.addObject("uploadType", dataMigrationDTO.getUploadType());
-		model.addObject("headerPosition", dataMigrationDTO.getHeaderPosition());
-		model.addObject("timesheetMode", dataMigrationDTO.getTimesheetMode());
+		/*model.addObject("headerPosition", dataMigrationDTO.getHeaderPosition());
+		model.addObject("timesheetMode", dataMigrationDTO.getTimesheetMode());*/
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

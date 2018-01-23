@@ -98,7 +98,8 @@ public interface OrgSpocDao {
 	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId, String responderType) throws Exception;
 
 	List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId,Long orgRelationId,Long orgLocationId) throws Exception;
-
+	
+	OrgSpoc getGusetClientOrgSpocByOrgRelationId(Long orgRelationId);
 
 	OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId)throws Exception;
 
