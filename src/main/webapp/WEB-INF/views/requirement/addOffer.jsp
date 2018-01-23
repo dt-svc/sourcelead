@@ -210,9 +210,9 @@ function selectOfferApplicants(){
 </div> -->
             
 <div id="divOfferTd5" style="display: none; float: left;">
-	<div class="input-group" id="OfferAttachmentuploadFileGroup">
+	<div class="input-group errorInptgroup" id="OfferAttachmentuploadFileGroup">
         <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-          <input type="file" style="display: none;"  multiple id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
+          <input type="file" style="display: none;" id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
 		</label> 
 		<input type="text" class="form-control file1" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >
 		<div class="clearUpload"></div>
@@ -676,7 +676,7 @@ function otherJobType(id){
 }
 </script>
 
-<<script type="text/javascript">
+<script type="text/javascript">
 $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 	 $(".clearUpload").show();
 	 $('#OfferAttachmentuploadFile').val(this.value.split( '\\' ).pop());
@@ -686,9 +686,9 @@ $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 		 var docSize = this.files[0].size;
 	      $("#OfferAttachmentuploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
+	    	  //document.getElementById("OfferAttachmentuploadFile").value = '';
 	    	  $('#OfferAttachmentuploadFileGroup').find('p.jquery_form_error_message').remove();
-			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $("input#OfferAttachmentuploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist','yes');
 			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
