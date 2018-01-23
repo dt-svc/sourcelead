@@ -220,7 +220,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
         
 
             <div class="share mt10">
-            <div class="addthis_inline_share_toolbox_s1a2"></div>
+            <div class="addthis_inline_share_toolbox_s1a2" ></div>
 			</div>
             </div>
 

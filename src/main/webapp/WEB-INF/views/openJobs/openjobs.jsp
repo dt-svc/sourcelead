@@ -1669,7 +1669,27 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 
 				result = result +'	<div class="share">';
-				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
+				    var sourceleadShareUrl = sourceleadUrl ;
+					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
+					alert("Before temp "+temp)
+					var temp = json.jobTitle;
+					temp.replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase();
+					alert("After temp "+temp)
+					if (jobTitle.startsWith("-")){
+						jobTitle = jobTitle.substring(1);
+				    }
+					if (jobTitle.endsWith("-")){
+						jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
+				    }
+					requirement.setUrl(jobTitle);
+					
+					
+					
+					
+					
+					
+					
+				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+json.jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+json.jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1814,7 +1834,7 @@ function openJobSearchRequirement(){
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 
 										result = result +'	<div class="share">';
-										result = result +' <div class="addthis_inline_share_toolbox" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+										result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
@@ -1832,6 +1852,12 @@ function openJobSearchRequirement(){
 					}
 				});
 			}
+	
+				 window.setTimeout(function() {
+						addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
+						addthis.init(".addthis_inline_share_toolbox_s1a2");
+						addthis.layers.refresh();
+			        }, 500);
 				$('body').on('blur','#openJobsAdvancedForm',function() {
 				$("#openJobsAdvancedForm").showHelpOnFocus();
 				$("#openJobsAdvancedForm").validateOnBlur(false, validationSettings);
