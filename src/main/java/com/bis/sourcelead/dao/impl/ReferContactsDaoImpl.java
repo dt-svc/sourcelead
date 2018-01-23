@@ -324,4 +324,23 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		}
 	}
 
+	@Override
+	@Transactional
+	public ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
+		logger.debug("getReferContactsByFromUserIdAndToUserId start");
+		referContacts = session
+				.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser fromUser left join fetch contacts.contactUser toUser "
+						+ " where fromUser.id = :fromUserId and toUser.id = :toUserId ")
+				.setLong("fromUserId", fromUserId).setLong("toUserId", fromUserId).setCacheable(true).list();
+		logger.debug("getReferContactsByFromUserIdAndToUserId end");
+		if (referContacts.size() > 0) {
+			return referContacts.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

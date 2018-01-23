@@ -60,10 +60,8 @@
 		<i class="glyphicon glyphicon-export"></i>
 	</p>
 	<ul id="exporrt">
-		<li onclick="exportTimeSheetToPdfOrExcel('pdf');">
-			<i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
-		<li onclick="exportTimeSheetToPdfOrExcel('excel');">
-			<i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
+	<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
+	<li onclick="exportTimeSheetToPdfOrExcel('excel');"title="Excel"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
 	</ul>
 </div>
 </c:if>

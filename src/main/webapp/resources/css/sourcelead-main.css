@@ -5,7 +5,7 @@
 	margin: 0; padding: 0;
 }
 body {
-	font-size: 14px; color: #333; min-height: 100%; background-color: #f1f1f1 !important;
+	font-size: 14px; color: #333; min-height: 100%; background-color: #e0e0e0 !important;
     font-weight: 400 !important; font-style: normal !important; font-family:'Roboto', sans-serif  !important;
 }
 a:hover, a:active, a:focus {
@@ -4453,7 +4453,7 @@ font-size: 14px; font-weight: normal;
 	width: 680px;
 }
 table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
-    padding: 0px 15px !important; background-size: 15px;
+    padding: 0px 15px !important; background-size: 15px; min-height: 40px;
 }
 .form-footer.custom_formfooter {
     min-height: 45px; line-height: 45px;
@@ -6609,8 +6609,7 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
 }
 /* Dashboard */
 .leavescount a{
-    font-size: 1.5em; font-weight: 500; color: #808080; text-align: center;
-    bottom: 35px; width: 100%; text-align: center; left: 0; z-index: 9;
+    font-size: 1.5em; font-weight: 500; color: #808080; bottom: 35px; width: 100%; text-align: center; left: 0; z-index: 9;
     position: absolute; transition: all 0.3s ease-in-out;
 }
 .leavescount a:hover{
@@ -6626,12 +6625,10 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
     padding: 15px;
 }
 .mediaHeading {
-  margin-top: 0; margin-bottom: 15px; font-size: 15px; background: #f0f0f0; padding: 10px 15px;
-    border-radius: 5px 5px 0 0;
+  	margin-top: 0; margin-bottom: 15px; font-size: 15px; background: #f0f0f0; padding: 10px 15px; border-radius: 5px 5px 0 0;
 }
 .heading {
-    font-size: 16px; padding: 10px 0px;
-    border-radius: 5px 5px 0 0; margin: 0;  color: #3f51b5;
+    font-size: 16px; padding: 10px 0px; border-radius: 5px 5px 0 0; margin: 0;  color: #3f51b5;
 }
 .time-balance h4 {
     margin-top: 0; margin-bottom: 5px; font-size: 15px;
@@ -6654,8 +6651,7 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
 }
 .media.media-custom {
     border-top: 1px solid #ffe0b2; border-right: 1px solid #ffe0b2; border-bottom: 1px solid #ffe0b2;
-    border-left: 3px solid #ffb74d; padding: 5px 10px 5px 5px; margin-top: 10px;
-    min-height: 75px;
+    border-left: 3px solid #ffb74d; padding: 5px 10px 5px 5px; margin-top: 10px; min-height: 75px;
 }
 .ptagmrng-none p {
     margin-bottom: 0;
@@ -6664,8 +6660,8 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
     position: absolute; top: -5px; right: 0;
 }
 .leaves-heading {
-padding: 5px 0px; line-height: 32px; font-size: 16px; clear: both; display: inline-block;
-width: 100%; margin: 0; border-radius: 5px 5px 0 0; color: #3f51b5;
+	padding: 5px 0px; line-height: 32px; font-size: 16px; clear: both; display: inline-block;
+	width: 100%; margin: 0; border-radius: 5px 5px 0 0; color: #3f51b5;
 }
 .leaves-heading select {
     border: none; background-color:transparent; color: #375d81;
@@ -6683,8 +6679,8 @@ width: 100%; margin: 0; border-radius: 5px 5px 0 0; color: #3f51b5;
     border-width: 15px; border-bottom: 10px; left: 0; top: 0; border-left: 5px;
 }
 .customizeEmployee, .customLeaves, .showLeaveReport  {
-background: #fff; border: 1px solid #ededed; box-shadow: 1px 1px 1px #333; position: absolute; top: 50px;
-right: 15px; z-index: 9; width: 100%; padding: 10px; display: none;
+	background: #fff; border: 1px solid #ededed; box-shadow: 1px 1px 1px #333; position: absolute; top: 50px;
+	right: 15px; z-index: 9; width: 100%; padding: 10px; display: none;
 }
 .customizeEmployee:after, .customLeaves:after, .showLeaveReport:after {
 	bottom:100%; right: 10%; border: solid transparent; content: "";
@@ -6696,7 +6692,7 @@ right: 15px; z-index: 9; width: 100%; padding: 10px; display: none;
     background-size: 10px;
 }
 .remove_search.searchCustom {
-right: 10px; top: -28px; z-index: 99;
+	right: 10px; top: -28px; z-index: 99;
 }
 .remove_search.search-custom{
   position: relative; float: right; margin:0px; top: 0; margin-bottom: 10px;
@@ -7422,6 +7418,9 @@ min-height: 40px;
 .minHeight80{
 min-height:80px;
 }
+.minHeight50{
+    min-height: 50px;
+}
 .tableStyles {
 	position: relative; /*border: 1px solid #ddd;*/
 	overflow-y: auto;
@@ -7540,7 +7539,7 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
-.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal {
+.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal, .modal.modalApplyjob {
 	display: none;
 }
 .location-alert {
@@ -7873,6 +7872,9 @@ top: 0;
 }
 .exportButton_custom .dataTables_info {
 padding-left: 15px !important;
+}
+.uploaded_file.uploaded_wizet {
+min-height: 125px;
 }
 /* media 320px */
 @media (max-width: 320px) {

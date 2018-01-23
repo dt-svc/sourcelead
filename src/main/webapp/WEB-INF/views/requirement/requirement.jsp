@@ -2635,22 +2635,20 @@ function getEditRequirementDetails(requirementId){
 
 <script type="text/javascript">
  function validateTeamName() {
-	 var name = $('#candidateName').val(); 
+	 var teamName = $('#nameOfCandidate').val(); 
 	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
-	 if(name != null && name != ""){
+	 if(teamName != null && teamName != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+name, 
+		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+teamName, 
 		        success: function(data) {
 		        	if(data == 'true'){
-						  
-		        		  $("input#candidateName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+		        		  $("input#nameOfCandidate").after("<p class='jquery_form_error_message'>"+teamName+" is Already Existed</span>");
 						  $("#add_team").attr("disabled", "disabled");
 						  $("#add_team").addClass('button').val('Processing..');
 		        	}
 		        	else{
-		        		
-		        		 $('input#candidateName').removeAttr("record-exist record-exist-errormsg");
+		        		 $('input#nameOfCandidate').removeAttr("record-exist record-exist-errormsg");
 		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#add_team" ).addClass('button').val('Save');
                          $("#add_team").removeAttr("disabled");

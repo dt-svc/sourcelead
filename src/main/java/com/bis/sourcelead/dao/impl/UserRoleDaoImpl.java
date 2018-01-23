@@ -823,23 +823,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
 			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
 			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.reportingManager.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.reportingManager.lastName like '%" + userDTO.getSearchValue() + "' ")
-			   .append("OR (concat(userRole.reportingManager.firstName,userRole.reportingManager.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
-			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%')  ")
-			   .append("OR userRole.userState like '%" + userDTO.getSearchValue() + "%' )");
-		 
-		 if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-active".toLowerCase()) || userDTO.getSearchValue().equalsIgnoreCase("inactive".toLowerCase())) {
-			 query1.append("OR userRole.userState like '%" + Status.INACTIVE + "%' ");
-		 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("active".toLowerCase())) {
-			 query1.append("OR userRole.userState like '%" + Status.ACTIVE + "%' ");
-		 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("resend".toLowerCase())) {
-			 query1.append("OR (userRole.userState like '%" + Status.NOT_LOGGEDIN + "%' and userRole.isMailSent = 'Y')");
-		 }else if(userDTO.getSearchValue().toLowerCase().equalsIgnoreCase("invite".toLowerCase())) {
-			 query1.append("OR (userRole.userState like '%" + Status.NOT_LOGGEDIN + "%' and userRole.isMailSent = 'N') ");
-		 }
+			   /*.append("OR ((userRole.reportingManager IS NULL) OR (userRole.reportingManager IS NOT NULL and (userRole.reportingManager.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.reportingManager.lastName like '%" + userDTO.getSearchValue() + "'))) ")
+			   .append("OR ((userRole.reportingManager IS NULL) OR (userRole.reportingManager IS NOT NULL and concat(userRole.reportingManager.firstName,userRole.reportingManager.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%'))" )*/
+			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
 					
 		}
-//		role.getReportingManager().getFirstName()
+		
 		if(roleId != null) {
 			 subQuery = " and userRole.roles.id = :roleId ";
 			params.put("roleId",roleId);
@@ -945,6 +934,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 							userRoleDTO.setUserState("connected");
 						}
 						userRoleDTO.setCreatedDate(connections.getCreatedDate());
+						userRoleDTO.setConnectionUUID(connections.getConnectionUID());
 					}
 					StringBuilder userName = new StringBuilder();
 					if(userRole.getUser().getLastName() != null) {

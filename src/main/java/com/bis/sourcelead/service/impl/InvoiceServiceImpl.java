@@ -1400,12 +1400,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				
 			}
 			}
-			List<Projects> projectsList = null;
-			if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+			List<Projects> projectsList = projectsService.getClientProjectsByOrgRelationId(client.getId(),orgLocation.getId());
+			/*if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
 				projectsList = projectsService.getClientProjectsByOrgRelationId(client.getId(),orgLocation.getId());
 			}else{
 				projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocation.getId());
-			}
+			}*/
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
   			if(null != projectsList && projectsList.size() >0){
   				for(Projects project : projectsList){
@@ -1648,7 +1648,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<SubmissionApproverHierarchy> sahList = null;
 		invoice.setInvoiceFrequency(frequency);
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,orgLocation.getId(), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -1732,7 +1732,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, orgLocation.getId(),startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {

@@ -219,7 +219,18 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								requirementOffers.setUpdatedBy(loginUser.getUserCode());
 								requirementOffers.setOfferUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
-								requirementOffers.setOfferStatus(Constants.OFFERMADE);
+								
+								 if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES)){
+									 
+									 if(submission.getSourceSubmission() != null) {
+										 requirementOffers.setOfferStatus(Constants.OFFERMADE); 
+									 }else {
+										 requirementOffers.setOfferStatus(Constants.CLIENT_OFFERMADE);
+									 }
+								 }else{
+									 requirementOffers.setOfferStatus(Constants.OFFERMADE);
+								 }
+								
 								RequirementOffers updateOffer = requirementOffersDao.storeRequirementOffers(requirementOffers);
 								
 						           //to save offer history
@@ -286,7 +297,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								
 								
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
-					           
+					           String submissionStatus = "";
 					           if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES)){
 					        	   if(requirementSubmission.getSourceSubmission() != null) {
 					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
@@ -297,7 +308,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           }else {
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           }
-					          
+					           submissionStatus = requirementSubmission.getSubmissionStatus().getValue();
 					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
@@ -350,7 +361,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        	   }
 					        	  
 	                            	
-					           }else {
+					           }else if(requirementSubmission.getSourceSubmission() == null){
 						        	   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
 				        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
@@ -373,7 +384,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.NO)  && requirementSubmission.getSourceSubmission() !=null){
 					        		   if(jsonObj.has("notifyToVendor") && !jsonObj.getString("notifyToVendor").isEmpty() && sourcesubmission != null){
 					        			   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-								           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+								           requirementSubmissionHistory.setFromStage(submissionStatus);
 					        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
 					        			   requirementSubmissionHistory.setCreatedBy(loginUser.getUserCode());
 					       				   requirementSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
@@ -973,7 +984,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    	
 		    	  //Changing the status of offerTable 
 			      if(requirementOffers  != null){
-					    requirementOffers.setOfferStatus("OFFERACCEPTED");
+			    	  if(requirementOffers.getOfferStatus().equalsIgnoreCase("CLIENT_OFFERMADE")) {
+			    		  requirementOffers.setOfferStatus("CLIENT_OFFERACCEPTED");
+			    	  }else {
+			    		  requirementOffers.setOfferStatus("OFFERACCEPTED");
+			    	  }
+					   
 					    requirementOffers.setUpdatedBy(loginUser.getUserCode());
 					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 					    requirementOffersDao.storeRequirementOffers(requirementOffers);

@@ -110,7 +110,7 @@ public class FileUploadUtil {
 			List<FileInfo> list = extractAll1(file.toPath(), folderFile.toPath(), orgId, locationId, staticPath);
 			if (list != null)
 				fileInfoList.addAll(list);
-		} catch (IllegalStateException | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return fileInfoList;
@@ -257,7 +257,7 @@ public class FileUploadUtil {
 					ex.printStackTrace();
 				}
 			}
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		} finally {
 			if(zos != null)
