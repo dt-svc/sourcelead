@@ -1201,7 +1201,7 @@ $(document).ready(function () {
         
           <div class="clearfix">
 		        <div class="col-lg-12">
-		          <h3>Job Locations</h3>
+		          <h3>Locations</h3>
 		        </div>
 		       <div class="col-md-6">
 				 <label class="col-md-12">Job Locations<span class="text-danger paddingLeft">*</span>&nbsp;<i class='fa fa-info-circle' title='Location must be in city,state,country format'></i></label>
