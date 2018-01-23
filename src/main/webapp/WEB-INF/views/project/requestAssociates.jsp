@@ -1,11 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
-    <script type="text/javascript">
+<script type="text/javascript">
 		window.onload = function () {
 			getRequestedAssociateListDiv();
 			var requestUUID = '${requestUUID}';
@@ -18,108 +19,129 @@
    </script>
 
 <section class="content-wraper" id="themeroller">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Request Associates</h2>
-      </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Planning</a> &raquo; Request Associates</div>
-    </section>
-    
-<div class="content-area content-new clearfix">
-    <div class="row form-horizontal mt myForm">
-      <div id="choicepopUp"></div>
-      <div id="associateRequestLoading"></div>
-      
-      <form:form id="requestAssociates_form" name="requestAssociates_form" method="post">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
-         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-            <div class="form-group">
-              <label class="col-md-3">Request Id <span class="text-danger paddingLeft">*</span></label>
-				<div class="col-md-9">
-                  <div class="form-icon">
-		                <input type="text" class="form-control pull-left" name="requestId" id="requestId" data-validation="required" field-name="Project Id">
-		                  <i class="fa fa-refresh btn btn-default formic1" title="Project Id"></i>
-		                  <div class="clearfix"></div>
-		                <span class="hidden">Request Id</span> 
-	                </div>
-                  </div>            
-            </div>
-             <input type="hidden" name="savedPlanningRequestUUID" id="savedPlanningRequestUUID">
-            
-            <div class="form-group">
-              <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
-              <div class="col-md-9">
-                <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
-                </select>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="col-md-3">Description <span class="text-danger paddingLeft">*</span></label>
-              <div class="col-md-9">
-                  <textarea cols="1" class="form-control" field-name="Description" id="description" name="description" data-validation="required validate_length length2-5000"></textarea>
-              </div>
-            </div>
-            
-            </div>
-          </div>
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Request Associates</h2>
+		</div>
+		<div class="pull-right brud-crum">
+			<a href="<c:url value='${appPath}/projectDashboard'/>">Home</a>
+			&raquo; <a
+				href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Planning</a>
+			&raquo; Request Associates
+		</div>
+	</section>
 
-<div class="clearfix mt"></div>
-<div id="acceptedAssociatesListDiv" class="col-md-12"></div>
-<div class="clearfix mt"></div>
+	<div class="content-area content-new clearfix">
+		<div class="row form-horizontal mt myForm">
+			<div id="choicepopUp"></div>
+			<div id="associateRequestLoading"></div>
 
-<div class="project_side_wrap_inn_tabs clearfix">
-    <div class="project_tabs_inn_head">
-        	<div class="project_tabs_inn_head mt25">
-        	   <a href="javascript:void(0)"  title="Search Associates" onclick="getAssociates();" id="addDiv"  class="btn btn-primary btn-sm anchorWhite">
-                   <i class="glyphicon glyphicon-search"></i>
-                   Search Associates
-               </a>
-               	<div class="clearfix mb10"></div>
-			</div>
-		<div id="resourceListLoading"></div>
-		<div id="searchAssociatesList"></div>
-    </div>
-</div>        
+			<form:form id="requestAssociates_form" name="requestAssociates_form"
+				method="post">
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+							<div class="form-group">
+								<label class="col-md-3">Request Id <span
+									class="text-danger paddingLeft">*</span></label>
+								<div class="col-md-9">
+									<div class="form-icon">
+										<input type="text" class="form-control pull-left"
+											name="requestId" id="requestId" data-validation="required"
+											field-name="Project Id"> <i
+											class="fa fa-refresh btn btn-default formic1"
+											title="Project Id" onclick='$("#requestId").val("");'></i>
+										<div class="clearfix"></div>
+										<span class="hidden">Request Id</span>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" name="savedPlanningRequestUUID"
+								id="savedPlanningRequestUUID">
 
-	<div class="form-footer clearfix mt">
-		  <div class="col-lg-12">
-			<div class="pull-right">
-			  <input type="button" value="Draft" class="btn btn-warning mr" onclick="requestAssociate('Draft');">
-			  <input type="button" value="Send" class="btn btn-primary" onclick="requestAssociate('Send');">
-			  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>'" class="btn btn-default ml">
-			</div>
-		  </div>
-	</div>        
-   </div> 
-    </form:form>
-      </div>
-    </div>
-  </section>
+							<div class="form-group">
+								<label class="col-md-3">Approver <span
+									class="text-danger paddingLeft">*</span></label>
+								<div class="col-md-9">
+									<select class="chosen-select form-control"
+										data-validation="required" id="approver" name="approver"
+										field-name="Approver">
+									</select>
+								</div>
+							</div>
 
-<jsp:include page="../masterFooter.jsp" />	
+							<div class="form-group">
+								<label class="col-md-3">Description <span
+									class="text-danger paddingLeft">*</span></label>
+								<div class="col-md-9">
+									<textarea cols="1" class="form-control"
+										field-name="Description" id="description" name="description"
+										data-validation="required validate_length length2-5000"></textarea>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="clearfix mt"></div>
+					<div id="acceptedAssociatesListDiv" class="col-md-12"></div>
+					<div class="clearfix mt"></div>
+
+					<div class="project_side_wrap_inn_tabs clearfix">
+						<div class="project_tabs_inn_head">
+							<div class="project_tabs_inn_head mt25">
+								<a href="javascript:void(0)" title="Search Associates"
+									onclick="getAssociates();" id="addDiv"
+									class="btn btn-primary btn-sm anchorWhite"> <i
+									class="glyphicon glyphicon-search"></i> Search Associates
+								</a>
+								<div class="clearfix mb10"></div>
+							</div>
+							<div id="resourceListLoading"></div>
+							<div id="searchAssociatesList"></div>
+						</div>
+					</div>
+
+					<div class="form-footer clearfix mt">
+						<div class="col-lg-12">
+							<div class="pull-right">
+								<input type="button" value="Draft" class="btn btn-warning mr"
+									onclick="requestAssociate('Draft');"> <input
+									type="button" value="Send" class="btn btn-primary"
+									onclick="requestAssociate('Send');"> <input
+									type="button" value="Cancel"
+									onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>'"
+									class="btn btn-default ml">
+							</div>
+						</div>
+					</div>
+				</div>
+			</form:form>
+		</div>
+	</div>
+</section>
+
+<jsp:include page="../masterFooter.jsp" />
 
 <div id="divTaskTd1" style="display: none; float: left;">
 	<div class="width215px">
 		<div id="REPLACEROWIDcandidateName" class="tbldata-dotdot pull-left">
 		</div>
-		
+
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateFullName" name="REPLACEROWIDcandidateFullName" />
-		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidateId" />
-		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDresourceRequestId" name="REPLACEROWIDresourceRequestId">
-		</input>
-		
-		<div class="show_Empdetails" id="REPLACEROWIDresourceRejection" style="display: none;">
-		<i class="fa fa-ellipsis-v text-danger"></i>
-		<div class="associate-rejects">
-			<p id="REPLACEROWIDresourceRejectedReason"></p>
-		</div>
+			id="REPLACEROWIDcandidateFullName"
+			name="REPLACEROWIDcandidateFullName" /> <input type="hidden"
+			class="form-control input-sm" id="REPLACEROWIDcandidateId"
+			name="REPLACEROWIDcandidateId" /> <input type="hidden"
+			class="form-control input-sm" id="REPLACEROWIDresourceRequestId"
+			name="REPLACEROWIDresourceRequestId"> </input>
+
+		<div class="show_Empdetails" id="REPLACEROWIDresourceRejection"
+			style="display: none;">
+			<i class="fa fa-ellipsis-v text-danger"></i>
+			<div class="associate-rejects">
+				<p id="REPLACEROWIDresourceRejectedReason"></p>
+			</div>
 		</div>
 	</div>
 </div>
@@ -127,94 +149,111 @@
 
 <div id="divTaskTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-me">
-         <small class="pull-left"><div id="REPLACEROWIDpayRateCurrency"></div></small>
-         <div class="tblminwidth-150 pull-left text-center" id="REPLACEROWIDpayRate" ></div>
-         <small class="pull-right"><div id="REPLACEROWIDpayRateType" ></div></small>
+		<small class="pull-left"><div id="REPLACEROWIDpayRateCurrency"></div></small>
+		<div class="tblminwidth-150 pull-left text-center"
+			id="REPLACEROWIDpayRate"></div>
+		<small class="pull-right"><div id="REPLACEROWIDpayRateType"></div></small>
 	</div>
-	
-	 <input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidatePayRateCurrency" name="REPLACEROWIDcandidatePayRateCurrency" />
-			
-			<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidatePayRate" name="REPLACEROWIDcandidatePayRate" />
-			
-			<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidatePayRateType" name="REPLACEROWIDcandidatePayRateType" />
-			
-			
+
+	<input type="hidden" class="form-control input-sm"
+		id="REPLACEROWIDcandidatePayRateCurrency"
+		name="REPLACEROWIDcandidatePayRateCurrency" /> <input type="hidden"
+		class="form-control input-sm" id="REPLACEROWIDcandidatePayRate"
+		name="REPLACEROWIDcandidatePayRate" /> <input type="hidden"
+		class="form-control input-sm" id="REPLACEROWIDcandidatePayRateType"
+		name="REPLACEROWIDcandidatePayRateType" />
+
+
 </div>
 
 
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="changeRate_div changeRateDiv">
-                  <div class="pull-left dropdown-select drpdownCurrency">
-                      <select id="REPLACEROWIDbillRateCurrency" name="REPLACEROWIDbillRateCurrency">
-	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
-                     </select>
-                  </div>
-                  <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate" data-validation-optional="true"  data-validation="validate_Space validate_int validate_length length1-15">
-                  </div>
-                  <div class="pull-left drpdownMonthly dropdown-select">
-                  <select id="REPLACEROWIDbillRateRateType" name="REPLACEROWIDbillRateRateType">
-	                    <option value="Hourly">Hourly</option>
-	                    <option value="Weekly">Weekly</option>
-	                    <option value="Bi-weekly">Bi-weekly</option>
-	                    <option value="Semi-Monthly">Semi-Monthly</option>
-	                    <option value="Monthly">Monthly</option>
-	                    <option value="Bi-Monthly">Bi-Monthly</option>
-	                    <option value="Yearly">Yearly</option>
-                      </select>
-                  </div>
-     </div>
+		<div class="pull-left dropdown-select drpdownCurrency">
+			<select id="REPLACEROWIDbillRateCurrency"
+				name="REPLACEROWIDbillRateCurrency">
+				<option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+				<option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+				<option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+				<option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+				<option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+				<option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
+			</select>
+		</div>
+		<div class="pull-left inputRate">
+			<input class="form-control input-sm" type="text"
+				id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate"
+				data-validation-optional="true"
+				data-validation="validate_Space validate_int validate_length length1-15">
+		</div>
+		<div class="pull-left drpdownMonthly dropdown-select">
+			<select id="REPLACEROWIDbillRateRateType"
+				name="REPLACEROWIDbillRateRateType">
+				<option value="Hourly">Hourly</option>
+				<option value="Weekly">Weekly</option>
+				<option value="Bi-weekly">Bi-weekly</option>
+				<option value="Semi-Monthly">Semi-Monthly</option>
+				<option value="Monthly">Monthly</option>
+				<option value="Bi-Monthly">Bi-Monthly</option>
+				<option value="Yearly">Yearly</option>
+			</select>
+		</div>
+	</div>
 </div>
 
 
 <div id="divTaskTd6" style="display: none; float: left;">
 
-	<select id="REPLACEROWIDconsultingType" name="REPLACEROWIDconsultingType" data-validation="required" field-name="Consulting">
-                      <option value="">--Select--</option>
-                      <option value="Offsite">Off Site</option>
-                      <option value="Onsite">On Site</option>
-                      <option value="Onsite">Near Shore</option>
-                      <option value="Onsite">Off Shore</option>
-                    <option value="Onsite">Hybrid</option>
-   </select>
-		
+	<select id="REPLACEROWIDconsultingType"
+		name="REPLACEROWIDconsultingType" data-validation="required"
+		field-name="Consulting">
+		<option value="">--Select--</option>
+		<option value="Offsite">Off Site</option>
+		<option value="Onsite">On Site</option>
+		<option value="Onsite">Near Shore</option>
+		<option value="Onsite">Off Shore</option>
+		<option value="Onsite">Hybrid</option>
+	</select>
+
 </div>
 
 <div id="divTaskTd7" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-         <input class="form-control input-sm" type="text" id="REPLACEROWIDestHours" name="REPLACEROWIDestHours" data-validation-optional="true" onblur="calculateTotalEstimateHours();" data-validation="validate_Space validate_int" field-name="Est Hours">
+		<input class="form-control input-sm" type="text"
+			id="REPLACEROWIDestHours" name="REPLACEROWIDestHours"
+			data-validation-optional="true"
+			onblur="calculateTotalEstimateHours();"
+			data-validation="validate_Space validate_int" field-name="Est Hours">
 	</div>
 </div>
 
 <div id="divTaskTd8" style="display: none; float: left;">
 	<div class="changeRate_div estRate_div">
-          
-          <div class="pull-left mt10">
-                 <div id="REPLACEROWIDestBudgetCurrencyType" name="REPLACEROWIDestBudgetCurrencyType" value='${SourceLeadWeb_currencyCode}'>${SourceLeadWeb_currencyCode}</div>
-          </div> 
-		  
-         <div class="pull-left inputRate">
-         	<input class="form-control input-sm" type="text" id="REPLACEROWIDestBudget" name="REPLACEROWIDestBudget" data-validation-optional="true" onblur="calculateTotalEstimateBudget();"  data-validation="validate_int validate_Space validate_length length1-15" field-name="Est Budget">
-         </div>
-        
+
+		<div class="pull-left mt10">
+			<div id="REPLACEROWIDestBudgetCurrencyType"
+				name="REPLACEROWIDestBudgetCurrencyType"
+				value='${SourceLeadWeb_currencyCode}'>${SourceLeadWeb_currencyCode}</div>
+		</div>
+
+		<div class="pull-left inputRate">
+			<input class="form-control input-sm" type="text"
+				id="REPLACEROWIDestBudget" name="REPLACEROWIDestBudget"
+				data-validation-optional="true"
+				onblur="calculateTotalEstimateBudget();"
+				data-validation="validate_int validate_Space validate_length length1-15"
+				field-name="Est Budget">
+		</div>
+
 	</div>
 </div>
-                  
- <div id="divTaskTd9" style="display: none; float: left;">
-       <a class="text-danger tblminwidth-50" title="Remove row"
+
+<div id="divTaskTd9" style="display: none; float: left;">
+	<a class="text-danger tblminwidth-50" title="Remove row"
 		id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i
 		class="fa fa-remove"></i></a>
- </div>          
-                        
-                    
+</div>
+
 
 
 
@@ -283,6 +322,8 @@ function getRequestedAssociateListDiv(){
      emptyRecordsList();
 }
 </script>
+
+
 
 <script>
 function emptyRecordsList(){
@@ -702,8 +743,8 @@ function calculateTotalEstimateBudget(){
 </script>
 
 <div class="side_mask">
-    <div class="proj_close"></div>
-</div> 
+	<div class="proj_close"></div>
+</div>
 <div id="associatesList"></div>
 
 <script>
@@ -1243,7 +1284,7 @@ function requestAssociate(saveType){
    	});
 }
 </script>
-	
+
 <script type="text/javascript">
 function alertMessage(){
 	var result = "";
@@ -1266,8 +1307,8 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-	
-	
+
+
 <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -1460,7 +1501,7 @@ function cancel(){
         $('.addcandidate-popup').fadeOut(200);
 	}
   </script>
-  
+
 <script>
 function toDate(selector) {
     var from = $(selector).val().split("-");
@@ -1498,8 +1539,8 @@ function getEstimatedHours(rowId){
 
 
 
- 
- 	<script type="text/javascript">
+
+<script type="text/javascript">
 	$(".AdRes").click(function(){
 		$(".addResource").slideToggle(0);
 	});
@@ -1507,8 +1548,8 @@ function getEstimatedHours(rowId){
 		$(".addResource").slideUp(0);
 	});		
 	</script>
- 
-	<script type="text/javascript">
+
+<script type="text/javascript">
 // project side bar tabs 
 $(document).ready(function() {
 	$("#tab-1").show()
@@ -1522,8 +1563,8 @@ $(document).ready(function() {
     });
 });	
 	</script>
-	
-  <script type="text/javascript">
+
+<script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1539,8 +1580,8 @@ $(document).ready(function() {
 				$this.next().css({'width': '100%'});
 				});
 </script>
- 
- <script type="text/javascript">
+
+<script type="text/javascript">
     $(document).ready(function() {
     $("#addDiv").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
@@ -1555,15 +1596,15 @@ $(document).ready(function() {
 	});	
 });
 
-</script>		
-  
-  <script type="text/javascript">
+</script>
+
+<script type="text/javascript">
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
 		}
   </script>
-	
-	<script type="text/javascript">
+
+<script type="text/javascript">
 		function openPop(){
 			$("div.cand-advsrch-popup").toggle();
 		}

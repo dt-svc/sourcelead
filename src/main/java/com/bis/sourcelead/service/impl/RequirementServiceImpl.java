@@ -431,7 +431,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setFileName(fileInfo.getFileName());
 			requirement.setFileContentType(fileInfo.getContentType());
 			requirement.setFileURL(fileInfo.getFileURL());
-			if(!fileInfo.getFileURL().contains("requirementDocuments")) {
+			if(StringUtils.isEmpty(requirementDTO.getImportValue())) {
 				FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "requirementDocuments");
 			}
 		}
