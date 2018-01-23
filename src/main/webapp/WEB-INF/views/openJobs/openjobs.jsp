@@ -1321,10 +1321,14 @@ function prepareOpenJobsElkList(data,offset){
 				$("#openJobsRequirementsList").empty();
 				$("#openJobsRequirementsList").append(result); 
 			}
-			alert("1")
-			addthis.toolbox(".addthis_inline_share_toolbox");
-			addthis.init(".addthis_inline_share_toolbox");
-			addthis.layers.refresh();
+			
+			window.setTimeout(function() {
+				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
+				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.layers.refresh();
+	        }, 500);
+			
+			
 			$("#openJobsRequirementTitleId").val('');
 			$("#openJobsLocationId").val('');
 			$("#openJobsExperienceId").val('');
@@ -1665,7 +1669,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 
 				result = result +'	<div class="share">';
-				result = result +' <div class="addthis_inline_share_toolbox_8xlj" data-url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:url="'+(sourceleadUrl+'/job/'+json.jobTitle+'--'+json.requirementUUID)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1674,10 +1678,13 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</section>'; 
 				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
-				alert("1")
-				addthis.toolbox(".addthis_inline_share_toolbox");
-				addthis.init(".addthis_inline_share_toolbox");
-				addthis.layers.refresh();
+
+				window.setTimeout(function() {
+					addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
+					addthis.init(".addthis_inline_share_toolbox_s1a2");
+					addthis.layers.refresh();
+		        }, 500);
+				
 				$("#openJobsRequirementsSummary").append(result);
 				if(requirementUUID != null){
 				$("#noResultsDiv").css("display", "block");
