@@ -47,11 +47,122 @@ z-index: 1000000000 !important;
 .pac-container::after {
 	display:none;
 }
+.profile-show {
+	border: 1px solid #ededed; padding: 2px 15px; margin-top: 15px; background-color: #f5f5f5;
+}
+.profile-show ul li {
+padding-right:15px; border-right:1px solid #ededed;
+}
+.profile-show ul li:last {
+border-right:none;
+}
 </style>
 </head>
 <body>
 <div class="container new_side_wrap_inn applytoJobDiv">
 	<div class="row">
+	<div class="col-md-12">
+		<div class="clearfix profile-show">
+			<h4 data-toggle="collapse" data-toggle="collapse" data-target="#profilediv" class="arrow-pro">Profile details<span class="ml fa fa-angle-down"></span></h4>
+			<div class="clearfix"></div>
+			<div id="profilediv" class="panel-collapse collapse">
+        		
+        		
+        		<div class="jobResultsCta job_container">
+				<div class="jobResultsInn">
+				
+				<div class="clearfix"></div>
+				<div class="skills mb">
+				<strong>Skills :</strong>
+				<c:if test="${!empty skills}">
+				<span>${skills}</span>
+				</c:if>
+				<c:if test="${empty skills}">
+				<span>--</span>
+				</c:if>
+				</div>	
+				<div class="clearfix"></div>
+				<ul class="list-unstyled list-inline"><li>
+				<div class="jobType">
+				<c:if test="${!empty jobType}">
+				<span><i class="fa fa-clock-o paddingRight"></i>${jobType}</span>
+				</c:if>
+				<c:if test="${empty jobType}">
+				<span><i class="fa fa-clock-o paddingRight"></i> --</span>
+			</c:if>
+			</div>
+			</li>
+			<li>
+				<div class="experience">
+				<c:if test="${!empty minExperience && !empty minExperience}">
+				<span><i class="fa fa-briefcase paddingRight"></i>${minExperience} to ${maxExperience} Years</span>
+				</c:if>
+				<c:if test="${!empty maxExperience && empty minExperience}">
+				<span><i class="fa fa-briefcase paddingRight"></i>${maxExperience}+" Years"</span>
+				</c:if>
+				<c:if test="${empty minExperience && empty maxExperience}">
+				<span><i class="fa fa-briefcase paddingRight"></i>--</span>
+				</c:if>
+				</div>
+				</li><li>
+				<div class="location">
+				<c:if test="${!empty location}">
+				<span><i class="fa fa-map-marker paddingRight"></i>${location}</span>
+				</c:if>
+				<c:if test="${empty location}">
+				<span><i class="fa fa-map-marker paddingRight"></i>--</span>
+				</c:if>
+				</div>
+				</li><li>
+				<div class="rate">
+				<c:if test="${!empty minRate && !empty maxRate}">
+				<span><i class="fa fa-rupee paddingRight"></i>${minRate} - ${maxRate}</span>
+<!-- 				description =  description+'Rate: '+rate+";"; -->
+				</c:if>
+				<c:if test="${empty minRate && empty maxRate}">
+				<span><i class="fa fa-rupee paddingRight"></i>--</span>	
+				</c:if>
+					<c:if test="${!empty minRate && !empty maxRate && !empty rateType && !empty currencyCode}">
+				<span>-${currencyCode}</span>	
+				</c:if>
+				
+				<c:if test="${empty minRate && empty maxRate && empty rateType && empty currencyCode}">
+				<span><i class="fa fa-rupee paddingRight"></i>--</span>	
+				</c:if>
+				<c:if test="${!empty rateType && !empty minRate && !empty maxRate}">
+				<span>/${rateType}</span>	
+				</c:if>
+				
+				<c:if test="${empty rateType}">
+				<span><i class="fa fa-rupee paddingRight"></i>--</span>	
+				</c:if>
+				</div>
+				</li><li>
+				<div class="noticePeriod">
+				<c:if test="${!empty noticePeriod}">
+				<span><i class="fa fa-bell paddingRight"></i>${noticePeriod}</span>
+				</c:if>
+				<c:if test="${empty noticePeriod}">
+				<span><i class="fa fa-bell paddingRight"></i>--</span>
+				</c:if>
+				</div>
+				</li><li>
+				<div class="visaTypes">
+				<c:if test="${!empty visaTypes}">
+				<span><i class="fa fa-plane paddingRight"></i>${visaTypes}</span>
+				</c:if>
+				<c:if test="${empty visaTypes}">
+				<span><i class="fa fa-plane paddingRight"></i>--</span>	
+				</c:if>
+				</div>
+				</li>
+				</ul>
+			
+				</div>
+       	</div>
+		</div>
+	</div>
+	
 		<div class="col-md-12">
 			<!-- IncludeJSP -->
 			<div id="applytoJobDiv"></div>
@@ -65,6 +176,13 @@ $(document).ready(function() {
 	var requirementId = '${reqId}';
 	var jobTitle = '${reqName}'
 	var sourceleadUrl = '${sourceleadUrl}';
+	var skills = '${skills}';
+	var jobType = '${jobType}';
+	var experience = '${experience}';
+	var location = '${location}';
+	var rate = '${rate}';
+	var noticePeriod = '${noticePeriod}';
+	var visaTypes = '${visaTypes}';
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
@@ -94,7 +212,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '------- ( OR ) -------';
 		result = result + '</div>';
 		
-		result = result + '<div class="col-md-5 pull-right">';
+		result = result + '<div class="col-md-5">';
 		result = result + '<div class="col-md-12" id="browseDiv">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
 		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
@@ -762,5 +880,12 @@ function zipcodeMask(country,zipCodeId){
 			}
 </script>
 
-  
+  <script>
+  $("#profilediv").on("hide.bs.collapse", function(){
+    $(".arrow-pro").html('Profile details<span class="fa fa-angle-down ml"></span>');
+  });
+  $("#profilediv").on("show.bs.collapse", function(){
+    $(".arrow-pro").html('Profile details<span class="fa fa-angle-up ml"></span>');
+  });
+</script>
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
