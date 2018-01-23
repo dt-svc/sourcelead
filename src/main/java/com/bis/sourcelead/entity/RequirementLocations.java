@@ -47,6 +47,9 @@ public class RequirementLocations implements Serializable{
 	@Column(name = "CITY")
 	private String city;
 	
+	@Column(name = "ZIPCODE")
+	private String zipCode;
+	
 	@Column(name = "LONGITUDE")
 	private String longitude;
 	
@@ -139,4 +142,14 @@ public class RequirementLocations implements Serializable{
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+
 }

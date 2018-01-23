@@ -44,14 +44,43 @@ public void addLocations() throws IOException, SQLException {
 			 System.out.println("----Adding locations to requirement starts-----");
 			 while(rs1.next()){
 				 Long  requirementId = rs1.getLong("ID");
-				 String location =  rs1.getString("LOCATION");
+				 String location = null;
+				 StringBuilder jobLocation = new StringBuilder();
+				 if(rs1.getString("LOCATION") == null || rs1.getString("LOCATION").isEmpty()) {
+					 
+					 if(rs1.getString("CITY") != null && !rs1.getString("CITY").isEmpty()) {
+						 jobLocation = jobLocation.append(rs1.getString("CITY")).append(",");
+					 }
+					 
+					 if(rs1.getString("STATE") != null && !rs1.getString("STATE").isEmpty()) {
+						 jobLocation = jobLocation.append(rs1.getString("STATE")).append(",");
+					 }
+					 
+					 if(rs1.getString("COUNTRY") != null && !rs1.getString("COUNTRY").isEmpty()) {
+						 jobLocation = jobLocation.append(rs1.getString("COUNTRY")).append(",");
+					 }
+					 
+					 if(jobLocation.toString() != null && !jobLocation.toString().isEmpty()) {
+						 location =  jobLocation.toString();
+					 }
+					 
+					 if(location != null && !location.isEmpty()) {
+						 location = location.substring(0, location.length() - 1);
+					 }
+					
+				 }else{
+					 location =  rs1.getString("LOCATION");
+				 }
+				 
+				
 				 String country =  rs1.getString("COUNTRY");
 				 String state =  rs1.getString("STATE");
 				 String city =  rs1.getString("CITY");
+				 String zipcode =  rs1.getString("ZIPCODE");
 				 
-				String query = " insert into sourcelead.REQUIREMENT_LOCATIONS (REQUIREMENT_ID, LOCATION, COUNTRY, STATE, CITY, "
+				String query = " insert into sourcelead.REQUIREMENT_LOCATIONS (REQUIREMENT_ID, LOCATION, COUNTRY, STATE, CITY, ZIPCODE, "
 							+ "LOCATION_UID, STATUS)"
-							+ " values (?, ?, ?, ?, ?, ?, ?)";
+							+ " values (?, ?, ?, ?, ?, ?, ?, ?)";
 		    		
 		    		try {
 		    			
@@ -61,8 +90,9 @@ public void addLocations() throws IOException, SQLException {
 		    			 pstmt.setString(3, country);
 		    			 pstmt.setString(4, state);
 		    			 pstmt.setString(5, city);
-		    			 pstmt.setString(6, SourceLeadRandomCodeHelper.generateRandomUUID());
-		    			 pstmt.setInt(7, 1);
+		    			 pstmt.setString(6, zipcode);
+		    			 pstmt.setString(7, SourceLeadRandomCodeHelper.generateRandomUUID());
+		    			 pstmt.setInt(8, 1);
 		    			 pstmt.executeUpdate();	
 			    		 
 		    		}catch (Exception e){   
