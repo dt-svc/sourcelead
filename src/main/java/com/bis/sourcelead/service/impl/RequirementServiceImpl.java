@@ -783,33 +783,44 @@ public class RequirementServiceImpl implements RequirementService {
 					requirementLocations.setRequirementId(requirement);
 					requirementLocations.setLocation(locationDTO.getLocationName());
 					
-					if(StringUtils.isNotBlank(locationDTO.getCountry())) {
+					if(locationDTO.getCountry() != null && !locationDTO.getCountry().isEmpty()) {
 						requirementLocations.setCountry(locationDTO.getCountry());
 					}
 					
-					
-					if(StringUtils.isNotBlank(locationDTO.getState())) {
+					if(locationDTO.getState() != null && !locationDTO.getState().isEmpty()) {
 						requirementLocations.setState(locationDTO.getState());
 					}
 					
-					if(StringUtils.isNotBlank(locationDTO.getState())) {
-						requirementLocations.setState(locationDTO.getState());
-					}
-					
-					if(StringUtils.isNotBlank(locationDTO.getCity())) {
+					if(locationDTO.getCity() != null && !locationDTO.getCity().isEmpty()) {
 						requirementLocations.setCity(locationDTO.getCity());
 					}
 					
-					if(StringUtils.isNotBlank(locationDTO.getZipcode())) {
+					if(locationDTO.getZipcode() != null && !locationDTO.getZipcode().isEmpty()) {
 						requirementLocations.setZipCode(locationDTO.getZipcode());
 					}
 					
-					if(StringUtils.isNotBlank(locationDTO.getLongitude())) {
+					if(locationDTO.getLongitude() != null && !locationDTO.getLongitude().isEmpty()) {
 						requirementLocations.setLongitude(locationDTO.getLongitude());
 					}
 					
-					if(StringUtils.isNotBlank(locationDTO.getLatitude())) {
+					if(locationDTO.getLatitude() != null && !locationDTO.getLatitude().isEmpty()) {
 						requirementLocations.setLatitude(locationDTO.getLatitude());
+					}
+					
+					
+					if(locationDTO.getCountry() == null || "".equals(locationDTO.getCountry()) ) {
+						String[] jobLocation = locationDTO.getLocationName().split(",");
+						if(jobLocation[0] != null && !jobLocation[0].isEmpty()) {
+							requirementLocations.setCity(jobLocation[0]);
+						}
+						
+						if(jobLocation[1] != null && !jobLocation[1].isEmpty()) {
+							requirementLocations.setState(jobLocation[1]);
+						}
+						
+						if(jobLocation[2] != null && !jobLocation[2].isEmpty()) {
+							requirementLocations.setCountry(jobLocation[2]);
+						}
 					}
 					
 					requirementLocations.setStatus(Constants.RECORD_ACTIVE);
