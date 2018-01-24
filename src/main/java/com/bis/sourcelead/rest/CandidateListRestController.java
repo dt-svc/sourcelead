@@ -57,6 +57,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
@@ -1108,6 +1109,7 @@ public class CandidateListRestController {
 	@RequestMapping(value = {"/updateCandidate", "/rest/updateCandidate"},method=RequestMethod.POST)
 	public String updateCandidate(CandidateDTO candidateDto,HttpServletRequest request) throws Exception {
 		String isUpdated = "failed";
+		if(Validator.validate(candidateDto)) {
 		User user = userService.getUserById(Long.valueOf(candidateDto.getLoginUserId()));
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
 		Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
@@ -1115,6 +1117,9 @@ public class CandidateListRestController {
         	isUpdated =  "success";	
         }
 		return isUpdated;
+		}else{
+		return isUpdated;
+		}
 
 	}
 
