@@ -4,21 +4,32 @@
  
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>.::Guest Apply to Job::.</title>
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
- <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
 <script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
 <script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-
- <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
- 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 
 <style>
 .viewTemplate {
@@ -36,11 +47,122 @@ z-index: 1000000000 !important;
 .pac-container::after {
 	display:none;
 }
+.profile-show {
+	border: 1px solid #ededed; padding: 2px 15px; margin-top: 15px; background-color: #f5f5f5;
+}
+.profile-show ul li {
+padding-right:15px; border-right:1px solid #ededed;
+}
+.profile-show ul li:last {
+border-right:none;
+}
 </style>
 </head>
 <body>
 <div class="container new_side_wrap_inn applytoJobDiv">
 	<div class="row">
+	<div class="col-md-12">
+		<div class="clearfix profile-show">
+			<h4 data-toggle="collapse" data-toggle="collapse" data-target="#profilediv" class="arrow-pro">${reqName}<span class="ml fa fa-angle-down"></span></h4>
+			<div class="clearfix"></div>
+			<div id="profilediv" class="panel-collapse collapse">
+        		
+        		
+        		<div class="jobResultsCta job_container">
+				<div class="jobResultsInn">
+				
+				<div class="clearfix"></div>
+				<div class="skills mb">
+				<strong>Skills :</strong>
+				<c:if test="${!empty skills}">
+				<span>${skills}</span>
+				</c:if>
+				<c:if test="${empty skills}">
+				<span>--</span>
+				</c:if>
+				</div>	
+				<div class="clearfix"></div>
+				<ul class="list-unstyled list-inline"><li>
+				<div class="jobType">
+				<c:if test="${!empty jobType}">
+				<span><i class="fa fa-clock-o paddingRight"></i>${jobType}</span>
+				</c:if>
+				<c:if test="${empty jobType}">
+				<span><i class="fa fa-clock-o paddingRight"></i> --</span>
+			</c:if>
+			</div>
+			</li>
+			<li>
+				<div class="experience">
+				<c:if test="${!empty minExperience && !empty minExperience}">
+				<span><i class="fa fa-briefcase paddingRight"></i>${minExperience} to ${maxExperience} Years</span>
+				</c:if>
+				<c:if test="${!empty maxExperience && empty minExperience}">
+				<span><i class="fa fa-briefcase paddingRight"></i>${maxExperience}+" Years"</span>
+				</c:if>
+				<c:if test="${empty minExperience && empty maxExperience}">
+				<span><i class="fa fa-briefcase paddingRight"></i>--</span>
+				</c:if>
+				</div>
+				</li><li>
+				<div class="location">
+				<c:if test="${!empty location}">
+				<span><i class="fa fa-map-marker paddingRight"></i>${location}</span>
+				</c:if>
+				<c:if test="${empty location}">
+				<span><i class="fa fa-map-marker paddingRight"></i>--</span>
+				</c:if>
+				</div>
+				</li><li>
+				<div class="rate">
+				<c:if test="${!empty minRate && !empty maxRate}">
+				<span><i class="fa fa-rupee paddingRight"></i>${minRate} - ${maxRate}</span>
+<!-- 				description =  description+'Rate: '+rate+";"; -->
+				</c:if>
+				<c:if test="${empty minRate && empty maxRate}">
+				<span><i class="fa fa-rupee paddingRight"></i>--</span>	
+				</c:if>
+					<c:if test="${!empty minRate && !empty maxRate && !empty rateType && !empty currencyCode}">
+				<span>-${currencyCode}</span>	
+				</c:if>
+				
+				<c:if test="${empty minRate && empty maxRate && empty rateType && empty currencyCode}">
+				<span><i class="fa fa-rupee paddingRight"></i>--</span>	
+				</c:if>
+				<c:if test="${!empty rateType && !empty minRate && !empty maxRate}">
+				<span>/${rateType}</span>	
+				</c:if>
+				
+				<c:if test="${empty rateType}">
+				<span><i class="fa fa-rupee paddingRight"></i>--</span>	
+				</c:if>
+				</div>
+				</li><li>
+				<div class="noticePeriod">
+				<c:if test="${!empty noticePeriod}">
+				<span><i class="fa fa-bell paddingRight"></i>${noticePeriod}</span>
+				</c:if>
+				<c:if test="${empty noticePeriod}">
+				<span><i class="fa fa-bell paddingRight"></i>--</span>
+				</c:if>
+				</div>
+				</li><li>
+				<div class="visaTypes">
+				<c:if test="${!empty visaTypes}">
+				<span><i class="fa fa-plane paddingRight"></i>${visaTypes}</span>
+				</c:if>
+				<c:if test="${empty visaTypes}">
+				<span><i class="fa fa-plane paddingRight"></i>--</span>	
+				</c:if>
+				</div>
+				</li>
+				</ul>
+			
+				</div>
+       	</div>
+		</div>
+	</div>
+	
 		<div class="col-md-12">
 			<!-- IncludeJSP -->
 			<div id="applytoJobDiv"></div>
@@ -54,6 +176,13 @@ $(document).ready(function() {
 	var requirementId = '${reqId}';
 	var jobTitle = '${reqName}'
 	var sourceleadUrl = '${sourceleadUrl}';
+	var skills = '${skills}';
+	var jobType = '${jobType}';
+	var experience = '${experience}';
+	var location = '${location}';
+	var rate = '${rate}';
+	var noticePeriod = '${noticePeriod}';
+	var visaTypes = '${visaTypes}';
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
@@ -65,11 +194,11 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	  var finalDateFormatScript = 'dd-mm-yy'; 
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	 var result = "";
 		var result = "";
-		result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
+		result = result + '<form id="guestApplicant_form" name="guestApplicant_form" enctype="multipart/form-data" method="post">';
 		result = result + '<h3>Application Form</h3>';
 		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
+		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 		
 		result = result + '<div class="row">';
 		result = result + '<div class="venk clearfix">';
@@ -83,13 +212,13 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '------- ( OR ) -------';
 		result = result + '</div>';
 		
-		result = result + '<div class="col-md-5 pull-right">';
-		result = result + '<div class="col-md-12" id="browseDiv"  style="display: block;">';
+		result = result + '<div class="col-md-5">';
+		result = result + '<div class="col-md-12" id="browseDiv">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
-		result = result + '<label class="input-group-btn" onchange="importGuestAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 		result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
-		result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
+		result = result + '<input type="text" class="form-control" data-validation="required validatedoc "  field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 		result = result + '</div>';
 		result = result + '</div>';	
 		result = result + '</div>';
@@ -106,7 +235,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		
 		
 		result = result + '<div class="row">';
-	    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
+	    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" >';
 		result = result + '<label class="col-md-4">Skills</label>';
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
@@ -137,7 +266,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>'; 
-		
 		
 	    result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="employmentOtherTypeDiv" style="display: none;">';
@@ -173,6 +301,21 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		
 		result = result + '</div>';
 		
+		
+/* 		result = result + '<div class="row">';
+		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv">';
+		result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
+		result = result + '		<div class="col-md-8">';
+		result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
+		result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '                   <input type="file" style="display: none;"  id="newUploadBtns"  class="upload">';
+		result = result + '			          </span> </label>';
+		result = result + '			          <input type="text" class="form-control" readonly id="newUploadFiles" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
+		result = result + '			    </div>';
+		result = result + '		 </div>';
+		result = result + '	 </div>';
+		 */
+		
 		result = result + '<div class="form-footer clearfix mt">';
 		result = result + '<div class="pull-right mr">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
@@ -186,7 +329,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	$("#submitDetailsDiv").empty();
 	$("#applytoJobDiv").empty();
 	$("#applytoJobDiv").append(result);
- 
 	   var config = {
 				  '.chosen-select'           : {},
 				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -212,7 +354,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	    $("#candidateSkills").chosen().change(function(event) {
 	    	var allSkills = $(event.target).val();
 	   
-	    	
 	    	$.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
@@ -250,14 +391,14 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 			                }
 					       
 		    	         }
-	    	});
+	    	}); 
 	    //Adding Customized Skills to the list
 			
-	$("#candidateSkills").val('').trigger("chosen:updated");
+	$("#candidateSkills").trigger("chosen:updated");
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
-	$("body").css('overflow-y', 'hidden');
+/* 	$("body").css('overflow-y', 'hidden'); */
 	
 	var selectedFile = document.getElementById("uploadBtn");
 	selectedFile.addEventListener("change", function() {
@@ -282,18 +423,47 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
 	
+	document.getElementById("newUploadBtn123").onchange = function () {
+		$('#newUploadFile123').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+	};
+	
 }
 </script>
-
 <script>
-function importGuestAddApplicantDoc(){
-	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
+function importAddApplicantDoc(){
+	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form");
+	var uploadfiles = $("#uploadBtn").val();
+	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
-
 </script>
-
+<!-- <script>
+/*  function importGuestAddApplicantDoc(){
+	 alert("uploadFile")
+	fileUpload("uploadBtn", "addApplicants", "guestApplicant_form");
+} */
+function importGuestAddApplicantDoc(){
+	fileUpload("uploadBtn", "addApplicants", "guestApplicant_form");
+	var uploadfiles = $("#uploadBtn").val();
+	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
+}
+</script> -->
+<script type="text/javascript">
+var sourceleadUrl ='${sourceleadUrl}';
+</script>
+<!-- <script>
+function uploadAddApplicantCandidateDoc(){
+	fileUpload("newUploadBtns", "addApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
+	var uploadfiles = $("#newUploadBtns").val();
+	$('#newUploadFiles').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
+}
+</script> -->
 <script>
  $(document.body).on('change', '#uploadBtn' ,function(){
+	 var sourceleadUrl = '${sourceleadUrl}';
+		if(sourceleadUrl.indexOf("/app")!=-1){
+			sourceleadUrl = sourceleadUrl.split("/app")[0];
+		}
+ 
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -301,12 +471,11 @@ function importGuestAddApplicantDoc(){
  		 var docSize = this.files[0].size;
 	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
-	    	  
 	    	  $("input[name=FirstName]").val('');
 	        	 $("input[name=LastName]").val('');
 	        	 $("input[name=EmailId]").val('');
 	        	 $("input[name=PhoneNumber]").val('');
-	        	 $("#candidateSkills").empty();
+// 	        	 $("#candidateSkills").empty();
 	        	 
 	        	 $("#candidateSkills").append('');
 	        	 $("#candidateSkills").trigger("chosen:updated");
@@ -321,11 +490,12 @@ function importGuestAddApplicantDoc(){
 			 	
 			  
 	      }else{
+	    	  
 	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
    		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
  	 
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var form = $('#addApplicant_form')[0];
+		var form = $('#guestApplicant_form')[0];
   		var formData = new FormData(form); 
 		   $.ajax({
 				    type: "POST",
@@ -335,7 +505,7 @@ function importGuestAddApplicantDoc(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : "/parseResume?"+tokenParamName+"="+tokenValue+"",
+		   	     url : sourceleadUrl+"/parseResume",
 					success : function(data) {
 						var json = JSON.parse(data);
 						var name = json.name;
@@ -380,10 +550,10 @@ function importGuestAddApplicantDoc(){
  						$("#candidateSkills").append(internalOutput);
  		        		$("#candidateSkills").trigger("chosen:updated");
   						
-			        	 
+ 		        		 $("#loading").removeAttr("style");
 						 validateSubmissionCandidateEmail();
 						 getUserByUserEmail();
-						 $("#loading").removeAttr("style");
+						
 					},
 				});
  	 }
@@ -393,22 +563,103 @@ function importGuestAddApplicantDoc(){
 </script> 
 
 <script type="text/javascript">
+ function validateSubmissionCandidateEmail() {
+	 var email =   $("input[name=EmailId]").val();
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var requirementId = $("#requirementId").val();
+	 var validation = true;
+	 if(document.getElementById("candidateSubmissionType")){
+		 validation = false;
+	 }
+	 if(sourceleadUrl.indexOf("/app")!=-1){
+			sourceleadUrl = sourceleadUrl.split("/app")[0];
+		}
+	 
+	 if(email != null && email != "" && validation){
+		 $("#save_button").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateRequirementGuestCandidateEmail?&email="+email+"&requirementId="+requirementId, 
+		        success: function(data) {
+		         	if(data == 'true'){
+			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
+			        	  $('.jquery_form_error_message').remove();
+		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
+		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	}
+		        	else{
+		        		$("#save_button").removeAttr("disabled");
+		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
+		        		$('.jquery_form_error_message').remove();
+		        		isCoolingOff(requirementId);
+		        	} 
+		        },
+		    });
+	 }
+	 
+ }
+ </script>  
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+  <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+ 
+
+<script type="text/javascript">
 function addApplicantSubmission(){
 	var requirementId = '${reqId}';
-	if ($('#addApplicant_form').validate(false, validationSettings)) {
-		alert("2")
-    var frm = $('#addApplicant_form').serializeFormJSON();
-		alert("3")
+	if ($('#guestApplicant_form').validate(false, validationSettings)) {
+    var frm = $('#guestApplicant_form').serializeFormJSON();
     var con1 = JSON.stringify(frm);
-		alert("4")
     con1= con1.replace(/[{}]/g, "");
-		alert("5")
     var jsonData = encodeURIComponent(con1);
-    alert("6")
-    var form = $('#addApplicant_form')[0];
+    var form = $('#guestApplicant_form')[0];
     var formData = new FormData(form); 
     //Loop through fields and save field data to array
-    alert("7")
     var fields = [];
     $('.sjfb-field').each(function() { 
     	  var $this = $(this); 
@@ -513,29 +764,37 @@ function addApplicantSubmission(){
     
      $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
+    
+     /* $.post(sourceleadUrl + "/saveGuestAddApplicant", formData, function(result) {
+    	 window.location.href = "/jobs";
+    	 window.location = "http://localhost:8080/jobs";
+     }); */
+     
+     
+     
 	     $.ajax({
-	    	type: "POST",
-	    	data: formData,
-	        contentType : 'application/json; charset=utf-8',
-	        enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-	        dataType : 'json',
-	    	url : "/saveGuestAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+	    	 type: "POST",
+	    	 data: formData,
+		     contentType : 'application/json; charset=utf-8',
+		     enctype: 'multipart/form-data',
+		     processData: false,
+		     contentType:false,
+		     dataType : 'json',
+	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	window.location.href = "/jobs";
 	        	 window.location = "http://localhost:8080/jobs"
 	        },
-	    }); 
+	    });  
     return true; 
    }
   else{
   	return false;	
      } 
 }
-$('body').on('blur', '#addApplicant_form', function() {
-	$("#addApplicant_form").showHelpOnFocus();
-	$("#addApplicant_form").validateOnBlur(false, validationSettings);
+$('body').on('blur', '#guestApplicant_form', function() {
+	$("#guestApplicant_form").showHelpOnFocus();
+	$("#guestApplicant_form").validateOnBlur(false, validationSettings);
 });
   
 </script>
@@ -648,5 +907,25 @@ function zipcodeMask(country,zipCodeId){
 	}
 		     
 }
+</script>
+ <script type="text/javascript">
+ var staticTime='${staticTime}';
+ var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+</script>
+
+  <script>
+  $("#profilediv").on("hide.bs.collapse", function(){
+    $(".arrow-pro").html('${reqName}<span class="fa fa-angle-down ml"></span>');
+  });
+  $("#profilediv").on("show.bs.collapse", function(){
+    $(".arrow-pro").html('${reqName}<span class="fa fa-angle-up ml"></span>');
+  });
 </script>
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>

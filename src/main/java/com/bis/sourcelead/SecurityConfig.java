@@ -110,6 +110,7 @@ public class SecurityConfig  {
     			.antMatchers("/app/ws/displayOrgImageInMail/**").permitAll() 
     			.antMatchers("/openJobsPublicPage").permitAll()
     			.antMatchers("/guestApplyToJob/**").permitAll()
+    			.antMatchers("/validateRequirementGuestCandidateEmail/**").permitAll()
     			.antMatchers("/getGuestUserRequirmentOrgSubmissionTemplate/**").permitAll()
     			.antMatchers("/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/parseResume/**").permitAll()

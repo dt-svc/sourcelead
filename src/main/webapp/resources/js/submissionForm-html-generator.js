@@ -519,7 +519,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                  }
              }
              init();
-             changeRateLabels();
+//             changeRateLabels();
              var d = new Date();
              var year = d.getFullYear() - 18;
              d.setFullYear(year);

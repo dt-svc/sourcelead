@@ -2470,7 +2470,7 @@ function reActiveUser(userId){
                success: function(data) {
             	   $("#selectoruser").removeAttr("style");
         		   $("#selectoruser").css({ display: "block" });
-        		   $("#userMsgDiv").html("Success!! User reactivated for sourcelead");
+        		   $("#userMsgDiv").html("Success!! associate reactivated for sourcelead");
                	   location.replace(sourceleadUrl+"/usersList");
             	   userDetails(userId);
                }

@@ -244,6 +244,22 @@ public class SubmissionsRestController {
 	   }
 	 
 	 
+	 
+	 @RequestMapping(value = "/validateRequirementGuestCandidateEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateRequirementGuestCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+		 	String result = null;
+		 	Requirement req =requirementService.getRequirementByRequirementId(requirementId);
+		 	RequirementSubmission requirementSubmission = requirementSubmissionService.validateRequirementCandidateEmail(email,requirementId,req.getOrgLocationId().getId());
+		 	
+		 	if (requirementSubmission != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
+
+	 
 	 @RequestMapping(value = "/app/validateRequirementRecruiterCandidateEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateRequirementRecruiterCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		 	
@@ -348,7 +364,7 @@ public class SubmissionsRestController {
 
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
-
+			
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
@@ -672,12 +688,14 @@ public class SubmissionsRestController {
 		}
 		User  submittedSourceUser = userService.getUserByUserCode(submission.getCreatedBy());
 		// This is to show the Requested User for Applicant AUthorization
+		if(submittedSourceUser !=null){
 		if(null != submittedSourceUser.getLastName() && !" ".equalsIgnoreCase(submittedSourceUser.getLastName())){
             StringBuilder sub = new  StringBuilder();
             submission.setSubmittedBy(sub.append(submittedSourceUser.getFirstName()).append(" ").append(submittedSourceUser.getLastName()).toString() );
 		}else{
 			submission.setSubmittedBy(submittedSourceUser.getFirstName());
 
+		}
 		}
 		submission.setDesignationType(submission.getCandidate().getDesignationType());
 		submission.setCandidateSummary(submission.getCandidate().getSummary());

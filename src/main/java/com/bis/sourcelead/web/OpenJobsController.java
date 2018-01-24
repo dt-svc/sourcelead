@@ -62,7 +62,23 @@ public class OpenJobsController {
 		ModelAndView model = new ModelAndView();
 		Requirement req = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		model.addObject("reqId", req.getId());
+		model.addObject("orgId", req.getOrgLocationId().getOrg().getId());
+		model.addObject("locationId", req.getOrgLocationId().getId());
+		model.addObject("skills", req.getSkills());
 		model.addObject("reqName", req.getJobTitle());
+		model.addObject("jobType", req.getJobType());
+		model.addObject("minExperience", req.getMinExp());
+		model.addObject("maxExperience", req.getMaxExp());
+		model.addObject("location", req.getLocation());
+		model.addObject("minRate", req.getRate());
+		model.addObject("maxRate", req.getMaxRate());
+		model.addObject("rateType",req.getRateType());
+		model.addObject("currencyCode", req.getCurrencyCode());
+		model.addObject("noticePeriod", req.getNoticePeriod());
+		model.addObject("visaTypes", req.getVisaType());
+		
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("openJobs/guestApplyToJob");
 		return model;
