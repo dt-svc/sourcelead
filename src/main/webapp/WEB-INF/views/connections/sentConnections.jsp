@@ -38,10 +38,10 @@
 <div class="conneWrapHead clearfix">
 		<ul class="clearfix connection-count">
 			
-			<li><a href="<c:url value='${appPath}/loadConnectedList'/>">Connected<i id="connectedCountVal"></i></a></li>
-			<li class="current"><a href="${appPath}/loadSentConnections">Sent<i id="sentCountVal"></i></a></li>
-			<li><a href="<c:url value='${appPath}/loadReceivedConnections'/>">Received<i id="receivedCountVal"></i></a></li>
-			<li><a  href="<c:url value='${appPath}/loadFindConnections'/>">Find</a></li>
+			<li><a href="<c:url value='${appPath}/loadConnectedList?status=connected'/>">Connected<i id="connectedCountVal"></i></a></li>
+			<li class="current"><a href="${appPath}/loadSentConnections?status=sent">Sent<i id="sentCountVal"></i></a></li>
+			<li><a href="<c:url value='${appPath}/loadReceivedConnections?status=received'/>">Received<i id="receivedCountVal"></i></a></li>
+			<li><a  href="<c:url value='${appPath}/loadFindConnections?status=find'/>">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Company" type="text"></span>
 	</div>
@@ -93,7 +93,6 @@ $("#searchFindConnId").keydown(function(e) {
 		getConnectionsList('manual');
 	}
 });
-var count = 0; 
 var sentCount = 0;
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {
@@ -123,20 +122,23 @@ var sentCount = 0;
             success: function(json) {
 	        var result = "";
 	        var flag = false;
-	        if(json != null && json.length>0){
-	        	count++;
-	        }
 	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
+	    		 if(json[0].sentCount != 0){
+	 					localStorage.setItem("sentCount", json[0].sentCount);
+	 				}
+	 				if(json[0].receivedCount != 0){
+	 					localStorage.setItem("receivedCount", json[0].receivedCount);
+	 				}
+	 				if(json[0].connectedCount != 0){
+	 					localStorage.setItem("connectedCount", json[0].connectedCount);
+	 				}
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
-	 				if(user.sentCount != null){
-	 					localStorage.setItem("sentCount", user.sentCount);
-	 				}
-		 			if(user.mutualCount != 0){
-		 				mutCountStatus = user.mutualCount + " Mutual Connections";
+		 			if(user.count != 0){
+		 				mutCountStatus = user.count + " Mutual Connections";
 		 			}else{
 		 				mutCountStatus = "No Mutual Connections";
 		 			}
@@ -146,10 +148,14 @@ var sentCount = 0;
 	 				}else{
 	 					orgNameValue = "at " + user.orgName;
 	 				}
+	 				var fileUrl = "";
+	 				if(user.fileUrl != null){
+	 					fileUrl = user.fileUrl;
+	 				}
 	 				result = result + "<div class='connCta'><div class='connCtaInn'><div class='connCtaInnText'>";
-	 				result = result + "<span><img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' src='"+user.fileUrl+"' class='m-t-xs'   alt='image'>";
+	 				result = result + "<span><img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' src='"+fileUrl+"' class='m-t-xs'   alt='image'>";
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
-	 				result = result + "<p>"+user.userRoleName+" <b> "+orgNameValue+" </b></p></a>";
+	 				result = result + "<p>"+user.userType+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
 	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="getConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink orange">Withdraw</a></div></div></div>';
 	   		    }
@@ -159,7 +165,7 @@ var sentCount = 0;
         		}else if(json != null && json.length >= 18 && json.length != 0 ){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}
-	   		}else if(type === 'manual' && json == null){
+	   		}else if(type === 'manual' && json.length == 0){
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').empty();
 	   			localStorage.setItem("sentCount", 0);

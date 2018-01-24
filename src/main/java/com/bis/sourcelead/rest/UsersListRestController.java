@@ -45,6 +45,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -2118,12 +2119,12 @@ public class UsersListRestController {
 	
 	
 	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.POST)
-	public @ResponseBody List<UserRoleDTO> getUserListForConnections(
+	public @ResponseBody List<ConnectionsDTO> getUserListForConnections(
 			@RequestParam(value = "searchValue", required = false) String searchValue, 
 			@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		List<ConnectionsDTO> userRoleDTOList = new ArrayList<>();
 		userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
 		return userRoleDTOList;
 
