@@ -1035,7 +1035,12 @@ function removeSkillPopUp(candidateId){
 						data : formData,
 						url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
+							if(result && result === "failed") {
+								 //$("#update_candidate").removeAttr("disabled");
+								showError("Invalid data");
+							} else{
 							clientSideBar(candidateId);
+							}
 						},
 					});
 			return true;

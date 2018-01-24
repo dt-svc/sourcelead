@@ -412,7 +412,13 @@
 		    	        contentType:false,
 		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
-								location.replace(sourceleadUrl+"/professionalProfile");
+							if(result && result === "DataMissing") {
+	                      		$("#update_user").attr("disabled", "disabled");
+	     						showError("Invalid data");
+	     					}else{
+	     						location.replace(sourceleadUrl+"/professionalProfile");	
+	     					}
+								
 						},
 					});
 			return true;

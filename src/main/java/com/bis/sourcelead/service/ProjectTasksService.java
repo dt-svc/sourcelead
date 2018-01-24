@@ -62,6 +62,16 @@ public interface ProjectTasksService {
 	
 	public void updateBillingType(String billing, String taskId, Long userId)throws Exception;
 	
+	public void updateDueDate(String dueDate, String taskId, Long userId)throws Exception;
+	
+	public void updateEstimatedTime(String estimatedTime, String taskId, Long userId)throws Exception;
+	
+	public void updateOwner(Long ownerId, String taskId, Long userId)throws Exception;
+	
+	public void updateEpic(Long epicId, String taskId, Long userId)throws Exception;
+	
+	public void updateUserStory(Long userStoryId, String taskId, Long userId)throws Exception;
+	
 	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception;
 	
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;

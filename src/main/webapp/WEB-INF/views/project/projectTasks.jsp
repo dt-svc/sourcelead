@@ -66,10 +66,10 @@ function projectTask(projectId, status) {
 	}
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox scroll-dropdown">';
 		result = result	+ '	    	<ul>';
 		<c:forEach var="assignedMembers" items="${projectAssignMemberList}">     
-			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox"><label for="assignedtaskId${assignedMembers.id}">${assignedMembers.candidateName}</label></li>';
+			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox" class="pull-left"><label for="assignedtaskId${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>';
 		</c:forEach>  
 	    result = result	+ '	        </ul>';
 		result = result	+ '	    </div>';                	
@@ -97,8 +97,7 @@ function projectTask(projectId, status) {
 		<c:forEach var="type" items="${taskTypeList}">        
 		 
 		<c:if test="${taskTypeList[1] == type || taskTypeList[2] == type}">
-		result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();" checked type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
-	    
+		result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
 		</c:if>	
 	    <c:if test="${taskTypeList[1] != type && taskTypeList[2] != type}">
 	    result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
@@ -236,7 +235,7 @@ function projectTaskPaginations(url){
               "data": "taskstype",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot_80" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
 	              return result;
               		
               }
@@ -457,27 +456,27 @@ function editCancel(){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 	 } 
 	   if(taskType ==  "UserStory"){
 		 document.getElementById("epic").style.display="block";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 		 getSubEpicsByUserStory();
 	 }
 	    if(taskType ==  "Bug"){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="block";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 		 getUserStoryByBug();
 	 }
 	 if(taskType ==  "SubTask"){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
-		 $('#taskId').attr("data-validation","required"); 
+		 $('#subTasksId').attr("data-validation","required"); 
 		 getSubTasks(taskType);
 	 } 
 	 
@@ -550,7 +549,6 @@ function editCancel(){
 	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
-	     			output = output + "<option value=''>--Select Task--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
@@ -725,7 +723,7 @@ function editCancel(){
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
 			result = result	+ '           <div class="col-md-12 txtEditor_p">';
-			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>';
+			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea"></textarea>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="clearfix"></div>';

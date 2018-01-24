@@ -585,11 +585,12 @@ function getRolesList(){
 
 <script type="text/javascript">
 function validateEmail(){
+// 	alert("he")
 	var email = document.getElementById("email").value;
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
