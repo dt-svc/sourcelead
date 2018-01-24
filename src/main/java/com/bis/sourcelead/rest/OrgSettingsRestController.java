@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -49,6 +51,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.OrgSettings;
+import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -75,27 +79,32 @@ public class OrgSettingsRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	@Autowired
-	OrgService orgService;
+	private OrgService orgService;
 	@Autowired
-	OrgRelationsService orgRelationsService;
+	private OrgRelationsService orgRelationsService;
 	@Autowired
-	OrgLocationService orgLocationService;
+	private OrgLocationService orgLocationService;
 	@Autowired
-	RolesService rolesService;
+	private RolesService rolesService;
 	@Autowired
-	RoleHierarchyService roleHierarchyService;
+	private RoleHierarchyService roleHierarchyService;
 	@Autowired
-	CommonUtil commonUtil;
+	private CommonUtil commonUtil;
 	@Autowired
-	SourceleadSignatureService sourceleadSignatureService;
+	private SourceleadSignatureService sourceleadSignatureService;
 	@Autowired
-	UserRoleService userRoleService;
+	private UserRoleService userRoleService;
 	@Autowired
-	ModulesService modulesService;
+	private ModulesService modulesService;
 	@Autowired
-	WhiteListIpAddressService whiteListIpAddressService;
+	private WhiteListIpAddressService whiteListIpAddressService;
 	@Autowired
-	WhiteListIpAddressDao whiteListIpAddressDao;
+	private WhiteListIpAddressDao whiteListIpAddressDao;
+	@Autowired
+	private ExpensesService expensesService;
+	@Autowired
+	private AddExpensesService addExpensesService;
+	
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
@@ -111,6 +120,11 @@ public class OrgSettingsRestController {
 		try {
 			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+			
+			if(orgLocations.getGeneratedUserId() != null) {
+				changeShortCodeForExpenses(orgLocations.getGeneratedUserId(),orgLocations.getId());
+			}
+			
 			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
@@ -125,6 +139,23 @@ public class OrgSettingsRestController {
 		return "home";
 	}
 	
+	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception {
+		 List<Expenses> expenses = expensesService.getAllExpensesByOrgLocationId(orgLocationId);
+		 if(!expenses.isEmpty()) {
+		 for(Expenses exp:expenses) {
+			 if(exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId()) && !exp.getExpenseId().equalsIgnoreCase(generatedUserId)) {
+				 	 String expId = exp.getExpenseId();
+				 	 int two = expId.lastIndexOf("EP", expId.length());
+					 String finalExpId = expId.substring(two,expId.length());
+					 StringBuilder expensesId = new StringBuilder();
+					 expensesId.append(generatedUserId).append(finalExpId);
+					 exp.setExpenseId(expensesId.toString());
+					 addExpensesService.storeAddExpensesData(exp);
+			 }
+		 	}
+		 }
+	}
+
 	@RequestMapping(value = {"/app/displayOrgImage/{orgCode}","/app/ws/displayOrgImage/{orgCode}"}, method = RequestMethod.GET)
 	public void displayOrgImage(@PathVariable String orgCode, HttpServletResponse response)
 	{

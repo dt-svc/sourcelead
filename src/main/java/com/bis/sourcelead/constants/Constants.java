@@ -866,6 +866,7 @@ public class Constants {
 	public static final String CANDIDATE_ENTITY = "CD";
 	public static final String JOB_ENTITY = "JB";
 	public static final String PROJECT_ENTITY = "PJ";
+	public static final String EXPENSES_ENTITY = "EP";
 	  
 	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
 	public static final String OLD_VALUE_TAG_END = "</span>";

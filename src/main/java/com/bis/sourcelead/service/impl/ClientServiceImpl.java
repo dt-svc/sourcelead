@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,7 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -566,6 +568,23 @@ public class ClientServiceImpl implements ClientService {
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
+		}
+		
+		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
+			if(clientOrgLocations.getGeneratedUserId()== null || StringUtils.isBlank(clientOrgLocations.getGeneratedUserId())) {
+			Boolean validateShortCode = true;
+	 		while(validateShortCode){
+	 			String orgShortCode = RandomStringUtils.randomAlphabetic(4);
+	 			 boolean validateGeneratedUserId = orgLocationService.validateOrgShortCode(orgShortCode);
+	 			 if(validateGeneratedUserId == true){
+	 					validateShortCode = true;
+	 				}else {
+	 					validateShortCode = false;
+	 					clientOrgLocations.setGeneratedUserId(orgShortCode.toUpperCase());
+	 					orgLocationService.updateOrgLocations(clientOrgLocations);
+	 				}
+	 		 }
+		   }
 		}
 		
 		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
