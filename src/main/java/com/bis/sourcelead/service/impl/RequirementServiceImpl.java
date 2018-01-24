@@ -46,7 +46,9 @@ import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorsDocumentsDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Candidate;
@@ -66,6 +68,7 @@ import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
@@ -772,8 +775,51 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		
 		
+		HashSet<RequirementLocations> requirementLocationsList = new HashSet<RequirementLocations>();
+		if(requirementDTO.getLocationInfo() != null && !requirementDTO.getLocationInfo().isEmpty()) {
+			for(RequirementLocationsDTO locationDTO : requirementDTO.getLocationInfo()) {
+				if(StringUtils.isNotBlank(locationDTO.getLocationName())) {
+					RequirementLocations requirementLocations = new RequirementLocations();
+					requirementLocations.setRequirementId(requirement);
+					requirementLocations.setLocation(locationDTO.getLocationName());
+					
+					if(StringUtils.isNotBlank(locationDTO.getCountry())) {
+						requirementLocations.setCountry(locationDTO.getCountry());
+					}
+					
+					
+					if(StringUtils.isNotBlank(locationDTO.getState())) {
+						requirementLocations.setState(locationDTO.getState());
+					}
+					
+					if(StringUtils.isNotBlank(locationDTO.getState())) {
+						requirementLocations.setState(locationDTO.getState());
+					}
+					
+					if(StringUtils.isNotBlank(locationDTO.getCity())) {
+						requirementLocations.setCity(locationDTO.getCity());
+					}
+					
+					if(StringUtils.isNotBlank(locationDTO.getZipcode())) {
+						requirementLocations.setZipCode(locationDTO.getZipcode());
+					}
+					
+					if(StringUtils.isNotBlank(locationDTO.getLongitude())) {
+						requirementLocations.setLongitude(locationDTO.getLongitude());
+					}
+					
+					if(StringUtils.isNotBlank(locationDTO.getLatitude())) {
+						requirementLocations.setLatitude(locationDTO.getLatitude());
+					}
+					
+					requirementLocations.setStatus(Constants.RECORD_ACTIVE);
+					requirementLocations.setLocationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					requirementLocationsList.add(requirementLocations);
+				}
+			}
+		}
 		
-		
+		requirement.setRequirementLocations(requirementLocationsList);
 		
 		/*int teamCount = 0;
 			ArrayList<String> assignedTeamId = new ArrayList<String>();

@@ -18,7 +18,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -35,7 +34,6 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	/**
@@ -352,6 +350,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementLocations> requirementLocations = new HashSet<RequirementLocations>(0);
 	
 	@Transient
 	private String searchType;;
@@ -1903,6 +1907,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setExperienceLevel(LookUpData experienceLevel)
 	{
 		this.experienceLevel = experienceLevel;
+	}
+
+	public Set<RequirementLocations> getRequirementLocations() {
+		return requirementLocations;
+	}
+
+	public void setRequirementLocations(Set<RequirementLocations> requirementLocations) {
+		this.requirementLocations = requirementLocations;
 	}
 
 	
