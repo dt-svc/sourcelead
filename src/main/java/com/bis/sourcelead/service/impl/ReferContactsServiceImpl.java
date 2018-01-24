@@ -201,24 +201,17 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 			throws Exception {
 		
 		ReferContacts referContacts = new ReferContacts();
-		ReferContactsDTO referContactsDTO = new ReferContactsDTO();
 		if(StringUtils.isNoneBlank(toUser.getFirstName())){
 			referContacts.setFirstName(toUser.getFirstName());
-			referContactsDTO.setFirstName(toUser.getFirstName());
 		}
-		
 		if(StringUtils.isNoneBlank(toUser.getLastName())){
 			referContacts.setLastName(toUser.getLastName());
-			referContactsDTO.setLastName(toUser.getLastName());
 		}
-		
-		referContactsDTO.setEmail(toUser.getEmail());
+
 		referContacts.setContactUser(toUser);
-		
 		if(StringUtils.isNoneBlank(toUser.getMobilePhone())){
 			referContacts.setContactUserPhone(toUser.getMobilePhone());
 		}
-		
 		referContacts.setReferFromUser(fromUser);
 		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
 		referContacts.setContactUserEmail(toUser.getEmail());
@@ -231,6 +224,11 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		referContactsDao.addReferContacts(referContacts);
 		
 		
+	}
+
+	@Override
+	public ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception {
+		return referContactsDao.getReferContactsByFromUserIdAndToUserId(fromUserId, toUserId);
 	}
 
 }

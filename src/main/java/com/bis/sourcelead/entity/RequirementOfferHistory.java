@@ -19,6 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
 	@Table(name = "REQUIREMENT_OFFER_HISTORY")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirmentOfferHistory")
@@ -85,6 +87,10 @@ import org.hibernate.annotations.NotFoundAction;
 	
 	@Transient
     private Long offerResumeId;
+	
+	@Transient
+	@JsonProperty
+    private String submissionStatusStr;
 
 	public Long getId() {
 		return id;
@@ -220,5 +226,15 @@ import org.hibernate.annotations.NotFoundAction;
 
 	public void setOfferResumeId(Long offerResumeId) {
 		this.offerResumeId = offerResumeId;
+	}
+
+	public String getSubmissionStatusStr()
+	{
+		return submissionStatusStr;
+	}
+
+	public void setSubmissionStatusStr(String submissionStatusStr)
+	{
+		this.submissionStatusStr = submissionStatusStr;
 	}
 }

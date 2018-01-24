@@ -256,7 +256,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			   if(projectMembersList != null && projectMembersList.size() > 0){
 				   teamMembersTable = getTeamMembersTable(projectMembersList);
 			   }else{
-				   teamMembersTable = "-----";
+				   teamMembersTable = "";
 			   }
 			   List<ProjectApproverHierarchy> projectApproverHierarchiesList = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			   if(projectApproverHierarchiesList != null && projectApproverHierarchiesList.size() > 0){
@@ -273,12 +273,13 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			   for (ProjectApproverHierarchy projectApproverHierarchy : approverHierarchy) {
 				 StringBuilder fullname=new StringBuilder();
 				 if(projectApproverHierarchy.getApproverUserId().getLastName()!=null && projectApproverHierarchy.getApproverUserId().getLastName()!="")
-				   managers=managers.append(fullname.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(projectApproverHierarchy.getApproverUserId().getLastName())).append("&");
+				   managers=managers.append(fullname.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(projectApproverHierarchy.getApproverUserId().getLastName())).append(" & ");
 				 else
 					 managers=managers.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" & ");
 			}
 			  String projectManagers=managers.toString();
-			  String projectmanagerss= managers.substring(0, projectManagers.length()-1);
+			  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
+		 
 			 
 			   if(projectMembersList != null && projectMembersList.size() > 0){
 				   for(ProjectMembers projectMembers : projectMembersList){
