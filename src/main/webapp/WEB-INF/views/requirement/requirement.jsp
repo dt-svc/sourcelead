@@ -1508,7 +1508,7 @@ $(document).ready(function () {
 <div id="divLocTd1" style="display: none; float: left;">
     <div class='positionRelative'>
 		 <input type="text"  placeholder="Location" onclick="addLocationAuto('REPLACEROWIDaddlocation','REPLACEROWID','REPLACEROWIDlongitude','REPLACEROWIDlatitude')" class="form-control joblocinput" id="REPLACEROWIDaddlocation" name="locationInfo[REPLACEROWID].locationName"  data-validation="required" field-name="Location" > 
-	     <div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation('REPLACEROWID');"></div>
+	     <div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation('REPLACEROWID');"></div>
 	     <input type="hidden"  name="locationInfo[REPLACEROWID].country" id="REPLACEROWIDcountry">
 		 <input type="hidden"  name="locationInfo[REPLACEROWID].state" id="REPLACEROWIDstate">
 		 <input type="hidden"  name="locationInfo[REPLACEROWID].city" id="REPLACEROWIDcity">
@@ -2909,7 +2909,7 @@ function getJobLocations(){
 		         		 var j = i+1000;
 		         		 result = result +"<div class='positionRelative mt5' id='location"+opt.id+"'>";
 		         		 result = result +'<input type="text" value="'+opt.locationName+'" placeholder="Location" id="'+j+'addlocation" onclick="addLocationAuto(\''+j+'addlocation\','+j+',\''+j+'longitude\',\''+j+'latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="savedLocationInfo['+i+'].locationName">';
-		         		 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon pull-right" title="Refresh" onClick="refreshLocation('+j+');"></div>';
+		         		 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon pull-right" title="Clear" onClick="refreshLocation('+j+');"></div>';
 		         		 result = result +"<span class='fa fa-trash jobloc-trash' onclick='deleteSavedLocation("+opt.id+")'></span>";
 		         		 result = result +'<input type="hidden" value="'+opt.country+'"  name="savedLocationInfo['+i+'].country" id="'+j+'country">';
 			        	 result = result +'<input type="hidden" value="'+opt.state+'"  name="savedLocationInfo['+i+'].state" id="'+j+'state">';
@@ -2930,7 +2930,7 @@ function getJobLocations(){
 		        	 result = result +"<td>";
 		        	 result = result +"<div class='positionRelative mt5'>";
 		        	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation-optional="true" field-name="Location" name="locationInfo[0].locationName">';
-		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation(0);"></div>';
+		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation(0);"></div>';
 		        	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
 		        	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
 		        	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
@@ -2964,7 +2964,7 @@ function getJobLocations(){
 		        	 result = result +"<td>";
 		        	 result = result +"<div class='positionRelative'>";
 		        	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="locationInfo[0].locationName">';
-		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation(0);"></div>';
+		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation(0);"></div>';
 		        	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
 		        	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
 		        	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
