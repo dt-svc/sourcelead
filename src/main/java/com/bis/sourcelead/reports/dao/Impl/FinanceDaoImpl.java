@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -37,8 +38,12 @@ public class FinanceDaoImpl implements FinanceDao{
 	OrgRelationsService orgRelationsService;
 	
 	@Autowired
+	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
+	@Autowired
 	ReportsUtil reportsUtil;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
@@ -335,6 +340,7 @@ public class FinanceDaoImpl implements FinanceDao{
 			try {
 				Session session = this.sessionFactory.getCurrentSession();
 				String subQuery = "";
+				String groupQuery = "";
 				if("invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
 					subQuery = "(sah.invoiceStatus IS NULL OR sah.invoiceStatus = 'DRAFT')";
 				}else {
@@ -417,7 +423,13 @@ public class FinanceDaoImpl implements FinanceDao{
 					query = qry;
 				}
 				
-				Query query1 = session.createQuery(query+" "+searchQuery+" GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate) ");
+				if("invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
+					groupQuery = " GROUP BY CONCAT(sah.submissionId.projects.id,sah.frequencyStartDate,sah.frequencyEndDate)";
+				}else {
+					groupQuery = " GROUP BY CONCAT(sah.submissionId.projects.id,sah.frequencyStartDate,sah.frequencyEndDate)";
+				}
+				
+				Query query1 = session.createQuery(query+" "+searchQuery+groupQuery);
 				List<SubmissionApproverHierarchy> tslist = null;
 				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
@@ -435,7 +447,14 @@ public class FinanceDaoImpl implements FinanceDao{
 				}
 				
 				
-				 Query countQ = session.createQuery(queryCount+" GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate) ");
+				if(tslist != null && !tslist.isEmpty()) {
+					for(SubmissionApproverHierarchy sah :tslist) {
+						List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(sah.getSubmissionId().getProjects().getId(), sah.getFrequencyStartDate(), sah.getFrequencyEndDate(),null);
+					}
+				}
+				/*submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate*/
+				
+				 Query countQ = session.createQuery(queryCount+groupQuery);
 				 countQ.setLong("orgLocationId", orgLocations.getId()).setCacheable(true);
 				
 				List<Long> countList  = null;

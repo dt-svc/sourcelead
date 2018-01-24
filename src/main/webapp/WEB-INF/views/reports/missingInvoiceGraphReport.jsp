@@ -19,9 +19,9 @@ $(document).ready(function(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Missing Invoices</h2>
+        <h2>Missing last_years</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Missing Invoices</div>
+      <div class="pull-right brud-crum">Home &raquo; Missing last_years</div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">
@@ -51,17 +51,16 @@ $(document).ready(function(){
         <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" id="customDates">
-          <option>Select Date</option>
-          <option value="invoiceweekly">Last 7 days</option>
-          <option value="invoice15Days">Last 15 days</option>
-          <option value="invoice1Month">1 month</option>
-          <option value="invoice3Month">3 months</option>
-          <option value="invoices" selected>Last year</option>
-          <option>Year to Date</option>
-          <option value="custom-select">Custom</option>
+          <option value="">Select Date</option>
+          <option value="last_7days">Last 7 days</option> 
+          <option value="last_15days">Last 15 days</option>
+          <option value="1month">1 month</option>
+          <option value="3months">3 months</option>
+          <option value="last_years" selected>last year</option>
+          <option value="custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
-    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
+    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom" style="display: none; width: 346px;">
     <div class="pull-left">
     <div class="pull-left mr5" style="width: 140px">
     <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
@@ -110,11 +109,11 @@ $(document).ready(function(){
 		</ul>
 </div>
 		<div class="col-md-9">
-		<div id="invoices" style="width: 100%; height: 375px;" class="amchartAnchor-Hide"></div>
-		<div id="invoiceweekly" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
-		<div id="invoice15Days" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
-		<div id="invoice1Month" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
-		<div id="invoice3Month" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+		<div id="last_years" style="width: 100%; height: 375px;" class="amchartAnchor-Hide"></div>
+		<div id="last_7days" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+		<div id="last_15days" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+		<div id="1month" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+		<div id="3months" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
 		</div>
 		</div>
 	</div>
@@ -139,66 +138,98 @@ var config = {
     });
     $('#priority').trigger('chosen:updated');
 </script> 
+
 <script>
-	$(function(){
-		$("#customDates").change(function() {
-			var customDates = $(this).val();
-			if (customDates === "custom-select") {
-				$("#custom-select").show();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").show();
-			}else if (customDates === "invoiceweekly") {
-				$("#custom-select").hide();
-				$("#invoiceweekly").show();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").hide();
-			}else if (customDates === "invoice15Days") {
-				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").show();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").hide();
-			}else if (customDates === "invoice1Month") {
-				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").show();
-				$("#invoice3Month").hide();
-				$("#invoices").hide();
-			}else if (customDates === "invoice3Month") {
-				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").show();
-				$("#invoices").hide();
-			}else if (customDates === "invoices") {
-				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").show();
-			}else{
-				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").show();
-			}
-		});
-	})
+function missingInvoiceDataGraph(){
+	     var invoiceType = "invoice";
+		 var sourceleadUrl ='${sourceleadUrl}';
+	
+	       $.post(sourceleadUrl+"/missingInvoiceDataGraph?&invoiceType="+invoiceType, function(json) {
+	    	var data = json.data;
+	    	prepareapMissingInvoiceGraph(data);
+		});  
+}
+</script>
+
+<script>
+	function prepareapMissingInvoiceGraph(data){
+	/* 	$("#customDates").change(function() { */
+			var customDates = $("#customDates").val();
+			alert("Hai"+customDates);
+			if (customDates === "last_years") {
+				alert(data);
+				lastYearGraph(data);
+			}else if (customDates === "last_7days") {
+				$("#custom").hide();
+				$("#last_7days").show();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").hide();
+			}else if (customDates === "last_15days") {
+				$("#custom").hide();
+				$("#last_7days").hide();
+				$("#last_15days").show();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").hide();
+			}else if (customDates === "1month") {
+				$("#custom").hide();
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").show();
+				$("#3months").hide();
+				$("#last_years").hide();
+			}else if (customDates === "3months") {
+				$("#custom").hide();
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").show();
+				$("#last_years").hide();
+			}else if (customDates === "custom") {
+				alert("Custom");
+				$("#custom").show();
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").hide();
+			}/* else{
+				$("#custom").hide();
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").show();
+			} */
+		/* }); */
+	}
 </script>
 <!-- amCharts javascript code --> 
-<script type="text/javascript">
-	AmCharts.makeChart("invoices",
+
+<script>
+function lastYearGraph(data){
+	alert(data);
+	$("#custom").hide();
+	$("#last_7days").hide();
+	$("#last_15days").hide();
+	$("#1month").hide();
+	$("#3months").hide();
+	$("#last_years").show();
+	
+	  var chartData = [];
+	   for (var i = 0; i < data.length; i++) { 
+	 		 var opt = data[i]; 
+	 		 alert(opt.invoiceDate);
+	         chartData.push({
+	        	 "date": opt.invoiceDate,
+	        	 "column-1": opt.invoiceAmount
+	       });
+	   }  
+	   alert(chartData.length);
+	   
+	AmCharts.makeChart("last_years",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -266,63 +297,19 @@ var config = {
 		{
 			"id": "missingInvoices",
 			"size": 15,
-			"text": "Missing Invoices"
+			"text": "Missing last_years"
 		}
 	],
-	"dataProvider": [
-		{
-			"date": "2017-01-12",
-			"column-1": "100",
-		},
-		{
-			"date": "2017-02-10",
-			"column-1": "80",
-		},
-		{
-			"date": "2017-03-10",
-			"column-1": "60",
-		},
-		{
-			"date": "2017-04-10",
-			"column-1": "40",
-		},
-		{
-			"date": "2017-05-10",
-			"column-1": "30",
-		},
-		{
-			"date": "2017-06-10",
-			"column-1": "20",
-		},
-		{
-			"date": "2017-07-10",
-			"column-1": "10",
-		},
-		{
-			"date": "2017-08-10",
-			"column-1": "5",
-		},
-		{
-			"date": "2017-09-10",
-			"column-1": "15",
-		},
-		{
-			"date": "2017-10-10",
-			"column-1": "25",
-		},
-		{
-			"date": "2017-11-10",
-			"column-1": "35",
-		},
-		{
-			"date": "2017-12-10",
-			"column-1": "450",
-		}
-	]
+	"dataProvider": chartData
 }
 );
+}
+</script>
+
+
+<script>
 //invoice weekly	
-	AmCharts.makeChart("invoiceweekly",
+	AmCharts.makeChart("last_7days",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -387,7 +374,7 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
 			"text": "Weekly Missing Invoice"
 		}
@@ -424,8 +411,8 @@ var config = {
 	]
 }
 );
-//invoice15Days
-	AmCharts.makeChart("invoice15Days",
+//last_15days
+	AmCharts.makeChart("last_15days",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -490,7 +477,7 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
 			"text": "15Days Missing Invoice"
 		}
@@ -567,8 +554,8 @@ var config = {
 	]
 }
 );
-	//invoice1Month
-	AmCharts.makeChart("invoice1Month",
+	//1month
+	AmCharts.makeChart("1month",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -635,7 +622,7 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
 			"text": "1 Month Missing Invoice"
 		}
@@ -768,8 +755,8 @@ var config = {
 	]
 }
 );
-//invoice3Month
-	AmCharts.makeChart("invoice3Month",
+//3months
+	AmCharts.makeChart("3months",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -835,9 +822,9 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
-			"text": "Three Months Missing Invoices"
+			"text": "Three Months Missing last_years"
 		}
 	],
 	"dataProvider": [
@@ -858,16 +845,6 @@ var config = {
 );
 </script>
 
-<script>
-function missingInvoiceDataGraph(){
-	     var invoiceType = 'invoice';
-		 var sourceleadUrl ='${sourceleadUrl}';
-	
-	       $.post(sourceleadUrl+"/missingInvoiceDataGraph?"+tokenParamName+"="+tokenValue+"&invoiceType"+invoiceType, function(json) {
-	    	
-	    	prepareapagingGraph(json);
-		});  
-}
-</script>
+
 
 <jsp:include page="../masterFooter.jsp" />

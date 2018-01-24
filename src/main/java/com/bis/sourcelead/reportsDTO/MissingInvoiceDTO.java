@@ -21,6 +21,8 @@ public class MissingInvoiceDTO extends SearchDTO {
 	private String fromDate;
 	private String toDate;
 	private String frequencyDate;
+	private String billAmount;
+	private String invoiceAmount;
 	
 
 	public String getInvoiceReferId() {
@@ -130,6 +132,22 @@ public class MissingInvoiceDTO extends SearchDTO {
 
 	public void setFrequencyDate(String frequencyDate) {
 		this.frequencyDate = frequencyDate;
+	}
+
+	public String getBillAmount() {
+		return billAmount;
+	}
+
+	public void setBillAmount(String billAmount) {
+		this.billAmount = billAmount;
+	}
+
+	public String getInvoiceAmount() {
+		return invoiceAmount;
+	}
+
+	public void setInvoiceAmount(String invoiceAmount) {
+		this.invoiceAmount = invoiceAmount;
 	}
 
 
