@@ -51,9 +51,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -70,6 +72,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -80,6 +83,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -95,6 +99,7 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
@@ -179,6 +184,10 @@ public class RequirementListRestController {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -2058,6 +2067,45 @@ public class RequirementListRestController {
 		resultJson = commonUtil.toJSON(timezoneList);
 		return resultJson;
 	}
+	
+	
+	
+	@RequestMapping(value = "/getRequirementLocations")
+	public @ResponseBody List<RequirementLocationsDTO> getRequirementLocations(@RequestParam(value = "requirementUUID", required = true) String requirementUUID) throws Exception
+	{
+		
+		List<RequirementLocationsDTO> locationsDTOList = new ArrayList<>();
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations locations : locationsList) {
+				RequirementLocationsDTO locationsDTO = new RequirementLocationsDTO();
+				locationsDTO.setLocationName(locations.getLocation());
+				locationsDTO.setCountry(locations.getCountry());
+				if(!isNullOrEmpty(locations.getState())) {
+					locationsDTO.setState(locations.getState());
+				}
+				if(!isNullOrEmpty(locations.getCity())) {
+					locationsDTO.setCity(locations.getCity());
+				}
+				if(!isNullOrEmpty(locations.getZipCode())) {
+					locationsDTO.setZipcode(locations.getZipCode());
+				}
+				if(!isNullOrEmpty(locations.getLatitude())) {
+					locationsDTO.setLatitude(locations.getLatitude());
+				}
+				if(!isNullOrEmpty(locations.getLongitude())) {
+					locationsDTO.setLongitude(locations.getLongitude());
+				}
+				
+				locationsDTO.setLocationUUID(locations.getLocationUUID());
+				locationsDTO.setId(locations.getId());
+				locationsDTOList.add(locationsDTO);
+			}
+		}
+		return locationsDTOList;
+	}
+	
 	
 	@SuppressWarnings("unused")
 	public void modifiedReqStatusMailtoVendorContact(Requirement requirement, User loginUser, OrgLocations loginOrgLocation) throws Exception

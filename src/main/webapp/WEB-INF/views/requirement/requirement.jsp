@@ -1206,7 +1206,7 @@ $(document).ready(function () {
 		       <div class="col-md-6">
 				 <label class="col-md-12">Job Locations<span class="text-danger paddingLeft">*</span>&nbsp;<i class='fa fa-info-circle' title='Location must be in city,state,country format'></i></label>
 				 <div class="clearfix"></div>
-					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom">
+					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom jobdocsCustom">
 		                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
 						        <span class="uploadAttachments"> 
 					              <div id="jobLocationsList"></div>
@@ -2890,30 +2890,101 @@ function refreshRequirementClientContactList(){
 
 <script>
 function getJobLocations(){
-	var result = "";
-	var addlocation = 'addlocation0'
-	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
-     result = result +"<input type='hidden' id='locationsRowCount' value='1' />";
-	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0'>";
-	 result = result +"<tr id='divAttachmentTsRow0'>";
-	 result = result +"<td>";
-	 result = result +"<div class='positionRelative'>";
-	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="locationInfo[0].locationName">';
-	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation(0);"></div>';
-	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
-	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
-	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
-	 result = result +'<input type="hidden"  name="locationInfo[0].zipcode" id="0zipcode">';
-	 result = result +'<input type="hidden"  name="locationInfo[0].longitude" id="0longitude">';
-	 result = result +'<input type="hidden"  name="locationInfo[0].latitude" id="0latitude">';
-	 result = result +"</td>";
-	 result = result +"</div>";
-	 result = result +"<td><i class='fa fa-plus' id='addLocRow' onclick='addNewLocation()'></i></td>";
-	 result = result +"</tr>";
-	 result = result +"</table>";
 	
-	 $("#jobLocationsList").empty();
-	 $("#jobLocationsList").append(result);
+	var requirementUUID = '${requirementUUID}';
+	
+	if(requirementUUID){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
+		        success: function(json) {
+		        	
+		        	 var result = "";
+		        	 var addlocation = 'addlocation0';
+		        	 var locCount = json.length;
+		        	 
+		         	 for (var i = 0; i < json.length; i++) { 
+		         		 var opt = json[i]; 
+		         		 var j = i+1000;
+		         		 result = result +"<div class='positionRelative mt5' id='location"+opt.id+"'>";
+		         		 result = result +'<input type="text" value="'+opt.locationName+'" placeholder="Location" id="'+j+'addlocation" onclick="addLocationAuto(\''+j+'addlocation\','+j+',\''+j+'longitude\',\''+j+'latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="savedLocationInfo['+i+'].locationName">';
+		         		 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon pull-right" title="Refresh" onClick="refreshLocation('+j+');"></div>';
+		         		 result = result +"<span class='fa fa-trash jobloc-trash' onclick='deleteSavedLocation("+opt.id+")'></span>";
+		         		 result = result +'<input type="hidden" value="'+opt.country+'"  name="savedLocationInfo['+i+'].country" id="'+j+'country">';
+			        	 result = result +'<input type="hidden" value="'+opt.state+'"  name="savedLocationInfo['+i+'].state" id="'+j+'state">';
+			        	 result = result +'<input type="hidden" value="'+opt.city+'" name="savedLocationInfo['+i+'].city" id="'+j+'city">';
+			        	 result = result +'<input type="hidden" value="'+opt.zipcode+'" name="savedLocationInfo['+i+'].zipcode" id="'+j+'zipcode">';
+			        	 result = result +'<input type="hidden" value="'+opt.longitude+'" name="savedLocationInfo['+i+'].longitude" id="'+j+'longitude">';
+			        	 result = result +'<input type="hidden" value="'+opt.latitude+'" name="savedLocationInfo['+i+'].latitude" id="'+j+'latitude">';
+			        	 result = result +'<input type="hidden" value="'+opt.locationUUID+'" name="savedLocationInfo['+i+'].locationUUID" >';
+	   				     result = result +"</div>";
+		         	 }
+		        	 
+		        	 
+		         	 result = result +"<input type='hidden' name='savedlocationsMaxRowNumber'  id='savedlocationsMaxRowNumber' value='"+locCount+"' />";
+		        	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
+		             result = result +"<input type='hidden' id='locationsRowCount' value='1' />";
+		        	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0'>";
+		        	 result = result +"<tr id='divAttachmentTsRow0'>";
+		        	 result = result +"<td>";
+		        	 result = result +"<div class='positionRelative mt5'>";
+		        	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation-optional="true" field-name="Location" name="locationInfo[0].locationName">';
+		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation(0);"></div>';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].zipcode" id="0zipcode">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].longitude" id="0longitude">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].latitude" id="0latitude">';
+		        	 result = result +"</td>";
+		        	 result = result +"</div>";
+		        	 result = result +"<td><i class='fa fa-plus' id='addLocRow' onclick='addNewLocation()'></i></td>";
+		        	 result = result +"</tr>";
+		        	 result = result +"</table>";
+		        	
+		        	 $("#jobLocationsList").empty();
+		        	 $("#jobLocationsList").append(result);
+		        	 $("#loading").removeAttr("style");	
+		        }
+		 });
+	}else{
+		
+		 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
+		        success: function(json) {
+		        	
+		        	 var result = "";
+		        	 var addlocation = 'addlocation0'
+		        	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
+		             result = result +"<input type='hidden' id='locationsRowCount' value='1' />";
+		        	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0'>";
+		        	 result = result +"<tr id='divAttachmentTsRow0'>";
+		        	 result = result +"<td>";
+		        	 result = result +"<div class='positionRelative'>";
+		        	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="locationInfo[0].locationName">';
+		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshLocation(0);"></div>';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].zipcode" id="0zipcode">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].longitude" id="0longitude">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].latitude" id="0latitude">';
+		        	 result = result +"</td>";
+		        	 result = result +"</div>";
+		        	 result = result +"<td><i class='fa fa-plus' id='addLocRow' onclick='addNewLocation()'></i></td>";
+		        	 result = result +"</tr>";
+		        	 result = result +"</table>";
+		        	
+		        	 $("#jobLocationsList").empty();
+		        	 $("#jobLocationsList").append(result);
+		        }
+		 });
+	}
+	
+	 
+	
 	 
 	 
 	
@@ -2974,6 +3045,22 @@ function refreshLocation(rowId){
 	  $("#"+rowId+"city").val('');
 	  $("#"+rowId+"zipcode").val('');
 
+}
+
+
+function deleteSavedLocation(id){
+	document.getElementById("location"+id).remove();
+	
+	var savedlocationsMaxRowNumber = parseInt($("input[name = 'savedlocationsMaxRowNumber']").val());
+	$("input[name = 'savedlocationsMaxRowNumber']").val(savedlocationsMaxRowNumber - 1);
+	
+	var savedlocMaxRowNumber = parseInt($("input[name = 'savedlocationsMaxRowNumber']").val());
+	if(savedlocMaxRowNumber == 0){
+		$("#0addlocation").removeAttr("data-validation-optional");
+		$("#0addlocation").attr("data-validation","required");
+	}
+	
+	
 }
 </script>
 

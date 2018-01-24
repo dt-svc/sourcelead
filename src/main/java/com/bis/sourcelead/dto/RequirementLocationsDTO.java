@@ -15,6 +15,10 @@ public class RequirementLocationsDTO {
 	private String longitude;
 	
 	private String latitude;
+	
+	private Long id;
+	
+	private String locationUUID;
 
 	public String getLocationName() {
 		return locationName;
@@ -70,6 +74,22 @@ public class RequirementLocationsDTO {
 
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getLocationUUID() {
+		return locationUUID;
+	}
+
+	public void setLocationUUID(String locationUUID) {
+		this.locationUUID = locationUUID;
 	}
 	
 	

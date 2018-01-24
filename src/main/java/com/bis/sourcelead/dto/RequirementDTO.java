@@ -172,6 +172,8 @@ public class RequirementDTO extends CommonDTO {
 	private String fileName;
 	
 	private List<RequirementLocationsDTO> locationInfo;
+	
+	private List<RequirementLocationsDTO> savedLocationInfo;
 
 	
 	/*
@@ -1308,6 +1310,14 @@ public class RequirementDTO extends CommonDTO {
 	}
 	public String getImportValue() {
 		return importValue;
+	}
+
+	public List<RequirementLocationsDTO> getSavedLocationInfo() {
+		return savedLocationInfo;
+	}
+
+	public void setSavedLocationInfo(List<RequirementLocationsDTO> savedLocationInfo) {
+		this.savedLocationInfo = savedLocationInfo;
 	}
 
 	public void setImportValue(String importValue) {

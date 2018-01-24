@@ -93,6 +93,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -176,6 +177,11 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
+	
+	
 	@Override
 	 public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
@@ -774,6 +780,61 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		
+		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
+			
+			List<String> savedUUIDList = requirementLocationsService.getRequirementLocationsUUIDByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
+			List<String> UUIDList = new ArrayList<>();
+			if(requirementDTO.getSavedLocationInfo() != null && !requirementDTO.getSavedLocationInfo().isEmpty()) {
+				for(RequirementLocationsDTO savedLocationDTO : requirementDTO.getSavedLocationInfo()) {
+					if(savedLocationDTO.getLocationUUID() != null && !savedLocationDTO.getLocationUUID().isEmpty()) {
+					RequirementLocations reqLocation = requirementLocationsService.getRequirementLocationsByLocationUUID(savedLocationDTO.getLocationUUID());
+					if(reqLocation != null) {
+						reqLocation.setLocation(savedLocationDTO.getLocationName());
+						
+						if(savedLocationDTO.getCountry() != null && !savedLocationDTO.getCountry().isEmpty()) {
+							reqLocation.setCountry(savedLocationDTO.getCountry());
+						}
+						
+						if(savedLocationDTO.getState() != null && !savedLocationDTO.getState().isEmpty()) {
+							reqLocation.setState(savedLocationDTO.getState());
+						}
+						
+						if(savedLocationDTO.getCity() != null && !savedLocationDTO.getCity().isEmpty()) {
+							reqLocation.setCity(savedLocationDTO.getCity());
+						}
+						
+						if(savedLocationDTO.getZipcode() != null && !savedLocationDTO.getZipcode().isEmpty()) {
+							reqLocation.setZipCode(savedLocationDTO.getZipcode());
+						}
+						
+						if(savedLocationDTO.getLongitude() != null && !savedLocationDTO.getLongitude().isEmpty()) {
+							reqLocation.setLongitude(savedLocationDTO.getLongitude());
+						}
+						
+						if(savedLocationDTO.getLatitude() != null && !savedLocationDTO.getLatitude().isEmpty()) {
+							reqLocation.setLatitude(savedLocationDTO.getLatitude());
+						}
+						
+						requirementLocationsService.saveRequirementLocations(reqLocation);
+					}
+					UUIDList.add(savedLocationDTO.getLocationUUID());
+					}
+				}
+				
+				
+				UUIDList.retainAll(savedUUIDList);
+				savedUUIDList.removeAll(UUIDList);
+				
+				if(savedUUIDList != null && !savedUUIDList.isEmpty()) {
+					for(String UUID : savedUUIDList) {
+						RequirementLocations reqLocation = requirementLocationsService.getRequirementLocationsByLocationUUID(UUID);
+						requirementLocationsService.deleteRequirementLocations(reqLocation);
+					}
+				}
+				
+			}
+		}
+		
 		
 		HashSet<RequirementLocations> requirementLocationsList = new HashSet<RequirementLocations>();
 		if(requirementDTO.getLocationInfo() != null && !requirementDTO.getLocationInfo().isEmpty()) {
@@ -805,22 +866,6 @@ public class RequirementServiceImpl implements RequirementService {
 					
 					if(locationDTO.getLatitude() != null && !locationDTO.getLatitude().isEmpty()) {
 						requirementLocations.setLatitude(locationDTO.getLatitude());
-					}
-					
-					
-					if(locationDTO.getCountry() == null || "".equals(locationDTO.getCountry()) ) {
-						String[] jobLocation = locationDTO.getLocationName().split(",");
-						if(jobLocation[0] != null && !jobLocation[0].isEmpty()) {
-							requirementLocations.setCity(jobLocation[0]);
-						}
-						
-						if(jobLocation[1] != null && !jobLocation[1].isEmpty()) {
-							requirementLocations.setState(jobLocation[1]);
-						}
-						
-						if(jobLocation[2] != null && !jobLocation[2].isEmpty()) {
-							requirementLocations.setCountry(jobLocation[2]);
-						}
 					}
 					
 					requirementLocations.setStatus(Constants.RECORD_ACTIVE);
