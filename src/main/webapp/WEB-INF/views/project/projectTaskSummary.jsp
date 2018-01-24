@@ -21,8 +21,85 @@ var sourceleadUrl = '${sourceleadUrl}';
 		getSubTaskList();
 		getSavedTaskDetails();
 		maskme();
+		var taskType = '${taskStatus}';
+		if(taskType == "Bug"){
+			getSelectUserStoryByBug();
+		}
+		if(taskType == "UserStory"){
+			getSelectSubEpicsByUserStory();
+		}
 	});
  </script>
+ 
+ 
+ <script>
+ function getSelectUserStoryByBug(){
+	 var projectId = '${projectId}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var taskType = "UserStory";
+	 var parentTaskId = '${parentTaskId}';
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    		success: function(json) {
+	    			var output = "";
+	    				output = output + "<option value=''>--Select User Story--</option>";
+	    			for (var i=0; i<json.length; i++)
+		     		{
+			     		var opt = json[i];
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     		if(opt.id == parentTaskId){
+			     			output = output + "<option "+ (opt.id == parentTaskId ? "selected" : '') +" value='" +opt.id+ "'>"+generatedId+"   "+opt.taskName+"</option>";
+			     		}else{
+			     			output = output + "<option value='" +opt.id+ "'> "+generatedId+"   "+opt.taskName+"</option>";
+			     		}
+		     		}
+	    				$("#editUserStroyId").empty();
+			     		$("#editUserStroyId").append(output);
+			     		$('#editUserStroyId').trigger("chosen:updated");
+	    		}
+	 });
+ }
+ function getSelectSubEpicsByUserStory(){
+	 var projectId =  "${projectId}";
+	 var taskType = "Epic";
+	 var parentTaskId = '${parentTaskId}';
+	 $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    		success: function(json) {
+	    			var output = "";
+	    				output = output + "<option value=''>--Select Epic--</option>";
+	    			for (var i=0; i<json.length; i++)
+		     		{
+			     		var opt = json[i];
+			     		if(opt.generatedId != null && opt.generatedId != "" && opt.generatedId != "undefined"){
+			     			generatedId = opt.generatedId +" - ";
+			     		}else{
+			     			generatedId = "";
+			     		}
+			     		
+			     		if(opt.id == parentTaskId){
+			     			output = output + "<option "+ (opt.id == parentTaskId ? "selected" : '') +" value='" +opt.id+ "'>"+generatedId+"   "+opt.taskName+"</option>";
+			     		}else{
+			     			output = output + "<option value='" +opt.id+ "'> "+generatedId+"   "+opt.taskName+"</option>";
+			     		}
+		     		}
+	    			 
+	    			$("#editEepicId").empty();
+		     		$("#editEepicId").append(output);
+		     		$('#editEepicId').trigger("chosen:updated");
+	    		}
+	 });
+ }
+ </script>
+ 
+ 
+ 
  <div id="taskDeletePopUp"></div>
 	<section class="content-wraper clearfix">
 	
@@ -78,8 +155,8 @@ var sourceleadUrl = '${sourceleadUrl}';
                   <span class="tbldata-dotdot pull-left" title="${createdBy}">${createdBy}</span>
               </div>
               <div class="col-md-3 mt5">
-                  <label class="paddingRight">Due On:</label>
-                  <span>${dueDate}</span>
+                  <%-- <label class="paddingRight">Due On:</label>
+                  <span>${dueDate}</span> --%>
               </div>
                   <div class="col-md-1 text-center">
                   <span class="fa fa-caret-down btn btn-sm btn-primary"></span>
@@ -187,18 +264,38 @@ var sourceleadUrl = '${sourceleadUrl}';
 		          </c:if>
 		                 
 			              
-			           <div class="row dropdown-select mb">
-			              <label class="col-md-12">Task Type </label>
-			              <div class="col-md-12 dropdown-select">
-			              <input type="text" value="${projectTask.taskTypes}" disabled="disabled" class="form-control input-sm">
-			                <%-- <select class="form-control" onchange="inlineEditTaskType(${projectTask.id});" id="taskTypeId" disabled="disabled">
-			                   <c:forEach var="type" items="${taskTypeList}">         
-			                    <option value="${type.id}" ${type.id  == projectTask.taskTypes.id ? 'selected' : ''} >${type.name}</option>                                                                                                     
-								</c:forEach> 
-			                </select> --%>
-			              </div>
-			              </div>
+		           <div class="row dropdown-select mb">
+		              <label class="col-md-12">Task Type </label>
+		              <div class="col-md-12 dropdown-select">
+		              <input type="text" value="${projectTask.taskTypes}" disabled="disabled" class="form-control input-sm">
+		                <%-- <select class="form-control" onchange="inlineEditTaskType(${projectTask.id});" id="taskTypeId" disabled="disabled">
+		                   <c:forEach var="type" items="${taskTypeList}">         
+		                    <option value="${type.id}" ${type.id  == projectTask.taskTypes.id ? 'selected' : ''} >${type.name}</option>                                                                                                     
+							</c:forEach> 
+		                </select> --%>
+		              </div>
+		              </div>
+			              
+			          <c:if test="${taskStatus == 'UserStory'}">
+			          <div class="row mb">
+		                  <label class="col-md-12">Epic</label>
+		              <div class="col-md-12 dropdown-select">
+		              <select class="chosen-select form-control" id="editEepicId" onchange="inlineEditEpic(${projectTask.id});"></select>
+		              
+		              </div>
+		              </div>
+			          </c:if>
+			          
+			          <c:if test="${taskStatus == 'Bug'}">
+			          <div class="row mb">
+		                  <label class="col-md-12">UserStroy</label>
+		              <div class="col-md-12 dropdown-select">
+		                   <select class="chosen-select form-control" id="editUserStroyId"  onchange="inlineEditUserStory(${projectTask.id});"></select>
+		              </div>
+		              </div>
+			          </c:if>
 		             
+		              
 		              <div class="clearfix  mb select-loader">
 		                  <select class="pull-left" onchange="inlineEditTaskStatus(${projectTask.id});" id="taskStatusId" name="taskstype" field-name="Task Type"  data-validation="required">    
 							<c:forEach var="status" items="${taskStatusList}">    
@@ -270,6 +367,29 @@ var sourceleadUrl = '${sourceleadUrl}';
 						 </span>  
 		            </div>
 		            
+		             <div class="row mb">
+		                  <label class="col-md-12">Due Date </label>
+		              <div class="col-md-12">
+		              <div class="input-group">
+		                   <input class="form-control calendar" value="${dueDate}" name="editDueDate" id="editDueDate" placeholder="Due Date" type="text" onchange="inlineEditDueDate(${projectTask.id});" readonly>
+		                   <span class="input-group-addon" onClick="clearEditDueDate();inlineEditDueDate(${projectTask.id});"><i class="colorRed fa fa-times cursorPointer"></i></span>
+		                   </div>
+		              </div>
+		              </div>
+		              
+		              <div class="row mb">
+		                  <label class="col-md-12">Estimated Time</label>
+		              <div class="col-md-12 dropdown-select">
+		                   <input class="form-control"  placeholder="Estimated Time" type="text" value="${projectTask.estimateTime}" id="editEstimatedTime" size="8" maxlength="8" onchange="inlineEditEstimatedTime(${projectTask.id});" onkeypress="return isNumberKey(event)"> 
+		              </div>
+		              </div>
+		              
+		              <div class="row mb">
+		                  <label class="col-md-12">Owner</label>
+		              <div class="col-md-12 dropdown-select">
+		                   <select class="form-control" data-placeholder="Select Owner" id="editOwnerId" onchange="inlineEditOwner(${projectTask.id});"></select> 
+		              </div>
+		              </div>
 		              
 		               <div class="row mb">
 		                  <label class="col-md-12">Assign To </label>
@@ -291,7 +411,37 @@ var sourceleadUrl = '${sourceleadUrl}';
 		dateFormat : 'yyyy/mm/dd' 
      }; 
 </script>
+<script>
+$(function() {
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var projectStartDate = '${projectStartDate}';
+	var finalDateFormatProjectSave = '';
+	if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatProjectSave = 'yy-mm-dd';
+	}if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatProjectSave = 'dd-mm-yy'; 
+	}if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatProjectSave = 'mm-dd-yy'; 
+	}if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatProjectSave = 'yy-dd-mm'; 
+	}
 
+	$('#editDueDate').datepicker({
+		dateFormat : finalDateFormatProjectSave,
+		changeMonth: true,
+		changeYear: true, 
+		minDate : projectStartDate,
+		 
+	});
+
+	$('#editOwnerId').chosen('refresh');
+	$('#editOwnerId').trigger("chosen:updated");
+	getOwnerList();
+});
+function clearEditDueDate(){
+	$("#editDueDate").val("");
+	};
+</script>
 <script>
 function getprojectTaskMembersByProjectId(projectId){
 	var taskUUID = '${taskUUID}';
@@ -528,7 +678,7 @@ function inlineEditBillingType(taskId){
 				 result = result +' </div> ';
 				 
 			   	 result  = result + '<div class="col-md-12 clearfix txtEditor_p saveBtn">';
-			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true">' + json.description + '</textarea>';
+			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea">' + json.description + '</textarea>';
 			   	 result  = result  + '<div class="mt5 clearfix"><button type"button" class="pull-right btn btn-sm btn-warning save-btn" onclick="inlineEditDescription('+projectTaskId+');">Save</button></span>';
 			   	 result  = result  + '</div>';
 			   	 result  = result  + '</div>';
@@ -671,6 +821,75 @@ $(document).ready(function() {
 });	
 	</script>
 
+
+<script>
+function inlineEditDueDate(taskId){
+	var userId = '${SourceLeadWeb_userId}';
+	var editDueDate = $("#editDueDate").val();
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/ProjectTasks/updateDueDate?${_csrf.parameterName}=${_csrf.token}&editDueDate="+editDueDate+"&taskId="+taskId+"&userId="+userId,    
+	    success: function(data) {
+		    	getTaskActivities();
+	    }
+ }); 
+}
+function inlineEditEstimatedTime(taskId){
+	var userId = '${SourceLeadWeb_userId}';
+	var editEstimatedTime = $("#editEstimatedTime").val();
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/ProjectTasks/updateEstimatedTime?${_csrf.parameterName}=${_csrf.token}&estimatedTime="+editEstimatedTime+"&taskId="+taskId+"&userId="+userId,    
+	    success: function(data) {
+		    	getTaskActivities();
+	    }
+ }); 
+}
+function isNumberKey(evt)
+{
+   var charCode = (evt.which) ? evt.which : event.keyCode
+   if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+
+   return true;
+}
+function inlineEditOwner(taskId){
+	var userId = '${SourceLeadWeb_userId}';
+	var editOwnerId = $("#editOwnerId").val();
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/ProjectTasks/updateTaskOwner?${_csrf.parameterName}=${_csrf.token}&ownerId="+editOwnerId+"&taskId="+taskId+"&userId="+userId,    
+	    success: function(data) {
+		    	getTaskActivities();
+	    }
+ });
+}
+
+function inlineEditEpic(taskId){
+	var userId = '${SourceLeadWeb_userId}';
+	var editEepicId = $("#editEepicId").val();
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/ProjectTasks/updateEpic?${_csrf.parameterName}=${_csrf.token}&epicId="+editEepicId+"&taskId="+taskId+"&userId="+userId,    
+	    success: function(data) {
+		    	getTaskActivities();
+	    }
+ });
+}
+
+function inlineEditUserStory(taskId){
+	var userId = '${SourceLeadWeb_userId}';
+	var editUserStroyId = $("#editUserStroyId").val();
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/ProjectTasks/updateUserStroy?${_csrf.parameterName}=${_csrf.token}&userStoryId="+editUserStroyId+"&taskId="+taskId+"&userId="+userId,    
+	    success: function(data) {
+		    	getTaskActivities();
+	    }
+ });
+}
+
+</script>
 
 <!-- ============================ Document tab related script Start ============================== -->
 <script>
@@ -1306,8 +1525,8 @@ function cleartprojectdueDate(){
  </script>
 <script>
 function getOwnerList(){
-	
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	var ownerUserId = '${projectTask.ownerUserId.id}';
 	$.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
@@ -1317,17 +1536,28 @@ function getOwnerList(){
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
-		     		var fullname = '';
+	     		var fullname = '';
 		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
 		     			fullname = opt.firstName+" "+opt.lastName;
 		     		}else{
 		     			fullname = opt.firstName;
 		     		}
+		     		if(opt.id == ownerUserId){
+		     			output = output + "<option "+ (opt.id == ownerUserId ? "selected" : '') +" value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     		}else{
 		     			output = output + "<option value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     		}
+		     			
 	     		}
 	     		$("#ownerId").empty();
 	     		$("#ownerId").append(output);
 	     		$('#ownerId').trigger("chosen:updated"); 
+	     		
+	     		$("#editOwnerId").empty();
+	     		$("#editOwnerId").append(output);
+	     		$('#editOwnerId').trigger("chosen:updated"); 
+	     		
+	     		
 	     		
 	         }
 	 });

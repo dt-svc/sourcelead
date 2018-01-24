@@ -7876,6 +7876,9 @@ padding-left: 15px !important;
 .uploaded_file.uploaded_wizet {
 min-height: 125px;
 }
+.scroll-dropdown {
+	width: 300px; max-height: 250px; overflow-y:auto; 
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
