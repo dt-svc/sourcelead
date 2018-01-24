@@ -493,7 +493,17 @@
 			    	     contentType:false,
 			        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
 						        success : function(result) {
-									location.replace(sourceleadUrl+"/candidatesList");
+						        	if(result && result === "DataMissing") {
+										$("#store_candidate").removeAttr("disabled");
+										$("#store_candidate").removeAttr('button').val('Save');	
+										showError("Invalid data");
+									} else if(result && result === "success")
+										location.replace(sourceleadUrl+"/candidatesList");
+									else {
+										$("#store_candidate").removeAttr("disabled");
+										$("#store_candidate").addClass('button').val('Save');
+										showError("Operation failed, please try again");
+									}
 						},
 				});
 			return true;

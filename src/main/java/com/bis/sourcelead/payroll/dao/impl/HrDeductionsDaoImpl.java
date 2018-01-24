@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -65,7 +66,13 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrDeductionsList = null;
 		ResponseList<HrDeductions> response = new ResponseList<>();
-		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId";
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(hrDeductionsDTO.getSortColumn())) {
+			qry = " order by hrd."+ hrDeductionsDTO.getSortColumn() +" "+hrDeductionsDTO.getSortOrder();
+		}
+		
+		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId"+qry;
 		String countQuery = "from HrDeductions hrd  where hrd.orgLocationId.id =:orgLocationId";
 		
 		if(hrDeductionsDTO.getSearchValue().contains("/") || hrDeductionsDTO.getSearchValue().contains("-")){
@@ -147,14 +154,14 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 				}
 				
 			}
-			Collections.sort(hrDeductionsList, new Comparator() {  
+		/*	Collections.sort(hrDeductionsList, new Comparator() {  
 	            @Override  
 	            public int compare(Object obj1, Object obj2) {  
 	            	HrDeductions hrDeductions1 = (HrDeductions)obj1;  
 	            	HrDeductions hrDeductions2 = (HrDeductions)obj2; 
 	            	return hrDeductions1.getEmployeeName().compareToIgnoreCase(hrDeductions2.getEmployeeName());  
 	            }  
-	        });
+	        });*/
 			return hrDeductionsList;
 		
 	}

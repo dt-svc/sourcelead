@@ -204,10 +204,50 @@ public  class CalendarUtil {
    }*/
 	
 	
+	/***
+	 *  getUTC formatted Date String For a given Date and Dateformat
+	 * @param dateWithTime
+	 * @param dateFormat
+	 * @return
+	 */
+	public static String getUTCDateTimeStrForGivenDate(Date dateWithTime,String dateFormat) {
+	    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	    String dateStr = utcFormat.format(dateWithTime);
+        
+        
+        DateFormat currentTFormat = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+        currentTFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String converted_date = null;
+		try {
+			converted_date = currentTFormat.format(utcFormat.parse(dateStr));
+		} catch (ParseException e) {}
+	
+	    return converted_date;
+   }
+	
+	/***
+	 *  getUTC formatted Date  For a given Date and Dateformat
+	 * @param dateWithTime
+	 * @param dateFormat
+	 * @return
+	 */
+	public static Date getUTCDateTimeForGivenDate(Date dateWithTime,String dateFormat) {
+		String converted_dateStr = getUTCDateTimeStrForGivenDate(dateWithTime, dateFormat);
+		DateFormat df = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+		Date converted_date = null;
+		try {
+			converted_date = df.parse(converted_dateStr);
+		}catch (Exception e) {}
+	    return converted_date;
+    }
+	
+	
 	public static String getDateStrForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
 		    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		    String dateStr = utcFormat.format(dateWithTime);
 	        utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	        
 	        DateFormat currentTFormat = new SimpleDateFormat(dateFormat);
 	        currentTFormat.setTimeZone(TimeZone.getTimeZone(timeZoneId));
 	        String converted_date = null;
@@ -217,10 +257,35 @@ public  class CalendarUtil {
 		
 		    return converted_date;
 	}
-	
 	public static Date getDateForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
 		String converted_dateStr = getDateStrForGivenTimeZone(timeZoneId, dateWithTime, dateFormat);
 		DateFormat df = new SimpleDateFormat(dateFormat);
+		Date converted_date = null;
+		try {
+			converted_date = df.parse(converted_dateStr);
+		}catch (Exception e) {}
+	    return converted_date;
+	}
+	
+	
+	public static String getDateTimeStrForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+	    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String dateStr = utcFormat.format(dateWithTime);
+        utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        
+        DateFormat currentTFormat = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+        currentTFormat.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+        String converted_date = null;
+		try {
+			converted_date = currentTFormat.format(utcFormat.parse(dateStr));
+		} catch (ParseException e) {}
+	
+	    return converted_date;
+   }
+	
+	public static Date getDateTimeForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+		String converted_dateStr = getDateTimeStrForGivenTimeZone(timeZoneId, dateWithTime, dateFormat);
+		DateFormat df = new SimpleDateFormat(dateFormat+" HH:mm:ss");
 		Date converted_date = null;
 		try {
 			converted_date = df.parse(converted_dateStr);

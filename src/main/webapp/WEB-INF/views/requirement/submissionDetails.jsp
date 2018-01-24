@@ -195,13 +195,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 					  }
 				  }
-               
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li>'+designation+'</li>';
+               if(designationType != null && designationType != '' && designationType != 'undefined'){
                result = result + ' <li>'+designationType+'</li>';
+               }
                result = result + ' <li>'+experience+'</li>';
                result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';
@@ -1115,11 +1116,10 @@ function getOfferDetails(submissionId){
 	
 	                         var accept = "OFFERACCEPTED";
 	                    	 var reject = "OFFERREJECTED";
-	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav">';
 	                    	 result = result + '<span id="'+report.offerId.id+'offerActionDiv">';
-	                    	 if(report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" ){
+	                    	 if(report.submissionStatusStr != "REJECTED" && report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" &&  report.offerId.offerStatus != "CLIENT_OFFERACCEPTED" ){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ACCEPT_OFFER\')">';
 	                    		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"   ><i class="fa fa-check text-success"></i></a>';
 	                    		 '</sec:authorize>';

@@ -317,7 +317,7 @@ public class DataMigrationCommonUtil {
 				if(!dataMigrationDTOJsonCopy.getString("manager").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("manager"))) {
 					User approverList = userService.getTabAccessOwnersByOrgLocationIdEmailAndTabId(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("manager"), Long.valueOf(Constants.TAB_REQUIREMENT));
 					if(approverList == null){
-						errorSet.put("manager", dataMigrationDTOJsonCopy.getString("manager")+" is invalid manager Email");
+						dataMigrationDTOJsonCopy.put("manager", user.getId().toString());
 					}else{
 						dataMigrationDTOJsonCopy.put("manager", approverList.getId().toString());
 					}
@@ -498,6 +498,9 @@ public class DataMigrationCommonUtil {
 						String url = staticPath + "/" + orgLocation.getOrg().getId() + "/"
 								+ orgLocation.getId() + "/" + "requirementDocuments" + "/"
 								+ fileName + time + extenstion;
+						String fileUrl = "/slead-static" + "/" + orgLocation.getOrg().getId() + "/"
+								+ orgLocation.getId() + "/" + "requirementDocuments" + "/"
+								+ fileName + time + extenstion;
 						File dest = new File(url);
 						/*if (!dest.exists()) {
 							dest.mkdirs();
@@ -505,7 +508,7 @@ public class DataMigrationCommonUtil {
 							
 						try {
 							Files.copy(source.toPath(), dest.toPath());
-							dataMigrationDTOJsonCopy.put("fileURL", dest.toPath());
+							dataMigrationDTOJsonCopy.put("fileURL", fileUrl);
 							dataMigrationDTOJsonCopy.put("fileName", fileName + time + extenstion);
 						} catch (IOException e) {
 							errorSet.put("docFile", "Error occured while importing attachemt");
