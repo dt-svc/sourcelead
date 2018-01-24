@@ -164,104 +164,131 @@ public class RequirementListController {
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("requirement/releaseRequirement");
-			
-
-			    String experience = "";
-			    if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isEmpty(requirement.getMaxExp())){
-					experience = requirement.getMinExp()+" Years";
-				}else if(StringUtils.isEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
-					experience = requirement.getMaxExp()+" Years";
-				}else if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
-					experience = requirement.getMinExp()+" to "+requirement.getMaxExp()+" Years";
-				}
-				
-			    String location ="";
-				if(StringUtils.isNotEmpty(requirement.getState()) && StringUtils.isNotEmpty(requirement.getCountry())){
-						location = requirement.getState()+", "+requirement.getCountry();
-				}else{
-					location = requirement.getCountry();
-				}
-				
-				StringBuilder  description = new StringBuilder("");
-				description = description.append("Job Title : ").append(requirement.getJobTitle()).append("; ")
-				            .append("Posted By : ").append(requirement.getOrgLocationId().getOrgLocationName()).append("; ")
-				            .append("Skills : ").append(requirement.getSkills()).append("; ").append("Job Type : ").append(requirement.getJobType()).append("; ");
-				if(StringUtils.isNotEmpty(experience)){
-					description =   description.append("Experience : ").append(experience).append("; ");
-				}
-				if(StringUtils.isNotEmpty(location)){
-					description =   description.append("Job Location : ").append(location).append("; ");	
-				}
-				if(StringUtils.isNotEmpty(requirement.getNoticePeriod())){
-					description =   description.append("Notice Period : ").append(requirement.getNoticePeriod()).append("; ");
-				}
-				
-				description = description.append("Posted Date : ").append(requirement.getCreatedDate()).append("; ").append("");
-				
-				model.addObject("socialpost_title", "");
-				model.addObject("socialpost_link", new StringBuilder("").append(sourceleadUrl).append("/openJobsPublicPage?requirementUUID=").append(requirementUUID));
-				model.addObject("socialpost_description", description);
-				model.addObject("socialpost_picture", "");
-				model.addObject("socialpost_comment", "");
-				
-
-			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.Requirement);
-			
-			//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
-			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "", "");
-			
-			for(OrgRelations orgRelation :vendorsList){
-				if(orgRelation.getLocationId().getId().equals(orgLoc.getId())){
-					orgRelation.setVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
-				}
-				if(orgRelation.getResponderLocationId().getId().equals(orgLoc.getId())){
-					orgRelation.setVendorName(orgRelation.getLocationId().getOrgLocationName());
-				}
-			}
-			model.addObject("vendor_list", vendorsList);
-	        model.addObject(vendorsList);
-	        model.addObject("requirementId",requirement.getId());
-
-	        model.addObject("requirementUUID",requirementUUID);
-	       
-	        if(!isNullOrEmpty(requirement.getJobType())){
-	        	model.addObject("requirementType",requirement.getJobType());
-	        }
-	       
-	        if(null != requirement.getRate()){
-	        	 model.addObject("jobRate",requirement.getCurrencyCode()+" "+requirement.getRate()+" / "+requirement.getRateType());	
-	        }
-	        
-	        if(null != requirement.getRewardType()){
-	        	model.addObject("rewardType", requirement.getRewardType());
-	        	model.addObject("rewardPercentage", requirement.getRewardPercentage());
-	        	model.addObject("rewardFlat", requirement.getRewardFlat());
-	        	model.addObject("rewardFlatRateType", requirement.getRewardFlatRateType());
-	        	model.addObject("rewardGauranteePeriod", requirement.getRewardGuaranteePeriod());
-	        }
-	       
-
-	        model.addObject("jobTitle",requirement.getJobTitle());
-	        
-			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqReleaseMessage");
-			if(!isNullOrEmpty(msg)){
-				model.addObject("msg", msg);
-				SourceLeadSessionManager.removeSessionAttribute(request, "reqReleaseMessage");
-			}
-			request.getSession().setAttribute("sessionData",sessionData);
+			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
 		
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/jobReleaseManagement")
+	public ModelAndView jobReleaseManagement(String requirementUUID,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		ModelAndView model = new ModelAndView();
+		
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("requirement/requirementRelease");
+			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
+		}else{
+			model.setViewName("registration/persmissionDenied");
+		}
 		
 		return model;
-
 	}
+	
+	
+	public ModelAndView getReleaseManagementDetails(ModelAndView model,Requirement requirement,String requirementUUID,OrgLocations orgLoc,HttpServletRequest request) throws Exception {
+		
+		String experience = "";
+	    if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isEmpty(requirement.getMaxExp())){
+			experience = requirement.getMinExp()+" Years";
+		}else if(StringUtils.isEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
+			experience = requirement.getMaxExp()+" Years";
+		}else if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
+			experience = requirement.getMinExp()+" to "+requirement.getMaxExp()+" Years";
+		}
+		
+	    String location ="";
+		if(StringUtils.isNotEmpty(requirement.getState()) && StringUtils.isNotEmpty(requirement.getCountry())){
+				location = requirement.getState()+", "+requirement.getCountry();
+		}else{
+			location = requirement.getCountry();
+		}
+		
+		StringBuilder  description = new StringBuilder("");
+		description = description.append("Job Title : ").append(requirement.getJobTitle()).append("; ")
+		            .append("Posted By : ").append(requirement.getOrgLocationId().getOrgLocationName()).append("; ")
+		            .append("Skills : ").append(requirement.getSkills()).append("; ").append("Job Type : ").append(requirement.getJobType()).append("; ");
+		if(StringUtils.isNotEmpty(experience)){
+			description =   description.append("Experience : ").append(experience).append("; ");
+		}
+		if(StringUtils.isNotEmpty(location)){
+			description =   description.append("Job Location : ").append(location).append("; ");	
+		}
+		if(StringUtils.isNotEmpty(requirement.getNoticePeriod())){
+			description =   description.append("Notice Period : ").append(requirement.getNoticePeriod()).append("; ");
+		}
+		
+		description = description.append("Posted Date : ").append(requirement.getCreatedDate()).append("; ").append("");
+		
+		model.addObject("socialpost_title", "");
+		model.addObject("socialpost_link", new StringBuilder("").append(sourceleadUrl).append("/openJobsPublicPage?requirementUUID=").append(requirementUUID));
+		model.addObject("socialpost_description", description);
+		model.addObject("socialpost_picture", "");
+		model.addObject("socialpost_comment", "");
+		
+
+	SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+	if(sessionData == null)
+	{
+		sessionData = new SessionMaintainanceData();
+	}
+	sessionData.setNav(Constants.Requirement);
+	
+	//List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
+	List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLoc.getId(), "", "");
+	
+	for(OrgRelations orgRelation :vendorsList){
+		if(orgRelation.getLocationId().getId().equals(orgLoc.getId())){
+			orgRelation.setVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
+		}
+		if(orgRelation.getResponderLocationId().getId().equals(orgLoc.getId())){
+			orgRelation.setVendorName(orgRelation.getLocationId().getOrgLocationName());
+		}
+	}
+	model.addObject("vendor_list", vendorsList);
+    model.addObject(vendorsList);
+    model.addObject("requirementId",requirement.getId());
+
+    model.addObject("requirementUUID",requirementUUID);
+   
+    if(!isNullOrEmpty(requirement.getJobType())){
+    	model.addObject("requirementType",requirement.getJobType());
+    }
+   
+    if(null != requirement.getRate()){
+    	 model.addObject("jobRate",requirement.getCurrencyCode()+" "+requirement.getRate()+" / "+requirement.getRateType());	
+    }
+    
+    if(null != requirement.getRewardType()){
+    	model.addObject("rewardType", requirement.getRewardType());
+    	model.addObject("rewardPercentage", requirement.getRewardPercentage());
+    	model.addObject("rewardFlat", requirement.getRewardFlat());
+    	model.addObject("rewardFlatRateType", requirement.getRewardFlatRateType());
+    	model.addObject("rewardGauranteePeriod", requirement.getRewardGuaranteePeriod());
+    }
+   
+
+    model.addObject("jobTitle",requirement.getJobTitle());
+    
+	String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqReleaseMessage");
+	if(!isNullOrEmpty(msg)){
+		model.addObject("msg", msg);
+		SourceLeadSessionManager.removeSessionAttribute(request, "reqReleaseMessage");
+	}
+	request.getSession().setAttribute("sessionData",sessionData);
+		return model;
+		
+	}
+	
+	
+	
 	
 	 @RequestMapping(value = "/terminateRequirementTemplate", method = RequestMethod.POST)
 		public @ResponseBody String terminateRequirementTemplate(String requirementId, HttpServletRequest request) throws Exception {
