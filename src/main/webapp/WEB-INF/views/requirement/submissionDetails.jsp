@@ -195,13 +195,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 					  }
 				  }
-               
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li>'+designation+'</li>';
+               if(designationType != null && designationType != '' && designationType != 'undefined'){
                result = result + ' <li>'+designationType+'</li>';
+               }
                result = result + ' <li>'+experience+'</li>';
                result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';
