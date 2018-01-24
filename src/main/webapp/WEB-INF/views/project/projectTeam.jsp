@@ -552,7 +552,7 @@ function filterStatus() {
 function projectEmployeePagination(){
     $('#projectEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	"scrollX": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
@@ -561,7 +561,8 @@ function projectEmployeePagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $('#projectEmployeePagination').wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 }
 </script>
 
