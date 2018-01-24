@@ -200,10 +200,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 	}
 
-	@Override
+	/*@Override
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId) {
 		return projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
-	}
+	}*/
 	
 	
 
@@ -238,7 +238,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String filterValue,Long orgLocationId) throws Exception {
 		List<ProjectMembers> allProjectsList = null;
 		if(filterValue.equals("All")){
-			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
+			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId,null);
 		}
 		if(filterValue.equals("Active")){
 			 allProjectsList = projectMembersDao.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
@@ -757,9 +757,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 
 	@Override
-	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
+	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId,String fromType) throws Exception
 	{
-		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId,fromType);
 		Float finalExpenseAmount = 0f;
 		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
