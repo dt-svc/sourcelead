@@ -305,7 +305,7 @@ function addEducation(candidateId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -457,6 +457,7 @@ function EditEducation(candidateId,candidateEducationId) {
 							result = result  +'                <div class="form-horizontal clearfix"> ';
 							result = result  +'   ';
 							result = result  +'                  <div class="clearfix mb10"> ';
+							result = result  +'                    <div class="col-md-12">                                                                                                            ';
 							result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 		               
 						
@@ -478,6 +479,7 @@ function EditEducation(candidateId,candidateEducationId) {
 							  
 							});
     result = result + "</select>";
+	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
@@ -533,7 +535,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -859,13 +861,10 @@ function educationSelectScoreType(){
 		var strToUpper = str.toUpperCase();
 		$('#candidateEducationScore').val(strToUpper);
 	}
-	 var selectedText = document.getElementById("candidateEducationScore").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
+	 
+	 var selectedText = document.getElementById("scoreEducationType").value;
 	 var canScore = document.getElementById("candidateEducationScore").value;
+	 
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/

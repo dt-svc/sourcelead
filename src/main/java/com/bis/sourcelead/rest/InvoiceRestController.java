@@ -347,6 +347,16 @@ public class InvoiceRestController {
 		ResponseList<BillingDTO> responseList = new ResponseList<>();
 		
 		
+		String[] tableColumns = {"invoiceId", "orgRelationID", "contactUser", "projectID", "invoiceDate", "total","dueAmount","dueDate","invoiceStatus","paymentStatus",""};
+	     int sortColumnIndex = 1; //by default sorting using invoice date
+		String sortColumnOrder = "asc"; //by default descending order
+		if(invoiceDTO.getOrder() != null && !invoiceDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(invoiceDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = invoiceDTO.getOrder().get(0).get("dir");
+		}
+		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		invoiceDTO.setSortOrder(sortColumnOrder);
+		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime();
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");

@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -63,7 +64,14 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<WageTaxSummary> wagesAndTaxlist = null;
 		ResponseList<WageTaxSummary> response = new ResponseList<>();
-		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId";
+	
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(wagesTaxSummaryDTO.getSortColumn())) {
+			qry = " order by wts."+ wagesTaxSummaryDTO.getSortColumn() +" "+wagesTaxSummaryDTO.getSortOrder();
+		}
+		
+		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId "+qry;
 		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId";
 		
 		if(wagesTaxSummaryDTO.getSearchValue().contains("/") || wagesTaxSummaryDTO.getSearchValue().contains("-")){

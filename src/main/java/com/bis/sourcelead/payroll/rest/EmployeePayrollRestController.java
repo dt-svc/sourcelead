@@ -154,6 +154,17 @@ public class EmployeePayrollRestController {
 	{
 //		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(employerPayrollCostDTO.getOrgLocationId()));
+		
+		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssn", "totalHrs","grossWages","fica","futa","sui","erLocals","wcCost","adminFee","totalErCost"};
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "asc"; //by default descending order
+		if(employerPayrollCostDTO.getOrder() != null && !employerPayrollCostDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(employerPayrollCostDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = employerPayrollCostDTO.getOrder().get(0).get("dir");
+		}
+		employerPayrollCostDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		employerPayrollCostDTO.setSortOrder(sortColumnOrder);
+		
 		ResponseList<EmployerPayrollCost> list = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation,employerPayrollCostDTO);
 		List<EmployerPayrollCost> data = getEmployerCostSortedList(list.getData());
 		list.setData(data);
@@ -193,8 +204,8 @@ public class EmployeePayrollRestController {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(wagesTaxSummaryDTO.getOrgLocationId()));
 		
 		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};
-	     int sortColumnIndex = 3; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
+	     int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "asc"; //by default descending order
 		if(wagesTaxSummaryDTO.getOrder() != null && !wagesTaxSummaryDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(wagesTaxSummaryDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = wagesTaxSummaryDTO.getOrder().get(0).get("dir");
@@ -238,14 +249,14 @@ public class EmployeePayrollRestController {
 				wts.setSsnNumber(sb.toString());
 			}
 			
-			Collections.sort(wagesAndTaxList, new Comparator() {  
-	            @Override  
-	            public int compare(Object obj1, Object obj2) {  
-	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
-	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
-	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
-	            }  
-	        });
+//			Collections.sort(wagesAndTaxList, new Comparator() {  
+//	            @Override  
+//	            public int compare(Object obj1, Object obj2) {  
+//	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
+//	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
+//	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
+//	            }  
+//	        });
 		}
 		return wagesAndTaxList;
 		
@@ -263,7 +274,7 @@ public class EmployeePayrollRestController {
 		
 		String[] tableColumns = {"employeeId", "employeeName", "fromDate", "toDate", "dedAmount", "batchNumber","requestSubDate","requestApprovedDate","repaidStatus"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
+		String sortColumnOrder = "asc"; //by default descending order
 		if(accountDeductionsDTO.getOrder() != null && !accountDeductionsDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(accountDeductionsDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = accountDeductionsDTO.getOrder().get(0).get("dir");
@@ -300,7 +311,7 @@ public class EmployeePayrollRestController {
 		
 		String[] tableColumns = {"employeeId", "employeeName", "fromDate", "toDate", "dedAmount", "batchNumber","requestSubDate","requestApprovedDate","repaidStatus"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
+		String sortColumnOrder = "asc"; //by default descending order
 		if(hrDeductionsDTO.getOrder() != null && !hrDeductionsDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(hrDeductionsDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = hrDeductionsDTO.getOrder().get(0).get("dir");
@@ -451,7 +462,7 @@ public class EmployeePayrollRestController {
 		
 		String[] tableColumns = {"empId", "empName", "date", "typeOfExpense", "bankName", "month","legalFees","advance","generalExpenses","vendorPayments","electronicWithdrawals","payrollChecks","amount","checkNo"};
 	     int sortColumnIndex = 1; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
+		String sortColumnOrder = "asc"; //by default descending order
 		if(checksDTO.getOrder() != null && !checksDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(checksDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = checksDTO.getOrder().get(0).get("dir");
@@ -528,8 +539,8 @@ public class EmployeePayrollRestController {
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","qty","amount","arPaid","oldNew"};
-	     int sortColumnIndex = 2; //by default sorting using updated date
-		String sortColumnOrder = "desc"; //by default descending order
+	     int sortColumnIndex = 5; //by default sorting using updated date
+		String sortColumnOrder = "asc"; //by default descending order
 		if(invoiceDetailsDTO.getOrder() != null && !invoiceDetailsDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(invoiceDetailsDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = invoiceDetailsDTO.getOrder().get(0).get("dir");

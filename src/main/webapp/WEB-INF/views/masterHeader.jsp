@@ -508,7 +508,7 @@ function preventTabkey(e){
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"> </div>
+              <a href="<c:url value='${appPath}/userProfile'/>"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></a> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
                 <p>${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</p>
@@ -540,7 +540,7 @@ function preventTabkey(e){
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
 	        </li>
             <li class="reportsH">
-					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadFindConnections'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
