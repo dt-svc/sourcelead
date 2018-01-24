@@ -23,6 +23,8 @@ public class RequirementDTO extends CommonDTO {
 	private String jobType;
 
 	private String jobId;
+	
+	private String importValue;
 
 	private String otherJobType;
 
@@ -1296,12 +1298,21 @@ public class RequirementDTO extends CommonDTO {
 		this.fileName = fileName;
 	}
 
+
 	public List<RequirementLocationsDTO> getLocationInfo() {
 		return locationInfo;
 	}
 
 	public void setLocationInfo(List<RequirementLocationsDTO> locationInfo) {
 		this.locationInfo = locationInfo;
+	}
+	public String getImportValue() {
+		return importValue;
+	}
+
+	public void setImportValue(String importValue) {
+		this.importValue = importValue;
+
 	}
 	
 }
