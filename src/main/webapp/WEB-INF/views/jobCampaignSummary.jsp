@@ -268,9 +268,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          </div>';
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
-				 
-				 //result = result +'<a href="'+sourceleadUrl+'" class="refer">Refer</a>';
-				/*  result = result +'<a href="'+sourceleadUrl+"/login?requirementUUID="+requirementUUID+'" class="jobApply">Apply To Job</a>'; */
+				 result = result +'<a href="/guestApplyToJob?requirementUUID='+requirementUUID+'" class="rbtn btn-warning btn-sm">Apply as Guest User</a>';
 				 
 				
 				 result = result +'          </div>';

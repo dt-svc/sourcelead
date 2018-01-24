@@ -174,6 +174,8 @@ public interface RequirementService {
 	 * public boolean addGeneratedIdRecordsToJobsForOldRecords(Long
 	 * orglocationId) throws Exception;
 	 */
-
+	public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement, Candidate candidate)throws Exception;
+	
 	public Requirement getRequirementByShortURL(String shortURL) throws Exception;
+	
 }
