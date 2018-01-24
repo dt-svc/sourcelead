@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -57,7 +58,13 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<EmployerPayrollCost> employerPayrollCostList = null;
 		ResponseList<EmployerPayrollCost> response = new ResponseList<>();
-		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId";
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(employerPayrollCostDTO.getSortColumn())) {
+			qry = " order by epc."+ employerPayrollCostDTO.getSortColumn() +" "+employerPayrollCostDTO.getSortOrder();
+		}
+		
+		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId"+qry;
 		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId";
 		
 		if(employerPayrollCostDTO.getSearchValue().contains("/") || employerPayrollCostDTO.getSearchValue().contains("-")){
