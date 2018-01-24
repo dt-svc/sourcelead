@@ -909,13 +909,10 @@ function requirementsList(offset){
 			 				
 			 				
 			 				if(requirementType != "AppliedJobs"){
+			 					var sourceleadShareUrl = sourceleadUrl ;
+			 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
 			 					result = result +'<div class="openCtaRight">';
-				 			    result = result +'<p>Share Job</p>';
-				 				result = result +'<span>';
-			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');" title="LinkedIn"><i class="fa fa-linkedin-square"></i></a>';
-								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');" title="Twitter"><i class="fa fa-twitter-square"></i></a>';				  
-								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');" title="Facebook"><i class="fa fa-facebook-square"></i></a>';
-				 				result = result +'</span>'; 
+				 				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
 				 				if(requirements.isJobSaved != 'Y'){
@@ -1052,6 +1049,11 @@ function requirementsList(offset){
    		    	
    		    }
 	     
+	     window.setTimeout(function() {
+				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
+				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.layers.refresh();
+	        }, 500);
 	     $("#requirementsListLoading").removeAttr("style"); 
    	
 		 },
@@ -2491,7 +2493,6 @@ function deleteSavedJob(jobTitle,savedJobUUID,requirementUUID){
     });
 }
 </script>
-	
 
-
+<script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>	
 <jsp:include page="../socialinviterscripts.jsp" />
