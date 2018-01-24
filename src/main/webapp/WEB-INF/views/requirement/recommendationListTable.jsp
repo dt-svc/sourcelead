@@ -41,6 +41,10 @@
 function prepareRecommendationList(url,requirementRecommendationsDate,requirementId, requirementSubmissionStatus) {
 	var result = '';
 	result = result +" <div class='clearfix'>";
+	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '</div>';
+    
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='recommendationTableSearch'/>";
  	result = result +"</div>";
@@ -554,10 +558,17 @@ function shareAllRecommendations(requirementId){
 		 candidateIds.push(compareCandidates[e]);
 	 }
 	 if(candidateIds.length > 0){
+			$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 	          type : "POST",
 	          url: sourceleadUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
 	           success :function(data) {
+	        	   $("#recommendationsLoading").removeAttr("style");
+	        	    $("#selector4").removeAttr("style");
+	       			$("#selector4").css({ display: "block" });
+	       			$("#eduMsgDiv").html("Recommended candidates are shared");
+	       			eduMsgFadeinFunction();
+	       			toggleShareRecommendation();
 	           },
 	   });  
 	 }else{
@@ -574,4 +585,9 @@ function shareAllRecommendations(requirementId){
 	 }
 }
 </script>
-
+<script>
+	function eduMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script>
