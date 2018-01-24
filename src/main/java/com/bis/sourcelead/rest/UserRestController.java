@@ -1517,9 +1517,9 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 */
 	@RequestMapping(value = { "/getAssignedProjectsListForUser",
 			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
-	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "fromType", required = false) String fromType) throws Exception
 	{
-		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId,fromType);
 		return projectMembersList;
 	}
 	
