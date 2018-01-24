@@ -39,17 +39,17 @@ function compareRecommendedUsers(requirementId){
 		        }
 		 });
 	}else{
-		alertMessage();
+		alertMessage(candidateIds);
 	}
 }
 </script>
 
 <script>
-function alertMessage(){ 
+function alertMessage(candidateIds){ 
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	if(compareCandidates.length <= 2){
+	if(candidateIds.length <= 2){
 		result = result +"		<p>Please select Minimum 2 Candidates to Compare</p>";
 	}else{
 		result = result +"		<p>Please select Maximum 4 Candidates to Compare</p>";
