@@ -63,7 +63,7 @@ border-right:none;
 	<div class="row">
 	<div class="col-md-12">
 		<div class="clearfix profile-show">
-			<h4 data-toggle="collapse" data-toggle="collapse" data-target="#profilediv" class="arrow-pro">Profile details<span class="ml fa fa-angle-down"></span></h4>
+			<h4 data-toggle="collapse" data-toggle="collapse" data-target="#profilediv" class="arrow-pro">${reqName}<span class="ml fa fa-angle-down"></span></h4>
 			<div class="clearfix"></div>
 			<div id="profilediv" class="panel-collapse collapse">
         		
@@ -218,7 +218,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 		result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
-		result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
+		result = result + '<input type="text" class="form-control" data-validation="required validatedoc "  field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 		result = result + '</div>';
 		result = result + '</div>';	
 		result = result + '</div>';
@@ -561,6 +561,46 @@ function uploadAddApplicantCandidateDoc(){
  });
 
 </script> 
+
+<script type="text/javascript">
+ function validateSubmissionCandidateEmail() {
+	 var email =   $("input[name=EmailId]").val();
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var requirementId = $("#requirementId").val();
+	 var validation = true;
+	 if(document.getElementById("candidateSubmissionType")){
+		 validation = false;
+	 }
+	 if(sourceleadUrl.indexOf("/app")!=-1){
+			sourceleadUrl = sourceleadUrl.split("/app")[0];
+		}
+	 
+	 if(email != null && email != "" && validation){
+		 $("#save_button").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateRequirementGuestCandidateEmail?&email="+email+"&requirementId="+requirementId, 
+		        success: function(data) {
+		         	if(data == 'true'){
+			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
+			        	  $('.jquery_form_error_message').remove();
+		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
+		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	}
+		        	else{
+		        		$("#save_button").removeAttr("disabled");
+		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
+		        		$('.jquery_form_error_message').remove();
+		        		isCoolingOff(requirementId);
+		        	} 
+		        },
+		    });
+	 }
+	 
+ }
+ </script>  
+
 <script type="text/javascript">
 function validate_fileupload(fileName)
 {
@@ -882,10 +922,10 @@ function zipcodeMask(country,zipCodeId){
 
   <script>
   $("#profilediv").on("hide.bs.collapse", function(){
-    $(".arrow-pro").html('Profile details<span class="fa fa-angle-down ml"></span>');
+    $(".arrow-pro").html('${reqName}<span class="fa fa-angle-down ml"></span>');
   });
   $("#profilediv").on("show.bs.collapse", function(){
-    $(".arrow-pro").html('Profile details<span class="fa fa-angle-up ml"></span>');
+    $(".arrow-pro").html('${reqName}<span class="fa fa-angle-up ml"></span>');
   });
 </script>
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>

@@ -244,6 +244,22 @@ public class SubmissionsRestController {
 	   }
 	 
 	 
+	 
+	 @RequestMapping(value = "/validateRequirementGuestCandidateEmail" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateRequirementGuestCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
+		 	String result = null;
+		 	Requirement req =requirementService.getRequirementByRequirementId(requirementId);
+		 	RequirementSubmission requirementSubmission = requirementSubmissionService.validateRequirementCandidateEmail(email,requirementId,req.getOrgLocationId().getId());
+		 	
+		 	if (requirementSubmission != null) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
+
+	 
 	 @RequestMapping(value = "/app/validateRequirementRecruiterCandidateEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateRequirementRecruiterCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		 	
