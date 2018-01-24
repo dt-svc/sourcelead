@@ -236,7 +236,7 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER')")
+	//@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
 	public String getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId,HttpServletRequest request) throws Exception {
 

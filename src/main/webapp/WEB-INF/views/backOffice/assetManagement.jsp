@@ -110,7 +110,7 @@ $(document).ready(function(){
                     <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
                   <div class="col-md-4 mb10" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="MotherBoard" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">

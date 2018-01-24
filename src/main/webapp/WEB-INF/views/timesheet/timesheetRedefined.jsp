@@ -158,6 +158,7 @@
 	        		    	  var projectMemberId = $("#projectMemberId").val();
 	        		    	  if(projectMemberId !=null && projectMemberId != 'undefined' && projectMemberId != ''){
 	        		    		  $("#loadTime").removeAttr('style');
+		        		    	  	setTotals();
 		        		    	  prepareChosenScripts();
 	        		    	  }else{
 	        		    		  $("#timesheet_out").empty();
