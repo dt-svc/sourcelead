@@ -418,6 +418,7 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 		
+		
 		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
 			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
@@ -932,12 +933,6 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getCountry())) {
-				orgLocations.setCountry(clientDTO.getCountry());
-			} else {
-
-				orgLocations.setCountry("");
-			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
@@ -1062,12 +1057,7 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getCountry())) {
-				orgLocations.setCountry(clientDTO.getCountry());
-			} else {
-
-				orgLocations.setCountry("");
-			}
+			
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
 			}else if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {

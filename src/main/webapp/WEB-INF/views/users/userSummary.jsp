@@ -1097,11 +1097,16 @@ function getChangeRole(userId,userRoleId){
                             type: "POST",
                             url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
+                            	if(result && result === "DataMissing") {
+                            	$("#update_user").attr("disabled", "disabled");
+           						showError("Invalid data");
+           					}else{
                             	 $("#selectoruser").removeAttr("style");
 	                       		  $("#selectoruser").css({ display: "block" });
-	                       		  $("#userMsgDiv").html("Success!! User Details Updated");
+	                       		  $("#userMsgDiv").html("Success!! associate details updated");
                                userDetails(userId);
                                userMsgFadein();
+           					}
                                 
                             },
                         });
@@ -1133,11 +1138,16 @@ function getChangeRole(userId,userRoleId){
                                   type: "POST",
                                   url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
+                                	  if(result && result === "DataMissing") {
+                                  		$("#update_user").attr("disabled", "disabled");
+                 						showError("Invalid data");
+                 					}else{
                                 	  $("#selectoruser").removeAttr("style");
                             		  $("#selectoruser").css({ display: "block" });
-                            		  $("#userMsgDiv").html("Success!! User Details Updated");
+                            		  $("#userMsgDiv").html("Success!! associate details updated");
                                       userDetails(userId);
                                       userMsgFadein();
+                 					}
                                       
                                   },
                               });
@@ -1158,11 +1168,16 @@ function getChangeRole(userId,userRoleId){
                       type: "POST",
                       url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
+                    	  if(result && result === "DataMissing") {
+                      		$("#update_user").attr("disabled", "disabled");
+     						showError("Invalid data");
+     					}else{
                     	  $("#selectoruser").removeAttr("style");
                 		  $("#selectoruser").css({ display: "block" });
-                		  $("#userMsgDiv").html("Success!! User Details Updated");
+                		  $("#userMsgDiv").html("Success!! associate details updated");
                           userDetails(userId);
                           userMsgFadein();
+     					}
                           
                       },
                   });
@@ -2470,7 +2485,7 @@ function reActiveUser(userId){
                success: function(data) {
             	   $("#selectoruser").removeAttr("style");
         		   $("#selectoruser").css({ display: "block" });
-        		   $("#userMsgDiv").html("Success!! User reactivated for sourcelead");
+        		   $("#userMsgDiv").html("Success!! associate reactivated for sourcelead");
                	   location.replace(sourceleadUrl+"/usersList");
             	   userDetails(userId);
                }

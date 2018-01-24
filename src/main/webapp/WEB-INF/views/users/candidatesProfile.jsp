@@ -223,7 +223,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '</div>';
 							
 							result = result + '</div>';
@@ -463,7 +463,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10 mt">';
 							result = result + '<div class="col-md-12">';
-							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
+							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
 							result = result + '</div>';
@@ -1102,16 +1102,24 @@ function candidateProfile(candidateId,candidateType){
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
 				
-
-		        $.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-		        	//location.replace(sourceleadUrl+"/candidatesList"); 
-
-		        	 $("#selector1").removeAttr("style");
-         			 $("#selector1").css({ display: "block" });
-		        	 $("#candMsgDiv").html("Success!!  Associate Updated");
-		        	candUpdateMsgFadeinFunction();
-		        	profileDetails(candidateId);
-		        });
+			$.ajax({
+				type : "POST",
+        	    data: formData,
+				url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
+				success : function(result) {
+					if(result && result === "failed") {
+						 $("#update_candidate").removeAttr("disabled");
+						showError("Invalid data");
+					} 
+					else {
+						$("#selector1").removeAttr("style");
+	         			 $("#selector1").css({ display: "block" });
+			        	 $("#candMsgDiv").html("Success!!  Associate Updated");
+			        	candUpdateMsgFadeinFunction();
+			        	profileDetails(candidateId);
+					}
+				},
+			});
 			 
 			return true;
 		 }else{ 

@@ -713,7 +713,6 @@ function topTenClientReports(){
                     }
                     for(i=0; i<listLength; i++){
                         var opt = data[i];
-                        if((opt.totalPaidAmount > 0 || opt.totalPaidAmount != 0) && (opt.totalPaidAmount != '' && opt.totalPaidAmount != null && opt.totalPaidAmount != 'undefined')){
                         result += '  <tr>';
                         result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgRelationUUID='+opt.orgRelationUUID+'&invoiceType=Receivable&type=byClient">'+opt.clientName+'</a> </div></td>';
                         result += '    <td><div class="tblminwidth-30">'+opt.noOfContacts+'</div></td>';
@@ -724,7 +723,6 @@ function topTenClientReports(){
                         result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
                         result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalPaidAmount+'</div></td>';
                         result += '  </tr>';
-                        }
                     }
                     
                     result += '</tbody>';
@@ -736,12 +734,13 @@ function topTenClientReports(){
                            report = data[i];
                            opt += '<option value='+report.orgRelationUUID+'>'+report.clientName+'</option>';
                        }
-                       
+
                        $("#topTenClientList").empty();
                        $("#topTenClientList").show();
                        $("#topTenClientContactList").hide();
                        $("#topClientloadingDiv").removeAttr('style');
                        $("#topTenClientList").append(result);
+                    $("#topTenClientSelect").empty();
                     $("#topTenClientSelect").append(opt);
                     $("#clientSelectDiv").show();
                     $("#clientContactSelectDiv").hide();
@@ -982,7 +981,6 @@ function topTenClientContactReports(){
                     }
                     for(i=0; i<listLength; i++){
                         var opt = data[i];
-                        if((opt.totalPaidAmount > 0 || opt.totalPaidAmount != 0) && (opt.totalPaidAmount != '' && opt.totalPaidAmount != null && opt.totalPaidAmount != 'undefined')){
                         result += '  <tr>';
                         result += '    <td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/clientReportSummary?&orgSpocUUID='+opt.orgSpocUUID+'&invoiceType=Receivable&type=byContact">'+opt.clientContactName+'</a> </div></td>';
                         result += '    <td><div class="tblminwidth-30">'+opt.clientName+'</div></td>';
@@ -993,7 +991,6 @@ function topTenClientContactReports(){
                         result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalContracts+'</div></td>';
                         result += '    <td><div class="tbldata-dotdot-vsm">'+opt.totalPaidAmount+'</div></td>';
                         result += '  </tr>';
-                    }
                     }
                     
                     result += '</tbody>';
@@ -1011,6 +1008,7 @@ function topTenClientContactReports(){
                        $("#topTenClientList").hide();
                        $("#topClientloadingDiv").removeAttr('style');
                        $("#topTenClientContactList").append(result);
+                       $("#topTenClientContactSelect").empty();
                        $("#topTenClientContactSelect").append(opt);
                        $("#clientSelectDiv").hide();
                     $("#clientContactSelectDiv").show();

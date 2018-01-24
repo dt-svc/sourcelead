@@ -87,6 +87,15 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", catLocationId).setLong("categoryId", categoryId).setCacheable(true).list();
 		return assetCategoryList.get(0);
 	}
+	
+	@Override
+	@Transactional
+	public AssetCategory getAssetCategoryByCategoryId(Long categoryId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetCategory ac where ac.status = '1' and ac.id = :categoryId"; 
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("categoryId", categoryId).setCacheable(true).list();
+		return assetCategoryList.get(0);
+	}
 
 
 
@@ -109,8 +118,15 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	@Transactional
 	public AssetCategory getAssetCategoryListByLocationIdAndName(Long orgLocationId, String name)throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssetCategory ac where ac.orgLocations.id =:orgLocationId and ac.status = '1' and ac.categoryName =:name or (ac.defaultCategory = '1')";
-		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		String query = null;
+		List<AssetCategory> assetCategoryList = null;
+		if(name.equals("Laptop") || name.equals("Desktop") || name.equals("Others")){
+		 query = "from AssetCategory ac where ac.status = '1' and ac.categoryName =:name";
+		 assetCategoryList = session.createQuery(query.toString()).setString("name", name).setCacheable(true).list();
+		}else{
+		 query = "from AssetCategory ac where ac.orgLocations.id =:orgLocationId and ac.status = '1' and ac.categoryName =:name";
+		 assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		}
 		AssetCategory category = null;
 		if (assetCategoryList != null && assetCategoryList.size() > 0) {
 			category = (AssetCategory) assetCategoryList.iterator().next();

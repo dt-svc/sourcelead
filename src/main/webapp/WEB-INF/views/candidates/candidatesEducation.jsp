@@ -311,7 +311,7 @@ function addEducation(candidateId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -560,7 +560,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateEducationScore" onkeyup="educationSelectScoreType();educationscoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -887,12 +887,7 @@ function educationSelectScoreType(){
 		var strToUpper = str.toUpperCase();
 		$('#candidateEducationScore').val(strToUpper);
 	}
-	 var selectedText = document.getElementById("candidateEducationScore").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
+	 var selectedText = document.getElementById("scoreEducationType").value;
 	 var canScore = document.getElementById("candidateEducationScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
@@ -983,6 +978,15 @@ function clearSearchKeyEducation() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
+		
+		var scoreType = document.getElementById("scoreEducationType").value; 
+		 if(scoreType != null && scoreType != ""){
+			 $('#candidateEducationScore').removeAttr('data-validation-optional');
+			 $('#candidateEducationScore').attr("data-validation","required"); 
+		 }else{
+			 $('#candidateEducationScore').removeAttr('data-validation');
+			 $('#candidateEducationScore').attr("data-validation-optional","true"); 
+		 }
 		
 		if ($('#education_form').validate(false,
 				validationSettings)) {

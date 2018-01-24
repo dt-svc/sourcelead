@@ -1274,7 +1274,7 @@ public class CrowdSourcingRequirementsRestController {
 
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			referContactsService.saveuserContacts(user, orgLocations, referContactsDTO);
+			referContactsService.saveuserContacts(user, referContactsDTO);
 						
 			return "success";
 
@@ -2305,6 +2305,9 @@ public class CrowdSourcingRequirementsRestController {
 			String resultJson = null;
 			
 			List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getCrowdSourcingOfferDetailsBySubmissionId(submissionId,locationCode);
+			for(RequirementOfferHistory offers : offersList) {
+				offers.setSubmissionStatusStr(offers.getSubmissionId().getSubmissionStatus().toString());
+			}
 			resultJson = commonUtil.toJSON(offersList);
 			return resultJson ;
 			

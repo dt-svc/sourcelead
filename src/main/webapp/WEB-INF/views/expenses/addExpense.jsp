@@ -16,7 +16,7 @@
 
  <script type="text/javascript">
 		window.onload = function () {
-			getClientBasedOnSelectedProject();
+			//getClientBasedOnSelectedProject();
 			
 			var entrySize = '${expenses.expenseEntry.size()}';
 			if(entrySize>0){
@@ -86,7 +86,7 @@
 				 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="expensePurposeId" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" autocomplete="off"   name="expensePurpose" value="${expenses.expensePurpose}" id="expensePurposeId" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div> 
 					
@@ -249,7 +249,7 @@
 		                 
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>
+							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>
 						</div>		
 		                    <div id='attachmentSection' class='col-md-4 minHeight'>
 		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
@@ -300,10 +300,10 @@
 			<div class="pull-right">
 			<input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			<c:if test ="${!empty expenses.id}">
-			  <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
+			<c:if test ="${!empty expenses.expenseAutoId}">
+			  <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
 	        </c:if>
-			<c:if test ="${empty expenses.id}">
+			<c:if test ="${empty expenses.expenseAutoId}">
 			  <input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/expenses'/>' "  >
 			</c:if>
 		   </div>
@@ -320,9 +320,9 @@
 
 <script type="text/javascript">
 function removeWhiteSpacesMyExp(rowCount){
-	var el = document.getElementsByName("entryDes"+rowCount)[0];
-	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
-	$("#entryDes"+rowCount).val(val);
+	 var el = $("#entryDes"+rowCount).val();
+	 $("#entryDes"+rowCount).val(removeEmptyLines(el));
+	
 }
 </script>
 

@@ -23,6 +23,8 @@ public class RequirementDTO extends CommonDTO {
 	private String jobType;
 
 	private String jobId;
+	
+	private String importValue;
 
 	private String otherJobType;
 
@@ -162,6 +164,12 @@ public class RequirementDTO extends CommonDTO {
 	private List<CustomFormFieldDTO> customFormData;
 	
 	private String url;
+	
+	private String fileURL;
+	
+	private String fileContentType;
+	
+	private String fileName;
 
 	
 	/*
@@ -1257,8 +1265,43 @@ public class RequirementDTO extends CommonDTO {
 	{
 		this.url = url;
 	}
-	
-	
 
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public String getImportValue() {
+		return importValue;
+	}
+
+	public void setImportValue(String importValue) {
+		this.importValue = importValue;
+	}
 	
 }

@@ -53,7 +53,7 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet() throws Exception;
 
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId);
+//	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId);
 	
 	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception;
 	
@@ -102,7 +102,7 @@ public interface ProjectMembersService {
 
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId)throws Exception;
 
-	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId,Long orgLocationId)throws Exception;
+	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId,Long orgLocationId, String fromType)throws Exception;
 	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
 
 	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId)throws Exception;
@@ -126,4 +126,6 @@ public interface ProjectMembersService {
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception;
 }

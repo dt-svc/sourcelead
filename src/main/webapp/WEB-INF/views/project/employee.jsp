@@ -201,7 +201,7 @@ function resourceRequestsTab(){
 	    		result = result + '	         	<th>Request Id</th>';
 	    		result = result + '	             <th>Approver</th>';
 	    		result = result + '	             <th>Req. Resources</th>';
-	    		result = result + '	             <th>Alloted Resources</th>';
+	    		result = result + '	             <th>Allocated Resource</th>';
 	    		result = result + '	             <th>Estimated Hours<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
 	    		result = result + '	             <th>Estimated Budget<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
 	    		result = result + '	             <th>Req. On</th>';

@@ -508,7 +508,7 @@ function preventTabkey(e){
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"> </div>
+              <a href="<c:url value='${appPath}/userProfile'/>"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></a> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
                 <p>${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</p>
@@ -540,7 +540,7 @@ function preventTabkey(e){
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
 	        </li>
             <li class="reportsH">
-					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadFindConnections'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
@@ -677,6 +677,11 @@ function preventTabkey(e){
             </div> --%>
           </li>
 <%--           </c:if> --%>
+
+
+          <li class="reportsH">
+					<a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="fa fa-user-circle"></i></a>
+	      </li>
           
           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
@@ -684,7 +689,6 @@ function preventTabkey(e){
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
 	                     
-	                      <li><a href="<c:url value="/app/userProfile" />"><i class="fa fa-user-circle" aria-hidden="true"></i>Account Settings</a></li>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
@@ -797,7 +801,7 @@ function preventTabkey(e){
   <!--  Alert message for Switching Locaction -->
   <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
-    <strong>Alert !</strong> Your are not allowded to access this Location.
+    <strong>Alert !</strong> Your are not able to Save Required data is Missing.
   </div>
  <!--  Alert message for Switching Locaction -->
   
@@ -848,6 +852,7 @@ function preventTabkey(e){
 	    			 }
 	    		 }else{
 	    			 $(".location-alert").fadeIn();
+	    			 $(".location-alert").fadeOut(5000);
 	    		 }
 	    	   
 	      },

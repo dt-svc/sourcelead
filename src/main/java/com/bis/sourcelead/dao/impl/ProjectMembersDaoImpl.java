@@ -753,11 +753,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId) {
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId,String fromType) {
+		String subQuery = "";
+		if(! "Associate".equalsIgnoreCase(fromType)){
+			subQuery = "and pm.status <> '0'";
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectClientsId left join fetch pm.employee emp left join fetch pm.projectMemberCandidteId "
-				+ " where (pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId ) and pm.status <> '0' and pm.projects.projectMode <> 'Draft')" ;
+				+ " where (pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId )"+subQuery+" and pm.projects.projectMode <> 'Draft')" ;
 		
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setCacheable(true) 
 			    .list();
@@ -1368,6 +1373,22 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			pm  = pmList.iterator().next();
 		}
 		return pm;  
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<ProjectMembers> pmList = null;
+		 ArrayList<ProjectMembers> projectsMembersList = new ArrayList<ProjectMembers>();
+        	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
+ 					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
+ 					+ "where pm.projectClientsId = :projectClientsId");
+        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+	        	 projectsMembersList.addAll(pmList);
+	      
+	        return projectsMembersList;
 	}
 	
 	

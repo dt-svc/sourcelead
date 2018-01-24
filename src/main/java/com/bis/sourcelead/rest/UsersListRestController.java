@@ -42,6 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -1373,7 +1374,17 @@ public class UsersListRestController {
 			 globalVarsMap.put("assignedUser", assignedUserName.append(req.getManagerUserId().getFirstName()).toString());
 		 }
 		 globalVarsMap.put("reqCount", requirementsCountAsManager2.toString());
-		 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+		 
+		 StringBuilder terminatedUserName = new StringBuilder();
+		 
+		 if(termentaedUserName.getLastName() != null) {
+			 globalVarsMap.put("terminatedUser", terminatedUserName.append(termentaedUserName.getFirstName()).append(" ").append(termentaedUserName.getLastName()).toString());
+		 }else {
+			 globalVarsMap.put("terminatedUser", terminatedUserName.append(termentaedUserName.getFirstName()).toString());
+		 }
+		 
+		// globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+		 
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	  
@@ -1883,11 +1894,10 @@ public class UsersListRestController {
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
-	String updateUser(AddUserDTO addUserDTO,
-			@RequestParam(value = "userId", required = false) Long userId,
+	String updateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
 			throws Exception {
-
+		if(Validator.validate(addUserDTO)){
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -2056,6 +2066,9 @@ public class UsersListRestController {
 		
 
 		return "success";
+		}else{
+			return "DataMissing";
+		}
 	}
 
 	

@@ -61,7 +61,7 @@ public interface ProjectMembersDao {
     
     public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet() throws Exception;
 
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId);
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId, String fromType);
 
 	public Integer getAllProjectMembersCountByProjectId(Long id);
 	
@@ -114,4 +114,6 @@ public interface ProjectMembersDao {
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 
 	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception;
 }

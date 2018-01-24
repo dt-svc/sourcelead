@@ -340,7 +340,27 @@ public class ClientRestController {
 			 return result;
 		 }
 		 
+		 @RequestMapping(value = "/validateClientOrVendorEmails",  method = RequestMethod.POST)
+		    public @ResponseBody String validateClientOrVendorEmails(@RequestParam(value="email", required=true) String email ) throws Exception {
+			 
+			 String  result = "Valid Email";
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(email, orgLocation.getId());
+			 if(userRole == null){
+				 User spocuser = userService.findByEmail(email);
+				 if(spocuser != null) {
+					 return "Valid Email";
+				 }
+			 }else{
+				result = "Invalid Email";
+			 }
+			 
+			 return result;
+		 }
+		 
 		
+		 
 		 @RequestMapping(value = "/getSpocUserDetails",  method = RequestMethod.POST)
 		    public @ResponseBody String getSpocUserDetails(@RequestParam(value="email", required=false) String email,
 		    		@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -1593,17 +1613,11 @@ public class ClientRestController {
 			
 			//Any Keyword
 		 List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
-			if(anyKeyWordArray == null)
-				anyKeyWordArray = new ArrayList<>();
-			if(StringUtils.isNotEmpty(clientVendorDTO.getSearchValue())) {
-				anyKeyWordArray.add(clientVendorDTO.getSearchValue());
-			}
-			 // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
 			if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 				 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : anyKeyWordArray){
 					 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getAnyKeywordMatchQueryBuilderList(keywd);
 					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
 						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
 							anyBoolSubQueryBuilder.should(matchQueryBuilder);
@@ -1618,6 +1632,11 @@ public class ClientRestController {
 			
 			
 			List<String> allKeyWordArray = clientVendorDTO.getAllKeywords();//getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+			if(allKeyWordArray == null)
+				allKeyWordArray = new ArrayList<>();
+			if(StringUtils.isNotEmpty(clientVendorDTO.getSearchValue())) {
+				allKeyWordArray.add(clientVendorDTO.getSearchValue());
+			}
 			if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : allKeyWordArray){
@@ -1810,6 +1829,28 @@ public class ClientRestController {
 	}
 	
 	
+	private ArrayList<MatchQueryBuilder> getAnyKeywordMatchQueryBuilderList(String keywd){
+	    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+	   
+	    //Vendor Search 
+	    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorOrgName", keywd));
+	    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderOrgName", keywd));
+	    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+	    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("createdBy", keywd));
+		
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderCountry", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderState", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderCity", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorCountry", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorState", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorCity", keywd));
+		
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
+		
+		return matchQueryBuilderList; 
+ }
 
 	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
 		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();

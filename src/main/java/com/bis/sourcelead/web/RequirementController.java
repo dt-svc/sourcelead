@@ -192,6 +192,8 @@ public class RequirementController {
 	    
 		if(null != requirementUUID && !requirementUUID.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
+			model.addObject("requirementUUID", requirementUUID);
+			model.addObject("requirementStatus", requirement.getRequirementSubmissionStatus());
 
 			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
 
@@ -658,7 +660,7 @@ public class RequirementController {
 		Boolean isLoginUserAsApprover = false;
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		if(isAdmin || isManager){
-			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirement.getId());
+			requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
 		}else{
 			requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
 		}
