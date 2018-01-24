@@ -254,7 +254,7 @@ function invoiceDetailsPagination(url){
 		                } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[2,'desc']],
+	    	"aaSorting": [[4,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
