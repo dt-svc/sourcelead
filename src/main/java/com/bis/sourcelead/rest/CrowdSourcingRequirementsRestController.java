@@ -2305,6 +2305,9 @@ public class CrowdSourcingRequirementsRestController {
 			String resultJson = null;
 			
 			List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getCrowdSourcingOfferDetailsBySubmissionId(submissionId,locationCode);
+			for(RequirementOfferHistory offers : offersList) {
+				offers.setSubmissionStatusStr(offers.getSubmissionId().getSubmissionStatus().toString());
+			}
 			resultJson = commonUtil.toJSON(offersList);
 			return resultJson ;
 			

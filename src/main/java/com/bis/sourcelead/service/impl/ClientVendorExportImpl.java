@@ -330,7 +330,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		Set<ProjectApproverHierarchy> projectApproverHierarchySet = projectClients.getProjectApproverHierarchyList();
 		 StringBuilder sb = new StringBuilder();
 		 for(ProjectApproverHierarchy ProjectApproverHierarchy:projectApproverHierarchySet ){
-			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()).append(",");
+			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFullName()).append(",");
 		 }
 		 String projectManager = sb.substring(0, sb.length()-1);
 		 
