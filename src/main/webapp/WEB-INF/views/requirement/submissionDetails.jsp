@@ -1115,11 +1115,10 @@ function getOfferDetails(submissionId){
 	
 	                         var accept = "OFFERACCEPTED";
 	                    	 var reject = "OFFERREJECTED";
-	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav">';
 	                    	 result = result + '<span id="'+report.offerId.id+'offerActionDiv">';
-	                    	 if(report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" &&  report.offerId.offerStatus != "CLIENT_OFFERACCEPTED" ){
+	                    	 if(report.submissionStatusStr != "REJECTED" && report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" &&  report.offerId.offerStatus != "CLIENT_OFFERACCEPTED" ){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ACCEPT_OFFER\')">';
 	                    		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"   ><i class="fa fa-check text-success"></i></a>';
 	                    		 '</sec:authorize>';

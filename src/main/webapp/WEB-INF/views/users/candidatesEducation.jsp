@@ -457,6 +457,7 @@ function EditEducation(candidateId,candidateEducationId) {
 							result = result  +'                <div class="form-horizontal clearfix"> ';
 							result = result  +'   ';
 							result = result  +'                  <div class="clearfix mb10"> ';
+							result = result  +'                    <div class="col-md-12">                                                                                                            ';
 							result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 		               
 						
@@ -478,6 +479,7 @@ function EditEducation(candidateId,candidateEducationId) {
 							  
 							});
     result = result + "</select>";
+	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';

@@ -355,7 +355,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
 	result = result +"<label class='col-md-4 noPad'>Designation</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='designationType' id='designationType' field-name='Designation'  pattern='[A-Za-z\s]*' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<input class='form-control' type='text' name='designation' id='designation' field-name='Designation'  pattern='[A-Za-z\s]*' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
