@@ -285,7 +285,7 @@ function addEducation(candidateId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-5 dropdown-select positionRelative paddingRight">';
-	result = result  +'	                     <select class="form-control"  name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="newSelect"  name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -294,7 +294,7 @@ function addEducation(candidateId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -510,7 +510,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="newSelect" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -531,7 +531,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
 	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
