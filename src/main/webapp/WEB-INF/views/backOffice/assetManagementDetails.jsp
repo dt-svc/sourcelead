@@ -301,7 +301,7 @@ function assetDetails(assetId) {
 						result = result + '</div>';
 					}
 					if(json.monitor != null && json.monitor != '' && json.monitor != 'undefined'){
-					result = result + ' <div class="require_wrap_details_cta"> <b><strong>MotherBoard:</strong></b> <span>'+json.monitor+'</span>';
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Monitor:</strong></b> <span>'+json.monitor+'</span>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + '</div>';
 					}
@@ -510,7 +510,7 @@ function editAssetManagement(assetId){
 				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
 					result = result + ' <div class="col-md-3">';
-					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="MotherBoard">';
+					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Monitor">';
 					result = result + '</div>';
 				}
 				
