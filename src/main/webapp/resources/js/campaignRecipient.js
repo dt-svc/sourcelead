@@ -46,6 +46,8 @@ function campaignRecipient(ele,listId, fromType) {
 	            });
 			 
 			 $("#resetForm").click(function(){
+				 $('#recipientEmailDiv').find('p.jquery_form_error_message').remove();
+				 $('#cpnListNameDiv').find('p.jquery_form_error_message').remove();
 				 $("#capn_add_Recipient_List")[0].reset();
 				 $("#recipientEmail").empty();
 				  $("#recipientEmail").trigger("chosen:updated");
