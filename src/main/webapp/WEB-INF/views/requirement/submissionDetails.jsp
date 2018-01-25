@@ -85,6 +85,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }); 
 	    	   
 	    	   var designation = '';
+	    	   var designationType = '';
 	    	   var experience = '';
 	    	   var noticeperiod = '';
 	    	   
@@ -200,9 +201,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li>'+designation+'</li>';
-               if(designationType != null && designationType != '' && designationType != 'undefined'){
                result = result + ' <li>'+designationType+'</li>';
-               }
                result = result + ' <li>'+experience+'</li>';
                result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';

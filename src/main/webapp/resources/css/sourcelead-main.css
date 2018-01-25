@@ -7877,7 +7877,14 @@ padding-left: 15px !important;
 min-height: 125px;
 }
 .scroll-dropdown {
-	width: 300px; max-height: 250px; overflow-y:auto; 
+width: 300px; max-height: 250px; overflow-y:auto; 
+}
+.dropdown-select-chosen .search-field input {
+width: 110% !important;
+}
+.timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.joblocinput {
+background-color: #fff; color: #333; border: 1px solid #ddd; width: 350px !important;
+margin-right: 15px;
 }
 /* media 320px */
 @media (max-width: 320px) {
