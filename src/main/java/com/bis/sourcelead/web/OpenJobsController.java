@@ -27,6 +27,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class OpenJobsController {
@@ -109,10 +110,21 @@ public class OpenJobsController {
 		modelMap.addAttribute("companies", companies);
 		modelMap.addAttribute("offset", offset);
 		modelMap.addAttribute("postedOrgName", postedOrgName);
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "guestuserCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			modelMap.addAttribute("guestusermsg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "guestuserCreateMsg");
+		}
 		return "openJobs/openjobs";
 	}
 	
 	
+	private boolean isNullOrEmpty(String msg)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	@RequestMapping(value = { "/app/ws/{postedOrgName}-{companies}"})
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String companies,@PathVariable String postedOrgName,HttpServletRequest request) throws Exception
 	{
