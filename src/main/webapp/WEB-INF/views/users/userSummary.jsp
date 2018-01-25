@@ -516,7 +516,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned Users as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+						    result = result + '<p>Assigned Associates as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="changeReportingManagerDiv">';
@@ -1098,7 +1098,8 @@ function getChangeRole(userId,userRoleId){
                             url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
                             	if(result && result === "DataMissing") {
-                            	$("#update_user").attr("disabled", "disabled");
+                            		$("#update_user").removeAttr("disabled");
+            						$("#update_user").removeAttr('button').val('Update');	
            						showError("Invalid data");
            					}else{
                             	 $("#selectoruser").removeAttr("style");
@@ -1139,7 +1140,8 @@ function getChangeRole(userId,userRoleId){
                                   url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
                                 	  if(result && result === "DataMissing") {
-                                  		$("#update_user").attr("disabled", "disabled");
+                                		$("#update_user").removeAttr("disabled");
+                  						$("#update_user").removeAttr('button').val('Update');	
                  						showError("Invalid data");
                  					}else{
                                 	  $("#selectoruser").removeAttr("style");
@@ -1169,7 +1171,8 @@ function getChangeRole(userId,userRoleId){
                       url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
                     	  if(result && result === "DataMissing") {
-                      		$("#update_user").attr("disabled", "disabled");
+                    		$("#update_user").removeAttr("disabled");
+      						$("#update_user").removeAttr('button').val('Update');	
      						showError("Invalid data");
      					}else{
                     	  $("#selectoruser").removeAttr("style");
@@ -1777,7 +1780,7 @@ function removeUser(userId){
 						result = result + '<div class="clearfix mb10">';
 						result = result + '<div class="col-md-6">';
 						    result = result + '<div class="user_badg">';
-							    result = result + '<p>Assigned Users as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+							    result = result + '<p>Assigned Associates as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
 									result = result + '</div>';
 					            result = result + '</div>';
 							result = result + '<div class="col-md-6" id="reportingManagerDiv">';

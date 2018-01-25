@@ -4,6 +4,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
 <script>
 function requirementListCheck(searchValue,universalRequirementSearchList,searchType,sourceleadUrl){
 	if(universalRequirementSearchList != null && universalRequirementSearchList != '' && universalRequirementSearchList != 'undefined' 
@@ -201,11 +202,17 @@ function jpagination(url,sourceleadUrl){
 		         "data": "requirementUUID",
 		         "render": function ( data, type, opt, meta ) {
 		         		   var result = "";
-		         		  result = result +" <td><div class='widthIcon'>";
+		         		  result = result +" <td><div class=' widthIcon widthIcon-three'>";
+		         		  
 		      	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
+		      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        
+		      		        }
 		      	        '</sec:authorize>';
+		      	        
+		      	      	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
+	         				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assing To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-user-secret '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
+	         		 	'</sec:authorize>';
 		      	        
 		      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		      					if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
@@ -570,4 +577,14 @@ function jpagination(url,sourceleadUrl){
    	   }
    	});
  }
+</script>
+<script>
+function getAssignedMembersDiv(reqId){
+	$("#summaryButtonsDiv").hide();
+	$("#listButtonsDiv").show();
+	$('#listSaveButton').removeAttr('onclick');
+	$('#listSaveButton').attr('onClick', 'editAssignedTeamsOrUsers('+reqId+');');
+	getAssignedMembersListForEdit(reqId);
+	
+}
 </script>
