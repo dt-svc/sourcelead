@@ -174,7 +174,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
 	@Override
-	 public String getRequirementId(OrgLocations orgLocations) {
+	public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
 	    	Long number = 1L;
 			String requirementId = null;
