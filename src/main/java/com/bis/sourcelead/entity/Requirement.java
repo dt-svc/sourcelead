@@ -571,6 +571,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "FILE_URL")
 	private String fileURL;
 	
+	@Transient
+	@JsonProperty
+	private String assignedMembersCount;
+	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
 	}
@@ -1905,5 +1909,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.experienceLevel = experienceLevel;
 	}
 
+	public String getAssignedMembersCount()
+	{
+		return assignedMembersCount;
+	}
+
+	public void setAssignedMembersCount(String assignedMembersCount)
+	{
+		this.assignedMembersCount = assignedMembersCount;
+	}
 	
 }
