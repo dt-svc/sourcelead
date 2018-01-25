@@ -17,6 +17,7 @@ public class ConnectionsDTO {
 	private BigInteger connectedCount;
 	private BigInteger sentCount;
 	private BigInteger receivedCount;
+	private String countFlag; //flag set to true when list size > 0
 	
 	public BigInteger getId() {
 		return id;
@@ -102,13 +103,19 @@ public class ConnectionsDTO {
 	public void setReceivedCount(BigInteger receivedCount) {
 		this.receivedCount = receivedCount;
 	}
+	public String getCountFlag() {
+		return countFlag;
+	}
+	public void setCountFlag(String countFlag) {
+		this.countFlag = countFlag;
+	}
 	@Override
 	public String toString() {
 		return "ConnectionsDTO [id=" + id + ", userName=" + userName + ", email=" + email + ", userType=" + userType
 				+ ", orgName=" + orgName + ", count=" + count + ", userCode=" + userCode + ", fileUrl=" + fileUrl
 				+ ", connectionUUID=" + connectionUUID + ", requestSent=" + requestSent + ", requestRecieved="
 				+ requestRecieved + ", connectedCount=" + connectedCount + ", sentCount=" + sentCount
-				+ ", receivedCount=" + receivedCount + "]";
+				+ ", receivedCount=" + receivedCount + ", countFlag=" + countFlag + "]";
 	}
 	
 }

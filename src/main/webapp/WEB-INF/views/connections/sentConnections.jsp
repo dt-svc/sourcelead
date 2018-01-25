@@ -122,18 +122,20 @@ var sentCount = 0;
             success: function(json) {
 	        var result = "";
 	        var flag = false;
+	        if(json[0].sentCount != 0){
+				localStorage.setItem("sentCount", json[0].sentCount);
+			}
+			if(json[0].receivedCount != 0){
+				localStorage.setItem("receivedCount", json[0].receivedCount);
+			}
+			if(json[0].connectedCount != 0){
+				localStorage.setItem("connectedCount", json[0].connectedCount);
+			}
+			if(json[0].countFlag == null){
 	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
-	    		 if(json[0].sentCount != 0){
-	 					localStorage.setItem("sentCount", json[0].sentCount);
-	 				}
-	 				if(json[0].receivedCount != 0){
-	 					localStorage.setItem("receivedCount", json[0].receivedCount);
-	 				}
-	 				if(json[0].connectedCount != 0){
-	 					localStorage.setItem("connectedCount", json[0].connectedCount);
-	 				}
+	    		 
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
@@ -165,7 +167,8 @@ var sentCount = 0;
         		}else if(json != null && json.length >= 18 && json.length != 0 ){
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}
-	   		}else if(type === 'manual' && json.length == 0){
+	   		}
+	   		}else if(type === 'manual' && json[0].countFlag == 'true'){
 	   			$('.connHeadText').empty();
 	   			$('#loadMoreDiv').empty();
 	   			localStorage.setItem("sentCount", 0);

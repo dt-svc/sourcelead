@@ -129,8 +129,13 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		//Pagination                                                              //Converting custom DTO class list from Sql result 
 		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
 		usersList = queryString.list();
+		if(usersList.isEmpty()) {
+			ConnectionsDTO connectionsDTO = new ConnectionsDTO();
+			connectionsDTO.setCountFlag("true");
+			usersList.add(connectionsDTO);
+		}
 		Map<String, BigInteger> countValues = getCountValuesForSentReceivedConnected(userId);
-		if(!countValues.isEmpty() && !usersList.isEmpty()) {
+		if(!usersList.isEmpty()) {
 			usersList.get(0).setSentCount(countValues.get("sentCount"));
 			usersList.get(0).setReceivedCount(countValues.get("receivedCount"));
 			usersList.get(0).setConnectedCount(countValues.get("connectedCount"));
