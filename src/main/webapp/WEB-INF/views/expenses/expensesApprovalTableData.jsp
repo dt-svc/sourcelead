@@ -42,7 +42,7 @@
 </sec:authorize>
 </div></td>
 	    	  			
-<td><div id="status${expApproverHierarchy.expId}" title="${expApproverHierarchy.expensesStatus}">${expApproverHierarchy.expensesStatus}</div></td>
+<td><div style="text-transform: capitalize;" id="status${expApproverHierarchy.expId}" title="${expApproverHierarchy.expensesStatus}">${expApproverHierarchy.expensesStatus}</div></td>
 	    	  		
  <td>
 		        	 <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'NEW'}" >

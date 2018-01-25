@@ -418,6 +418,7 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 		
+		
 		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
 			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
