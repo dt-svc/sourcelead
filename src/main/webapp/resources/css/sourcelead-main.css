@@ -5207,6 +5207,9 @@ appearance:none; -webkit-appearance:none; -moz-appearance:none; -ms-appearance:n
 .widthIcon > div{
     padding:0 5px; margin: 0 auto;
 }
+.widthIcon.widthIcon-three {
+width: 75px;
+}
  .centerDiv {
 float:none; margin:0 auto;
 }
@@ -7883,8 +7886,15 @@ width: 300px; max-height: 250px; overflow-y:auto;
 width: 110% !important;
 }
 .timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.joblocinput {
-background-color: #fff; color: #333; border: 1px solid #ddd; width: 350px !important;
+background-color: #fff; color: #333; border: 1px solid #ddd; width: 335px !important;
 margin-right: 15px;
+}
+.timesheetDocs-custom.jobdocsCustom {
+width: 72%;
+}
+.jobloc-trash {
+position: absolute; right: -22px; top:8px; width: auto !important; color:#a21e23;
+font-size: 18px;
 }
 /* media 320px */
 @media (max-width: 320px) {

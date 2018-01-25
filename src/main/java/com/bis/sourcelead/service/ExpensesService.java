@@ -41,5 +41,6 @@ public interface ExpensesService {
 	
 	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
 
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception;
 	
 }
