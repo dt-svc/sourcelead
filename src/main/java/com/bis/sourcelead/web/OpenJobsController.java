@@ -136,7 +136,7 @@ public class OpenJobsController {
 	}
 
 	
-	@RequestMapping(value = "/job/{url}--{id}")
+	@RequestMapping(value = "/job/{url}-{id}")
 	public ModelAndView openRequirementsSummary(@PathVariable long id, @PathVariable String url) throws Exception
 	{
 		/*
