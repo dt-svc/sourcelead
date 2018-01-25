@@ -364,7 +364,6 @@
 <script>
 /* this script is for calculate total hours */
 $(document).ready(function() {
-	setTotals();
 	maskme();
 	if($("#timesheet_form input[data-id*=docFile]").length > 0) {
 		$("#timesheet_form input[data-id*=docFile]").remove();
@@ -440,45 +439,58 @@ function setTotals(){
 		}else{
 			total =  "00:00";
 		}
-	 $("#rowTotal"+i+"Id").val(total);
-}	
-	 
+	    $("#rowTotal"+i+"Id").val(total);
+       }	
+	    //alert("total>>>>"+total);
+	   //alert("billableSum>>>>"+billableSum);
+	  // alert("nonBillableSum>>>>"+nonBillableSum);
 	   //for calculate billable count
-	    var t1 = billableSum; 
-		var billableHours = Math.floor(t1 / 60); 
-		var billableMinutes = t1 % 60;
-		
-		if (billableMinutes < 10) {
-			billableMinutes = '0' + billableMinutes;
-		}
-		if (billableHours < 10) {
-			billableHours = '0' + billableHours;
-		}
-		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
-			billableTotal = billableHours +":"+ billableMinutes;
-		}else{
-			billableTotal =  "00:00";
-		}
-	    $("#grandBillableTotal").val(billableTotal);
+	   
+	    if(!isNaN(billableSum)){
+	        var t1 = billableSum; 
+	 		var billableHours = Math.floor(t1 / 60); 
+	 		var billableMinutes = t1 % 60;
+	 		
+	 		if (billableMinutes < 10) {
+	 			billableMinutes = '0' + billableMinutes;
+	 		}
+	 		if (billableHours < 10) {
+	 			billableHours = '0' + billableHours;
+	 		}
+	 		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
+	 			billableTotal = billableHours +":"+ billableMinutes;
+	 		}else{
+	 			billableTotal =  "00:00";
+	 		}
+	 	    $("#grandBillableTotal").val(billableTotal);
+	    }else{
+	    	$("#grandBillableTotal").val("00:00");
+	    }
+	   
 	    
 	    
 	  //for calculate non-billable count
-	    var t2 = nonBillableSum; 
-		var nonBillableHours = Math.floor(t2 / 60); 
-		var nonBillableMinutes = t2 % 60;
-		
-		if (nonBillableMinutes < 10) {
-			nonBillableMinutes = '0' + nonBillableMinutes;
-		}
-		if (nonBillableHours < 10) {
-			nonBillableHours = '0' + nonBillableHours;
-		}
-		if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
-			nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
-		}else{
-			nonBillableTotal =  "00:00";
-		}
-	    $("#grandNonBillableTotal").val(nonBillableTotal);
+	   if(!isNaN(nonBillableSum)){
+		    var t2 = nonBillableSum; 
+			var nonBillableHours = Math.floor(t2 / 60); 
+			var nonBillableMinutes = t2 % 60;
+			
+			if (nonBillableMinutes < 10) {
+				nonBillableMinutes = '0' + nonBillableMinutes;
+			}
+			if (nonBillableHours < 10) {
+				nonBillableHours = '0' + nonBillableHours;
+			}
+			if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
+				nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
+			}else{
+				nonBillableTotal =  "00:00";
+			}
+		    $("#grandNonBillableTotal").val(nonBillableTotal);
+	   }else{
+		   $("#grandNonBillableTotal").val("00:00");
+	   }
+	   
 	    
 	 grandTotal();		
  }
@@ -818,6 +830,9 @@ function addTimeSheetRow(projectId) {
        
         function prepareProjectTaskDetails(entryIndex,projectTaskId){
         	 if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
+        		   var taskId = $("#" + projectTaskId).val().split(",");
+    			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+    			   setTotals(); 
 	  			   var taskDetails = $("#" + projectTaskId).val().split(",");
 	  			   var taskId = taskDetails[0];
 	        	   var taskType   = taskDetails[1];
