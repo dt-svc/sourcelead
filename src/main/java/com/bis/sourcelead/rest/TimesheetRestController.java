@@ -720,11 +720,12 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
 			 timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
 			 timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
-			 
+			 List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(eedDTO.getProjectsId());
 			 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
 			 model.addObject("timesheetSubmissionDTO",tsDTO);
 		     LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tsDTO,request);
 			 model.addObject("entriesMap",entriesMap);
+			 model.addObject("projectsTasks",projectsTasks);
 		     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");

@@ -85,6 +85,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }); 
 	    	   
 	    	   var designation = '';
+	    	   var designationType = '';
 	    	   var experience = '';
 	    	   var noticeperiod = '';
 	    	   
@@ -195,7 +196,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 					  }
 				  }
-               
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';

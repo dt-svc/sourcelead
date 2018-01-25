@@ -1669,9 +1669,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	 	    			 for(TimeSheetDayEntries tde : tdeList){
 	 	    				 float totalHours = 0f;
 	 	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
-	 	    					 totalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+	 	    					totalHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
 	 		    			 }
-	 		    			 weekTotalHours = weekTotalHours+totalHours;
+	 		    			 weekTotalHours = commonUtil.getCombinedHours(weekTotalHours,totalHours);
 	 		    			 
 	 	    			 }
 	 	    		}
