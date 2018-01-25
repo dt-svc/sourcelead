@@ -230,7 +230,7 @@ function getRequestedAssociatesList(){
 						result = result +'<td>';
 						result = result +'<div class="tbldata-dotdot-vsm">';
 			     		result = result +"<i class='glyphicon glyphicon-comment edit-reason mr5'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
-	    				result = result +'<b title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+	    				result = result +'<b class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
 						result = result +'</div>';
 						result = result +'</td>';
 						
