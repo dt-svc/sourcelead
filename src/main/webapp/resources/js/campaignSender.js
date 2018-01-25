@@ -36,6 +36,10 @@ function campaignSender(ele,senderId, fromType) {
 	            });
 			 
 			 $("#resetForm").click(function(){
+				 $('#cpnSenderNameDiv').find('p.jquery_form_error_message').remove();
+				 $('#fromMailDiv').find('p.jquery_form_error_message').remove();
+				 $('#replyMailDiv').find('p.jquery_form_error_message').remove();
+				 $('#nickNameDiv').find('p.jquery_form_error_message').remove();
 				 $("#capn_add_sender")[0].reset();
 				 $("#recipientEmail").empty();
 				  $("#recipientEmail").trigger("chosen:updated");
