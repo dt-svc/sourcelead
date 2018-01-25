@@ -129,6 +129,7 @@ function getConnectionsList(type){
 	        if(json !=null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();
+	    		 $('.connHeadText').show();
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var state = null;
@@ -180,7 +181,7 @@ function getConnectionsList(type){
 	 			}
 	   		}
 	   		}else if(type === 'manual' && json[0].countFlag == 'true'){
-	   			$('.connHeadText').empty();
+	   			$('.connHeadText').hide(); 
 	   			$('#loadMoreDiv').empty();
 	   			$('#loadMoreDiv').append('<div class="noDate"></div>');
 	   		}
