@@ -165,10 +165,10 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public ProjectDocumentFolder getProjectDocumentFolderByProjectId(Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectDocumentFolder pdf  where pdf.projectId.id =:folderId";
+		String query = "from ProjectDocumentFolder pdf  where pdf.projectId.id =:projectId";
 		List<ProjectDocumentFolder> projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
 		ProjectDocumentFolder projectDocumentFolder = null;
-		if(projectDocumentFolderList != null){
+		if(projectDocumentFolderList != null && projectDocumentFolderList.size()>0 ){
 			projectDocumentFolder = projectDocumentFolderList.iterator().next();
 		}
 		return projectDocumentFolder;

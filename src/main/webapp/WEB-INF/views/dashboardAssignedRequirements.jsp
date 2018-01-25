@@ -8,6 +8,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<jsp:include page="../views/requirement/requirementAssignedTo.jsp"/>
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
@@ -111,13 +112,19 @@ function requirementList(){
 	                    	 result = result +"<tr>";
 	                    	  result = result +"<td>";
 			                     result = result + '<div class="tblminwidth-75">';
+			                     
 			         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 				         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-				         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
+				         	    	  result = result +'<div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
 				         	       }else{
-				         	    	  result = result +"<div class='text-center'>---</div>";
+				         	    	  result = result +"<div class='text-center pull-left'>---</div>";
 				         	       }
 			         	        '</sec:authorize>';
+			         	        
+			         	       '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
+			         				result = result +'<div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assing To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-user-secret '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+'"></i></a></div>';
+			         		   '</sec:authorize>';
+			         	        
 			         	       '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 			                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 			                    	 if(opt.isRequirementReleasedByuser == 'Y'){
@@ -126,7 +133,7 @@ function requirementList(){
 			                       	 result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
 			                       	 }
 			                     }else{
-				                     result = result +"<div>---</div>";
+				                     result = result +"<div class='pull-left'>---</div>";
 			                     } 
 			                     '</sec:authorize>';
 			                     result = result + '</div>';
@@ -237,6 +244,17 @@ function pagination(){
        }
     } );
 }
-</script> 
+</script>
+<script>
+function getAssignedMembersDiv(reqId){
+	$("#selectedUsersGrid").empty();
+	$("#summaryButtonsDiv").hide();
+	$("#listButtonsDiv").show();
+	$('#listSaveButton').removeAttr('onclick');
+	$('#listSaveButton').attr('onClick', 'editAssignedTeamsOrUsers('+reqId+');');
+	getAssignedMembersListForEdit(reqId);
+	
+}
+</script>
 
 <jsp:include page="addApplicantFromDashboard.jsp" />

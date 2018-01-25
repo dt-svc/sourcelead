@@ -1900,6 +1900,8 @@ public class RequirementListRestController {
             				requirement.setReqCoolingOffPeriod(orgLocation.getCoolingOffPeriod());
             			}
 	            		
+	            		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+	            		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
 	            		reqList.add(requirement);
 	            	}
 	            }

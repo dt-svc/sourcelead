@@ -51,7 +51,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 					<c:if test="${submissionStatus != 'SUBMITTED'}">
-						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" >
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
 								<option value="">Select Project</option>
@@ -583,15 +583,14 @@ function removeWhiteSpaces(rowCount){
 			}
 			var  pmIdValue = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
 			$("#projectIdHidden").val(pmIdValue);
-
-			if(date_validation == "true"){
-				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i>Item duration should be between Expense StartDate and EndDate</p>");
-				return false;
-			}
-			else if(validation_required == "true"){
+			if(validation_required == "true"){
 				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
 				return false;
 			}
+			 else if(date_validation == "true"){
+					$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i>Item duration should be between Expense StartDate and EndDate</p>");
+					return false;
+				} 
 			else{
 				//$("#submitForApprovalExpensesId").prop('disabled', true);
 				//$("#cancelForApprovalExpensesId").prop('disabled', true);
