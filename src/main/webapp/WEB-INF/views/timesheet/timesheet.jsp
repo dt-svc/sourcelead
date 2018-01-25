@@ -404,7 +404,6 @@ function addTimeSheetRow(projectId) {
        
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
-		   alert("hello")
 		   var sourceleadUrl ='${sourceleadUrl}';
 		   
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
