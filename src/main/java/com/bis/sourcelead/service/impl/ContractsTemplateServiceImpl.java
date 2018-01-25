@@ -2164,7 +2164,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setFileURL(info.getFileURL());
 				contracts.setFileName(info.getFileName());
 				contracts.setFileType(info.getContentType());
-				contracts.setFileName(info.getFileName());
+				
+				vendorContracts.setFileURL(info.getFileURL());
+				vendorContracts.setFileName(info.getFileName());
+				vendorContracts.setFileType(info.getContentType());
+				
 				}
 				//move the document file temp to your(ContractDocs here) folder
 				FileUploadUtil.moveFile(contractsDTO.getStaticPath(), info, "ContractDocs");

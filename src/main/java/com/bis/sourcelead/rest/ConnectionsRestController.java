@@ -207,7 +207,7 @@ public class ConnectionsRestController {
 		emailMessage.setLastName(toUser.getLastName());
 		emailMessage.setToEmail(toUser.getEmail());
 		emailMessage.setFromEmail("donotreply@sourcelead.com");
-		emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setFromName("donotreply@sourcelead.com");
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		// emailMessage.setOrgLocationId(locationId);
 		// setting the class filed values

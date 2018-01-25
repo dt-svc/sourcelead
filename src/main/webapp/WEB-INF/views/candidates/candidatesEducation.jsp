@@ -887,12 +887,7 @@ function educationSelectScoreType(){
 		var strToUpper = str.toUpperCase();
 		$('#candidateEducationScore').val(strToUpper);
 	}
-	 var selectedText = document.getElementById("candidateEducationScore").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
+	 var selectedText = document.getElementById("scoreEducationType").value;
 	 var canScore = document.getElementById("candidateEducationScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
