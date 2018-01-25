@@ -1454,7 +1454,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 											}
 											else {
 												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), vendorLocations.getId());
-												if (userRole == null) {
+												if (userRole != null) {
 													List<OrgRelations> vandorsListByOrgLocationId;
 													if ("Client".equalsIgnoreCase(responderType)) {
 														vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(clientOrVendor.getOrgName(), orgLocations.getId());
@@ -1533,8 +1533,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												// List<OrgSpoc> spocList =
 												// orgSpocService.getSpoclistByDomain(orgRelations.getId(),domain);
 												spocList = orgRelationsService.getAllClientsByOrgLocationIdAndDomain(orgLocations.getId(), domain, responderType);
-												if ((null != spocList && spocList.size() > 0)
-														&& !"gmail.com".equalsIgnoreCase(domain)) {
+												if (null != spocList && spocList.size() > 0) {
 													if ("Client".equalsIgnoreCase(responderType)) {
 														clientOrVendor.setReason("Similar client exist with domain");
 													}
