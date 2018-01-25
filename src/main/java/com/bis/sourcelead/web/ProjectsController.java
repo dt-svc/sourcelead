@@ -408,7 +408,7 @@ public class ProjectsController {
 				 if(projectTask.getDueDate() !=null) {
 					 model.addObject("dueDate",  dateFormat.format(projectTask.getDueDate()));
 				 }else {
-					 model.addObject("dueDate",  "--");
+					 model.addObject("dueDate",  "");
 				 }
 				 
 				 if(projectTask.getProjectId() != null && projectTask.getProjectId().getStartDate() != null){
@@ -438,9 +438,11 @@ public class ProjectsController {
 						 model.addObject("parentProjectTaskUUID", projectTask.getParentTaskId().getProjectTasksUUID());
 					 }
 					 model.addObject("parentGeneratedId", projectTask.getParentTaskId().getGeneratedId());
+					 model.addObject("parentTaskId", projectTask.getParentTaskId().getId());
 				 }
 				if(projectTask.getProjectId() != null) {
 					model.addObject("projectName", projectTask.getProjectId().getProjectName());
+					model.addObject("projectStartDate",  commonUtil.dateStrFromOrgDateFormatter(projectTask.getProjectId().getOrgLocationsId().getDateFormat(), projectTask.getProjectId().getStartDate()));
 				}
 				 
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
@@ -454,7 +456,11 @@ public class ProjectsController {
 				 
 				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
 				 model.addObject("taskStatusList", taskStatusList);
-				 model.addObject("taskUUID", taskUUID);
+				 
+				 
+				 LookUpData taskStatus = lookUpDataService.getRequirementExperienceLevelyUniqueKey(projectTask.getTaskType().getUniqueKey());
+				 model.addObject("taskStatus", taskStatus.getUniqueKey());
+				model.addObject("taskUUID", taskUUID);
 				model.addObject("projectClientUUID", projectClientUUID);
 				model.setViewName("project/projectTaskSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
