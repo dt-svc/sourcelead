@@ -223,11 +223,11 @@ $.ajax({
  			result = result +'</div>';
  			result = result +'</td>';
  			if(opt.employmentTypeVendors != null && opt.employmentTypeVendors !='' && opt.employmentTypeVendors!='Undefined' && opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i><i title="client name">'+opt.employmentTypeVendors+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="emp type">'+opt.employementType+'</i><i title="client name">'+opt.employmentTypeVendors+'</i></div></td>';	
  			}else if(opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="emp type">'+opt.employementType+'</i></div></td>';	
  			}else{
- 			result = result +'<td><div class="md"><i title="Project name">--</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="emp type">--</i></div></td>';	
  			}
  			
  			if(opt.clientNameExpenses != null && opt.clientNameExpenses !='' && opt.clientNameExpenses!='Undefined'){

@@ -5207,6 +5207,9 @@ appearance:none; -webkit-appearance:none; -moz-appearance:none; -ms-appearance:n
 .widthIcon > div{
     padding:0 5px; margin: 0 auto;
 }
+.widthIcon.widthIcon-three {
+width: 75px;
+}
  .centerDiv {
 float:none; margin:0 auto;
 }
@@ -7539,7 +7542,7 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
-.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal, .modal.modalApplyjob, .modal.sharejob-pop {
+.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal, .modal.modalApplyjob {
 	display: none;
 }
 .location-alert {
@@ -7883,17 +7886,15 @@ width: 300px; max-height: 250px; overflow-y:auto;
 width: 110% !important;
 }
 .timesheetDocs.timesheetDocs-custom .timesheet_week_comm input.joblocinput {
-background-color: #fff; color: #333; border: 1px solid #ddd; width: 350px !important;
+background-color: #fff; color: #333; border: 1px solid #ddd; width: 335px !important;
 margin-right: 15px;
 }
-ul.dropdown-morecustom li {
-	margin: 0 !important; padding: 0 !important; width: 178px !important; border-bottom: 1px solid #ededed;
+.timesheetDocs-custom.jobdocsCustom {
+width: 72%;
 }
-ul.dropdown-morecustom li a {
-	margin: 0 !important; padding: 5px 10px !important; 
-}
-ul.dropdown-morecustom li a:hover{
-	color: #fff !important;
+.jobloc-trash {
+position: absolute; right: -22px; top:8px; width: auto !important; color:#a21e23;
+font-size: 18px;
 }
 /* media 320px */
 @media (max-width: 320px) {
@@ -9888,6 +9889,5 @@ bottom: -14px; left: -30px !important; position: absolute;
 
 
 /* Animated Ends */
-
 
 

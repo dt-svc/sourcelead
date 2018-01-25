@@ -156,6 +156,7 @@ function statusvalidating(id){
 }
 </script>
 <jsp:include page="requirementTable.jsp" />
+<jsp:include page="requirementAssignedTo.jsp"/>
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
 <input type="hidden" name="noReq" id="noReq" />
 <input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
@@ -557,6 +558,8 @@ function statusvalidating(id){
 </section>
  <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
+
+<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 <!-- 
 
 <script type="text/javascript">

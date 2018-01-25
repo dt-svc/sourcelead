@@ -223,6 +223,7 @@ function assetDetails(assetId) {
 				    var description = "NO DATA";
 				    var shiftAEmpName = " ";
 				    var shiftBEmpName = " ";
+				    var issueDate = "NO DATA";
 					
 					if (json.make != null && json.make != '' && json.make != 'undefined') {
 						make = json.make;
@@ -269,6 +270,9 @@ function assetDetails(assetId) {
 					}else{
 						shiftBEmpName = "NO DATA";
 					}
+					if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
+						issueDate = json.issueDate;
+					}
 					var result = "";
 					result = result + '<div class="require_wrap_details">';
 					result = result + '<h1>'+json.categoryName+' Asset details: <a id="edit-user" href="javascript:editAssetManagement('+assetId+');">Edit<i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp</a></h1>';
@@ -287,6 +291,10 @@ function assetDetails(assetId) {
 					result = result + '</div>';
 					
 					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Model:</strong></b> <span>'+model+'</span>';
+					result = result + '  <div class="clearfix"></div>';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="require_wrap_details_cta"> <b><strong>Issue Date:</strong></b> <span>'+issueDate+'</span>';
 					result = result + '  <div class="clearfix"></div>';
 					result = result + ' </div>';
 					
@@ -399,7 +407,7 @@ function editAssetManagement(assetId){
 			var selected2 = '';
 			var empA = "";
 			var empB = "";
-			
+			var issueDate = "";
 			if (json.make != null && json.make != '' && json.make != 'undefined') {
 				make = json.make;
 			} 
@@ -452,6 +460,10 @@ function editAssetManagement(assetId){
 				shiftBFileName = json.shiftBFileName;
 			}
 			
+			if (json.issueDate != null && json.issueDate != '' && json.issueDate != 'undefined') {
+				issueDate = json.issueDate;
+			}
+			
 			if(json.workingStatus == 'Working'){
 				selected1 = 'selected';
 			} 
@@ -494,6 +506,13 @@ function editAssetManagement(assetId){
 			result = result + ' </div>';
 			//this block not visible to others category assets
 			
+                result = result + ' <div class="col-md-3 minHeight50"> ';
+                result = result + '   <div class="input-group"> ';
+                result = result + '      <input type="text" value="'+issueDate+'" name="issueDate" placeholder = "Issue Date" class="form-control calendar" id="issueDate" readonly="readonly">   ';
+                result = result + '      <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>   ';
+                result = result + '   </div>  ';
+                result = result + '  </div>  ';
+			
 			if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && (json.categoryId == 1 || json.categoryId ==2)) {
 			
 				result = result + ' <div class="col-md-3 minHeight50">';
@@ -509,7 +528,7 @@ function editAssetManagement(assetId){
 				result = result + '</div>';
 				
 				if (json.categoryName != null && json.categoryName != '' && json.categoryName != 'undefined' && json.categoryId == 2) {
-					result = result + ' <div class="col-md-3">';
+					result = result + ' <div class="col-md-3 minHeight50">';
 					result = result + '<input type="text" class="form-control input-sm" name="monitor" value="'+monitor+'" data-validation-optional="true" data-validation="validate_Space validate_length length2-100" placeholder="Monitor">';
 					result = result + '</div>';
 				}
@@ -517,10 +536,14 @@ function editAssetManagement(assetId){
 			}
 			//this block not visible to others category assets
 			
-			result = result + '<div class="clearfix">';
-				result = result + '<h4 class="col-md-12 margin-top0">Shift A</h4>';
+				result = result + '<div class="clearfix"></div>';
+				
+				result = result + '<div class="row">';
+				result = result + '<div class="col-md-6">';
+				result = result + '<div class="clearfix">';
+				result = result + '<h4 class="col-md-12">Shift A</h4>';
 				result = result + '</div>';
-				result = result + '<div class="col-md-3">';
+				result = result + '<div class="col-md-5">';
 				result = result + ' <select class="form-control chosen-select" id="shiftAEmp" name="shiftAEmp">';
 				result = result + '<option selected value="">-Select Employee-</option>';
 					for (var i=0; i<json.employeesList.length; i++)
@@ -536,7 +559,7 @@ function editAssetManagement(assetId){
 				result = result + '   </select>';
 				result = result + ' </div>';
 				
-				 result = result + '<div class="col-md-4 minHeight50" id="shiftAFileAttachmentDiv">';
+				 result = result + '<div class="col-md-7 minHeight50" id="shiftAFileAttachmentDiv">';
 				 result = result + ' <div class="input-group attachfile-error">';
 				 result = result + '   <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftAUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 				 result = result + '     <input type="file" style="display: none;" multiple name="uploadBtn-dskA" id="uploadBtnShiftA" class="upload">';
@@ -545,16 +568,17 @@ function editAssetManagement(assetId){
 				 result = result + ' </div>';
 				 result = result + '</div>';
 				 var blockA = "A";
-				 result = result+'  <div class="col-md-4 minHeight50" id="shiftADocNameDiv" style="display: none;">';
+				 result = result+'  <div class="col-md-7 minHeight50" id="shiftADocNameDiv" style="display: none;">';
 				 result = result+'  <label id="shiftADocumentName" name="shiftADocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftAFileName+'" >'+shiftAFileName+'</label>&nbsp;&nbsp;<span id="delete_shiftAFile" onclick="removeDoc('+assetId+',\''+json.shiftAFileUrl+'\',\''+blockA+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftAExisitngFile" name="shiftAExisitngFile" value="'+shiftAFileName+'">';
 				 result = result+'  </div>';
+				 result = result+'  </div>';
 				 
-				
+				 result = result + '<div class="col-md-6">';
 				result = result + '<div class="clearfix">';
 				result = result + ' <h4 class="col-md-12">Shift B</h4>';
 				result = result + '</div>';
-				result = result + '<div class="col-md-3 minHeight50">';
+				result = result + '<div class="col-md-5 minHeight50">';
 				result = result + '<select class="form-control chosen-select" id="shiftBEmp" name="shiftBEmp">';
 				result = result + '<option selected value="">-Select Employee-</option>';
 					for (var i=0; i<json.employeesList.length; i++)
@@ -569,7 +593,7 @@ function editAssetManagement(assetId){
 				result = result + '</select>';
 				result = result + '</div>';
 				
-				result = result + '<div class="col-md-4 minHeight50" id="shiftBFileAttachmentDiv">';
+				result = result + '<div class="col-md-7 minHeight50" id="shiftBFileAttachmentDiv">';
 				result = result + ' <div class="input-group attachfile-error">';
 				result = result + '   <label class="input-group-btn"> <b class="btn btn-primary" onchange="uploadFileShiftBUpdate();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 				result = result + '     <input type="file" style="display: none;" name="uploadBtn-dskB" id="uploadBtnShiftB" class="upload">';
@@ -578,11 +602,14 @@ function editAssetManagement(assetId){
 				result = result + '</div>';
 				result = result + '</div>';
 				var blockB = "B";
-				 result = result+'  <div class="col-md-4" id="shiftBDocNameDiv" style="display: none;">';
+				 result = result+'  <div class="col-md-7" id="shiftBDocNameDiv" style="display: none;">';
 				 result = result+'  <label id="shiftBDocumentName" name="shiftBDocumentName" class="text-primary tbldata-dotdot-vsm pull-left" title="'+shiftBFileName+'" ></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeDoc('+assetId+',\''+json.shiftBFileUrl+'\',\''+blockB+'\');"><i class="fa fa-trash removeIcon"></i></span>';
 				 result = result+ '<input type="hidden" id="shiftBExisitngFile" name="shiftBExisitngFile" value="'+shiftBFileName+'">';
 				 result = result+'  </div>';
 				 result = result+'  </div>';
+				 result = result+'  </div>';
+				 result = result+'  </div>';
+				 
 			result = result + ' <div class="col-md-8">';
 			result = result + '  <textarea class="form-control" rows="2" name="description" placeholder="Description" data-validation-optional="true" data-validation="validate_Space">'+description+'</textarea>';
 			result = result + ' </div>';
@@ -666,6 +693,25 @@ function editAssetManagement(assetId){
 
 }
 </script>		
+
+<script> 
+$(document).ready(function(){
+	 //var userId = '${userId}';
+	 
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 // written common method in slead-common.js for date formats start 
+	 var finalDateFormat = getJSDateFormat(locationDate);
+	 $('body').on('focus', '#issueDate', function() {
+		 $('#issueDate').datepicker({
+			 dateFormat: finalDateFormat,
+			 changeMonth: true,
+			 changeYear: true, 
+			});
+	 });
+	 
+	 
+});
+</script>
 
 <script>
 function manageDocs(fileName,shiftAFileName,shiftBFileName){
@@ -889,6 +935,9 @@ function uploadFileShiftBUpdate(){
        return o;
    };
 })(jQuery);
+function clearDate(){
+$('#issueDate').val('');	
+}
 </script>
 
 <!-- <script>
