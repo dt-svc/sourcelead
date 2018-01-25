@@ -855,13 +855,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
 			Query query2 = session.createQuery(queryCount+query1);
 			if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).setCacheable(true).list();
 			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setCacheable(true).list();
 			} else if(!"".equalsIgnoreCase(userState)){
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setCacheable(true).list();
 			}else {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 			}
 			  
 		if(query1.toString() != null && !query1.toString().isEmpty()){

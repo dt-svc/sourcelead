@@ -536,7 +536,8 @@ function getEmployeementType(designationType){
 				url : sourceleadUrl+"/createUser?"+tokenParamName+"="+tokenValue+"",
 				success : function(result) {
 					if(result && result === "DataMissing") {
-						 $("#create_user").removeAttr("disabled");
+						$("#create_user").removeAttr("disabled");
+						$("#create_user").removeAttr('button').val('Save');	
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
