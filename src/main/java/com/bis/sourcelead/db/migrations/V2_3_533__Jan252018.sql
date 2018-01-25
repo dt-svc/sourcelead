@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ASSET','ISSUE_DATE','DATE NULL AFTER `DESCRIPTION`');
