@@ -143,8 +143,10 @@ public class OrgSettingsRestController {
 		 List<Expenses> expenses = expensesService.getAllExpensesByOrgLocationId(orgLocationId);
 		 if(!expenses.isEmpty()) {
 		 for(Expenses exp:expenses) {
-			 if(exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId()) && !exp.getExpenseId().equalsIgnoreCase(generatedUserId)) {
-				 	 String expId = exp.getExpenseId();
+			 String expId = exp.getExpenseId();
+		 	 int twoGenId = expId.lastIndexOf("EP", expId.length());
+			 String genId = expId.substring(0,twoGenId);
+			 if(exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId()) && !exp.getExpenseId().equalsIgnoreCase(genId)) {
 				 	 int two = expId.lastIndexOf("EP", expId.length());
 					 String finalExpId = expId.substring(two,expId.length());
 					 StringBuilder expensesId = new StringBuilder();
