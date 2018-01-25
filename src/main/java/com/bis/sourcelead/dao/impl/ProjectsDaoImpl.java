@@ -1161,7 +1161,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Projects project where project.orgLocationsId = :orgLocationsId";
+		String query = "from Projects ps where ps.id IN (select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId) ";
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setCacheable(true).list();
 		
 		return projectsList;

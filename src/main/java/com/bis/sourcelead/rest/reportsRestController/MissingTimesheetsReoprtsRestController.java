@@ -73,27 +73,28 @@ public class MissingTimesheetsReoprtsRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
          Date[] searchDates = null;
-		
-		if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getDateSelection()) && !missingTimesheetRepotDTO.getDateSelection().equalsIgnoreCase("custom")) {
-			searchDates = reportsUtil.getJobFilterDate(missingTimesheetRepotDTO.getDateSelection(),orgLocations);
-		}else {
-			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getFromDate());
-    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getToDate());
-			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
-			String customEndTimeStr = TZ_DF_CED.format(toDate);
-			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-			fromDate = TZ_DF_TS.parse(startDateString);
-			toDate = TZ_DF_TS.parse(endDateString);
-			
-    	    searchDates = new Date[2];
-    	    searchDates[0] = fromDate;
-    	    searchDates[1] = toDate;
-		}
+         if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getDateSelection())){
+        	 if(!missingTimesheetRepotDTO.getDateSelection().equalsIgnoreCase("custom")) {
+     			searchDates = reportsUtil.getJobFilterDate(missingTimesheetRepotDTO.getDateSelection(),orgLocations);
+     		}else {
+     			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+     			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+     			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+     			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+     			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getFromDate());
+         	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getToDate());
+     			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+     			String customEndTimeStr = TZ_DF_CED.format(toDate);
+     			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+     			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+     			fromDate = TZ_DF_TS.parse(startDateString);
+     			toDate = TZ_DF_TS.parse(endDateString);
+     			
+         	    searchDates = new Date[2];
+         	    searchDates[0] = fromDate;
+         	    searchDates[1] = toDate;
+     		}
+         }
 		
 		List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 		ArrayList<Long> projectIds = new ArrayList<>();
@@ -135,7 +136,7 @@ public class MissingTimesheetsReoprtsRestController {
 					            	 flag = false;
 					             }
 								
-					             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pm.getId()) && (flag)){
+					             if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pm.getId()) && (flag) && frequencyEndDate.before(currentCal.getTime())){
 					            	String unfilledFrequency =  key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-");
 					            	MissingTimesheetResultRepotDTO mtr = new MissingTimesheetResultRepotDTO();
 					            	mtr.setProjectName(pm.getProjects().getProjectName());
@@ -143,7 +144,7 @@ public class MissingTimesheetsReoprtsRestController {
 					            	//mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignation());
 					            	mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignationType());
 					            	mtr.setFrequency(unfilledFrequency);
-					            	mtr.setDueDays(CalendarUtil.getNumberOfDays(currentCal.getTime(),frequencyEndDate));
+					            	mtr.setDueDays(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()));
 					            	List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(pm.getProjects().getId(),orgLocations.getId()) ;
 							    	String approverName = "";
 							    	String seperator = "";
@@ -183,7 +184,7 @@ public class MissingTimesheetsReoprtsRestController {
     			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
     			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
     			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getFromDate());
-       	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getToDate());
+       	        Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getToDate());
     			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
     			String customEndTimeStr = TZ_DF_CED.format(toDate);
     			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -238,14 +239,14 @@ public class MissingTimesheetsReoprtsRestController {
 					            	 flag = false;
 					             }
 								
-					             if(submissionApproverHierarchyService.getPendingForApprovalTimesheetReportByProjectMemberId(frequencyStartDate, frequencyEndDate, pm.getId()) && (flag)){
+					             if(submissionApproverHierarchyService.getPendingForApprovalTimesheetReportByProjectMemberId(frequencyStartDate, frequencyEndDate, pm.getId()) && (flag) && frequencyEndDate.before(currentCal.getTime())){
 					            	String unfilledFrequency =  key.replaceAll("/", "-")+" To "+value.replaceAll("/", "-");
 					            	MissingTimesheetResultRepotDTO mtr = new MissingTimesheetResultRepotDTO();
 					            	mtr.setProjectName(pm.getProjects().getProjectName());
 					            	mtr.setEmployeName(pm.getProjectMemberCandidteId().getFullName());
 					            	mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignation());
 					            	mtr.setFrequency(unfilledFrequency);
-					            	mtr.setDueDays(CalendarUtil.getNumberOfDays(currentCal.getTime(),frequencyEndDate));
+					            	mtr.setDueDays(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()));
 					            	List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(pm.getProjects().getId(),orgLocations.getId()) ;
 							    	String approverName = "";
 							    	String seperator = "";

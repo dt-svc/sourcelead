@@ -40,7 +40,7 @@ function reloadFunction(){
     <div class="ReqRepHead clearfix">
 		<div class="col-md-3"></div>
 	<div class="col-md-4">
-	      <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="projectIds" id="projectIds">
+	      <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectIds" id="projectIds">
             <c:forEach var="option" items="${projectList}">
 				<option value="${option.id}">${option.projectName}</option>
 			</c:forEach>
@@ -50,10 +50,9 @@ function reloadFunction(){
    <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
-            <option value=''>Select Date</option>
-            <option value='Last_7_days' selected >Last 7 days</option>
+            <option value='Last_7_days' >Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
-            <option value='1_month'>1 month</option>
+            <option value='1_month' selected>1 month</option>
             <option value='3_months'>3 months</option>
             <option value='YTD' >YTD</option>
             <option value='Last_Year'>Last Year</option>

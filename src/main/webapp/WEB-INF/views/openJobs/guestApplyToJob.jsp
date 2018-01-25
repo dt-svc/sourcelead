@@ -199,6 +199,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<h3>Application Form</h3>';
 		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
+		result = result + '<input type="hidden" id="guestApplicant" name="guestApplicant" value="guestApplicant">';
 		
 		result = result + '<div class="row">';
 		result = result + '<div class="venk clearfix">';
