@@ -6,7 +6,7 @@ public interface AddExpensesDao {
 
 	public Expenses storeAddExpensesData(Expenses expenses) throws Exception;
 
-	public Expenses checkExpensIdNumberInDatebase(Long orgLocId);
+	public Long checkExpensIdNumberInDatebase(Long orgLocId, Integer generatedIdcount);
 
 	public void deleteDocumentByDocumentId(Long documentId);
 
