@@ -274,8 +274,13 @@ a.alertBtn {
 
 
 <!-- Content Area -->
-<<jsp:include page="../staticHeader.jsp" />
+<jsp:include page="../staticHeader.jsp" />
 <div class="innerPageSearch"> 
+<c:if test="${!empty guestusermsg}">
+	        <div class="success_pop" id="guestselector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${guestusermsg}</span>
+			</div>
+	     </c:if>
 	<section class="searchWrap" id="orgProfile" style="display:block">
 		<span><i class="fa fa-search"></i><input type="text"
 			placeholder="Search" id="openJobsRequirementTitleId"
@@ -300,6 +305,7 @@ a.alertBtn {
 			<b id="ADS">Advanced Search</b>
 		</h3>
 		<div class="clear"></div>
+		
 	</section>
 	
 </div>
@@ -884,6 +890,8 @@ a.alertBtn {
 
 <!-- this script is for load more...  -->
 <script>
+$("#guestselector").fadeIn(200);
+$('#guestselector').delay(2000).fadeOut('slow');
 	function loadMoreReq(){
     	var avilableCount = $("#openJobsOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(10); 
@@ -1221,7 +1229,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1947,6 +1955,7 @@ function getCities(){
 
 
 <script type="text/javascript">
+$.noConflict();
     	   var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
