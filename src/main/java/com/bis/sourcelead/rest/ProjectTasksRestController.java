@@ -67,6 +67,7 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DateFormat;
@@ -343,31 +344,22 @@ public class ProjectTasksRestController {
 				.getProjectTaskActivityByProjectTaskId(projectTaskId);
 
 		for (ProjectTaskActivity activity : taskActivityList) {
-			Timezone timezone = timeZoneService
-					.getTimezone(activity.getProjecId().getOrgLocationsId().getTimezone().getId());
-			activity.setCreatedStr(commonUtil.dateStrFromOrgDateFormatter(
-					activity.getProjectTaskId().getProjectId().getOrgLocationsId().getDateFormat(),
-					activity.getCreatedDate()));
-
+			Timezone timezone = timeZoneService .getTimezone(activity.getProjecId().getOrgLocationsId().getTimezone().getId());
+			activity.setCreatedStr(CalendarUtil.getDateStrForGivenTimeZone(timezone.getTimeZoneId(), activity.getCreatedDate(), activity.getProjectTaskId().getProjectId().getOrgLocationsId().getDateFormat()));
 			if (activity.getCreatedDate() != null) {
-				DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
-				String currentTimeStr = Constants.TZ_DF.format(activity.getCreatedDate());
-				String startTimeUTC = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, timezone.getTimeZoneId(),
-						currentTimeStr);
-				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-				String convertedDateStr = DF_DMY.format(convertedDate);
+				String startTimeUTC = CalendarUtil.getDateTimeStrForGivenTimeZone(timezone.getTimeZoneId(), activity.getCreatedDate(), activity.getProjecId().getOrgLocationsId().getDateFormat());
+				Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTimeUTC);
+				String convertedDateStr = new SimpleDateFormat("hh:mm a").format(date);
 				activity.setActivityTimezoneStr(convertedDateStr);
-
 			}
-			long diff = commonUtil.currentDate().getTime() - activity.getCreatedDate().getTime();
+			long diff = commonUtil.currentDate().getTime() - CalendarUtil.getDateTimeForGivenTimeZone(timezone.getTimeZoneId(), activity.getCreatedDate(), activity.getProjecId().getOrgLocationsId().getDateFormat()).getTime();
 			long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
 			long diffHours = diff / (60 * 60 * 1000) % 24;
 			long diffDays = diff / (24 * 60 * 60 * 1000);
 			StringBuilder timeBuilder = new StringBuilder();
 			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
-				activity.setActionTimeStr(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+				activity.setActionTimeStr(timeBuilder.append(diffSeconds).append(" seconds ago").toString());
 			} else if (diffDays == 0 && diffHours == 0) {
 				activity.setActionTimeStr(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
 			} else if (diffDays == 0) {
@@ -497,6 +489,87 @@ public class ProjectTasksRestController {
 	}
 	
 
+	 /**
+	  * @author Laxman
+	  * @param editDueDate
+	  * @param taskId
+	  * @param userId
+	  * @return success
+	  * @throws Exception
+	  */
+	@RequestMapping(value = "/updateDueDate", method = RequestMethod.POST)
+	public String updateDueDate(@RequestParam(value = "editDueDate", required = false) String editDueDate,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateDueDate(editDueDate, taskId, userId);
+		return "success";
+	}
+	
+	/**
+	 * @author Laxman
+	 * @param estimatedTime
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateEstimatedTime", method = RequestMethod.POST)
+	public String updateEstimatedTime(@RequestParam(value = "estimatedTime", required = false) String estimatedTime,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateEstimatedTime(estimatedTime, taskId, userId);
+		return "success";
+	}
+	
+	/**
+	 * @author Laxman
+	 * @param ownerId
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/updateTaskOwner", method = RequestMethod.POST)
+	public String updateTaskOwner(@RequestParam(value = "ownerId", required = false) Long ownerId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateOwner(ownerId, taskId, userId);
+		return "success";
+	}
+	
+	/**
+	 * @author Laxman
+	 * @param epicId
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateEpic", method = RequestMethod.POST)
+	public String updateEpic(@RequestParam(value = "epicId", required = false) Long epicId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateEpic(epicId, taskId, userId);
+		return "success";
+	}
+	
+	/**
+	 * @author Laxman
+	 * @param userStoryId
+	 * @param taskId
+	 * @param userId
+	 * @return success
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updateUserStroy", method = RequestMethod.POST)
+	public String updateUserStroy(@RequestParam(value = "userStoryId", required = false) Long userStoryId,
+			@RequestParam(value = "taskId", required = false) String taskId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		tasksService.updateUserStory(userStoryId, taskId, userId);
+		return "success";
+	}
+	
 	/**
 	 * @author Laxman
 	 * @param getProjectTasksDescrption

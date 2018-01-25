@@ -406,7 +406,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
 		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
 		       .append("OR pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
-			   .append("OR pt.taskType.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+			   .append("OR pt.taskType.name = '%" + projectTasksDTO.getSearchValue() + "%' ")
 			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
 					
 		}

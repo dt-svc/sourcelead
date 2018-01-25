@@ -200,7 +200,7 @@
 					if(report.permissionAccess == 0){
 						result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
+						result = result + '	 										<a href=\"'+report.fileUrl+'\" download> ';
 						result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
 						result = result + '	 										Download                                                                                       ';
 						result = result + '	 										</a></li>                                                                                  ';
@@ -219,7 +219,7 @@
 					}else{
 						result = result + '	 								<ul class="list-unstyled list-inline text-center extrafields">                                     ';
 						result = result + '	 										<li>                                                                                       ';
-						result = result + '	 										<a href=\"'+report.fileUrl+'\" target="_new"> ';
+						result = result + '	 										<a href=\"'+report.fileUrl+'\" download> ';
 						result = result + '	 										<i class="fa fa-download"></i> <br>                                                             ';
 						result = result + '	 										Download                                                                                       ';
 						result = result + '	 										</a></li>                                                                                  ';

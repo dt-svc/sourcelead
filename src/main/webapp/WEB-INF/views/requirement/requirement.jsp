@@ -187,7 +187,6 @@ $(document).ready(function () {
 	getIsClientVal();
 });    
 </script>
-    
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -204,13 +203,34 @@ $(document).ready(function () {
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
+   
+   <div class="newPrDetails newPrDetailsPMO"> 
+ 		<div class="newPrTabs">
+   			  <ul class="newPrTabsMenu">
+				<c:if test="${empty requirementUUID}">
+				<li class="current"><a href="#tab-a" data-toggle="tab">Job Details</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="jobRelease">Job Release</a></li>
+				</c:if>
+				<c:if test="${!empty requirementUUID}">
+				<li class="current"><a href="<c:url value='${appPath}/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
+				<c:if test="${requirementStatus == 'OPEN'}">
+					<li><a href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
+				</c:if>
+				<c:if test="${requirementStatus != 'OPEN'}">
+					<li><a href="#tab-b" data-toggle="tab" id="jobRelease">Job Release</a></li>
+				</c:if>
+				</c:if>
+				<div class="clearfix mb"></div>
+			  </ul>
+	   <div class="clearfix"></div>
+   
    <form:form id="requirement_form" name="requirement_form">
  	<input type="hidden" id="actionId" value="${actionId}">
     <div class="form-horizontal req-dtls myForm row">
-      <div class="clearfix">
-        <div class="col-lg-12">
+      <div class="clearfix mt10">
+        <!-- <div class="col-lg-12">
           <h3>Job Details</h3>
-        </div>
+        </div> -->
 	       <div class="col-md-12 clearfix">
         	  <div class="col-md-12">
 	          <div style="margin:0 auto" class="input-group col-md-6">
@@ -1390,16 +1410,23 @@ $(document).ready(function () {
         	<input type="button" value="Draft" id="draft" onclick="storeRequirement('draft'); " class="btn btn-danger ml">
         </c:if>
          <c:if test="${requirement.requirementSubmissionStatus == 'OPEN'}">
-       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+       			  <!-- <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >  -->  
+       			   <input type="button" value="Save & Continue" id="save" onclick="storeRequirement('saveAndContinue');" class="btn btn-primary ml" >  
          </c:if>
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
-       			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
+       			  <!-- <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >  -->  
+       			   <input type="button" value="Save & Continue" id="save" onclick="storeRequirement('saveAndContinue');" class="btn btn-primary ml" >  
          </c:if>
+         
+         
         <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>
     </form:form>
+    
+    </div>
+</div>  
   <!-- Content Area Ends-->
   <div id="addContact" class="modal fade" role="dialog">
   </div>
@@ -1621,7 +1648,14 @@ function validate_fileupload(fileName)
 			 $('#rateType').attr("data-validation-optional","true"); 
 		 }
 		 
-		   if ($('#requirement_form').validate(false, validationSettings)){ 
+			 var jobSaveType = '';
+			 if(saveType == 'saveAndContinue'){
+				 jobSaveType = 'save';
+			 }else{
+				 jobSaveType = saveType;
+			 }
+			 
+		     if ($('#requirement_form').validate(false, validationSettings)){ 
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -1630,10 +1664,13 @@ function validate_fileupload(fileName)
 					 data: formData,
 	  		         processData: false,
 	  		         contentType:false, 
-					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+saveType,
-					  	success : function(data) {
-					  		$("#loading").removeAttr("style");	
-						location.replace(sourceleadUrl+"/jobs");
+					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
+					  	success : function(result) {
+					  	$("#loading").removeAttr("style");	
+					  	if(saveType != 'saveAndContinue'){
+					  		location.replace(sourceleadUrl+"/jobs");
+					  	}
+					  	
 						$("#selector2").removeAttr("style");
 			    		$("#selector2").css({ display: "block" });
 			    		if(saveType == 'save'){
@@ -1643,6 +1680,12 @@ function validate_fileupload(fileName)
 			    		}
 			    		else if(saveType == 'submitForApproval'){
 			    			$("#msgJobDiv").html("Successfully job  submitted for approval");
+			    		}else if(saveType == 'saveAndContinue'){
+			    			if(result != 'MissingData'){
+			    				$("#msgJobDiv").html("Successfully job saved..");
+			    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result);	
+			    			}
+			    			
 			    		}
 		     			msgFadein();
 

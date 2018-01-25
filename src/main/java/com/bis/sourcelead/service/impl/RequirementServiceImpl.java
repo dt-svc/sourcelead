@@ -431,7 +431,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setFileName(fileInfo.getFileName());
 			requirement.setFileContentType(fileInfo.getContentType());
 			requirement.setFileURL(fileInfo.getFileURL());
-			if(!fileInfo.getFileURL().contains("requirementDocuments")) {
+			if(StringUtils.isEmpty(requirementDTO.getImportValue())) {
 				FileUploadUtil.moveFile(requirementDTO.getStaticPath(), fileInfo, "requirementDocuments");
 			}
 		}
@@ -3576,6 +3576,82 @@ public class RequirementServiceImpl implements RequirementService {
 	{
 		return requirementDao.getAllCampaignRequirementsByIdsList(requirementIds);
 
+	}
+
+	@Override
+	public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement, Candidate candidate) throws Exception {
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(candidate.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			StringBuilder sb = new StringBuilder();
+			if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
+				globalVarsMap.put("jobName", sb.append(requirement.getJobTitle()).append("-").append(requirement.getJobId()).toString());
+			}
+			else {
+				globalVarsMap.put("jobName", requirement.getJobTitle());
+			}
+		}
+		 
+		StringBuilder sb = new StringBuilder();
+		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))
+				&& (requirement.getMaxRate() != null
+						&& !"".equalsIgnoreCase(requirement.getMaxRate()))) {
+			globalVarsMap.put("jobRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" - ").append(requirement.getMaxRate()).append(" / ").append(requirement.getRateType()).toString());
+		}
+		else if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate())) {
+			globalVarsMap.put("jobRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
+		}
+		else {
+			globalVarsMap.put("jobRate", "--");
+		}
+		if (requirement.getDescription() != null && !"".equalsIgnoreCase(requirement.getDescription())){
+			globalVarsMap.put("jobDescription", requirement.getDescription());
+		}else {
+			globalVarsMap.put("jobDescription", requirement.getDescription());
+		}
+				
+		if (requirement.getMinExp() != null && requirement .getMaxExp() != null){
+			globalVarsMap.put("jobExperience", "Min Exp  "+requirement.getMinExp() +" - "+"Max Exp  "+ requirement.getMaxExp());
+		}else if(requirement.getMinExp() != null){
+			globalVarsMap.put("jobExperience", "Min Exp  "+requirement.getMinExp());
+		}else if(requirement .getMaxExp() != null) {
+			globalVarsMap.put("jobExperience", "Max Exp  "+ requirement.getMaxExp());
+		}
+		if(candidate.getLastName() != null) {
+			StringBuilder candidateName = new StringBuilder();
+			globalVarsMap.put("candidateName", candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+		}else {
+			globalVarsMap.put("candidateName", candidate.getFirstName());
+		}
+		globalVarsMap.put("loginOrgName", orgLocation.getOrgLocationName());
+		globalVarsMap.put("loginUserName", loginUser.getFullName());
+		globalVarsMap.put("jobLocation", requirement.getLocation());
+
+		
+		StringBuilder linkBuild = new StringBuilder();
+		globalVarsMap.put("viewJobLink", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>").toString());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT, Constants.ENTITY_TYPE_EMAIL);
+		 
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+ 
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocation.getOrg(), orgLocation);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+	
 	}
 	
 }
