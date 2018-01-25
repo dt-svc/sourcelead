@@ -954,8 +954,13 @@ function removeSkillPopUp(candidateId){
 		    	        contentType:false,
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
+							if(result && result === "failed") {
+								$("#update_candidate").removeAttr("disabled");
+								showError("Invalid data");
+							}else{ 
 							$("#profileEditPopup").hide();
 							getProfessionalInfo();
+							}
 						},
 					});
 			return true;

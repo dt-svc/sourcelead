@@ -91,7 +91,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  *
  */
 @RestController
-@RequestMapping("/app")
+//@RequestMapping("/app")
 public class CandidateRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
 	@Value("${sourceleadUrl}")
@@ -170,7 +170,7 @@ public class CandidateRestController {
 	 * @throws NullPointer
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/storeCandidate", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception
 	{
 		if(Validator.validate(candidateDto)) {
@@ -187,7 +187,7 @@ public class CandidateRestController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "/parseResume", method = RequestMethod.POST)
+	@RequestMapping(value = {"/parseResume","/app/parseResume"}, method = RequestMethod.POST)
 	public @ResponseBody String parseResume(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request, @RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) throws Exception
 	{
 		MultipartFile multiFile = null;
@@ -209,7 +209,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/validateCandidateEmail", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/validateCandidateEmail", method = RequestMethod.POST)
 	public @ResponseBody String validateCandidateEmail(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception
 	{
 		String result = null;
@@ -235,7 +235,7 @@ public class CandidateRestController {
 	 * candidateSkillsService.validateSkillName(skillName); } return flag; }
 	 */
 	
-	@RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getCandidatesList", method = RequestMethod.POST)
 	public @ResponseBody String getCandidatesList(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateType", required = false) String candidateType, @RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -303,7 +303,7 @@ public class CandidateRestController {
 	 * 
 	 * @throws NullPointer
 	 */
-	@RequestMapping(value = "/checkCandidateState", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/checkCandidateState", method = RequestMethod.POST)
 	public @ResponseBody String checkCandidateState(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -325,7 +325,7 @@ public class CandidateRestController {
 	 * @return string
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadCandidateResume", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/downloadCandidateResume", method = RequestMethod.GET)
 	public @ResponseBody void downloadCandidateResume(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, 1);
@@ -349,7 +349,7 @@ public class CandidateRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/getUserByRoleId", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getUserByRoleId", method = RequestMethod.POST)
 	public @ResponseBody String getUserByRoleId(@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -359,7 +359,7 @@ public class CandidateRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getAllRoleUsers", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getAllRoleUsers", method = RequestMethod.POST)
 	public @ResponseBody String getAllRoleUsers(HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -376,7 +376,7 @@ public class CandidateRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getConsultantUserDetailsById", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getConsultantUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody String getConsultantUserDetailsById(@RequestParam(value = "userId", required = false) Long userId)
 	{
 		ArrayList<String> userList = new ArrayList<String>();
@@ -395,7 +395,7 @@ public class CandidateRestController {
 		return commonUtil.toJSON(userList);
 	}
 	
-	@RequestMapping(value = "/getCandidatesListByCandidateType", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getCandidatesListByCandidateType", method = RequestMethod.POST)
 	public @ResponseBody String getCandidatesListByCandidateType(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateType", required = false) String candidateType, @RequestParam(value = "applicantSearch", required = false) String applicantSearch, HttpServletRequest request) throws Exception
 	{
 		List<Candidate> candidatesList = null;
@@ -422,7 +422,7 @@ public class CandidateRestController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
-	@RequestMapping(value = "/getTeams", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getTeams", method = RequestMethod.POST)
 	public @ResponseBody String getTeams(HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -439,7 +439,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/verifyCoolingOffPeriod")
+	@RequestMapping(value = "/app/verifyCoolingOffPeriod")
 	public String verifyCoolingOffPeriod(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateEmail", required = false) String candidateEmail, @RequestParam(value = "reqCoolingOffPeriod", required = false) String reqCoolingOffPeriod, Long orgLocationId) throws Exception
 	{
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
@@ -499,7 +499,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getRequirementHistoryListByCandidateId")
+	@RequestMapping(value = "/app/getRequirementHistoryListByCandidateId")
 
 	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -543,7 +543,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getRequirementHistoryDetailsByCandidateId")
+	@RequestMapping(value = "/app/getRequirementHistoryDetailsByCandidateId")
 	public String getRequirementHistoryDetailsByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -755,7 +755,7 @@ public class CandidateRestController {
 		return null;
 	}
 	
-	@RequestMapping(value = {"/ws/profileBySkillSet", "/profileBySkillSet"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/app/ws/profileBySkillSet", "/app/profileBySkillSet"}, method = RequestMethod.POST)
 	public @ResponseBody String profileBySkillSet(@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request) throws Exception
 	{
 		String[] mySkills = allSkills.split(",");

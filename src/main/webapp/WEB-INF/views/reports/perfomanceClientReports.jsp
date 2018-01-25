@@ -729,7 +729,7 @@ function topTenClientReports(){
                        result += '</table>';
                        
                        var opt = "";
-                       opt += '<option >Select Client</option>';
+                       opt += '<option value="">Select Client</option>';
                        for(i=0; i<data.length; i++){
                            report = data[i];
                            opt += '<option value='+report.orgRelationUUID+'>'+report.clientName+'</option>';
@@ -997,7 +997,7 @@ function topTenClientContactReports(){
                        result += '</table>';
                        
                        var opt = "";
-                       opt += '<option >Select Client Contact</option>';
+                       opt += '<option value="">Select Client Contact</option>';
                        for(i=0; i<data.length; i++){
                            repo = data[i];
                            opt += '<option value='+repo.orgSpocUUID+'>'+repo.clientContactName+'</option>';

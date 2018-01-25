@@ -36,6 +36,7 @@
 	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
 		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
 	        		    	  }
+	        		    		setTotals();
 	        		    	  $("#loadTime").removeAttr('style');
 	        		      }
 	        	    }); 

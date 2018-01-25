@@ -11,20 +11,20 @@
   
   <div class='file_mask'>
   </div>
-  <div class="alert alert-danger" role="alert" style='display:none;'>
+  <!-- <div class="alert alert-danger" role="alert" style='display:none;'>
 	<div>
 		<strong>Alert</strong>
 		<div class="close" data-type="2"></div>
 	</div>
 	<span></span>
-  </div>
+  </div>-->
   <div class="alert alert-success" role="alert" style='display:none;'>
 	<div>
 		<strong>Message</strong>
 		<div class="close" data-type="1"></div>
 	</div>
 	<span></span>
-  </div>
+  </div> 
   <style type='text/css'>
   	.file_mask {
   		display: none;
