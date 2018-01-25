@@ -299,7 +299,7 @@ function editCandidate(candidateId){
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
-							result = result + '<option  '+(json.rateType == "Biweekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(json.rateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
 							result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
 							result = result + '<option  '+(json.rateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
@@ -954,8 +954,13 @@ function removeSkillPopUp(candidateId){
 		    	        contentType:false,
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
+							if(result && result === "failed") {
+								$("#update_candidate").removeAttr("disabled");
+								showError("Invalid data");
+							}else{ 
 							$("#profileEditPopup").hide();
 							getProfessionalInfo();
+							}
 						},
 					});
 			return true;

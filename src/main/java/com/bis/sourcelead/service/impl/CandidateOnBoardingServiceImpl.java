@@ -52,6 +52,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -76,6 +77,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	UserRoleDao userRoleDao;
@@ -662,6 +666,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    userRole = userRoleDao.getLoginUserPrimaryRole(user.getId());
 		 }
 		 
+		 OrgLocations locations= orgLocationService.getOrgLocations(locationId);
+		 
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -676,18 +682,18 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 emailMessage.setOrgLocationId(locationId);
 		 
 		//setting the class filed values
+		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 StringBuilder builder=new StringBuilder();
-		 
-		 if(user.getLastName() !=null){
-		 globalVarsMap.put("firstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 if(user.getLastName() != null && user.getLastName() !=""){
+			 globalVarsMap.put("firstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("firstName", user.getFirstName());	 
 		 }
-		 else{
-		 globalVarsMap.put("firstName", user.getFirstName());
-		 }
-		// globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+
+		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
+		 globalVarsMap.put("loginUser",loginUserFullName);
+		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 globalVarsMap.put("role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());

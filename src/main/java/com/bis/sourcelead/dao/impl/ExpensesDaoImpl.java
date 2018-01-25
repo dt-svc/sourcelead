@@ -295,4 +295,13 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		return expensesList;
 	}
 
+	@Override
+	@Transactional
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Expenses  expenses left join fetch expenses.orgLocationId orgLocation where orgLocation = :orgLocationId";
+		List<Expenses>  expensesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return expensesList;
+	}
+
 }

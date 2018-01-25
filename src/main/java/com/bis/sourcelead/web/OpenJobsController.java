@@ -56,6 +56,34 @@ public class OpenJobsController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/guestApplyToJob")
+	public ModelAndView guestApplyToJob(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		Requirement req = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		model.addObject("reqId", req.getId());
+		model.addObject("orgId", req.getOrgLocationId().getOrg().getId());
+		model.addObject("locationId", req.getOrgLocationId().getId());
+		model.addObject("skills", req.getSkills());
+		model.addObject("reqName", req.getJobTitle());
+		model.addObject("jobType", req.getJobType());
+		model.addObject("minExperience", req.getMinExp());
+		model.addObject("maxExperience", req.getMaxExp());
+		model.addObject("location", req.getLocation());
+		model.addObject("minRate", req.getRate());
+		model.addObject("maxRate", req.getMaxRate());
+		model.addObject("rateType",req.getRateType());
+		model.addObject("currencyCode", req.getCurrencyCode());
+		model.addObject("noticePeriod", req.getNoticePeriod());
+		model.addObject("visaTypes", req.getVisaType());
+		
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("openJobs/guestApplyToJob");
+		return model;
+	}
+	
 	@RequestMapping(value = { "/jobs/{title}/{location}/{experience}",
 			"/app/jobs/{title}/{location}/{experience}" })
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, @RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, HttpServletRequest request) throws Exception
