@@ -170,7 +170,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  		if(!"pdf".equalsIgnoreCase(exportType)){
  			createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userDTO.getUserState(),orgLocations);
  			  StringBuilder templateSB = new StringBuilder();
- 	 		  file = File.createTempFile(templateSB.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+ 	 		  file = File.createTempFile(templateSB.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
  	 		  file.setReadable(true);
  	 		  
  			 FileOutputStream fos = new FileOutputStream(file);

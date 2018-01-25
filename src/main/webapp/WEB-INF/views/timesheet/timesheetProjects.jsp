@@ -29,6 +29,7 @@
 	        		    	  $("#timesheetEntriesDivByProjectMemberId").append(data);
 	        		    	  $("#loadTime").removeAttr('style');
 	        		    	  prepareChosenScripts();
+	        		    	  setTotals();
 	        		      }
 	        	    }); 
 	}

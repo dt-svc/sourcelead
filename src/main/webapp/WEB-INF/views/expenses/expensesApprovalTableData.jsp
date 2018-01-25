@@ -42,7 +42,7 @@
 </sec:authorize>
 </div></td>
 	    	  			
-<td><div id="status${expApproverHierarchy.expId}" title="${expApproverHierarchy.expensesStatus}">${expApproverHierarchy.expensesStatus}</div></td>
+<td><div style="text-transform: capitalize;" id="status${expApproverHierarchy.expId}" title="${expApproverHierarchy.expensesStatus}">${expApproverHierarchy.expensesStatus}</div></td>
 	    	  		
  <td>
 		        	 <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'NEW'}" >
@@ -57,7 +57,7 @@
 		               </div> 
 		            </c:if>
 		           <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REJECTED'}">
-		            	  <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>
+		            	  <div class='sm text-center' title="Rejected"><h3 class='reje_color'>Rejected</h3>
 		            	  <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
 		            	 <div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.rejectedReason}</div>
 		        	 	 <br><p title="${expApproverHierarchy.actionPerformedBy}">By :${expApproverHierarchy.actionPerformedBy}</p>
@@ -65,12 +65,12 @@
 		           </c:if>
 		            <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus ==  'APPROVED'}">
 		            	<c:if test="${not empty expApproverHierarchy.reopenRejectedReason}">
-		            		 <div class='sm text-center'><h3 class='reje_color'>Rejected</h3></div>
+		            		 <div class='sm text-center'title="Rejected"><h3 class='reje_color'>Rejected</h3></div>
 		            		  <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
 		            		 <div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenRejectedReason}</div>
 		            	</c:if>
 		            	<c:if test="${not empty expApproverHierarchy.actionPerformedBy}">
-		            		 <div class='sm text-center' title="${expApproverHierarchy.actionPerformedBy}"> <h3>Approved</h3><br>By : ${expApproverHierarchy.actionPerformedBy}</div> 
+		            		 <div class='sm text-center' title="Approved"> <h3>Approved</h3><br>By : ${expApproverHierarchy.actionPerformedBy}</div> 
 		            	</c:if>
 		            </c:if>
 		             <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REOPEN'}">

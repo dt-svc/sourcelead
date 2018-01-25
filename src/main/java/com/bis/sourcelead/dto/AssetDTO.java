@@ -71,6 +71,8 @@ public class AssetDTO extends CommonDTO {
 		private String shiftAEmployee;
 		
 		private String shiftBEmployee;
+		
+		private String issueDate;
 
 		public String getSno() {
 			return sno;
@@ -334,6 +336,14 @@ public class AssetDTO extends CommonDTO {
 
 		public void setShiftBEmployee(String shiftBEmployee) {
 			this.shiftBEmployee = shiftBEmployee;
+		}
+
+		public String getIssueDate() {
+			return issueDate;
+		}
+
+		public void setIssueDate(String issueDate) {
+			this.issueDate = issueDate;
 		}
 
 		

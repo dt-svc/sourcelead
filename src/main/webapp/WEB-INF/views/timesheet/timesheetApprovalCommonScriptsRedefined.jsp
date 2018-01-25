@@ -83,6 +83,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 			    	        $(".project_tabs_inn").not(tab).css("display", "none");
 			    	        $(tab).fadeIn();
 			    	  });
+			    	 setTotals();
 				     maskme();
 		      }
 	    }); 

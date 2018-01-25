@@ -1102,16 +1102,24 @@ function candidateProfile(candidateId,candidateType){
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
 				
-
-		        $.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-		        	//location.replace(sourceleadUrl+"/candidatesList"); 
-
-		        	 $("#selector1").removeAttr("style");
-         			 $("#selector1").css({ display: "block" });
-		        	 $("#candMsgDiv").html("Success!!  Associate Updated");
-		        	candUpdateMsgFadeinFunction();
-		        	profileDetails(candidateId);
-		        });
+			$.ajax({
+				type : "POST",
+        	    data: formData,
+				url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
+				success : function(result) {
+					if(result && result === "failed") {
+						 $("#update_candidate").removeAttr("disabled");
+						showError("Invalid data");
+					} 
+					else {
+						$("#selector1").removeAttr("style");
+	         			 $("#selector1").css({ display: "block" });
+			        	 $("#candMsgDiv").html("Success!!  Associate Updated");
+			        	candUpdateMsgFadeinFunction();
+			        	profileDetails(candidateId);
+					}
+				},
+			});
 			 
 			return true;
 		 }else{ 

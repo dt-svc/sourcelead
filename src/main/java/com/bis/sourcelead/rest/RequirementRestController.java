@@ -32,6 +32,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.OrgLocations;
 
@@ -1011,4 +1012,32 @@ public class RequirementRestController {
 	}
 	
 
+	
+	@RequestMapping(value = "/shareRecomendedApplicant", method = RequestMethod.POST)
+	public @ResponseBody void shareRecomendedApplicant(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request)throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
+	}
+	
+	@RequestMapping(value = "/shareAllRecommendations", method = RequestMethod.POST)
+	public @ResponseBody void shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		String[] candidateId = candidateIds.split(",");
+		if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
+			for(String candidateid   : candidateId){
+				Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
+				boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long.valueOf(candidateid), requirementId);
+				if(isSumbitted == false)
+					requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+			}
+		}
+		
+	}
+	
+	
 }

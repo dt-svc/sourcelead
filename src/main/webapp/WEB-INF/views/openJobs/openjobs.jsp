@@ -10,6 +10,7 @@
 </c:if>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
+<link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <link
 	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
@@ -76,6 +77,36 @@
 	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+
+
+ 
+<!--  Modal Pop for apply Jobs -->
+  <!-- Modal -->
+  <div class="comMask"></div>
+  <div class="modal modalApplyjob" id="applyModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+        <div id="gustLoginId"></div>
+          <button type="button" class="close" onclick="closeApplyJob();">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="clearfix"></div>
+          <div class="clearfix mt">
+          	<jsp:include page="../SignIn.jsp"></jsp:include>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="closeApplyJob();">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+<!--  Modal Ends -->
 
 <script type="text/javascript">
 window.onload = function () {
@@ -243,8 +274,13 @@ a.alertBtn {
 
 
 <!-- Content Area -->
-<<jsp:include page="../staticHeader.jsp" />
+<jsp:include page="../staticHeader.jsp" />
 <div class="innerPageSearch"> 
+<c:if test="${!empty guestusermsg}">
+	        <div class="success_pop" id="guestselector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${guestusermsg}</span>
+			</div>
+	     </c:if>
 	<section class="searchWrap" id="orgProfile" style="display:block">
 		<span><i class="fa fa-search"></i><input type="text"
 			placeholder="Search" id="openJobsRequirementTitleId"
@@ -269,6 +305,7 @@ a.alertBtn {
 			<b id="ADS">Advanced Search</b>
 		</h3>
 		<div class="clear"></div>
+		
 	</section>
 	
 </div>
@@ -833,7 +870,7 @@ a.alertBtn {
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+            <b>Â© 2016 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
@@ -853,6 +890,8 @@ a.alertBtn {
 
 <!-- this script is for load more...  -->
 <script>
+$("#guestselector").fadeIn(200);
+$('#guestselector').delay(2000).fadeOut('slow');
 	function loadMoreReq(){
     	var avilableCount = $("#openJobsOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(10); 
@@ -1077,6 +1116,8 @@ function getOpenJobsELKList(orgLocationId){
 	var offset = '${offset}';
 	if(offset == ''){
 		offset = 0;
+	}else{
+		$("#openJobsOffset").val(offset)
 	}
 	
 	
@@ -1105,7 +1146,10 @@ function getOpenJobsELKList(orgLocationId){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length >= 10){
+				var newOffset = parseInt(offset) + 10;
+	    		if(json[0].noOfSearchHits < newOffset){
+	    			$("#loadMoreReq").css("display", "none");
+	    		}else{
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,offset);
@@ -1122,7 +1166,6 @@ function getOpenJobsELKList(orgLocationId){
 	 });  
  }
 </script>
-
 <script>
 function prepareOpenJobsElkList(data,offset){
 	$("#openJobsRequirementsList").show();
@@ -1186,7 +1229,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1267,18 +1310,13 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
-
-// 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
-// 				result = result +'  <div class="addthis_inline_share_toolbox" data-url='+link+' data-title='+title+'></div>';
-			    result = result +'	<div class="share">';
-			    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
-				result = result +'	</div>'; 
+				result = result +'	<div class="share">';			  
+				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				result = result +'	</div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-				result = result +'   <a href="/login?requirementUUID='+requirements.requirementUUID+'">Apply</a>';
+				result = result +'   <a onClick="applyJob(\''+requirements.requirementUUID+'\');">Apply</a>';
 				result = result +'	<a href="/login" style="background-color:#eb821c;">Refer</a></div>';
 				result = result +'	</div>';
 				result = result +'	</div>';
@@ -1291,6 +1329,14 @@ function prepareOpenJobsElkList(data,offset){
 				$("#openJobsRequirementsList").empty();
 				$("#openJobsRequirementsList").append(result); 
 			}
+			
+			window.setTimeout(function() {
+				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
+				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.layers.refresh();
+	        }, 500);
+			
+			
 			$("#openJobsRequirementTitleId").val('');
 			$("#openJobsLocationId").val('');
 			$("#openJobsExperienceId").val('');
@@ -1535,7 +1581,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'    </div>';			
 				result = result +'  <div class="jobApply">';
 				result = result +'	<a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+json.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
-				result = result +'  <a href="/login?requirementUUID='+json.requirementUUID+'">Apply</a>';
+				result = result +'   <a onClick="applyJob(\''+json.requirementUUID+'\');">Apply</a>';
 				result = result +'	<a href="/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				result = result +'	<div style="clear:both;"></div>';
 				/* result = result +'	<div class="share hidden">';
@@ -1630,11 +1676,19 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:</label>--</div>';
 				}
 
-// 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 				result = result +'	<div class="share">';
-				result = result +'	<a  href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-				result = result +'	<a  href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
-				result = result +'	<a  href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+				    var sourceleadShareUrl = sourceleadUrl ;
+					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
+					var jobTitle = json.jobTitle;
+					jobTitle = jobTitle.replace(/[^a-zA-Z0-9]+/gi, '-').toLowerCase();
+					 if (jobTitle.startsWith("-")){
+						jobTitle = jobTitle.substring(1);
+				    }
+					if (jobTitle.endsWith("-")){
+						jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
+				    } 
+					
+				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1643,10 +1697,19 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</section>'; 
 				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
+
+				window.setTimeout(function() {
+					addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
+					addthis.init(".addthis_inline_share_toolbox_s1a2");
+					addthis.layers.refresh();
+		        }, 500);
+				
 				$("#openJobsRequirementsSummary").append(result);
 				if(requirementUUID != null){
 				$("#noResultsDiv").css("display", "block");
 				}
+				
+				
 	   	   	   }
 	   	   	}
 		});  
@@ -1770,9 +1833,7 @@ function openJobSearchRequirement(){
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 
 										result = result +'	<div class="share">';
-										result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-										result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+										result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
@@ -1790,6 +1851,12 @@ function openJobSearchRequirement(){
 					}
 				});
 			}
+	
+				 window.setTimeout(function() {
+						addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
+						addthis.init(".addthis_inline_share_toolbox_s1a2");
+						addthis.layers.refresh();
+			        }, 500);
 				$('body').on('blur','#openJobsAdvancedForm',function() {
 				$("#openJobsAdvancedForm").showHelpOnFocus();
 				$("#openJobsAdvancedForm").validateOnBlur(false, validationSettings);
@@ -1888,6 +1955,7 @@ function getCities(){
 
 
 <script type="text/javascript">
+$.noConflict();
     	   var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -3000,8 +3068,47 @@ Please mail us at </p>
 		<a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a>
 		<span>We will get back to you As soon as possible</span>
     </div>    
-</section> 
- 
- <!--   Free trial pop   -->  
+</section>
 
+<script>
+function applyJob(requirementUUID){
+	$(".modal.modalApplyjob").fadeIn();
+	$(".comMask").fadeIn();
+	loginPopup(requirementUUID)
+	
+}
+function closeApplyJob(){
+	$(".modal.modalApplyjob").fadeOut();
+	$(".comMask").fadeOut();
+}
+</script>
+ 
+ <!--   Free trial pop   --> 
+ <script>
+function forgotPassword(){
+	$(".signWrap").removeClass("orgOutWrap");
+	$(".signWrap").addClass("forPassOut");
+	$("#signinDiv").removeAttr("style");
+	$("#signinDiv").attr("style","display:none");
+	$("#forgotPasswordDiv").removeAttr("style");
+	$(".ForPasSlide").attr("style","display:block");
+}
+</script>
+ <script>
+ function loginPopup(requirementUUID){
+	 var result = "";
+	 result = result +'<div class="pull-left">';
+	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply as Guest User</button>';
+	 result = result +'</div>';
+	 $("#gustLoginId").empty();
+	 $("#gustLoginId").append(result);
+ } 
+ </script>
+ <script>
+ function guestUserRest(requirementUUID){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		window.location.href = "/guestApplyToJob?&requirementUUID="+requirementUUID;
+ }
+ </script>                                                                                     
+   <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

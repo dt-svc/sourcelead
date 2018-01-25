@@ -304,7 +304,7 @@
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;"  id="uploadBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="text"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc" >
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="text"  name="" placeholder="Upload Resume ..." field-name="Resume" data-validation="required validate_Space validatedoc" >
            </div>
          </div>
         </div>
@@ -412,7 +412,13 @@
 		    	        contentType:false,
 		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
-								location.replace(sourceleadUrl+"/professionalProfile");
+							if(result && result === "DataMissing") {
+	                      		$("#update_user").attr("disabled", "disabled");
+	     						showError("Invalid data");
+	     					}else{
+	     						location.replace(sourceleadUrl+"/professionalProfile");	
+	     					}
+								
 						},
 					});
 			return true;

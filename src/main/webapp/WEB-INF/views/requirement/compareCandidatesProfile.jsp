@@ -16,9 +16,13 @@ z-index:9999 !important;
 function compareRecommendedUsers(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	
-	
-	if(compareCandidates.length >= 2 && compareCandidates.length <= 4){
+	var candidateIds = new Array();
+	 for(var e in compareCandidates) {
+		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(compareCandidates[e]);
+	 }
+	if(candidateIds.length >= 2 && candidateIds.length <= 4){
 		var s = "";
 		for(var e in compareCandidates) {
 			if(s !== "")
@@ -35,17 +39,21 @@ function compareRecommendedUsers(requirementId){
 		        }
 		 });
 	}else{
-		alertMessage();
+		alertMessage(candidateIds);
 	}
 }
 </script>
 
 <script>
-function alertMessage(){ 
+function alertMessage(candidateIds){ 
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Please select Minimum 2 Candidates to Compare</p>";
+	if(candidateIds.length <= 2){
+		result = result +"		<p>Please select Minimum 2 Candidates to Compare</p>";
+	}else{
+		result = result +"		<p>Please select Maximum 4 Candidates to Compare</p>";
+	}
 	result = result + ' <div id="reasonForInvoiceDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";

@@ -213,6 +213,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
 	public static final String APPROVE_CONTRACT = "Approve Contract";
 	public static final String REJECT_CONTRACT = "Reject Contract";
@@ -356,6 +357,7 @@ public class Constants {
 	public static final String UPLOADED_REQUESTED_DOCUMENTS = "UploadedRequestForDocumentsToCandidates";
 	public static final String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static final String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+	public static final String GUEST_APPLIED_TO_REQUIREMENT = "Guest Applied To Requirement";
 	public static final String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
 	public static final String ADD_NEW_USER_CONTACT = "Add New User Contact";
 	public static final String CROWD_SOURCING_SOURCE_SELF = "SELF";
@@ -866,6 +868,7 @@ public class Constants {
 	public static final String CANDIDATE_ENTITY = "CD";
 	public static final String JOB_ENTITY = "JB";
 	public static final String PROJECT_ENTITY = "PJ";
+	public static final String EXPENSES_ENTITY = "EP";
 	  
 	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
 	public static final String OLD_VALUE_TAG_END = "</span>";

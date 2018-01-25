@@ -27,6 +27,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class OpenJobsController {
@@ -56,6 +57,34 @@ public class OpenJobsController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/guestApplyToJob")
+	public ModelAndView guestApplyToJob(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		Requirement req = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		model.addObject("reqId", req.getId());
+		model.addObject("orgId", req.getOrgLocationId().getOrg().getId());
+		model.addObject("locationId", req.getOrgLocationId().getId());
+		model.addObject("skills", req.getSkills());
+		model.addObject("reqName", req.getJobTitle());
+		model.addObject("jobType", req.getJobType());
+		model.addObject("minExperience", req.getMinExp());
+		model.addObject("maxExperience", req.getMaxExp());
+		model.addObject("location", req.getLocation());
+		model.addObject("minRate", req.getRate());
+		model.addObject("maxRate", req.getMaxRate());
+		model.addObject("rateType",req.getRateType());
+		model.addObject("currencyCode", req.getCurrencyCode());
+		model.addObject("noticePeriod", req.getNoticePeriod());
+		model.addObject("visaTypes", req.getVisaType());
+		
+		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("openJobs/guestApplyToJob");
+		return model;
+	}
+	
 	@RequestMapping(value = { "/jobs/{title}/{location}/{experience}",
 			"/app/jobs/{title}/{location}/{experience}" })
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, @RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, HttpServletRequest request) throws Exception
@@ -81,10 +110,21 @@ public class OpenJobsController {
 		modelMap.addAttribute("companies", companies);
 		modelMap.addAttribute("offset", offset);
 		modelMap.addAttribute("postedOrgName", postedOrgName);
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "guestuserCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			modelMap.addAttribute("guestusermsg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "guestuserCreateMsg");
+		}
 		return "openJobs/openjobs";
 	}
 	
 	
+	private boolean isNullOrEmpty(String msg)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	@RequestMapping(value = { "/app/ws/{postedOrgName}-{companies}"})
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String companies,@PathVariable String postedOrgName,HttpServletRequest request) throws Exception
 	{
@@ -96,7 +136,7 @@ public class OpenJobsController {
 	}
 
 	
-	@RequestMapping(value = "/job/{url}--{id}")
+	@RequestMapping(value = "/job/{url}-{id}")
 	public ModelAndView openRequirementsSummary(@PathVariable long id, @PathVariable String url) throws Exception
 	{
 		/*
