@@ -130,9 +130,7 @@ function eduMsgFadeinFunction(message) {
 	        if(json[0].countFlag == null){
 	        if(json != null && json.length > 0)
 	   		{
-	        	alert(json.length);
 	    		 $('#loadMoreDiv').empty();
-	    		 
 	 			for(var i=0; i<json.length; i++){
 	 				var user = json[i];
 	 				var mutCountStatus = null;
