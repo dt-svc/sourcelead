@@ -7452,4 +7452,38 @@ font-weight: 500;
 .headingText {
 	padding: 10px 15px 15px; margin: 0px 0px !important; font-size: 17px; color: #545454; font-weight: 400;
 }
+.popTabScroll {
+	max-height: 350px; overflow: auto;
+}
+.payCompWrap {
+	background-color: #fff; padding: 15px; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius: 3px;
+}
+.payComp {
+}
+.payComp ul {
+	padding: 0px 0px; margin: 0px 0px; border-top: 1px solid #f1f1f1;
+}
+.payComp ul.bg {
+	background-color: #f1f1f1;
+}
+.payComp ul li {
+	list-style-type: none; float: left; padding: 8px 15px; width: 22%;
+}
+.payComp ul li:first-child {
+	width: 34%;
+}
+.payComp ul.bg li {
+	font-weight: 500; color: #545454;
+}
 
+
+.holdPro {
+	font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#ff9800;
+	text-align:center; width:75px; margin:0px 0px 0px 5px;
+}
+.holdPro.projRej {
+	background-color:#d94747;
+} 
+.OrgSearch {
+	z-index: 100;
+    }
