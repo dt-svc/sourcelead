@@ -124,7 +124,6 @@ public class OrgSettingsRestController {
 			if(orgLocations.getGeneratedUserId() != null) {
 				changeShortCodeForExpenses(orgLocations.getGeneratedUserId(),orgLocations.getId());
 			}
-			
 			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
@@ -146,7 +145,7 @@ public class OrgSettingsRestController {
 			 String expId = exp.getExpenseId();
 		 	 int twoGenId = expId.lastIndexOf("EP", expId.length());
 			 String genId = expId.substring(0,twoGenId);
-			 if(exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId()) && !exp.getExpenseId().equalsIgnoreCase(genId)) {
+			 if(exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId()) && !genId.equalsIgnoreCase(generatedUserId)) {
 				 	 int two = expId.lastIndexOf("EP", expId.length());
 					 String finalExpId = expId.substring(two,expId.length());
 					 StringBuilder expensesId = new StringBuilder();
