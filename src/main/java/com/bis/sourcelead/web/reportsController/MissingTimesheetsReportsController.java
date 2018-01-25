@@ -30,7 +30,7 @@ public class MissingTimesheetsReportsController {
 	{
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 ModelAndView model = new ModelAndView();
-		 List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocation.getId());
+		 List<Projects> projectList = projectsService.getAllProjectByOrgLocationsId(orgLocation.getId());
 		 model.addObject("projectList", projectList);
 		 model.setViewName("reports/missingTimesheetsReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -42,7 +42,7 @@ public class MissingTimesheetsReportsController {
 	{
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 ModelAndView model = new ModelAndView();
-		 List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocation.getId());
+		 List<Projects> projectList = projectsService.getAllProjectByOrgLocationsId(orgLocation.getId());
 		 model.addObject("projectList", projectList);
 		 model.setViewName("reports/pendingForApprovalTimesheetReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
