@@ -5,7 +5,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +30,7 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -337,12 +340,16 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Override
 	@Transactional
-	public int getNumberOfLeavesTakenByUser(Long userId,String leaveTypeId) throws Exception {
+	public Map<String, Integer> getNumberOfLeavesTakenByUser(Long userId,String leaveTypeId) throws Exception {
+		Map<String, Integer> leavesMap = new HashMap<>();
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED'";
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setString("leaveTypeId", leaveTypeId).setCacheable(true).list();
 		int numberOfLeavsTaken = leavesList.stream().filter(l->l.getNumberOfDays() != null).mapToInt(l->Integer.parseInt(l.getNumberOfDays())).sum();
-		return numberOfLeavsTaken;
+		leavesMap.put("numberOfLeavsTaken", numberOfLeavsTaken);
+		int numberOfExtraLeaves = leavesList.stream().filter(l->l.getExtraLeavesTaken() != null).mapToInt(l->Integer.parseInt(l.getExtraLeavesTaken())).sum();
+		leavesMap.put("numberOfExtraLeaves", numberOfExtraLeaves);
+		return leavesMap;
 	}
 
 
@@ -670,5 +677,35 @@ public class LeaveDaoImpl implements LeaveDao{
 		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status =:status";
 		list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).list();
 		return list;
+	}
+
+
+	@Override
+	@Transactional
+	public List<Leave> getLeavesListByTypeIdAndDuration(String leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		List<Leave> list = null;
+		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.id = :leaveTypeId and leave.status = 'APPROVED' and (leave.fromDate >= :startDate and leave.fromDate <= :endDate)";
+		list = session.createQuery(query).setString("leaveTypeId", leaveTypeId).setLong("orgLocationId", orgLocationId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
+		return list;
+	}
+
+
+	@Override
+	@Transactional
+	public MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (monthlyLeaves != null) {
+				session.saveOrUpdate(monthlyLeaves);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return monthlyLeaves;
 	}
 }
