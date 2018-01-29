@@ -15,6 +15,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,9 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
-import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -45,7 +47,6 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -164,19 +166,19 @@ public class RegistrationRestController {
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
-				@RequestParam(value="json", required=false) String json ,
+			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
 				@RequestParam(value="submodulesList", required=false) String submodulesList ,
 	   			HttpServletRequest request) {
 		try {
 
-				String json1 = "{"+json+"}";
+				/*String json1 = "{"+json+"}";
 				
-				JSONObject jsonObj = new JSONObject(json1);
+				JSONObject jsonObj = new JSONObject(json1);*/
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-				Registration registration =  gson.fromJson(json1,Registration.class);
-				
-				
+				Registration registration = new Registration();
+				ModelMapper mapper1 = new ModelMapper();
+				registration = mapper1.map(companyRegistrationDTO, Registration.class);
 				
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    String[] registredModules =  modulesList.split(",");
@@ -190,7 +192,7 @@ public class RegistrationRestController {
 			    	}
 			    }
 			   
-				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId(),jsonObj);
+				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId(),candidateDTO);
 				 StringBuilder orgCreateMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
 			} catch (Exception e) {
