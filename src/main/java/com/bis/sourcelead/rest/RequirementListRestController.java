@@ -2050,6 +2050,17 @@ public class RequirementListRestController {
         if(null != requirementIndex.getRequirementUUID()){
     		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
     	   }
+        
+    	List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				requirementLocationsList.add(location.getLocation());
+			}
+		}
+        
+		requirement.setLocationsList(requirementLocationsList);
+        
       	return requirement;
  	}
     private String getReqSkills(String[] skills) {

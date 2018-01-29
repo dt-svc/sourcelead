@@ -357,8 +357,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementLocations> requirementLocations = new HashSet<RequirementLocations>(0);
 	
+	
 	@Transient
 	private String searchType;;
+	
+	@Transient
+	@JsonProperty
+	private List<String> locationsList;
 	
 	@Transient
 	@JsonProperty
@@ -1931,6 +1936,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setAssignedMembersCount(String assignedMembersCount)
 	{
 		this.assignedMembersCount = assignedMembersCount;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
 	}
 
 	
