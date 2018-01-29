@@ -185,7 +185,7 @@ function prepareTasksList(url){
 	result = result + '<tr">';
 	result = result + '<th>Task Name</th>';
 	result = result + '<th>Task Type</th>';
-	result = result + '<th>Priotiry</th>';
+	result = result + '<th>Priority</th>';
 	result = result + '<th>Assigned To</th>';
 	result = result + '<th>Status</th>';
 	result = result + '<th>Action</th>';
