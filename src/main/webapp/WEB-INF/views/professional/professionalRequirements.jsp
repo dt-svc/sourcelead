@@ -34,9 +34,12 @@ padding:4px 12px; float: left;
 .bg-green {
 	background: #1ab394 !important;
 }
-
 .bg-red {
   background: #D84315 !important; 
+}
+
+.OpenJob h5 strong{
+	width: 70px !important; 
 }
 
 </style>
@@ -782,7 +785,7 @@ function requirementsList(offset){
 			 				var jobType = '';
 			 				var experience = '';
 			 				var rate = '';
-			 				var location = '';
+			 				//var location = '';
 			 				var jobId = '';
 			 				var industryName = '';
 			 				var visaType ='';
@@ -809,11 +812,11 @@ function requirementsList(offset){
 			 					experience = '--';
 			 				}
 			 				
-			 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
+			 				/* if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
 			 					location = requirements.state+", "+requirements.country;
 			 				}else{
 			 					location = requirements.country;
-			 				}
+			 				} */
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 			 					rate = requirements.rate+" "+requirements.currentRateCurrency+" / "+requirements.rateType;
@@ -852,12 +855,22 @@ function requirementsList(offset){
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';
-			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
+			 				/* result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>'; */
 			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
+							result = result +'<strong>Locations : </strong>';
+			 				
+			 				result = result +'<ul>';
+			 				if(requirements.locationsList != null){
+			 					for(var k=0; k<requirements.locationsList.length; k++){
+			 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+			 					}
+			 				}
+			 				result = result +'</ul>';
+			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'<strong>Skills :</strong>';
 			 				result = result +'<ul>';
 			 				
@@ -1126,7 +1139,6 @@ function searchRequirement(offset){
 									 				var jobType = '';
 									 				var experience = '';
 									 				var rate = '';
-									 				var location = '';
 									 				var jobId = '';
 									 				var industryName = '';
 									 				var visaType ='';
@@ -1156,12 +1168,6 @@ function searchRequirement(offset){
 									 					experience = '--';
 									 				}
 									 				
-									 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
-									 					location = requirements.state+", "+requirements.country;
-									 				}else{
-									 					location = requirements.country;
-									 				}
-									 				
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
@@ -1189,12 +1195,22 @@ function searchRequirement(offset){
 									 				result = result +'<span>';
 									 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 									 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-									 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 									 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
 									 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 									 				result = result +'<b><i class="fa fa-plane" title="Industry"></i>'+visaType+'</b>';
 									 				result = result +'</span>';
 									 				result = result +'<h5>';
+									 				
+									 				result = result +'<strong>Locations : </strong>';
+									 				
+									 				result = result +'<ul>';
+									 				if(requirements.locationsList != null){
+									 					for(var k=0; k<requirements.locationsList.length; k++){
+									 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+									 					}
+									 				}
+									 				result = result +'</ul>';
+									 				
 									 				result = result +'<strong>Skills :</strong>';
 									 				result = result +'<ul>';
 									 				if(requirements.skillsList != null){

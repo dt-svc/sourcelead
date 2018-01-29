@@ -69,6 +69,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -84,6 +85,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
@@ -162,6 +164,9 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	ContactsGroupService contactsGroupService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -367,6 +372,15 @@ public class CrowdSourcingRequirementsRestController {
 	 	    	    }
 	 	    	    
 	 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
+	 	    	    List<String> requirementLocationsList = new ArrayList<>();
+	 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+	 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+	 	    	    	for(RequirementLocations locations : locationsList) {
+	 	    	    		requirementLocationsList.add(locations.getLocation());
+	 	    	    	}
+	 	    	    }
+	 	    	    requirementIndex.setLocationsList(requirementLocationsList);
+	 	    	    
 	 	    	    requirementList.add(requirementIndex);
 	 	    	}
 	 	    }
@@ -465,8 +479,17 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	    }else{
 			 	    	    	requirementIndex.setIsJobSaved(Constants.NO);
 			 	    	    }
+			 	    	    
+			 	    	    List<String> requirementLocationsList = new ArrayList<>();
+			 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(refer.getRequirementId().getId());
+			 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+			 	    	    	for(RequirementLocations locations : locationsList) {
+			 	    	    		requirementLocationsList.add(locations.getLocation());
+			 	    	    	}
+			 	    	    }
+			 	    	    requirementIndex.setLocationsList(requirementLocationsList);
 						  
-    					  requirementList.add(requirementIndex);
+    					    requirementList.add(requirementIndex);
 	    			 } 
     			 }else{
     				 isELKSearchEnable = false;
@@ -562,7 +585,17 @@ public class CrowdSourcingRequirementsRestController {
 						  requirementIndex.setRequirementUUID(savedJobs.getRequirementId().getRequirementUUID());
 						  requirementIndex.setIsJobSaved(Constants.YES);
 						  requirementIndex.setSavedJobUUID(savedJobs.getSavedJobUUID());
-    					  requirementList.add(requirementIndex);
+						  
+						  List<String> requirementLocationsList = new ArrayList<>();
+			 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(savedJobs.getRequirementId().getId());
+			 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+			 	    	    	for(RequirementLocations locations : locationsList) {
+			 	    	    		requirementLocationsList.add(locations.getLocation());
+			 	    	    	}
+			 	    	    }
+			 	    	    requirementIndex.setLocationsList(requirementLocationsList);
+			 	    	    
+    					   requirementList.add(requirementIndex);
 	    			 }
 	    			 
 	    		 }else{

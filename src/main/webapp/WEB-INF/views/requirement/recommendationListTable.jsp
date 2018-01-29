@@ -500,7 +500,7 @@ function shareRecomendedApplicant(requirementId,candidateId){
         success: function(result) {
         	$("#selector4").removeAttr("style");
    			$("#selector4").css({ display: "block" });
-   			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
+   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
    			eduMsgFadeinFunction();
         },
     });
