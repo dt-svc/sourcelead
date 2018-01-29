@@ -741,8 +741,8 @@ function saveReferContacts(){
 	  		         contentType:false, 
 					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
 					success : function(result) {
-						alert("oooo"+result)
-						//location.replace(sourceleadUrl+ "/referRequirementList");
+						
+						location.replace(sourceleadUrl+ "/referRequirementList");
 					},
 				});
     
