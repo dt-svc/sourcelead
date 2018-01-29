@@ -50,7 +50,7 @@
 											name="requestId" id="requestId" data-validation="required"
 											field-name="Project Id"> <i
 											class="fa fa-refresh btn btn-default formic1"
-											title="Project Id" onclick='$("#requestId").val("");'></i>
+											title="Request Id" onclick='$("#requestId").val("");'></i>
 										<div class="clearfix"></div>
 										<span class="hidden">Request Id</span>
 									</div>

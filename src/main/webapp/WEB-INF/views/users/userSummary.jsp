@@ -516,7 +516,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned Users as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+						    result = result + '<p>Assigned Associates as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="changeReportingManagerDiv">';
@@ -1097,11 +1097,17 @@ function getChangeRole(userId,userRoleId){
                             type: "POST",
                             url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
+                            	if(result && result === "DataMissing") {
+                            		$("#update_user").removeAttr("disabled");
+            						$("#update_user").removeAttr('button').val('Update');	
+           						showError("Invalid data");
+           					}else{
                             	 $("#selectoruser").removeAttr("style");
 	                       		  $("#selectoruser").css({ display: "block" });
 	                       		  $("#userMsgDiv").html("Success!! associate details updated");
                                userDetails(userId);
                                userMsgFadein();
+           					}
                                 
                             },
                         });
@@ -1133,11 +1139,17 @@ function getChangeRole(userId,userRoleId){
                                   type: "POST",
                                   url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
+                                	  if(result && result === "DataMissing") {
+                                		$("#update_user").removeAttr("disabled");
+                  						$("#update_user").removeAttr('button').val('Update');	
+                 						showError("Invalid data");
+                 					}else{
                                 	  $("#selectoruser").removeAttr("style");
                             		  $("#selectoruser").css({ display: "block" });
                             		  $("#userMsgDiv").html("Success!! associate details updated");
                                       userDetails(userId);
                                       userMsgFadein();
+                 					}
                                       
                                   },
                               });
@@ -1158,11 +1170,17 @@ function getChangeRole(userId,userRoleId){
                       type: "POST",
                       url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
+                    	  if(result && result === "DataMissing") {
+                    		$("#update_user").removeAttr("disabled");
+      						$("#update_user").removeAttr('button').val('Update');	
+     						showError("Invalid data");
+     					}else{
                     	  $("#selectoruser").removeAttr("style");
                 		  $("#selectoruser").css({ display: "block" });
                 		  $("#userMsgDiv").html("Success!! associate details updated");
                           userDetails(userId);
                           userMsgFadein();
+     					}
                           
                       },
                   });
@@ -1762,7 +1780,7 @@ function removeUser(userId){
 						result = result + '<div class="clearfix mb10">';
 						result = result + '<div class="col-md-6">';
 						    result = result + '<div class="user_badg">';
-							    result = result + '<p>Assigned Users as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+							    result = result + '<p>Assigned Associates as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
 									result = result + '</div>';
 					            result = result + '</div>';
 							result = result + '<div class="col-md-6" id="reportingManagerDiv">';
@@ -2470,7 +2488,7 @@ function reActiveUser(userId){
                success: function(data) {
             	   $("#selectoruser").removeAttr("style");
         		   $("#selectoruser").css({ display: "block" });
-        		   $("#userMsgDiv").html("Success!! User reactivated for sourcelead");
+        		   $("#userMsgDiv").html("Success!! associate reactivated for sourcelead");
                	   location.replace(sourceleadUrl+"/usersList");
             	   userDetails(userId);
                }

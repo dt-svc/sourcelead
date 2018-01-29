@@ -903,8 +903,8 @@ function removeEmployer(candidateemployerId, candidateId){
 		}else {
 			
 			document.getElementById("endDateEditDiv").style.display = '';
-			$("#endYearEdit").attr("data-validation", "required");
-			$("#endMonthEdit").attr("data-validation", "required");
+			/* $("#endYearEdit").attr("data-validation", "required");
+			$("#endMonthEdit").attr("data-validation", "required"); */
 			
 			 var exisitngEndYear;
 			 if ($('#exisitngEndYear').length)

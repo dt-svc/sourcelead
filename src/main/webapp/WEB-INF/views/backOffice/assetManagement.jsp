@@ -97,20 +97,30 @@ $(document).ready(function(){
                   <div class="col-md-4 mb10" id="modelDiv">
                     <input type="text" class="form-control input-sm" id="model" name="model" placeholder="Model"  data-validation-optional="true" data-validation="validate_Space validate_length length2-100" >
                   </div>
-                  <div class="col-md-4 mb10" id="nameDiv" style="display:none;">
+                  <!-- <div class="col-md-4 mb10" id="nameDiv">
                     <input type="text" class="form-control input-sm" name="name" id="name" placeholder="Name" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                  </div> -->
+                  <div class="col-md-4 mb10" id="memoryDiv"  style="display: none;" >
+                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory"  data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50">
                   </div>
-                  <div class="col-md-4 mb10" id="memoryDiv">
-                    <input type="text" class="form-control input-sm" name="memory" id="memory" placeholder="Memory" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-50">
+                  <div class="col-md-4 mb10" id="cpuDiv"  style="display: none;" >
+                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4 mb10" id="cpuDiv">
-                    <input type="text" class="form-control input-sm" name="cpu" id="cpu" placeholder="CPU" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                  <div class="col-md-4 mb10" id="harddiskDiv"  style="display: none;">
+                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
                   </div>
-                  <div class="col-md-4 mb10" id="harddiskDiv">
-                    <input type="text" class="form-control input-sm" name="harddisk" id="harddisk" placeholder="Hard Disk" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
+                  
+                  
+                         <div class="col-md-4 mb10">
+                         <div class="">
+                           <div class="input-group">
+                              <input type="text" value="" name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" id="issueDate" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
                   </div>
-                  <div class="col-md-4 mb10" id="monitorDiv">
-                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="MotherBoard" style="display: none;" data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
+                  <div class="col-md-4 mb10" id="monitorDiv" style="display: none;">
+                    <input type="text" class="form-control input-sm" id="monitor" name="monitor" placeholder="Monitor"  data-validation-optional="true" data-validation="validate_Space validate_NumberAndAlphabet validate_length length2-100">
                   </div>
                 </div>
                 <div class="clearfix mb10">
@@ -226,7 +236,26 @@ $(document).ready(function(){
   </div>
   </section>
   
+  <script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#issueDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
   
+  function clearDate(){
+  	$("#issueDate").val("");
+  	};
+  
+</script>
   
   <script type="text/javascript">
   function storeAsset() {
@@ -506,29 +535,29 @@ function removeAssetManagement(assetId){
   function assetCategory(category){
 	  var selectedCategory = category.value;
 	    if(selectedCategory == '2'){
-			  document.getElementById("monitor").style.display="";
+			  document.getElementById("monitorDiv").style.display="";
 			  document.getElementById("name").style.display="";
-			  document.getElementById("memory").style.display="";
-			  document.getElementById("cpu").style.display="";
-			  document.getElementById("harddisk").style.display="";
+			  document.getElementById("memoryDiv").style.display="";
+			  document.getElementById("cpuDiv").style.display="";
+			  document.getElementById("harddiskDiv").style.display="";
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  
 		  }else if((selectedCategory != 'Desktop' && selectedCategory == '1') || category == '1'){
-			  document.getElementById("monitor").style.display="none";
+			  document.getElementById("monitorDiv").style.display="none";
 			  document.getElementById("name").style.display="";
-			  document.getElementById("memory").style.display="";
-			  document.getElementById("cpu").style.display="";
-			  document.getElementById("harddisk").style.display="";
+			  document.getElementById("memoryDiv").style.display="";
+			  document.getElementById("cpuDiv").style.display="";
+			  document.getElementById("harddiskDiv").style.display="";
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  
 			  $("#monitor").val('');
 		  }else{
-			  document.getElementById("monitor").style.display="none";
-			  document.getElementById("memory").style.display="none";
-			  document.getElementById("cpu").style.display="none";
-			  document.getElementById("harddisk").style.display="none";
+			  document.getElementById("monitorDiv").style.display="none";
+			  document.getElementById("memoryDiv").style.display="none";
+			  document.getElementById("cpuDiv").style.display="none";
+			  document.getElementById("harddiskDiv").style.display="none";
 			  document.getElementById("shiftADetails").style.display="";
 			  document.getElementById("shiftBDetails").style.display="";
 			  $("#monitor").val('');
@@ -544,12 +573,11 @@ function removeAssetManagement(assetId){
   
   <script>
   function loadCategory(){
-	  document.getElementById("monitor").style.display="none";
+	  document.getElementById("monitorDiv").style.display="none";
 	  document.getElementById("name").style.display="";
-	  document.getElementById("memory").style.display="";
-	  document.getElementById("cpu").style.display="";
-	  document.getElementById("harddisk").style.display="";
-	  document.getElementById("harddisk").style.display="";
+	  document.getElementById("memoryDiv").style.display="";
+	  document.getElementById("cpuDiv").style.display="";
+	  document.getElementById("harddiskDiv").style.display="";
 	  document.getElementById("shiftADetails").style.display="";
 	  document.getElementById("shiftBDetails").style.display="";
   }
