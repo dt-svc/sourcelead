@@ -682,11 +682,11 @@ function closeCertificatePopup(){
 									if(window.candidateStatusGlobal == '0'){
 				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 									}else{
-										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');"></a>';	
+										result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';	
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');"></i></div></td>';
+										result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></div></td>';
 									}
 									result = result + '</tr>';
 								}
@@ -903,8 +903,8 @@ function removeEmployer(candidateemployerId, candidateId){
 		}else {
 			
 			document.getElementById("endDateEditDiv").style.display = '';
-			$("#endYearEdit").attr("data-validation", "required");
-			$("#endMonthEdit").attr("data-validation", "required");
+			/* $("#endYearEdit").attr("data-validation", "required");
+			$("#endMonthEdit").attr("data-validation", "required"); */
 			
 			 var exisitngEndYear;
 			 if ($('#exisitngEndYear').length)

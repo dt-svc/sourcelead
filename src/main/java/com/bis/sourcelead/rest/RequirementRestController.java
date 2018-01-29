@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +33,9 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
+import com.bis.sourcelead.entity.JobShareCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 
 import com.bis.sourcelead.entity.OrgRelations;
@@ -51,6 +54,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -156,6 +160,8 @@ public class RequirementRestController {
 	 @Autowired
 	 private OrgRelationsService orgRelationsService;
 	 
+	 @Autowired
+	 JobShareService jobShareService;
 	/**
 	 * @author prasad k
 	 * @since sept 13 2016
@@ -223,7 +229,7 @@ public class RequirementRestController {
 				StringBuilder reqUpdateMs5 = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
 			}
-			return "success";
+			return requirement.getRequirementUUID();
 		}
 		else
 			return "MissingData";
@@ -1011,4 +1017,37 @@ public class RequirementRestController {
 	}
 	
 
+	
+	@RequestMapping(value = "/shareRecomendedApplicant", method = RequestMethod.POST)
+	public @ResponseBody void shareRecomendedApplicant(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request)throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
+	}
+	
+	@RequestMapping(value = "/shareAllRecommendations", method = RequestMethod.POST)
+	public @ResponseBody void shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		String[] candidateId = candidateIds.split(",");
+		if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
+			for(String candidateid   : candidateId){
+				Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
+						JobShareCandidate jobShareCandidate = new JobShareCandidate();
+						jobShareCandidate.setCandidateId(candidates);
+						jobShareCandidate.setJobId(requirement);
+						jobShareCandidate.setCreatedDate(new Date());
+						jobShareService.saveJobShareCandidate(jobShareCandidate);
+						requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+				}
+//				boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long.valueOf(candidateid), requirementId);
+//				if(isSumbitted == false)
+		}
+	}
+	
+	
 }

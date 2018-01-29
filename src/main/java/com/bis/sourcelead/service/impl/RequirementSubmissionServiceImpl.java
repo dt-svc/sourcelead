@@ -267,6 +267,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 Candidate candidate = null;
 		 CandidateResumes candidateResumes = null;
 		 Date date = new Date();
+		 OrgLocations guestOrglocation=null;
 		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
@@ -282,12 +283,25 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 				if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 					 candidate = candidateDao.getCandidateByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
-				}else{
-					 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
 				}
+				if(orgLocations != null){
+					 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+					}
+					else{
+						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
+					}
+				
 		 }if(candidate == null){
 			       candidate = new Candidate();
+			       
+					if(orgLocations == null){
+						guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
+					}
+					if(orgLocations != null){
 			       candidate.setOrgLocationId(orgLocations);
+					}else{
+					candidate.setOrgLocationId(guestOrglocation);
+					}
 					
 			        if(jsonObj.has("FirstName") && !isNullOrEmpty(jsonObj.getString("FirstName"))){
 					candidate.setFirstName(jsonObj.getString("FirstName"));
@@ -403,17 +417,45 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					}
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
-					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
-					}
+					
+//					User guestUser = null ;
+//					if(user == null){
+//						guestUser = userService.getUserById(requirement.getCreatedBy().getId());
+//					}
+				
+					
+					
+					if(orgLocations != null){
+						if(null == masterCandidate){
+							masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
+						}
 					candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
+					candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+					candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+					
+					}
+					else{
+						if(null == masterCandidate){
+							masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,guestOrglocation);
+						}
+						candidate.setGeneratedId(candidateService.getCandidateId(guestOrglocation));
+						candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));
+						candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));	
+					}
+					
+					if(user != null){
+						
+						candidate.setCreatedBy(user.getUserCode());	
+					}
+					
+					else{
+						
+						candidate.setCreatedBy(null);	
+					}
 					candidate.setMasterCandidateId(masterCandidate);
 					candidate.setCandidateType("Candidate");
 					candidate.setIsAssociate(Constants.NO);
 					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-					candidate.setCreatedBy(user.getUserCode());
-					candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
-					candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 					if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 						candidate.setRecruiterUserId(user);
@@ -456,7 +498,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 							candidateEducation.setCandidateId(candidate);
 							candidateEducation.setOrglocationId(orgLocations);
 							candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
+							if(user != null){
 							candidateEducation.setCreatedBy(user.getUserCode());
+							}
+							else{
+								candidateEducation.setCreatedBy(null);
+
+							}
 							candidateEducation.setCreatedDate(new Date());
 							candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
 							candidateEducationDao.storeCandidateEducation(candidateEducation);
@@ -471,7 +519,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidateEmployers.setName(jsonObj.getString("Current/LastCompany"));
 						 candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
 						 candidateEmployers.setCreatedDate(new Date());
-						 candidateEmployers.setCreatedBy(user.getUserCode());
+						 if(user != null){
+							 candidateEmployers.setCreatedBy(user.getUserCode());
+
+						 }
+						 else{
+						 candidateEmployers.setCreatedBy(null);
+						 }
 						 candidateEmployers.setUpdatedDate(new Date());
 						 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
 						 candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
@@ -507,19 +561,50 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
  				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
  				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
  				 candidateResumes.setCreatedDate(new Date());
+ 				 if(user !=null){
 				 candidateResumes.setCreatedBy(user.getUserCode());
+ 				 }
+ 				 else{
+ 					 candidateResumes.setCreatedBy(null);
+ 
+ 				 }
 				 candidateResumes.setUpdatedDate(new Date());
-				 candidateResumes.setOrgLocationId(orgLocations);
+				 if(orgLocations != null){
+					 candidateResumes.setOrgLocationId(orgLocations);
+
+				 }
+				 else{
+				 candidateResumes.setOrgLocationId(guestOrglocation);
+				 }
+				 if(orgLocations != null){
 				 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 }
+				 else{
+					 
+					 FileUploadUtil.moveFile(staticPath, fileInfo, "guestAddApplicants");
+					 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 }
+				 if(user !=null){
 				 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, user);
+				 }
+				 else{
+					 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, null);
+				 }
 				 requirementSubmission.setCandidateResumes(candidateResumes);
 				 //insert the currentResumeId in ELK				 
 				 insertResumeIdInELK(candidate);
 			 }
 		 }
-		 
+			if(orgLocations == null){
+				guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
+			}
+		 if(orgLocations !=null){
 		 requirementSubmission.setOrgLocations(orgLocations);
+		 }
+		 else{
+			 requirementSubmission.setOrgLocations(guestOrglocation); 
+		 }
 		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
 		 
 		 /* the functionality of this block is to verify the submitted candidate is in the Cooling-Off Period or not
@@ -571,7 +656,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 /*END Code snippet*/
 		 
 		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
+		 if(user != null){
 		 requirementSubmission.setCreatedBy(user.getUserCode());
+		 }
+		 else{
+			 requirementSubmission.setCreatedBy(null);
+		 }
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(new Date());
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
@@ -581,21 +671,28 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 StringBuilder userName = new StringBuilder();
 		 StringBuilder nameBuilder = new StringBuilder();
-		 
+		 if(user !=null){
 		 if(!isNullOrEmpty(user.getLastName())){
 			 userName = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName());
 	   	 }else{
 	   		 userName = nameBuilder.append(user.getFirstName());
 	   	 }
-		 
 		 requirementSubmission.setCreatedUser(userName.toString());
 		 requirementSubmission.setUpdatedUser(userName.toString());
-		 
+		 }
+		 else{
+		 requirementSubmission.setCreatedUser(null);
+		 requirementSubmission.setUpdatedUser(null);
+		 }
 		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 			 requirementSubmission.setRecruiterUserId(user);
 			 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
 		 }else{
+			 if(orgLocations != null){
 			 requirementSubmission.setOrgLocations(orgLocations);
+			 }else{
+				 requirementSubmission.setOrgLocations(guestOrglocation); 
+			 }
 		 }
 		 
 		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
@@ -645,8 +742,16 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 				try {
+					if(orgLocations != null){
 					   templateFields.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
-					} catch (Exception e) {
+					
+					}
+					else{
+						   templateFields.setDateOfBirth(commonUtil.orgLocationDateFormat(guestOrglocation.getDateFormat(),jsonObj.getString("DOB")));
+					}
+				}
+					catch (Exception e) {
+					
 					  e.printStackTrace();
 					}
 			}
@@ -702,9 +807,27 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 
 		 templateFields.setStatus(Constants.CANDIDATE_ACTIVE);
+		 if(user != null){
 		 templateFields.setCreatedBy(user.getUserCode());
+		 }
+		 else{
+			 templateFields.setCreatedBy(null);
+
+		 }
+			
+			if(orgLocations == null){
+				guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
+			}
+			 if(orgLocations !=null){
 		 templateFields.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		 templateFields.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+			 }
+			 
+			 else{
+				 
+				 templateFields.setCreatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));
+				 templateFields.setUpdatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));
+			 }
 		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
 		 
 		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
@@ -734,10 +857,98 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()) && (jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))) || ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 		 }
-		 
+		 if(jsonObj.has("guestApplicant") && !isNullOrEmpty(jsonObj.getString("guestApplicant")) && ("guestApplicant".equalsIgnoreCase(jsonObj.getString("guestApplicant")))){
+		 sendEmailToGuestUserForAppliedJob(candidate, requirement);
+		 }
 		return requirementSubmission;
 		
 	}
+	
+	
+	public void sendEmailToGuestUserForAppliedJob(Candidate user, Requirement requirement) throws Exception {
+		
+		 
+		 StringBuilder nameBuilder = new StringBuilder();
+		 StringBuilder expBuilder = new StringBuilder();
+		 StringBuilder locationBuilder = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String guestUserName = null;
+		 String experience = null;
+		 String location = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 guestUserName = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 guestUserName = nameBuilder.append(user.getFirstName()).toString();
+		 }
+		 
+		 if(!isNullOrEmpty(requirement.getMinExp()) && !isNullOrEmpty(requirement.getMaxExp())){
+			 experience = expBuilder.append(requirement.getMinExp()).append(" to ").append(requirement.getMaxExp()).append(" Years").toString();
+		 }else if(!isNullOrEmpty(requirement.getMinExp())){
+			 experience = expBuilder.append(requirement.getMinExp()).append(" Years").toString();
+		 } else if(!isNullOrEmpty(requirement.getMaxExp())){
+			 experience = expBuilder.append(requirement.getMaxExp()).append(" Years").toString();
+		 }else{
+			 experience = "Not Mentioned";
+		 }
+		 
+		 if(!isNullOrEmpty(requirement.getCity())){
+			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").append(requirement.getCity()).toString();
+		 }else if(!isNullOrEmpty(requirement.getState()) && isNullOrEmpty(requirement.getCity())){
+			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").toString();
+		 }else{
+			 location = locationBuilder.append(requirement.getCountry()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setCreatedBy("sladmin");
+		 if (environment.equalsIgnoreCase("prod")) {
+			 emailMessage.setFromName("info@sourcelead.com");
+		 }else{
+			 emailMessage.setFromName("qa@sourcelead.com");	 
+		 }
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("guestUserName", guestUserName);
+		 globalVarsMap.put("employerName", requirement.getPostedOrgName());
+		// globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		 globalVarsMap.put("experience", experience);
+		 globalVarsMap.put("location", location);
+		 globalVarsMap.put("guestUserEmail", user.getEmail());
+		 
+		 if(requirement.getJobId() !=null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementTitle",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		 }
+		 
+		 else{
+			 globalVarsMap.put("requirementTitle", requirement.getJobTitle()); 
+			 
+		 }
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.GUEST_APPLIED_TO_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+	}
+	
 
 	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);

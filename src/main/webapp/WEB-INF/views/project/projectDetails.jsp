@@ -1010,15 +1010,9 @@ function projectStatus(){
 							var opt = json[i];
 							if (manager2 == opt.id) {
 								selected = 'selected';
-								output = output
-										+ "<option "+selected+" value='" +opt.id+ "'>"
-										+ opt.firstName + " " + opt.lastName
-										+ "</option>";
+								output = output + "<option "+selected+" value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
 							} else {
-								output = output
-										+ "<option value='" +opt.id+ "'>"
-										+ opt.firstName + " " + opt.lastName
-										+ "</option>";
+								output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
 							}
 
 						}
@@ -1085,10 +1079,7 @@ function showLevel2Div(){
 										+ "<option value=''>-Select Manager-</option>";
 								for (var i = 0; i < json.length; i++) {
 									var opt = json[i];
-									output = output
-											+ "<option value='" +opt.id+ "'>"
-											+ opt.firstName + " "
-											+ opt.lastName + "</option>";
+									output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
 								}
 								$("#level2Manager").empty();
 								$("#level2Manager").append(output);

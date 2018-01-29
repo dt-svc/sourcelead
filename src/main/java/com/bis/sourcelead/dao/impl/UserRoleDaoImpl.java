@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ConnectionsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -42,6 +46,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private ConnectionsDao connectionsDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -855,13 +862,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
 			Query query2 = session.createQuery(queryCount+query1);
 			if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).setCacheable(true).list();
 			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setCacheable(true).list();
 			} else if(!"".equalsIgnoreCase(userState)){
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setCacheable(true).list();
 			}else {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
 			}
 			  
 		if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -887,34 +894,61 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<UserRoleDTO> getUserListForConnections(String searchByName, Integer offset,Long userId) throws Exception {
+	public List<ConnectionsDTO> getUserListForConnections(String searchByName, Integer offset,Long userId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		List<ConnectionsDTO> usersList = new ArrayList<ConnectionsDTO>();
 		String searchByValue = searchByName.trim();
 		StringBuilder subQuery = new StringBuilder("");
+		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',IFNULL(u.last_name, '')) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
+				"((select count(c.from_uid) from connections c where c.to_uid = u.id "+
+				"and (c.from_uid in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.from_uid in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from connections c where c.FROM_UID = u.id "+
+				"and (c.TO_UID in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"(select c.CONNECTION_UID from connections c where (c.FROM_UID = :loginUserId and c.TO_UID = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID, " +
+				"(select count(*) from connections c where c.from_uid = :loginUserId and c.to_uid = u.id and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
+				"(select count(*) from connections c where c.from_uid = u.id and c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
+				"from user u, user_role ur, org_locations ol " + 
+				"where ur.user_id = u.id and ur.org_locations_id = ol.id and u.IS_VERIFIED = 'Y' " + 
+				"and u.id not in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.id not in (select c.TO_UID from connections c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.id != :loginUserId and ur.IS_PRIMARY = 1";
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
-			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
-			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
-			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
-			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
-			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
+			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.email like :searchByValue)");
+			sqlQuery = sqlQuery.concat(subQuery.toString());
 		}
+		sqlQuery = sqlQuery.concat(" order by count DESC, userName");
 		
-		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
-				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString();
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
-		
-		/*if(userRoleList.size() >= offset){
-			if(userRoleList.size() > offset + 18){
-				userRoleList = userRoleList.subList(offset, (offset+18));
-			}else{
-				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
-			}
-			*/
-			if(userRoleList != null && userRoleList.size() > 0) {
+		Query queryString = session.createSQLQuery(sqlQuery);
+		queryString.setParameter("loginUserId", userId); //setting same parameters multiple times in query
+		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
+			queryString.setParameter("searchByUserType",searchByValue)
+			.setParameter("searchByValue", "%" + searchByValue + "%");
+		}
+		System.out.println(queryString.getQueryString());
+		//Pagination                                                              //Converting custom DTO class list from Sql result 
+		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
+		usersList = queryString.list();
+		if(usersList.isEmpty()) {
+			ConnectionsDTO connectionsDTO = new ConnectionsDTO();
+			connectionsDTO.setCountFlag("true");
+			usersList.add(connectionsDTO);
+		}
+		System.out.println(usersList.get(0));
+		Map<String, BigInteger> countValues = connectionsDao.getCountValuesForSentReceivedConnected(userId);
+		if(!usersList.isEmpty()) {
+			usersList.get(0).setSentCount(countValues.get("sentCount"));
+			usersList.get(0).setReceivedCount(countValues.get("receivedCount"));
+			usersList.get(0).setConnectedCount(countValues.get("connectedCount"));
+		}
+		return usersList;
+	}
+			/*if(userRoleList != null && userRoleList.size() > 0) {
 				int requestSentCount = 0;
 				int requestReceivedCount = 0;
 				int connectedCount = 0;
@@ -985,7 +1019,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return  null;
 		}
 		
-	}
+	}*/
 	
 	/*
      @SuppressWarnings("unchecked")

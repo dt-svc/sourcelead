@@ -875,7 +875,7 @@ public class RequirementListRestController {
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
+		if (isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName) && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)) {
 			return "false";
 		}
 		else {
@@ -902,7 +902,7 @@ public class RequirementListRestController {
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		// authorizing if the login user as Team Member Or Not
 		Boolean isLoginUserAsTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-		if ((isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName)) || (isLoginUserAsTeamMember && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName))) {
+		if (isLoginUserAsTeamMember && !"ROLE_ADMIN".equalsIgnoreCase(userRoleName) && !"ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)) {
 			return "false";
 		}
 		else {
@@ -1900,6 +1900,8 @@ public class RequirementListRestController {
             				requirement.setReqCoolingOffPeriod(orgLocation.getCoolingOffPeriod());
             			}
 	            		
+	            		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+	            		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());
 	            		reqList.add(requirement);
 	            	}
 	            }

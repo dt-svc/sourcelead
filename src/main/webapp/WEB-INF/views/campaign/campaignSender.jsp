@@ -28,7 +28,7 @@
 		</div>
 		<div id="loading"></div>
 		<div class="popupMid clearfix">
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="cpnSenderNameDiv">
 				<label class="col-md-3 padding_left">Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right">
                 	<input type="text" class="form-control" id="cpnSenderName" name="cpnSenderName" value="${sender.fromName}" data-validation="required validate_length length1-100 validate_Space validate_AlphaNumber" field-name="Name">

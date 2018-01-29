@@ -61,7 +61,7 @@ z-index: 1040 !important;
 			
           <div class="col-sm-12 noPad mt clearfix">
               <label class="col-md-3 padding_left">Recipient(Email)<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="recipientEmailDiv">
                 <select multiple class="chosen-select form-control" id="recipientEmail" name="recipientEmail" data-validation="required validate_length length1-250" field-name="Recipient Email">
                <c:if test="${not empty recipientList}"></c:if>
                <c:forEach items="${recipientList}" var="recipient">

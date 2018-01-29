@@ -42,9 +42,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -1893,11 +1895,10 @@ public class UsersListRestController {
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ASSOCIATE')")
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	@ResponseBody
-	String updateUser(AddUserDTO addUserDTO,
-			@RequestParam(value = "userId", required = false) Long userId,
+	String updateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
 			throws Exception {
-
+		if(Validator.validate(addUserDTO)){
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -2066,6 +2067,9 @@ public class UsersListRestController {
 		
 
 		return "success";
+		}else{
+			return "DataMissing";
+		}
 	}
 
 	
@@ -2118,12 +2122,12 @@ public class UsersListRestController {
 	
 	
 	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.POST)
-	public @ResponseBody List<UserRoleDTO> getUserListForConnections(
+	public @ResponseBody List<ConnectionsDTO> getUserListForConnections(
 			@RequestParam(value = "searchValue", required = false) String searchValue, 
 			@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		List<ConnectionsDTO> userRoleDTOList = new ArrayList<>();
 		userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
 		return userRoleDTOList;
 

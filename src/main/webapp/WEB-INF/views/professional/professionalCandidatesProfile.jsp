@@ -230,7 +230,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields mt10">';
-							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length1-6" data-validation-optional="true"></input>';
+							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text"></input>';
 							result = result + '</div>';
 							
 
@@ -299,7 +299,7 @@ function editCandidate(candidateId){
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
-							result = result + '<option  '+(json.rateType == "Biweekly" ? "selected" : '') +'>Bi-weekly</option>';
+							result = result + '<option  '+(json.rateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
 							result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
 							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
 							result = result + '<option  '+(json.rateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
@@ -954,8 +954,13 @@ function removeSkillPopUp(candidateId){
 		    	        contentType:false,
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
+							if(result && result === "failed") {
+								$("#update_candidate").removeAttr("disabled");
+								showError("Invalid data");
+							}else{ 
 							$("#profileEditPopup").hide();
 							getProfessionalInfo();
+							}
 						},
 					});
 			return true;

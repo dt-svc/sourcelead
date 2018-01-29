@@ -282,7 +282,7 @@ public class LeaveServiceImpl implements LeaveService{
 				if(leave.getUser().getId() != null){ 
 				 UserRole userrole;
 				try {
-					userrole = userRoleService.getUserRoleByUserId(leave.getUser().getId());
+					userrole = userRoleService.getUserDetailsByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
 					leaveDto.setEmpType(userrole.getUserType());
 				} catch (Exception e) {
 					e.printStackTrace();

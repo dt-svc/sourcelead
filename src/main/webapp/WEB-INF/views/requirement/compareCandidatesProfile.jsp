@@ -16,9 +16,13 @@ z-index:9999 !important;
 function compareRecommendedUsers(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	
-	
-	if(compareCandidates.length >= 2 && compareCandidates.length <= 4){
+	var candidateIds = new Array();
+	 for(var e in compareCandidates) {
+		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(compareCandidates[e]);
+	 }
+	if(candidateIds.length >= 2 && candidateIds.length <= 4){
 		var s = "";
 		for(var e in compareCandidates) {
 			if(s !== "")
@@ -35,8 +39,32 @@ function compareRecommendedUsers(requirementId){
 		        }
 		 });
 	}else{
-		alert("Please select Minimum 2 Candidates to Compare")
+		alertMessage(candidateIds);
 	}
+}
+</script>
+
+<script>
+function alertMessage(candidateIds){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	if(candidateIds.length <= 2){
+		result = result +"		<p>Please select Minimum 2 Candidates to Compare</p>";
+	}else{
+		result = result +"		<p>Please select Maximum 4 Candidates to Compare</p>";
+	}
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -187,8 +215,8 @@ function compareRecommendedUsersdiv(data,requirementId){
     
 	$("#candidateCompare").empty();
 	$("#candidateCompare").append(result);
-	prepareCandidateGrid(data,requirementId);
 	prepareCompareCandidateList();
+	prepareCandidateGrid(data,requirementId);
 	
 	$("#compareCandidateList1").chosen();
 	$("#compareCandidateList2").chosen();
@@ -382,21 +410,29 @@ function prepareCandidateGrid(data,requirementId){
 		    	    	$("#profileDiv1").empty();
 // 		    	    	$("#noRecords1").hide();
 		    	    	$("#profileDiv1").append(opt);
+		    	    	$("#compareCandidateList1").val(report.candidateId);
+		    	    	$("#compareCandidateList1").trigger('chosen:update');
 		    	    }
 		    	    if(count==2){
 		    	    	$("#profileDiv2").empty();
 // 		    	    	$("#noRecords2").hide();
 		    	    	$("#profileDiv2").append(opt);
+		    	    	$("#compareCandidateList2").val(report.candidateId);
+		    	    	$("#compareCandidateList2").trigger('chosen:update');
 		    	    }
 		    	    if(count==3){
 		    	    	$("#profileDiv3").empty();
 // 		    	    	$("#noRecords3").hide();
 		    	    	$("#profileDiv3").append(opt);
+		    	    	$("#compareCandidateList3").val(report.candidateId);
+		    	    	$("#compareCandidateList3").trigger('chosen:update');
 		    	    }
 		    	    if(count==4){
 		    	    	$("#profileDiv4").empty();
 // 		    	    	$("#noRecords4").hide();
 		    	    	$("#profileDiv4").append(opt);
+		    	    	$("#compareCandidateList4").val(report.candidateId);
+		    	    	$("#compareCandidateList4").trigger('chosen:update');
 		    	    }
 		 }else{
 			 break;

@@ -262,8 +262,12 @@ public class OpenJobsRestController {
 		try {
 			SearchHit[] searchHits = null;
 			if (isELKSearchEnable) {
+				if(offset < 10)
+					offset = 10;
+				else if(offset >= 10)
+					offset += 10;
 				searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX,
-						Constants.ELK_REQUIREMENT_TYPE, offset, Constants.MAX_RESULTS_TEN, boolQueryBuilder).getHits();
+						Constants.ELK_REQUIREMENT_TYPE, 0, offset, boolQueryBuilder).getHits();
 			}
 
 			if (null != searchHits && searchHits.length > 0) {

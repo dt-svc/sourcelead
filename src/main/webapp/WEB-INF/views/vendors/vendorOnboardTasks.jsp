@@ -108,7 +108,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<c:forEach begin="1" end="12" varStatus="loop">
 															<option>${loop.index}</option>

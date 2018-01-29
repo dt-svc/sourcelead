@@ -720,11 +720,12 @@ public class TimesheetRestController {
 			 timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
 			 timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
 			 timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
-			 
+			 List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(eedDTO.getProjectsId());
 			 TimeSheetSubmissionDTO tsDTO =  getTimesheetSubmissionDetails(eedDTO, request);
 			 model.addObject("timesheetSubmissionDTO",tsDTO);
 		     LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(tsDTO,request);
 			 model.addObject("entriesMap",entriesMap);
+			 model.addObject("projectsTasks",projectsTasks);
 		     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");
@@ -1703,7 +1704,7 @@ public class TimesheetRestController {
 		            LinkedList<TimeSheetDayEntries> entriesDayList = new LinkedList<>();
 		            if(tsDTO.getTimesheetEntries() !=null && !tsDTO.getTimesheetEntries().isEmpty()){
 		            	for(TimesheetEntriesDTO teDTO : tsDTO.getTimesheetEntries()){
-		            		if(StringUtils.isEmpty(teDTO.getHours()) || (StringUtils.isNotEmpty(teDTO.getHours()) && teDTO.getHours().equalsIgnoreCase("00:00")) || ((teDTO.getTimesheetTaskDTO() == null) || (teDTO.getTimesheetTaskDTO() == null && teDTO.getTimesheetTaskDTO().getId() == null)))
+		            		if(StringUtils.isEmpty(teDTO.getHours()) || ((teDTO.getTimesheetTaskDTO() == null) || (teDTO.getTimesheetTaskDTO() == null && teDTO.getTimesheetTaskDTO().getId() == null)))
 		            			continue;
 		            		   ProjectTasks projectTasks = projectTasksService.getTasksId(teDTO.getTimesheetTaskDTO().getId().toString());
 		            			String taskType = teDTO.getTimesheetTaskDTO().getTaskType();

@@ -228,7 +228,10 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</div>';
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +"<i class='glyphicon glyphicon-comment colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
+	    				result = result +'<b class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+						result = result +'</div>';
 						result = result +'</td>';
 						
 					 result = result +'</tr>';

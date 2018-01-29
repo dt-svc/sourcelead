@@ -109,13 +109,11 @@ function getBudgetRequestList(requestType){
 	    		
 	    		 for (var i=0; i<json.length; i++){
 	    			var report = json[i];
-		    		
 	    			if(report.estimatedBudgetValue != null  && report.estimatedBudgetValue != "" && report.estimatedBudgetValue != "undefined"){
 	    				estimatedBudgetValue = report.estimatedBudgetValue;
 	    			}else{
 	    				estimatedBudgetValue = "--";
 	    			}
-	    			
 	    			if(report.estimatedHours != null && report.estimatedHours != "" && report.estimatedHours !="undefined"){
 	    				estimatedHours = report.estimatedHours;
 	    			}else{
@@ -164,10 +162,14 @@ function getBudgetRequestList(requestType){
 					
 					
 					if((report.approverUserIdlLong ==  '${SourceLeadWeb_user.id}') &&  requestType == "On Hold"){
-						result = result + '     <td><div class="tblminwidth-75">';
-						result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
+					
+						result = result + '     <td><div class="tblminwidth-75 paTp">';
+						 result = result+"  <i class='glyphicon glyphicon-comment colB' id='"+report.id+"' onclick='rejectedMessage(\""+report.rejectedReason+"\");'>";
+					 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+report.id+"'>"+report.rejectedReason+"</div></i>|";
+					 	result = result + '     <i class="fa fa-check text-success" alt="Approve" title="Approved" onclick="acceptBudgetRequset(\''+report.id+'\',\''+requestType+'\')"></i>|';
 						result = result + '     <i class="fa fa-times text-danger" alt="Rejected" title="Rejected" onclick="deleteBudgetRequaet(\''+report.id+'\',\''+requestType+'\');"></i>';
 						result = result + '     </div></td>';
+												
 						
 					}
 					if(requestType == "On Hold" && (report.approverUserIdlLong !=  '${SourceLeadWeb_user.id}')){
@@ -262,7 +264,7 @@ function deleteBudgetRequaet(budgetRequestedId,requestType){
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
 	result = result +"		<p>Are you sure you want to reject ?</p>";
-	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000'></textarea>";
 	result = result +"</form>";
 	result = result +'		<b href="javascript:void(0)"><input id="delete_budget-id" type="button" value="Delete" onclick="saveBudgetReason(\''+budgetRequestedId+'\',\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -277,6 +279,7 @@ function cancelTermination(){
 	 $(".vendor_wrap_mask").fadeOut(200);
 }
 function saveBudgetReason(budgetRequestedId,requestType){
+	if ($('#deleteBudget_form').validate(false, validationSettings)) {
 	var sourceleadUrl = '${sourceleadUrl}';
      $("#delete_budget").attr("disabled", "disabled");
 	 $("#delete_budget").attr("disabled", "disabled");
@@ -286,16 +289,21 @@ function saveBudgetReason(budgetRequestedId,requestType){
 				data :formData,
 				url : sourceleadUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
+					$("#popUp").empty();
+					$(".project_inn_mask").fadeOut(200);
 					cancelTermination();
 					getBudgetRequestList(requestType);
 					getBudgetRequestListCount();
 				},
 			}); 
-}
-$('body').on('blur', '#deleteBudget_form', function() {
+return true;
+}else{
+	return false;
+}}
+/* $('body').on('blur', '#deleteBudget_form', function() {
 	$("#deleteBudget_form").showHelpOnFocus();;
 	$("#deleteBudget_form").validateOnBlur(false, validationSettings);  
-}); 
+});  */
 
 function editBudgetrequest(budgetRequestedId,requestType){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -397,7 +405,7 @@ function onholdBudgetRequaet(budgetRequestedId,requestType){
 	result = result +"<input type='hidden' id='budgetRequestedId' name='budgetRequestedId' value='"+budgetRequestedId+"'>";
 	result = result +"<input type='hidden' id='loginUserid' name='loginUserid' value='${SourceLeadWeb_user.id}'>";
 	result = result +"		<p>Are you sure you want to On-Hold ?</p>";
-	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='validate_length length2-5000' data-validation-optional='true'></textarea>";
+	result = result +"		<textarea  id='reasonForProjectBudget' name='reasonForProjectBudget'  placeholder='Comments here' field-name='Reason' data-validation='required validate_length length2-5000' ></textarea>";
 	result = result +"</form>";
 	result = result +'		<b href="javascript:void(0)"><input id="onHold_budget-id" type="button" value="Delete" onclick="saveOnHoldBudgetReason(\''+requestType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
@@ -405,8 +413,9 @@ function onholdBudgetRequaet(budgetRequestedId,requestType){
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".vendor_wrap_mask").fadeIn(200);
-}
+	}
 function saveOnHoldBudgetReason(requestType){
+	if ($('#onHoldBudget_form').validate(false, validationSettings)) {
 	var sourceleadUrl = '${sourceleadUrl}';
      $("#onHold_budget").attr("disabled", "disabled");
 	 $("#onHold_budget").attr("disabled", "disabled");
@@ -416,16 +425,23 @@ function saveOnHoldBudgetReason(requestType){
 				data :formData,
 				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
-					cancelTermination();
+					$("#popUp").empty();
+	   			 	//$(".project_inn_mask").fadeOut(200);
+	   			 	$(".vendor_wrap_mask").fadeOut(200);
+					//cancelTermination();
 					getBudgetRequestList(requestType);
 					getBudgetRequestListCount();
 				},
 			}); 
-}
+	 return true;
+	}else{
+		return false;
+}}
+	/* }
 $('body').on('blur', '#deleteBudget_form', function() {
 	$("#deleteBudget_form").showHelpOnFocus();;
 	$("#deleteBudget_form").validateOnBlur(false, validationSettings);  
-}); 
+});  */
 </script>
 <script>
 function saveBudgetRequest(requestType){
