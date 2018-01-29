@@ -186,19 +186,17 @@ function cancelOrgImg(){
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
-			<div class="clearfix">
-			  <form:form class="login-form clearfix mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
-			  
-			  <div class="col-xs-12 col-sm-3 col-md-3">
+		  	<form:form class="login-form mt10"  id="orgImage_form"  name="orgImage_form" method="post" > 
+		  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
 					  <button type="button" class="btn btn-sm btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -211,6 +209,11 @@ function cancelOrgImg(){
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
+			  </form:form>
+			<div class="clearfix">
+			  <form:form class="login-form  mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
+			  
+			  
 			  <div id="popUp" ></div>
 			  			
 				<div class="col-xs-12 col-sm-9 col-md-9">
@@ -1186,7 +1189,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/app/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}

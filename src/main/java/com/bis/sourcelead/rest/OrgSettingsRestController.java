@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -31,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -101,6 +98,19 @@ public class OrgSettingsRestController {
 	private ExpensesService expensesService;
 	@Autowired
 	private AddExpensesService addExpensesService;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
+	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO,HttpServletRequest request) throws Exception{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		companyRegistrationDTO.setStaticPath(staticPath);
+		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
+		return "success";
+	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
