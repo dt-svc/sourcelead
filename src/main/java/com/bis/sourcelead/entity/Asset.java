@@ -71,6 +71,8 @@ public class Asset implements Serializable{
 	@Column(name = "MONITOR")
 	private String monitor;
 	
+	@Column(name = "ISSUE_DATE")
+	private Date issueDate;
 
 	@Column(name = "ATTACHMENT",columnDefinition="mediumblob")
 	@Lob
@@ -454,6 +456,14 @@ public class Asset implements Serializable{
 
 	public void setShiftBFileUrl(String shiftBFileUrl) {
 		this.shiftBFileUrl = shiftBFileUrl;
+	}
+
+	public Date getIssueDate() {
+		return issueDate;
+	}
+
+	public void setIssueDate(Date issueDate) {
+		this.issueDate = issueDate;
 	}
 
 }
