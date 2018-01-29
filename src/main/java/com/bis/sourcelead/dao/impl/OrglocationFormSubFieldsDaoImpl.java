@@ -37,7 +37,7 @@ public class OrglocationFormSubFieldsDaoImpl implements OrglocationFormSubFields
 		if(customFieldId != null) {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from OrglocationFormSubFields subFields left join fetch subFields.formField formfield where formfield.id =:customFieldId";
-			List<OrglocationFormSubFields> subFieldList = session.createQuery(query).setLong("customFieldId",customFieldId).setCacheable(true).list();
+			List<OrglocationFormSubFields> subFieldList = session.createQuery(query).setLong("customFieldId",customFieldId).list();
 			return subFieldList;
 		}else {
 			return null;

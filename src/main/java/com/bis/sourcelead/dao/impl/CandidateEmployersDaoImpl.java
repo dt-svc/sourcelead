@@ -100,7 +100,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY candidateEmployers.id DESC";  
-		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId).list();
 		return candidateList;
 	}
 
@@ -125,7 +125,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEmployers  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orgLocationId where cEmp.id = :candidateEmployersId and cEmp.candidateId.id = :candidateId ";
 		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateEmployersId", candidateEmployersId).setLong("candidateId", candidateId)
-				.setCacheable(true).list();
+				.list();
 		
 
 		CandidateEmployers canEMp = null;
@@ -145,7 +145,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		String query = "from CandidateEmployers  employer left join fetch employer.candidateId left join fetch employer.orgLocationId where employer.candidateId = :candidateId and "
 				+ " employer.orgLocationId.id = :orgLocationId and employer.isCurrentPosition = 'Y' and employer.status = '1' ";
 		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId)
-				.setCacheable(true).list();
+				.list();
 		
 
 		CandidateEmployers canEMp = null;
@@ -163,7 +163,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		String query = "from CandidateEmployers  employer left join fetch employer.candidateId left join fetch employer.orgLocationId where employer.candidateId = :candidateId and "
 				+ " employer.orgLocationId.id = :orgLocationId and employer.isCurrentPosition = 'N' and employer.status = '1' ";
 		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId)
-				.setCacheable(true).list();
+				.list();
 		
 
 		CandidateEmployers canEMp = null;

@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -303,7 +304,7 @@ public class LeaveManagementRestController {
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays())) + Integer.parseInt(leave.getExtraLeavesTaken());
 						takenLeaveCounts = takenLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 				}
@@ -1224,12 +1225,12 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
 			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 			leaveDto.setApproverUsers(String.join(",", aphlist)); 
-			int nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+			Map<String,Integer> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
-			int balLeaves = totalLeavesperYear - nuberOfLeavestaken;
+			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
 			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 		}
 		return leaveDto;
@@ -1539,7 +1540,7 @@ public class LeaveManagementRestController {
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 								approvedCounts = approvedCounts + 1;
 								
-								noOfDays = noOfDays + Integer.valueOf(leave.getNumberOfDays());
+								noOfDays = noOfDays + (Integer.valueOf(leave.getNumberOfDays()) - + Integer.parseInt(leave.getExtraLeavesTaken()));
 								if(noOfDays > totalLeavesperYear) {
 									int totalLeaves =  totalLeavesperYear - noOfDays;
 									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totalLeaves));
@@ -1656,18 +1657,22 @@ public class LeaveManagementRestController {
 	}
 
 	@RequestMapping(value = {"/validateMaxLeave","/rest/validateMaxLeave"}, method = RequestMethod.GET)
-	public  @ResponseBody boolean validateMaxLeave(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
+	public  @ResponseBody boolean validateMaxLeave(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
 	{
+		User user = userService.getUserById(userId);
+		Employees emp = employeesService.getEmployeeByUserId(userId);
 		boolean isvalidate = false;
 		int totalLeavesApplied = 0;
 		int totalLeaves = 0;
+		
 		List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId, orgLocationId,userId);
+		
 		if(leaveList.size() > 0){
 			for (Leave leave : leaveList) {
 				if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 					totalLeavesApplied = totalLeavesApplied + Integer.valueOf(leave.getNumberOfDays());
 				}
-				totalLeaves = Integer.valueOf(leave.getLeaveType().getNumbefrOfLeavesPeryear());
+				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leaveList.get(0).getLeaveType(), emp, leaveList.get(0).getOrgLocations(), user);
 			}
 			
 			if(totalLeavesApplied >= totalLeaves) {
@@ -1734,6 +1739,47 @@ public class LeaveManagementRestController {
 		}
 		else
 			return null;
+	}
+	
+	@RequestMapping(value = {"/validateCarryForwardLeaves","/rest/validateCarryForwardLeaves"}, method = RequestMethod.GET)
+	public  @ResponseBody boolean validateCarryForwardLeaves(@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = userService.getUserById(userId);
+		Employees emp = employeesService.getEmployeeByUserId(userId);
+		int totalLeaves = 0;
+		boolean isvalidate = false;
+		Date appliedFromDate = commonUtil.getDateFormat(fromDate);
+		Date endDate = commonUtil.getDateFormat(toDate);
+		
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_YEAR, 1);
+        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
+		
+        
+        Calendar sDate = Calendar.getInstance();
+        Calendar eDate = Calendar.getInstance();
+        sDate.setTime(appliedFromDate);
+        eDate.setTime(yearStartDate);
+        int difInMonths = sDate.get(Calendar.MONTH) - eDate.get(Calendar.MONTH);
+        
+		List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocation.getId(),userId,yearStartDate,appliedFromDate);
+		
+		if(leaveList.size() > 0){
+			int totalAppliedLeaves = 0;
+			totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leaveList.get(0).getLeaveType(), emp, leaveList.get(0).getOrgLocations(), user);
+			for(Leave leave : leaveList){
+				if("Mothly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+					difInMonths = difInMonths * leave.getLeaveType().getNoOfDays();
+					
+				}
+			}
+		
+		
+		}
+		
+		return isvalidate;
+		
 	}
 	
 }
