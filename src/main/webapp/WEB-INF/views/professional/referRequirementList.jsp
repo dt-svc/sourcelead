@@ -362,7 +362,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 					<div class="form-group col-md-6" id="emailDiv">
 					  <label class="col-md-12">Email Id *</label>
 					  <div class="col-md-12">
-						<input type="text" class="form-control" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+						<input type="text" class="form-control input-sm" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
 						<span class="hidden"></span> </div>
 					</div> 
 					<div class="form-group col-md-6" id="phoneDiv">
@@ -373,7 +373,7 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 					</div> 
 					<div class="col-md-12 mt10 clearfix">            
 					<div class="pull-right">
-					  <input type="submit" value="Add Contact" id="add_contact" onclick="saveReferContacts();" class="btn btn-primary">
+					  <input type="button" value="Add Contact" id="add_contact" onclick="saveReferContacts();" class="btn btn-primary">
 					  <input type="button" value="Cancel" onclick="flushContactDetails()" class="btn btn-default ml10 canBtn">
 					</div>    
 					</div> 
@@ -724,15 +724,16 @@ function validateContactEmail(){
 <script type="text/javascript">
 function saveReferContacts(){
 	var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-	   };  
-	if ($('#addcontact_form').validate(false, validationSettings)){
+            };
+		 if ($('#addcontact_form').validate(false, validationSettings)){ 
+		var formData = getFormData1("addcontact_form");
   		$("#add_contact").attr("disabled", "disabled");
   		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     var formData = getFormData1("addcontact_form");
+	     
 		$.ajax({
 					type : "POST",
 					 data: formData,
@@ -740,39 +741,22 @@ function saveReferContacts(){
 	  		         contentType:false, 
 					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
 					success : function(result) {
-						location.replace(sourceleadUrl+ "/referRequirementList");
+						alert("oooo"+result)
+						//location.replace(sourceleadUrl+ "/referRequirementList");
 					},
 				});
     
 	    return true;
+}else{
+	return false;
 }
 }
 	
-         /* $('body').on('submit', '#addcontact_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-	          		
-	          		$("#add_contact").attr("disabled", "disabled");
-	          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	     var formData = getFormData1("addcontact_form");
-	        		$.ajax({
-	        					type : "POST",
-	        					 data: formData,
-	        	  		         processData: false,
-	        	  		         contentType:false, 
-	        					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
-	        					success : function(result) {
-	        						location.replace(sourceleadUrl+ "/referRequirementList");
-	        					},
-	        				});
-                
-            	    return true;
-            }
-            else{
-            	return false;	
-               }
-            }); */
-         $('#addcontact_form').showHelpOnFocus();
-         $('#addcontact_form').validateOnBlur(false, validationSettings); 
+        
+            $('body').on('blur', '#addcontact_form', function() {
+        		$("#addcontact_form").showHelpOnFocus();
+        		$("#addcontact_form").validateOnBlur(false, validationSettings);  
+           });
             
      
 </script> 
