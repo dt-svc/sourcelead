@@ -234,6 +234,12 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 		List<RequirementAssignTo> newlyUpdatedRequirementAssignToList = null;
 		List<RequirementAssignTo> requirementAssignToListCopy = new ArrayList<RequirementAssignTo>();
 		if (null != requirementId && "" != requirementId && "undefined" != requirementId) {
+			
+			List<String> assignedIdValList = new ArrayList<String>();
+			for (Iterable<String> iterable : Iterables.partition(Splitter.on(",").split(assignedIdVal), 2)) {
+				assignedIdValList.add(Joiner.on(",").join(iterable));
+			}
+			
 			requirementAssignToList = getRequirementAssignToListByRequirementId(Long.parseLong(requirementId));
 			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
 				String existedUser = "";
@@ -245,12 +251,8 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 					existedUser = requirementAssignTo.getAssignUserId().getId().toString()
 							+ ",undefined";
 				}
-				
-				if (assignedIdVal.contains(existedUser)) {
-					assignedIdVal = assignedIdVal.replace(("," + existedUser + ","), ",");
-					assignedIdVal = assignedIdVal.replace((existedUser + ","), "");
-					assignedIdVal = assignedIdVal.replace(("," + existedUser), "");
-					assignedIdVal = assignedIdVal.replace(existedUser, "");
+				if(assignedIdValList.contains(existedUser)) {
+					assignedIdValList.remove(existedUser);
 				}else{
 					requirementAssignTo.setUpdatedBy(user.getUserCode());
 					requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
@@ -258,10 +260,10 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 					requirementAssignToListCopy.add(requirementAssignTo);
 				}
 			}
-			for (Iterable<String> iterable : Iterables.partition(Splitter.on(",").split(assignedIdVal), 2)) {
-				if(!iterable.toString().equalsIgnoreCase("[]")){
-					String userId = Joiner.on(",").join(iterable).split(",")[0];
-					String teamId = Joiner.on(",").join(iterable).split(",")[1];
+			for (String assigned : assignedIdValList) {
+				if(!assigned.equalsIgnoreCase("")){
+					String userId = assigned.split(",")[0];
+					String teamId = assigned.split(",")[1];
 					RequirementAssignTo requirementAssignTo = new RequirementAssignTo();
 					User assignedUser = new User();
 					assignedUser.setId(Long.parseLong(userId));

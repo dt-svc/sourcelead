@@ -524,7 +524,11 @@ public class BackOfficeRestController {
 		assetDTO.setShiftBEmpName(asset.getShiftBEmpName());
 		assetDTO.setName(asset.getName());
 		assetDTO.setDescription(asset.getDescription());
-		
+		if(asset.getIssueDate() != null){
+		assetDTO.setIssueDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),asset.getIssueDate()));
+		}else{
+			assetDTO.setIssueDate("");
+		}
 		return assetDTO;
 	}
 	
@@ -588,7 +592,7 @@ public class BackOfficeRestController {
 		    assetDTO.setStaticPath(staticPath);
 		    /*String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);*/
-			
+		    assetDTO.setDateFormat(orgLocations.getDateFormat());
 			assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
 			
 		

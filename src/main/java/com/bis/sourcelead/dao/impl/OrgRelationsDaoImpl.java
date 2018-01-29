@@ -805,11 +805,11 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		
 		Query clientsListQuery;
 		if("".equalsIgnoreCase(responderType) || "Client".equalsIgnoreCase(responderType)){
-			clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where  orgrelation.id IN(  select DISTINCT spoc.orgRelations.id  from OrgSpoc spoc  where spoc.clientUser.email like '%"+domain+"%' ) and  (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' )");
-			clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor' and orgrelation.locationId.org.webSite =:domain) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor' and orgrelation.responderLocationId.org.webSite =:domain)");
+			clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setString("domain", domain).setCacheable(true).list();
 		}else{
-			clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where  orgrelation.id IN(  select DISTINCT spoc.orgRelations.id  from OrgSpoc spoc  where spoc.clientUser.email like '%"+domain+"%' ) and  (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client' )");
-			clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			clientsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Client' and orgrelation.locationId.org.webSite =:domain) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Client'  and orgrelation.responderLocationId.org.webSite =:domain)");
+			clientsList = clientsListQuery.setLong("orgLocationId", orgLocationId).setString("domain", domain).setCacheable(true).list();
 		}
 		
 		return clientsList;

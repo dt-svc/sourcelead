@@ -392,6 +392,7 @@ public class SubmissionsRestController {
 			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
 			requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 		}
+		SourceLeadSessionManager.setSessionAttribute(request, "guestuserCreateMsg", "Successfully Applied");
 		return "success";
 
 	}
