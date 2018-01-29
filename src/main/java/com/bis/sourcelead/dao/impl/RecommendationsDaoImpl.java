@@ -24,7 +24,7 @@ public class RecommendationsDaoImpl implements RecommendationsDao{
           
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.id =:requirementId";
-		List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
@@ -39,6 +39,6 @@ public class RecommendationsDaoImpl implements RecommendationsDao{
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status =1";
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 }

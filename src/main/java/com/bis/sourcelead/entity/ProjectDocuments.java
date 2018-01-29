@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectDocuments")
 public class ProjectDocuments implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -42,7 +41,7 @@ public class ProjectDocuments implements Serializable {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projects;
@@ -64,18 +63,18 @@ public class ProjectDocuments implements Serializable {
 	@Column(name = "FILE_FORMAT")
 	private String fileFormat;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_FOLDER_ID")
    	private ProjectDocumentFolder projectFolderId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY")
    	private User createdBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
    	private User updatedBy;
 	

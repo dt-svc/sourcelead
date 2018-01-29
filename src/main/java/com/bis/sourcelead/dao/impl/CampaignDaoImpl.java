@@ -61,7 +61,7 @@ public class CampaignDaoImpl implements CampaignDao {
 			
 		boolean isNickNameDuplicate = false;
 		Session session = this.sessionFactory.getCurrentSession();
-		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.nickName = :nickName and cSender.id <> :senderId and cSender.orgLocations.id = :orgLocationId").setString("nickName", nickName).setLong("senderId", senderId).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.nickName = :nickName and cSender.id <> :senderId and cSender.orgLocations.id = :orgLocationId").setString("nickName", nickName).setLong("senderId", senderId).setLong("orgLocationId", orgLocation.getId()).list();
 		if (createSenderList != null && createSenderList.size() > 0) {
 			isNickNameDuplicate = true;
 		}
@@ -74,7 +74,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CreateSender> senderList = new ArrayList<>();
-		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.orgLocations.id = :orgLocationId and cSender.status = 1").setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.orgLocations.id = :orgLocationId and cSender.status = 1").setLong("orgLocationId", orgLocation.getId()).list();
 		if (createSenderList != null && createSenderList.size() > 0) {
 			senderList = createSenderList;
 		}
@@ -88,7 +88,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		CreateSender createSender = null;
 		List<CreateSender> senderList = new ArrayList<>();
-		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.id = :senderId").setLong("senderId", senderId).setCacheable(true).list();
+		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.id = :senderId").setLong("senderId", senderId).list();
 		if (createSenderList != null && createSenderList.size() > 0) {
 			createSender = createSenderList.get(0);
 		}
@@ -115,7 +115,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	public List<CreateSender> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.createdBy.id = :userId and cSender.orgLocations.id = :orgLocationId and cSender.status = 1").setLong("userId", user.getId()).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.createdBy.id = :userId and cSender.orgLocations.id = :orgLocationId and cSender.status = 1").setLong("userId", user.getId()).setLong("orgLocationId", orgLocations.getId()).list();
 		return createSenderList;
 	}
 
@@ -140,12 +140,12 @@ public class CampaignDaoImpl implements CampaignDao {
 			if (campaignListDTO != null || campaignListDTO.getLength() > 0) {
 				queryObj.setFirstResult(campaignListDTO.getStart());
 				queryObj.setMaxResults(campaignListDTO.getLength());
-				queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", Integer.parseInt(campaignListDTO.getTypeOfCampaign())).setCacheable(false).list();
+				queryObj.setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", Integer.parseInt(campaignListDTO.getTypeOfCampaign())).list();
 			}
 			cpnList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", Integer.parseInt(campaignListDTO.getTypeOfCampaign())).setCacheable(false).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).setInteger("campaignType", Integer.parseInt(campaignListDTO.getTypeOfCampaign())).list();
 
 			if (countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
@@ -176,7 +176,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CampaignList campaignList where campaignList.id=:id";
-		List<CampaignList> campaignList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		List<CampaignList> campaignList = session.createQuery(query).setLong("id", id).list();
 		if(campaignList != null && campaignList.size()>0){
 			return campaignList.get(0);
 		}else{
@@ -189,7 +189,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		CampaignList campaignList = null;
-		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.listId= :listId and cpnList.status = 1 and cpnList.campaignType = :campaignType").setString("listId", listId).setInteger("campaignType", campaignType).setCacheable(true).list();
+		List<CampaignList> cpnList = session.createQuery("from CampaignList cpnList left join fetch cpnList.orgLocation where cpnList.listId= :listId and cpnList.status = 1 and cpnList.campaignType = :campaignType").setString("listId", listId).setInteger("campaignType", campaignType).list();
 		
 		if(cpnList !=null && cpnList.size() >0) {
 			campaignList = cpnList.get(0);
@@ -220,7 +220,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from " + fromTable
 				+ " frm where frm.orgLocation.id = :orgLocationId and frm.status = '1' and frm.listName = :name";
-		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).list();
 		if (found.size() > 0) {
 			return true;
 		}
@@ -235,7 +235,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 //		CampaignRecipient campaignRecipient = null;
-		List<CampaignRecipient> cpnList = session.createQuery("from CampaignRecipient cpnres where cpnres.campaignListId.id = :viewListId and cpnres.status = 1").setString("viewListId", viewListId).setCacheable(true).list();
+		List<CampaignRecipient> cpnList = session.createQuery("from CampaignRecipient cpnres where cpnres.campaignListId.id = :viewListId and cpnres.status = 1").setString("viewListId", viewListId).list();
 		
 //		if(cpnList !=null && cpnList.size() >0) {
 //			campaignRecipient = cpnList.get();
@@ -277,7 +277,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	public List<Campaign> getAllCampaigns() throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Campaign> cpnList = session.createQuery("from Campaign").setCacheable(true).list();
+		List<Campaign> cpnList = session.createQuery("from Campaign").list();
 		return cpnList;
 	}
 	@SuppressWarnings("unchecked")
@@ -289,7 +289,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		List<CampaignStats> cpnStatsList = null;
 		ResponseList<CampaignStats> response = new ResponseList<>();
 		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1";
-//				.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+//				.setLong("orgLocationId", orgLocationId).list();
 //		String query = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId";
 		String countQuery = "from CampaignStats cpnstats where cpnstats.orgLocation.id = :orgLocationId and cpnstats.status = 1";
 		
@@ -318,12 +318,12 @@ public class CampaignDaoImpl implements CampaignDao {
 			if (campaignStatsDTO != null && campaignStatsDTO.getLength() > 0) {
 				queryObj.setFirstResult(campaignStatsDTO.getStart());
 				queryObj.setMaxResults(campaignStatsDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+				queryObj.setLong("orgLocationId", orgLocationId).list();
 			}
 			cpnStatsList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).list();
 			if(countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
@@ -355,7 +355,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		CampaignStats campaignStats = null;
-		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.categoryName = :campaignName and cmpStats.status = 1").setString("campaignName", campaignName).setCacheable(true).list();
+		List<CampaignStats> statsList = session.createQuery("from CampaignStats cmpStats where cmpStats.categoryName = :campaignName and cmpStats.status = 1").setString("campaignName", campaignName).list();
 		if (statsList != null && statsList.size() > 0) {
 			campaignStats = statsList.get(0);
 		}
@@ -369,7 +369,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Campaign campaign = null;
-		List<Campaign> cpnList = session.createQuery("from Campaign cpn where cpn.campaignSubject = :subjectName and cpn.orgLocation.id = :orglocationId and cpn.campaignType = :campaignType").setString("subjectName", subjectName).setLong("orglocationId", orgLocationId).setInteger("campaignType", campaignType).setCacheable(true).list();
+		List<Campaign> cpnList = session.createQuery("from Campaign cpn where cpn.campaignSubject = :subjectName and cpn.orgLocation.id = :orglocationId and cpn.campaignType = :campaignType").setString("subjectName", subjectName).setLong("orglocationId", orgLocationId).setInteger("campaignType", campaignType).list();
 		if (cpnList != null && cpnList.size() > 0) {
 			campaign = cpnList.get(0);
 		}
@@ -382,7 +382,7 @@ public class CampaignDaoImpl implements CampaignDao {
 	{
 		Map<String,Integer> map = new HashMap();
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Campaign> cpnList = session.createQuery("from Campaign cpn where cpn.campaignId = :campaignId").setString("campaignId", campaignId).setCacheable(true).list();
+		List<Campaign> cpnList = session.createQuery("from Campaign cpn where cpn.campaignId = :campaignId").setString("campaignId", campaignId).list();
 		if (cpnList != null && cpnList.size() > 0) {
 			Campaign campaign = cpnList.get(0);
 			StringBuilder sb = new StringBuilder();
@@ -390,7 +390,7 @@ public class CampaignDaoImpl implements CampaignDao {
 			if(campaign.getListIds() !=null) {
 				String[] listIds = campaign.getListIds().split(",");
 				for(String listId : listIds) {
-					List<CampaignList> campaignList = session.createQuery("from CampaignList cpnlist where cpnlist.listId = :listId").setString("listId", listId).setCacheable(true).list();
+					List<CampaignList> campaignList = session.createQuery("from CampaignList cpnlist where cpnlist.listId = :listId").setString("listId", listId).list();
 				   if(campaignList !=null && campaignList.size() >0) {
 					   CampaignList cpmList = campaignList.get(0);
 					   sb.append(cpmList.getListName()).append(",");
@@ -428,7 +428,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		}else {
 			 query = "from CreateSender sender where sender.fromMail = :email and sender.status = 1 and sender.id <> :senderId ";
 		}
-		List<CreateSender> senderList = session.createQuery(query).setString("email", email).setLong("senderId", senderId).setCacheable(true).list();
+		List<CreateSender> senderList = session.createQuery(query).setString("email", email).setLong("senderId", senderId).list();
 		
 		if(senderList !=null && senderList.size() >0) {
 			createSender = senderList.get(0);

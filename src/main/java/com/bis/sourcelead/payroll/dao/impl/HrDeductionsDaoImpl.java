@@ -114,12 +114,12 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		if (hrDeductionsDTO != null && hrDeductionsDTO.getLength() > 0) {
 			queryObj.setFirstResult(hrDeductionsDTO.getStart());
 			queryObj.setMaxResults(hrDeductionsDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
 		hrDeductionsList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -173,7 +173,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductionsDetails> hrdeductionlist = null;
 		String query = "from HrDeductionsDetails hrd  left join fetch hrd.hrDeductions where hrd.hrDeductions.id =:hrDeductionId";
-		hrdeductionlist = session.createQuery(query).setLong("hrDeductionId", hrDeductionId).setCacheable(true).list();
+		hrdeductionlist = session.createQuery(query).setLong("hrDeductionId", hrDeductionId).list();
 		if(hrdeductionlist != null && hrdeductionlist.size() >0)
 		{
 			return hrdeductionlist;
@@ -187,7 +187,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrdeductionlist = null;
 		String query = "from HrDeductions hrd  left join fetch hrd.orgLocationId where hrd.orgLocationId.id =:orgLocationId and hrd.employeeId = :empId";
-		hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
+		hrdeductionlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
 		if(hrdeductionlist != null && hrdeductionlist.size() >0)
 		{
 			return hrdeductionlist;
@@ -202,7 +202,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		HrDeductions hrDeductions = null;
 		String query = "from HrDeductions hr where hr.id =:deductionId";
-		List<HrDeductions> hrDeductionsList = session.createQuery(query).setLong("deductionId", deductionId).setCacheable(true).list();
+		List<HrDeductions> hrDeductionsList = session.createQuery(query).setLong("deductionId", deductionId).list();
 		if(hrDeductionsList != null && hrDeductionsList.size() >0)
 		{
 			hrDeductions = hrDeductionsList.get(0);
@@ -217,7 +217,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<HrDeductions> hrDeductionslist = null;
 		String query = "from HrDeductions hr where hr.orgLocationId.id =:orgLocationId and hr.employeeId =:empId and ( hr.createdDate >= :startDateUTC and hr.createdDate <= :endDateUTC )";
-		hrDeductionslist = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setParameter("startDateUTC", startDate).setParameter("endDateUTC", endDate).setCacheable(true).list();
+		hrDeductionslist = session.createQuery(query).setLong("orgLocationId", locationId).setString("empId", empId).setParameter("startDateUTC", startDate).setParameter("endDateUTC", endDate).list();
 		if(hrDeductionslist != null && hrDeductionslist.size() >0)
 		{
 			return hrDeductionslist.get(0);
@@ -245,7 +245,7 @@ public class HrDeductionsDaoImpl implements HrDeductionsDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(hrd.version)  FROM HrDeductions hrd where hrd.orgLocationId.id =:orgLocationId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).list();
 		Integer count = 0;
 		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();

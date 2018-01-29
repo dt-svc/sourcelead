@@ -188,7 +188,7 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			getLeaveDetails(finalDateFormatEndDate);
-			
+// 			validateCarryForwardLeaves();
 			}
 		});
 		
@@ -203,6 +203,7 @@ window.onload = function() {
 			removeEndValid();
 			validateDate();
 			getLeaveDetails();
+			validateCarryForwardLeaves();
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
@@ -579,12 +580,13 @@ function validateMaxLeave(data){
 		userId = '${SourceLeadWeb_userId}';
 	}
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
 	var leaveTypeId = $("#leaveType").val();
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
-		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
 				$('.jquery_form_error_message').remove();
 				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
@@ -598,6 +600,40 @@ function validateMaxLeave(data){
 	
 }
 </script>
+
+<script>
+function validateCarryForwardLeaves(){
+	alert("sdasdsadsa")
+	$('.jquery_form_error_message cOrange').hide();
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	var leaveTypeId = $("#leaveType").val();
+	if(userId != null && userId !='' && userId !='undefined'){
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		alert("asdas")
+		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+			if(data == true){
+				$('.jquery_form_error_message').remove();
+				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			}else{
+				$('.jquery_form_error_message').hide();
+			}
+		}); 
+	}
+	
+  }
+	
+}
+</script>
+
 <div class='comMask'></div>
 <script>
 function validateDate(){

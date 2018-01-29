@@ -294,13 +294,13 @@ public class HomeController {
 		return model;
 	}
 
-	@RequestMapping(value = { "/ehCacheTest" ,  "/app/ehCacheTest"}, method = RequestMethod.GET)
+	/*@RequestMapping(value = { "/ehCacheTest" ,  "/app/ehCacheTest"}, method = RequestMethod.GET)
 	public ModelAndView ehCachePage() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("ehCacheTest");
 		return model;
 
-	}
+	}*/
 
 	// for 403 access denied page
 	@RequestMapping(value = "/403", method = RequestMethod.GET)

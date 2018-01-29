@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveApproverHierarchy")
 public class LeaveApproveHierarchy {
 
 	@Id
@@ -36,14 +35,12 @@ public class LeaveApproveHierarchy {
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	private String id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_ID", nullable = false)
 	private Leave leaveid;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference

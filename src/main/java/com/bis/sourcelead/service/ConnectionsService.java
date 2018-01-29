@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.User;
@@ -14,11 +15,9 @@ public interface ConnectionsService {
 	
 	Connections updateConnection(Connections connections) throws Exception;
 
-	List<UserRoleDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String connectionStatus, String status) throws Exception;
+	List<ConnectionsDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String status) throws Exception;
 
 	int acceptConnection(User user, User toUser, String status);
-
-	List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String status);
 
 	Long getConnectionReceivedCount(Long id);
 	
