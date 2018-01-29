@@ -979,6 +979,9 @@ var validationSettings = {
 			        	else if((result == 'Invalid Sub Modules')){
 			        		$("#loading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
+			        	}else if((result == 'DataMissing')){
+			        		showError("Invalid data");
+			        		$("#loading").removeAttr('style');
 			        	}
 			        	
 			        },  

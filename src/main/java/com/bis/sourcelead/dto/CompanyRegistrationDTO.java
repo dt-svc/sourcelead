@@ -2,18 +2,26 @@ package com.bis.sourcelead.dto;
 
 	import java.util.List;
 
+import com.bis.sourcelead.annotations.Email;
+import com.bis.sourcelead.annotations.Required;
+
 	public class CompanyRegistrationDTO extends CommonDTO {
 
 		private Integer id;
 		
+		@Required(desc = "first name")
 		private String firstName;
 		
 		private String lastName;
 		
+		@Required(desc = "company name")
 		private String companyName;
 		
+		@Required(desc = "website")
 		private String website;
 		
+		@Required(desc = "email")
+		@Email
 		private String email;
 		
 		private String country;
@@ -28,12 +36,14 @@ package com.bis.sourcelead.dto;
 		
 		private String verificationCode;
 		
+		@Required(desc = "timeZone")
 		private String timeZone;
 		
 		private String mobilePhone;
 		
 		private String registeredOrgId;
 		
+		@Required(desc = "location")
 		private String location;
 		
 		private String zipCode;

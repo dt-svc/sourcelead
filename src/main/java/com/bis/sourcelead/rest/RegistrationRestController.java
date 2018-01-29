@@ -33,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -170,6 +171,7 @@ public class RegistrationRestController {
 				@RequestParam(value="modulesList", required=false) String modulesList ,
 				@RequestParam(value="submodulesList", required=false) String submodulesList ,
 	   			HttpServletRequest request) {
+		if(Validator.validate(companyRegistrationDTO)){
 		try {
 
 				Registration registration = new Registration();
@@ -196,6 +198,9 @@ public class RegistrationRestController {
 			}
 			
 			return "orgList";
+		}else{
+			return "DataMissing";
+		}
 	     
 	   }
 	

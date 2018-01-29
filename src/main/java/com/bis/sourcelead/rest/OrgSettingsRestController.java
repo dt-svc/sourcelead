@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
@@ -108,6 +109,7 @@ public class OrgSettingsRestController {
 	{
 		/*Iterator<String> itrator = request.getFileNames();
 		MultipartFile multiFile = request.getFile(itrator.next());*/
+		if(Validator.validate(companyRegistrationDTO)){
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelMapper mapper1 = new ModelMapper();
@@ -131,6 +133,10 @@ public class OrgSettingsRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return "home";
+		}else{
+			
+			return "DataMissing";
+		}
 	}
 	
 	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception {
