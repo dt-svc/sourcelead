@@ -19,7 +19,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CAMPAIGN_RECIPIENT")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaignRecipient")
 public class CampaignRecipient {
 	
 	@Id
@@ -36,7 +35,6 @@ public class CampaignRecipient {
 	@Column(name = "EMAIL")
 	private String email;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CAMPAIGN_LIST_ID", nullable = false)
 	private CampaignList campaignListId;
@@ -50,8 +48,7 @@ public class CampaignRecipient {
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
 	private User createdBy;
 	

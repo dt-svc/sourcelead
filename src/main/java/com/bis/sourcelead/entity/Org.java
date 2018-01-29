@@ -38,7 +38,6 @@ import com.bis.sourcelead.enums.Status;
  */
 @Entity
 @Table(name="ORG")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="org")
 public class Org implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -64,8 +63,8 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
@@ -109,7 +108,7 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status timeSheet;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="org",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgLocations> orgLocationsList;

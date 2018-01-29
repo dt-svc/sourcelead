@@ -76,7 +76,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		return session.createQuery(query)
 				.setLong("teamId", teamId)
 				.setLong("orgLocationID", orgLocationID)
-				.setCacheable(true)
+				
 				.list();
 		
 	}
@@ -87,7 +87,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TeamMembers tm  where tm.id = :teamMmeberId and tm.orgLocationId.id =:orgLocationId";  
-		List<TeamMembers> teamMembersList = session.createQuery(query).setLong("teamMmeberId", teamMmeberId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<TeamMembers> teamMembersList = session.createQuery(query).setLong("teamMmeberId", teamMmeberId).setLong("orgLocationId", orgLocationId).list();
 		TeamMembers teamMember = null;
 		if(teamMembersList != null && !teamMembersList.isEmpty()){
 			teamMember = teamMembersList.iterator().next();
@@ -131,7 +131,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	public List<TeamMembers> getTeamMembersListByLocationId(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TeamMembers tm    left join fetch tm.memberUserId   left join fetch tm.teamId team   left join fetch team.ownerUserId where team.orgLocationsId.id =:orgLocationId and tm.status = '1'";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TeamMembers tm left join fetch tm.memberUserId left join fetch tm.teamId team "
 				+ "where team.orgLocationsId.id = :orgLocationId and tm.memberUserId.id = :userId and tm.status = '1'";
-		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 	}
 	
 	@Override
@@ -148,7 +148,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 	public Boolean isUserBelongsCurrentTeamByUserIdAndTeamId(Long userId, Long teamId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TeamMembers teamMember where teamMember.teamId.id = :teamId and teamMember.memberUserId.id = :userId and teamMember.status = '1'  or teamMember.teamId.id IN ( select team.id from Team team where team.ownerUserId.id =:userId and team.id =:teamId)";
-		List<TeamMembers> teamMembersList = session.createQuery(query.toString()).setLong("userId", userId).setLong("teamId", teamId).setCacheable(true).list();
+		List<TeamMembers> teamMembersList = session.createQuery(query.toString()).setLong("userId", userId).setLong("teamId", teamId).list();
 	     boolean isMemberFound = false;
 		if (teamMembersList != null && !teamMembersList.isEmpty()) {
 			isMemberFound = true;
@@ -164,7 +164,7 @@ public class TeamMemberDaoImpl  implements TeamMemberDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TeamMembers tm left join fetch tm.teamId team left join fetch team.orgLocationsId  "
 				+ "where tm.memberUserId.id = :memberUserId and team.orgLocationsId.id =:orgLocationId and tm.status = '1' ";  
-		List<TeamMembers> teamMembersList = session.createQuery(query).setLong("memberUserId", memberUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<TeamMembers> teamMembersList = session.createQuery(query).setLong("memberUserId", memberUserId).setLong("orgLocationId", orgLocationId).list();
 		TeamMembers teamMember = null;
 		if(teamMembersList != null && !teamMembersList.isEmpty()){
 			teamMember = teamMembersList.iterator().next();

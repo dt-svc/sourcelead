@@ -112,7 +112,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 
 		}
 		
-		return query.setCacheable(true).list();
+		return query.list();
 	}
 
 	
@@ -122,7 +122,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh "
 				+ " left join fetch rsh.submissionId rs left join fetch rsh.submissionId.requirement requirement where requirement.id = :requirementId";
-		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		return  session.createQuery(query).setLong("requirementId", requirementId).list();
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		int totalCount = 0;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId and rsh.toStage = :applicantStatus";
-	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setString("applicantStatus", applicantStatus).setCacheable(true).list();
+	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setString("applicantStatus", applicantStatus).list();
 	if(null != rshList){
 		totalCount = rshList.size();
 	}
@@ -143,7 +143,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	public List<RequirementSubmission> getReceivedApplicantsCountsPerReq(Long requirementId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where requirement.id = :requirementId  and rs.vendorLocationId <> null ";
-		return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		return  session.createQuery(query).setLong("requirementId", requirementId).list();
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	public List<RequirementSubmissionHistory> getReceivedApplicantsCountForReports(Long orgLocationId,Long requirementId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.requirement.id = :requirementId and  rs.vendorLocationId <> null ";
-		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setCacheable(true).list();
+		return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).list();
 	}
 
 
@@ -160,7 +160,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	public List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh  left join fetch rsh.submissionId rs where rs.orgLocations = :orgLocationsId";
-	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).setCacheable(true).list();
+	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).list();
 	return rshList;
 	}
 
@@ -171,7 +171,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		int totalCount = 0;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus =:requirementStatus";
-		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocId).setString("requirementStatus", requirementStatus).setCacheable(true).list();
+		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocId).setString("requirementStatus", requirementStatus).list();
 		if(!reqList.isEmpty() && reqList.size() > 0){
 			totalCount = reqList.size();
 		}
@@ -218,10 +218,10 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	    List<Requirement> reqList = null;
 	    if(!list.isEmpty() && null != list){
 	    	query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus IN (:statusList)";
-	    	reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setParameterList("statusList", list).setCacheable(true).list();
+	    	reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setParameterList("statusList", list).list();
 	    }else{
 	    	query = "from Requirement req where req.orgLocationId =:orgLocId and (req.isTemplate IS NULL OR req.isTemplate <> 'Y') ORDER BY req.id DESC";
-	    	reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).setCacheable(true).list();
+	    	reqList = session.createQuery(query).setLong("orgLocId",orgLocation.getId()).list();
 	    }
 		return reqList;
 	}
@@ -233,11 +233,11 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		if(null != startDateUTC && null != endDateUTC ){
 				String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and (rsh.createdDate >= :startDateUTC and rs.createdDate <=  :endDateUTC) ";
-				return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+				return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}
 		else{
 			String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).list();
 		}
 		
 			}
@@ -272,8 +272,8 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
-		return qry.setCacheable(true).list();
-		/*return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();*/
+		return qry.list();
+		/*return  session.createQuery(query).setLong("requirementId", requirementId).list();*/
 
 	}
 
@@ -285,11 +285,11 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		if(null != startDateUTC && null != endDateUTC ){
 			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}
 		else{
 			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and rs.vendorLocationId.id = :vendorLocationId and  rs.vendorLocationId <> null  ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("vendorLocationId", vendorLocationId).list();
 		
 		}
 	}
@@ -325,9 +325,9 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				qry.setParameter(str, (Date) params.get("endDateUTC"));
 			}
         }
-		return qry.setCacheable(true).list();
+		return qry.list();
 		
-		//return  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		//return  session.createQuery(query).setLong("requirementId", requirementId).list();
 	}
 
 
@@ -337,12 +337,12 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		if(null != startDateUTC && null != endDateUTC ){
 			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null  and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 
 		}
 		else{
 			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		}
 	}
 
@@ -351,7 +351,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	public List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId,Set<String> userCodesList, Date startDateUTC, Date endDateUTC) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId where rs.createdBy IN (:userCodesList)";
-		return session.createQuery(query).setParameterList("userCodesList", userCodesList).setCacheable(true).list();
+		return session.createQuery(query).setParameterList("userCodesList", userCodesList).list();
 	}
 
 }
