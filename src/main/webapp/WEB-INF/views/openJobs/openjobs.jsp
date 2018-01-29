@@ -1247,6 +1247,17 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<h4>--</h4>';
 				}
+				
+				result = result +'<strong>Locations : </strong>';
+				result = result +'<ul>';
+ 				if(requirements.locationsList != null){
+ 					for(var k=0; k<requirements.locationsList.length; k++){
+ 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+ 					}
+ 				}
+ 				result = result +'</ul>';
+ 				result = result +'<div class="clearfix"></div>';
+ 				
 				result = result +'	<div class="skills">';
 				result = result +'	<strong>Skills :</strong>';
 				if(requirements.skills != null && requirements.skills != '' && requirements.skills !='undefined'){
@@ -1272,12 +1283,12 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';	
 				}
-				if(location != null && location != '' && location !='undefined'){
+				/* if(location != null && location != '' && location !='undefined'){
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 				description =  description+'Job Location: '+location+";";
 				}else{
 				result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
-				}
+				} */
 				
 				if(rate != null && rate != '' && rate !='undefined'){
 				result = result +'	<b><i class="fa fa-rupee"></i>'+rate+'-'+rateType+'/'+currencyType+'</b>';
