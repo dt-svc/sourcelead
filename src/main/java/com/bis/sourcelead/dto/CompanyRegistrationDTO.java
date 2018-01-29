@@ -51,6 +51,22 @@ package com.bis.sourcelead.dto;
 		private Integer averageWorkingHours;
 		
 		private String staticPath;
+		
+		private String poEmail;
+	    
+	    private String remittanceEmail;
+	    
+	    private String businessType;
+	    
+	    private String otherBusinessType;
+	    
+	    private String systemGeneratedId;
+	    
+	    private String phone;
+		
+		private String fax;
+		
+		private String aboutCompany;
 
 		private List<FileInfo> fileInfo;
 
@@ -252,6 +268,70 @@ package com.bis.sourcelead.dto;
 
 		public void setFileInfo(List<FileInfo> fileInfo) {
 			this.fileInfo = fileInfo;
+		}
+
+		public String getPoEmail() {
+			return poEmail;
+		}
+
+		public void setPoEmail(String poEmail) {
+			this.poEmail = poEmail;
+		}
+
+		public String getRemittanceEmail() {
+			return remittanceEmail;
+		}
+
+		public void setRemittanceEmail(String remittanceEmail) {
+			this.remittanceEmail = remittanceEmail;
+		}
+
+		public String getBusinessType() {
+			return businessType;
+		}
+
+		public void setBusinessType(String businessType) {
+			this.businessType = businessType;
+		}
+
+		public String getOtherBusinessType() {
+			return otherBusinessType;
+		}
+
+		public void setOtherBusinessType(String otherBusinessType) {
+			this.otherBusinessType = otherBusinessType;
+		}
+
+		public String getSystemGeneratedId() {
+			return systemGeneratedId;
+		}
+
+		public void setSystemGeneratedId(String systemGeneratedId) {
+			this.systemGeneratedId = systemGeneratedId;
+		}
+
+		public String getPhone() {
+			return phone;
+		}
+
+		public void setPhone(String phone) {
+			this.phone = phone;
+		}
+
+		public String getFax() {
+			return fax;
+		}
+
+		public void setFax(String fax) {
+			this.fax = fax;
+		}
+
+		public String getAboutCompany() {
+			return aboutCompany;
+		}
+
+		public void setAboutCompany(String aboutCompany) {
+			this.aboutCompany = aboutCompany;
 		}
 
 		

@@ -172,10 +172,6 @@ public class RegistrationRestController {
 	   			HttpServletRequest request) {
 		try {
 
-				/*String json1 = "{"+json+"}";
-				
-				JSONObject jsonObj = new JSONObject(json1);*/
-				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration = new Registration();
 				ModelMapper mapper1 = new ModelMapper();
 				registration = mapper1.map(companyRegistrationDTO, Registration.class);
