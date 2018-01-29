@@ -498,6 +498,10 @@ function shareRecomendedApplicant(requirementId,candidateId){
     	type: "POST",
         url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
         success: function(result) {
+        	$("#selector4").removeAttr("style");
+   			$("#selector4").css({ display: "block" });
+   			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
+   			eduMsgFadeinFunction();
         },
     });
 }
