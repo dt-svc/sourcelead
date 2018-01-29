@@ -46,7 +46,7 @@
 	type="text/css">
 
 <script
-	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU"
+	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
 	type="text/javascript"></script>
 <script
 	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
@@ -1818,7 +1818,11 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';					
 										result = result +'	<span>';
 										result = result +'	<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
-										result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
+										if(experience == 'undefined'){
+											result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
+										}else{
+											result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';
+										}
 										result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 										result = result +'	</span>';
 										result = result +'	</div>';
@@ -2308,7 +2312,7 @@ $(".LettSelec a").click(function(){
 <!-- Create Alert modal Popup -->
 <div class="pop_mask"></div>
 <!-- Modal -->
-<div class="modal_createalert" id="myModal" role="dialog">
+<div class="modal_createalert" id="myModal" role="dialog" >
 	<div id="createAlertPopUpDiv"></div>
 </div>
 <!-- Create Alert modal Popup Ends -->
@@ -2323,6 +2327,8 @@ function alertClose(){
 	$(".pop_mask").fadeOut();
 	$(".modal_createalert").removeClass("modal");
 	$(".modal.modal_createalert").fadeOut();
+	document.getElementById("myModal").style.display="none";
+	
 }
 </script>
 <!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
@@ -2724,6 +2730,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 
 
 <script type="text/javascript">
+jQuery.noConflict( true );
 (function ($) {
    $.fn.serializeFormJSON = function () {
 
