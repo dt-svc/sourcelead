@@ -97,8 +97,13 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		String searchByValue = searchValue.trim();
 		StringBuilder subQuery = new StringBuilder("");
 		String resultSqlQuery = null;
-		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',u.last_name) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
-				"(select count(*) from connections c where (c.FROM_UID = u.id or c.TO_UID = u.id) and c.from_uid <> :loginUserId and c.to_uid <> :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') as count, "+
+		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',IFNULL(u.last_name, '')) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
+				"((select count(c.from_uid) from connections c where c.to_uid = u.id "+
+				"and (c.from_uid in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.from_uid in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from connections c where c.FROM_UID = u.id "+
+				"and (c.TO_UID in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
 				"(select c.CONNECTION_UID from connections c where (c.from_uid = :loginUserId and c.to_uid = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID " +
 				"from user u, user_role ur, org_locations ol, connections c " + 
 				"where ur.user_id = u.id and ur.org_locations_id = ol.id and u.IS_VERIFIED = 'Y' and ur.IS_PRIMARY = 1 "; 

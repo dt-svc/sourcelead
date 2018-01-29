@@ -52,8 +52,6 @@ window.onload = function () {
 	<div class="conHeadgap"></div>
 	
 	<h5 class="connHeadText">People You May Know</h5>
-	<div class="conneWrapInn clearfix" id="mutualConnList"></div>
-	
 	<div class="conneWrapInn clearfix" id="findConnectionListId">
 	</div>
 	<div id="loadMoreDiv"></div> 
@@ -103,8 +101,6 @@ function getConnectionsList(type){
 			localStorage.setItem("sentCount", 0);
 			localStorage.setItem("receivedCount", 0);
 			localStorage.setItem("connectedCount", 0);
-			$("#mutualConnList").hide();
-			$("#mutualConnList").empty();
 			$("#findConnectionListId").empty();
     		$("#orgOffset").val(0);
    		    offset = 0;
@@ -162,15 +158,7 @@ function getConnectionsList(type){
 	 				result = result + "<p>"+user.userType+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"<p></a>";
 	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'">'+state+'</div></div></div>';
-	 				if(user.count != 0){
-	 					mutualResult = mutualResult + result;
-	 					result = "";
-	 				}
 	   		    }
-	 			if(mutualResult != ""){
-	 				$("#mutualConnList").show();
- 					$("#mutualConnList").append(mutualResult);
- 				}
 	 			if(result !== ""){
         			$("#findConnectionListId").append(result);
 	 			}

@@ -111,6 +111,7 @@ function eduMsgFadeinFunction(message) {
     		$("#orgOffset").val(0);
    		    offset = 0;
     	} 
+		
 		$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
