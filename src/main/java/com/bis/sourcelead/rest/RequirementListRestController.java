@@ -2083,21 +2083,37 @@ public class RequirementListRestController {
 			for(RequirementLocations locations : locationsList) {
 				RequirementLocationsDTO locationsDTO = new RequirementLocationsDTO();
 				locationsDTO.setLocationName(locations.getLocation());
-				locationsDTO.setCountry(locations.getCountry());
+				
+				if(!isNullOrEmpty(locations.getCountry())) {
+					locationsDTO.setCountry(locations.getCountry());
+				}else {
+					locationsDTO.setCountry("");
+				}
+				
 				if(!isNullOrEmpty(locations.getState())) {
 					locationsDTO.setState(locations.getState());
+				}else {
+					locationsDTO.setState("");
 				}
 				if(!isNullOrEmpty(locations.getCity())) {
 					locationsDTO.setCity(locations.getCity());
+				}else {
+					locationsDTO.setCity("");
 				}
 				if(!isNullOrEmpty(locations.getZipCode())) {
 					locationsDTO.setZipcode(locations.getZipCode());
+				}else {
+					locationsDTO.setZipcode("");
 				}
 				if(!isNullOrEmpty(locations.getLatitude())) {
 					locationsDTO.setLatitude(locations.getLatitude());
+				}else {
+					locationsDTO.setLatitude("");
 				}
 				if(!isNullOrEmpty(locations.getLongitude())) {
 					locationsDTO.setLongitude(locations.getLongitude());
+				}else {
+					locationsDTO.setLongitude("");
 				}
 				
 				locationsDTO.setLocationUUID(locations.getLocationUUID());

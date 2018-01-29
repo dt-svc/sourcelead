@@ -1710,7 +1710,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
 					  	success : function(result) {
-					  	$("#loading").removeAttr("style");	
+					  	//$("#loading").removeAttr("style");	
 					  	if(saveType != 'saveAndContinue'){
 					  		location.replace(sourceleadUrl+"/jobs");
 					  	}
