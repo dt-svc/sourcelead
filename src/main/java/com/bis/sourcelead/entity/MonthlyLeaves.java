@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "MONTHLY_LEAVES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "monthlyLeaves")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "monthlyLeaves")
 public class MonthlyLeaves {
 
 	@Id
