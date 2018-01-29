@@ -183,8 +183,32 @@ public class RequirementListController {
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("jobRecommendations", "jobRecommendations");
+			model.addObject("requirementUUID", requirementUUID);
 			model.setViewName("requirement/requirementRelease");
 			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
+		}else{
+			model.setViewName("registration/persmissionDenied");
+		}
+		
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/jobRecommendations")
+	public ModelAndView jobRecommendations(String requirementUUID,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		ModelAndView model = new ModelAndView();
+		
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("requirementUUID", requirementUUID);
+			model.addObject("requirementId", requirement.getId());
+			model.addObject("requirementSubmissionStatus", requirement.getRequirementSubmissionStatus());
+			model.setViewName("requirement/jobRecommendations");
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

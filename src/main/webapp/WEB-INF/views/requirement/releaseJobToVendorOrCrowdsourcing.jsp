@@ -77,7 +77,7 @@
 	    	<i class="fa fa-check-circle"></i><span id="relMsgDiv"></span>
 	    </div>
          <div class="clearfix">
-          <h2 onclick="opennetwork();">Open Network</h2>
+          <h2 onclick="opennetwork();">Release To Open Networks</h2>
           <div class="content clearfix" >
             <div class="row">
               <div class="col-md-6">
@@ -191,6 +191,9 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Public / Crowdsourcing  is mandatory</span>
+	           <c:if test="${!empty jobRecommendations}">
+	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
+	           </c:if>
            	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'">
           </div>
@@ -202,7 +205,9 @@
       <div class="form-footer clearfix row mt" id="releaseToVendors" style="display: block">
         <div class="col-lg-12">
           <div class="pull-right">
-         
+               <c:if test="${!empty jobRecommendations}">
+	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
+	           </c:if>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
@@ -342,6 +347,8 @@ function releaseTo(){
 	    var isCrowdScourcingGlobel = $("#isCrowdScourcingGlobel").val();
 	    var releaseRequirement = true;
 	    var percentageRewardValue = '';
+	    var jobRecommendations = '${jobRecommendations}';
+	    var requirementUUID = '${requirementUUID}';
 	    
 	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	 	    	$('span.jquery_form_error_message').hide();
@@ -351,11 +358,19 @@ function releaseTo(){
 	 			$("#releaseBtn").prop('value', 'Processing');
 	 		    var sourceleadUrl ='${sourceleadUrl}';
 	 		    var requirementId = '${requirementId}';
+	 		    
 	 		 	 $.ajax({
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
-	 		            	location.replace(sourceleadUrl+"/jobs");	 		            },
+	 		            	
+ 		            	if(jobRecommendations){
+	 		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+ 		     		    }else{
+ 		     		    	   location.replace(sourceleadUrl+"/jobs");
+ 	     		    	 } 		            
+	 		            	
+	 		            },
 	 		    });  
 	 	    }else{
 	 	    	$('span.jquery_form_error_message').show();
@@ -409,7 +424,8 @@ function releaseToOneVendor(vendorcheckboxId){
      		}else{
      			 document.getElementById("openNetworkRelease").style.display="";
      		}
-     		
+     		  var jobRecommendations = '${jobRecommendations}';
+     		  var requirementUUID = '${requirementUUID}';
        	    
 	        if(isContinue){
 	       	     $.ajax({
@@ -420,7 +436,12 @@ function releaseToOneVendor(vendorcheckboxId){
 		    			$("#relTocro").css({ display: "block" });
 						$("#relMsgDiv").html("Success!! Job Release To Open Network");
 		       			relMsgFadeinFunction();
-		       			location.replace(sourceleadUrl+"/jobs");
+		       			
+		       		 if(jobRecommendations){
+		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+		     		    }else{
+		     		    	location.replace(sourceleadUrl+"/jobs");
+	     		     }
 			        	
 			        },
 			    });  

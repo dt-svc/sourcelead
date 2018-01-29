@@ -211,15 +211,18 @@ $(document).ready(function () {
    			  <ul class="newPrTabsMenu">
 				<c:if test="${empty requirementUUID}">
 				<li class="current"><a href="#tab-a" data-toggle="tab">Job Details</a></li>
-				<li><a href="#tab-b" data-toggle="tab" id="jobRelease">Job Release</a></li>
+				<li><a href="#"  id="jobRelease">Job Release</a></li>
+				<li><a href="#"  id="recommendations">Recommendations</a></li>
 				</c:if>
 				<c:if test="${!empty requirementUUID}">
 				<li class="current"><a href="<c:url value='${appPath}/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
 				<c:if test="${requirementStatus == 'OPEN'}">
 					<li><a href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
+				    <li><a href="<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
 				</c:if>
 				<c:if test="${requirementStatus != 'OPEN'}">
-					<li><a href="#tab-b" data-toggle="tab" id="jobRelease">Job Release</a></li>
+					<li><a href="#" id="jobRelease">Job Release</a></li>
+					<li><a href="#" id="recommendations">Recommendations</a></li>
 				</c:if>
 				</c:if>
 				<div class="clearfix mb"></div>
