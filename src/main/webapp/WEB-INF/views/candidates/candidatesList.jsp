@@ -9,6 +9,11 @@
      @author : p.sarath kumar
      this script is for candidate Activation
 --%>
+
+  <div id="shareEmptypopUp"></div>
+   <div class="success_pop" id="selector4" style="display: none;"> 
+     <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
+   </div>  
 <script>
   function noAccess(id){ 	
 	 
@@ -68,6 +73,7 @@
 			}
 	};
 	</script>
+
 
 <style type="text/css">
 .candidate_wrap_table table tr td:first-child {
@@ -216,7 +222,6 @@ function candidateSideBar(candidateId){
          			 	 
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
-	                	
 	                	 
 	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
 			             result = result+'  <div class="profile_details clearfix mb">';
@@ -1124,6 +1129,19 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
       </div>
+      <div class="dropdown pull-left ml mt">
+			  <div class="dropdown-toggle" data-toggle="dropdown">
+			  <span class="fa fa-share-alt cursorPointer" title="Share"></span></div>
+			  <ul class="dropdown-menu dropdown-morecustom">
+			    <li><a title="Share" href="#" onclick="shareJob();" data-toggle="modal" data-target="#myModal">Share Job</a></li>
+<!-- 			    <li><a href="#">Compose Email</a></li> -->
+			  </ul>
+			</div>
+			
+			<!-- <div class="dropdown pull-left ml mt">
+			  <div class="dropdown-toggle" data-toggle="dropdown">
+			  <span class="fa fa-envelope cursorPointer" title="Compose Email"></span></div>
+			</div> -->
       <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
       <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter">
         <ul>
@@ -1163,7 +1181,7 @@ function cancel(candidateId){
                   </div>                	
           </li>  
           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li><b id="addmore"><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>&nbsp;<span>Add Candidate</span></b>
+          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user-plus" style="font-size:17px;"></i></b>
           <div id="addmorepop" class="approved_pop">
            <%-- <ul>
              <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
@@ -2247,4 +2265,224 @@ function minMaxExperience(){
 
 <!-- End  clearCandidateSearchKeys() method for clear search data-->
 
+
+
+
+<!-- =========================================== share scriptin By Laxman ======================================== -->
+<script>
+function toggleShareCandidates(source){
+	  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
+	  if($(source).is(":checked"))
+		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
+	  else 
+		  $('input[class="contactscheckbox"]').removeProp('checked');
+	  
+	  $('input[class="contactscheckbox"]').each(function(i) {
+		  if($(this).is(":checked")) {
+		      shareCandidates[$(this).data("id")] = $(this).val();
+		  } else {
+			  shareCandidates[$(this).data("id")] = "";
+		  }
+	  });
+}
+
+function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
+	$("#"+checkboxId).removeProp("checked");
+	   var count = 0;
+	   var data = $("#"+tableId).DataTable().data();
+	 for(var e in selectedItems) {
+	   if(!e || !selectedItems[e] || selectedItems[e] === "")
+		   continue;
+	   
+	   for(var f in data) {
+ 	   if(e === data[f].id+"") {
+ 		count ++;
+ 	   }
+		}
+	 }
+	 if(count == data.count()) {
+		$("#"+checkboxId).prop("checked", "checked");
+	 }
+}
+</script>
+<script>
+var shareCandidates = {};
+function checkShareCandidates(elem) {
+	if($(elem).is(":checked")) {
+		shareCandidates[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#sharedcheckbox").removeProp('checked');
+		shareCandidates[$(elem).data("id")] = "";
+	}
+}
+</script>
+
+<!-- Modal share job -->
+<div class="sideMask"></div>
+  <div class="modal sharejob-pop" id="sharejob-pop">
+  </div>
+<script>
+function shareJob() {
+	$("#sharejob-pop").fadeIn();
+	$(".sideMask").fadeIn();
+	var candidateIds = new Array();
+	 for(var e in shareCandidates) {
+		 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(shareCandidates[e]);
+	 }
+	 if(candidateIds.length > 0){
+		 sharejobpopup(candidateIds.length);
+		getRequirements();
+	 }else{
+		 $("#sharejob-pop").hide();
+			$(".sideMask").hide();
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>"; 
+			result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Please select at least one Candidate</p>";
+			result = result + ' <div id="reasonForInvoiceDiv"/>';
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
+			result = result +"	</div>";
+			$("#shareEmptypopUp").empty();
+			$("#shareEmptypopUp").append(result);
+			$("#shareCandidate").slideDown(200);
+			$(".project_inn_mask").fadeIn(200); 
+	 }
+	
+	}
+function cancelShareCandidate(){
+	$("#shareCandidate").fadeOut();
+	$(".project_inn_mask").fadeOut(); 
+}
+function closejobpop() {
+	$("#sharejob-pop").fadeOut();
+	$(".sideMask").fadeOut();
+	}
+function sharejobpopup(candidateCount) {
+	var result = "";
+	result = result+ '<form method="post">';
+	 result = result+ '<div  id="shareJob-form" name="shareJob-form" class="modal-dialog">';
+	 result = result+ '<div class="modal-content">';
+	 result = result+ '  <div class="modal-header positionRelative">';
+	 result = result+ '    <button type="button" class="close" data-dismiss="modal" onclick="closejobpop();">&times;</button>';
+	 result = result+ '    <h4 class="modal-title col-md-3">Share Job</h4>';
+	 result = result+ '    <h5 class="modal-title col-md-8">Selected Candidates:<span id="selectedcandidatescount" class="paddingLeft">'+candidateCount+'</span></h5>';
+	 result = result+ '  </div>';
+	 result = result+ '  <div class="modal-body">';
+	 result = result+ '    <div class="clearfix mb">';
+	 result = result+ '    <label class="col-md-3">Posted from <span class="text-danger">&nbsp;*</label>';
+	 result = result+ '    <div class="dropdown-select col-md-9">';
+	 result = result+ '    <select class="form-control" id="requirementsTimeRange" onchange="getRequirements();">';
+	 result = result+ '    <option value="today">Today</option>';
+	 result = result+ '    <option value="yesterday">Yesterday</option>';
+	 result = result+ '    <option value="week" selected="">1 week</option>';
+	 result = result+ '    <option value="twoweeks">2 weeks</option>';
+	 result = result+ '    <option value="month">1 month</option>';
+	 result = result+ '    <option value="twomonths">2 months</option>';
+	 result = result+ '    </select>';
+	 result = result+ '    </div>';
+	 result = result+ '  </div>';
+	 result = result+ '  <div class="clearfix mb">';
+	 result = result+ '    <label class="col-md-3">Job<span class="text-danger">&nbsp;*</label>';
+	 result = result+ '    <div class="dropdown-select col-md-9">';
+	 result = result+ '    <select class="form-control chosen-select" id="shareRequirementsList" field-name="Job" data-validation="required">';
+	 result = result+ '    </select>';
+	 result = result+ '    </div>';
+	 result = result+ '  </div>';
+	 result = result+ '  </div>';
+	 result = result+ '  <div class="modal-footer">';
+	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectedJobSharing();">Share Job</button>';
+	 result = result+ '    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
+	 result = result+ '  </div>';
+	 result = result+ '</div>';
+	 result = result+ '</div>';
+	 result = result+ '</form>';
+	 $("#sharejob-pop").empty();
+	 $("#sharejob-pop").append(result);
+	 
+	 $("#shareRequirementsList").chosen();
+	 $("#shareRequirementsList").trigger("chosen:updated");
+}
+</script>
+<script>
+function selectedJobSharing(){
+	if ($('#shareJob-form').validate(false, validationSettings)) {
+		var requirementId = $("#shareRequirementsList").val();
+		var candidateIds = new Array();
+		 for(var e in shareCandidates) {
+			 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+				   continue;
+			 candidateIds.push(shareCandidates[e]);
+		 }
+		 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+	          type : "POST",
+	          url: sourceleadUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
+	           success :function(data) {
+	        	   closejobpop();
+	        	    $("#recommendationsLoading").removeAttr("style");
+	        	    $("#selector4").removeAttr("style");
+	       			$("#selector4").css({ display: "block" });
+	       			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
+	       			shareMsgFadeinFunction();
+	       			toggleShareCandidates();
+	           },
+	   }); 
+      return true;
+		
+	}else {
+		return false;
+	}
+}
+$('body').on('blur', '#shareJob-form', function() {
+	$("#shareJob-form").showHelpOnFocus();
+	$("#shareJob-form").validateOnBlur(false, validationSettings);
+});
+</script>
+<script>
+	function shareMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script>
+<script>
+function getRequirements(){
+	var postedDateRange =$("#requirementsTimeRange").val();
+	$.ajax({
+        type : "GET",
+        url: sourceleadUrl+"/getAllRequirementByOrgLocationIdAndUserIdAndPostedDate?postedDateRange="+postedDateRange,    
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+            	  var json = JSON.parse(data);
+            	  var result = "";
+            	  result = result + '<option value="">--- Select Job ---</option>';
+                  for (var i = 0; i < json.length; i++) {
+                 	 var opt = json[i]; 
+                 	var jobId = "";
+                 	if(null != opt.jobId && "" != opt.jobId && 'undefined' != opt.jobId){
+                 		jobId = " - "+opt.jobId;
+                 	}
+                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+jobId+'</option>';
+                  }
+                  $("#shareRequirementsList").empty();
+                  $("#shareRequirementsList").append(result);
+                  $("#shareRequirementsList").chosen();
+              	  $("#shareRequirementsList").trigger('chosen:update');
+	              $('#shareRequirementsList') .find('option:first-child').prop('selected', true) .end().trigger('chosen:updated');
+              }else{
+            	  var result = "";
+            	  	 result = result + '<option value="">--- Select Job ---</option>';
+            	  $("#shareRequirementsList").empty();
+                  $("#shareRequirementsList").append(result);
+                  $("#shareRequirementsList").chosen();
+              	  $("#shareRequirementsList").trigger('chosen:update');
+	              $('#shareRequirementsList').find('option:first-child').prop('selected', true).end().trigger('chosen:updated');
+              }
+           
+       },
+    });
+
+}
+</script>
 <jsp:include page="../masterFooter.jsp" /> 
