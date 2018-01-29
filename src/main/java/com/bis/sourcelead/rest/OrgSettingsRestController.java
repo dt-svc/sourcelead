@@ -119,7 +119,7 @@ public class OrgSettingsRestController {
 	{
 		/*Iterator<String> itrator = request.getFileNames();
 		MultipartFile multiFile = request.getFile(itrator.next());*/
-		if(Validator.validate(companyRegistrationDTO)){
+		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelMapper mapper1 = new ModelMapper();
@@ -143,10 +143,7 @@ public class OrgSettingsRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return "home";
-		}else{
-			
-			return "DataMissing";
-		}
+		
 	}
 	
 	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception {
