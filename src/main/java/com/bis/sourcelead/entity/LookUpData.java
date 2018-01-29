@@ -21,7 +21,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name="LOOKUP_DATA")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="lookupdata")
 public class LookUpData implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -46,7 +46,7 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 				
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from ExpensesCategory ec where ec.orgLocationId.id = :orgLocationId  ORDER BY ec.id DESC";
-	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
         return documentsList;
 	}
 	
@@ -57,7 +57,7 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 				
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from ExpensesCategory ec where ec.orgLocationId.id = :orgLocationId and ec.status =:status ORDER BY ec.id DESC";
-	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("status", status).setCacheable(true).list();
+	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("status", status).list();
         return documentsList;
 	}
 
@@ -86,7 +86,7 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ExpensesCategory expCat  where expCat.id = :expCategoryId";  
-		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("expCategoryId", expCategoryId).setCacheable(true).list();
+		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("expCategoryId", expCategoryId).list();
 		ExpensesCategory expensesCategory = null;
 		if(expensesCategoryList != null && !expensesCategoryList.isEmpty()){
 			expensesCategory = expensesCategoryList.iterator().next();
@@ -101,7 +101,7 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
 		String query ="from ExpensesCategory ec where ec.expensesName = :categoryName and ec.orgLocationId.id = :orgLocationId  ";
-		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("categoryName", categoryName).setCacheable(true).list();
+		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("categoryName", categoryName).list();
 		if(expensesCategoryList !=null && expensesCategoryList.size() >0){
 			flag = true;
 			return flag;

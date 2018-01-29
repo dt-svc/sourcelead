@@ -22,7 +22,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name="EMPLOYEE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="employees")
 public class Employees implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -32,8 +31,8 @@ public class Employees implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	
@@ -58,8 +57,8 @@ public class Employees implements Serializable{
 	@Column(name="EMPLOYEE_STATE")
 	private String employeeState;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )        
     private OrgLocations orgLocations;
 	
@@ -81,18 +80,18 @@ public class Employees implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations orgRelationId;
 	    
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="DEPARTMENT_ID", nullable=false )        
     private Department departmentId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
 	

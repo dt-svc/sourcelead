@@ -4,8 +4,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveType;
@@ -215,6 +219,78 @@ public class LeaveManagementUtil {
 		}
 		
 		return totalLeaves;
+	}
+
+	public int getNumberOfExtraDaysByPeriod(LeaveType leaveType, LeaveDTO leaveDTO, OrgLocations orgLocations, User user) throws Exception
+	{
+		int noOfExtraDays = 0;
+		Date fromDate = commonUtil.getDateFormat(leaveDTO.getFromDate());
+		Date[] dates = getMonthStartDateAndEndDate(fromDate);
+		if("Monthly".equalsIgnoreCase(leaveType.getPeriod())){
+			int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(commonUtil.getDateFormat(leaveDTO.getFromDate()), commonUtil.getDateFormat(leaveDTO.getToDate()));
+			List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndDuration(leaveType.getId(), orgLocations.getId(),user.getId(),dates[0],dates[1]);
+			if(leaveList.size() > 0){
+				noOfExtraDays = numberOfdays;
+			}else{
+				noOfExtraDays = numberOfdays - leaveType.getNoOfDays();
+			}
+		}
+		return noOfExtraDays;
+	}
+	
+	public Date[] getMonthStartDateAndEndDate(Date fromDate){
+		Date[] dates = new Date[2];
+		Calendar calendar = Calendar.getInstance();  
+		calendar.setTime(fromDate);
+	    calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+//	    Date nextMonthFirstDay = calendar.getTime();
+	    dates[0] = calendar.getTime();
+//	    System.out.println(nextMonthFirstDay);
+	    calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+	    dates[1] = calendar.getTime();
+//	    System.out.println(nextMonthLastDay);
+		return dates;
+	}
+	
+	public Map<String,Integer> getMonthlyAppliedLeaves(Leave leave, LeaveDTO leaveDTO, User user) throws Exception{
+		Map<String,Integer> monthlyLeaves = new HashMap<>();
+		String months[] = Constants.MONTHS;
+		Date fromDate = commonUtil.getDateFormat(leaveDTO.getFromDate());
+		Date toDate = commonUtil.getDateFormat(leaveDTO.getToDate());
+		
+		Calendar fromCal = Calendar.getInstance();
+		Calendar toCal = Calendar.getInstance();
+		fromCal.setTime(fromDate);
+		int fromMonth = fromCal.get(Calendar.MONTH);
+		toCal.setTime(toDate);
+		int toMonth = toCal.get(Calendar.MONTH);
+		int noOfDays = 0;
+		if(fromMonth == toMonth){
+			noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate,toDate);
+			monthlyLeaves.put(months[fromMonth], noOfDays);
+		}else{
+			for(int i=1; i <= toMonth;i++){
+				if(fromMonth+i == toMonth){
+					Date[] dates = new Date[2];
+					fromCal.set(Calendar.DATE, fromCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+					dates[0] = fromCal.getTime();
+					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate,dates[0]);
+					monthlyLeaves.put(months[fromMonth], noOfDays);
+					
+					toCal.set(Calendar.DATE, toCal.getActualMinimum(Calendar.DAY_OF_MONTH));
+					dates[1] = toCal.getTime();
+					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(dates[1],toDate);
+					monthlyLeaves.put(months[toMonth], noOfDays);
+				}else{
+					Calendar cal = Calendar.getInstance();
+					cal.set(Calendar.MONTH,fromMonth+i);
+					noOfDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+					monthlyLeaves.put(months[toMonth], noOfDays);
+				}
+			}
+			
+		}
+		return monthlyLeaves;
 	}
 		
 }

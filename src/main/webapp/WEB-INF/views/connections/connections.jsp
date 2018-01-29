@@ -191,10 +191,15 @@ function getConnectionsList(type){
 
 <script>
 function eduMsgFadeinFunction(message) {
-	$("#selector4").fadeIn(200);
-	$("#inviteMessage").text(message);
-	message = "";
-    $('#selector4').delay(200).fadeOut('slow');
+	$("#selector4").fadeIn(200, function(){
+		$("#inviteMessage").text(message);
+		$(this).delay(200).fadeOut('slow');
+	});
+	
+	/* message = "";
+    $('#selector4').delay(200).fadeOut('slow',function(){
+    	$("#inviteMessage").text("");
+    }); */
 }
 
 

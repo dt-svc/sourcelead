@@ -43,7 +43,7 @@ public class TimeToFillDaoImpl implements TimeToFillDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rh left join fetch rh.submissionId left join fetch rh.submissionId.requirement where rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :toStage "
 				+ " and (rh.createdDate BETWEEN :startDate and :endDate)";
-		return  session.createQuery(query).setParameterList("jobIds", jobIdList).setString("toStage", stage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).setCacheable(true).list();
+		return  session.createQuery(query).setParameterList("jobIds", jobIdList).setString("toStage", stage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).list();
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class TimeToFillDaoImpl implements TimeToFillDao{
 		logger.debug("In TimeToFillDaoImpl class getRequirementHistoryBySubmissionIdsAndStage method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rh where rh.submissionId.id = :submissionId and rh.toStage = :toStage ";
-		List submissionHistoryList = session.createQuery(query).setLong("submissionId", submissionId).setString("toStage", stage).setCacheable(true).list();
+		List submissionHistoryList = session.createQuery(query).setLong("submissionId", submissionId).setString("toStage", stage).list();
 		
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		if(submissionHistoryList != null && !submissionHistoryList.isEmpty())

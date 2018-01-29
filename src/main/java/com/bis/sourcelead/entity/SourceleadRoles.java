@@ -21,7 +21,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "SOURCELEAD_ROLES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="sourceleadRoles")
 public class SourceleadRoles implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -41,8 +40,8 @@ public class SourceleadRoles implements Serializable{
 	@Type(type="text")
 	private String actionId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HIERARCHY_ID")
 	private RoleHierarchy roleHierarchy;
 	

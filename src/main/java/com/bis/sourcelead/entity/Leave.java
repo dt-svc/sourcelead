@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "USER_LEAVE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leave")
 public class Leave {
 
 	@Id
@@ -83,6 +82,9 @@ public class Leave {
 	
 	@Column(name = "NUMBER_OF_DAYS")
 	private String numberOfDays;
+	
+	@Column(name = "EXTRA_LEAVES_TAKEN")
+	private String extraLeavesTaken;
 	
 	@Column(name = "REJECTED_REASON",columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -410,6 +412,16 @@ public class Leave {
 		this.numberOfDays = numberOfDays;
 	}
 	
+	public String getExtraLeavesTaken()
+	{
+		return extraLeavesTaken;
+	}
+
+	public void setExtraLeavesTaken(String extraLeavesTaken)
+	{
+		this.extraLeavesTaken = extraLeavesTaken;
+	}
+
 	public String getApprovedByUser()
 	{
 		return approvedByUser;
