@@ -98,6 +98,9 @@ private Date updatedDate;
 @Column(name = "UPDATED_BY")
 private String updatedBy;
 
+@Column(name = "ACTION_BY_ORGLOC_ID")
+private Long actionbyorglocid;
+
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
 @Fetch(FetchMode.SELECT)
@@ -394,6 +397,16 @@ public String getExpenseLocationCode() {
 public void setExpenseLocationCode(String expenseLocationCode) {
 	this.expenseLocationCode = expenseLocationCode;
 }
+
+public Long getActionbyorglocid() {
+	return actionbyorglocid;
+}
+
+public void setActionbyorglocid(Long actionbyorglocid) {
+	this.actionbyorglocid = actionbyorglocid;
+}
+
+
 
 
 }	
