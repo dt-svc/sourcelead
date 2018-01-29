@@ -1281,6 +1281,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 					if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 						bulkClientVendors.setEmail(row.getCell(8).toString());
 					}
+
 					if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 						String mobileNumer = getCellValueAsString(row.getCell(9), fname);
 						bulkClientVendors.setPhone(mobileNumer);

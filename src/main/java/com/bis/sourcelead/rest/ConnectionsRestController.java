@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
@@ -104,51 +105,36 @@ public class ConnectionsRestController {
 	
 	
 	@RequestMapping(value = "/getConnectionsList")
-	public @ResponseBody List<UserRoleDTO> getConnectionsList(
+	public @ResponseBody List<ConnectionsDTO> getConnectionsList(
 			@RequestParam(value = "searchValue", required = false) String searchValue, 
 			@RequestParam(value = "offset", required = false) Integer offset, @RequestParam(value = "status", required = false) String status, HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<UserRoleDTO>();
-		userRoleDTOList = connectionsService.getConnectionsListByStatus(searchValue, offset, user.getId(), ConnectionStatus.REQUEST_SENT.getValue(), status);
+		List<ConnectionsDTO> userRoleDTOList = new ArrayList<ConnectionsDTO>();
+		userRoleDTOList = connectionsService.getConnectionsListByStatus(searchValue, offset, user.getId(), status);
 		return userRoleDTOList;
 	}
 	
-	@RequestMapping(value="/loadFindConnections")
-	public ModelAndView loadFindConnections(HttpServletRequest request) {
+	@RequestMapping(value={"/loadFindConnections", "/loadSentConnections", "/loadReceivedConnections", "/loadConnectedList"})
+	public ModelAndView loadFindConnections(HttpServletRequest request, @RequestParam(value = "status", required = false) String status) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
 		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
 		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
-		model.setViewName("/connections/connections");
+		if(status.equalsIgnoreCase("find")) {
+			model.setViewName("/connections/connections");
+		}else if(status.equalsIgnoreCase("sent")) {
+			model.setViewName("/connections/sentConnections");
+		}else if(status.equalsIgnoreCase("received")) {
+			model.setViewName("/connections/receivedConnections");
+		}else if(status.equalsIgnoreCase("connected")) {
+			model.setViewName("/connections/connectedConnections");
+		}
 		return model;
 	}
 	
-	@RequestMapping(value="/loadSentConnections")
-	public ModelAndView loadSentConnections(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView();
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
-		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
-		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("/connections/sentConnections");
-		return model;
-	}
-	
-	@RequestMapping(value="/loadReceivedConnections")
-	public ModelAndView loadReceivedConnections(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView();
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
-		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("/connections/receivedConnections");
-		return model;
-	}
 	
 	@RequestMapping(value="/withdrawConnection")
 	public String withdrawConnection(@RequestParam(value = "connectionUUID", required = false) String connectionUUID, HttpServletRequest request){
@@ -210,29 +196,6 @@ public class ConnectionsRestController {
 		}
 	}
 	
-
-	@RequestMapping(value="/loadConnectedList")
-	public ModelAndView loadConnectedList(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView();
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
-		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("/connections/connectedConnections");
-		return model;
-	}
-	
-	@RequestMapping(value = "/getConnectedList")
-	public @ResponseBody List<UserRoleDTO> getConnectedList(
-			@RequestParam(value = "searchValue", required = false) String searchValue, 
-			@RequestParam(value = "offset", required = false) Integer offset, HttpServletRequest request)
-			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<UserRoleDTO>();
-		userRoleDTOList = connectionsService.getConnectedList(searchValue, offset, user.getId(), ConnectionStatus.CONNECTED.getValue());
-		return userRoleDTOList;
-	}
 	
 	private void connectionInvitationMailToUser(User loginUser, User toUser, Long locationId,String connectionUUID) throws Exception
 	{
