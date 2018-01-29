@@ -7542,7 +7542,7 @@ z-index: 9999; display:none; background-image: "../images/cancel.png"; backgroun
     text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
     background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
-.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal, .modal.modalApplyjob {
+.modal.addipPopup-modal, .modal.folderPermission, .modal.deleteModal, .modal.modalApplyjob, .modal.sharejob-pop {
 	display: none;
 }
 .location-alert {
@@ -7895,6 +7895,15 @@ width: 72%;
 .jobloc-trash {
 position: absolute; right: -22px; top:8px; width: auto !important; color:#a21e23;
 font-size: 18px;
+}
+ul.dropdown-morecustom li {
+margin: 0 !important; padding: 0 !important; width: 178px !important; border-bottom: 1px solid #ededed;
+}
+ul.dropdown-morecustom li a {
+margin: 0 !important; padding: 5px 10px !important; 
+}
+ul.dropdown-morecustom li a:hover{
+color: #fff !important;
 }
 /* media 320px */
 @media (max-width: 320px) {
@@ -9889,6 +9898,5 @@ bottom: -14px; left: -30px !important; position: absolute;
 
 
 /* Animated Ends */
-
 
 
