@@ -87,6 +87,13 @@ public class Org implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@Column(name = "ORG_DESCRIPTION")
 	@Type(type="text")
 	private String orgDescription;
@@ -244,12 +251,6 @@ public class Org implements Serializable{
 		this.docFile = docFile;
 	}
 	
-	@Column(name = "FILE_NAME")
-	private String fileName;
-	
-	
-	@Column(name = "FILE_URL")
-	private String fileUrl;
 	
 	public String getFileContentType() {
 		return fileContentType;
