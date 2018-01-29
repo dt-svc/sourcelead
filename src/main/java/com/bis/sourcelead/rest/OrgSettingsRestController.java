@@ -243,6 +243,8 @@ public class OrgSettingsRestController {
 	{
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		org.setDocFile(null);
+		org.setFileName(null);
+		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
