@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="ORG_RELATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
 public class OrgRelations implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,14 +38,14 @@ public class OrgRelations implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )   
 	@JsonBackReference
     private OrgLocations responderLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="LOCATION_ID", nullable=false )  
 	@JsonBackReference
     private OrgLocations locationId;
@@ -111,8 +110,8 @@ public class OrgRelations implements Serializable{
 	@Column(name="DUNS_NUMBER")
 	private String dunsNumber;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BANK_DETAILS_ID")
     private OrgBankDetails bankDetailsId;
 	
@@ -324,7 +323,7 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String clientContactIds;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
 	private Set<OrgSpoc> orgSpocList;

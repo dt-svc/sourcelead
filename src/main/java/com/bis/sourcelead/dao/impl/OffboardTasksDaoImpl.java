@@ -60,7 +60,7 @@ public class OffboardTasksDaoImpl implements OffboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffboardTasks tasks left join fetch tasks.offboardingTemplateId where tasks.offboardingTemplateId.id = :templateId "
 	    		+ " and tasks.status = '1' ";
-	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).setCacheable(true).list();
+	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).list();
         return tasksList;
 	}
 
@@ -86,7 +86,7 @@ public class OffboardTasksDaoImpl implements OffboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffboardTasks tasks left join fetch tasks.candidateOffBoardingId where tasks.candidateOffBoardingId.id = :candidateOffBoardingId "
 	    		+ " and tasks.status = '1' and tasks.isTaskSumbitted = 'N' ";
-	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).setCacheable(true).list();
+	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).list();
         return tasksList;
 	}
 
@@ -97,7 +97,7 @@ public class OffboardTasksDaoImpl implements OffboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffboardTasks tasks left join fetch tasks.offboardingTemplateId where tasks.offboardingTemplateId.id IN (:templateId) "
 	    		+ " and tasks.status = '1' ";
-	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setParameterList("templateId", templateId).setCacheable(true).list();
+	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setParameterList("templateId", templateId).list();
         return tasksList;
 	}
 
@@ -106,7 +106,7 @@ public class OffboardTasksDaoImpl implements OffboardTasksDao{
 	public OffboardTasks getOffboardTasksByTaskId(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OffboardTasks> offboardTasks = session.createQuery("from OffboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<OffboardTasks> offboardTasks = session.createQuery("from OffboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).list();
 		if (offboardTasks.size() > 0) {
 			return offboardTasks.get(0);
 		} else {
@@ -122,7 +122,7 @@ public class OffboardTasksDaoImpl implements OffboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffboardTasks tasks left join fetch tasks.candidateOffBoardingId where tasks.candidateOffBoardingId.id = :candidateOffBoardingId "
 	    		+ " and tasks.assignToCandidate = 'Y' and tasks.status = '1' ";
-	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).setCacheable(true).list();
+	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).list();
         return tasksList;
 	}
 
@@ -134,7 +134,7 @@ public class OffboardTasksDaoImpl implements OffboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OffboardTasks tasks left join fetch tasks.candidateOffBoardingId where tasks.candidateOffBoardingId.id = :candidateOffBoardingId "
 	    		+ " and tasks.status = '1' ";
-	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).setCacheable(true).list();
+	    List<OffboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOffBoardingId", candidateOffBoardingId).list();
         return tasksList;
 	}
 

@@ -24,7 +24,6 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "MODULES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="modules")
 public class Modules implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,12 +38,12 @@ public class Modules implements Serializable{
 	@Column(name = "MODULE_NAME")
 	private String moduleName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org org;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARENT_MODULE_ID")
 	private Modules parentModule;

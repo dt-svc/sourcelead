@@ -14,7 +14,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name="EMAIL_NOTIFICATION")
-//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="emailNotifications")
 public class EmailNotification implements Serializable{
 	
 	

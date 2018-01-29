@@ -41,7 +41,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_TASKS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTasks")
 public class ProjectTasks implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -66,19 +65,19 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "BILLABLE_TYPE")
 	private String billableType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="TASK_TYPE", nullable=false )	
 	private LookUpData taskType;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
 	@Column(name = "DUE_DATE")
     private Date dueDate; 
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PRIORITY", nullable=false )	
 	private LookUpData priority;
 	
@@ -88,11 +87,11 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "ESTIMATE_TIME")
     private String estimateTime;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="SEVERITY", nullable=false )	
 	private LookUpData severity;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="TASK_STATUS", nullable=false )	
 	private LookUpData taskStatus;
 	
@@ -140,7 +139,7 @@ public class ProjectTasks implements Serializable{
     private Set<ProjectAssignTask> projectAssignTask;
     
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@OneToMany(mappedBy = "projectTaskId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
     private List<ProjectTaskActivity> projectTaskActivity;

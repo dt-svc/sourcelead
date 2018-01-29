@@ -44,7 +44,7 @@ public class ShiftDaoImpl implements ShiftDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Shift shift where shift.orgLocations.id=:orgLocationId";
-	    List<Shift> shiftList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<Shift> shiftList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		return shiftList;
 	}
 
@@ -54,7 +54,7 @@ public class ShiftDaoImpl implements ShiftDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Shift shift where shift.id=:shiftId";
-		List<Shift> shiftList = session.createQuery(query).setString("shiftId", shiftId).setCacheable(true).list();
+		List<Shift> shiftList = session.createQuery(query).setString("shiftId", shiftId).list();
 		if(shiftList != null && shiftList.size()>0){
 			return shiftList.get(0);
 		}else{

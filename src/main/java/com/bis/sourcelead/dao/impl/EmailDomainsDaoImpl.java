@@ -41,7 +41,7 @@ public class EmailDomainsDaoImpl implements EmailDomainsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<EmailDomains> emailDomains = new ArrayList<EmailDomains>();
 		logger.debug("getEmailDomainsByDomainName start");
-		emailDomains = session.createQuery("from EmailDomains emailDomains where emailDomains.domainName =:domainName").setString("domainName", domainName).setCacheable(true).list();
+		emailDomains = session.createQuery("from EmailDomains emailDomains where emailDomains.domainName =:domainName").setString("domainName", domainName).list();
 		logger.debug("getEmailDomainsByDomainName end");
 		if (emailDomains.size() > 0) {
 			return emailDomains.get(0);

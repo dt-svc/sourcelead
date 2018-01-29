@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "LEAVES_ROLE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leavesRoles")
 public class LeaveRole {
 
 	@Id
@@ -35,29 +34,25 @@ public class LeaveRole {
 //	@Column(columnDefinition = "BINARY(16)")
 	private String id;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVES_OPTION_ID", nullable = false)
 	private Option leavesOptionId;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveTypeid;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "RESTRICT_DAY_ID", nullable = false)
 	private RestrictDay restrictDay;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roleId;

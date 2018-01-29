@@ -60,7 +60,7 @@ public class OrgBankDetailsDaoImpl implements OrgBankDetailsDao{
 	public OrgBankDetails getOrgBankDetailsByOrgLocationId(Long orgLocationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OrgBankDetails> bankDetails = session.createQuery("from OrgBankDetails bankDetails left join fetch bankDetails.orgLocationsId  where bankDetails.orgLocationsId.id = :orgLocationId" ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		List<OrgBankDetails> bankDetails = session.createQuery("from OrgBankDetails bankDetails left join fetch bankDetails.orgLocationsId  where bankDetails.orgLocationsId.id = :orgLocationId" ).setLong( "orgLocationId", orgLocationId ).list();
 		if (bankDetails.size() > 0) {
 			return bankDetails.get(0);
 		} else {
@@ -74,7 +74,7 @@ public class OrgBankDetailsDaoImpl implements OrgBankDetailsDao{
 	public OrgBankDetails getOrgBankDetailsById(Long id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OrgBankDetails> bankDetails = session.createQuery("from OrgBankDetails bankDetails left join fetch bankDetails.orgLocationsId  where bankDetails.id = :id" ).setLong( "id", id ).setCacheable(true).list();
+		List<OrgBankDetails> bankDetails = session.createQuery("from OrgBankDetails bankDetails left join fetch bankDetails.orgLocationsId  where bankDetails.id = :id" ).setLong( "id", id ).list();
 		if (bankDetails.size() > 0) {
 			return bankDetails.get(0);
 		} else {

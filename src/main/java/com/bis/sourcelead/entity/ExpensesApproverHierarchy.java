@@ -47,7 +47,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "EXPENSES_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesApproverHierarchy")
 public class ExpensesApproverHierarchy implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -56,14 +55,14 @@ private static final long serialVersionUID = 1L;
 @Column(name = "ID", nullable = false)
 private Long id;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
@@ -98,8 +97,8 @@ private Date updatedDate;
 @Column(name = "UPDATED_BY")
 private String updatedBy;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
