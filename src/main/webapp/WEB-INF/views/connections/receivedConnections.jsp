@@ -111,16 +111,10 @@ function eduMsgFadeinFunction(message) {
 			url : sourceleadUrl+"/getConnectionsList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset+"&status=received",
             success: function(json) {
 	        var result = "";
-	        if(json[0].sentCount != 0){
-					localStorage.setItem("sentCount", json[0].sentCount);
-				}
-				if(json[0].receivedCount != 0){
-					localStorage.setItem("receivedCount", json[0].receivedCount);
-				}
-				if(json[0].connectedCount != 0){
-					localStorage.setItem("connectedCount", json[0].connectedCount);
-				}
-				if(json[0].countFlag == null){
+			localStorage.setItem("sentCount", json[0].sentCount);
+			localStorage.setItem("receivedCount", json[0].receivedCount);
+			localStorage.setItem("connectedCount", json[0].connectedCount);
+			if(json[0].countFlag == null){
 	        if(json != null && json.length > 0)
 	   		{
 	    		 $('#loadMoreDiv').empty();

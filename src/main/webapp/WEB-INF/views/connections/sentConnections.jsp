@@ -122,15 +122,9 @@ var sentCount = 0;
             success: function(json) {
 	        var result = "";
 	        var flag = false;
-	        if(json[0].sentCount != 0){
-				localStorage.setItem("sentCount", json[0].sentCount);
-			}
-			if(json[0].receivedCount != 0){
-				localStorage.setItem("receivedCount", json[0].receivedCount);
-			}
-			if(json[0].connectedCount != 0){
-				localStorage.setItem("connectedCount", json[0].connectedCount);
-			}
+			localStorage.setItem("sentCount", json[0].sentCount);
+			localStorage.setItem("receivedCount", json[0].receivedCount);
+			localStorage.setItem("connectedCount", json[0].connectedCount);
 			if(json[0].countFlag == null){
 	        if(json != null && json.length > 0)
 	   		{
