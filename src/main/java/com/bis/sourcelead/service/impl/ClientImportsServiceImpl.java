@@ -1255,6 +1255,8 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 					if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 						String orgName = row.getCell(0).toString().trim();
 						bulkClientVendors.setOrgName(orgName);
+					}else {
+						isFileCreated = "empty";
 					}
 					if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 						bulkClientVendors.setWebsite(row.getCell(1).toString());
@@ -1274,13 +1276,18 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 					//
 					if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
 						bulkClientVendors.setFirstName(row.getCell(6).toString());
+					}else {
+						isFileCreated = "empty";
 					}
 					if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 						bulkClientVendors.setLastName(row.getCell(7).toString());
 					}
 					if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 						bulkClientVendors.setEmail(row.getCell(8).toString());
+					}else {
+						isFileCreated = "empty";
 					}
+
 					if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 						String mobileNumer = getCellValueAsString(row.getCell(9), fname);
 						bulkClientVendors.setPhone(mobileNumer);
@@ -1454,7 +1461,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 											}
 											else {
 												UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), vendorLocations.getId());
-												if (userRole == null) {
+												if (userRole != null) {
 													List<OrgRelations> vandorsListByOrgLocationId;
 													if ("Client".equalsIgnoreCase(responderType)) {
 														vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgNameOrgLocationId(clientOrVendor.getOrgName(), orgLocations.getId());
@@ -1533,8 +1540,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												// List<OrgSpoc> spocList =
 												// orgSpocService.getSpoclistByDomain(orgRelations.getId(),domain);
 												spocList = orgRelationsService.getAllClientsByOrgLocationIdAndDomain(orgLocations.getId(), domain, responderType);
-												if ((null != spocList && spocList.size() > 0)
-														&& !"gmail.com".equalsIgnoreCase(domain)) {
+												if (null != spocList && spocList.size() > 0) {
 													if ("Client".equalsIgnoreCase(responderType)) {
 														clientOrVendor.setReason("Similar client exist with domain");
 													}
