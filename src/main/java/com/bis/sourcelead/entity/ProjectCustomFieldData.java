@@ -24,7 +24,6 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "PROJECT_CUSTOM_FIELD_DATA", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ProjectCustomFieldData")
 public class ProjectCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -33,12 +32,12 @@ public class ProjectCustomFieldData implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PROJECT_ID", nullable=false )        
     private Projects projects;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CUSTOM_FORM_FIELD_ID", nullable=false )        
     private OrglocationFormFields orglocationsFormFields;

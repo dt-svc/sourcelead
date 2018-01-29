@@ -26,15 +26,14 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "CANDIDATE_DOCUMENTS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateDocumentsHistory")
 public class CandidateDocumentsHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_DOCUMENTS", nullable = false)
 	private CandidateDocuments candidateDocuments;
 	@Column(name = "DOC_UPLOAD_STATUS")
@@ -67,7 +66,7 @@ public class CandidateDocumentsHistory implements Serializable {
 	private Integer status;
 	@Column(name = "IS_CONFIDENTIAL")
 	private String isConfidential;
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
