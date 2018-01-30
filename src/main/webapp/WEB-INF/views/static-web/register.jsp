@@ -6,7 +6,7 @@
     	<div class="logIcon"><i class="fa fa-lock"></i></div>
     	<div class="logFilds">
         	<h3>Registration</h3>
-            <span>I have an account <a href="http://localhost:8080/app/">Sign in now</a></span>
+            <span>I have an account <a href="/SignIn">Sign in now</a></span>
         	<div class="logFildInn">
             	<span><input type="text" class="textfild" placeholder="Username" /><i class="fa fa-user"></i><p>Error message here..</p></span>
                 <span><input type="text" class="textfild" placeholder="Email" /><i class="fa fa-envelope"></i><p>Error message here..</p></span>
