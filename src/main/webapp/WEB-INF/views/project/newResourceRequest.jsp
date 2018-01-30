@@ -181,7 +181,7 @@
 								<div class="col-md-9">
 					                  <div class="form-icon">
 					                   <input class="form-control pull-left" name="requestId" id="requestId" field-name="Request Id" data-validation="required validate_Space validate_length length1-15 validate_int" >
-					                   <i class="fa fa-refresh btn btn-default formic1" title="Request Id"></i>
+					                   <i class="fa fa-refresh btn btn-default formic1" title="Request Id" onclick='$("#requestId").val("");'></i>
 					                   <div class="clearfix"></div>
 					                   </div>
 					           </div>            
