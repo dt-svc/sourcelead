@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.aspectj.apache.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Invoice;
@@ -304,18 +306,18 @@ public class FinanceReportRestController {
 		 ModelAndView model = new ModelAndView();
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-//			if(null != vendorList){
-//				for (OrgRelations orgRelations : vendorList) {
-//					String orgName = "";
-//					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-//						orgName = orgRelations.getLocationId().getOrgLocationName();
-//					}
-//					if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-//						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
-//					}
-//					orgRelations.setOrgName(orgName);
-//				}
-//			}
+			if(null != vendorList){
+				for (OrgRelations orgRelations : vendorList) {
+					String orgName = "";
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getLocationId().getOrgLocationName();
+					}
+					if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					}
+					orgRelations.setOrgName(orgName);
+				}
+			}
 			
 		 model.addObject("vendorList", vendorList);
 		 model.setViewName("reports/missingBillReport");
@@ -350,7 +352,13 @@ public class FinanceReportRestController {
 	@RequestMapping(value = { "/missingInvoiceData", "/rest/missingInvoiceData" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<MissingInvoiceDTO> missingInvoiceData(MissingInvoiceDTO missingInvoiceDto,HttpServletRequest request, HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return financeService.getMissingInvoiceData(missingInvoiceDto, orgLocation);
+		String contractType = "";
+		if("vendorSow".equalsIgnoreCase(missingInvoiceDto.getContractType())) {
+			contractType = Constants.Vendor_SOW;
+		}else{
+			contractType = Constants.Client_SOW;
+		}
+		return financeService.getMissingInvoiceData(missingInvoiceDto, orgLocation,contractType);
 	}
 	
 	
@@ -366,6 +374,13 @@ public class FinanceReportRestController {
 	@RequestMapping(value = { "/missingInvoiceDataGraph", "/rest/missingInvoiceDataGraph" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<MissingInvoiceDTO> missingInvoiceDataGraph(MissingInvoiceDTO missingInvoiceDto,HttpServletRequest request, HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return financeService.getMissingInvoiceGraphData(missingInvoiceDto, orgLocation);
+		
+		String contractType = "";
+		if("vendorSow".equalsIgnoreCase(missingInvoiceDto.getContractType())) {
+			contractType = Constants.Vendor_SOW;
+		}else{
+			contractType = Constants.Client_SOW;
+		}
+		return financeService.getMissingInvoiceGraphData(missingInvoiceDto, orgLocation,contractType);
 	}
 }

@@ -11,11 +11,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.boot.model.relational.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -89,8 +92,7 @@ public class FinanceServiceImpl implements FinanceService{
 	}
 
 	@Override
-	public ResponseList<MissingInvoiceDTO> getMissingInvoiceData(MissingInvoiceDTO missingInvoiceDto,
-			OrgLocations orgLocation) {
+	public ResponseList<MissingInvoiceDTO> getMissingInvoiceData(MissingInvoiceDTO missingInvoiceDto,OrgLocations orgLocation, String contractType) {
 		ResponseList<SubmissionApproverHierarchy> sahList = financeDao.getMissingInvoiceData(missingInvoiceDto,orgLocation);
 		ResponseList<MissingInvoiceDTO> response = new ResponseList<>();
 		List<MissingInvoiceDTO> missingInvoiceDTOList = new ArrayList<>();
@@ -104,7 +106,13 @@ public class FinanceServiceImpl implements FinanceService{
 							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
 							if(candidate.getOrgRelationId() != null) {
 								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
-								
+								StringBuilder name = new StringBuilder();
+								if(StringUtils.isNotBlank(candidate.getLastName())) {
+									name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+								}else {
+									name.append(candidate.getFirstName());
+								}
+								missingInvoice.setCandidateName(name.toString());
 								if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 									missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 								}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
@@ -122,22 +130,23 @@ public class FinanceServiceImpl implements FinanceService{
 									missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
 									missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
 									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
-								}else {
-									double payRate = sah.getSubmissionId().getProjectMembers().getPayRate();
 								}
 								if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
 									StringBuilder sb = new StringBuilder();
 									String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getFrequencyStartDate());
 									String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getFrequencyEndDate());
-									sb.append(startDate).append(" / ").append(endDate);
+									sb.append(startDate).append(" to ").append(endDate);
 									missingInvoice.setFrequencyDate(sb.toString());
 								}
-								
+								List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, candidate.getOrgRelationId(), contractType);
+								double amount = 0;
+								if(contractList != null && contractList.size() >0) {
+									 amount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
+								}
+								missingInvoice.setBillAmount(amount);
 								missingInvoiceDTOList.add(missingInvoice);
 								count++;
 							}
-							
-							
 						}
 						
 					}
@@ -146,6 +155,13 @@ public class FinanceServiceImpl implements FinanceService{
 						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 						if (sah.getHeirarchyId().getProjectClientsId().getOrgRelationId() != null) {
 							OrgRelations orgRelations = orgRelationsService.getOrgRelationById(sah.getHeirarchyId().getProjectClientsId().getOrgRelationId().getId());
+							Candidate candidate  = candidateService.getCandidateByCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
+							StringBuilder name = new StringBuilder();
+							if(StringUtils.isNotBlank(candidate.getLastName())) {
+								name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+							}else {
+								name.append(candidate.getFirstName());
+							}
 							
 							if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 								missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
@@ -179,39 +195,19 @@ public class FinanceServiceImpl implements FinanceService{
 								sb.append(startDate).append(" / ").append(endDate);
 								missingInvoice.setFrequencyDate(sb.toString());
 							}
+							
+							List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
+							double amount = 0;
+							if(contractList != null && contractList.size() >0) {
+								 amount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
+							}
+							missingInvoice.setInvoiceAmount(amount);
 							missingInvoiceDTOList.add(missingInvoice);
 							count++;
 						}
 					}
 
 				}
-				
-				
-				
-				
-//				Map<Integer,List<Double>> map = new HashMap<>();
-//				 for(AparagingDate aparagingdate : apagingdto.getAbove365Dates()) {
-//					 Calendar cal = Calendar.getInstance(); 
-//					 cal.setTime(aparagingdate.getDate());
-//					 int year = cal.get(Calendar.YEAR);
-//		    	   if(map.containsKey(year)) {
-//		    	   List<Double> amountList = map.get(year);
-//		    	   amountList.add(aparagingdate.getAmount());
-//		    	   map.put(year, amountList);
-//		    	   }else {
-//		    	   List<Double> amountList = new ArrayList<>();
-//		    	   amountList.add(aparagingdate.getAmount());
-//		    	   map.put(year, amountList);
-//		    	   }
-//		       }
-//				 for (Map.Entry<Integer,List<Double>> entry : map.entrySet()) {
-//					 AparagingDate apar = new AparagingDate();
-//					 apar.setYear(entry.getKey());
-//					 double amount = entry.getValue().stream().mapToDouble(am->am.doubleValue()).sum();
-//					 apar.setAmount(amount);
-//					 aparagingDate.add(apar);
-//					}
-				
 				
 				response.setData(missingInvoiceDTOList);
 				response.setRecordsFiltered(count);
@@ -226,9 +222,28 @@ public class FinanceServiceImpl implements FinanceService{
 		
 		return response;
 	}
+	
+	
+	private double getAmount(float hours, String payRate) {
+		double amount = 0;
+//		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getPayRateType())){
+			double rate = Double.parseDouble(payRate);
+			String hr = String.valueOf(hours);
+			String[] hh = hr.split("\\.");
+			double hrs = Double.parseDouble(hh[0]);
+			double minutes = Double.parseDouble(hh[1]);
+			double totalHourMin = hrs * 60;
+			double totMinutes = totalHourMin + minutes;
+			amount = totMinutes * (rate/60);
+//		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getPayRateType())){
+//			double rate = pm.getPayRate();
+//			amount = rate/2;
+//		}
+		return amount;
+	}
 
 	@Override
-	public ResponseList<MissingInvoiceDTO> getMissingInvoiceGraphData(MissingInvoiceDTO missingInvoiceDto,OrgLocations orgLocation) {
+	public ResponseList<MissingInvoiceDTO> getMissingInvoiceGraphData(MissingInvoiceDTO missingInvoiceDto,OrgLocations orgLocation,String contractType) {
 		ResponseList<SubmissionApproverHierarchy> sahList = financeDao.getMissingInvoiceData(missingInvoiceDto,orgLocation);
 		ResponseList<MissingInvoiceDTO> response = new ResponseList<>();
 		List<MissingInvoiceDTO> missingInvoiceDTOList = new ArrayList<>();
@@ -243,40 +258,31 @@ public class FinanceServiceImpl implements FinanceService{
 							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
 							if(candidate.getOrgRelationId() != null) {
 								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
-								
-//								if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-//									missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
-//								}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-//									missingInvoice.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
-//								}
-//								missingInvoice.setProjectName(sah.getSubmissionId().getProjects().getProjectName());
-								
+								SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
+								String date = "";
 								if (sah.getBillDate() != null) {
-									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getBillDate()));
+									 date = month_date.format(sah.getBillDate());
 								}else {
-									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getUpdatedDate()));
+									 date = month_date.format(sah.getUpdatedDate());
 								}
+								List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
+								double amount = 0;
+								if(contractList != null && contractList.size() >0) {
+									 amount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
+								}
+								missingInvoice.setInvoiceAmount(amount);
 								
-//								if (sah.getBillId() != null) {
-//									missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
-//									missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-//									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
-//								}else {
-//									double payRate = sah.getSubmissionId().getProjectMembers().getPayRate();
-//								}
-//								if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
-//									StringBuilder sb = new StringBuilder();
-//									String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getFrequencyStartDate());
-//									String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getFrequencyEndDate());
-//									sb.append(startDate).append(" / ").append(endDate);
-//									missingInvoice.setFrequencyDate(sb.toString());
-//								}
-								
-								missingInvoiceDTOList.add(missingInvoice);
+								 if(map.containsKey(date)) {
+							    	   List<MissingInvoiceDTO> amountList = map.get(date);
+							    	   amountList.add(missingInvoice);
+							    	   map.put(date, amountList);
+							    	   }else {
+							    	   List<MissingInvoiceDTO> amountList = new ArrayList<>();
+							    	   amountList.add(missingInvoice);
+							    	   map.put(date, amountList);
+							    	   }
 								count++;
 							}
-							
-							
 						}
 						
 					}
@@ -285,36 +291,24 @@ public class FinanceServiceImpl implements FinanceService{
 					for (SubmissionApproverHierarchy sah : sahList.getData()) {
 						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 						if (sah.getHeirarchyId().getProjectClientsId().getOrgRelationId() != null) {
-//							OrgRelations orgRelations = orgRelationsService.getOrgRelationById(sah.getHeirarchyId().getProjectClientsId().getOrgRelationId().getId());
-//							
-//							if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-//								missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
-//							}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-//								missingInvoice.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
-//							}
-							
-//							missingInvoice.setProjectName(sah.getSubmissionId().getProjects().getProjectName());
+							OrgRelations orgRelations = orgRelationsService.getOrgRelationById(sah.getHeirarchyId().getProjectClientsId().getOrgRelationId().getId());
+							Candidate candidate  = candidateService.getCandidateByCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
 							String date = "";
 							if (sah.getInvoiceDate() != null) {
-								SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
+								 SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
 								 date = month_date.format(sah.getInvoiceDate());
-								 System.out.println("*************************"+date);
-//								date = commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", sah.getInvoiceDate());
-								missingInvoice.setInvoiceAmount(String.valueOf(amount+50));
 							}else {
 								SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
 								 date = month_date.format(sah.getUpdatedDate());
-								 System.out.println("*************************"+date);
-//								date = commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", sah.getUpdatedDate());	
-								missingInvoice.setInvoiceAmount(String.valueOf(amount+50));
 							}
 							
+							List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
+							double iamount = 0;
+							if(contractList != null && contractList.size() >0) {
+								iamount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
+							}
+							missingInvoice.setInvoiceAmount(iamount);
 							
-							
-//							 for(MissingInvoiceDTO missingInvoiceDTO : apagingdto.getAbove365Dates()) {
-//								 Calendar cal = Calendar.getInstance(); 
-//								 cal.setTime(aparagingdate.getDate());
-//								 int year = cal.get(Calendar.YEAR);
 					    	   if(map.containsKey(date)) {
 					    	   List<MissingInvoiceDTO> amountList = map.get(date);
 					    	   amountList.add(missingInvoice);
@@ -324,43 +318,17 @@ public class FinanceServiceImpl implements FinanceService{
 					    	   amountList.add(missingInvoice);
 					    	   map.put(date, amountList);
 					    	   }
-							
-//							if (sah.getBillDate() != null) {
-//								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getBillDate()));
-//							}
-//							if (sah.getInvoiceId() != null) {
-//								missingInvoice.setInvoiceReferId(String.valueOf(sah.getInvoiceId().getId()));
-//								missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-//								missingInvoice.setInvoiceDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
-//							}
-//							if (sah.getBillId() != null) {
-//								missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
-//								missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-//								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
-//							}
-//							if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
-//								StringBuilder sb = new StringBuilder();
-//								String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getFrequencyStartDate());
-//								String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getFrequencyEndDate());
-//								sb.append(startDate).append(" / ").append(endDate);
-//								missingInvoice.setFrequencyDate(sb.toString());
-//							}
 							count++;
 						}
 					}
-					
-//					 for (Map.Entry<String,List<MissingInvoiceDTO>> entry : map.entrySet()) {
-//						 System.out.println(entry.getKey() + "/" + entry.getValue().size());
-//						}
 
 				}
 				
 				 for (Map.Entry<String,List<MissingInvoiceDTO>> entry : map.entrySet()) {
 					 MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 					 missingInvoice.setInvoiceDate(entry.getKey());
-					 double amount = entry.getValue().stream().mapToDouble(am->Double.parseDouble(am.getInvoiceAmount())).sum();
-					 System.out.println("////////////////////////////////////"+amount);
-					 missingInvoice.setInvoiceAmount(String.valueOf(amount));
+					 double amount = entry.getValue().stream().mapToDouble(am->am.getInvoiceAmount()).sum();
+					 missingInvoice.setInvoiceAmount(amount);
 					 missingInvoiceDTOList.add(missingInvoice);
 					}
 				 
@@ -372,8 +340,17 @@ public class FinanceServiceImpl implements FinanceService{
 			            	return candidate2.getInvoiceDate().compareToIgnoreCase(candidate1.getInvoiceDate());  
 			            }  
 			        });
+				 List<MissingInvoiceDTO> list = new ArrayList<>();
+				 for(MissingInvoiceDTO missingInvoice : missingInvoiceDTOList) {
+					 MissingInvoiceDTO missingInvoiceDTO = new MissingInvoiceDTO();
+					 int monthDigit =  getMonthNumber(missingInvoice.getInvoiceDate());
+					 missingInvoiceDTO.setInvoiceDate(getStartDate(monthDigit,orgLocation));
+					 missingInvoiceDTO.setInvoiceAmount(missingInvoice.getInvoiceAmount());
+					 list.add(missingInvoiceDTO);
+				 }
 				 
-				response.setData(missingInvoiceDTOList);
+				 
+				response.setData(list);
 				response.setRecordsFiltered(count);
 				response.setRecordsTotal(count);
 				response.setStatusCode("200");
@@ -384,6 +361,51 @@ public class FinanceServiceImpl implements FinanceService{
 		
 		return response;
 
+	}
+
+	private int getMonthNumber(String key) {
+		int number = 0;
+		switch(key){  
+	    case "Jan": number = 0;
+	     break; 
+	    case "Feb": number = 1;
+	     break;  
+	    case "Mar": number = 2;
+	     break;  
+	    case "Apr": number = 3;
+	     break;  
+	    case "May": number = 4;
+	     break;  
+	    case "Jun": number = 5;
+	     break;  
+	    case "Jul": number = 6;
+	     break;  
+	    case "Aug": number = 7;
+	     break;  
+	    case "Sep": number = 8;
+	     break;  
+	    case "Oct": number = 9;
+	     break;  
+	    case "Nov": number = 10;
+	     break;  
+	    case "Dec": number = 11;
+	     break;  
+	 
+	    default: number = 0;
+	    	  
+	    }  
+		return number;
+	}
+
+	private String getStartDate(int currentMonth, OrgLocations orgLocation) {
+		Date d = new Date();
+	    Calendar calendar = Calendar.getInstance();      
+	    calendar.set(Calendar.MONTH,currentMonth);
+	    calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+	    Date monthStartDate = calendar.getTime();
+	    System.out.println(monthStartDate);
+	    return commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", monthStartDate);
+		
 	}
 
 }

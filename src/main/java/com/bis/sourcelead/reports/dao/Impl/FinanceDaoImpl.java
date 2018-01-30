@@ -16,16 +16,20 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.reports.dao.FinanceDao;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 
 @Repository
@@ -39,6 +43,9 @@ public class FinanceDaoImpl implements FinanceDao{
 	
 	@Autowired
 	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
+	@Autowired
+	TimeSheetDayEntriesDao timeSheetDayEntriesDao;
 	
 	@Autowired
 	ReportsUtil reportsUtil;
@@ -422,14 +429,9 @@ public class FinanceDaoImpl implements FinanceDao{
 				else {
 					query = qry;
 				}
-				
-				if("invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
-					groupQuery = " GROUP BY CONCAT(sah.submissionId.projects.id,sah.frequencyStartDate,sah.frequencyEndDate)";
-				}else {
-					groupQuery = " GROUP BY CONCAT(sah.submissionId.projects.id,sah.frequencyStartDate,sah.frequencyEndDate)";
-				}
-				
-				Query query1 = session.createQuery(query+" "+searchQuery+groupQuery);
+				 groupQuery = " GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)";
+			
+				Query query1 = session.createQuery(query+" "+searchQuery+" "+groupQuery);
 				List<SubmissionApproverHierarchy> tslist = null;
 				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
@@ -449,12 +451,29 @@ public class FinanceDaoImpl implements FinanceDao{
 				
 				if(tslist != null && !tslist.isEmpty()) {
 					for(SubmissionApproverHierarchy sah :tslist) {
-						List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(sah.getSubmissionId().getProjects().getId(), sah.getFrequencyStartDate(), sah.getFrequencyEndDate(),null);
+						float totalHours = 0f;
+	    			    float totalBillableHours = 0f;
+	    				float totalNonBillableHours = 0f;
+	    				List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getAllSubmissionApproverHierarchiesByProjectMemberId(sah.getFrequencyStartDate(), sah.getFrequencyEndDate(),sah.getSubmissionId().getProjectMembers().getId(),orgLocations.getId());
+					    if(sahList != null && !sahList.isEmpty()) {
+					    	 for(SubmissionApproverHierarchy tempSah :sahList) {
+					    		 totalHours = CommonUtil.getCombinedHours(tempSah.getTotalHours(), totalHours);
+					    		 totalBillableHours = CommonUtil.getCombinedHours(tempSah.getBillableHours(), totalBillableHours);
+					    		 totalNonBillableHours = CommonUtil.getCombinedHours(tempSah.getNonBillableHours(), totalNonBillableHours);
+					    	}
+					    }
+					/*    System.out.println("Project Id >>>>>>>>>"+sah.getSubmissionId().getProjects().getId()+"MasterCanddidate Id >>>>>>>>>>>"+ sah.getSubmissionId().getMasterCandidateId().getId());
+					    System.out.println("startDate>>>>>>>>>>>"+ sah.getFrequencyStartDate()+"  EndDate>>>>>>>>>"+sah.getFrequencyEndDate());
+					    System.out.println("totalHours>>>>>>>>>>>"+totalHours);
+					    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");*/
+					    sah.setTotalHours(totalHours);
+					    sah.setBillableHours(totalBillableHours);
+					    sah.setNonBillableHours(totalNonBillableHours);
 					}
 				}
 				/*submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate*/
 				
-				 Query countQ = session.createQuery(queryCount+groupQuery);
+				 Query countQ = session.createQuery(queryCount+" "+searchQuery+" "+groupQuery);
 				 countQ.setLong("orgLocationId", orgLocations.getId()).setCacheable(true);
 				
 				List<Long> countList  = null;
@@ -482,6 +501,30 @@ public class FinanceDaoImpl implements FinanceDao{
 			}
 			
 			return response;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Contracts> getRecentSowcontractListByAssociateId(Long candidateId, OrgLocations orgLocation,OrgRelations orgRelation, String contractType) {
+
+		List<Contracts> contractsList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.createdDate = (SELECT MAX(con.createdDate) from Contracts con where con.candidate.id = :candidateId) and contract.orgLocationId.id = :orgLocationId and "
+					+ "contract.orgRelations.id = :orgRelationId  and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
+		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).setLong("orgRelationId", orgRelation.getId()).setString("contractType", contractType).setCacheable(false).list();
+		  if(null != contractsList){
+			  return contractsList;
+		  }
+		  return contractsList;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contractsList;
+		
+		 
+	
 	}
 
 }

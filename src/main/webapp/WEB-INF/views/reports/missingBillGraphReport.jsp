@@ -11,7 +11,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	missingBillDataGraph();
 });
 </script>
 
@@ -51,14 +51,13 @@ $(document).ready(function(){
         <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" id="customDates">
-          <option>Select Date</option>
-          <option value="invoiceweekly">Last 7 days</option>
-          <option value="invoice15Days">Last 15 days</option>
-          <option value="invoice1Month">1 month</option>
-          <option value="invoice3Month">3 months</option>
-          <option value="invoices" selected>Last year</option>
-          <option>Year to Date</option>
-          <option value="custom-select">Custom</option>
+           <option value="">Select Date</option>
+          <option value="last_7days">Last 7 days</option> 
+          <option value="last_15days">Last 15 days</option>
+          <option value="1month">1 month</option>
+          <option value="3months">3 months</option>
+          <option value="last_years" selected>last year</option>
+          <option value="custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
@@ -110,11 +109,11 @@ $(document).ready(function(){
                 </ul>
 		</div>
 				<div class="col-md-9">
-				<div id="invoices" style="width: 100%; height: 375px;" class="amchartAnchor-Hide"></div>
-				<div id="invoiceweekly" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
-				<div id="invoice15Days" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
-				<div id="invoice1Month" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
-				<div id="invoice3Month" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+				<div id="last_years" style="width: 100%; height: 375px;" class="amchartAnchor-Hide"></div>
+				<div id="last_7days" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+				<div id="last_15days" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+				<div id="1month" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
+				<div id="3months" style="width: 100%; height: 375px; display: none;" class="amchartAnchor-Hide"></div>
 				</div>
 				</div>
 			</div>
@@ -139,190 +138,179 @@ var config = {
     });
     $('#priority').trigger('chosen:updated');
 </script> 
+
 <script>
-	$(function(){
-		$("#customDates").change(function() {
-			var customDates = $(this).val();
+function missingBillDataGraph(){
+	      var invoiceType = "bill";
+		  var sourceleadUrl ='${sourceleadUrl}';
+		  var contractType = "vendorSow";
+	       $.post(sourceleadUrl+"/missingInvoiceDataGraph?&invoiceType="+invoiceType+"&contractType="+contractType, function(json) {
+	    	var data = json.data;
+	    	prepareapMissingBillGraph(data);
+		});  
+}
+</script>
+
+
+
+<script>
+function prepareapMissingBillGraph(data){
+	/* $(function(){
+		$("#customDates").change(function() { */
+			var customDates = $("#customDates").val();
 			if (customDates === "custom-select") {
 				$("#custom-select").show();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").show();
-			}else if (customDates === "invoiceweekly") {
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").show();
+			}else if (customDates === "last_7days") {
 				$("#custom-select").hide();
-				$("#invoiceweekly").show();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").hide();
-			}else if (customDates === "invoice15Days") {
+				$("#last_7days").show();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").hide();
+			}else if (customDates === "last_15days") {
 				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").show();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").hide();
-			}else if (customDates === "invoice1Month") {
+				$("#last_7days").hide();
+				$("#last_15days").show();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").hide();
+			}else if (customDates === "1month") {
 				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").show();
-				$("#invoice3Month").hide();
-				$("#invoices").hide();
-			}else if (customDates === "invoice3Month") {
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").show();
+				$("#3months").hide();
+				$("#last_years").hide();
+			}else if (customDates === "3months") {
 				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").show();
-				$("#invoices").hide();
-			}else if (customDates === "invoices") {
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").show();
+				$("#last_years").hide();
+			}else if (customDates === "last_years") {
 				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").show();
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").show();
+				lastYearGraph(data);
 			}else{
 				$("#custom-select").hide();
-				$("#invoiceweekly").hide();
-				$("#invoice15Days").hide();
-				$("#invoice1Month").hide();
-				$("#invoice3Month").hide();
-				$("#invoices").show();
+				$("#last_7days").hide();
+				$("#last_15days").hide();
+				$("#1month").hide();
+				$("#3months").hide();
+				$("#last_years").show();
 			}
-		});
-	})
+		/* }); */
+	}
+</script>
+
+
+<script>
+function  lastYearGraph(data){
+	
+	 var chartData = [];
+	   for (var i = 0; i < data.length; i++) { 
+	 		 var opt = data[i]; 
+	 		 alert(opt.invoiceDate);
+	         chartData.push({
+	        	 "date": opt.invoiceDate,
+	        	 "column-1": opt.invoiceAmount
+	       });
+	   }  
+	   alert(chartData.length);
+	   
+	AmCharts.makeChart("last_years",
+			{
+			"type": "serial",
+			"categoryField": "date",
+			"dataDateFormat": "YYYY-MM",
+			"marginBottom": 15,
+			"marginLeft": 15,
+			"marginRight": 15,
+			"marginTop": 15,
+			"zoomOutButtonImageSize": 15,
+			"addClassNames": true,
+			"borderColor": "#FFFFFF",
+			"theme": "default",
+			"responsive": {
+				"enabled": true
+			},
+			"export": {
+				"enabled": true
+			},
+			"categoryAxis": {
+				"minPeriod": "MM",
+				"parseDates": true,
+				"twoLineMode": true,
+				"axisThickness": 0,
+				"centerLabels": true,
+				"gridThickness": 0,
+				"markPeriodChange": false,
+				"minHorizontalGap": 0,
+				"minVerticalGap": 0
+			},
+			"trendLines": [],
+			"graphs": [
+				{
+					"balloonText": " [[category]]  <br>Amount:[[value]]",
+					"fillAlphas": 1,
+					"fillColors": "#EF9A9A",
+					"fixedColumnWidth": 20,
+					"id": "total",
+					"lineColor": "#EF9A9A",
+					"title": "Total",
+					"type": "column",
+					"valueField": "column-1"
+				}
+			],
+			"guides": [],
+			"valueAxes": [
+				{
+					"axisTitleOffset": 15,
+					"id": "invoiceValueAxis",
+					"axisThickness": 0,
+					"color": "#737373",
+					"gridThickness": 0,
+					"labelsEnabled": true,
+					"title": ""
+				}
+			],
+			"allLabels": [],
+			"balloon": {},
+			"legend": {
+				"enabled": true,
+				"align": "center",
+				"markerLabelGap": 10,
+				"markerSize": 13
+			},
+			"titles": [
+				{
+					"id": "missingBills",
+					"size": 15,
+					"text": "Missing Bills"
+				}
+			],
+			"dataProvider": chartData
+		}
+		);
+	
+}
+
 </script>
 <!-- amCharts javascript code --> 
 <script type="text/javascript">
-	AmCharts.makeChart("invoices",
-	{
-	"type": "serial",
-	"categoryField": "date",
-	"dataDateFormat": "YYYY-MM",
-	"marginBottom": 15,
-	"marginLeft": 15,
-	"marginRight": 15,
-	"marginTop": 15,
-	"zoomOutButtonImageSize": 15,
-	"addClassNames": true,
-	"borderColor": "#FFFFFF",
-	"theme": "default",
-	"responsive": {
-		"enabled": true
-	},
-	"export": {
-		"enabled": true
-	},
-	"categoryAxis": {
-		"minPeriod": "MM",
-		"parseDates": true,
-		"twoLineMode": true,
-		"axisThickness": 0,
-		"centerLabels": true,
-		"gridThickness": 0,
-		"markPeriodChange": false,
-		"minHorizontalGap": 0,
-		"minVerticalGap": 0
-	},
-	"trendLines": [],
-	"graphs": [
-		{
-			"balloonText": " [[category]]  <br>Amount:[[value]]",
-			"fillAlphas": 1,
-			"fillColors": "#EF9A9A",
-			"fixedColumnWidth": 20,
-			"id": "total",
-			"lineColor": "#EF9A9A",
-			"title": "Total",
-			"type": "column",
-			"valueField": "column-1"
-		}
-	],
-	"guides": [],
-	"valueAxes": [
-		{
-			"axisTitleOffset": 15,
-			"id": "invoiceValueAxis",
-			"axisThickness": 0,
-			"color": "#737373",
-			"gridThickness": 0,
-			"labelsEnabled": true,
-			"title": ""
-		}
-	],
-	"allLabels": [],
-	"balloon": {},
-	"legend": {
-		"enabled": true,
-		"align": "center",
-		"markerLabelGap": 10,
-		"markerSize": 13
-	},
-	"titles": [
-		{
-			"id": "missingBills",
-			"size": 15,
-			"text": "Missing Bills"
-		}
-	],
-	"dataProvider": [
-		{
-			"date": "2017-01",
-			"column-1": "100",
-		},
-		{
-			"date": "2017-02",
-			"column-1": "80",
-		},
-		{
-			"date": "2017-03",
-			"column-1": "60",
-		},
-		{
-			"date": "2017-04",
-			"column-1": "40",
-		},
-		{
-			"date": "2017-05",
-			"column-1": "30",
-		},
-		{
-			"date": "2017-06",
-			"column-1": "20",
-		},
-		{
-			"date": "2017-07",
-			"column-1": "10",
-		},
-		{
-			"date": "2017-08",
-			"column-1": "5",
-		},
-		{
-			"date": "2017-09",
-			"column-1": "15",
-		},
-		{
-			"date": "2017-10",
-			"column-1": "25",
-		},
-		{
-			"date": "2017-11",
-			"column-1": "35",
-		},
-		{
-			"date": "2017-12",
-			"column-1": "45",
-		}
-	]
-}
-);
+	
 //invoice weekly	
-	AmCharts.makeChart("invoiceweekly",
+	AmCharts.makeChart("last_7days",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -387,7 +375,7 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
 			"text": "Weekly Missing Bills"
 		}
@@ -424,8 +412,8 @@ var config = {
 	]
 }
 );
-//invoice15Days
-	AmCharts.makeChart("invoice15Days",
+//last_15days
+	AmCharts.makeChart("last_15days",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -490,7 +478,7 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
 			"text": "15Days Missing Bills"
 		}
@@ -567,8 +555,8 @@ var config = {
 	]
 }
 );
-	//invoice1Month
-	AmCharts.makeChart("invoice1Month",
+	//1month
+	AmCharts.makeChart("1month",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -635,7 +623,7 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
 			"text": "1 Month Missing Bills"
 		}
@@ -769,8 +757,8 @@ var config = {
 	]
 }
 );
-//invoice3Month
-	AmCharts.makeChart("invoice3Month",
+//3months
+	AmCharts.makeChart("3months",
 	{
 	"type": "serial",
 	"categoryField": "date",
@@ -836,7 +824,7 @@ var config = {
 	},
 	"titles": [
 		{
-			"id": "invoices",
+			"id": "last_years",
 			"size": 15,
 			"text": "Three Months Missing Bills"
 		}

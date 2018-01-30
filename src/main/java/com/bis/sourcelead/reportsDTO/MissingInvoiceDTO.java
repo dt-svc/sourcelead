@@ -1,7 +1,8 @@
 package com.bis.sourcelead.reportsDTO;
 
 import com.bis.sourcelead.dto.SearchDTO;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class MissingInvoiceDTO extends SearchDTO {
 
 	/**
@@ -21,9 +22,10 @@ public class MissingInvoiceDTO extends SearchDTO {
 	private String fromDate;
 	private String toDate;
 	private String frequencyDate;
-	private String billAmount;
-	private String invoiceAmount;
-	
+	private double billAmount;
+	private double invoiceAmount;
+	private String candidateName;
+	private String contractType;
 
 	public String getInvoiceReferId() {
 		return invoiceReferId;
@@ -134,20 +136,38 @@ public class MissingInvoiceDTO extends SearchDTO {
 		this.frequencyDate = frequencyDate;
 	}
 
-	public String getBillAmount() {
+	
+
+	public double getBillAmount() {
 		return billAmount;
 	}
 
-	public void setBillAmount(String billAmount) {
+	public void setBillAmount(double billAmount) {
 		this.billAmount = billAmount;
 	}
 
-	public String getInvoiceAmount() {
+	public double getInvoiceAmount() {
 		return invoiceAmount;
 	}
 
-	public void setInvoiceAmount(String invoiceAmount) {
+	public void setInvoiceAmount(double invoiceAmount) {
 		this.invoiceAmount = invoiceAmount;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getContractType() {
+		return contractType;
+	}
+
+	public void setContractType(String contractType) {
+		this.contractType = contractType;
 	}
 
 

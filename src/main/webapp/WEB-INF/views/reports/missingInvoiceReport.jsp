@@ -121,10 +121,14 @@ function missingInvoiceReportData(){
 		searchValue = searchValue ? searchValue : "";
 		var invoiceType = "invoice";
 		var filterType = $("#filterType").val();
+		if(filterType == 'undefined'){
+			filterType = "";
+		}
 		var fromDate = $("#fromDate").val();
 		var toDate = $("#toDate").val();
 		var orgIds = $("#orgIds").val();
-		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue+"&invoiceType="+invoiceType+"&filterType="+filterType+"&orgIds="+orgIds+"&fromDate="+fromDate+"&toDate="+toDate;
+		var contractType = "clientSow";
+		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue+"&invoiceType="+invoiceType+"&filterType="+filterType+"&orgIds="+orgIds+"&fromDate="+fromDate+"&toDate="+toDate+"&contractType="+contractType;
 		prepareMissingInvoiceData(url); 
 }
 </script>

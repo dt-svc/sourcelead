@@ -183,7 +183,8 @@ function missingBillReportData(){
 		var fromDate = $("#fromDate").val();
 		var toDate = $("#toDate").val();
 		var orgIds = $("#orgIds").val();
-		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue+"&invoiceType="+invoiceType+"&filterType="+filterType+"&orgIds="+orgIds+"&fromDate="+fromDate+"&toDate="+toDate;
+		var contractType = "vendorSow";
+		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue+"&invoiceType="+invoiceType+"&filterType="+filterType+"&orgIds="+orgIds+"&fromDate="+fromDate+"&toDate="+toDate+"&contractType="+contractType;
 		prepareMissingBillData(url); 
 }
 </script>
@@ -197,7 +198,8 @@ function prepareMissingBillData(url){
  	    result = result +"<table id='missingInvoicePagination' class='display' cellspacing='0' width='100%' >"; 
         result = result +"<thead>"; 
         result = result + '<tr>';
-        result = result + '<th>Refer Id</th>';
+        result = result + '<th>Refer Id</th>'; 
+        result = result + '<th>Candidate Name</th>';
 		result = result + '<th>Vendor Name</th>';
 		result = result + '<th>Project Name</th>';
 		result = result + '<th>Project Frequency</th>';
@@ -229,6 +231,7 @@ function missingBill(url){
         }),       
         "columns": [
         	{ "data": "referId" },
+        	{ "data": "candidateName"},
             { "data": "orgName" },
             { "data": "projectName"},
             { "data": "frequencyDate"},
@@ -250,6 +253,16 @@ function missingBill(url){
 		             return result;
 	    	  	}
 	      },{
+	    	  "targets": colIndex++,
+              "data": "candidateName",
+          	  "sortable": false, 
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+						 result = result + ' <td><div class="tblminwidth-75">'+opt.candidateName+'</div></td>'; 
+	              return result;
+              		
+              }
+	          },{
 	    	  "targets": colIndex++,
               "data": "orgName",
           	  "sortable": false, 
@@ -302,10 +315,8 @@ function missingBill(url){
             	"sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		if(opt.totalAmount !=null && opt.totalAmount !='' && opt.totalAmount != 'undefined'){
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.totalAmount+'</div></td>';	
-                			 total = parseFloat(total)+parseFloat(opt.totalAmount);
-                			  $("#total").html(total.toFixed(2));
+                		if(opt.billAmount !=null && opt.billAmount !='' && opt.billAmount != 'undefined'){
+                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.billAmount.toFixed(2)+'</div></td>';	
                 		}else{
                 			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
                 		}

@@ -155,9 +155,7 @@ function missingInvoiceDataGraph(){
 	function prepareapMissingInvoiceGraph(data){
 	/* 	$("#customDates").change(function() { */
 			var customDates = $("#customDates").val();
-			alert("Hai"+customDates);
 			if (customDates === "last_years") {
-				alert(data);
 				lastYearGraph(data);
 			}else if (customDates === "last_7days") {
 				$("#custom").hide();
@@ -210,7 +208,6 @@ function missingInvoiceDataGraph(){
 
 <script>
 function lastYearGraph(data){
-	alert(data);
 	$("#custom").hide();
 	$("#last_7days").hide();
 	$("#last_15days").hide();
