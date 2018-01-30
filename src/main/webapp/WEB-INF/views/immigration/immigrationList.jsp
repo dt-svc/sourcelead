@@ -47,7 +47,7 @@
 			<div class="timesheet_head">
 			  <ul>
 				  <li>
-					  <a href="new-petition.html"><i class="fa fa-plus paddingRight"></i> New </a>
+					  <a href="${appPath}/loadNewPetition" onclick="callNewPetition()"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
 
 				  <li class="dropdown">
@@ -689,4 +689,6 @@
    </section> 
    
 <jsp:include page="../masterFooter.jsp" />
- 
+ <script type="text/javascript">
+
+</script>

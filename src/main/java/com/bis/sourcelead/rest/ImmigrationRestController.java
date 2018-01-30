@@ -78,6 +78,31 @@ public class ImmigrationRestController {
 		model.setViewName("/immigration/immigrationList");
 		return model;
 	}
+	@RequestMapping(value={"/loadNewPetition"})
+	public ModelAndView loadNewPetition(HttpServletRequest request ) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/newPetition");
+		return model;
+	}
 	
 	
+	@RequestMapping(value={"/loadNewPetitionPageOne"})
+	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request ) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/newPetitionPage1");
+		return model;
+	}
+	
+	@RequestMapping(value={"/loadNewPetitionPageTwo"})
+	public ModelAndView 	loagNewPetitionPageTwo(HttpServletRequest request ) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/newPetitionPage2");
+		return model;
+	}
 }
