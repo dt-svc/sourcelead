@@ -74,10 +74,18 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		System.out.println("inside immigartion URL....");
+		System.out.println("inside loadImmigrationList...");
 		model.setViewName("/immigration/immigrationList");
 		return model;
 	}
-	
+	@RequestMapping(value={"/viewImmigration"})
+	public ModelAndView viewImmigration(HttpServletRequest request ) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		System.out.println("inside viewImmigration URL....");
+		model.setViewName("/immigration/immigrationView");
+		return model;
+	}
 	
 }
