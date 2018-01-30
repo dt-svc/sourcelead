@@ -201,6 +201,12 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name="PAYMENT_REMITTANCE_EMIL")
 	private String remittanceEmail;
+	
+	@Column(name="FINANCIAL_YEAR_START_MONTH")
+	private String startMonth;
+	
+	@Column(name="FINANCIAL_YEAR_END_MONTH")
+	private String endMonth;
     
     @Transient
     private String orgName;
@@ -827,5 +833,27 @@ public class OrgLocations implements Serializable{
 	public void setRemittanceEmail(String remittanceEmail) {
 		this.remittanceEmail = remittanceEmail;
 	}
+
+	public String getStartMonth()
+	{
+		return startMonth;
+	}
+
+	public void setStartMonth(String startMonth)
+	{
+		this.startMonth = startMonth;
+	}
+
+	public String getEndMonth()
+	{
+		return endMonth;
+	}
+
+	public void setEndMonth(String endMonth)
+	{
+		this.endMonth = endMonth;
+	}
+
+	
 	
 }

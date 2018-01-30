@@ -648,4 +648,17 @@ public class OrgSettingsRestController {
 		WhiteListIPAddress whiteListIp = whiteListIpAddressService.getWhiteListIpsById(whiteListId);
 		return whiteListIp;
 	}
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveFinanacialYear", method = RequestMethod.GET)
+	public String saveFinanacialYear(@RequestParam(value = "locationId", required = false) Long locationId, @RequestParam(value = "startMonth", required = false) String startMonth, @RequestParam(value = "endMonth", required = false) String endMonth, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (startMonth != null && endMonth != null) {
+			orgLocations.setStartMonth(startMonth);
+			orgLocations.setEndMonth(endMonth);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		return "Success";
+	}
 }

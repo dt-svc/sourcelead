@@ -544,6 +544,56 @@ function cancelOrgImg(){
 	               			</div>         
 	           			</div> 
            			</c:if>
+           			
+           			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	               			<h4>Financial Year</h4>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Financial Year<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-2 toggle-button" >
+			                      <select class="chosen-select" id="financialStartYear" onChange="validateFinancialYear();">
+			                      <option ${SourceLeadWeb_startMonth == '' ? 'selected' : ''}>--Select Month--</option>
+			                      <option ${SourceLeadWeb_startMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${SourceLeadWeb_startMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${SourceLeadWeb_startMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${SourceLeadWeb_startMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${SourceLeadWeb_startMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${SourceLeadWeb_startMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${SourceLeadWeb_startMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${SourceLeadWeb_startMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${SourceLeadWeb_startMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${SourceLeadWeb_startMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${SourceLeadWeb_startMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${SourceLeadWeb_startMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	                   			<div class="col-md-2 toggle-button">
+			                      <select class="chosen-select" id="financialEndYear" disabled="disabled" readonly="">
+			                      <option ${SourceLeadWeb_endMonth == '' ? 'selected' : ''}>--Select Month--</option>
+			                      <option ${SourceLeadWeb_endMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${SourceLeadWeb_endMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${SourceLeadWeb_endMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${SourceLeadWeb_endMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${SourceLeadWeb_endMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${SourceLeadWeb_endMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${SourceLeadWeb_endMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${SourceLeadWeb_endMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${SourceLeadWeb_endMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${SourceLeadWeb_endMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${SourceLeadWeb_endMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${SourceLeadWeb_endMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	               			</div>
+	               			<div class="mt clearfix">
+           			  	<div class="pull-right">
+           			  		<button type="button" class="btn btn-primary btn-sm mr" onclick="financialYear();">Save</button>
+           			  		<!-- <button type="button" class="btn btn-default btn-sm" onclick="cancel();">Cancel</button> -->
+           			  	</div>
+           			  </div>
+	               			         
+	           			</div> 
+           			</c:if>
            			           			
         			</div>
     			</div>
@@ -2958,6 +3008,59 @@ function deleteIP(id){
 			     });
 }
 
+
+</script>
+
+<script>
+function validateFinancialYear(){
+	var startMonth = $("#financialStartYear").val();
+	if(startMonth == ""){
+		$("#financialEndYear").val("");
+	}else if(startMonth == "January"){
+		$("#financialEndYear").val("December");
+	}else if(startMonth == "February"){
+		$("#financialEndYear").val("January");
+	}else if(startMonth == "March"){
+		$("#financialEndYear").val("February");
+	}else if(startMonth == "April"){
+		$("#financialEndYear").val("March");
+	}else if(startMonth == "May"){
+		$("#financialEndYear").val("April");
+	}else if(startMonth == "June"){
+		$("#financialEndYear").val("May");
+	}else if(startMonth == "July"){
+		$("#financialEndYear").val("June");
+	}else if(startMonth == "August"){
+		$("#financialEndYear").val("July");
+	}else if(startMonth == "September"){
+		$("#financialEndYear").val("August");
+	}else if(startMonth == "October"){
+		$("#financialEndYear").val("September");
+	}else if(startMonth == "November"){
+		$("#financialEndYear").val("October");
+	}else if(startMonth == "December"){
+		$("#financialEndYear").val("November");
+	}
+	$("#financialEndYear").trigger("chosen:updated");
+}
+</script>
+
+<script>
+function financialYear(){
+	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var startMonth = $("#financialStartYear").val();
+	var endMonth = $("#financialEndYear").val();
+	if(startMonth != null && startMonth != 'undefined' && endMonth != null && endMonth != 'undefined'){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/saveFinanacialYear?&locationId="+locationId+"&startMonth="+startMonth+"&endMonth="+endMonth,
+			success : function(result) {
+				
+			},
+		});
+	}
+}
 </script>
 
 <jsp:include page="masterFooter.jsp" />
