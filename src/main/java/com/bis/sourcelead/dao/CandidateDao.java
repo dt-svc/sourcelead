@@ -116,4 +116,6 @@ public interface CandidateDao {
 	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all);
 	
 	public Candidate getCandidateByShortURL(String shortURL);
+	
+	List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType) throws Exception;
 }

@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -79,6 +80,9 @@ public class UserController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
 
 	
 	/**
@@ -107,6 +111,9 @@ public class UserController {
 		    
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
+		    
+		    List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsExceptLoggedInLocation(orgLocations.getId(), org.getId());
+			model.addObject("orgLocationsList", orgLocationsList);
 		    
 		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_USER);
 		     model.addObject("actionId",action.getId());

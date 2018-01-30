@@ -369,4 +369,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	{
 		return orgLocationsDao.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(userId);
 	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception {
+		return orgLocationsDao.getAllRegisteredOrgLocationsExceptLoggedInLocation(orgLocationId, orgId);
+	}
 }

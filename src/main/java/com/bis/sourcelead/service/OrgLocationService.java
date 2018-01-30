@@ -58,6 +58,8 @@ public interface OrgLocationService {
 	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
 
 	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long id);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception;
 
 
 }

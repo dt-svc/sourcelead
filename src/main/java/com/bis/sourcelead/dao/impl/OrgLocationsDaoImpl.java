@@ -199,7 +199,8 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' ";
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).list();
-		return orgList;}
+		return orgList;
+		}
 	
 	
 	@Override
@@ -348,6 +349,19 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			return true;
 		else
 			return false;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.id = :orgId and org.orgCode != 'slead') "
+				+ " and orgLocations.id <> :orgLocationId ";
+		
+		List orgList = session.createQuery(query).setLong("orgId", orgId).setLong("orgLocationId", orgLocationId).list();
+		return orgList;
 	}
 
 }

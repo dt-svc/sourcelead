@@ -54,37 +54,43 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
-      <%-- <div class="col-md-12 clearfix">
+       <div class="col-md-12 clearfix">
         <div class="well clearfix">
           
-          <div class="col-md-6 er selectUser col-md-offset-3">
+          <div class="col-md-8 er selectUser col-md-offset-2">
           <div class="row">
-          <div class="col-md-4 paddingRight">
-             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType(this);">
-                <option value="">All</option>
-                 <option>C2C</option>
-                 <option>C2C-1099</option>
-                 <option>W-2</option>
-                 <option>C2H</option>
-                 <option>C2H -1099</option>
-                 <option>Part Time</option>
-                 <option>Full Time</option>
-                 <option>Other</option>
+          
+          <div class="col-md-5 paddingRight">
+	           <select class="chosen-select pull-left" id="registeredLocations" name="registeredLocations" onChange="getDesignationType();" field-name="EmployeementType" data-validation-optional="true" >
+		            <option value="" selected>-Select Location-</option>
+		            <c:forEach var="option" items="${orgLocationsList}">
+						<option value="${option.id}">${option.orgLocationName}</option>
+					</c:forEach>
+	           </select>
+	          </div>
+          
+          <div class="col-md-2 paddingRight">
+             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType();">
+                <option  value="">All</option>
+                 <option value="C2C">C2C</option>
+                 <option value="C2C-1099">C2C-1099</option>
+                 <option value="W-2">W-2</option>
+                 <option value="C2H">C2H</option>
+                 <option value="C2H -1099">C2H -1099</option>
+                 <option value="Part Time">Part Time</option>
+                 <option value="Full Time">Full Time</option>
+                 <option value="Other">Other</option>
              </select>
              </div>
-           <div class="col-md-8 paddingLeft">
-           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
-	          <!--   <option value="">-Select Employment Type-</option> -->
-	            <option value=" " selected>-Select Associate-</option>
-	            <c:forEach var="option" items="${associateList}">
-					<option value="${option.id}">${option.displayName}</option>
-				</c:forEach>
+           <div class="col-md-5 paddingLeft" id="associateError">
+           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="Associate" onchange="getAssociateUserDetails();" data-validation-optional="true" >
+	            <option value="" selected>-Select Associate-</option>
            </select>
           </div> </div>
           </div>
            <input type="hidden" id="associateId" name="associateId"/>
           </div>
-        </div> --%>
+        </div> 
               
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
@@ -158,22 +164,22 @@
 			</sec:authorize>
                 </div> 
                  </div> 
-                <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
-         <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" data-validation="required">
-                <option value="">--Select Employment type--</option>
-                 <option>C2C</option>
-                 <option>C2C-1099</option>
-                 <option>W-2</option>
-                 <option>C2H</option>
-                 <option>C2H -1099</option>
-                 <option>Part Time</option>
-                 <option>Full Time</option>
-                 <option>Other</option>
-             </select>
-         </div>
-       </div>
+		        <div class="form-group" id="employmentTypeDiv" style="display: block;">
+		         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
+		         <div class="col-md-9">
+		             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" data-validation="required">
+		                 <option value="">--Select Employment type--</option>
+		                 <option>C2C</option>
+		                 <option>C2C-1099</option>
+		                 <option>W-2</option>
+		                 <option>C2H</option>
+		                 <option>C2H -1099</option>
+		                 <option>Part Time</option>
+		                 <option>Full Time</option>
+		                 <option>Other</option>
+		             </select>
+		         </div>
+		       </div>
                 
                 <div class="form-group errorInptgroup">
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
@@ -193,7 +199,7 @@
                 </div>
                 </div> 
                
-               <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+          <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Other Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="designationOtherType" name="designationOtherType"   field-name="Job Type" value="">
@@ -346,8 +352,6 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 document.getElementById("hideVendor").style.display="block";
 	 $('#vendors').attr("data-validation","required"); 
 	 $('#vendorcontact').attr("data-validation","required"); 
-	// $("#vendors").attr("data-validation", "true");
-	 // getVendorsByOrgLocationId();
 }else{
 	 document.getElementById("hideVendor").style.display="none";
 	 $('#vendors').removeAttr("data-validation","required"); 
@@ -712,9 +716,6 @@ function getAssociateUserDetails(){
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getActiveAssociateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+employeementType, 
-	        /* contentType: "application/json; charset=utf-8",
-	        dataType: "json", */
-	        
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
@@ -726,7 +727,6 @@ function getAssociateUserDetails(){
 	        		  $("#designationType").val(json['designationType']);
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
-// 	        		  $("#RatePer").val(json['currentRateType']);
 	        		  $("select[name=RatePer]").val(json['currentRateType']);
 		        	  $("#RatePer").selectpicker('refresh');
 		        	  
@@ -737,11 +737,8 @@ function getAssociateUserDetails(){
 	        		  $("select[name=currentCurrency]").val(json['currentRateCurrency']);
 		        	  $("#currentCurrency").selectpicker('refresh');
 		        	  
-		        	  
-// 	        		  $("#currentCurrency").val(json['currentRateCurrency']);
-	        		  
 	        		  $("#designationType").selectpicker('refresh');
-	        		  employementType(json['designationType']);
+	        		 // employementType(json['designationType']);
 	        		  if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] !='undefined' && json['vendorOrgRelationId'] !=''){
 	        		  getVendors(json['vendorName'],json['vendorOrgRelationId']);
 	        		  vendorContactList(json['vendorContactName'],json['vendorOrgRelationId'],json['vendorSpocId']);
@@ -888,10 +885,31 @@ function getAssociateUserDetails(){
  
  <script>
  function getDesignationType(){
+	 var registeredLocations = document.getElementById("registeredLocations").value;
 	 var employmentDesignationType = $("#employmentDesignationType").val();
+	 
+	
+	 if(registeredLocations){
+		 $("#employeementType").removeAttr("data-validation-optional");
+		 $('#employeementType').attr('data-validation','required');
+		 
+		 $("#designationType").removeAttr("data-validation"); 
+		 $('#designationType').attr('data-validation-optional','true');
+		 document.getElementById("employmentTypeDiv").style.display="none";
+		 
+		 document.getElementById("hideVendor").style.display="none";
+		 $('#vendors').removeAttr("data-validation","required"); 
+		 $('#vendorcontact').removeAttr("data-validation","required"); 
+		 
+		 $("#vendors").val('');
+		 $("#vendorcontact").val('');
+		 $("#errorvendor").find("p.jquery_form_error_message").remove();
+		 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		 
+		 
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
+	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType+"&registeredLocations="+registeredLocations,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -913,6 +931,22 @@ function getAssociateUserDetails(){
 		        $('#employeementType').trigger("chosen:updated");
 	        },
 	    });
+ 	}else{
+ 		 $("#employeementType").removeAttr("data-validation");
+		 $('#employeementType').attr('data-validation-optional','true');
+		 $("#employeementType").val('');
+		 $('#employeementType').trigger("chosen:updated");
+		 $("#associateError").find("p.jquery_form_error_message").remove();
+		 
+		 $("#designationType").removeAttr("data-validation-optional"); 
+		 $('#designationType').attr('data-validation','required');
+	     $("#designationType").val('');
+		 $("#designationType").selectpicker('refresh');
+		 $('#designationType').trigger("chosen:updated");
+		 document.getElementById("employmentTypeDiv").style.display=""; 
+		  
+		 
+ 	}
 	 
  }
  

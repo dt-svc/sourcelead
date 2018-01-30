@@ -188,5 +188,7 @@ public interface CandidateService {
 	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
 	
 	public Candidate getCandidateByShortURL(String shortURL) throws Exception;
+	
+	List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType) throws Exception;
 
 }
