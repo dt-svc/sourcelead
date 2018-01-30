@@ -287,7 +287,7 @@ public class RequirementDaoImpl implements RequirementDao {
         	
         }
 		
-		reqList = query.setCacheable(true).list();		
+		reqList = query.list();		
 		return reqList;
 		
 	}
@@ -313,7 +313,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from Requirement requirement left join fetch requirement.createdBy left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch requirement.orgLocationId  where requirement.id =:requirementId";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
@@ -332,7 +332,7 @@ public class RequirementDaoImpl implements RequirementDao {
         Session session = this.sessionFactory.getCurrentSession();
         
         String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.parentRequirement.id =:requirementId";
-        List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+        List requirementList = session.createQuery(query).setLong("requirementId", requirementId).list();
         
         Requirement requirement = null;
         if(requirementList != null && !requirementList.isEmpty())
@@ -356,7 +356,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		 boolean flag = false;
 		 if(requirementId != null && spocId != null){
 				String query = "from Requirement requirement where requirement.parentRequirement.id = :requirementId and requirement.spocId = :spocId ";
-				List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("spocId", spocId).setCacheable(true).list();
+				List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("spocId", spocId).list();
 				if (requirementList != null && requirementList.size() > 0) {
 					flag = true;
 				}
@@ -369,7 +369,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 				String query = "from Requirement requirement where requirement.parentRequirement.id = :requirementId and requirement.spocId = :spocId ";
-				List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("spocId", spocId).setCacheable(true).list();
+				List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("spocId", spocId).list();
 		 return requirementList;
 	}
 	
@@ -380,7 +380,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 
 		String query = "from Requirement  req  left join fetch req.parentRequirement  where req.isTemplate = 'Y' and req.orgLocationId =:orgLocationId and req.status<>'0'";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 	}
 
@@ -389,7 +389,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();  
 		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId and reqassignto.roleId.orgLocations.id =:orgLocationId ";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 	}
 
 
@@ -452,7 +452,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		return query.setCacheable(true).list();
+		return query.list();
 		
 	}
 	
@@ -511,7 +511,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		return query.setCacheable(true).list();
+		return query.list();
 		
 	}
 	
@@ -623,7 +623,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		return query.setCacheable(true).list();
+		return query.list();
 		
 	}
 
@@ -673,7 +673,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		return query.setCacheable(true).list();
+		return query.list();
 		
 	
 	}
@@ -683,7 +683,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getRequirementListById(Long requirementId) {
 		Session session = sessionFactory.getCurrentSession();
 		String query = "from Requirement requ  left join fetch requ.parentRequirement left join fetch requ.spocId spoc    left join fetch requ.parentRequirement where requ.parentRequirement.id =:requirementId";
-		return session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		return session.createQuery(query).setLong("requirementId", requirementId).list();
 		
 	}
 
@@ -692,7 +692,7 @@ public class RequirementDaoImpl implements RequirementDao {
     public Requirement validateExistingJobId(String jobId, Long requirementId, Long orgLocationId) throws Exception {
             Session session = this.sessionFactory.getCurrentSession();
             String query ="from Requirement requirement left join fetch requirement.parentRequirement where requirement.id = :requirementId and requirement.jobId = :jobId and requirement.orgLocationId.id =:orgLocationId";
-            List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("jobId", jobId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+            List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("jobId", jobId).setLong("orgLocationId", orgLocationId).list();
             Requirement requirement = null;
             if(requirementList != null && !requirementList.isEmpty())
             {
@@ -709,7 +709,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String query ="select count(*)from Requirement requirement where requirement.jobId = :id and requirement.orgLocationId.id =:orgLocationId";
 		
-		List<Long> jobCount = session.createQuery(query.toString()).setString("id", id).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> jobCount = session.createQuery(query.toString()).setString("id", id).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();
@@ -725,7 +725,7 @@ public class RequirementDaoImpl implements RequirementDao {
         Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from Requirement requirement left join fetch requirement.parentRequirement  where requirement.parentRequirement.id =:requirementId";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
@@ -741,7 +741,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
 		String query ="from Requirement requirement left join fetch requirement.parentRequirement  where requirement.jobTitle = :jobName and requirement.isTemplate = 'Y' and requirement.orgLocationId.id =:orgLocationId";
-		List<Requirement> requirementList = session.createQuery(query).setString("jobName", jobName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Requirement> requirementList = session.createQuery(query).setString("jobName", jobName).setLong("orgLocationId", orgLocationId).list();
 		if(requirementList !=null && requirementList.size() >0){
 			flag = true;
 			return flag;
@@ -765,10 +765,10 @@ public class RequirementDaoImpl implements RequirementDao {
 //			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
 			/*if("Admin".equalsIgnoreCase(userRole.getUserType())){*/
 				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
-				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
+				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).list();
 			/*}else{
 				query = "from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and parentRequirement !='null' and requirement.spocId.createdBy =:loginUserCode";
-				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setString( "loginUserCode", user.getUserCode() ).setCacheable(true).list();
+				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setString( "loginUserCode", user.getUserCode() ).list();
 			}*/
 		}
         return releasedJobsList;
@@ -785,7 +785,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
 		String query ="from Requirement requirement where requirement.id = :requirementId and requirement.managerUserId.id =:userId";
-		List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("userId", userId).setCacheable(true).list();
+		List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("userId", userId).list();
 		if(requirementList !=null && requirementList.size() >0){
 			flag = true;
 			return flag;
@@ -806,7 +806,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement req left join fetch req.createdBy  left join fetch req.parentRequirement where req.isTemplate = 'Y' and req.orgLocationId.id =:orgLocationId and req.status <>'0'  ORDER BY req.id DESC ";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -816,7 +816,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from Requirement requirement left join fetch requirement.createdBy left join fetch requirement.parentRequirement  where requirement.id =:requirementId and requirement.isTemplate = 'Y' and requirement.orgLocationId.id =:orgLocationId ";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
@@ -835,7 +835,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "select count(requirement.id) from Requirement requirement "
 					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId ";
 			
-			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();
@@ -852,7 +852,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "select count(requirement.id) from Requirement requirement "
 					+ "where requirement.id IN (select hierarchy.requirementId.id from RequirementApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and requirement.orgLocationId.id = :orgLocationId ";
 			
-			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			List<Long> jobCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(jobCount != null && !jobCount.isEmpty()){
 					count = jobCount.get(0).intValue();
@@ -868,7 +868,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		String query = "from Requirement requirement left join f"
 				+ "etch requirement.parentRequirement "
 					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId";
-		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		
 	}
 	
@@ -879,7 +879,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = sessionFactory.getCurrentSession();       
 		String subQuery = "requirement.id IN ( select rs.requirement.id from RequirementSubmission rs where  rs.submissionRateStatus = 'REQUEST' or rs.submissionRateStatus = 'ACCEPTED' ) ";
 		String query = "from Requirement requirement left join fetch requirement.parentRequirement   where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId and "+subQuery+" ";
-		List requirementList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List requirementList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
@@ -897,7 +897,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		 logger.debug("In EmployeesDaoImpl class getEmployeeByIdAndUserIdAndOrgLocationsId method");
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Requirement requirement left join fetch requirement.parentRequirement where requirement.orgLocationId = :orgLocationsId and requirement.jobId = :id and requirement.id = :requirementId ";
-			List<Requirement> requirementList =  session.createQuery(query) .setString("id", id).setLong("requirementId", requirementId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			List<Requirement> requirementList =  session.createQuery(query) .setString("id", id).setLong("requirementId", requirementId).setLong("orgLocationsId", orgLocationsId).list();
 			Requirement requirement = null;
 			if(requirementList != null && !requirementList.isEmpty())
 			{
@@ -914,7 +914,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		 boolean flag = false;
 		 if(id != null && orgLocationsId != null){
 				String query = "from Requirement requirement where requirement.orgLocationId = :orgLocationsId and requirement.jobId = :id ";
-				List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("id", id).setCacheable(true).list();
+				List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("id", id).list();
 
 				if (requirementList != null && requirementList.size() > 0) {
 					flag = true;
@@ -928,7 +928,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select req.skills from Requirement req where req.id =:requirementId";
-	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).list();
         return skillNames;
 	}
 	
@@ -937,7 +937,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select req.industryName from Requirement req where req.id =:requirementId";
-	    List<String> industryNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+	    List<String> industryNames = session.createQuery(query).setLong( "requirementId", requirementId).list();
         return industryNames;
 	}
 
@@ -948,7 +948,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "select count(*) from Requirement requirement  where requirement.orgLocationId.id =:orgLocationId and requirement.status = '1'";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
@@ -958,7 +958,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
     Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement left join fetch requirement.orgLocationId loc left join fetch loc.org left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.requirementUUID =:requirementUUID";
-		List requirementList = session.createQuery(query).setString("requirementUUID", requirementUUID).setCacheable(true).list();
+		List requirementList = session.createQuery(query).setString("requirementUUID", requirementUUID).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())
@@ -973,7 +973,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Requirement requirement where requirement.orgLocationId.id = :orgLocationId";
-			return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 	
 	@Override
@@ -981,7 +981,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> getAllReleasedRequirementsByParentId(Long parentRequirementId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Requirement requirement where requirement.parentRequirement.id = :parentRequirementId";
-			return session.createQuery(query).setLong("parentRequirementId", parentRequirementId).setCacheable(true).list();
+			return session.createQuery(query).setLong("parentRequirementId", parentRequirementId).list();
 	}
 
 	@Override
@@ -989,7 +989,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select req.noticePeriod from Requirement req where req.id =:requirementId";
-	    List<String> noticePeriodList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+	    List<String> noticePeriodList = session.createQuery(query).setLong( "requirementId", requirementId).list();
 	    return noticePeriodList.get(0);
 	}
 	
@@ -1008,7 +1008,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	        		                                    .setLong( "userId", user.getId())
 	        		                                    .setLong( "orgLocationId", orgLocationId)
 	        		                                    .setString("userCode", user.getUserCode())
-	        		                                    .setCacheable(true)
+	        		                                    
 	        		                                    .list();
   
         return requirementList;
@@ -1025,7 +1025,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		          List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
 		        		                                     .setLong( "userId", user.getId())
 		        		                                     .setLong( "orgLocationId", orgLocationId)
-		        		                                     .setCacheable(true)
+		        		                                     
 		        		                                     .list();
 		
 			return requirementList;
@@ -1052,7 +1052,7 @@ public class RequirementDaoImpl implements RequirementDao {
          		                                     .setLong( "userId", user.getId())
          		                                     .setDate("sqlCurrentDate", sqlCurrentDate)
          		                                     .setLong( "orgLocationId", orgLocationId)
-         		                                     .setCacheable(true)
+         		                                     
          		                                     .list();
          Integer count = 0;
    		if(requirementList != null && !requirementList.isEmpty()){
@@ -1070,7 +1070,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	 		
 	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.orgLocationId.id =:orgLocationId and  requirement.id  IN (select reqassign.requirementId.id  from RequirementAssignTo reqassign where reqassign.assignUserId.id =:userId  and reqassign.teamId.id =:teamId)";
 	 		
-	         List<Requirement> requirementList = session.createQuery(query).setLong("userId", teamMembers.getMemberUserId().getId()).setLong("teamId", teamMembers.getTeamId().getId()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	         List<Requirement> requirementList = session.createQuery(query).setLong("userId", teamMembers.getMemberUserId().getId()).setLong("teamId", teamMembers.getTeamId().getId()).setLong("orgLocationId", orgLocationId).list();
 	 		return requirementList;
 	 	}
 
@@ -1128,7 +1128,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			Session session = this.sessionFactory.getCurrentSession();
 	 		
 	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.clientId.id =:relationId and  requirement.spocId.id =:spocId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC )";
-	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).setCacheable(true).list();
+	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).list();
 	 		return requirementList;
 		}
 		
@@ -1146,7 +1146,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	 		
 	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where (requirement.isTemplate = null or requirement.isTemplate = 'N') and requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
 	 		
-	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	 		return requirementList;
 	 	}
 
@@ -1155,7 +1155,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		public List<String> getAllRequirementEducationByRequirementId(Long requirementId){
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "select req.education from Requirement req where req.id =:requirementId";
-		    List<String> educationList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+		    List<String> educationList = session.createQuery(query).setLong( "requirementId", requirementId).list();
 	        return educationList;
 		}
 		
@@ -1164,7 +1164,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			Requirement  requirement =  null;
-			List<Requirement>  requirementList = session.createQuery("from Requirement req where req.id =:requirementId").setLong("requirementId", requirementId).setCacheable(true).list();
+			List<Requirement>  requirementList = session.createQuery("from Requirement req where req.id =:requirementId").setLong("requirementId", requirementId).list();
 			if(null != requirementList && requirementList.size() >0){
 				requirement = requirementList.get(0);
 			}
@@ -1246,7 +1246,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
         	
         }
-		return query.setCacheable(true).list();
+		return query.list();
 		
 		}
 
@@ -1260,7 +1260,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "";
 			if(orgRelationId != null && orgLocationId != null){
 				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC ) and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
-				releasedJobsList = session.createQuery(query).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).setCacheable(true).list();
+				releasedJobsList = session.createQuery(query).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).list();
 			}
 	        return releasedJobsList;
 		}
@@ -1274,7 +1274,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "";
 			if(user != null && orgLocations != null){
 				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.orgLocationId =:orgLocationId and :userId IN (requirement.releasedBy)";
-				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocations.getId()).setLong( "userId", user.getId() ).setCacheable(true).list();
+				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocations.getId()).setLong( "userId", user.getId() ).list();
 			}
 	        return releasedJobsList;
 		}
@@ -1383,7 +1383,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				query.setParameter(str, params.get(str));
 			}
 		}
-		releasedJobsList = query.setCacheable(true).list();
+		releasedJobsList = query.list();
 		return releasedJobsList;
 	}
 		
@@ -1396,7 +1396,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "";
 			if(parentreqIds != null && !parentreqIds.isEmpty() && relationId != null){
 				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.parentRequirement.id IN (:parentreqIds) and requirement.clientId.id =:relationId";
-				releasedJobsList = session.createQuery(query).setParameterList("parentreqIds", parentreqIds).setLong("relationId", relationId).setCacheable(true).list();
+				releasedJobsList = session.createQuery(query).setParameterList("parentreqIds", parentreqIds).setLong("relationId", relationId).list();
 			}
 	        return releasedJobsList;
 		}
@@ -1408,7 +1408,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			Session session = this.sessionFactory.getCurrentSession();
 
 			String query = "from Requirement requirement where ( requirement.closedDate >= :startDateUTC and requirement.closedDate <= :endDateUTC ) ";
-			return session.createQuery(query).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+			return session.createQuery(query).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}
 		
 		
@@ -1499,7 +1499,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				query.setParameter(str, params.get(str));
 			}
 		}
-		releasedJobsList = query.setCacheable(true).list();
+		releasedJobsList = query.list();
 		return releasedJobsList;
 	}
 		
@@ -1509,7 +1509,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select req.visaType from Requirement req where req.id =:requirementId";
-	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).list();
         return skillNames;
 	}
 
@@ -1519,7 +1519,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementAssignTo reqAssignedTo left join fetch reqAssignedTo.requirementId  where reqAssignedTo.requirementId =:requirementId";
-		List<RequirementAssignTo> reqAssignedTo = session.createQuery(query).setLong( "requirementId", id).setCacheable(true).list();
+		List<RequirementAssignTo> reqAssignedTo = session.createQuery(query).setLong( "requirementId", id).list();
 		Set<RequirementAssignTo> requirementAssignedTo = new HashSet<RequirementAssignTo>(reqAssignedTo);
 		return requirementAssignedTo;
 	}
@@ -1530,7 +1530,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement where requirement.id =(SELECT MAX(req.id) FROM Requirement req where req.orgLocationId.id =:orgLocationId)";  
-		List<Requirement> requirement  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(requirement.isEmpty()){
 			return null;
 		}
@@ -1562,7 +1562,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Boolean data  = true;
 		if(StringUtils.isNotEmpty(tableName)){
 			String query = "select table.generatedId from "+tableName+" table where table.orgLocationId.id =:orglocationId"; 
-			List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+			List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).list();
 			 data  = requirement.contains(null);
 		}
 		else{
@@ -1574,11 +1574,11 @@ public class RequirementDaoImpl implements RequirementDao {
 				for(String tabName : tableNames){
 					if(tabName != "Projects"){
 						String query = "select table.generatedId from "+tabName+" table where table.orgLocationId.id =:orglocationId";
-						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).list();
 						data  = result.contains(null);
 					}else{
 						String query = "select table.generatedId from "+tabName+" table where table.orgLocationsId.id =:orglocationId";
-						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).list();
 						data  = result.contains(null);
 					}
 					
@@ -1599,7 +1599,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Requirement> addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId";
-		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).list();
 		if(!requirement.isEmpty()){
 			return requirement;
 		}else{
@@ -1613,7 +1613,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Projects> addGeneratedIdRecordsToProjectsForOldRecords(Long orglocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select projects from Projects projects left join fetch projects.orgLocationsId orgLocation where orgLocation.id =:orglocationId";
-		List<Projects> projects  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		List<Projects> projects  =  session.createQuery(query).setLong("orglocationId",orglocationId).list();
 		if(!projects.isEmpty()){
 			return projects;
 		}else{
@@ -1627,7 +1627,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public List<Candidate> addGeneratedIdRecordsToCandidatesForOldRecords(Long orglocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select candidate from Candidate candidate left join fetch candidate.orgLocationId orgLocation where orgLocation.id =:orglocationId";
-		List<Candidate> candidate  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		List<Candidate> candidate  =  session.createQuery(query).setLong("orglocationId",orglocationId).list();
 		if(!candidate.isEmpty()){
 			return candidate;
 		}else{
@@ -1642,7 +1642,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId and requirement.requirementSubmissionStatus = 'OPEN' ";
-		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).list();
 		if(!requirement.isEmpty()){
 			return requirement;
 		}else{
@@ -1657,7 +1657,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id = :orglocationId "
 				+ "and requirement.id IN (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId)";
-		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setLong("userId",userId).list();
 		if(!requirement.isEmpty()){
 			return requirement;
 		}else{
@@ -1706,10 +1706,10 @@ public class RequirementDaoImpl implements RequirementDao {
 			    queryObj.setFirstResult(requirementDTO.getStart());
 				queryObj.setMaxResults(requirementDTO.getLength());
 				
-				queryObj.setLong("orglocationId",orglocationId).setCacheable(true).list();
+				queryObj.setLong("orglocationId",orglocationId).list();
 				requirementList = queryObj.list();
 				
-				countlist = session.createQuery("select count(*) " + query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+				countlist = session.createQuery("select count(*) " + query).setLong("orglocationId",orglocationId).list();
 				if(query1.toString() != null && !query1.toString().isEmpty()){
 					filterCount = requirementList.size();
 				}
@@ -1719,7 +1719,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			 
 			String query = "from Requirement requirement where requirement.orgLocationId.id = :orglocationId "
 					+ "and requirement.id IN (select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId)";
-			List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+			List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setLong("userId",userId).list();
 			
 			
 			
@@ -1732,10 +1732,10 @@ public class RequirementDaoImpl implements RequirementDao {
 		    queryObj.setFirstResult(requirementDTO.getStart());
 			queryObj.setMaxResults(requirementDTO.getLength());
 			
-			queryObj.setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+			queryObj.setLong("orglocationId",orglocationId).setLong("userId",userId).list();
 			requirementList = queryObj.list();
 			
-			countlist = session.createQuery("select count(*) " + query).setLong("orglocationId",orglocationId).setLong("userId",userId).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orglocationId",orglocationId).setLong("userId",userId).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = requirementList.size();
 			}
@@ -1788,7 +1788,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		List<RequirementDTO> requirementDTOList = new ArrayList<>();
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement where requirement.id IN (:requirementIds) )";
-		List<Requirement> requirementList  =  session.createQuery(query).setParameterList("requirementIds",requirementIds).setCacheable(true).list();
+		List<Requirement> requirementList  =  session.createQuery(query).setParameterList("requirementIds",requirementIds).list();
 		
 		if(requirementList != null && requirementList.size() > 0){
 			for(Requirement requirement : requirementList){
@@ -1812,7 +1812,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public Requirement getRequirementByShortURL(String shortURL) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select r from Requirement r where r.requirementUUID =:shortURL";
-	    List<Requirement> requirements = session.createQuery(query).setString("shortURL",shortURL).setCacheable(true).list();
+	    List<Requirement> requirements = session.createQuery(query).setString("shortURL",shortURL).list();
 		if(!requirements.isEmpty()){
 			return requirements.get(0);
 		}else{
@@ -1827,7 +1827,7 @@ public class RequirementDaoImpl implements RequirementDao {
 Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from Requirement requirement left join fetch requirement.createdBy left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch requirement.orgLocationId  where requirement.id =:requirementId and requirement.url =:url";
-		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("url", url).setCacheable(true).list();
+		List requirementList = session.createQuery(query).setLong("requirementId", requirementId).setString("url", url).list();
 		
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())

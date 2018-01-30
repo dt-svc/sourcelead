@@ -44,7 +44,7 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from InvoiceLineItems lineItems left join fetch lineItems.invoice  left join fetch lineItems.contract left join fetch lineItems.candidate where lineItems.invoice.id = :invoiceId and lineItems.status = '1' ";
-		List<InvoiceLineItems> InvoiceLineItemsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		List<InvoiceLineItems> InvoiceLineItemsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).list();
 		return InvoiceLineItemsList;
 	}
 
@@ -55,7 +55,7 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 	public List<InvoiceLineItems> getInvoiceLineItemsByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession(); 
 		String query = "from InvoiceLineItems invoiceItems left join fetch invoiceItems.contract left join fetch invoiceItems.candidate  where invoiceItems.invoice.id = :invoiceId and invoiceItems.orgLocation.id = :orgLocationId  and invoiceItems.status = '1'";
-		List<InvoiceLineItems> invoiceLineItemsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<InvoiceLineItems> invoiceLineItemsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).list();
 		return invoiceLineItemsList;
 	}
 
@@ -64,7 +64,7 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 	public InvoiceLineItems getInvoiceLineItemsById(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<InvoiceLineItems> lineItem = session.createQuery("from InvoiceLineItems lineItems left join fetch lineItems.invoice where lineItems.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<InvoiceLineItems> lineItem = session.createQuery("from InvoiceLineItems lineItems left join fetch lineItems.invoice where lineItems.id =:id" ).setLong( "id", Id ).list();
 		if (lineItem.size() > 0) {
 			return lineItem.get(0);
 		} else {
@@ -121,7 +121,7 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 			 
 		String query = "select lineItems.id from InvoiceLineItems lineItems where lineItems.invoice.id = :invoiceId ";
 		List<Long> lineItemsIdsList =  session.createQuery(query.toString()).setLong("invoiceId", invoiceId)
-									.setCacheable(true).list();
+									.list();
 		
 		return lineItemsIdsList;
 	}

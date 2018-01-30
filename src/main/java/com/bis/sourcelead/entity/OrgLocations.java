@@ -37,7 +37,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LOCATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgLocation" )
 public class OrgLocations implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -47,25 +46,23 @@ public class OrgLocations implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID")
     private Org org;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TIMEZONE_ID")
     private Timezone timezone;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
+	
+	@OneToMany(mappedBy="responderLocationId",fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
 	
@@ -130,8 +127,8 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FILLING_FORM")
 	private String fillingForm;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="BUSINESS_TYPE", nullable=false )	
 	private LookUpData businessType;
 	

@@ -117,12 +117,12 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		if (accountDeductionsDTO != null && accountDeductionsDTO.getLength() > 0) {
 			queryObj.setFirstResult(accountDeductionsDTO.getStart());
 			queryObj.setMaxResults(accountDeductionsDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
 		accountDeductionsList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -176,7 +176,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AccountDeductionsDetails> accountDeductionslist = null;
 		String query = "from AccountDeductionsDetails ad left join fetch ad.accountDeductions where ad.accountDeductions.id =:deductionId";
-		accountDeductionslist = session.createQuery(query).setLong("deductionId", deductionId).setCacheable(true).list();
+		accountDeductionslist = session.createQuery(query).setLong("deductionId", deductionId).list();
 		if(accountDeductionslist != null && accountDeductionslist.size() >0)
 		{
 			return accountDeductionslist;
@@ -191,7 +191,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		AccountDeductions accountDeductions = null;
 		String query = "from AccountDeductions ad where ad.id =:deductionId";
-		List<AccountDeductions> accountDeductionslist = session.createQuery(query).setLong("deductionId", deductionId).setCacheable(true).list();
+		List<AccountDeductions> accountDeductionslist = session.createQuery(query).setLong("deductionId", deductionId).list();
 		if(accountDeductionslist != null && accountDeductionslist.size() >0)
 		{
 			accountDeductions = accountDeductionslist.get(0);
@@ -206,7 +206,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AccountDeductions> accountDeductionslist = null;
 		String query = "from AccountDeductions ad left join fetch ad.orgLocationId where ad.orgLocationId.id =:orgLocationId and ad.employeeId = :empId";
-		accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
+		accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
 		if(accountDeductionslist != null && accountDeductionslist.size() >0)
 		{
 			return accountDeductionslist;
@@ -220,7 +220,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(acc.version)  FROM AccountDeductions acc where acc.orgLocationId.id =:orgLocationId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).list();
 		Integer count = 0;
 		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();

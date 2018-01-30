@@ -21,7 +21,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "PROJECT_DOCUMENT_PERMISSIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectDocumentPermission")
 public class ProjectDocumentPermission implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -31,22 +30,22 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_DOCUMENT_ID", nullable = false)
 	private ProjectDocuments projectDocumentId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_DOCUMENT_FOLDER_ID", nullable = false)
 	private ProjectDocumentFolder projectDocumentFolderId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable = false)
 	private ProjectMembers projectMemberId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ROLE_ID", nullable = false)
 	private Roles userRoleId;
@@ -57,7 +56,7 @@ private static final long serialVersionUID = 1L;
    	@Column(name = "CREATED_DATE")
    	private Date createdDate;
    	
-   	@NotFound(action=NotFoundAction.IGNORE)
+   	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
 	private User  createdBy;
@@ -65,7 +64,7 @@ private static final long serialVersionUID = 1L;
    	@Column(name = "UPDATED_DATE")
    	private Date updatedDate;
    	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY", nullable = false)
 	private User  updatedBy;

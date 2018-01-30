@@ -28,7 +28,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "TEAM")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "team")
 public class Team implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -41,8 +40,8 @@ public class Team implements Serializable{
 	@Column(name = "NAME")
 	private String name ;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="OWNER_USER_ID", nullable=false )        
     private User ownerUserId;
 	
@@ -67,8 +66,8 @@ public class Team implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;
 	

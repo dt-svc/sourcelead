@@ -65,7 +65,7 @@ public class OrglocationStateTaxDaoImpl implements OrglocationStateTaxDao{
 
 		String query = "from OrglocationStateTax orglocationStateTax where orglocationStateTax.orgLocationId.id = :orgLocationId and orglocationStateTax.status = '1' ";
 		
-		List<OrglocationStateTax> orglocationStateTaxList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<OrglocationStateTax> orglocationStateTaxList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		return orglocationStateTaxList;
 	}
 
@@ -76,7 +76,7 @@ public class OrglocationStateTaxDaoImpl implements OrglocationStateTaxDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationStateTax orglocationStateTax  where orglocationStateTax.uuid = :UUID and orglocationStateTax.status = '1' ";  
-		List<OrglocationStateTax> orglocationStateTaxList =  session.createQuery(query).setString("UUID", UUID).setCacheable(true).list();
+		List<OrglocationStateTax> orglocationStateTaxList =  session.createQuery(query).setString("UUID", UUID).list();
 		OrglocationStateTax orglocationStateTax = null;
 		if (orglocationStateTaxList != null && orglocationStateTaxList.size() > 0) {
 			orglocationStateTax = (OrglocationStateTax) orglocationStateTaxList.iterator().next();

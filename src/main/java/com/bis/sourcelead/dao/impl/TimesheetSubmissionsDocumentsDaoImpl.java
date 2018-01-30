@@ -59,7 +59,7 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from TimesheetSubmissionsDocuments tsd where tsd.timesheetSubmissions.Id =:submissionId and tsd.status = '1') ";
-	    List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = session.createQuery(query.toString()).setLong("submissionId", submissionId).setCacheable(true).list();
+	    List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
         return timesheetSubmissionsDocumentsList;
         
 	}

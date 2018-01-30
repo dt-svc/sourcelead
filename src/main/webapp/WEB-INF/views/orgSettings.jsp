@@ -186,19 +186,17 @@ function cancelOrgImg(){
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
-			<div class="clearfix">
-			  <form:form class="login-form clearfix mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
-			  
-			  <div class="col-xs-12 col-sm-3 col-md-3">
+		  	<form:form class="login-form mt10"  id="orgImage_form"  name="orgImage_form" method="post" > 
+		  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
 					  <button type="button" class="btn btn-sm btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -211,6 +209,11 @@ function cancelOrgImg(){
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
+			  </form:form>
+			<div class="clearfix">
+			  <form:form class="login-form  mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
+			  
+			  
 			  <div id="popUp" ></div>
 			  			
 				<div class="col-xs-12 col-sm-9 col-md-9">
@@ -248,7 +251,7 @@ function cancelOrgImg(){
 							<div class="form-group">
 								<label class="col-md-3">ZipCode</label>
 								<div class="col-md-9">
-								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
 							
@@ -902,19 +905,10 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
 	          		
-	          		var frm = $('#orgSettings_form').serializeFormJSON();
-	            	var con = JSON.stringify(frm);
-				    con = con.replace(/[{}]/g, "");
-				  //It will escape all the special characters
-    		        var jsonData = encodeURIComponent(con);
-				    
-	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		var form = $('#orgSettings_form')[0];
-	           		var formData = new FormData(form);
+	           		var formData = getFormData("orgSettings_form");
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
-	           		
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
@@ -923,13 +917,7 @@ var validationSettings = {
 	                  $.ajax({
 	              	      type: "POST",
 	              	      data: formData,
-	              	      contentType : 'application/json; charset=utf-8',
-	              	      enctype: 'multipart/form-data',
-	          	          processData: false,
-	          	          contentType:false,
-	              	      dataType : 'json',
-	              	      
-	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
 	  			        	 if((result == 'home')){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
@@ -1251,7 +1239,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/app/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}
@@ -1544,7 +1532,7 @@ function loadRegisteredOrgs(){
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
 	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+orgLoc.fileUrl+" alt='image'>";
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	result = result +"</div>";
@@ -2620,12 +2608,9 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	
-        		var frm = $('#createOrg_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+        	
          		var sourceleadUrl ='${sourceleadUrl}';
-         		
+         		var formData = getFormData("createOrg_form");
          		 var modulesList = [];
          		 $("input[name='modulesList[]']:checked").each( function (i) {
          			modulesList[i] = $(this).val();
@@ -2640,9 +2625,8 @@ var validationSettings = {
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+          	      data: formData,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
                 			  
                 			  
                   	success: function(result) {
@@ -2652,6 +2636,9 @@ var validationSettings = {
 			        	else if((result == 'Invalid Sub Modules')){
 			        		$("#loading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
+			        	}else if((result == 'DataMissing')){
+			        		showError("Invalid data");
+			        		$("#loading").removeAttr('style');
 			        	}
 			        	
 			        },  

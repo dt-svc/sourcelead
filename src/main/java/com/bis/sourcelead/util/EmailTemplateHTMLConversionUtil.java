@@ -28,7 +28,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		 * src='http://vannamnew.xp3.biz/html/images/mail-logo.png'
 		 */
 		
-		
+		String newUrl = StringUtils.removeEnd(url, url.substring(url.lastIndexOf("/")));
 		tempHTML.append("<table width='100%' cellpadding='0' cellspacing='0' style='background-color:#EEEEEE; font-family:verdana, arial;'>");
 				tempHTML.append("<tr>");
 						tempHTML.append("<td>");
@@ -41,7 +41,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 												      //This condition for org image     
 												      if(org != null && org.getId() != null){
 												    	  	if(StringUtils.isNotEmpty(org.getFileContentType())){
-												    	  	  tempHTML.append("<td style='text-align: center; height:50px;'><img src='"+url+"/ws/displayOrgImageInMail/"+org.getOrgCode()+"' width='auto' style='padding: 5px 20px; max-height:100%; background-color:#fff; margin: 0px auto; display:block;'></td>");
+												    	  	  tempHTML.append("<td style='text-align: center; height:50px;'><img src='"+newUrl+org.getFileUrl()+"' width='auto' style='padding: 5px 20px; max-height:100%; background-color:#fff; margin: 0px auto; display:block;'></td>");
 												    	  	}else{
 												    	  		 tempHTML.append("<td class='text-logo'><span style='font-size: 20px; color: #757575; width: 400px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px; text-align:center; margin:0 auto; font-weight: 600;'>"+orgLocations.getOrgLocationName()+"</span></td>");
 												    	  	}

@@ -21,7 +21,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "INVOICE_LINE_ITEMS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceLineItems")
 public class InvoiceLineItems {
 	
 	private static final long serialVersionUID = 1L;
@@ -36,31 +35,31 @@ public class InvoiceLineItems {
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidate;
 	
 	@Column(name = "INLINE_DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String inlineDescription;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTRACT_ID", nullable = false)
 	private Contracts contract; 
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INVOICE_ID", nullable = false)
 	private Invoice invoice;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
 	

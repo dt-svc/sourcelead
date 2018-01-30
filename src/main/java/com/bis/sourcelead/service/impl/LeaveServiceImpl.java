@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
@@ -141,12 +142,59 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setUpdatedDate(new Date());
 		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 		leave.setNumberOfDays(String.valueOf(numberOfdays));
+		
+		int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leaveType,leaveDTO,orgLocations,user);
+		leave.setExtraLeavesTaken(String.valueOf(noOfExtraDays));
+		
 		Leave savedLeave =  leaveDao.saveLeave(leave);
+		
+		Map<String,Integer> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
+		saveMonthlyLeaves(monthlyLeaves,leave,user);
+		
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
 			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations);
 		}
 		return savedLeave;
+	}
+
+	private void saveMonthlyLeaves(Map<String, Integer> monthlyLeaves, Leave leave, User user)
+	{
+		MonthlyLeaves leaves = new MonthlyLeaves();
+		leaves.setLeaveId(leave);
+		for(String key : monthlyLeaves.keySet()){
+			switch (key){
+				case "January" : leaves.setJanuaryLeaves(monthlyLeaves.get(key));
+				break;
+				case "February" : leaves.setFebruaryLeaves(monthlyLeaves.get(key));
+				break;
+				case "March" : leaves.setMarchLeaves(monthlyLeaves.get(key));
+				break;
+				case "April" : leaves.setAprilLeaves(monthlyLeaves.get(key));
+				break;
+				case "May" : leaves.setMayLeaves(monthlyLeaves.get(key));
+				break;
+				case "June" : leaves.setJuneLeaves(monthlyLeaves.get(key));
+				break;
+				case "July" : leaves.setJulyLeaves(monthlyLeaves.get(key));
+				break;
+				case "August" : leaves.setAugustLeaves(monthlyLeaves.get(key));
+				break;
+				case "September" : leaves.setSeptLeaves(monthlyLeaves.get(key));
+				break;
+				case "October" : leaves.setOctoberLeaves(monthlyLeaves.get(key));
+				break;
+				case "November" : leaves.setNovLeaves(monthlyLeaves.get(key));
+				break;
+				case "December" : leaves.setDecLeaves(monthlyLeaves.get(key));
+				break;
+			}
+		}
+		leaves.setCreatedBy(user.getUserCode());
+		leaves.setCreatedDate(new Date());
+		leaves.setUpdatedBy(user.getUserCode());
+		leaves.setUpdatedDate(new Date());
+		saveMonthlyLeaves(leaves);
 	}
 
 	private Set<LeaveApproveHierarchy> getApproverList(LeaveDTO leaveDTO, Leave leave, User user) {
@@ -187,12 +235,12 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder sb = new StringBuilder();
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
-				int nuberOfLeavestaken = 0;
+				Map<String,Integer> nuberOfLeavestaken = null;
 				if (leave.getUser() != null) {
 					try {
 						 nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 						int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-						leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+						leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken.get("numberOfLeavsTaken")));
 						leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -217,10 +265,12 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setStatus(leave.getStatus());
 				
 				int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
-				int balLeaves = totalLeaves - nuberOfLeavestaken;
+				int balLeaves = totalLeaves - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
 				
 				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				if(StringUtils.isNotBlank(leave.getExtraLeavesTaken()))
+					leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
 				leaveDto.setFromHalfDay(leave.getFromHalfDay());
 				if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
 					leaveDto.setNoOfDays("1/2");
@@ -320,7 +370,7 @@ public class LeaveServiceImpl implements LeaveService{
 					
 					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 					
-					int numberOfLeavesPerYear = totalLeaves - Integer.parseInt(numberOfDays);
+					int numberOfLeavesPerYear = totalLeaves - Integer.parseInt(numberOfDays) + Integer.parseInt(leave.getExtraLeavesTaken());
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
@@ -751,7 +801,7 @@ public class LeaveServiceImpl implements LeaveService{
 								pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+								totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays())) + Integer.parseInt(leave.getExtraLeavesTaken());
 							}
 						}
 						   balanceLeaveCounts += totalLeaves;
@@ -1156,8 +1206,19 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status)
 	{
-		
 		return leaveDao.getAllLeavesByLocationIdAndStatus(locationId, status);
+	}
+
+	@Override
+	public List<Leave> getLeavesListByTypeIdAndDuration(String leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate)
+	{
+		return leaveDao.getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocationId, userId, startDate, endDate);
+	}
+
+	@Override
+	public MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves)
+	{
+		return leaveDao.saveMonthlyLeaves(monthlyLeaves);
 	}
 
 }

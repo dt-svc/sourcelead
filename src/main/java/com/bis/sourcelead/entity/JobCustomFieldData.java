@@ -20,7 +20,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "JOB_CUSTOM_FIELD_DATA", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "jobCustomFieldData")
 public class JobCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -29,12 +28,12 @@ public class JobCustomFieldData implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirement;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CUSTOM_FORM_FIELD_ID", nullable=false )        
     private OrglocationFormFields orglocationsFormFields;
