@@ -87,6 +87,13 @@ public class Org implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@Column(name = "ORG_DESCRIPTION")
 	@Type(type="text")
 	private String orgDescription;
@@ -243,7 +250,8 @@ public class Org implements Serializable{
 	public void setDocFile(byte[] docFile) {
 		this.docFile = docFile;
 	}
-
+	
+	
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -389,6 +397,22 @@ public class Org implements Serializable{
 	public void setPrimaryOrgLocationId(Long primaryOrgLocationId)
 	{
 		this.primaryOrgLocationId = primaryOrgLocationId;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 
 	

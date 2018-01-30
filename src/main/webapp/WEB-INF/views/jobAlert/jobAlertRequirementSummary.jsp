@@ -230,7 +230,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +' 			 <div class="company-logo">';
-				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
+				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  data-id="orgLogoImage" src="'+json.fileUrl+'" alt="Company" title="Company Logo" class="img-responsive">';
 				 result = result +' 				</div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
