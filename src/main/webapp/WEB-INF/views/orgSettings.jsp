@@ -555,7 +555,7 @@ function cancelOrgImg(){
 		               			<label class="col-md-3">Financial Year<i class="" title="Login Security"></i></label>  
 		               			<div class="col-md-2 toggle-button" >
 			                      <select class="chosen-select" id="financialStartYear" onChange="validateFinancialYear();">
-			                      <option ${orgLocations.startMonth == '' ? 'selected' : ''}>--Select Month--</option>
+			                      <option value = "">--Select Month--</option>
 			                      <option ${orgLocations.startMonth == 'January' ? 'selected' : ''}>January</option>
 			                      <option ${orgLocations.startMonth == 'February' ? 'selected' : ''}>February</option>
 			                      <option ${orgLocations.startMonth == 'March' ? 'selected' : ''}>March</option>
@@ -572,7 +572,7 @@ function cancelOrgImg(){
 	                   			</div>
 	                   			<div class="col-md-2 toggle-button">
 			                      <select class="chosen-select" id="financialEndYear" disabled="disabled" readonly="">
-			                      <option ${orgLocations.endMonth == '' ? 'selected' : ''}>--Select Month--</option>
+			                      <option value = "">--Select Month--</option>
 			                      <option ${orgLocations.endMonth == 'January' ? 'selected' : ''}>January</option>
 			                      <option ${orgLocations.endMonth == 'February' ? 'selected' : ''}>February</option>
 			                      <option ${orgLocations.endMonth == 'March' ? 'selected' : ''}>March</option>
