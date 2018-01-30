@@ -64,7 +64,7 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnboardTasks tasks left join fetch tasks.onboardingTemplateId where tasks.onboardingTemplateId.id = :templateId "
 	    		+ " and tasks.status = '1' ";
-	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).setCacheable(true).list();
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).list();
         return tasksList;
 	}
 
@@ -91,7 +91,7 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnboardTasks tasks left join fetch tasks.candidateOnBoardingId where tasks.candidateOnBoardingId.id = :candidateOnBoardingId "
 	    		+ " and tasks.status = '1' ";
-	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setCacheable(true).list();
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).list();
         return tasksList;
 	}
 
@@ -103,7 +103,7 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnboardTasks tasks left join fetch tasks.onboardingTemplateId where tasks.onboardingTemplateId.id IN (:templateId) "
 	    		+ " and tasks.status = '1' ";
-	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setParameterList("templateId", templateId).setCacheable(true).list();
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setParameterList("templateId", templateId).list();
         return tasksList;
 	}
 
@@ -113,7 +113,7 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 	public OnboardTasks getOnboardTasksByTaskId(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OnboardTasks> onboardTasks = session.createQuery("from OnboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<OnboardTasks> onboardTasks = session.createQuery("from OnboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).list();
 		if (onboardTasks.size() > 0) {
 			return onboardTasks.get(0);
 		} else {
@@ -129,7 +129,7 @@ public class OnboardTasksDaoImpl implements OnboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnboardTasks tasks left join fetch tasks.candidateOnBoardingId where tasks.candidateOnBoardingId.id = :candidateOnBoardingId "
 	    		+ " and tasks.assignToCandidate = 'Y' and tasks.status = '1' ";
-	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setCacheable(true).list();
+	    List<OnboardTasks> tasksList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).list();
         return tasksList;
 	}
 	

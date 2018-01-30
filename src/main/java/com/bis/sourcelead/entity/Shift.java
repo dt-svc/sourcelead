@@ -21,8 +21,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "SHIFT")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "shift")
-
 public class Shift {
 	
 	@Id
@@ -31,7 +29,7 @@ public class Shift {
 //	@Column(columnDefinition = "BINARY(16)")
 	private String id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORGLOCATION_ID")        
     private OrgLocations orgLocations;

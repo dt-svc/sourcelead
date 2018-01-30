@@ -68,7 +68,7 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 	public List<EmailAccountSettings> emailAccountSettingsList(Long loginUserId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from EmailAccountSettings emailAccount  where emailAccount.userId.id =:loginUserId "; 
-		List<EmailAccountSettings> emailAccountsList =session.createQuery(query).setLong("loginUserId", loginUserId).setCacheable(true).list();
+		List<EmailAccountSettings> emailAccountsList =session.createQuery(query).setLong("loginUserId", loginUserId).list();
 		return emailAccountsList;
 	}
 
@@ -77,7 +77,7 @@ public class EmailAccountSettingsDaoImpl implements EmailAccountSettingsDao{
 	public EmailAccountSettings getEmailAccount(Long id, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from EmailAccountSettings emailAccount  where emailAccount.id =:id and emailAccount.userId.id = :userId"; 
-		List<EmailAccountSettings> emailAccountList =  session.createQuery(query) .setLong("id", id).setLong("userId", userId).setCacheable(true).list();
+		List<EmailAccountSettings> emailAccountList =  session.createQuery(query) .setLong("id", id).setLong("userId", userId).list();
 		EmailAccountSettings emailAccount = null;
 		if(emailAccountList != null && !emailAccountList.isEmpty())
 		{
