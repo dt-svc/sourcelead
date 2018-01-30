@@ -14,7 +14,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "states")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="states")
 public class States implements Serializable{
 
 	private static final long serialVersionUID = 1L;

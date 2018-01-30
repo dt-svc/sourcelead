@@ -59,7 +59,7 @@ public class PayrollDaoImpl implements PayrollDao {
 		 
 			Session session = this.sessionFactory.getCurrentSession();
 			List<Payroll> payrolls = new ArrayList<Payroll>();
-			payrolls = session.createQuery("from Payroll payroll where payroll.id =:id" ).setLong("id", id).setCacheable(true).list();
+			payrolls = session.createQuery("from Payroll payroll where payroll.id =:id" ).setLong("id", id).list();
 			logger.debug("Payroll end");
 			if (payrolls.size() > 0) {
 				return payrolls.get(0);
@@ -77,7 +77,7 @@ public class PayrollDaoImpl implements PayrollDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Payroll payroll";
 	   
-		List<Payroll> payrollList = session.createQuery(query.toString()).setCacheable(true).list();
+		List<Payroll> payrollList = session.createQuery(query.toString()).list();
 	    return payrollList;
 	    
 	}

@@ -41,7 +41,7 @@ public class OptionsDaoImpl implements OptionsDao{
 	public List<Option> getOptionsListByLocationId(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Option options where options.orgLocations.id = :orgLocationId and options.status = '1'";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class OptionsDaoImpl implements OptionsDao{
 		Option option = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Option option where option.id= :optionId";
-		List<Option> optionList = session.createQuery(query).setString("optionId", optionId).setCacheable(true).list();
+		List<Option> optionList = session.createQuery(query).setString("optionId", optionId).list();
 		if (optionList != null && optionList.size() > 0) {
 			option = optionList.get(0);
 		}
