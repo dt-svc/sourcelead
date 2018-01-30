@@ -126,7 +126,7 @@ function getConfiguredList(){
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-sm btn-primary">
-                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileSettings_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
                   </label>
                   <c:if test="${!empty SourceLeadWeb_user.fileContentType}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">

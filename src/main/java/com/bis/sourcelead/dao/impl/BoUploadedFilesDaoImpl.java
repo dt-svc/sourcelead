@@ -64,7 +64,7 @@ public class BoUploadedFilesDaoImpl implements BoUploadedFilesDao {
 
 	    String query = "from BoUploadedFiles bo where bo.bankName = :bankName  ";
 
-	    List<BoUploadedFiles> boUploadedFilesList = session.createQuery(query.toString()).setString( "bankName", bankName).setCacheable(true).list();
+	    List<BoUploadedFiles> boUploadedFilesList = session.createQuery(query.toString()).setString( "bankName", bankName).list();
         return boUploadedFilesList;
 	}
 	
@@ -73,7 +73,7 @@ public class BoUploadedFilesDaoImpl implements BoUploadedFilesDao {
 	public BoUploadedFiles getBoUploadedFileById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from BoUploadedFiles bouploadfile where bouploadfile.id = :id" ;
-		List<BoUploadedFiles> boUploadedFilesList =session.createQuery(query).setLong("id", id).setCacheable(true).list(); 
+		List<BoUploadedFiles> boUploadedFilesList =session.createQuery(query).setLong("id", id).list(); 
 		BoUploadedFiles boUploadedFiles = null;
 		if(boUploadedFilesList != null && !boUploadedFilesList.isEmpty()){
 			boUploadedFiles = boUploadedFilesList.iterator().next();

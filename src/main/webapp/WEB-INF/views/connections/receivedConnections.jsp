@@ -80,9 +80,10 @@ window.onload = function () {
 </script>
 <script type="text/javascript">
 function eduMsgFadeinFunction(message) {
-	$("#selector4").fadeIn(200);
-	$("#inviteMessage").text(message);
-    $('#selector4').delay(1000).fadeOut('slow');
+	$("#selector4").fadeIn(200, function(){
+		$("#inviteMessage").text(message);
+		$(this).delay(200).fadeOut('slow');
+	});
 }
 	function getConnectionsList(type){
 		$.post("check-session", {}, function(data) {

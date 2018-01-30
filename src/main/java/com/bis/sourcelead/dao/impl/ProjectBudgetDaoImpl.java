@@ -74,7 +74,7 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	public ProjectBudget getProjectBudgetsByProjectId(Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectBudget  projectBudget  where projectBudget.projectId.id =:projectId";
-		List<ProjectBudget> projectBudget = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+		List<ProjectBudget> projectBudget = session.createQuery(query).setLong("projectId", projectId).list();
 		ProjectBudget projectBd = null;
 		if (projectBudget != null && projectBudget.size() > 0) {
 			projectBd = (ProjectBudget) projectBudget.iterator().next();
@@ -88,7 +88,7 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long projectId,Long loginOrgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.projectId.orgLocationsId =:loginOrgLocationId ";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("loginOrgLocationId", loginOrgLocationId).setCacheable(true).list();
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("loginOrgLocationId", loginOrgLocationId).list();
 		return ProjectBudgetList;
 	}
 
@@ -110,7 +110,7 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	public ProjectBudget getProjectBudgetsById(Long Id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectBudget  projectBudget  where projectBudget.id =:Id";
-		List<ProjectBudget> projectBudget = session.createQuery(query).setLong("Id", Id).setCacheable(true).list();
+		List<ProjectBudget> projectBudget = session.createQuery(query).setLong("Id", Id).list();
 		ProjectBudget projectBd = null;
 		if (projectBudget != null && projectBudget.size() > 0) {
 			projectBd = (ProjectBudget) projectBudget.iterator().next();
@@ -126,10 +126,10 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 		List<ProjectBudget> ProjectBudgetList = null;
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId  projects left join fetch projectbudget.projectId.orgLocationsId orgLoaction where projectbudget.budgetStatus =:budgetStatus and projectbudget.approverUserId.id =:approverUserId and orgLoaction.id = :orgLocationId and projectbudget.status = '1' ";
-			ProjectBudgetList = session.createQuery(query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("budgetStatus", budgetStatus).setCacheable(true).list();
+			ProjectBudgetList = session.createQuery(query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("budgetStatus", budgetStatus).list();
 		}else {
 			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId  projects left join fetch projectbudget.projectId.orgLocationsId orgLoaction where projectbudget.budgetStatus =:budgetStatus and orgLoaction.id = :orgLocationId and projectbudget.status = '1' ";
-			ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("budgetStatus", budgetStatus).setCacheable(true).list();
+			ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("budgetStatus", budgetStatus).list();
 		}
 		
 		return ProjectBudgetList;
@@ -143,10 +143,10 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 		List<ProjectBudget> ProjectBudgetList = null;
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId.orgLocationsId orgLoaction where projectbudget.approverUserId.id =:approverUserId and orgLoaction.id = :orgLocationId and projectbudget.status = '1'";
-			 ProjectBudgetList = session.createQuery(query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			 ProjectBudgetList = session.createQuery(query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).list();
 		}else {
 			String query = "from ProjectBudget  projectbudget left join fetch projectbudget.projectId.orgLocationsId orgLoaction where orgLoaction.id = :orgLocationId and projectbudget.status = '1'";
-			 ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			 ProjectBudgetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		}
 		return ProjectBudgetList;
 	}
@@ -157,7 +157,7 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.budgetStatus = 'Approved' and projectbudget.createdDate >= :startDateUTC and projectbudget.createdDate <= :endDateUTC";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list();
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).list();
 		return ProjectBudgetList;
 	}
 }

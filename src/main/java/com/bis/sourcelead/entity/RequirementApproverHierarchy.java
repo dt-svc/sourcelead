@@ -27,7 +27,6 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 
 @Entity
 @Table(name = "REQUIREMENT_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementApproverHierarchy")
 public class RequirementApproverHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,13 +39,13 @@ public class RequirementApproverHierarchy implements Serializable{
 	@Column(name = "LEVEL")
 	private Integer level;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="APPROVER_USER_ID", nullable=false )        
     private User approverUserId;
 	
