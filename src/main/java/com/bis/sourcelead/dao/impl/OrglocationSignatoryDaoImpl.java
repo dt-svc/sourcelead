@@ -61,7 +61,7 @@ public class OrglocationSignatoryDaoImpl implements OrglocationSignatoryDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationSignatory signatory left join fetch signatory.userRoleId userRole left join fetch userRole.user left join fetch userRole.roles "
 				+ " where signatory.orgLocationId.id = :orgLocationId and signatory.status = '1' ";  
-		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		OrglocationSignatory orglocationSignatory = null;
 		if (orglocationSignatoryList != null && orglocationSignatoryList.size() > 0) {
 			orglocationSignatory = (OrglocationSignatory) orglocationSignatoryList.iterator().next();
@@ -77,7 +77,7 @@ public class OrglocationSignatoryDaoImpl implements OrglocationSignatoryDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationSignatory signatory left join fetch signatory.userRoleId userRole left join fetch userRole.user left join fetch userRole.roles "
 				+ " where signatory.uuid = :uuid and signatory.status = '1' ";  
-		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setString("uuid", uuid).setCacheable(true).list();
+		List<OrglocationSignatory> orglocationSignatoryList =  session.createQuery(query).setString("uuid", uuid).list();
 		OrglocationSignatory orglocationSignatory = null;
 		if (orglocationSignatoryList != null && orglocationSignatoryList.size() > 0) {
 			orglocationSignatory = (OrglocationSignatory) orglocationSignatoryList.iterator().next();

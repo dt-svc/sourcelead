@@ -47,7 +47,7 @@ public class ClientImportDaoImpl implements ClientImportDao{
 		List<BulkClientDetails> bulkClientDetailsList = null;
 		
 		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.recordStatus = '0' and bulkClientDetails.type =:responderType and bulkClientDetails.createdBy = :userCode";
-		bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("responderType", responderType).setString("userCode", user.getUserCode()).setCacheable(true).list();
+		bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("responderType", responderType).setString("userCode", user.getUserCode()).list();
 		
 		return bulkClientDetailsList;
 	}
@@ -61,11 +61,11 @@ public class ClientImportDaoImpl implements ClientImportDao{
 	    List<BulkClientDetails> bulkClientDetailsList = new ArrayList<>();
 		if(bulkClientVendors.getOrgName()!=null || !"".equalsIgnoreCase(bulkClientVendors.getOrgName())){
 			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and bulkClientDetails.orgName = :orgName  and bulkClientDetails.recordStatus ='0' and bulkClientDetails.type =:responderType";
-			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setString("orgName", bulkClientVendors.getOrgName()).setString("responderType", responderType).setCacheable(true).list();
+			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setString("orgName", bulkClientVendors.getOrgName()).setString("responderType", responderType).list();
 		}
 		else{
 			String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.email = :email and bulkClientDetails.ownerEmail = :ownerEmail and  bulkClientDetails.recordStatus ='0' and bulkClientDetails.type =:responderType";
-			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setString("responderType", responderType).setCacheable(true).list();
+			bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", bulkClientVendors.getEmail()).setString("ownerEmail", bulkClientVendors.getOwnerEmail()).setString("responderType", responderType).list();
 			
 		}
 		
@@ -83,7 +83,7 @@ public class ClientImportDaoImpl implements ClientImportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		BulkClientDetails bulkClientDetails = null;
 		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.id = :recordId and bulkClientDetails.type =:responderType";
-		List<BulkClientDetails> bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("responderType", responderType).setLong("recordId", recordId).setCacheable(true).list();
+		List<BulkClientDetails> bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("responderType", responderType).setLong("recordId", recordId).list();
 		
 		if(null != bulkClientDetailsList && bulkClientDetailsList.size() >0){
 			bulkClientDetails = bulkClientDetailsList.get(0);

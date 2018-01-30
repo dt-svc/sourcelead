@@ -285,7 +285,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		expensesApproverHierarchyDto.setTdSpanLength("9");
 		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
 		 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
-		 expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
+		 	expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
+		}else {
+			expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
 		}
 		expensesApproverHierarchyDto.setNoOfExpenses(expensesApproverHierarchy.getExpenseId().getNoOfExpenses());
 		expensesApproverHierarchyDto.setExpId(expensesApproverHierarchy.getExpenseId().getId());

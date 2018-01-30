@@ -21,7 +21,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "JOB_ALERTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="jobAlerts")
 public class JobAlert implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -31,7 +30,7 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User userId;

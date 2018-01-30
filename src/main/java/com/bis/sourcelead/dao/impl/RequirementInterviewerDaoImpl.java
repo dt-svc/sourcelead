@@ -65,7 +65,7 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.status = 1";
-		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setCacheable(true).list();
+		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).list();
 		return requirementInterviewersList;
 	}
 
@@ -78,7 +78,7 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.status = 1";
-		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setCacheable(true).list();
+		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).list();
 		for(RequirementInterviewer requirementInterviewer : requirementInterviewersList) {
 			RequirementInterviewerDTO requirementInterviewerDTO = new RequirementInterviewerDTO();
 			requirementInterviewerDTO.setId(requirementInterviewer.getId());
@@ -110,7 +110,7 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		logger.debug("In RequirementInterviewer getInterviwerstByInterviewIdAndUserId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from RequirementInterviewer rir where rir.requirementInterview.id = :requirementInterviewerId and rir.interviewerUser.id = :userId" ;
-		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("requirementInterviewerId", requirementInterviewerId).setLong("userId", userId).setCacheable(true).list(); 
+		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("requirementInterviewerId", requirementInterviewerId).setLong("userId", userId).list(); 
 		RequirementInterviewer interviewer = null;
 		if(interviewerList != null && !interviewerList.isEmpty()){
 			interviewer = interviewerList.iterator().next();
@@ -126,7 +126,7 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		logger.debug("In RequirementInterviewer getInterviwerstByInterviewIdAndUserId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from RequirementInterviewer rir where rir.requirementInterview.submissionId.orgLocations.id = :loginOrgLocations and rir.interviewerUser.id IN(:userId) and( rir.requirementInterview.startTime >= :startDateUTC and rir.requirementInterview.endTime <= :endDateUTC)" ;
-		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("loginOrgLocations", loginOrgLocations.getId()).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("userId", interviewerIds).setCacheable(true).list(); 
+		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("loginOrgLocations", loginOrgLocations.getId()).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("userId", interviewerIds).list(); 
 		return interviewerList;
 	}
 	
@@ -138,7 +138,7 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		 boolean flag = false;
 		 if(requirementInterviewerId != null && reqUUID != null && userId != null){
 				String query = "from RequirementInterviewer ri where ri.interviewerUser.id = :userId and ri.requirementInterview.submissionId.requirement.requirementUUID = :reqUUID and ri.requirementInterview.id = :requirementInterviewerId";
-				List<RequirementInterviewer> interviewList = session.createQuery(query).setLong("userId", userId).setLong("requirementInterviewerId", requirementInterviewerId).setString("reqUUID", reqUUID).setCacheable(true).list();
+				List<RequirementInterviewer> interviewList = session.createQuery(query).setLong("userId", userId).setLong("requirementInterviewerId", requirementInterviewerId).setString("reqUUID", reqUUID).list();
 				if (interviewList != null && interviewList.size() > 0) {
 					flag = true;
 				}

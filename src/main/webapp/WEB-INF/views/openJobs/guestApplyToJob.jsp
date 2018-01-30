@@ -26,10 +26,11 @@
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
+
 
 <style>
 .viewTemplate {
@@ -186,7 +187,7 @@ $(document).ready(function() {
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
-	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
+	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId);
 	});
 </script>
 <script>

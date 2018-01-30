@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_DOCUMENT_FOLDER")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectDocumentFolder")
 public class ProjectDocumentFolder implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -39,7 +38,7 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projectId;

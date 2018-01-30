@@ -62,7 +62,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			 
 		String query = "select resourceRequest.id from ProjectPlanningResourceRequest resourceRequest where resourceRequest.projectPlanningRequestId.id = :projectPlanningRequestId and (resourceRequest.resourceStatus IS NULL OR resourceRequest.resourceStatus = 'Rejected')";
 		List<Long> lineItemsIdsList =  session.createQuery(query.toString()).setLong("projectPlanningRequestId", projectPlanningRequestId)
-									.setCacheable(true).list();
+									.list();
 		
 		return lineItemsIdsList;
 	}
@@ -74,7 +74,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectPlanningResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId "
 				+ " where resourceRequest.id = :id and resourceRequest.status = '1' ";  
-		List<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		List<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = session.createQuery(query).setLong("id", id).list();
 		ProjectPlanningResourceRequest projectPlanningResourceRequest = null;
 		if(projectPlanningResourceRequestList != null && !projectPlanningResourceRequestList.isEmpty()){
 			projectPlanningResourceRequest = projectPlanningResourceRequestList.iterator().next();
@@ -108,7 +108,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectPlanningResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId left join fetch resourceRequest.candidateId "
 				+ " where resourceRequest.requestUUID = :requestUUID and resourceRequest.status = '1' ";  
-		List<ProjectPlanningResourceRequest> resourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).setCacheable(true).list();
+		List<ProjectPlanningResourceRequest> resourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).list();
 		ProjectPlanningResourceRequest projectPlanningResourceRequest = null;
 		if(resourceRequestList != null && !resourceRequestList.isEmpty()){
 			projectPlanningResourceRequest = resourceRequestList.iterator().next();
@@ -175,10 +175,10 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			
 			queryObj.setFirstResult(resourceRequestDTO.getStart());
 			queryObj.setMaxResults(resourceRequestDTO.getLength());
-			queryObj.setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			queryObj.setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			resourceRequestList= queryObj.list();
 			
-			countlist = session.createQuery("select count(*) " + query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = resourceRequestList.size();
 			}
@@ -196,10 +196,10 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			
 			queryObj.setFirstResult(resourceRequestDTO.getStart());
 			queryObj.setMaxResults(resourceRequestDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			resourceRequestList = queryObj.list();
 			
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocationId).setString("resourceStatus", resourceRequestDTO.getResourceStatus()).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = resourceRequestList.size();
 			}
@@ -266,13 +266,13 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			String query = "from ProjectPlanningResourceRequest resourceRequest  "
 					+ " where resourceRequest.projectPlanningRequestId.approverUser.id = :approverUserId and resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
-			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).list();
 			
 		}else {
 			String query = "from ProjectPlanningResourceRequest resourceRequest  "
 					+ " where  resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
-			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 			
 		}
 		

@@ -46,7 +46,7 @@ public class UserCustomFieldDataDaoImpl implements UserCustomFieldDataDao{
 			formIds.add(form.getCustomFormFieldId());
 		}
 		String query = "from UserCustomFieldData userData left join fetch userData.orglocationsFormFields formField left join fetch userData.user usr where usr.id =:userId and formField.id IN(:formFieldId)";
-		List<UserCustomFieldData> userFieldData  = session.createQuery(query).setLong("userId", userId).setParameterList("formFieldId", formIds).setCacheable(true).list();
+		List<UserCustomFieldData> userFieldData  = session.createQuery(query).setLong("userId", userId).setParameterList("formFieldId", formIds).list();
 		return userFieldData;
 	}
 

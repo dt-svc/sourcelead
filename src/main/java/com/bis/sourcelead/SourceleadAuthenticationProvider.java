@@ -114,7 +114,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  
 //        		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
-        		  try {
+        		/*  try {
 					 userRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -128,9 +128,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
             		  else{
             			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
             		  }
-        		   }else{
+        		   }else{*/
         			   return userLoginHelper.redirectToDashboard(userRole,username,password,null);
-        		   }
+        		   /*}*/
         		    
         			  /*OrgLocations orgLocations = null;
         			  Org org = null;

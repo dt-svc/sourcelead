@@ -122,7 +122,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			query.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
 		}
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList = query.setLong("locationsId", locationsId).setLong("projectId", projectId).setCacheable(true).list();
+		List<ProjectMembers> projectMemberList = query.setLong("locationsId", locationsId).setLong("projectId", projectId).list();
 		return projectMemberList;
 	}
 
@@ -159,7 +159,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId left join fetch pm.masterCandidateId mc "
 				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc "
 				+ "where pm.id = :id" ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -201,7 +201,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectMember getAllProjectMembers method");
         Session session = this.sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(ProjectMembers.class);
-        List<ProjectMembers> projectsMembersList = crit.setCacheable(true).list();
+        List<ProjectMembers> projectsMembersList = crit.list();
         return projectsMembersList;
 	}
 		
@@ -220,7 +220,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 														.setLong("orgRelationId", orgRelationId)
 				                                        .setLong("orgLocationId", orgLocationId)
 				                                        .setLong("projectId", projectId)
-				                                        .setCacheable(true)
+				                                        
 				                                        .list(); 
 		      
 	    return projectMembersList.size();
@@ -239,7 +239,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> idsList =session.createQuery(query)
 											.setInteger("userId", userId.intValue())
 											.setParameter("currentDate", currentDate)
-											.setCacheable(true)
+											
 										    .list(); 
 		return idsList;  
 	}
@@ -252,7 +252,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status ='OPEN' and  pmh.projectTerminationDate < :currentDate)" ;
 		List<ProjectMembers> idsList =session.createQuery(query)
 											.setParameter("currentDate", currentDate)
-											.setCacheable(true)
+											
 										    .list(); 
 		return idsList;  
 	}
@@ -264,7 +264,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		String subQueryForUserIdChecking = "(pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where "+subQueryForUserIdChecking+" and pm.projects.id = :projectId" ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("userId", userId).setLong("projectId", projectId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("userId", userId).setLong("projectId", projectId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -278,7 +278,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee where pm.employee.id = :empId and pm.projects.id = :projectId" ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("empId", empId).setLong("projectId", projectId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("empId", empId).setLong("projectId", projectId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -291,7 +291,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId and pm.id IN( select pmh.projectMemberId.id from ProjectMembersHistory pmh where (pmh.projectTerminationDate IS NULL) OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pm.projects.endDate) OR (pmh.projectAssignedDate > pm.projects.endDate)) " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).list(); 
 		return pmList;  
 	}
 
@@ -303,7 +303,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		 
 		String query = "from ProjectMembers pm left join fetch pm.projects pj left join fetch pj.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee where pj.orgLocationsId = :orgLocationsId and  pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ";
-		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).list();
 		return projectMemberList;
 	}
 	
@@ -313,7 +313,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   left join fetch pc.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId  where pm.status = '1' and pm.projectMemberCandidteId.id = :candidateId and  pc.orgLocationsId.id = :locationsId ";
-		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("candidateId", candidateId).list();
 		return projectMemberList;
 	}
 	
@@ -334,7 +334,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			    + ") "; 
 		
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).list();
 		return projectMemberList;
 	}
 	
@@ -512,7 +512,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setCacheable(true).setFirstResult(start).setMaxResults(length).list();
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setFirstResult(start).setMaxResults(length).list();
 		response.setData(projectMemberList);
 		
 		Query countQ = session.createQuery(countQuery);
@@ -525,11 +525,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 			countQ.setString("timesheetFrequency", timesheetFrequency);
 		}
-		countQ.setLong("locationsId", locationsId).setLong("userId", approverUserId).setCacheable(true);
+		countQ.setLong("locationsId", locationsId).setLong("userId", approverUserId);
 		
 		List<Long> countList  = null;
 		if(countQ != null) {
-			countList  = countQ.setCacheable(true).list();
+			countList  = countQ.list();
 		}
 		int recordsTotal=0;
 		if(countList != null && !countList.isEmpty()) {
@@ -592,7 +592,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setCacheable(true).list();
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).list();
 		return projectMemberList;
 	}
 	
@@ -647,7 +647,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setCacheable(true).list();
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).list();
 		return projectMemberList;
 	}
 	
@@ -661,7 +661,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "from ProjectMembers pm left join fetch pm.projects pj where  pm.projects.id = :projectId";
-		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("projectId",projectId).setCacheable(true).list();
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("projectId",projectId).list();
 		return projectMemberList;
 		
 	}
@@ -676,7 +676,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
-		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
+		projectsMembersList=projectsMembersListQuery.setLong("id", id).list();
 		return projectsMembersList;
         
 	}
@@ -689,7 +689,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc where pc.orgLocationsId.id = :locationsId and pm.projects.id = :id and pm.status = '1' ");
-		projectsMembersList=projectsMembersListQuery.setLong("id", id).setLong("locationsId", locationsId).setCacheable(true).list();
+		projectsMembersList=projectsMembersListQuery.setLong("id", id).setLong("locationsId", locationsId).list();
 		return projectsMembersList;
         
 	}
@@ -702,7 +702,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId and pm.isManuallyTerminated = :isManuallyTerminated " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setParameter("isManuallyTerminated", isManuallyTerminated).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setParameter("isManuallyTerminated", isManuallyTerminated).list(); 
 		return pmList;  
 	}
 
@@ -714,7 +714,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select pm.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )" ;
 		List<Long> idsList =session.createQuery(query).setInteger("userId", userId.intValue()) 
-			    .setCacheable(true).list(); 
+			    .list(); 
 		return idsList;  
 		
         
@@ -747,7 +747,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String subQueryForUserIdChecking = "(pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId) OR pm.projects.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and (pm.id IN(select pmh.projectMemberId.id from ProjectMembersHistory pmh where pmh.status ='OPEN' and  pmh.projectAssignedDate <= :nextMondayDate and (pmh.projectTerminationDate IS NULL OR pmh.projectTerminationDate >= :previousMonday))) and (pm.id NOT IN(select ts.projectMembers.id from TimesheetSubmissions ts where ts.status ='1' and ts.startDate = :nextMondayDate))" ;
 		List<ProjectMembers> idsList =session.createQuery(query).setInteger("userId", userId.intValue()).setParameter("previousMonday", previousMondaySqlDate).setParameter("nextMondayDate", nextMondaySqlDate) 
-			    .setCacheable(true).list(); 
+			    .list(); 
 		return idsList;  
 	}
 
@@ -764,7 +764,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectClientsId left join fetch pm.employee emp left join fetch pm.projectMemberCandidteId "
 				+ " where (pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId )"+subQuery+" and pm.projects.projectMode <> 'Draft')" ;
 		
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setCacheable(true) 
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId) 
 			    .list();
 		return allProjectsList;
 	}
@@ -774,7 +774,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.employee emp left join fetch emp.user user  where pm.projects.id IN (:projectIds) GROUP BY pm.employee" ;
-		List<ProjectMembers> allProjectMembersList =session.createQuery(query).setParameterList("projectIds", projectIds).setCacheable(true) 
+		List<ProjectMembers> allProjectMembersList =session.createQuery(query).setParameterList("projectIds", projectIds) 
 			    .list();
 		return allProjectMembersList;
 	}
@@ -787,7 +787,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		    Session session = this.sessionFactory.getCurrentSession();
 		    String status = Constants.MEMBER_ACTIVE;
 		    String query = "select count(*) from ProjectMembers pm  where pm.projects.id = :id and pm.status = :status";
-		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query).setLong("id", id).setString("status", status).setCacheable(true).list();
+		    List<Long> ProjectMembersCount = (List<Long>) session.createQuery(query).setLong("id", id).setString("status", status).list();
 		    
 		    Integer count = null;
 			if(ProjectMembersCount != null && !ProjectMembersCount.isEmpty()){
@@ -816,7 +816,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setString("status",status).setCacheable(true).list(); 
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setString("status",status).list(); 
 		return allProjectsList;
 	}
 
@@ -866,7 +866,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				                                     .setLong("userId", userId)
 			  	                                     .setDate("sqlCurrentDate", sqlCurrentDate)
 	    		                                      .setDate("endDate", endDate)
-				                                      .setCacheable(true) 
+				                                       
 			                                          .list();
 		return allProjectsList;
 		
@@ -900,7 +900,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	        
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId  "+ subQuery2 + "");
 
-		projectsMembersList=projectsMembersListQuery.setLong("projectId", projectId).setCacheable(true).list();
+		projectsMembersList=projectsMembersListQuery.setLong("projectId", projectId).list();
 		return projectsMembersList;
 	
 	}
@@ -942,7 +942,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	        @SuppressWarnings("unchecked")
 	        List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString())
 	                .setLong("projectMemberId", projectMemberId).setParameter("approvalStatus", Submission_Status.APPROVED)
-	                .setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
+	                .setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 	        LinkedHashMap<String, Float> monthTotals = new LinkedHashMap<>();
 	        float totalHours = 0f;
 	        float billableTotalHours = 0f;
@@ -1108,7 +1108,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
 				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc where loc.id = :orglocationId ";
-		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
+		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("orglocationId", orglocationId).list();
 		return allProjectMembersList;
 	}
 
@@ -1120,7 +1120,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.employee emp where emp.id = :employeeId";
-		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("employeeId", employeeId).setCacheable(true).list();
+		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("employeeId", employeeId).list();
 		return allProjectMembersList;
 	}
 
@@ -1133,7 +1133,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select pm.id from ProjectMembers pm where pm.projects.id = :projectId" ;
 		List<Long> idsList =session.createQuery(query).setLong("projectId", projectId) 
-			    .setCacheable(true).list(); 
+			    .list(); 
 		return idsList;  
 		
 	}
@@ -1201,7 +1201,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	        		 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
 	        					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
 	        					+ "where pm.projectClientsId = :projectClientsId  "+ subQuery2 + " "+subquery3+"");
-	        			pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+	        			pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).list();
 	        			projectsMembersList.addAll(pmList);
 	        	}
 	        }else {
@@ -1209,7 +1209,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
      					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
      					+ "where pm.projectClientsId = :projectClientsId  "+ subQuery2 + "");
 
-	        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+	        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).list();
 	        	 projectsMembersList.addAll(pmList);
 	        }
 	        return projectsMembersList;
@@ -1225,7 +1225,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				String query = "select pm.id from ProjectMembers pm where pm.projects.id = :projectId and "
 						+ "pm.projectClientsId.orgLocationsId.id = :orglocationId and pm.status = '1' " ;
 				List<Long> idsList =session.createQuery(query).setLong("projectId", projectId).setLong("orglocationId", orglocationId)  
-					    .setCacheable(true).list(); 
+					    .list(); 
 				return idsList;  
         
 	}
@@ -1241,7 +1241,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = " from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId "
 				+ " left join fetch pm.projectClientsId left join fetch pm.projectClientsId.orgLocationsId "
 				+ "where pm.projects.id = :projectId and pm.projectMemberCandidteId = :candidateId and pm.projectClientsId.orgLocationsId.id = :orgLocationId and pm.status = '1' " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("candidateId", candidateId).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("candidateId", candidateId).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -1258,7 +1258,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.masterCandidateId  where pm.projects.id = :projectId and "
 				+ " pm.masterCandidateId.id = :masterCandidateId and pm.status = '1'" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId",projectId).setCacheable(true).list(); 
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId",projectId).list(); 
 		return allProjectsList;
 	}
 
@@ -1285,7 +1285,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
 				+ "pm.projects.id = :projectId and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("candidateId", candidateId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("candidateId", candidateId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -1301,7 +1301,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
 				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and loc.id = :locationId and pm.status = '1' " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("masterCandidateId", masterCandidateId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("masterCandidateId", masterCandidateId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -1317,7 +1317,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
  		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm  left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.masterCandidateId mc  left join fetch pm.projectMemberCandidteId pmc left join fetch pm.projects projects where  "
 				+ " (projects.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )) and pc.level IN ( select MIN(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"' and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projects.id = pm.projects.id) and pm.status = '1' " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -1351,7 +1351,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
  					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
  					+ "where pm.projectClientsId = :projectClientsId  and pm.status ='1'");
-        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).list();
 	        	 projectsMembersList.addAll(pmList);
 	      
 	        return projectsMembersList;
@@ -1367,7 +1367,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
 				+ "pm.projectClientsId.id = :projectClientsId and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
-		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectClientsId", projectClientsId).setLong("candidateId", candidateId).setCacheable(true).list(); 
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectClientsId", projectClientsId).setLong("candidateId", candidateId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
 			pm  = pmList.iterator().next();
@@ -1385,7 +1385,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
         	 Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId cand "
  					+ "left join fetch pm.projects left join fetch pm.employee emp left join fetch cand.consultantUser user  "
  					+ "where pm.projectClientsId = :projectClientsId");
-        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).setCacheable(true).list();
+        	 pmList = projectsMembersListQuery.setLong("projectClientsId", projectClientsId).list();
 	        	 projectsMembersList.addAll(pmList);
 	      
 	        return projectsMembersList;

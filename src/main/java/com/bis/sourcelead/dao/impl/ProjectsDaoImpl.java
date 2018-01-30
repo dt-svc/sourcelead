@@ -162,7 +162,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project left join fetch project.orgRelationId left join fetch project.orgLocationsId orgLoc left join fetch orgLoc.org  where project.id = :id ";
-		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("id", id).list();
 
 		Projects projects = null;
 		if (projectsList != null && projectsList.size() > 0) {
@@ -180,7 +180,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectMode = 'Finished' ";
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return projectsList;
 	}
@@ -195,7 +195,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In ProjectsDaoImpl class getProjectIdsByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select project.id from Projects project where project.orgLocationsId = :orgLocationsId ";
-		List<Long> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<Long> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return projectsList;
 	}
@@ -213,7 +213,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		//String subQueryForUserIdChecking = "project.id IN ( select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) OR project.id IN(select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id = :userId))";
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.endDate < :currentDate";
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("currentDate", currentDate).setCacheable(true).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("currentDate", currentDate).list();
 		
 		return projectsList;
 	}
@@ -229,7 +229,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		String query = "from Projects project where  project.endDate < :currentDate";
-		List<Projects> projectsList =  session.createQuery(query.toString()).setParameter("currentDate", currentDate).setCacheable(true).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setParameter("currentDate", currentDate).list();
 		
 		return projectsList;
 	}
@@ -244,7 +244,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.isPrimary = '1' ";
-		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 
 		Projects projects = null;
 		if (projectsList != null && projectsList.size() > 0) {
@@ -294,7 +294,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				Collection<Projects> projectsList = session.createQuery(query.toString())
 						                                   .setLong("orgLocationsId", orgLocationsId)
 						                                   .setString("projectSequeneNumber", projectSequeneNumber)
-						                                   .setCacheable(true)
+						                                   
 						                                   .list();
 
 				if (projectsList != null && projectsList.size() > 0) {
@@ -313,7 +313,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In Projects getAllProjects method");
         Session session = this.sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(Projects.class);
-        List<Projects> projectsList = crit.setCacheable(true).list();
+        List<Projects> projectsList = crit.list();
         return projectsList;
 	}
 	
@@ -329,7 +329,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
         List<Projects> projectsList  =   session.createQuery(query.toString())
 								        		.setParameterList("projectIds", projectIds)
 								        		.setLong("orgLocationId", orgLocationId)
-								        		.setCacheable(true)
+								        		
 								        		.list();
        
         return projectsList;
@@ -346,7 +346,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		List<Long> deptCount =   session.createQuery(query.toString())
 				                         .setLong("projectId", projectId)
-				                         .setCacheable(true)
+				                         
 				                         .list();
 			Integer count = 0;
 			if(deptCount != null && !deptCount.isEmpty()){
@@ -373,7 +373,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		List<Projects> clientProjectsList =  session.createQuery(query.toString())
 													.setLong("orgRelationId", orgRelationId)
 													.setLong("locationId", locationId)
-													.setCacheable(true)
+													
 													.list();
 		
 		return clientProjectsList;
@@ -412,7 +412,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		List<Long> projectsIdList =  session.createQuery(query.toString())
 									.setLong("userId", userId)
 									.setLong("orgLocationId", orgLocationId)
-									.setCacheable(true).list();
+									.list();
 		
 		return projectsIdList;
 
@@ -426,7 +426,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		String query = "from Projects p where p.projectSequeneNumber = :projectSequeneNumber";
 		List<Projects> projectsList =  session.createQuery(query.toString())
 											  .setString("projectSequeneNumber", projectSequeneNumber)
-											  .setCacheable(true).list();
+											  .list();
 		if(projectsList != null){
 			return projectsList.get(0);
 		}
@@ -495,18 +495,18 @@ public class ProjectsDaoImpl implements ProjectsDao{
 					String subquery1 = "ps.orgRelationId =" + clnt;
 					String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subquery1 + " "
 							+ subQuery2 + "   and ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
-					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 					projectssList.addAll(plist);
 
 				}
 			} else if (subQuery2 != null && !"".equals(subQuery2)) {
 
 				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subQuery2 + " and  ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
-				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 				projectssList.addAll(plist);
 			} else {
 				String query = "from  Projects ps   left join fetch ps.orgLocationsId  where ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
-				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 				projectssList.addAll(plist);
 			}
 
@@ -519,7 +519,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 					String subquery3 = " (ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
 					String query = "from  Projects ps   left join fetch ps.orgLocationsId  where " + subquery3 + " and  ps.orgLocationsId = :orgLocationsId "
 							+ subquery1 + " " + subQuery2 + " ORDER BY ps.createdDate DESC";
-					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+					plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).list();
 					projectssList.addAll(plist);
 
 				}
@@ -528,14 +528,14 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				String subquery3 = " and (ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
 				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where " + subQuery2 + " "
 						+ subquery3 + " and ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
-				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).list();
 				projectssList.addAll(plist);
 			}
 			else{
 				
 				String subquery3 = "(ps.id IN(select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId = :userId))";
 				String query = "from  Projects ps  left join fetch ps.orgLocationsId  where "+ subquery3 + " and ps.orgLocationsId = :orgLocationsId ORDER BY ps.createdDate DESC";
-				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+				plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).list();
 				projectssList.addAll(plist);
 			}
 		}
@@ -637,9 +637,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
 			queryObj.setMaxResults(projectsDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = projectsList.size();
 			}
@@ -654,9 +654,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
 			queryObj.setMaxResults(projectsDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = projectsList.size();
 			}
@@ -671,9 +671,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
 			queryObj.setMaxResults(projectsDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = projectsList.size();
 			}
@@ -687,9 +687,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			
 			queryObj.setFirstResult(projectsDTO.getStart());
 			queryObj.setMaxResults(projectsDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				filterCount = projectsList.size();
 			}
@@ -804,7 +804,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Projects pj where pj.orgLocationsId = :orgLocationsId and pj.id NOT IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId )) ";
-			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).list();
 			return projectsList;
 		}
 		
@@ -822,7 +822,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 						 + " OR "
 						 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 					  + " ))";
-			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).list();
 			return projectsList;
 		}
 
@@ -834,7 +834,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Projects project left join fetch project.orgRelationId where project.id = :projectId and project.orgLocationsId = :orgLocationId ";
 			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId)
-					.setCacheable(true).list();
+					.list();
 			
 			
 			Projects projects = null;
@@ -855,7 +855,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			String query = "select pj from  Projects pj where pj.id IN (select pm.projects.id from ProjectMembers pm  "
 					+ "where pm.projectMemberCandidteId.id IN (select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId )  and pm.status = '1') and pj.projectMode <> 'Draft' " ;
 			List<Projects> projectsList =session.createQuery(query.toString()).setLong("userId", userId)
-					.setLong("orgLocationId", orgLocationId).setCacheable(true).list(); 
+					.setLong("orgLocationId", orgLocationId).list(); 
 			      
 		    return projectsList.size();
 			  
@@ -886,7 +886,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			
 			
 			String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate >= :frmDate and ts.endDate < :endsDate)  and ts.status = '1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-			List<User> userList  =  session.createQuery(query.toString()).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).setCacheable(true).list(); 
+			List<User> userList  =  session.createQuery(query.toString()).setDate("frmDate", previousWeekStartDayDate).setDate("endsDate", currentWeekStartDayDate).list(); 
 			logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
 			HashSet<User> userSet  = null;
 			if(userList != null && !userList.isEmpty()){
@@ -905,7 +905,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from SubmissionApproverHierarchy sah left join fetch sah.submissionId ts left join fetch ts.projectMembers pm left join fetch pm.employee emp left join fetch emp.user where emp.user.id = :userId";
-			List<SubmissionApproverHierarchy> userList  = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list(); 
+			List<SubmissionApproverHierarchy> userList  = session.createQuery(query.toString()).setLong("userId", userId).list(); 
 			return userList;
 		}
 /**
@@ -931,10 +931,10 @@ public HashSet<User> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invo
 	List<User> userList = null;
 	if(invoiceFrequency !=null && !"".equalsIgnoreCase(invoiceFrequency)){
 		String query = "from User user where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = :invoiceFrequency and emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-		userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
+		userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setString("invoiceFrequency", invoiceFrequency).list(); 
 	}else{
 		String query = "from User user where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-		userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).setCacheable(true).list(); 
+		userList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", currentMondayDate).list(); 
 	}
 	
 	logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+userList.size());
@@ -970,7 +970,7 @@ public Integer getProjectApproversCountByUserIdAndOrgLocationId(Long userId, Lon
 		String query = "select count(pc.projectId.id) from ProjectClients pc "
 				+ "where pc.projectId.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :userId) and pc.orgLocationsId.id = :orgLocationId ";
 		
-		List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(projectsCount != null && !projectsCount.isEmpty()){
 				count = projectsCount.get(0).intValue();
@@ -990,7 +990,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
       Date previousDate = CalendarUtil.getCurrentWeekDay("MON"); 
       java.sql.Date previousDayDate = new java.sql.Date(previousDate.getTime()); 
       String query = "from User user where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = 'Weekly' and emp.id IN(select pm.employee from ProjectMembers pm where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))"; 
-      List<User> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
+      List<User> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).list(); 
       logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
       HashSet<User> userSet  = null;
 		if(userList != null && !userList.isEmpty()){
@@ -1007,7 +1007,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		Session session = this.sessionFactory.getCurrentSession();
 			String query = "select count(projects.id) from Projects projects where projects.orgLocationsId.id = :orgLocationId ";
 			
-			List<Long> projectsCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			List<Long> projectsCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 			Integer count = 0;
 			if(projectsCount != null && !projectsCount.isEmpty()){
 					count = projectsCount.get(0).intValue();
@@ -1025,7 +1025,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				Collection<ProjectTasks> projectTaskList = session.createQuery(query.toString())
 						                                   .setLong("projectId", projectId)
 						                                   .setString("taskname", taskname)
-						                                   .setCacheable(true)
+						                                   
 						                                   .list();
 
 				if (projectTaskList != null && projectTaskList.size() > 0) {
@@ -1042,7 +1042,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects p where  p.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgRelationId.id = :orgRelationId and (pc.orgRelationId.locationId.id = :orgLocationsId  OR pc.orgRelationId.responderLocationId.id = :orgLocationsId ))  and p.projectStatus <> 'ONHOLD'";
-		return session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("orgLocationsId", orgLocationId).setCacheable(true).list();
+		return session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("orgLocationsId", orgLocationId).list();
 	}
 
 	@Override
@@ -1051,7 +1051,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 		return projectsList;
 	}
 
@@ -1061,7 +1061,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Projects> projects = new ArrayList<Projects>();
 		logger.debug("getProjectByProjectUUID start");
-		projects = session.createQuery("from Projects projects left join fetch projects.orgLocationsId where projects.projectUUID = :projectUUID" ).setCacheable(true).setString("projectUUID", projectUUID ).setCacheable(true).list();
+		projects = session.createQuery("from Projects projects left join fetch projects.orgLocationsId where projects.projectUUID = :projectUUID" ).setString("projectUUID", projectUUID ).list();
 		logger.debug("getProjectByProjectUUID end");
 		if (projects != null && projects.size() > 0) {
 			return projects.get(0);
@@ -1076,7 +1076,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects projects where projects.id =(SELECT MAX(pj.id) FROM Projects pj where pj.orgLocationsId.id =:orgLocationId)";  
-		List<Projects> project  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Projects> project  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(project.isEmpty()){
 			return null;
 		}
@@ -1092,7 +1092,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects projects where projects.orgLocationsId = :clientOrgLocationId and projects.projectMode = 'Finished' "
 				+ "and projects.id NOT IN (select pc.projectId.id from ProjectClients pc where pc.orgLocationsId.id = :orgLocationsId)";
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("clientOrgLocationId", clientOrgLocationId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("clientOrgLocationId", clientOrgLocationId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return projectsList;
 	}
@@ -1106,7 +1106,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		 boolean flag = false;
 		 if(shortCode != null && orgLocationsId != null){
 				String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectShortCode = :shortCode ";
-				Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("shortCode", shortCode).setCacheable(true).list();
+				Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("shortCode", shortCode).list();
 
 				if (projectsList != null && projectsList.size() > 0) {
 					flag = true;
@@ -1122,7 +1122,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		Session session = this.sessionFactory.getCurrentSession();
 			String query = "select count(projects.id) from Projects projects where projects.orgLocationsId.id = :orgLocationId and projects.createdBy =:userCode";
 			
-			List<Long> projectsCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode", userCode).setCacheable(true).list();
+			List<Long> projectsCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode", userCode).list();
 			Integer count = 0;
 			if(projectsCount != null && !projectsCount.isEmpty()){
 					count = projectsCount.get(0).intValue();
@@ -1136,7 +1136,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectName = :projectName ";
-		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("projectName", projectName).setCacheable(true).list();
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("projectName", projectName).list();
 
 		Projects projects = null;
 		if (projectsList != null && projectsList.size() > 0) {
@@ -1151,7 +1151,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			String projectClientUUID) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.uuid <> :uuid ) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setString("uuid", projectClientUUID).setCacheable(true).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setString("uuid", projectClientUUID).list();
 		return projectsList;
 	}
 
@@ -1162,7 +1162,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Projects ps where ps.id IN (select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId) ";
-		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setCacheable(true).list();
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).list();
 		
 		return projectsList;
 	}

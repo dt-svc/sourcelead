@@ -18,7 +18,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "BO_UPLOADED_FILES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boUploadedFiles")
 public class BoUploadedFiles implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

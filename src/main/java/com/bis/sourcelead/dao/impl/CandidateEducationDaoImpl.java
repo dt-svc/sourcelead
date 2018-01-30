@@ -84,7 +84,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEducation ce where  ce.candidateId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";
-		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return candidateEducation;
 	}
 	
@@ -109,7 +109,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orglocationId where cEmp.id = :candidateEducationId and cEmp.candidateId.id = :candidateId ";
-		List<CandidateEducation> educationList = session.createQuery(query.toString()).setLong("candidateEducationId", candidateEducationId).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<CandidateEducation> educationList = session.createQuery(query.toString()).setLong("candidateEducationId", candidateEducationId).setLong("candidateId", candidateId).list();
 		CandidateEducation canEMp = null;
 		if (educationList != null && educationList.size() > 0) {
 			canEMp = (CandidateEducation) educationList.iterator().next();
@@ -123,7 +123,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId where cEmp.candidateId.id = :candidateId and cEmp.status ='1' ";
-		List<CandidateEducation> educationList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<CandidateEducation> educationList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
 		CandidateEducation canEMp = null;
 		if (educationList != null && educationList.size() > 0) {
 			canEMp = (CandidateEducation) educationList.iterator().next();
@@ -138,7 +138,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
 		String query = "from CandidateEducation cEmp where cEmp.name = :candidateEducation and cEmp.candidateId.id = :candidateId and cEmp.status ='1' ";
-		List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setString("candidateEducation", candidateEducation).setCacheable(true).list();
+		List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setString("candidateEducation", candidateEducation).list();
 		if (educationList != null && educationList.size() > 0) {
 			flag = true;
 			return flag;
@@ -154,7 +154,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select edu.name from CandidateEducation edu where edu.candidateId.id =:candidateId and edu.status = '1'";
-		List<String> educationNames = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+		List<String> educationNames = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return educationNames;
 	}
 }
