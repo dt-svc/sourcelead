@@ -99,6 +99,7 @@ function redirectlocation(location){
 			result = result + '<th>Leave Type</th>';
 			result = result + '<th>Duration</th>';
 			result = result + '<th>No Of Days</th>';
+			result = result + '<th>No Of Extra Days</th>';
 			result = result + '<th>Leaves Taken</th>';
 			result = result + '<th>Approved By</th>';
 			result = result + '<th>Cancelled By</th>';
@@ -170,6 +171,14 @@ function redirectlocation(location){
 	            	   return result; 
 	              }
 	            }, {
+	                "targets": colIndex++,
+	                "data": "noOfDays",
+	                "render": function ( data, type, opt, meta ) {
+	              	   var result = "";
+	              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
+	              	    return result; 
+	                }
+	              },{
 	                "targets": colIndex++,
 	                "data": "leavesTaken",
 	                "render": function ( data, type, opt, meta ) {
