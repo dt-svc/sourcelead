@@ -914,7 +914,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				"(select count(*) from connections c where c.from_uid = :loginUserId and c.to_uid = u.id and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
 				"(select count(*) from connections c where c.from_uid = u.id and c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
 				"from user u, user_role ur, org_locations ol " + 
-				"where ur.user_id = u.id and ur.org_locations_id = ol.id and u.IS_VERIFIED = 'Y' " + 
+				"where ur.user_id = u.id and ur.org_locations_id = ol.id " + 
 				"and u.id not in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
 				"and u.id not in (select c.TO_UID from connections c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
 				"and u.id != :loginUserId and ur.IS_PRIMARY = 1";
