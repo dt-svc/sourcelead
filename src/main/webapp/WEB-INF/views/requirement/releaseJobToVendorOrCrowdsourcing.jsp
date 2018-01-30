@@ -183,7 +183,7 @@
 <%-- 			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('twitter');"><i class="fa-2x fa fa-twitter-square paddingLeft paddingRight"></i></a>				   --%>
 <%-- 			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('facebook');"><i class="fa-2x fa fa-facebook-square"></i></a> --%>
 			
-			<div class="addthis_inline_share_toolbox_s1a2" data-url=referLink addthis:url=referLink addthis:title="" data-title="" addthis:description="" data-description=""></div>
+			<div class="addthis_inline_share_toolbox_s1a2" data-url='${referralLink}' addthis:url='${referralLink}' addthis:title="" data-title="" addthis:description="" data-description=""></div>
 			</div>
             </div>
 
