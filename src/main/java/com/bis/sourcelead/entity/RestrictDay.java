@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "RESTRICT_DAY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "restrictDay")
 public class RestrictDay implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -43,7 +42,7 @@ public class RestrictDay implements Serializable{
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	private String id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID")
 	private OrgLocations orgLocationId;
 
@@ -80,7 +79,7 @@ public class RestrictDay implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "restrictDay")
 	private Set<LeaveRole> restrictDayRolesList;
 

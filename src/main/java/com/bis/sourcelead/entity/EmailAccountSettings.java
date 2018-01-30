@@ -34,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "EMAIL_ACCOUNT_SETTINGS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="emailAccountSettings")
 public class EmailAccountSettings implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -44,8 +43,8 @@ public class EmailAccountSettings implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 		
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User userId;
 	

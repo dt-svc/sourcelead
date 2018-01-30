@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -118,6 +119,6 @@ public interface UserRoleDao {
 	
 	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
-	List<UserRoleDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
+	List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
 
 }

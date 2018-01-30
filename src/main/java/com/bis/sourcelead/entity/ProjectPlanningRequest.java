@@ -34,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_REQUREST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectPlanningRequest")
 public class ProjectPlanningRequest implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -50,7 +49,7 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
     private String description;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
    	@JoinColumn(name = "PROJECT_ID")
@@ -61,7 +60,7 @@ public class ProjectPlanningRequest implements Serializable{
 	@Type(type="text")
 	private String projectName;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
    	@JoinColumn(name = "APPROVER_USER_ID")
@@ -91,7 +90,7 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "REQUESTED_USER")
    	private String requestedUser;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
    	@JoinColumn(name = "ORG_LOCATION_ID")
@@ -115,24 +114,24 @@ public class ProjectPlanningRequest implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
     
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
 	private Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList;

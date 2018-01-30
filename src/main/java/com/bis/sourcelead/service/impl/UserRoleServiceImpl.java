@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -631,7 +632,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public List<UserRoleDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception {
+	public List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception {
 		return userRoleDao.getUserListForConnections(searchByName,offSet,userId);
 	}
 

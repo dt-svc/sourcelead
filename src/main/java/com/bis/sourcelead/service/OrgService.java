@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.form.OrgSettings;
@@ -22,7 +23,7 @@ public interface OrgService {
 	
 	public String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
-	public Org saveOrgSettings(OrgSettings orgSettings,MultipartFile multiFile,Org org) throws Exception;
+	public Org saveOrgSettings(CompanyRegistrationDTO companyRegistrationDTO, Org org) throws Exception;
 	
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
 	

@@ -666,9 +666,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			if(candidates != null){
 				BoolQueryBuilder candiListBuilder = QueryBuilders.boolQuery();
 		        for(int i=0 ; i< candidates.length; i++){
-		        	BoolQueryBuilder candidateCompareQueryBuilder = QueryBuilders.boolQuery();
-		        	candidateCompareQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidates[i]));
-		        	candiListBuilder.should(candidateCompareQueryBuilder);
+		        	if(!"".equalsIgnoreCase(candidates[i])) {
+		        		BoolQueryBuilder candidateCompareQueryBuilder = QueryBuilders.boolQuery();
+			        	candidateCompareQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidates[i]));
+			        	candiListBuilder.should(candidateCompareQueryBuilder);
+		        	}
 		        }
 		        boolQueryBuilder.must(candiListBuilder);
 		        boolQueryBuilderForCount.must(candiListBuilder);

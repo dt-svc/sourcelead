@@ -22,7 +22,7 @@
    <div id='reOpenPopup'></div>
     <div id='reOpenRejectedPopup'></div>
     <div class="project_tabs"> 
-            <div class="project_tabs_inn_table">
+            <div class="clearfix">
 				<div class="project_details project_detailsExp">
                 
                 
@@ -45,13 +45,14 @@
 					     </c:if> 
 					     
 					     <c:if test="${isReopenButtonVisible && isSahReopened && !isSuperUser && !empty eah.reopenReason}">
-					          <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
+						      <p class='pull-right ml' style='width: 165px;'>Re-Open Request sent</p>
+						      <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 						      </i>
-						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
+						      <!-- <p class='pull-right ml' style='width: 165px;'>Re-Open Request sent<i class='pull-right glyphicon glyphicon-comment text-danger cursorPointer'></i></p> -->
 					     </c:if>
 					      <c:if test="${isReopenButtonVisible && submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
-					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
+					           <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
 					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>

@@ -40,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projects")
 public class Projects implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -107,8 +106,8 @@ public class Projects implements Serializable{
     @Column(name="OVERTIME_RATE_TYPE")
     private String overtimeRateType;
 
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
     
@@ -130,13 +129,13 @@ public class Projects implements Serializable{
 	@Column(name = "IS_TIMESHEET_ATTACHMENT_REQUIRED")
 	private Integer isTimesheetAttachmentRequired;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
 	
@@ -180,7 +179,7 @@ public class Projects implements Serializable{
    	private String notifyBudgetAt;
 	
      
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@OneToMany(mappedBy = "projectId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectBudget> projectBudget = new HashSet<ProjectBudget>(0);
@@ -189,19 +188,19 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectBudget>  projectBudgetList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectMembers> projectMembers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectApproverHierarchy> projectApprovers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
@@ -214,13 +213,13 @@ public class Projects implements Serializable{
     private Set<ProjectClients> projectClients;
   
 
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projects")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference

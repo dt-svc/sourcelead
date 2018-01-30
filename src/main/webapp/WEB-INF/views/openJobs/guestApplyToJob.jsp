@@ -26,10 +26,11 @@
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
+
 
 <style>
 .viewTemplate {
@@ -199,6 +200,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<h3>Application Form</h3>';
 		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
+		result = result + '<input type="hidden" id="guestApplicant" name="guestApplicant" value="guestApplicant">';
 		
 		result = result + '<div class="row">';
 		result = result + '<div class="venk clearfix">';

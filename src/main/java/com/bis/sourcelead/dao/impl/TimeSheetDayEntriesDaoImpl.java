@@ -262,11 +262,11 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		if(length>0){
 			query1.setFirstResult(start).setMaxResults(length);
 		}
-		List<TimeSheetDayEntries> tslist = query1.setCacheable(true).list();
+		List<TimeSheetDayEntries> tslist = query1.list();
 		response.setData(tslist);
 		if(length>0){
 			Query countQ = session.createQuery(queryCount+" "+searchCountQuery.toString());
-			 countQ.setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID).setCacheable(true);
+			 countQ.setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID);
 			
 			List<Long> countList  = null;
 			if(countQ != null) {

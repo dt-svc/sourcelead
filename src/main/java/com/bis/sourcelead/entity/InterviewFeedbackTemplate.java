@@ -21,7 +21,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "INTERVIEW_FEEDBACK_TEMPLATE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewfeedbackTemplate")
 public class InterviewFeedbackTemplate implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -31,18 +30,18 @@ public class InterviewFeedbackTemplate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REQUIREMENT_INTERVIEW_ID")
     private RequirementInterview requirementInterviewId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REQUIREMENT_INTERVIEWER_ID")
     private RequirementInterviewer requirementInterviewerId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBMISSION_TEMPLATE_ID")
     private SubmissionTemplate submissionTemplateId;
 	
