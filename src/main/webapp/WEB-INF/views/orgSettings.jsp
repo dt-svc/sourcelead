@@ -3010,7 +3010,6 @@ function deleteIP(id){
 <script>
 function validateFinancialYear(){
 	var startMonth = $("#financialStartYear").val();
-	alert(startMonth)
 	if(startMonth == ""){
 		$("#financialEndYear").val("");
 	}else if(startMonth == "January"){
