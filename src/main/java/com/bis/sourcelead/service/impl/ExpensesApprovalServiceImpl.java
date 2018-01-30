@@ -260,7 +260,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	}
 
 
-	private ExpensesApproverHierarchyDTO convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(ExpensesApproverHierarchy expensesApproverHierarchy) {
+	private ExpensesApproverHierarchyDTO convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception {
 		ExpensesApproverHierarchyDTO expensesApproverHierarchyDto = new ExpensesApproverHierarchyDTO();
 		expensesApproverHierarchyDto.setExpenseEmpUserFirstNameLastName(expensesApproverHierarchy.getExpenseEmpUserFirstNameLastName());
 		expensesApproverHierarchyDto.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseEmpUserEmail());
@@ -283,7 +283,12 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		}
 		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
 		expensesApproverHierarchyDto.setTdSpanLength("9");
-		expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
+		 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
+		 	expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
+		}else {
+			expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		}
 		expensesApproverHierarchyDto.setNoOfExpenses(expensesApproverHierarchy.getExpenseId().getNoOfExpenses());
 		expensesApproverHierarchyDto.setExpId(expensesApproverHierarchy.getExpenseId().getId());
 		expensesApproverHierarchyDto.setProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());

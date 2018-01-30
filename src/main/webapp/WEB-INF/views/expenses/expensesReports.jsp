@@ -208,32 +208,34 @@ $.ajax({
     		result = result +'<tr>';
  			result = result +'<td>';
  			result = result +'<div class="lg clearfix">';
- 			//result = result +'<div class="uimg"><img src="images/23.jpg" alt=""/></div>';
- 			result = result +'<div class="Utext">';
+ 			result = result +'<div class="time_appr_user">';
+ 			result = result +'<img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png" alt="Profile Image" class="img-circle img-responsive">'; 
+ 			result = result +'<span>';
  			if(opt.employeeIdForExpenses != null && opt.employeeIdForExpenses !='' && opt.employeeIdForExpenses!='Undefined'){
- 			result = result +'<i title="User name here">'+opt.employeeIdForExpenses+'</i>';	
+ 			result = result +'<i title="'+opt.employeeIdForExpenses+'">'+opt.employeeIdForExpenses+'</i>';	
  			}
  			if(opt.userName != null && opt.userName !='' && opt.userName!='Undefined'){
- 			result = result +'<i title="User name here">'+opt.userName+'</i>';	
+ 			result = result +'<i title="'+opt.userName+'">'+opt.userName+'</i>';	
  	 		}
  			if(opt.userEmail != null && opt.userEmail !='' && opt.userEmail!='Undefined'){
- 			result = result +'<i title="Email id here">'+opt.userEmail+'</i>';
+ 			result = result +'<i title="'+opt.userEmail+'">'+opt.userEmail+'</i>';
  	 		}
+ 			result = result +'</span>';
  			result = result +'</div>';
  			result = result +'</div>';
  			result = result +'</td>';
  			if(opt.employmentTypeVendors != null && opt.employmentTypeVendors !='' && opt.employmentTypeVendors!='Undefined' && opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
- 			result = result +'<td><div class="md"><i title="emp type">'+opt.employementType+'</i><i title="client name">'+opt.employmentTypeVendors+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="'+opt.employementType+'">'+opt.employementType+'</i><i title="client name">'+opt.employmentTypeVendors+'</i></div></td>';	
  			}else if(opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
- 			result = result +'<td><div class="md"><i title="emp type">'+opt.employementType+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="'+opt.employementType+'">'+opt.employementType+'</i></div></td>';	
  			}else{
- 			result = result +'<td><div class="md"><i title="emp type">--</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="--">--</i></div></td>';	
  			}
  			
  			if(opt.clientNameExpenses != null && opt.clientNameExpenses !='' && opt.clientNameExpenses!='Undefined'){
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i><i title="client name">'+opt.clientNameExpenses+'</i></div></td>';
+ 			result = result +'<td><div class="md"><i title="'+opt.projectName+'">'+opt.projectName+'</i><i title="client name">'+opt.clientNameExpenses+'</i></div></td>';
  			}else{
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="'+opt.projectName+'">'+opt.projectName+'</i></div></td>';	
  			}
  			
  			if(months.indexOf("January") > -1){
