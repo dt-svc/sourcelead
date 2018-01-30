@@ -38,7 +38,6 @@ import com.ibm.icu.math.BigDecimal;
 
 @Entity
 @Table(name = "EXPENSES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "Expenses")
 public class Expenses implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -47,14 +46,14 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="LOCATION_ID", nullable=false ) 
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	@JsonBackReference
 	private ProjectMembers projectMembers;
@@ -112,25 +111,25 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "BILLING_PAYABLE_STATUS")
 	private String billingPayableStatus;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
 	@JsonBackReference
 	private Projects projects;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false) 
 	@JsonBackReference
     private MasterCandidate masterCandidateId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="expensesId")
 	@JsonBackReference
 //  @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="expenseId")
 	@JsonBackReference
    // @Fetch(FetchMode.SELECT)

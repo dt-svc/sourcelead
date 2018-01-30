@@ -59,7 +59,7 @@ public class ClientCustomFieldDataDaoImpl implements ClientCustomFieldDataDao {
 			formIds.add(form.getCustomFormFieldId());
 		}
 		String query = "from ClientCustomFieldData clientData left join fetch clientData.orglocationsFormFields formField left join fetch clientData.org org where org.id =:orgId and formField.id IN(:formFieldId)";
-		List<ClientCustomFieldData> clientFieldData  = session.createQuery(query).setLong("orgId", orgLocation).setParameterList("formFieldId", formIds).setCacheable(true).list();
+		List<ClientCustomFieldData> clientFieldData  = session.createQuery(query).setLong("orgId", orgLocation).setParameterList("formFieldId", formIds).list();
 		return clientFieldData;
 	}
 

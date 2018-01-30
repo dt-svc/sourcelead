@@ -2258,10 +2258,11 @@ public class EMailJobScheduler {
 	}
 	
 	/**
-	 * This method is used to update the leave Status from pending to approved for expired leaves
+	 * This method is used to update the leave Status from pending to approved for expired leaves 
+	 * this cron will run at 04:00 AM (UTC)
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Scheduled(cron = "0 0 4 1/1 * ?")
 	@Async
 	public void updateLeaveStatus() throws Exception
 	{

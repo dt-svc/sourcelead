@@ -59,7 +59,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId where ac.userLoginLogoutSessionId.id = :userSessionId and ac.orgLocations.id =:orgLocation";
-		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userSessionId", userSessionId).setLong("orgLocation", orgLocation).setCacheable(true).list();
+		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userSessionId", userSessionId).setLong("orgLocation", orgLocation).list();
 		return actionHistoryList;
 	}
 	
@@ -69,7 +69,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId where ac.userLoginLogoutSessionId.actionUUID = :actionUUID and ac.orgLocations.id =:orgLocation";
-		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setString("actionUUID", actionUUID).setLong("orgLocation", orgLocation).setCacheable(true).list();
+		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setString("actionUUID", actionUUID).setLong("orgLocation", orgLocation).list();
 		return actionHistoryList;
 	}
 	
@@ -79,7 +79,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId left join fetch ac.orgLocations where ac.userLoginLogoutSessionId.id = :userSessionId GROUP BY ac.orgLocations ";
-		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userSessionId", userSessionId).setCacheable(true).list();
+		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userSessionId", userSessionId).list();
 		return actionHistoryList;
 	}
 	
@@ -89,7 +89,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId left join fetch ac.orgLocations where ac.userLoginLogoutSessionId.actionUUID = :actionUUID GROUP BY ac.orgLocations ";
-		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setString("actionUUID", actionUUID).setCacheable(true).list();
+		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setString("actionUUID", actionUUID).list();
 		return actionHistoryList;
 	}
 
@@ -168,7 +168,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug("getActionNameUsingMethodName start");
 		String query = "from ActionNames  actNames  where actNames.methodName =:methodName ";
-		List<ActionNames> actionNames = session.createQuery(query).setString("methodName", methodName).setCacheable(true).list();
+		List<ActionNames> actionNames = session.createQuery(query).setString("methodName", methodName).list();
 		logger.debug("getActionNameUsingMethodName end");
 			return actionNames;
 	}

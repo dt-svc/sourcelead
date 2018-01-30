@@ -191,7 +191,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		connections = session
 				.createQuery(
 						"from Connections connections left join fetch connections.fromUser left join fetch connections.toUser where connections.connectionUID = :connectionUUID")
-				.setString("connectionUUID", connectionUUID).setCacheable(true).list();
+				.setString("connectionUUID", connectionUUID).list();
 		logger.debug("getConnectionByUUID end");
 		if (connections.size() > 0) {
 			return connections.get(0);
