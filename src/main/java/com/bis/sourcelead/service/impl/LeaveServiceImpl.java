@@ -269,6 +269,8 @@ public class LeaveServiceImpl implements LeaveService{
 				
 				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				if(StringUtils.isNotBlank(leave.getExtraLeavesTaken()))
+					leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
 				leaveDto.setFromHalfDay(leave.getFromHalfDay());
 				if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
 					leaveDto.setNoOfDays("1/2");
