@@ -612,7 +612,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason) throws Exception {
+	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason,OrgLocations orglocations) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
@@ -620,10 +620,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		User loginUser = userDao.getUserById(approverUserId);
 		ProjectMembers projectMembers =projectMembersDao.getProjectMemberById(projectMemberId);
 		String actionPerformedBy = null;
+		Long actionPerformedByORgLocationId = null;
 		if(projectMembers != null && projectMembers.getProjectMemberCandidteId()!= null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null  && StringUtils.isNotEmpty(projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName())){
 			actionPerformedBy = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName();
+			actionPerformedByORgLocationId = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId();
 		}else{
 			actionPerformedBy = loginUser.getFullName();
+			actionPerformedByORgLocationId = orglocations.getId();
 		}
 		/*
 		 *  get submissionapproverhierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
@@ -659,6 +662,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             	 	sah.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setSubmissionStatus(Submission_Status.REJECTED);
             	 	sah.setActionPerformedBy(""+actionPerformedBy);
+            	 	sah.setActionPerformedByOrgLocationId(actionPerformedByORgLocationId);
             	 	sah.setRejectedReason(rejectedReason);
             	 	sah.setReopenReason(null);
             	    sah.setReopenedUser(null);
@@ -671,6 +675,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
 	            	 sah.setActionPerformedBy(""+actionPerformedBy);
+	            	 sah.setActionPerformedByOrgLocationId(actionPerformedByORgLocationId);
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);
@@ -701,6 +706,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            				approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.REJECTED);
 	            				approver.setSubmissionStatus(Submission_Status.REJECTED);
 	            				approver.setActionPerformedBy(" "+actionPerformedBy);
+	            				approver.setActionPerformedByOrgLocationId(actionPerformedByORgLocationId);
 	            				approver.setRejectedReason(rejectedReason);
 	            				approver.setReopenReason("");
 	            				approver.setReopenedUser(null);
@@ -715,6 +721,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            					 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
 	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
+	            	            	 approver.setActionPerformedByOrgLocationId(actionPerformedByORgLocationId);
 	            	            	 approver.setReopenReason("");
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");
@@ -724,6 +731,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	            	            	 approver.setSubmissionApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	            	 approver.setSubmissionStatus(Submission_Status.APPROVED);
 	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
+	            	            	 approver.setActionPerformedByOrgLocationId(actionPerformedByORgLocationId);
 	            	            	 approver.setReopenReason("");
 	                 				 approver.setReopenedUser(null);
 	                 				 approver.setReopenRejectedReason("");
