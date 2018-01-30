@@ -21,6 +21,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private List<TimesheetEntriesDTO> timesheetEntries;
 	
+	private Map<String,List<TimesheetEntriesDTO>> entriesMap;
+	
 	private List<Long> removedDocumentIds;
 	
 	private List<FileInfo> fileInfo;
@@ -282,7 +284,12 @@ public class TimeSheetSubmissionDTO implements Serializable{
 		this.reopenUserId = reopenUserId;
 	}
 
+	public Map<String, List<TimesheetEntriesDTO>> getEntriesMap() {
+		return entriesMap;
+	}
 
+	public void setEntriesMap(Map<String, List<TimesheetEntriesDTO>> entriesMap) {
+		this.entriesMap = entriesMap;
+	}
 
-	
 }
