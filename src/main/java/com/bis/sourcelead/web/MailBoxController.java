@@ -157,6 +157,7 @@ public class MailBoxController {
  				if(null != mailBox){
  					model.addObject("subject", mailBox.getSubject());
  					model.addObject("fromEmail", mailBox.getFromMail());
+ 					model.addObject("toEmail",mailBox.getToMail());
  				}else{
  					model.setViewName("registration/persmissionDenied");
  				}
