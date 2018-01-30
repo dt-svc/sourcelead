@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="CLASS_FIELD")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="classField")
 public class ClassField implements Serializable{
 	
 	
@@ -32,7 +31,7 @@ public class ClassField implements Serializable{
 	@Column(name="ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ENTITY_TYPE_ID", nullable=false )	
 	private EntityType entityTypeId;

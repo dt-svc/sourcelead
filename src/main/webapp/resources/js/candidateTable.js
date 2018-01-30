@@ -90,6 +90,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
      	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
           result = result +"<thead>"; 
           result = result +"  <tr>"; 
+  	      result = result +'<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>'; 
           result = result +"    <th>&nbsp;</th>";
           result = result +"    <th>Generated ID</th>";
           result = result +"    <th>Name</th>"; 
@@ -107,6 +108,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           $("#noCandidates").val(1);
           $("#candidateList").append(result);
           cpagination(url); 
+          shareCandidates = {};
   }
 
 function cpagination(url){ 
@@ -122,6 +124,7 @@ function cpagination(url){
             pages: 10
         }),
         "columns": [
+        	{ "data": "id" },
             { "data": "isAssociate" },
             { "data": "generatedId"},
             { "data": "firstName"},
@@ -133,6 +136,28 @@ function cpagination(url){
             { "data": "updatedDate" }
         ],
         "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"sortable": false,
+    	  	"render": function(data, type, report, meta) {
+    	  		 var result = "";
+    	  		 var shareflag = false;
+	        		 for(var e in shareCandidates) {
+   	     	    	   if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+   	     				   continue;
+   	     	    	   if(e === report.candidateId+"") {
+   	     	    		    if(!$("#sharedcheckbox").is(":checked"))
+   	     	    		 	checkOrUncheckParent("candidatePagination",shareCandidates, "sharedcheckbox"); 
+   	     	    		    shareflag = true;
+   	     	    	   	break;
+   	     	    	   }
+   	        		 }
+	        		 if(!shareflag)
+   	        			$("#sharedcheckbox").removeAttr('checked');
+   	        		 
+	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onchange="checkShareCandidates(this)"/></td>';
+    	  		 return result; 
+    	  	}
+        	},{
 	    	  	"targets": colIndex++,
 	    	  	//"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",

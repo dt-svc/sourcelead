@@ -94,9 +94,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private ConversionUtil conversionUtil;
 	
 	@Autowired
-	private CountriesService countriesService;
-	
-	@Autowired
 	private CandidateService candidateService;
 	
 	@Autowired
@@ -104,9 +101,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
-	
-	@Autowired
-	private OrgRelationsService orgRelationsService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
@@ -925,7 +919,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell23.setCellStyle(style);
 
 		Cell cell24 = writeRow.createCell(1);
-		StringBuilder str = new StringBuilder();
 		BigDecimal bd = new BigDecimal(Double.toString(expenseDetails.getTotalAmount()));
 		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 		cell24.setCellValue(bd.toString());
@@ -1266,6 +1259,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId, Long masterCandidateId)
 			throws Exception {
 		return expensesDao.getExpensesByProjectIdAndMasterCandidateId(projectId, masterCandidateId);
+	}
+
+	@Override
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception {
+		return expensesDao.getAllExpensesByOrgLocationId(orgLocationId);
 	}
 	
 }

@@ -72,7 +72,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 																	.setString("mode", mode)
 																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
-				   													.setString("locationCode", locationCode).setCacheable(true).list();
+				   													.setString("locationCode", locationCode).list();
 		Integer notificationCount = null;
 		
 			if(notificationList != null && !notificationList.isEmpty()){
@@ -97,7 +97,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 																	.setString("mode", mode)
 																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
-				   													.setString("locationCode", locationCode).setCacheable(true).list();
+				   													.setString("locationCode", locationCode).list();
 		return notificationList;
 	}
 
@@ -145,7 +145,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		List<Notifications> notificationList = (List<Notifications>)session.createQuery(query).setLong("userId", userId)
 																	.setString("notificationStatus", notificationStatus)
 				   													.setString("orgCode", orgCode)
-				   													.setString("locationCode", locationCode).setCacheable(true).list();
+				   													.setString("locationCode", locationCode).list();
 		return notificationList;
 	}
 
@@ -156,7 +156,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Notifications> notifications = new ArrayList<Notifications>();
 		logger.debug("getNotificationsById start");
-		notifications = session.createQuery("from Notifications where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		notifications = session.createQuery("from Notifications where id=:id" ).setLong( "id", Id ).list();
 		logger.debug("getNotificationsById end");
 		if (notifications.size() > 0) {
 			return notifications.get(0);
@@ -172,7 +172,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Notifications> notifications = new ArrayList<Notifications>();
 		logger.debug("getNotificationsById start");
-		notifications = session.createQuery("from Notifications ns where ns.UUID=:UUID and ns.userNotificationStatus <> 'Accepted' " ).setCacheable(true).setString( "UUID", UUID ).setCacheable(true).list();
+		notifications = session.createQuery("from Notifications ns where ns.UUID=:UUID and ns.userNotificationStatus <> 'Accepted' " ).setString( "UUID", UUID ).list();
 		logger.debug("getNotificationsById end");
 		if (notifications.size() > 0) {
 			return notifications.get(0);
@@ -187,7 +187,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Notifications> notifications = new ArrayList<Notifications>();
 		logger.debug("getNotificationBySpocUUID start");
-		notifications = session.createQuery("from Notifications ns where ns.spocUUID=:spocUUID" ).setCacheable(true).setString( "spocUUID", spocUUID ).setCacheable(true).list();
+		notifications = session.createQuery("from Notifications ns where ns.spocUUID=:spocUUID" ).setString( "spocUUID", spocUUID ).list();
 		logger.debug("getNotificationBySpocUUID end");
 		if (notifications.size() > 0) {
 			return notifications.get(0);
@@ -203,7 +203,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Notifications> notifications = new ArrayList<Notifications>();
 		logger.debug("getNotificationsById start");
-		notifications = session.createQuery("from Notifications ns where ns.UUID=:UUID " ).setCacheable(true).setString( "UUID", UUID ).setCacheable(true).list();
+		notifications = session.createQuery("from Notifications ns where ns.UUID=:UUID " ).setString( "UUID", UUID ).list();
 		logger.debug("getNotificationsById end");
 		if (notifications.size() > 0) {
 			return notifications.get(0);

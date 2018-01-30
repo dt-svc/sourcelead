@@ -30,7 +30,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CONTRACTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contracts")
 public class Contracts {
 	
 	private static final long serialVersionUID = 1L;
@@ -49,13 +48,13 @@ public class Contracts {
 	@Column(name = "TYPE_OF_CONTRACT")
 	private String typeOfContract;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne 
+	
+	@ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
 	private ContractsTemplate contractsTemplate; 
 	 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUserId;
 	
@@ -74,36 +73,36 @@ public class Contracts {
 	@Column(name = "INITIATOR_TYPE")
 	private String initiatorType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="PARENT_CONTRACT_ID")     
 	private Contracts parentContractId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CONTRACT_ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations contractOrgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
 	
 	/*@Column(name = "STATE_OF_JURISDICTION")
 	private String stateOfJurisdiction;*/
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
 	
@@ -143,13 +142,13 @@ public class Contracts {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
 	private RequirementSubmission requirementSubmission;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CANDIDATE_ID")     
 	private Candidate candidate;
 	

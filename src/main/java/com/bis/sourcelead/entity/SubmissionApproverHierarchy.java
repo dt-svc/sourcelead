@@ -29,7 +29,6 @@ import com.bis.sourcelead.enums.Submission_Status;
 
 @Entity
 @Table(name = "SUBMISSION_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHeirarchy")
 public class SubmissionApproverHierarchy implements  Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -39,13 +38,13 @@ public class SubmissionApproverHierarchy implements  Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "HIERARCHY_ID", nullable = false)
 	private ProjectApproverHierarchy hierarchyId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "SUBMISSION_ID", nullable = false)
 	private TimesheetSubmissions submissionId;
 	
@@ -71,13 +70,13 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	private Date billDate;
 	
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "INVOICE_ID", nullable = false)
 	private Invoice invoiceId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "BILL_ID", nullable = false)
 	private Invoice billId;
 	
@@ -102,8 +101,8 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 	private User reopenedUser;
 	

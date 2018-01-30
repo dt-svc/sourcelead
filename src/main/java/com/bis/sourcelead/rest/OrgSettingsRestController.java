@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,25 +30,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.OrgSettings;
+import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -60,9 +61,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -75,42 +73,64 @@ public class OrgSettingsRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	@Autowired
-	OrgService orgService;
+	private OrgService orgService;
 	@Autowired
-	OrgRelationsService orgRelationsService;
+	private OrgRelationsService orgRelationsService;
 	@Autowired
-	OrgLocationService orgLocationService;
+	private OrgLocationService orgLocationService;
 	@Autowired
-	RolesService rolesService;
+	private RolesService rolesService;
 	@Autowired
-	RoleHierarchyService roleHierarchyService;
+	private RoleHierarchyService roleHierarchyService;
 	@Autowired
-	CommonUtil commonUtil;
+	private CommonUtil commonUtil;
 	@Autowired
-	SourceleadSignatureService sourceleadSignatureService;
+	private SourceleadSignatureService sourceleadSignatureService;
 	@Autowired
-	UserRoleService userRoleService;
+	private UserRoleService userRoleService;
 	@Autowired
-	ModulesService modulesService;
+	private ModulesService modulesService;
 	@Autowired
-	WhiteListIpAddressService whiteListIpAddressService;
+	private WhiteListIpAddressService whiteListIpAddressService;
 	@Autowired
-	WhiteListIpAddressDao whiteListIpAddressDao;
+	private WhiteListIpAddressDao whiteListIpAddressDao;
+	@Autowired
+	private ExpensesService expensesService;
+	@Autowired
+	private AddExpensesService addExpensesService;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
+	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO,HttpServletRequest request) throws Exception{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		companyRegistrationDTO.setStaticPath(staticPath);
+		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
+		return "success";
+	}
+	
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
-	public String saveOrgSettings(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception
+	public String saveOrgSettings(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
 	{
-		Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());
+		/*Iterator<String> itrator = request.getFileNames();
+		MultipartFile multiFile = request.getFile(itrator.next());*/
+		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String json1 = "{" + json + "}";
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		OrgSettings orgSettings = gson.fromJson(json1, OrgSettings.class);
+		ModelMapper mapper1 = new ModelMapper();
+		OrgSettings orgSettings = mapper1.map(companyRegistrationDTO, OrgSettings.class);
 		try {
-			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
+			//org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+			
+			if(orgLocations.getGeneratedUserId() != null) {
+				changeShortCodeForExpenses(orgLocations.getGeneratedUserId(),orgLocations.getId());
+			}
 			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
@@ -123,8 +143,28 @@ public class OrgSettingsRestController {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return "home";
+		
 	}
 	
+	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception {
+		 List<Expenses> expenses = expensesService.getAllExpensesByOrgLocationId(orgLocationId);
+		 if(!expenses.isEmpty()) {
+		 for(Expenses exp:expenses) {
+			 String expId = exp.getExpenseId();
+		 	 int twoGenId = expId.lastIndexOf("EP", expId.length());
+			 String genId = expId.substring(0,twoGenId);
+			 if(exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId()) && !genId.equalsIgnoreCase(generatedUserId)) {
+				 	 int two = expId.lastIndexOf("EP", expId.length());
+					 String finalExpId = expId.substring(two,expId.length());
+					 StringBuilder expensesId = new StringBuilder();
+					 expensesId.append(generatedUserId).append(finalExpId);
+					 exp.setExpenseId(expensesId.toString());
+					 addExpensesService.storeAddExpensesData(exp);
+			 }
+		 	}
+		 }
+	}
+
 	@RequestMapping(value = {"/app/displayOrgImage/{orgCode}","/app/ws/displayOrgImage/{orgCode}"}, method = RequestMethod.GET)
 	public void displayOrgImage(@PathVariable String orgCode, HttpServletResponse response)
 	{
@@ -200,6 +240,8 @@ public class OrgSettingsRestController {
 	{
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		org.setDocFile(null);
+		org.setFileName(null);
+		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);

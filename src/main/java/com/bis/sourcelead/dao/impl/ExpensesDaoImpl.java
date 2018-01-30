@@ -181,12 +181,12 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		
 		
 		
-		List<Expenses> tslist = query.setCacheable(true).list();
+		List<Expenses> tslist = query.list();
 		response.setData(tslist); 
 		
 		List<Long> countList  = null;
 		if(countQuery != null) {
-			countList  = countQuery.setCacheable(true).list();
+			countList  = countQuery.list();
 		}
 		int recordsTotal=0;
 		if(countList != null && !countList.isEmpty()) {
@@ -208,7 +208,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		
 		
 		return response;
-		/*List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();
+		/*List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).list();
 		return expensesList;*/
 	}
 	
@@ -219,7 +219,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Long expenseIdLong= Long.parseLong(expenseId);
 		String query = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and expenses.id =:expenseIdLong"; 
-		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("expenseIdLong", expenseIdLong).setCacheable(true).list();
+		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("expenseIdLong", expenseIdLong).list();
 		return expensesList;
 	}
 	
@@ -230,7 +230,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		Session session = this.sessionFactory.getCurrentSession(); 
 		Long expenseIdLong= Long.parseLong(expenseId);
 		String query = "from ExpensesEntries expensesEntries  left join fetch expensesEntries.expensesCategoryId left join fetch expensesEntries.expensesId ex where ex.id =:expenseIdLong"; 
-		List<ExpensesEntries> expensesEntriesList =session.createQuery(query).setLong("expenseIdLong", expenseIdLong).setCacheable(true).list();
+		List<ExpensesEntries> expensesEntriesList =session.createQuery(query).setLong("expenseIdLong", expenseIdLong).list();
 		return expensesEntriesList;
 	}
 
@@ -240,7 +240,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	public Expenses getExpenseById(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Expenses expenses where expenses.id =:id";
-		List<Expenses> expenses = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		List<Expenses> expenses = session.createQuery(query).setLong("id", id).list();
 		Expenses expensesList = null;
 		if (expenses != null && expenses.size() > 0) {
 			expensesList = expenses.get(0);
@@ -254,7 +254,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Expenses  expense =  null;
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).setCacheable(true).list();
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).list();
 		if(null != expensesList && expensesList.size() >0){
 			expense = expensesList.get(0);
 		}
@@ -290,8 +290,17 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		}else {
 			subQuery = "expenses.billingPayableStatus IS NULL";  
 		}
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where project.id =:projectId and mc.id = :masterCandidateId and "+subQuery).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setCacheable(true).list();
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where project.id =:projectId and mc.id = :masterCandidateId and "+subQuery).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).list();
 		
+		return expensesList;
+	}
+
+	@Override
+	@Transactional
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Expenses  expenses left join fetch expenses.orgLocationId orgLocation where orgLocation = :orgLocationId";
+		List<Expenses>  expensesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		return expensesList;
 	}
 

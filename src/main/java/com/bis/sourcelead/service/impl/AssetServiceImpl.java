@@ -187,6 +187,15 @@ public class AssetServiceImpl implements AssetService{
 			 asset.setMonitor(null);
 		 }
 		 
+		 if(StringUtils.isNotBlank(assetDTO.getIssueDate())){
+			 try {
+				 asset.setIssueDate(commonUtil.orgLocationDateFormat(assetDTO.getDateFormat(), assetDTO.getIssueDate()));
+				  
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		 }
+		 
 		 if(StringUtils.isNotBlank(assetDTO.getCategory())){
 			 AssetCategory assetCategory = new AssetCategory();
 			 assetCategory.setId(Long.parseLong(assetDTO.getCategory()));

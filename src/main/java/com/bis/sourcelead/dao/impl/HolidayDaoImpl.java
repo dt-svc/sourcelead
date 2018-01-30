@@ -49,7 +49,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
 		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status ORDER BY holiday.fromDate ASC";
-		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
+		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
 		return holidayList;
 	}
 	
@@ -64,7 +64,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	
 		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"')";
 		//String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
-		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
+		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
 		return holidayList;
 	}
 	
@@ -74,7 +74,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		Holiday holiday = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Holiday holiday where holiday.id= :holidayId";
-		List<Holiday> holidayList = session.createQuery(query).setString("holidayId", holidayId).setCacheable(true).list();
+		List<Holiday> holidayList = session.createQuery(query).setString("holidayId", holidayId).list();
 		if (holidayList != null && holidayList.size() > 0) {
 			holiday = holidayList.get(0);
 		}
@@ -103,7 +103,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Holiday hday  where hday.orgLocations.id = :orgLocationId and ((hday.fromDate <= :fromDate and hday.toDate >= :fromDate) or (hday.fromDate <= :toDate and hday.toDate >= :toDate))";
-		List<Holiday> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+		List<Holiday> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).list();
 		return restrictDayList;
 	}
 
@@ -112,7 +112,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,Date endDate, Long orgLocationId) throws Exception {
 	Session session = this.sessionFactory.getCurrentSession();
 	String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.orgLocations.id = :orgLocationId";
-	List<Holiday> holiday=session.createQuery(query).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	List<Holiday> holiday=session.createQuery(query).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
 	if (holiday.size() > 0) {
 	return holiday;
 	} else {

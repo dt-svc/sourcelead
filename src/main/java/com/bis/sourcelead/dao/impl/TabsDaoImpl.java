@@ -33,7 +33,7 @@ public class TabsDaoImpl implements TabsDao{
 	     
 	     Session session = this.sessionFactory.getCurrentSession();
          List<Roles> rolesList = new ArrayList<Roles>();
-		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActionsList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
 			 for (String s : roles.getActionId().split(",")){
@@ -42,7 +42,7 @@ public class TabsDaoImpl implements TabsDao{
 		 }
 		
 	    String query = "from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
-	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).setCacheable(true).list();
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).list();
         return tabsList;	
 		 
 	}
@@ -58,7 +58,7 @@ public class TabsDaoImpl implements TabsDao{
 		 		+ "actionRoles.roles.id = :roleId and actionRoles.org.id = :orgId and actionRoles.isNotify = 'Y' )) order by tabs.tabOrder asc")
 					  .setLong("roleId", roleId)
 					  .setLong("orgId", orgId)
-					  .setCacheable(true).list();
+					  .list();
 		 
 		 
 		 
@@ -71,7 +71,7 @@ public class TabsDaoImpl implements TabsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN(:modulesId) "
 	    		+ "and moduleActions.sourceleadActions.id IN (select ram.sourceleadActions.id from RoleActionMapping ram where ram.roles.id = :roleId and ram.org.id = :orgId and ram.status = '1' ))) ORDER BY tabs.tabOrder ASC ";
-	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "roleId", roleId).setLong( "orgId", orgId).setParameterList("modulesId", modulesId).setCacheable(true).list();
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setLong( "roleId", roleId).setLong( "orgId", orgId).setParameterList("modulesId", modulesId).list();
 	    return tabsList;
 	}
 
@@ -83,7 +83,7 @@ public class TabsDaoImpl implements TabsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		
          List<Roles> rolesList = new ArrayList<Roles>();
-		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
 			 for (String s : roles.getActionId().split(",")){
@@ -93,7 +93,7 @@ public class TabsDaoImpl implements TabsDao{
 		
 		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id IN (:modulesId) "
 				+ " and moduleActions.sourceleadActions.id IN (:roleActonList))) and tabs.status = '1' ORDER BY tabs.tabOrder ASC ";
-	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).setCacheable(true).list();
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("modulesId", modulesId).setParameterList("roleActonList", roleActonList).list();
 	    return tabsList;
 	}
 
@@ -104,7 +104,7 @@ public class TabsDaoImpl implements TabsDao{
 		
 		 Session session = this.sessionFactory.getCurrentSession();
          List<Roles> rolesList = new ArrayList<Roles>();
-		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActionsList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
 			 for (String s : roles.getActionId().split(",")){
@@ -113,7 +113,7 @@ public class TabsDaoImpl implements TabsDao{
 		 }
 		
 	    String query = "select tabs.id from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
-	    List<Long> tabIds = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).setCacheable(true).list();
+	    List<Long> tabIds = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).list();
     
 	    return tabIds;
 	}
@@ -124,7 +124,7 @@ public class TabsDaoImpl implements TabsDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Tabs tabs where tabs.id IN (:tabIds) ";
-	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("tabIds", tabIds).setCacheable(true).list();
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("tabIds", tabIds).list();
 	    return tabsList;
 	}
 
@@ -135,7 +135,7 @@ public class TabsDaoImpl implements TabsDao{
 		 Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
         List<Roles> rolesList = new ArrayList<Roles>();
-		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActionsList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
 			 for (String s : roles.getActionId().split(",")){
@@ -144,7 +144,7 @@ public class TabsDaoImpl implements TabsDao{
 		 }
 		
 	    String query = "select tabs.id from Tabs tabs where tabs.id IN (select sa.tabs.id from SourceleadActions sa where sa.id IN (:roleActionsList)) ";
-	    List<Long> tabIds = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).setCacheable(true).list();
+	    List<Long> tabIds = session.createQuery(query.toString()).setParameterList("roleActionsList", roleActionsList).list();
    
 	    for(Long id : tabIds){
 	    	if(id.equals(tabId)){
@@ -161,7 +161,7 @@ public class TabsDaoImpl implements TabsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		
          List<Roles> rolesList = new ArrayList<Roles>();
-		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId" ).setLong( "roleId", roleId ).setCacheable(true).list();
+		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId" ).setLong( "roleId", roleId ).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 for(Roles roles : rolesList){
 			 for (String s : roles.getActionId().split(",")){
@@ -170,7 +170,7 @@ public class TabsDaoImpl implements TabsDao{
 		 }
 		
 		String query = "from Tabs tabs left join fetch tabs.tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (select moduleActions.sourceleadActions.id from ModuleActions moduleActions where moduleActions.modules.id = '5' and moduleActions.sourceleadActions.id IN (:roleActonList))) ORDER BY tabs.tabOrder ASC ";
-	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).setCacheable(true).list();
+	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).list();
 	    return tabsList;
 	}
 
@@ -181,7 +181,7 @@ public class TabsDaoImpl implements TabsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "select tabs.tabName from Tabs tabs where tabs.id IN (select distinct sa.tabs.id from SourceleadActions sa where sa.id IN (:actionIdsList)) ORDER BY tabs.tabOrder ASC ";
-	    List<String> tabNamesList = session.createQuery(query.toString()).setParameterList("actionIdsList", actionIdsList).setCacheable(true).list();
+	    List<String> tabNamesList = session.createQuery(query.toString()).setParameterList("actionIdsList", actionIdsList).list();
 	    return tabNamesList;
 	}
 

@@ -161,8 +161,7 @@
 						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
 					    result  = result + '</div>';
-						
-						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
+						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}' && json.approverUserId == '${SourceLeadWeb_userId}'){
 						    result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 							result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 		   		    		result = result +'</sec:authorize>';
@@ -1010,15 +1009,9 @@ function projectStatus(){
 							var opt = json[i];
 							if (manager2 == opt.id) {
 								selected = 'selected';
-								output = output
-										+ "<option "+selected+" value='" +opt.id+ "'>"
-										+ opt.firstName + " " + opt.lastName
-										+ "</option>";
+								output = output + "<option "+selected+" value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
 							} else {
-								output = output
-										+ "<option value='" +opt.id+ "'>"
-										+ opt.firstName + " " + opt.lastName
-										+ "</option>";
+								output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
 							}
 
 						}
@@ -1085,10 +1078,7 @@ function showLevel2Div(){
 										+ "<option value=''>-Select Manager-</option>";
 								for (var i = 0; i < json.length; i++) {
 									var opt = json[i];
-									output = output
-											+ "<option value='" +opt.id+ "'>"
-											+ opt.firstName + " "
-											+ opt.lastName + "</option>";
+									output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + " ("+opt.userType+")</option>";
 								}
 								$("#level2Manager").empty();
 								$("#level2Manager").append(output);
