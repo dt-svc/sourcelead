@@ -189,7 +189,16 @@ public class TimesheetRestController {
 	@RequestMapping(value = "/rest/getTimesheetEntryDetails")
 	public TimesheetEntryDetailsDTO getTimesheetEntryDetailsMobile(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
-		return getTimesheetEntryDetails(eedDTO, request);
+		
+		TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request);
+		TimeSheetSubmissionDTO tsDTO = tedDTO.getTimesheetSubmission();
+		if(tsDTO != null) {
+			Map<String, List<TimesheetEntriesDTO>> entriesMap =	getEntriesMapForDisplayMobile(tsDTO, request);
+			tsDTO.setEntriesMap(entriesMap);
+			tedDTO.setTimesheetSubmission(tsDTO);
+		}
+		
+		return tedDTO;
 		
 	}
 	
@@ -294,6 +303,33 @@ public class TimesheetRestController {
 			}
 		}
 		return freshEntryMap;
+	}
+	
+	private  Map<String, List<TimesheetEntriesDTO>> getEntriesMapForDisplayMobile(TimeSheetSubmissionDTO tsDTO,HttpServletRequest request) throws Exception{
+		Map<String, List<TimesheetEntriesDTO>> entriesMap = new HashMap<>();
+		if(tsDTO!= null && tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()){
+			for(TimesheetEntriesDTO teDTO : tsDTO.getTimesheetEntries()){
+				 String taskDate = null;
+				if(teDTO.getDate() != null){
+					taskDate = teDTO.getDate();
+				}
+				List<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskDate);
+				if(tsDTOList == null){
+					tsDTOList = new LinkedList<>();
+					tsDTOList.add(teDTO);
+				}else{
+					tsDTOList.add(teDTO);
+				}
+				entriesMap.put(taskDate, tsDTOList);
+			}
+		 }
+		 for(WeekDaysDTO weekDay :tsDTO.getWeekDays()){
+			 if(entriesMap.get(weekDay.getDate()) == null || entriesMap.get(weekDay.getDate()).isEmpty()) {
+				 entriesMap.put(weekDay.getDate(), new ArrayList<TimesheetEntriesDTO>());
+			 }
+		  } 
+		 
+		return entriesMap;
 	}
 	private TimesheetEntryDetailsDTO getTimesheetEntryDetails(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
