@@ -28,7 +28,7 @@
 				 <label for="userRoleId"></label>
 			</div>
 					
-			<span><img onerror="this.src='/resources/images/office-image.jpg'" src="${sourceleadUrl}/ws/displayOrgImage/${userRole.orgLocations.org.orgCode}"></span>
+			<span><img onerror="this.src='/resources/images/office-image.jpg'" data-id="orgImage" src="${userRole.orgLocations.org.fileUrl}"></span>
 			<div class="orgtext">
 				<b>${userRole.orgLocations.orgLocationName}</b>
 				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : ""} ${userRole.orgLocations.country}</p>

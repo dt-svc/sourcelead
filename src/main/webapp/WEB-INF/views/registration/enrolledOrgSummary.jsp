@@ -55,7 +55,7 @@ z-index: 9999999999 !important;
 			  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${orgloc.org.orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${orgloc.org.fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  </div>
 				  </div>
 			  </div>
