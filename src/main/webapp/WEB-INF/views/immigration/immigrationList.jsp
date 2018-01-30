@@ -10,13 +10,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
-   <section class="content-wraper content-wraperNew">
+    <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix addImmiHead">
       <div class="pull-left"><h2>Immigration list</h2></div>
-      <div class="pull-right brud-crum">Home » Immigrations List</div>
+      <div class="pull-right brud-crum">Home &raquo; Immigrations List</div>
 	<div class="clearfix"></div>
-    </section>
+    </section>    
+    
     <div class="immigrationWrap">
 		<div class="immigraCountHead">
 			<ul class="clearfix">
@@ -190,7 +191,7 @@
 					  </div>
 					</td>
 					<td>
-					  <div class="proj_show tbldata-dotdot-100"><a href="immigration-view.html">
+					  <div class="proj_show tbldata-dotdot-100"><a href="<c:url value='${appPath}/viewImmigration'/>">
 						  <div class="pull-left tbldata-dotdot_80" title="BIS10041">BIS10041</div>
 						  <i class="fa fa-binoculars pull-right"></i></a>
 					  </div>
@@ -675,19 +676,112 @@
 		<div class="immigraPagi clearfix">
 			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
 			  <ul class="pagination">
-				<li><a href="#"> &lt;&lt; </a></li>
+				<li><a href="#"> << </a></li>
 				<li><a href="#">2</a></li>
 				<li><a href="#">3</a></li>
 				<li class="disabled"><a href="#">6</a></li>
-				<li data-page="last"><a href="#"> &gt;&gt; </a></li>
+				<li data-page="last"><a href="#"> >> </a></li>
 			  </ul>
 		</div>			
 			
 		</div>   
    
-    </div>    
-   </section> 
-   
+    </div>
+  </section>
+  <!-- Content Area -->
+  
+  <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-calendar-check-o"></i></span>
+    <ul class="list-unstyled">
+      <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
+      <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
+      <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
+    </ul>
+  </div>
+</div>
+
+    
+<!-- Footer Area --> 
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
+<script src="js/moment.min.js"></script> 
+<script src="js/bootstrap-datetimepicker.min.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/masterHeaderAction.js"></script> 
+<script src="js/bootstrap-select.min.js"></script> 
+<script src="js/chosen.jquery.min.js"></script> 
+<script src="js/jquery-ui.min.js"></script> 
+<script type="text/javascript">
+        var config = {
+        '.chosen-select'           : {},
+        '.chosen-select-deselect'  : {allow_single_deselect:true},
+        '.chosen-select-no-single' : {disable_search_threshold:10},
+        '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        '.chosen-select-width'     : {width:"95%"}
+        }
+        for (var selector in config) {
+        $(selector).chosen(config[selector]);
+        }
+        $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': '100%'});
+        })
+        $(document).ready(function(){
+        $("#cd").click(function(){
+        $(".clientDetails").toggleClass('hidden', 500);
+        });
+
+        });
+    </script> 
+<script>
+    // Script for tabs next pre button
+    var $tabs = $('.tabbable li');
+    $('#prevtab').on('click', function() {
+        $tabs.filter('.active').prev('li').find('a[data-toggle="tab"]').tab('show');
+    });
+    $('#nexttab').on('click', function() {
+        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+    });
+</script> 
+<script>
+    function showMenu() {
+        $('.menupop').toggle();
+    };
+    function receivePaymentPop(){
+       $("#recvPymntpop").fadeIn(200);
+        $('.side_mask').fadeIn(200).addClass('in');
+    }
+    $(".close").click(function(){
+       $("#recvPymntpop").fadeOut(200);
+        $('.side_mask').fadeOut(200).removeClass('in');
+    });
+</script>
+
+  <script>
+    //addcandidate-popup script
+    function createBill(){
+        $('.addcandidate-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+    };
+       function closeCandidate(){
+        $('.addcandidate-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+       }
+    </script>
+    
+    <!-- Script for Linked Invoice pop -->
+    <script>
+        $(".sendReminder").click(function(){
+        $('.modal.modal_invoice').fadeIn(200);
+        $('.side_mask').fadeIn(200);
+        });
+        
+        $(".close, .cancel").click(function(){
+        $('.modal.modal_invoice').fadeOut(200);
+        $('.side_mask').fadeOut(200);
+        });
+    </script>
+    <!-- Script for Linked Invoice pop -->
 <jsp:include page="../masterFooter.jsp" />
  <script type="text/javascript">
 
