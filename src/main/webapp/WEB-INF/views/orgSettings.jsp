@@ -547,6 +547,65 @@ function cancelOrgImg(){
 	               			</div>         
 	           			</div> 
            			</c:if>
+           			
+           			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	               			<h4>Financial Year</h4>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Financial Year<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-2 toggle-button" >
+			                      <select class="chosen-select" id="financialStartYear" onChange="validateFinancialYear();">
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.startMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.startMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.startMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.startMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.startMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.startMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.startMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.startMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.startMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.startMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.startMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.startMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	                   			<div class="col-md-2 toggle-button">
+			                      <select class="chosen-select" id="financialEndYear" disabled="disabled" readonly="">
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.endMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.endMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.endMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.endMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.endMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.endMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.endMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.endMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.endMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.endMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.endMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.endMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	               			</div>
+	               			<div class="mt clearfix">
+           			  	<div class="pull-right">
+           			  		<button type="button" class="btn btn-primary btn-sm mr" onclick="financialYear();">Save</button>
+           			  		<!-- <button type="button" class="btn btn-default btn-sm" onclick="cancel();">Cancel</button> -->
+           			  	</div>
+           			  </div>
+           			  
+           			  <c:if test="${!empty msg}">
+	                       <div class="success_pop" id="selector"  style="display: none;">
+		                   <i class="fa fa-check-circle"></i><span>${msg}</span>
+			               </div>
+	              </c:if>
+	                 <div class="success_pop" id="selector1" style="display: none;">
+ 		            	<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+                     </div>
+	               			         
+	           			</div> 
+           			</c:if>
            			           			
         			</div>
     			</div>
@@ -1482,7 +1541,7 @@ function loadRegisteredOrgs(){
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
 	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+orgLoc.fileUrl+" alt='image'>";
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	result = result +"</div>";
@@ -2945,7 +3004,71 @@ function deleteIP(id){
 			     });
 }
 
+
 </script>
+
+<script>
+function validateFinancialYear(){
+	var startMonth = $("#financialStartYear").val();
+	if(startMonth == ""){
+		$("#financialEndYear").val("");
+	}else if(startMonth == "January"){
+		$("#financialEndYear").val("December");
+	}else if(startMonth == "February"){
+		$("#financialEndYear").val("January");
+	}else if(startMonth == "March"){
+		$("#financialEndYear").val("February");
+	}else if(startMonth == "April"){
+		$("#financialEndYear").val("March");
+	}else if(startMonth == "May"){
+		$("#financialEndYear").val("April");
+	}else if(startMonth == "June"){
+		$("#financialEndYear").val("May");
+	}else if(startMonth == "July"){
+		$("#financialEndYear").val("June");
+	}else if(startMonth == "August"){
+		$("#financialEndYear").val("July");
+	}else if(startMonth == "September"){
+		$("#financialEndYear").val("August");
+	}else if(startMonth == "October"){
+		$("#financialEndYear").val("September");
+	}else if(startMonth == "November"){
+		$("#financialEndYear").val("October");
+	}else if(startMonth == "December"){
+		$("#financialEndYear").val("November");
+	}
+	$("#financialEndYear").trigger("chosen:updated");
+}
+</script>
+
+<script>
+function financialYear(){
+	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var startMonth = $("#financialStartYear").val();
+	var endMonth = $("#financialEndYear").val();
+	if(startMonth != null && startMonth != 'undefined' && endMonth != null && endMonth != 'undefined'){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/saveFinanacialYear?&locationId="+locationId+"&startMonth="+startMonth+"&endMonth="+endMonth,
+			success : function(result) {
+				$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Details Updated Successfully");
+		    	 msgFadein();
+				
+			},
+		});
+	}
+}
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <jsp:include page="masterFooter.jsp" />
 

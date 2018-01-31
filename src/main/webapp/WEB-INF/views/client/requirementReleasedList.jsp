@@ -128,9 +128,9 @@ function clientRequirementList(orgRelationId){
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
 
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 				  {	        		
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		
 	        		
 	        		result = result + '<tr>';
