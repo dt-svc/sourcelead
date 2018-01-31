@@ -1935,7 +1935,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgSpoc.setClientLocationId(orglocations);
 			orgSpoc.setVendorLocationId(vendorOrgLocation);
 			orgSpoc.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgSpoc.setSpocStatus("Active");
 			orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+			orgSpoc.setOwnerUser(user);
 			orgSpoc.setCreatedDate(new Date());
 			orgSpoc.setCreatedBy(user.getUserCode());
 			orgSpoc.setUpdatedDate(new Date());
