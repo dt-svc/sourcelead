@@ -1,16 +1,11 @@
 package com.bis.sourcelead.reports.dao.Impl;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -20,16 +15,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
+import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.reports.dao.FinanceDao;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
+import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 
 @Repository
@@ -42,8 +42,15 @@ public class FinanceDaoImpl implements FinanceDao{
 	OrgRelationsService orgRelationsService;
 	
 	@Autowired
+	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
+	@Autowired
+	TimeSheetDayEntriesDao timeSheetDayEntriesDao;
+	
+	@Autowired
 	ReportsUtil reportsUtil;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
@@ -329,6 +336,195 @@ public class FinanceDaoImpl implements FinanceDao{
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public ResponseList<SubmissionApproverHierarchy> getMissingInvoiceData(MissingInvoiceDTO missingInvoiceDto, OrgLocations orgLocations) {
+			
+			ResponseList<SubmissionApproverHierarchy> response = new ResponseList<>();
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String subQuery = "";
+				String groupQuery = "";
+				if("invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
+					subQuery = "(sah.invoiceStatus IS NULL OR sah.invoiceStatus = 'DRAFT')";
+				}else {
+					subQuery = "(sah.billingStatus IS NULL OR sah.billingStatus = 'DRAFT')";
+				}
+				List<Long> orgIds = new ArrayList<>();
+				if(!"null".equalsIgnoreCase(missingInvoiceDto.getOrgIds()) && missingInvoiceDto.getOrgIds() != null) {
+					String[] ids = missingInvoiceDto.getOrgIds().split(",");
+					for(String id : ids) {
+						orgIds.add(Long.parseLong(id));
+					}
+				}
+				java.sql.Date startDate = null;
+				java.sql.Date endDate = null;
+				String dateQuery = "";
+				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+					if("last_7days".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+						Date[] dates = reportsUtil.last7Days(orgLocations);
+						startDate = new java.sql.Date(dates[0].getTime());
+						endDate = new java.sql.Date(dates[1].getTime());
+					}else if("last_15days".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+						Date[] dates = reportsUtil.last15DaysDates(orgLocations);
+						startDate = new java.sql.Date(dates[0].getTime());
+						endDate = new java.sql.Date(dates[1].getTime());
+					}else if("1month".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+						Date[] dates =  reportsUtil.last1MonthDates(orgLocations);
+						startDate = new java.sql.Date(dates[0].getTime());
+						endDate = new java.sql.Date(dates[1].getTime());
+					}else if("3months".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+						Date[] dates = reportsUtil.last3MonthDates(orgLocations);
+						startDate = new java.sql.Date(dates[0].getTime());
+						endDate = new java.sql.Date(dates[1].getTime());
+					}else if("last_years".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+						Date[] dates = reportsUtil.lastYearDates();
+						startDate = new java.sql.Date(dates[0].getTime());
+						endDate = new java.sql.Date(dates[1].getTime());
+					}else if("custom".equalsIgnoreCase(missingInvoiceDto.getFilterType())){
+						Date[] dates = reportsUtil.getCustomDates(missingInvoiceDto.getFromDate(),missingInvoiceDto.getToDate());
+						startDate = new java.sql.Date(dates[0].getTime());
+						endDate = new java.sql.Date(dates[1].getTime());
+					}
+					
+					if("invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
+						dateQuery = " and ((sah.invoiceDate IS NOT NULL and (sah.invoiceDate >= :startDate and sah.invoiceDate <= :endDate)) OR (sah.invoiceDate IS  NULL and (sah.updatedDate >= :startDate and sah.updatedDate <= :endDate))) ";
+					}else {
+						dateQuery = " and ((sah.billDate IS NOT NULL and (sah.billDate >= :startDate and sah.billDate <= :endDate)) OR (sah.billDate IS  NULL and (sah.updatedDate >= :startDate and sah.updatedDate <= :endDate))) ";
+					}
+				}
+				String inQuery = "";
+				if(orgIds.size() >0) {
+					inQuery = "and pclient.orgRelationId.id IN (:orgIds)";
+				}
+				/*StringBuilder searchCountQuery = new StringBuilder();
+				if(StringUtils.isNotEmpty(missingInvoiceDto.getSearchValue()) && missingInvoiceDto.getSearchValue() != null) {
+					searchCountQuery.append(" and (sah.hierarchyId.projectId.projectName like '%" + missingInvoiceDto.getSearchValue() + "%' )");
+							.append("OR sah.hierarchyId.projectClientsId.orgRelationId. like '%" + searchValue + "%')");
+				}
+				*/
+				
+				StringBuilder searchQuery = new StringBuilder();
+				if(StringUtils.isNotEmpty(missingInvoiceDto.getSearchValue()) && missingInvoiceDto.getSearchValue() != null) {
+					searchQuery.append(" and (sah.hierarchyId.projectId.projectName like '%" + missingInvoiceDto.getSearchValue() + "%' )");
+					}
+				
+				String qry = "from  SubmissionApproverHierarchy sah left join fetch sah.invoiceId invoice left join fetch sah.billId billinvoice left join fetch sah.submissionId subId left join fetch subId.projectMembers pmember left join fetch pmember.projectMemberCandidteId can left join fetch can.orgRelationId left join fetch subId.projects prjcts left join fetch sah.hierarchyId hierarchy left join fetch sah.invoiceId invoice left join fetch sah.billId bill left join fetch hierarchy.projectId proj left join fetch hierarchy.projectClientsId pclient  left join fetch pclient.orgRelationId orgRelation "
+						+ " where  pclient.orgLocationsId.id = :orgLocationId and  sah.submissionApprovalStatus = 'APPROVED' and sah.submissionId.status = '1' and "+subQuery;//OR (sah.invoiceStatus IS NOT NULL and sah.invoiceSatus = 'DRAFT')) ";
+				
+				String queryCount = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId and "
+						   + " sah.submissionApprovalStatus = 'APPROVED' and sah.submissionId.status = '1' and "+ subQuery; //OR (sah.invoiceStatus IS NOT NULL and sah.invoiceSatus = 'DRAFT'))" ;
+				
+				String query = "";
+				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+					query = qry+dateQuery;
+				}else if(orgIds.size() > 0){
+					query = qry + inQuery;
+				}else if(orgIds.size() > 0 && StringUtils.isNotBlank(missingInvoiceDto.getFilterType())){
+					query = qry+dateQuery+inQuery;
+				}
+				else {
+					query = qry;
+				}
+				 groupQuery = " GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)";
+			
+				Query query1 = session.createQuery(query+" "+searchQuery+" "+groupQuery);
+				List<SubmissionApproverHierarchy> tslist = null;
+				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
+					response.setData(tslist);
+				}else if(orgIds.size() > 0){
+					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameterList("orgIds", orgIds).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
+						response.setData(tslist);
+				}else if(orgIds.size() > 0){
+					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameterList("orgIds", orgIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
+						response.setData(tslist);
+				}
+				else {
+					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
+					response.setData(tslist);
+				}
+				
+				
+				if(tslist != null && !tslist.isEmpty()) {
+					for(SubmissionApproverHierarchy sah :tslist) {
+						float totalHours = 0f;
+	    			    float totalBillableHours = 0f;
+	    				float totalNonBillableHours = 0f;
+	    				List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyDao.getAllSubmissionApproverHierarchiesByProjectMemberId(sah.getFrequencyStartDate(), sah.getFrequencyEndDate(),sah.getSubmissionId().getProjectMembers().getId(),orgLocations.getId());
+					    if(sahList != null && !sahList.isEmpty()) {
+					    	 for(SubmissionApproverHierarchy tempSah :sahList) {
+					    		 totalHours = CommonUtil.getCombinedHours(tempSah.getTotalHours(), totalHours);
+					    		 totalBillableHours = CommonUtil.getCombinedHours(tempSah.getBillableHours(), totalBillableHours);
+					    		 totalNonBillableHours = CommonUtil.getCombinedHours(tempSah.getNonBillableHours(), totalNonBillableHours);
+					    	}
+					    }
+					/*    System.out.println("Project Id >>>>>>>>>"+sah.getSubmissionId().getProjects().getId()+"MasterCanddidate Id >>>>>>>>>>>"+ sah.getSubmissionId().getMasterCandidateId().getId());
+					    System.out.println("startDate>>>>>>>>>>>"+ sah.getFrequencyStartDate()+"  EndDate>>>>>>>>>"+sah.getFrequencyEndDate());
+					    System.out.println("totalHours>>>>>>>>>>>"+totalHours);
+					    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");*/
+					    sah.setTotalHours(totalHours);
+					    sah.setBillableHours(totalBillableHours);
+					    sah.setNonBillableHours(totalNonBillableHours);
+					}
+				}
+				/*submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate*/
+				
+				 Query countQ = session.createQuery(queryCount+" "+searchQuery+" "+groupQuery);
+				 countQ.setLong("orgLocationId", orgLocations.getId()).setCacheable(true);
+				
+				List<Long> countList  = null;
+				if(countQ != null) {
+					countList  = countQ.list();
+				}
+				int recordsTotal=0;
+				if(countList != null && !countList.isEmpty()) {
+					recordsTotal  =  countList.size();
+				}
+				response.setRecordsTotal(recordsTotal);
+				
+				int recordsFiltered = 0;
+				if(tslist != null && !tslist.isEmpty()) {
+					recordsFiltered = tslist.size();
+				}
+				if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
+					response.setRecordsFiltered(recordsFiltered);
+				}
+				else {
+					response.setRecordsFiltered(recordsTotal);
+				}
+			}catch (Exception e) {
+				e.getStackTrace();
+			}
+			
+			return response;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Contracts> getRecentSowcontractListByAssociateId(Long candidateId, OrgLocations orgLocation,OrgRelations orgRelation, String contractType) {
+
+		List<Contracts> contractsList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.createdDate = (SELECT MAX(con.createdDate) from Contracts con where con.templateSubmissionStatus = 'FINALIZED' and con.candidate.id = :candidateId) and contract.orgLocationId.id = :orgLocationId and "
+					+ "contract.orgRelations.id = :orgRelationId  and contract.contractType = :contractType ";
+		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).setLong("orgRelationId", orgRelation.getId()).setString("contractType", contractType).setCacheable(false).list();
+		  if(null != contractsList){
+			  return contractsList;
+		  }
+		  return contractsList;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contractsList;
+		
+		 
+	
 	}
 
 }

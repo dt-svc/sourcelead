@@ -35,42 +35,36 @@ $(document).ready(function(){
        
         <div class="col-md-4 col-md-offset-1">
     <div class="dropdown-scroll">
-		<select class="chosen-select form-control" multiple data-placeholder="Select Client">
-		<option>Client-1</option>
-		<option>Client-2</option>
-		<option>Client-3</option>
-		<option>Client-4</option>
-		<option>Client-5</option>
-		<option>Client-1</option>
-		<option>Client-2</option>
-		<option>Client-3</option>
-		<option>Client-4</option>
-		<option>Client-5</option>
+		<select class="chosen-select form-control" multiple data-placeholder="Select Client" id="orgIds" name="orgIds">
+		 <c:if test="${not empty clientList}">
+               <c:forEach items="${clientList}" var="client">
+   						<option value='${client.id }'>${client.orgName}</option>
+		       </c:forEach>
+		</c:if>
 		</select>
 	</div>
         </div>
         <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
-        <select class="form-control" id="customDates">
-          <option>Select Date</option>
-          <option value="invoiceweekly">Last 7 days</option>
-          <option value="invoice15Days">Last 15 days</option>
-          <option value="invoice1Month">1 month</option>
-          <option value="invoice3Month">3 months</option>
-          <option value="invoices" selected>Last year</option>
-          <option>Year to Date</option>
-          <option value="custom-select">Custom</option>
+        <select class="form-control" id="filterType" name="filterType" onchange="getMissingInvoiceCustomDates();">
+          <option value="">Select Date</option>
+          <option value="last_7days">Last 7 days</option> 
+          <option value="last_15days">Last 15 days</option>
+          <option value="1month">1 month</option>
+          <option value="3months">3 months</option>
+          <option value="last_years" >last year</option>
+          <option value="custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
-    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
+    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
 		<div class="pull-left">
 		<div class="pull-left mr5" style="width: 140px">
-		<input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+		<input value="" name="fromDate" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text">
 		</div>
 		<div class="pull-left mr5" style="width: 140px">
-		<input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+		<input value="" name="toDate" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text">
 		</div>
-		<button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+		<button type="button" class="btn btn-primary btn-sm" onclick="missingInvoiceReportData();"><i class="fa fa-search"></i></button>
 		</div>
     </div>
 <!-- Top Leave Takers Custom Date --> 
@@ -78,7 +72,7 @@ $(document).ready(function(){
 
         </div>
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceReportData();">Customize</button>
 		</div>
 		<div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
@@ -97,82 +91,18 @@ $(document).ready(function(){
         <div class="clearfix dashboard-widget mt col-md-12">
           <div class="clearfix">
           <p class="col-md-2 mb0 margin-top0 padding_left fontSize20">
-         	 	<span class="text-muted">Total:</span><span class="ml"><strong>250</strong></span>
+         	 	<span class="text-muted">Total:</span><span class="ml" id="total"><strong>0.00</strong></span>
          	 </p>
           	<div class="remove_search pull-right">
-                  <input placeholder="Search" type="text">
+                <!--   <input placeholder="Search" type="text"> -->
+ 	           <input type='text' placeholder='Search' id='dataTableSearch'/>
                 </div>
           </div>
           
           
-          <div class="clearfix tableStyles mt5">
-         <div id="missingInvoiceData"></div>
-          <!--   <table class="table table-bordered noMar">
-              <thead>          
-                <tr>
-                  <th>Refer ID</th>
-                  <th>Client Name</th>
-                  <th>Project Name</th>
-                  <th>Date</th>
-                  <th>Total Amount</th>
-                  <th>&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Invoice</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Invoice</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Invoice</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Invoice</a></div></td>
-                  </tr>
-                <tr>
-				  <td><div class="tbldata-dotdot-sm">0925</div></td>
-                  <td><div class="tbldata-dotdot-me">XYZ</div></td>
-                  <td><div class="tbldata-dotdot-sm">Project1</div></td>
-                  <td><div class="tbldata-dotdot-vsm">11/12/2017</div></td>
-                  <td><div class="tbldata-dotdot-vsm">20,000.00</div></td>
-				<td><div class="tbldata-dotdot-vsm"><a href="javascript:void(0)" class="butLink"><i class="fa fa-plus"></i>Gan. Invoice</a></div></td>
-                  </tr>                                                                        
-              </tbody>
-            </table>
-            Pagenation
-            <nav class="clearfix">
-              <ul id="paging" class="pagination pull-right">
-                <li><a href="#">Previous</a></li>
-                <li class="active"><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-            </nav> -->
+          <div class="clearfix tableStyles mt5 datatable_filter">
+         <div id="missingInvoiceData"  ></div>
+       
           </div>
           
         </div>
@@ -189,11 +119,17 @@ function missingInvoiceReportData(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue;
-		prepareMissingInvoiceData(url);
-	    /* $.post(sourceleadUrl+"/vendorapAging?"+tokenParamName+"="+tokenValue+"&apagingType="+apagingType, function(data) {
-			prepareApagingList();
-		});  */
+		var invoiceType = "invoice";
+		var filterType = $("#filterType").val();
+		if(filterType == 'undefined'){
+			filterType = "";
+		}
+		var fromDate = $("#fromDate").val();
+		var toDate = $("#toDate").val();
+		var orgIds = $("#orgIds").val();
+		var contractType = "clientSow";
+		var url = sourceleadUrl+"/missingInvoiceData?searchValue="+searchValue+"&invoiceType="+invoiceType+"&filterType="+filterType+"&orgIds="+orgIds+"&fromDate="+fromDate+"&toDate="+toDate+"&contractType="+contractType;
+		prepareMissingInvoiceData(url); 
 }
 </script>
 <script>
@@ -211,6 +147,7 @@ function prepareMissingInvoiceData(url){
 		result = result + '<th>Project Name</th>';
 		result = result + '<th>Date</th>';
 		result = result + '<th>Total Amount</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
         result = result +"</thead>";
         result = result +"<tbody>"; 
@@ -225,6 +162,7 @@ function prepareMissingInvoiceData(url){
 function missingInvoice(url){
 	var colIndex = 0;
 	var apagingTotal = 0;
+	/* var total = 0; */
     $('#missingInvoicePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -233,94 +171,87 @@ function missingInvoice(url){
             url: url,
             method: 'POST',
             pages: 10
-        }),
+        }),       
         "columns": [
-        	{ "data": "orgName" },
-            { "data": "tenDays" },
-            { "data": "fifteenDays"},
-            { "data": "thirtyDays"},
-            { "data": "sixtyDays" },
-            { "data": "nintyDays"},
-            { "data": "oneeightyDays" },
-            { "data": "threeSixtyFiveDays" },
-            { "data": "above365Days"},
-            { "data": "total"}
+        	{ "data": "referId" },
+            { "data": "orgName" },
+            { "data": "projectName"},
+            { "data": "date"},
+            { "data": "totalAmount" },
+            { "data": "action"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"data": "orgName",
+	    	  	"data": "referId",
+	    		"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+	    	  		if(opt.invoiceReferId != null && opt.invoiceReferId != '' && opt.invoiceReferId != 'undefined'){
+	    	  			 result = result + ' <td><div class="tblminwidth-75">'+opt.invoiceReferId+'</div></td>';
+	    	  		}else{
+	    	  			 result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+	    	  		}
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "tenDays",
+              "data": "orgName",
+          	  "sortable": false, 
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						result = result + ' <td><div class="tblminwidth-75">'+opt.tenDays.toFixed(2)+'</div></td>';
+						 result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>'; 
 	              return result;
               		
               }
 	          },{
             "targets": colIndex++,
-            "data": "fifteenDays",
+            "data": "projectName",
+        	"sortable": false,
             "render": function ( data, type, opt, meta ) {
-            	return  '<td><div class="tblminwidth-75">'+opt.fifteenDays.toFixed(2)+'</div></td>';
+            	  var result = "";
+					 result = result + ' <td><div class="tblminwidth-75">'+opt.projectName+'</div></td>'; 
+                 return result;
             }
           }, {
               "targets": colIndex++,
-              "data": "thirtyDays",
+              "data": "date",
+          	  "sortable": false,
               "render": function ( data, type, opt, meta ) {
-            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
+            	  var result = "";
+            	  if(opt.invoiceDate !=null && opt.invoiceDate != '' && opt.invoiceDate != 'undefined'){
+            		  result = result + ' <td><div class="tblminwidth-75">'+opt.invoiceDate+'</div></td>'; 
+            	  }else{
+            		  result = result + ' <td><div class="tblminwidth-75">--</div></td>'; 
+            	  }
+					
+                 return result;
               }
             }, {
                 "targets": colIndex++,
-                "data": "sixtyDays",
+                "data": "totalAmount",
+            	"sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.sixtyDays.toFixed(2)+'</div></td>';
+                		if(opt.totalAmount !=null && opt.totalAmount !='' && opt.totalAmount != 'undefined'){
+                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.totalAmount+'</div></td>';	
+                			/*  total = parseFloat(total)+parseFloat(opt.totalAmount);
+                			  $("#total").html(total.toFixed(2)); */
+                		}else{
+                			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
+                		}
+						
     	              return result;
                 }
           },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "nintyDays",
+	    	  	"data": "action",
+	    		"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					result = result + '<td><div class="tblminwidth-50">'+opt.nintyDays.toFixed(2)+'</div></td>';
+					 result = result + '<td><div class="tblminwidth-50">Action</div></td>';
   	              return result;
 	    	  	}
-	    	  },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "oneeightyDays",
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		var result = "";
-	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
-	    	  		return result;
-	    	  	}
-	    	  }, {
-                  "targets": colIndex++,
-                  "data": "threeSixtyFiveDays",
-                  "render": function ( data, type, opt, meta ) {
-                	  return '<td><div class="tblminwidth-75">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
-                  }
-                },{
-                    "targets": colIndex++,
-                    "data": "above365Days",
-                    "render": function ( data, type, opt, meta ) {
-                    	return '<td><div class="tblminwidth-75">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
-                    }
-                  },{
-                      "targets": colIndex++,
-                      "data": "total",
-                      "render": function ( data, type, opt, meta ) {
-                    	    apagingTotal = parseFloat(apagingTotal)+parseFloat(opt.total);
-                      	   $("#apagingTotal").html(apagingTotal.toFixed(2));
-                    	  return ' <td><div class="tblminwidth-75">'+opt.total.toFixed(2)+'</div></td>';
-                    	  
-                      }
-                    } ],
+	    	  } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[0,'desc']],
@@ -333,17 +264,73 @@ function missingInvoice(url){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("#apagingPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#missingInvoicePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   vendorapAging();
+    		   missingInvoiceReportData();
     	   }
     	});
     
 	
 }
 </script>
-  
+<script>
+//custom search
+function getMissingInvoiceCustomDates() {
+	 var dateSelection = $("#filterType").val(); 
+	 if(dateSelection == 'custom'){
+		 document.getElementById("customSearch").style.display="block";
+		 $("#jobReportList_custome").attr("disabled", "disabled");
+		 
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 $("#jobReportList_custome").removeAttr("disabled");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+		 document.getElementById("fromDateDiv").style.display="none";
+		 document.getElementById("toDateDiv").style.display="none";
+	 }
+}
+</script>  
+
+
+<script>
+  $( function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+    
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+  } );
+  </script>
 
 <jsp:include page="../masterFooter.jsp" />

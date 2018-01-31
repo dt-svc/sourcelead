@@ -1357,12 +1357,17 @@ public class LeaveManagementRestController {
 			@RequestParam(value = "toDate", required = false) String toDate,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "leaveId", required = false) String leaveId) throws Exception {
+			@RequestParam(value = "leaveId", required = false) String leaveId,HttpServletRequest request) throws Exception {
 
 		String isTrue = null;
 		StringBuilder sb = null ;
 		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		User user = null;
+		if(userId == null){
+			user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			userId = user.getId();
+		}
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 		if (StringUtils.isNotBlank(leaveId)) {
 			Leave leave = leaveService.getLeaveByLeavId(leaveId);
