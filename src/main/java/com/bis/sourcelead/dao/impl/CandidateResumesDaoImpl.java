@@ -165,7 +165,8 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateResumes candidateResumes where candidateResumes.id = :resumeId" ;
+
+		String query = " from CandidateResumes candidateResumes   where candidateResumes.id = :resumeId" ;
 		List<CandidateResumes> candidateResumesList =session.createQuery(query).setLong("resumeId", resumeId).list(); 
 		CandidateResumes candidateResumes = null;
 		if(candidateResumesList != null && !candidateResumesList.isEmpty()){
