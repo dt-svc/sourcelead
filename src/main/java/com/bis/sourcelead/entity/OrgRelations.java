@@ -39,13 +39,13 @@ public class OrgRelations implements Serializable{
 	private Long id;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )   
 	@JsonBackReference
     private OrgLocations responderLocationId;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false )  
 	@JsonBackReference
     private OrgLocations locationId;
@@ -111,7 +111,7 @@ public class OrgRelations implements Serializable{
 	private String dunsNumber;
 	
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "BANK_DETAILS_ID")
     private OrgBankDetails bankDetailsId;
 	

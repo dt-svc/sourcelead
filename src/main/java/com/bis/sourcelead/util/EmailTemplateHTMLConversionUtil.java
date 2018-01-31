@@ -27,8 +27,10 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		 * 
 		 * src='http://vannamnew.xp3.biz/html/images/mail-logo.png'
 		 */
-		
-		String newUrl = StringUtils.removeEnd(url, url.substring(url.lastIndexOf("/")));
+		String newUrl = null;
+		if(StringUtils.isNotEmpty(url)) {
+			newUrl = StringUtils.removeEnd(url, url.substring(url.lastIndexOf("/")));
+		}
 		tempHTML.append("<table width='100%' cellpadding='0' cellspacing='0' style='background-color:#EEEEEE; font-family:verdana, arial;'>");
 				tempHTML.append("<tr>");
 						tempHTML.append("<td>");
