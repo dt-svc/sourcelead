@@ -29,8 +29,8 @@ function candidateEducation(candidateId){
 		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt10">  ';
 	}
 	
-	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
-    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+	result  = result + '<div class="success_pop" id="selector04" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDivEmp"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		if(candidateType == "Candidates"){
@@ -86,8 +86,8 @@ function candidateEducation(candidateId){
 <!-- Show success message after form submission script -->
 <script>
 	function eduMsgFadeinFunction() {
-		$("#selector4").fadeIn(200);
-        $('#selector4').delay(2000).fadeOut('slow');
+		$("#selector04").fadeIn(200);
+        $('#selector04').delay(2000).fadeOut('slow');
 	}
 </script> 
 <!-- End -->
@@ -734,9 +734,9 @@ function candidateEducationStore(candidateId){
     			$("#quickDisVal").append(data+'%');
     			
        		    $("#popUpDiv").removeClass("edit-details-active");
-    			$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-				$("#eduMsgDiv").html("Success!! New Education added");
+    			$("#selector04").removeAttr("style");
+    			$("#selector04").css({ display: "block" });
+				$("#eduMsgDivEmp").html("Success!! New Education added");
        			candidateEducationList(candidateId);
        			eduMsgFadeinFunction();
        			qveducationSubmission(candidateId);
@@ -857,9 +857,9 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
        				$("#quickDisVal").append(data+'%');
            			
            			
-           			 	 $("#selector4").removeAttr("style");
-            			 $("#selector4").css({ display: "block" });
-            			 $("#eduMsgDiv").html("Education deleted");
+           			 	 $("#selector04").removeAttr("style");
+            			 $("#selector04").css({ display: "block" });
+            			 $("#eduMsgDivEmp").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
              			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
@@ -1005,9 +1005,9 @@ function clearSearchKeyEducation() {
 						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId ,
 						success : function(result) {
 							closePopup();
-		            			$("#selector4").removeAttr("style");
-		            			$("#selector4").css({ display: "block" });
-		            			$("#eduMsgDiv").html("Education details updated");
+		            			$("#selector04").removeAttr("style");
+		            			$("#selector04").css({ display: "block" });
+		            			$("#eduMsgDivEmp").html("Education details updated");
 							candidateEducationList(candidateId)
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
