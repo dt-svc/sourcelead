@@ -870,7 +870,7 @@ a.alertBtn {
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+            <b>Â© 2016 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
@@ -3105,7 +3105,7 @@ function forgotPassword(){
  function loginPopup(requirementUUID){
 	 var result = "";
 	 result = result +'<div class="pull-left">';
-	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply as Guest User</button>';
+	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply</button>';
 	 result = result +'</div>';
 	 $("#gustLoginId").empty();
 	 $("#gustLoginId").append(result);
