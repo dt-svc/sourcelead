@@ -188,7 +188,6 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			getLeaveDetails(finalDateFormatEndDate);
-// 			validateCarryForwardLeaves();
 			}
 		});
 		
@@ -203,7 +202,6 @@ window.onload = function() {
 			removeEndValid();
 			validateDate();
 			getLeaveDetails();
-			validateCarryForwardLeaves();
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});

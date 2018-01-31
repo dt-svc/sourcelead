@@ -27,42 +27,7 @@
                 
                 
 					<div class="Expdit pull-right mr">
-					
-					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
-					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
-					     </c:if>
-					     
-					      <c:if test="${isReopenButtonVisible && isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
-						        <c:if test="${!empty eah.reopenRejectedReason}">
-						            <i class='glyphicon glyphicon-comment rejectedHover'>
-						               <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenRejectedReason}</div>
-						             </i>
-						        </c:if>
-					      
-						     <div class="timeNewSe pull-right">
-						      <b class='proj_withdraw pull-right' onClick='reOpenMyExpense(${expenses.id});'>Re-open</b>
-						     </div>
-					     </c:if> 
-					     
-					     <c:if test="${isReopenButtonVisible && isSahReopened && !isSuperUser && !empty eah.reopenReason}">
-						      <p class='pull-right ml' style='width: 165px;'>Re-Open Request sent</p>
-						      <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
-					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
-						      </i>
-						      <!-- <p class='pull-right ml' style='width: 165px;'>Re-Open Request sent<i class='pull-right glyphicon glyphicon-comment text-danger cursorPointer'></i></p> -->
-					     </c:if>
-					      <c:if test="${isReopenButtonVisible && submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
-					           <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
-					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
-					            </i>
-					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
-					                  <label class='clearfix reopen-label'>RE-OPEN</label>
-					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  id ='acceptReopenExpenseBySuperUserId' onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
-					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
-					           </div> 
-					      </c:if>
-					     
-					     <div class="timeNewSe pull-right">
+					<div class="timeNewSe">
 						  <c:if test="${submissionStatus == 'NEW'}">
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
@@ -82,6 +47,42 @@
 						      </i>
 						  </c:if>
 						</div>
+					
+					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
+					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					     </c:if>
+					     
+					      <c:if test="${isReopenButtonVisible && isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
+						        <c:if test="${!empty eah.reopenRejectedReason}">
+						            <i class='glyphicon glyphicon-comment rejectedHover'>
+						               <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenRejectedReason}</div>
+						             </i>
+						        </c:if>
+					      
+						     <div class="timeNewSe pull-right">
+						      <b class='proj_withdraw pull-right' onClick='reOpenMyExpense(${expenses.id});'>Re-open</b>
+						     </div>
+					     </c:if> 
+					     
+					     <c:if test="${isReopenButtonVisible && isSahReopened && !isSuperUser && !empty eah.reopenReason}">
+						      <p class=' ml' style='width: 165px;'>Re-Open Request sent</p>
+						      <i class=' glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
+						      </i>
+						      <!-- <p class='pull-right ml' style='width: 165px;'>Re-Open Request sent<i class='pull-right glyphicon glyphicon-comment text-danger cursorPointer'></i></p> -->
+					     </c:if>
+					      <c:if test="${isReopenButtonVisible && submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
+					           <i class='glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
+					            </i>
+					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
+					                  <label class='clearfix reopen-label'>RE-OPEN</label>
+					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  id ='acceptReopenExpenseBySuperUserId' onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
+					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
+					           </div> 
+					      </c:if>
+					     
+					     
 					</div>                
 
 					   <ul class="UiPado">

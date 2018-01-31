@@ -41,7 +41,6 @@ public class CandidateResumes implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
-	@JsonBackReference
 	private Candidate candidateId;
 	
 	@Transient

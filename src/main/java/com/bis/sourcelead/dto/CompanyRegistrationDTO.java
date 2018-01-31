@@ -54,6 +54,8 @@ import com.bis.sourcelead.annotations.Required;
 		
 		private String dateFormat;
 		
+		private String dateFormat1;
+		
 		private String dba;
 		
 		private String generatedUserId;
@@ -342,6 +344,16 @@ import com.bis.sourcelead.annotations.Required;
 
 		public void setAboutCompany(String aboutCompany) {
 			this.aboutCompany = aboutCompany;
+		}
+
+		public String getDateFormat1()
+		{
+			return dateFormat1;
+		}
+
+		public void setDateFormat1(String dateFormat1)
+		{
+			this.dateFormat1 = dateFormat1;
 		}
 
 		
