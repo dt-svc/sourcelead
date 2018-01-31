@@ -69,4 +69,6 @@ public interface LeaveService {
 	List<Leave> getLeavesListByTypeIdAndDuration(String leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate);
 
 	MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves);
+	
+	MonthlyLeaves getMonthlyLeavesByLeaveId(String leaveId);
 }
