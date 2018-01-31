@@ -125,7 +125,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentId(Long documentId) throws Exception {
 		logger.debug("In Candidate Document By documentId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd left join fetch cd.candidateId where cd.id = :documentId" ;
+		String query = " from CandidateDocuments cd  where cd.id = :documentId" ;
 		List<CandidateDocuments> candidateDocumentsList =session.createQuery(query).setLong("documentId", documentId).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){

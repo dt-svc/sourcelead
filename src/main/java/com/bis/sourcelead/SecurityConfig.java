@@ -115,6 +115,8 @@ public class SecurityConfig  {
     			.antMatchers("/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/parseResume/**").permitAll()
     			.antMatchers("/app/getActionHistoryList/**").permitAll()
+    			.antMatchers("/app/jobCampaignSummary/**").permitAll()
+    			.antMatchers("/app/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")
