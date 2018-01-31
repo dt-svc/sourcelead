@@ -1683,7 +1683,7 @@ $("#searchType").selectpicker('refresh');
          
         <div class="modal-body invite_class">
             <div class="form-group clearfix">
-                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-building paddingRight text-info"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
+                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-folder-open-o  paddingRight text-info" aria-hidden="true"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-8 paddingLeft">
                     <input type="text" class="form-control input-sm" placeholder="Folder Path" id="folderPath" name="folderPath" field-name="Folder Path" data-validation="required validate_Space">
                 </div>
@@ -1694,7 +1694,7 @@ $("#searchType").selectpicker('refresh');
        
        <div class="clearfix form-footer">
             <div class="pull-right mr">
-          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="fa fa-send paddingRight"></i>Continue</button>
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="paddingRight"></i>Continue</button>
           <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushBulkImportPath();"></i>Cancel
             </button>
                 </div>
