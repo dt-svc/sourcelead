@@ -210,14 +210,12 @@ public class Candidate implements Serializable{
 	@Column(name="IS_ASSOCIATE")
 	private String isAssociate;
 	
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_RELATION_ID")        
     private OrgRelations orgRelationId; 
 	   
 	
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
     @JoinColumn(name="SPOC_ID" )        
     private OrgSpoc spocId; 
@@ -264,8 +262,7 @@ public class Candidate implements Serializable{
     private String fullName;
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
 	/*@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -273,13 +270,11 @@ public class Candidate implements Serializable{
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);*/
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	
 	
