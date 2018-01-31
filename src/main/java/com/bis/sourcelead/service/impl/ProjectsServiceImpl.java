@@ -739,6 +739,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
+			projectTasks.setPercentage(0);
 			projectTasks.setProjectId(projects);
 			set.add(projectTasks);
 			generatedId++;
