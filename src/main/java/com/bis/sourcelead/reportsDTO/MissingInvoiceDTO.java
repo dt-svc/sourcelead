@@ -11,6 +11,14 @@ public class MissingInvoiceDTO extends SearchDTO {
 	private static final long serialVersionUID = 1L;
 	private String invoiceReferId;
 	private String billReferId;
+	public String getGraphDateType() {
+		return graphDateType;
+	}
+
+	public void setGraphDateType(String graphDateType) {
+		this.graphDateType = graphDateType;
+	}
+
 	private String orgName;
 	private String projectName;
 	private String invoiceDate;
@@ -26,6 +34,7 @@ public class MissingInvoiceDTO extends SearchDTO {
 	private double invoiceAmount;
 	private String candidateName;
 	private String contractType;
+	private String graphDateType;
 
 	public String getInvoiceReferId() {
 		return invoiceReferId;

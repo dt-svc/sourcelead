@@ -511,8 +511,8 @@ public class FinanceDaoImpl implements FinanceDao{
 		List<Contracts> contractsList = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.createdDate = (SELECT MAX(con.createdDate) from Contracts con where con.candidate.id = :candidateId) and contract.orgLocationId.id = :orgLocationId and "
-					+ "contract.orgRelations.id = :orgRelationId  and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
+			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.createdDate = (SELECT MAX(con.createdDate) from Contracts con where con.templateSubmissionStatus = 'FINALIZED' and con.candidate.id = :candidateId) and contract.orgLocationId.id = :orgLocationId and "
+					+ "contract.orgRelations.id = :orgRelationId  and contract.contractType = :contractType ";
 		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).setLong("orgRelationId", orgRelation.getId()).setString("contractType", contractType).setCacheable(false).list();
 		  if(null != contractsList){
 			  return contractsList;

@@ -251,109 +251,151 @@ public class FinanceServiceImpl implements FinanceService{
 			if (sahList != null) {
 				int count = 0;
 				Map<String,List<MissingInvoiceDTO>> map = new HashMap<>();
-				if(!"invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
-					for (SubmissionApproverHierarchy sah : sahList.getData()) {
-						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
-						if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
-							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
-							if(candidate.getOrgRelationId() != null) {
-								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
-								SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
+				 List<MissingInvoiceDTO> list = new ArrayList<>();
+				if(sahList.getData() != null) {
+					if(!"invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
+						for (SubmissionApproverHierarchy sah : sahList.getData()) {
+							MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
+							if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
+								Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
+								if(candidate.getOrgRelationId() != null) {
+									OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
+									String date = "";
+									if(!"last_years".equalsIgnoreCase(missingInvoiceDto.getFilterType()) && !"3months".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+										if (sah.getBillDate() != null) {
+											 date = commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", sah.getBillDate());
+										}else {
+											 date = commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", sah.getUpdatedDate());
+										}	
+									}else {
+										SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
+										if (sah.getBillDate() != null) {
+											 date = month_date.format(sah.getBillDate());
+										}else {
+											 date = month_date.format(sah.getUpdatedDate());
+										}
+									}
+									double amount = 0;
+									if (sah.getBillId() != null) {
+										amount = Double.parseDouble(sah.getInvoiceId().getTotal());
+									}else {
+										List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
+										
+										if(contractList != null && contractList.size() >0) {
+											 amount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
+										}
+									}
+									missingInvoice.setInvoiceAmount(amount);
+									
+									 if(map.containsKey(date)) {
+								    	   List<MissingInvoiceDTO> amountList = map.get(date);
+								    	   amountList.add(missingInvoice);
+								    	   map.put(date, amountList);
+								    	   }else {
+								    	   List<MissingInvoiceDTO> amountList = new ArrayList<>();
+								    	   amountList.add(missingInvoice);
+								    	   map.put(date, amountList);
+								    	   }
+									count++;
+								}
+							}
+							
+						}
+					}else {
+						for (SubmissionApproverHierarchy sah : sahList.getData()) {
+							MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
+							if (sah.getHeirarchyId().getProjectClientsId().getOrgRelationId() != null) {
+								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(sah.getHeirarchyId().getProjectClientsId().getOrgRelationId().getId());
+								Candidate candidate  = candidateService.getCandidateByCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
 								String date = "";
-								if (sah.getBillDate() != null) {
-									 date = month_date.format(sah.getBillDate());
+								if (sah.getInvoiceDate() != null) {
+									 SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
+									 date = month_date.format(sah.getInvoiceDate());
 								}else {
+									SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
 									 date = month_date.format(sah.getUpdatedDate());
 								}
-								List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
+								
 								double amount = 0;
-								if(contractList != null && contractList.size() >0) {
-									 amount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
+								if (sah.getInvoiceId() != null) {
+									amount = Double.parseDouble(sah.getInvoiceId().getTotal());
+								}else {
+									List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
+									if(contractList != null && contractList.size() >0) {
+										amount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
+									}
 								}
+								
 								missingInvoice.setInvoiceAmount(amount);
 								
-								 if(map.containsKey(date)) {
-							    	   List<MissingInvoiceDTO> amountList = map.get(date);
-							    	   amountList.add(missingInvoice);
-							    	   map.put(date, amountList);
-							    	   }else {
-							    	   List<MissingInvoiceDTO> amountList = new ArrayList<>();
-							    	   amountList.add(missingInvoice);
-							    	   map.put(date, amountList);
-							    	   }
+						    	   if(map.containsKey(date)) {
+						    	   List<MissingInvoiceDTO> amountList = map.get(date);
+						    	   amountList.add(missingInvoice);
+						    	   map.put(date, amountList);
+						    	   }else {
+						    	   List<MissingInvoiceDTO> amountList = new ArrayList<>();
+						    	   amountList.add(missingInvoice);
+						    	   map.put(date, amountList);
+						    	   }
 								count++;
 							}
 						}
-						
-					}
-				}else {
-					 int amount = 100;
-					for (SubmissionApproverHierarchy sah : sahList.getData()) {
-						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
-						if (sah.getHeirarchyId().getProjectClientsId().getOrgRelationId() != null) {
-							OrgRelations orgRelations = orgRelationsService.getOrgRelationById(sah.getHeirarchyId().getProjectClientsId().getOrgRelationId().getId());
-							Candidate candidate  = candidateService.getCandidateByCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
-							String date = "";
-							if (sah.getInvoiceDate() != null) {
-								 SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
-								 date = month_date.format(sah.getInvoiceDate());
-							}else {
-								SimpleDateFormat month_date = new SimpleDateFormat("MMM", Locale.ENGLISH);
-								 date = month_date.format(sah.getUpdatedDate());
-							}
-							
-							List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
-							double iamount = 0;
-							if(contractList != null && contractList.size() >0) {
-								iamount = getAmount(sah.getBillableHours(),contractList.get(0).getBillingAmount());
-							}
-							missingInvoice.setInvoiceAmount(iamount);
-							
-					    	   if(map.containsKey(date)) {
-					    	   List<MissingInvoiceDTO> amountList = map.get(date);
-					    	   amountList.add(missingInvoice);
-					    	   map.put(date, amountList);
-					    	   }else {
-					    	   List<MissingInvoiceDTO> amountList = new ArrayList<>();
-					    	   amountList.add(missingInvoice);
-					    	   map.put(date, amountList);
-					    	   }
-							count++;
-						}
-					}
 
+					}
+					
+					 for (Map.Entry<String,List<MissingInvoiceDTO>> entry : map.entrySet()) {
+						 MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
+						 missingInvoice.setInvoiceDate(entry.getKey());
+						 double amount = entry.getValue().stream().mapToDouble(am->am.getInvoiceAmount()).sum();
+						 missingInvoice.setInvoiceAmount(amount);
+						 missingInvoiceDTOList.add(missingInvoice);
+						}
+					
+					 if(!"".equalsIgnoreCase(missingInvoiceDto.getFilterType()) && !"last_7days".equalsIgnoreCase(missingInvoiceDto.getFilterType()) && !"3months".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+						 for(MissingInvoiceDTO missingInvoice : missingInvoiceDTOList) {
+							 MissingInvoiceDTO missingInvoiceDTO = new MissingInvoiceDTO();
+							 if(!"last_7days".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+								 missingInvoiceDTO.setInvoiceDate(missingInvoice.getInvoiceDate());
+								 missingInvoiceDTO.setInvoiceAmount(missingInvoice.getInvoiceAmount());
+								 missingInvoiceDTO.setGraphDateType("yyyy-MM-dd");
+							 }else {
+								 int monthDigit =  getMonthNumber(missingInvoice.getInvoiceDate());
+								 missingInvoiceDTO.setInvoiceDate(getStartDate(monthDigit,orgLocation));
+								 missingInvoiceDTO.setInvoiceAmount(missingInvoice.getInvoiceAmount());
+								 missingInvoiceDTO.setGraphDateType("YYYY-MM");
+							 }
+							 
+							
+							 list.add(missingInvoiceDTO);
+						 } 
+					 }else {
+						 Collections.sort(missingInvoiceDTOList, new Comparator<Object>() {  
+					            @Override  
+					            public int compare(Object obj1, Object obj2) {  
+					            	MissingInvoiceDTO candidate1 = (MissingInvoiceDTO)obj1;  
+					            	MissingInvoiceDTO candidate2 = (MissingInvoiceDTO)obj2; 
+					            	return candidate2.getInvoiceDate().compareToIgnoreCase(candidate1.getInvoiceDate());  
+					            }  
+					        });
+						 
+						 for(MissingInvoiceDTO missingInvoice : missingInvoiceDTOList) {
+							 MissingInvoiceDTO missingInvoiceDTO = new MissingInvoiceDTO();
+								 int monthDigit =  getMonthNumber(missingInvoice.getInvoiceDate());
+								 missingInvoiceDTO.setInvoiceDate(getStartDate(monthDigit,orgLocation));
+								 missingInvoiceDTO.setInvoiceAmount(missingInvoice.getInvoiceAmount());
+								 missingInvoiceDTO.setGraphDateType("YYYY-MM");
+							 list.add(missingInvoiceDTO);
+						 } 
+					 }
+					 
+					 
+					 
+					response.setData(list);
+					response.setRecordsFiltered(count);
+					response.setRecordsTotal(count);
+					response.setStatusCode("200");
 				}
 				
-				 for (Map.Entry<String,List<MissingInvoiceDTO>> entry : map.entrySet()) {
-					 MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
-					 missingInvoice.setInvoiceDate(entry.getKey());
-					 double amount = entry.getValue().stream().mapToDouble(am->am.getInvoiceAmount()).sum();
-					 missingInvoice.setInvoiceAmount(amount);
-					 missingInvoiceDTOList.add(missingInvoice);
-					}
-				 
-				 Collections.sort(missingInvoiceDTOList, new Comparator<Object>() {  
-			            @Override  
-			            public int compare(Object obj1, Object obj2) {  
-			            	MissingInvoiceDTO candidate1 = (MissingInvoiceDTO)obj1;  
-			            	MissingInvoiceDTO candidate2 = (MissingInvoiceDTO)obj2; 
-			            	return candidate2.getInvoiceDate().compareToIgnoreCase(candidate1.getInvoiceDate());  
-			            }  
-			        });
-				 List<MissingInvoiceDTO> list = new ArrayList<>();
-				 for(MissingInvoiceDTO missingInvoice : missingInvoiceDTOList) {
-					 MissingInvoiceDTO missingInvoiceDTO = new MissingInvoiceDTO();
-					 int monthDigit =  getMonthNumber(missingInvoice.getInvoiceDate());
-					 missingInvoiceDTO.setInvoiceDate(getStartDate(monthDigit,orgLocation));
-					 missingInvoiceDTO.setInvoiceAmount(missingInvoice.getInvoiceAmount());
-					 list.add(missingInvoiceDTO);
-				 }
-				 
-				 
-				response.setData(list);
-				response.setRecordsFiltered(count);
-				response.setRecordsTotal(count);
-				response.setStatusCode("200");
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -397,15 +439,19 @@ public class FinanceServiceImpl implements FinanceService{
 		return number;
 	}
 
+	/**
+	 * To get start date of month
+	 * @param currentMonth
+	 * @param orgLocation
+	 * @return date in string format
+	 */
 	private String getStartDate(int currentMonth, OrgLocations orgLocation) {
-		Date d = new Date();
-	    Calendar calendar = Calendar.getInstance();      
-	    calendar.set(Calendar.MONTH,currentMonth);
-	    calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-	    Date monthStartDate = calendar.getTime();
-	    System.out.println(monthStartDate);
-	    return commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", monthStartDate);
-		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MONTH, currentMonth);
+		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+		Date monthStartDate = calendar.getTime();
+		return commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", monthStartDate);
+
 	}
 
 }
