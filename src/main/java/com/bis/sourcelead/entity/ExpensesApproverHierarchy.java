@@ -55,14 +55,14 @@ private static final long serialVersionUID = 1L;
 @Column(name = "ID", nullable = false)
 private Long id;
 
-
-@ManyToOne(fetch = FetchType.LAZY)
+@NotFound(action=NotFoundAction.IGNORE)
+@ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
-
-@ManyToOne(fetch = FetchType.LAZY)
+@NotFound(action=NotFoundAction.IGNORE)
+@ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
@@ -97,8 +97,11 @@ private Date updatedDate;
 @Column(name = "UPDATED_BY")
 private String updatedBy;
 
+@Column(name = "ACTION_BY_ORGLOC_ID")
+private Long actionbyorglocid;
 
-@ManyToOne(fetch = FetchType.LAZY)
+@NotFound(action=NotFoundAction.IGNORE)
+@ManyToOne
 @Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
@@ -393,6 +396,16 @@ public String getExpenseLocationCode() {
 public void setExpenseLocationCode(String expenseLocationCode) {
 	this.expenseLocationCode = expenseLocationCode;
 }
+
+public Long getActionbyorglocid() {
+	return actionbyorglocid;
+}
+
+public void setActionbyorglocid(Long actionbyorglocid) {
+	this.actionbyorglocid = actionbyorglocid;
+}
+
+
 
 
 }	

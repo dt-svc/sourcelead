@@ -620,9 +620,9 @@ function getEmailDetails(uuid,type){
 	   			 if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';
 	   			}
-	   			/*if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
+	   			if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
 	   				result = result +'<p>'+opt.body+'</p><br/>';
-	   			} */
+	   			} 
 	   			if(opt.campaignTableData != null && opt.campaignTableData != 'undefined' && opt.campaignTableData != ""){
 	   				result = result +'<p>'+opt.campaignTableData+'</p><br/>';
 	   			}
