@@ -384,12 +384,11 @@ function selectClientCategory(){
 			$.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationId+"&status="+status,  
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		        success: function(json) {
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
 		             }
 		        	 result = result +"</select>";
