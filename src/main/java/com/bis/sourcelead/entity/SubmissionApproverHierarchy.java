@@ -98,6 +98,9 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Type(type="text")
 	private String actionPerformedBy;
 	
+	@Column(name = "ACTION_BY_ORGLOC_ID")
+	private Long actionPerformedByOrgLocationId;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -559,6 +562,14 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Long getActionPerformedByOrgLocationId() {
+		return actionPerformedByOrgLocationId;
+	}
+
+	public void setActionPerformedByOrgLocationId(Long actionPerformedByOrgLocationId) {
+		this.actionPerformedByOrgLocationId = actionPerformedByOrgLocationId;
 	}
 
 
