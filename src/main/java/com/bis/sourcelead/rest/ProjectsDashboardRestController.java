@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
@@ -622,10 +622,10 @@ public class ProjectsDashboardRestController {
 			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : excludeKeyWordArray){
 					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+					ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+					if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+						for(QueryBuilder QueryBuilder :QueryBuilderList){
+							excludeBoolSubQueryBuilder.should(QueryBuilder);
 						}
 						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 					}
@@ -639,10 +639,10 @@ public class ProjectsDashboardRestController {
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -655,10 +655,10 @@ public class ProjectsDashboardRestController {
 					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArray){
 						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								allBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 						}
@@ -832,22 +832,22 @@ public class ProjectsDashboardRestController {
          return keyWordList;
     }
 
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
-		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+	 private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
+		    ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
 		   
 		    //Project Search
-		    //matchQueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
-			//matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
-			return matchQueryBuilderList; 
+		    //QueryBuilderList.add(QueryBuilders.matchQuery("id", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchQuery("projectSequeneNumber", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchQuery("projectName", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("level1ManagerName", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("level2ManagerName", keywd));
+			//QueryBuilderList.add(QueryBuilders.matchPhraseQuery("startDate", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("invoiceFrequency", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("clientName", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("projectMembers", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("projectMemberEmail", keywd));
+			return QueryBuilderList; 
 	 }
 	 
 	 @RequestMapping(value = "/getUniversalProjectsListByOrgLocationID")

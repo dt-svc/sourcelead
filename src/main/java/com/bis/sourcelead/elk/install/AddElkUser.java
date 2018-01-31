@@ -3,7 +3,6 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,10 +14,6 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +25,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -39,7 +35,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class AddElkUser {
 	private static final Logger logger = LoggerFactory.getLogger(AddElkUser.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private TransportClient client;
+	private SourceleadELKTC client;
 
 	public void addElkUser() throws IOException, SQLException {
 		ArrayList<UserIndex> elkUserList = getElkUsers();
@@ -189,10 +185,10 @@ public class AddElkUser {
 		String entityInJson = null;
 		try {
 			entityInJson = toJSON(userIndex);
-			client.prepareUpdate(index, type, id).setDoc(entityInJson).get();
+			client.getClient().prepareUpdate(index, type, id).setDoc(entityInJson).get();
 			logger.info(type + " has been updated.");
 		} catch (DocumentMissingException e) {
-			client.prepareIndex(index, type, id).setSource(entityInJson).execute().actionGet();
+			client.getClient().prepareIndex(index, type, id).setSource(entityInJson).execute().actionGet();
 			logger.info(type + " has been indexed.");
 		} catch (Exception e) {
 			logger.error(type + " could not be serialized. " + e.getLocalizedMessage());
@@ -225,15 +221,6 @@ public class AddElkUser {
 		comboPooledDataSource.setUser(dbconfig.getUser());
 		comboPooledDataSource.setPassword(dbconfig.getPassword());
 
-		try {
-			Settings settings = Settings.settingsBuilder().put("cluster.name", dbconfig.getCluster())
-					.put("node.name", dbconfig.getNode()).put("path.home", dbconfig.getPath()).build();
-			client = TransportClient.builder().settings(settings).build().addTransportAddress(
-					new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-		} catch (Exception exception) {
-			logger.error(ExceptionUtils.getFullStackTrace(exception));
-		}
-
 		return comboPooledDataSource;
 	}
 
@@ -241,7 +228,9 @@ public class AddElkUser {
 
 		try {
 			AddElkUser addElkUser = new AddElkUser();
+			addElkUser.client = new SourceleadELKTC();
 			addElkUser.addElkUser();
+			addElkUser.client.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

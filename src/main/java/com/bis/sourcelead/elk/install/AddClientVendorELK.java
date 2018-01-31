@@ -3,7 +3,6 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,15 +10,14 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -30,7 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
-import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -44,7 +42,7 @@ public class AddClientVendorELK {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private TransportClient client;
+	 private SourceleadELKTC client;
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -240,14 +238,22 @@ public class AddClientVendorELK {
 
 	public void saveOrUpdateElkDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
 		String entityInJson = null;
+		Map<String, Object> d = new HashMap<>();
 		try {
 		    entityInJson = toJSON(clientVendorIndex);
-		    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		    JSONObject json = new JSONObject(entityInJson);
+		   
+		    Iterator<String> it = json.keys();
+		    while(it.hasNext()) {
+		    	String key = it.next();
+		    		d.put(key, json.isNull(key) ? null : json.get(key));
+		    }
+		    client.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
 		    logger.info(type+" has been updated.");
 		} 
         catch(DocumentMissingException e){
-        	client.prepareIndex(index, type,id)
-		    .setSource(entityInJson).execute().actionGet();
+        	client.getClient().prepareIndex(index, type,id)
+		    .setSource(d).execute().actionGet();
 		    logger.info(type+" has been indexed.");
 		}
 		catch (Exception e) {
@@ -282,25 +288,15 @@ public class AddClientVendorELK {
 		comboPooledDataSource.setUser(dbconfig.getUser());
 		comboPooledDataSource.setPassword(dbconfig.getPassword());
 		
-		try {
-	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", dbconfig.getCluster())
-	                  .put("node.name", dbconfig.getNode())
-	         		  .put("path.home", dbconfig.getPath())
-	                  .build();
-			client = TransportClient.builder().settings(settings).build().
-			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-	     } catch (Exception exception) {
-			logger.error(ExceptionUtils.getFullStackTrace(exception));
-		}
-		
 		return comboPooledDataSource;
 	}
 	public static void main(String[] args) throws IOException {
 			
 		try {
 			   AddClientVendorELK addClientVendorELK = new AddClientVendorELK();
+			   addClientVendorELK.client = new SourceleadELKTC();
 			   addClientVendorELK.addClientVendorELK();
+			   addClientVendorELK.client.shutdown();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();

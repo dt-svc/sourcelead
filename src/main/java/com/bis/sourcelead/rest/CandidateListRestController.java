@@ -1,13 +1,10 @@
 package com.bis.sourcelead.rest;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,14 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -40,7 +35,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +42,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -246,10 +237,10 @@ public class CandidateListRestController {
 			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : excludeKeyWordArray) {
 				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				List<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						excludeBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 				}
@@ -269,10 +260,10 @@ public class CandidateListRestController {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				List<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					
 					DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
@@ -304,10 +295,10 @@ public class CandidateListRestController {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
 				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				List<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						allBoolSubQueryBuilder.should(matchQueryBuilder);
+				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						allBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 				}
@@ -593,54 +584,54 @@ public class CandidateListRestController {
 		return response;
 	}
 
-	private List<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
-		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("fullName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("address", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designation", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("summary", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("education", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("skillsName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("visaType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("employer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
-		// matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
+	private List<QueryBuilder> getQueryBuilderList(String keywd) {
+		List<QueryBuilder> QueryBuilderList = new ArrayList<>();
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("fullName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("address", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("designation", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("summary", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("education", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("visaType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("employer", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
+		// QueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateMobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateMobilePhone", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
-			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths",
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
+			// QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths",
 			// keywd));
 			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
 		if (StringUtils.isNumeric(keywd)) {
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")

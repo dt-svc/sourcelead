@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
@@ -431,12 +431,12 @@ public class UsersListRestController {
 			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : excludeKeyWordArray) {
 				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
 
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						excludeBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 				}
@@ -452,11 +452,11 @@ public class UsersListRestController {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
@@ -471,11 +471,11 @@ public class UsersListRestController {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
 				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						allBoolSubQueryBuilder.should(matchQueryBuilder);
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						allBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 				}
@@ -601,31 +601,31 @@ public class UsersListRestController {
 		return keyWordList;
 	}
 
-	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+	private ArrayList<QueryBuilder> getQueryBuilderList(String keywd) {
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
 
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			// QueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
 			// keywd));
 			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	/**

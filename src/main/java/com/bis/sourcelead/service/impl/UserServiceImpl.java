@@ -20,7 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
@@ -1244,11 +1244,11 @@ public class UserServiceImpl implements UserService {
 				BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 				for (String keywd : anyKeyWordArray) {
 					BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
+					ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getUsersQueryBuilderList(keywd);
 
-					if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-						for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-							anyBoolSubQueryBuilder.should(matchQueryBuilder);
+					if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+						for (QueryBuilder QueryBuilder : QueryBuilderList) {
+							anyBoolSubQueryBuilder.should(QueryBuilder);
 						}
 						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 					}

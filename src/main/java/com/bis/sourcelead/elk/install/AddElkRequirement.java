@@ -3,7 +3,6 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,10 +16,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +26,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -44,7 +40,7 @@ public class AddElkRequirement {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private TransportClient client;
+	private SourceleadELKTC client;
 	public void addElkRequirement() throws IOException, SQLException {
 		ArrayList<RequirementIndex> requirementList = getElkRequirements();
 		if(null != requirementList && !requirementList.isEmpty()){
@@ -538,11 +534,11 @@ public class AddElkRequirement {
 		String entityInJson = null;
 		try {
 		    entityInJson = toJSON(requirementIndex);
-		    client.prepareUpdate(index, type,requirementId).setDoc(entityInJson).get();
+		    client.getClient().prepareUpdate(index, type,requirementId).setDoc(entityInJson).get();
 		   // logger.info(type+" has been updated.");
 		} 
         catch(DocumentMissingException e){
-        	client.prepareIndex(index, type,requirementId)
+        	client.getClient().prepareIndex(index, type,requirementId)
 		    .setSource(entityInJson).execute().actionGet();
 		   // logger.info(type+" has been indexed.");
 		}
@@ -583,18 +579,6 @@ public class AddElkRequirement {
 			comboPooledDataSource.setUser(dbconfig.getUser());
 			comboPooledDataSource.setPassword(dbconfig.getPassword());
 			
-			try {
-		    	  Settings settings = Settings.settingsBuilder()
-		    			  .put("cluster.name", dbconfig.getCluster())
-		                  .put("node.name", dbconfig.getNode())
-		         		  .put("path.home", dbconfig.getPath())
-		                  .build();
-				client = TransportClient.builder().settings(settings).build().
-				      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-		     } catch (Exception exception) {
-				logger.error(ExceptionUtils.getFullStackTrace(exception));
-			}
-			
 			return comboPooledDataSource;
 		}
 	 
@@ -602,7 +586,9 @@ public class AddElkRequirement {
 			
 			try {
 				AddElkRequirement addElkCandidate = new AddElkRequirement();
+				addElkCandidate.client = new SourceleadELKTC();
 				   addElkCandidate.addElkRequirement();
+				   addElkCandidate.client.shutdown();
 			}catch (Exception e){
 				e.printStackTrace();
 			}

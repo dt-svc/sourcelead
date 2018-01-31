@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -843,10 +843,10 @@ public class CrowdSourcingRequirementsRestController {
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : excludeKeyWordArray){
 						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								excludeBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 						}
@@ -862,10 +862,10 @@ public class CrowdSourcingRequirementsRestController {
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : anyKeyWordArray){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -881,10 +881,10 @@ public class CrowdSourcingRequirementsRestController {
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
 							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									allBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 							}
@@ -1019,37 +1019,37 @@ public class CrowdSourcingRequirementsRestController {
      }
 	 
 	 
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+	 private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
 		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+		   ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		    QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
 			
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 			}
 
 				
-			return matchQueryBuilderList; 
+			return QueryBuilderList; 
 	 }
 	 
 	 
