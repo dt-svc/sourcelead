@@ -45,6 +45,11 @@ display: none;
 			 $("#emailsList").empty();
 			 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
 			 $("#emailsList").trigger("chosen:updated");
+           var toEmail = '${toEmail}';
+			 
+			 $("#emailsList").empty();
+			 $("#emailsList").append("<option value='" +toEmail+ "' selected>"+toEmail+"</option>");
+			 $("#emailsList").trigger("chosen:updated");
 		 }
 	 }
 });
