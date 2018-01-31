@@ -194,7 +194,7 @@ display: none;
   
 <script type="text/javascript">
 $(function() { 
-	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','skills');
 });
 </script> 
   
