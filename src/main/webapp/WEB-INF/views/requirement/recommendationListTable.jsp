@@ -5,8 +5,8 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-<jsp:include page="addApplicant.jsp" />
-<jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
+<%-- <jsp:include page="addApplicant.jsp" />
+<jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
 <div id="popUp" ></div>
 <script>
