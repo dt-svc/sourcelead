@@ -142,9 +142,7 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setUpdatedDate(new Date());
 		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 		leave.setNumberOfDays(String.valueOf(numberOfdays));
-		
-		int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leaveType,leaveDTO,orgLocations,user);
-		leave.setExtraLeavesTaken(String.valueOf(noOfExtraDays));
+		leave.setExtraLeavesTaken(String.valueOf(0));
 		
 		Leave savedLeave =  leaveDao.saveLeave(leave);
 		
@@ -363,16 +361,28 @@ public class LeaveServiceImpl implements LeaveService{
 		Employees emp = null;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveDao.getLeaveById(leaveId);
+		
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_YEAR, 1);
+        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
+        
+        
+		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),user.getId(),yearStartDate,leave.getFromDate());
+//		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocations.getId(),Constants.APPROVED,user.getId());
+		int carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate);
+		
 		leaveManagementHistory.setFromStage(leave.getStatus());
 		if (leave != null) {
 			if (Constants.LEAVE_APPROVED.equals(approveStatus)) {
 				leave.setStatus(Constants.LEAVE_APPROVED);
 				leave.setApprovedBy(user);
-					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-					
+//					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
 					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
-					
 					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
+					
+					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
+					
+					leave.setExtraLeavesTaken(String.valueOf(noOfExtraDays-carryForwardLeaves));
 					
 					int numberOfLeavesPerYear = totalLeaves - Integer.parseInt(numberOfDays) + Integer.parseInt(leave.getExtraLeavesTaken());
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
@@ -402,6 +412,116 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	
+
+	private int calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate)
+	{
+		Calendar sDate = Calendar.getInstance();
+        Calendar eDate = Calendar.getInstance();
+        sDate.setTime(fromDate);
+        eDate.setTime(yearStartDate);
+        int difInMonths = eDate.get(Calendar.MONTH) - sDate.get(Calendar.MONTH) + 1;
+        int fromMonth = sDate.get(Calendar.MONTH);
+		
+		int carryForwardLeaves = 0;
+		int janLeaves = 0;
+		int febLeaves = 0;
+		int marLeaves = 0;
+		int aprLeaves = 0;
+		int mayLeaves = 0;
+		int junLeaves = 0;
+		int julLeaves = 0;
+		int augLeaves = 0;
+		int sepLeaves = 0;
+		int octLeaves = 0;
+		int novLeaves = 0;
+		int decLeaves = 0;
+		int monthlyAllowedLeaves = 0;
+		for(Leave userLeave : leaveList){
+			if("Mothly".equalsIgnoreCase(userLeave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(userLeave.getLeaveType().getLeavesCarryforward())){
+				monthlyAllowedLeaves = userLeave.getLeaveType().getNoOfDays();
+				MonthlyLeaves monthlyLeaves = getMonthlyLeavesByLeaveId(userLeave.getId());
+				int monthlyTotalLeaves = difInMonths * userLeave.getLeaveType().getNoOfDays();
+				janLeaves += monthlyLeaves.getJanuaryLeaves();
+				febLeaves += monthlyLeaves.getFebruaryLeaves();
+				marLeaves += monthlyLeaves.getMarchLeaves();
+				aprLeaves += monthlyLeaves.getAprilLeaves();
+				mayLeaves += monthlyLeaves.getMayLeaves();
+				junLeaves += monthlyLeaves.getJuneLeaves();
+				julLeaves += monthlyLeaves.getJulyLeaves();
+				augLeaves += monthlyLeaves.getAugustLeaves();
+				sepLeaves += monthlyLeaves.getSeptLeaves();
+				octLeaves += monthlyLeaves.getOctoberLeaves();
+				novLeaves += monthlyLeaves.getNovLeaves();
+				decLeaves += monthlyLeaves.getDecLeaves();
+			}
+		}
+		
+		for(int i=0;i<= fromMonth; i++){
+			switch (i) {
+				case 0:
+					if(janLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 1:
+					if(febLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 2:
+					if(marLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 3:
+					if(aprLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 4:
+					if(mayLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 5:
+					if(junLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 6:
+					if(julLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 7:
+					if(augLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 8:
+					if(sepLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 9:
+					if(octLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 10:
+					if(novLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+				case 11:
+					if(decLeaves < monthlyAllowedLeaves){
+						carryForwardLeaves += 1;
+					}
+					break;
+			}
+		}
+		return carryForwardLeaves;
+	}
 
 	private void sendApprovedAndRejectedLeaveMailToEmployee(OrgLocations orgLocations, User loginUser, LeaveManagementHistory leaveManagementHistory) throws Exception
 	{
@@ -1242,6 +1362,12 @@ public class LeaveServiceImpl implements LeaveService{
 	public MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves)
 	{
 		return leaveDao.saveMonthlyLeaves(monthlyLeaves);
+	}
+
+	@Override
+	public MonthlyLeaves getMonthlyLeavesByLeaveId(String leaveId)
+	{
+		return leaveDao.getMonthlyLeavesByLeaveId(leaveId);
 	}
 
 }
