@@ -1719,4 +1719,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getAllAssociatesByOrglocationIdAndEmploymentType(orgLocationId, employeementType);
 	}
 
+	@Override
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO, Long orgLocationsId,
+			List<Long> roleIds, List<Long> associatesIds,Long loginOrgLocationId) throws Exception {
+		return candidateDao.getLocationCandidatesList(candidateDTO, orgLocationsId, roleIds, associatesIds,loginOrgLocationId);
+	}
+
 }

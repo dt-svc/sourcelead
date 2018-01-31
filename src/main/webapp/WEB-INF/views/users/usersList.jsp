@@ -146,7 +146,19 @@ function getUsersSearchResult(searchValue){
 				</select>
 		   </li>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
-	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add Associate</a></li>
+	           <li><sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')">
+							<a class="action" onclick="getActions();"
+								href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i
+								class="fa fa-caret-down"></i>
+							</a>
+							<div class="action-pop">
+								<span> 
+								<a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-plus"></i>Add Associate</a>
+								<a href="<c:url value='${appPath}/addAssociateFromLocations'/>"><i class="fa fa-plus"></i>Add From Loc</a>
+								</span>
+							</div>
+						</sec:authorize></li>
+						
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
@@ -893,5 +905,16 @@ $("#dynamicUserDataTableSearch").keydown(function(e) {
 	});
 </script> 
  
-
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+</script>
     

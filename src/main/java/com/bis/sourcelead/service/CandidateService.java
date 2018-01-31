@@ -190,5 +190,7 @@ public interface CandidateService {
 	public Candidate getCandidateByShortURL(String shortURL) throws Exception;
 	
 	List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType) throws Exception;
+	
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,List<Long> associatesIds,Long loginOrgLocationId)throws Exception ;
 
 }

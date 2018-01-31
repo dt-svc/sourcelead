@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -224,11 +225,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	
 	@RequestMapping(value = "/getActiveAssociateList", method = RequestMethod.POST)
 	public @ResponseBody String getCandidatesList(
-		   @RequestParam(value = "employeementType", required = true) String employeementType, 
-		   @RequestParam(value = "registeredLocations", required = true) Long registeredLocations, HttpServletRequest request) throws Exception {
+		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
 		String resultJson = null;
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredLocations);
-		List<Candidate> candidateIdsList = candidateService.getAllAssociatesByOrglocationIdAndEmploymentType(orgLocations.getId(),employeementType);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Candidate> candidateIdsList = candidateService.getAllActiveAssociatesByOrglocationId(orgLocations.getId(),employeementType);
 		resultJson = toJSON(candidateIdsList);
 		return resultJson;
 	}
@@ -1555,4 +1555,46 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
              imageUrl ="/resources/images/userprofile-img.png";
          return imageUrl;
      }
+	 
+	 
+	 @RequestMapping(value = "/getOrgLocationAssociatesList", method = RequestMethod.GET)
+	 public @ResponseBody ResponseList<CandidateDTO>  getOrgLocationAssociatesList(CandidateDTO candidateDTO,HttpServletRequest request) throws Exception{ 
+		 
+		
+		List<Long> roleIds = null; 
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");		
+		
+		String[] tableColumns = {"ischeck","name", "email","role", "rate", "manager", "resume"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default referContactsDTO order
+		if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+		}
+		candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateDTO.setSortOrder(sortColumnOrder);
+		
+		if(!isNullOrEmpty(candidateDTO.getRoles())){
+			roleIds = new ArrayList<Long>();
+			 String[] rolesList = candidateDTO.getRoles().split(",");
+			 for(int i=0; i < rolesList.length; i++){
+				 roleIds.add(Long.valueOf(rolesList[i]));
+			 }
+			 
+		}
+		
+		List<Long> associateIds = null; 
+		if(!isNullOrEmpty(candidateDTO.getSelectedAssociates())){
+			associateIds = new ArrayList<Long>();
+			 String[] associateIdsList = candidateDTO.getSelectedAssociates().split(",");
+			 for(int i=0; i < associateIdsList.length; i++){
+				 associateIds.add(Long.valueOf(associateIdsList[i]));
+			 }
+		}
+		
+		 
+		ResponseList<CandidateDTO> candidateDTOList = candidateService.getLocationCandidatesList(candidateDTO, candidateDTO.getOrgLocationId(), roleIds, associateIds, orgLocations.getId());
+		
+		return candidateDTOList;
+	  }
 }
