@@ -436,8 +436,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	@Override
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId, Long approverUserId,
-			Date startDate, Date endDate, String status, String rejectedReason) throws Exception {
-		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason);
+			Date startDate, Date endDate, String status, String rejectedReason,OrgLocations orglocations) throws Exception {
+		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason,orglocations);
 	}
 
 	@Override
