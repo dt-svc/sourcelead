@@ -133,6 +133,21 @@
 		</span>
 		</div>
 	</div>
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
+           <i class="fa fa-plane fa-2x text-info"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-info">Immigration</h2>
+		<p>Manage Your Immigration Templates</p>
+		<span>
+		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/loadAddPetitionTemplate'/>">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="javascript:void(0)">View</a>
+			</sec:authorize>
+		</span>
+		</div>
+	</div>
 	
 	<div class="clearfix"></div>
 </section>

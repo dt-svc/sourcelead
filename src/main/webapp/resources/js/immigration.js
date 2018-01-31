@@ -18,6 +18,18 @@ var savePageOneContinue = function (status){
 	}
 }
 
+var savePageAndContinuePetitionTemplate = function (status){
+	$("#addNewPetitionTemplateDiv").empty();
+	if(status == 'one'){
+		$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=one");
+	}else if(status == 'two'){
+		$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=two");
+	}else if(status == 'three'){
+		$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=three");
+	}else if(status == 'four'){
+		$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=four");
+	}
+}
 /*var savePageOneContinue = function (){
 	  $("#newPetitionTemplateDiv").empty();
 	  $("#newPetitionTemplateDiv").load("/app/loadNewPetitionPageOne");

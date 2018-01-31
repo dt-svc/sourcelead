@@ -111,6 +111,31 @@ public class ImmigrationRestController {
 		return model;
 	}
 
+	@RequestMapping(value={"/loadAddPetitionTemplate"})
+	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/addPetitionTemplate");
+		return model;
+	}
+	
+	@RequestMapping(value={"/loadAddPetitionTemplatePage"})
+	public ModelAndView loadAddPetitionTemplatePage(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		if(status.equalsIgnoreCase("one")) {
+			model.setViewName("/immigration/addPetitionTemplate1");
+		}else if(status.equalsIgnoreCase("two")) {
+			model.setViewName("/immigration/addPetitionTemplate2");
+		}else if(status.equalsIgnoreCase("three")) {
+			model.setViewName("/immigration/addPetitionTemplate3");
+		}else if(status.equalsIgnoreCase("four")) {
+			model.setViewName("/immigration/addPetitionTemplate4");
+		}
+		return model;
+	}
+	
 	@RequestMapping(value={"/viewImmigration"})
 	public ModelAndView viewImmigration(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
