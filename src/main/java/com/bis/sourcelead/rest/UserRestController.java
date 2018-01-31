@@ -41,6 +41,7 @@ import org.springframework.web.client.RestTemplate;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
@@ -1597,4 +1598,21 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		
 		return candidateDTOList;
 	  }
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
+	 @RequestMapping(value = "/saveLocationAssociate" , method = RequestMethod.POST)
+	 public String saveLocationAssociate(AddAssociateDTO addAssociateDTO, HttpServletRequest request)
+			throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	
+         
+           return null;
+	 
+	 }
+	 
+	 
+	 
 }

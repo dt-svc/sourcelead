@@ -1416,7 +1416,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			subQuery1 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.roles.id IN (:roleIds) )"; 
 		}
 		
-		subQuery2 = "and candidate.orgLocationId.id <> :loginOrgLocationId";
+		subQuery2 = " and candidate.consultantUser.id NOT IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :loginOrgLocationId  )";
 		
 		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState != 'INACTIVE')";
 		

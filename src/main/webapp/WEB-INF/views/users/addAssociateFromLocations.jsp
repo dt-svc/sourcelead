@@ -21,7 +21,7 @@
       
   <div class="content-area clearfix">
         <div id="loading"></div> 
-      
+      <div id="choicepopUp"></div>
 	<form:form id="addAssociate_form" name="addAssociate_form" method="post">
 		<div class="project_tabs_inn_head">
 			<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv" class="btn btn-primary btn-sm anchorWhite">
@@ -34,7 +34,7 @@
 	<div class="form-footer clearfix row">
               <div class="col-lg-12">
                 <div class="pull-right">
-                  <input type="button" value="Save" id="create_user" onclick="createUser();" class="btn btn-primary">
+                  <input type="button" value="Save" id="create_user" onclick="createAssociate();" class="btn btn-primary">
                   <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
@@ -57,7 +57,7 @@
 		</div>
 		
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
+			id="REPLACEROWIDcandidateId" name="locationAssociates[REPLACEROWID].candidateId" />
 	</div>
 </div>
 
@@ -66,7 +66,7 @@
 <div id="divTaskTd2" style="display: none; float: left;">
 	<div class="changeRate_div changeRateDiv">
                   <div class="pull-left dropdown-select drpdownCurrency">
-                      <select id="REPLACEROWIDpayRateCurrency" name="projectMembers[REPLACEROWID].payRateCurrency">
+                      <select id="REPLACEROWIDpayRateCurrency" name="locationAssociates[REPLACEROWID].payRateCurrency">
 	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
@@ -76,11 +76,11 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate positionRelative errorField-am">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="locationAssociates[REPLACEROWID].payRate" field-name="Pay Rate" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
-                  <select id="REPLACEROWIDpayRateRateType" name="projectMembers[REPLACEROWID].payRateRateType">
+                  <select id="REPLACEROWIDpayRateRateType" name="locationAssociates[REPLACEROWID].payRateRateType">
 	                    <option value="Hourly">Hourly</option>
 	                    <option value="Weekly">Weekly</option>
 	                    <option value="Bi-weekly">Bi-weekly</option>
@@ -96,7 +96,7 @@
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="changeRate_div changeRateDiv">
                   <div class="pull-left dropdown-select drpdownCurrency">
-                      <select id="REPLACEROWIDbillRateCurrency" name="projectMembers[REPLACEROWID].billRateCurrency">
+                      <select id="REPLACEROWIDbillRateCurrency" name="locationAssociates[REPLACEROWID].billRateCurrency">
 	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
@@ -106,10 +106,10 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="locationAssociates[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
-                  <select id="REPLACEROWIDbillRateRateType" name="projectMembers[REPLACEROWID].billRateRateType">
+                  <select id="REPLACEROWIDbillRateRateType" name="locationAssociates[REPLACEROWID].billRateRateType">
 	                    <option value="Hourly">Hourly</option>
 	                    <option value="Weekly">Weekly</option>
 	                    <option value="Bi-weekly">Bi-weekly</option>
@@ -126,8 +126,8 @@
 <div id="divTaskTd4" style="display: none; float: left;">
 	<div class="width150px">
 		<div class="dropdown-select">
-                  <select id="REPLACEROWIDassociateRole" name="projectMembers[REPLACEROWID].associateRole" onchange="getReportingManager(REPLACEROWID)" data-validation="required" field-name="Role">
-		                 <option value=" " selected>-Select Role-</option>
+                  <select id="REPLACEROWIDassociateRole" name="locationAssociates[REPLACEROWID].associateRole" onchange="getReportingManager(REPLACEROWID)" data-validation="required" field-name="Role">
+		                 <option value='' selected>-Select Role-</option>
 			            <c:forEach var="option" items="${rolesList}">
 							<option value="${option.id}">${option.displayName}</option>
 						</c:forEach>
@@ -140,8 +140,8 @@
 <div id="divTaskTd5" style="display: none; float: left;">
 	<div class="width150px">
 		<div class="dropdown-select">
-                  <select id="REPLACEROWIDassociateManager" name="projectMembers[REPLACEROWID].associateManager" data-validation="required" field-name="Manager">
-		                 <option value=" " selected>-Select Manager-</option>
+                  <select id="REPLACEROWIDassociateManager" name="locationAssociates[REPLACEROWID].associateManager" data-validation="required" field-name="Manager">
+		                 <option value='' selected>-Select Manager-</option>
                  </select>
          </div>
 	</div>
@@ -767,6 +767,81 @@ function pagination(){
 		}
 	}
 </script>
+
+
+<script>
+function createAssociate(){
+	
+	 if ($('#addAssociate_form').validate(false, validationSettings)){ 
+		 
+ 		var associatesRowsCount = document.getElementById("associatesRowsCount").value;
+ 		if(associatesRowsCount == 0){
+ 			 alertMessage();
+ 			 return false;
+ 		}else{
+ 			
+ 		    var formData = getFormData("addAssociate_form");
+      		var sourceleadUrl ='${sourceleadUrl}';
+      		
+       		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+      		$.ajax({
+					type : "POST",
+	  	    	    data : formData,
+					url : sourceleadUrl+"/saveLocationAssociate?${_csrf.parameterName}=${_csrf.token}", 
+					success : function(result) {
+						location.replace(sourceleadUrl+"/usersList");
+					},
+				}); 
+      		 return true;
+         	   
+ 		}
+	 }else{
+			return false;
+	  }
+	 
+	  $('body').on('blur', '#addAssociate_form', function() {
+   		$("#addAssociate_form").showHelpOnFocus();
+   		$("#addAssociate_form").validateOnBlur(false, validationSettings);
+   	});
+}
+</script>
+
+
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Add atleast one associate</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+ 
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script> 
 
 <script>
 function emptyRecordsList(){
