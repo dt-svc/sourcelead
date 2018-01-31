@@ -2670,8 +2670,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					.append("OR reqSub.createdUser like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidateScore like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSubCandidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-				    .append(" )");
+					.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					String[] nameBytes = requirementSubmissionsDTO.getSearchValue().split(" ");
+					for(String nameByte : nameBytes) {
+						searchQuery.append("OR reqSubCandidate.firstName like '%" + nameByte + "%' ")
+						.append("OR reqSubCandidate.lastName like '%" + nameByte + "%' ");
+						
+					}
+					searchQuery.append(" )");
 					}
 				}
 			
@@ -2685,12 +2691,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					releasedBy = requirement.getReleasedBy().split(",");
 				}
 		        Map<String, Object> params = new HashMap<String,Object>();
-				String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req left join fetch reqSub.candidate reqSubCandidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
+		        //left join fetch reqSub.requirement req left join fetch reqSub.candidate reqSubCandidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes
+				String from = "from RequirementSubmission reqSub  "; 
 				String subQuery = "";
 				// These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
 					if(null != releasedBy && releasedBy.length > 0){
 						
-						String subQueryForVendors = "where req.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
+						String subQueryForVendors = "where reqSub.requirement.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
 														params.put("userId",requirementSubmissionsDTO.getUserId());
 														params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
 														params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
@@ -2714,7 +2721,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							 for(RequirementSubmission rs :vendorSubmittedApplicants){
 									sourceSubmissionIds.add(rs.getId());
 								}
-								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  "; 
+							 //left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes
+								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub  where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  "; 
 								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
 																					.setFirstResult(requirementSubmissionsDTO.getStart())
 																					.setMaxResults(requirementSubmissionsDTO.getLength())

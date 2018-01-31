@@ -378,6 +378,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 								expensesArray[6] = "--";
 			           	     }
 							
+							
+							
 							 /*if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
 									expensesArray[5] = orgRelation.getResponderLocationId().getOrg().getOrgName();
