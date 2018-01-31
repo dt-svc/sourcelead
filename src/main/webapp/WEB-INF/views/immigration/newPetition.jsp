@@ -17,9 +17,16 @@
       <div class="pull-right brud-crum">Home &raquo; Immigrations List &raquo; New Petition</div>
 	<div class="clearfix"></div>
     </section>
+    <div id="newPetitionTemplateDiv"></div>
+    <%-- <div id = "newPetitonPageOneDiv">
+    <jsp:include page="newPetitionPage1.jsp" />
+    </div>
+    <div id = "newPetitonPageTwoDiv" style="display: none;">
+    <jsp:include page="newPetitionPage2.jsp" />
+    </div> --%>
     
-    <div id="newPetitionPageSection"></div>
-<%-- <section class="addImmiWrap">
+    <!-- <div id="newPetitionPageSection"></div> -->
+     <%-- <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
 			<!--<h2>1. Petition detail</h2>-->
@@ -490,14 +497,15 @@
 
    </div>
    </div>
-   </section> --%>    
+   </section> --%>   
     
   </section>
   <!-- Content Area -->
   <script type="text/javascript">
-  var appPath = "${appPath}";
-  $(function() {
-		$("#newPetitionPageSection").load(appPath+"/loadNewPetitionPageOne");
+  $( document ).ready(function() {
+	  $("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=one");
+	  /* $("#newPetitonPageTwoDiv").hide(); */
+	  registerFunc();
 	});
   </script>
   <jsp:include page="../masterFooter.jsp" />

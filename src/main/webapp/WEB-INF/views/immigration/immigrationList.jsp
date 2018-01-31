@@ -48,7 +48,7 @@
 			<div class="timesheet_head">
 			  <ul>
 				  <li>
-					  <a href="${appPath}/loadNewPetition" onclick="callNewPetition()"><i class="fa fa-plus paddingRight"></i> New </a>
+					  <a href="${appPath}/loadNewPetition"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
 
 				  <li class="dropdown">

@@ -89,12 +89,25 @@ public class ImmigrationRestController {
 	}
 	
 	
-	@RequestMapping(value={"/loadNewPetitionPageOne"})
-	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request ) {
+	@RequestMapping(value={"/loadNewPetitionPage"})
+	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		model.setViewName("/immigration/newPetitionPage1");
+		if(status.equalsIgnoreCase("one")) {
+			model.setViewName("/immigration/newPetitionPage1");
+		}else if(status.equalsIgnoreCase("two")) {
+			model.setViewName("/immigration/newPetitionPage2");
+		}else if(status.equalsIgnoreCase("three")) {
+			model.setViewName("/immigration/newPetitionPage3");
+		}else if(status.equalsIgnoreCase("four")) {
+			model.setViewName("/immigration/newPetitionPage4");
+		}else if(status.equalsIgnoreCase("five")) {
+			model.setViewName("/immigration/newPetitionPage5");
+		}else if(status.equalsIgnoreCase("six")) {
+			model.setViewName("/immigration/newPetitionPage6");
+		}else if(status.equalsIgnoreCase("seven")) {
+			model.setViewName("/immigration/newPetitionPage7");
+		}
 		return model;
 	}
 
@@ -105,15 +118,6 @@ public class ImmigrationRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		System.out.println("inside viewImmigration URL....");
 		model.setViewName("/immigration/immigrationView");
-		return model;
-	}
-	
-	@RequestMapping(value={"/loadNewPetitionPageTwo"})
-	public ModelAndView 	loagNewPetitionPageTwo(HttpServletRequest request ) {
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		model.setViewName("/immigration/newPetitionPage2");
 		return model;
 	}
 }
