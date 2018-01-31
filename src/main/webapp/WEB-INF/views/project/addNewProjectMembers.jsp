@@ -849,7 +849,7 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var candidateResume = "";
 	            	    
 	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+		        			candidateResume = '<a  class="fa fa-download" download href=\"'+report.fileUrl+'\" title="Download"></a>';
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 
