@@ -99,7 +99,7 @@ right: 15px;
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
 				                   <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                   </c:if>
 				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
 				                     <img src="/resources/images/office-image.jpg">
@@ -147,7 +147,7 @@ right: 15px;
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" onerror="predefineOrgImage(this);" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
 				   <c:if test="${empty SourceLeadWeb_org.fileContentType}">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/resources/images/office-image.jpg'/>" alt="Org Image" class="comp-image img-responsive">
@@ -156,7 +156,7 @@ right: 15px;
 					  <button type="button" class="btn btn-sm btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgSettings_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -661,6 +661,7 @@ function deleteOrgImage(){
 </script>
 
 <script type="text/javascript">
+var sourceleadUrl ='${sourceleadUrl}';
 function cancelOrgImg(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
@@ -934,7 +935,8 @@ $(function(){
 	});
   });
 </script>
-
+<script src="/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
