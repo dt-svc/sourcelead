@@ -44,8 +44,6 @@
 <link rel="stylesheet"3
 	href="/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
-	
-<link rel="stylesheet" href="build/css/countrySelect.css">	
 
 <script
 	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
@@ -3118,11 +3116,6 @@ function forgotPassword(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		window.location.href = "/guestApplyToJob?&requirementUUID="+requirementUUID;
  }
- </script>  
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="build/js/countrySelect.min.js"></script>
-<script>
-  $("#openJobsLocationId").countrySelect();
-</script>                                                                                   
+ </script>                                                                                     
    <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
 <jsp:include page="../socialinviterscripts.jsp" />
