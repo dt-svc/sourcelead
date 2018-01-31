@@ -433,7 +433,7 @@ function getVendorDetails(){
 							<div class="col-md-9 dropdown-select">
 								<select class="form-control" id="PaymentTermId"
 									name="paymentTerms">
-									<option selected="selected" disabled value="">Select Payment Term</option>
+									<option value="">Select Payment Term</option>
 									<option value="10 days">10 days</option>
 									<option value="15 days">15 days</option>
 									<option value="30 days">30 days</option>

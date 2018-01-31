@@ -62,7 +62,7 @@ public class CandidateDocuments implements Serializable{
 	private String requestedDocRejectedReason;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 		
