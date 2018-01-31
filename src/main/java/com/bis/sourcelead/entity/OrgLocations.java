@@ -62,7 +62,7 @@ public class OrgLocations implements Serializable{
     private User user;
 	
 	
-	@OneToMany(mappedBy="responderLocationId",fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
 	

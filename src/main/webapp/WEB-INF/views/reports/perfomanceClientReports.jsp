@@ -125,6 +125,7 @@ $(document).ready(function(){
             <div class="clearfix mb row">
               <div class="col-md-6">
                 <div class="projectDashboad clearfix positionRelative">
+                <div id="top5receivablesDiv" style="width:100%; height:250px"></div>
                   <div id="top5receivables" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
                   
                   <ul class="list-unstyled list-inline vendor-listcount mt">
@@ -192,7 +193,7 @@ $(document).ready(function(){
           
             <div class="projectDashboad clearfix positionRelative">
               <div class="row">
-                <h4 class="col-md-8" id="vr">Top 10 Clients Report</h4>
+                <h4 class="col-md-8" id="vr">Top 10 Clients Billing Report</h4>
                 <h4 class="col-md-8" style="display: none;" id="cr">Contact Report</h4>
                 <div class="select-fild col-md-2">
                   <select id="topClientList" onchange="changeTopTenList();">
@@ -545,6 +546,8 @@ function getTopFiveConracts(){
                     $("#engagedContractsDiv").hide();
                 }else{
                 	result = result + '<div class="dataTables_empty center" ></div>';
+                	$("#engagedContractsDiv").show();
+                	$("#engagedContractsDiv").empty();
                 	$("#engagedContractsDiv").append(result);
                 	$("#engagedContracts").hide();
                 }
@@ -608,11 +611,15 @@ function getAmchartData(data){
     	 for(var k in data.newAmountList) {
     	        mainAmcahrt[i] = {"category": k, "column-1": data.newAmountList[k].toFixed(2), "color": colors[i++] };
     	    }
+    	 $("#top5receivables").show();
+    	 $("#top5receivablesDiv").hide();
     }else{
     	var result = '';
     	result = result + '<div class="dataTables_empty center" ></div>';
-    	 $("#top5receivables").empty();
-    	 $("#top5receivables").append(result);
+    	 $("#top5receivablesDiv").show();
+    	 $("#top5receivablesDiv").empty();
+    	 $("#top5receivablesDiv").append(result);
+    	 $("#top5receivables").hide();
     }
    
     if(data.othersAmountList != null && data.othersAmountList != '' && data.othersAmountList != 'undefined'){
