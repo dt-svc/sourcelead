@@ -187,7 +187,7 @@ $(document).ready(function() {
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
-	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
+	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId);
 	});
 </script>
 <script>

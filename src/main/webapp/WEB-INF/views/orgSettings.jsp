@@ -555,36 +555,36 @@ function cancelOrgImg(){
 		               			<label class="col-md-3">Financial Year<i class="" title="Login Security"></i></label>  
 		               			<div class="col-md-2 toggle-button" >
 			                      <select class="chosen-select" id="financialStartYear" onChange="validateFinancialYear();">
-			                      <option ${SourceLeadWeb_startMonth == '' ? 'selected' : ''}>--Select Month--</option>
-			                      <option ${SourceLeadWeb_startMonth == 'January' ? 'selected' : ''}>January</option>
-			                      <option ${SourceLeadWeb_startMonth == 'February' ? 'selected' : ''}>February</option>
-			                      <option ${SourceLeadWeb_startMonth == 'March' ? 'selected' : ''}>March</option>
-			                      <option ${SourceLeadWeb_startMonth == 'April' ? 'selected' : ''}>April</option>
-			                      <option ${SourceLeadWeb_startMonth == 'May' ? 'selected' : ''}>May</option>
-			                      <option ${SourceLeadWeb_startMonth == 'June' ? 'selected' : ''}>June</option>
-			                      <option ${SourceLeadWeb_startMonth == 'July' ? 'selected' : ''}>July</option>
-			                      <option ${SourceLeadWeb_startMonth == 'August' ? 'selected' : ''}>August</option>
-			                      <option ${SourceLeadWeb_startMonth == 'September' ? 'selected' : ''}>September</option>
-			                      <option ${SourceLeadWeb_startMonth == 'October' ? 'selected' : ''}>October</option>
-			                      <option ${SourceLeadWeb_startMonth == 'November' ? 'selected' : ''}>November</option>
-			                      <option ${SourceLeadWeb_startMonth == 'December' ? 'selected' : ''}>December</option>
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.startMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.startMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.startMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.startMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.startMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.startMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.startMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.startMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.startMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.startMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.startMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.startMonth == 'December' ? 'selected' : ''}>December</option>
 			                      </select>
 	                   			</div>
 	                   			<div class="col-md-2 toggle-button">
 			                      <select class="chosen-select" id="financialEndYear" disabled="disabled" readonly="">
-			                      <option ${SourceLeadWeb_endMonth == '' ? 'selected' : ''}>--Select Month--</option>
-			                      <option ${SourceLeadWeb_endMonth == 'January' ? 'selected' : ''}>January</option>
-			                      <option ${SourceLeadWeb_endMonth == 'February' ? 'selected' : ''}>February</option>
-			                      <option ${SourceLeadWeb_endMonth == 'March' ? 'selected' : ''}>March</option>
-			                      <option ${SourceLeadWeb_endMonth == 'April' ? 'selected' : ''}>April</option>
-			                      <option ${SourceLeadWeb_endMonth == 'May' ? 'selected' : ''}>May</option>
-			                      <option ${SourceLeadWeb_endMonth == 'June' ? 'selected' : ''}>June</option>
-			                      <option ${SourceLeadWeb_endMonth == 'July' ? 'selected' : ''}>July</option>
-			                      <option ${SourceLeadWeb_endMonth == 'August' ? 'selected' : ''}>August</option>
-			                      <option ${SourceLeadWeb_endMonth == 'September' ? 'selected' : ''}>September</option>
-			                      <option ${SourceLeadWeb_endMonth == 'October' ? 'selected' : ''}>October</option>
-			                      <option ${SourceLeadWeb_endMonth == 'November' ? 'selected' : ''}>November</option>
-			                      <option ${SourceLeadWeb_endMonth == 'December' ? 'selected' : ''}>December</option>
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.endMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.endMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.endMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.endMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.endMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.endMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.endMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.endMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.endMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.endMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.endMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.endMonth == 'December' ? 'selected' : ''}>December</option>
 			                      </select>
 	                   			</div>
 	               			</div>
@@ -594,6 +594,15 @@ function cancelOrgImg(){
            			  		<!-- <button type="button" class="btn btn-default btn-sm" onclick="cancel();">Cancel</button> -->
            			  	</div>
            			  </div>
+           			  
+           			  <c:if test="${!empty msg}">
+	                       <div class="success_pop" id="selector"  style="display: none;">
+		                   <i class="fa fa-check-circle"></i><span>${msg}</span>
+			               </div>
+	              </c:if>
+	                 <div class="success_pop" id="selector1" style="display: none;">
+ 		            	<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+                     </div>
 	               			         
 	           			</div> 
            			</c:if>
@@ -3043,12 +3052,23 @@ function financialYear(){
 			type : "GET",
 			url : sourceleadUrl+"/saveFinanacialYear?&locationId="+locationId+"&startMonth="+startMonth+"&endMonth="+endMonth,
 			success : function(result) {
+				$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Details Updated Successfully");
+		    	 msgFadein();
 				
 			},
 		});
 	}
 }
 </script>
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <jsp:include page="masterFooter.jsp" />
 

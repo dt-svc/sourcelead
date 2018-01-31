@@ -151,7 +151,11 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
-			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations);
+			for(String approverUserId :leaveDTO.getApproverUser()){
+			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
+			if(user.getId().longValue() != approverUser.getId().longValue())
+			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser);
+			}
 		}
 		return savedLeave;
 	}
@@ -964,15 +968,15 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 	
 	@Override
-	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc) throws Exception {
+	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception {
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		
 		 if(null != leaveDTO.getApproverUser()){
-		for(String approverUserId :leaveDTO.getApproverUser()){
-			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
+//		for(String approverUserId :leaveDTO.getApproverUser()){
+//			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
 			 StringBuilder sb = new StringBuilder();
-			 emailMessage.setFirstName(approverUser.getFileName());
+			 emailMessage.setFirstName(approverUser.getFirstName());
 			 emailMessage.setToEmail(approverUser.getEmail());
 			 emailMessage.setFromEmail(loginUser.getEmail());
 			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
@@ -994,9 +998,20 @@ public class LeaveServiceImpl implements LeaveService{
 				 globalVarsMap.put("employeeUser",loginUser.getFirstName());
 			 }
 			 
-			if(null != approverUser.getFileName() && !"".equalsIgnoreCase(approverUser.getFileName())){
+			 User applyUser = null;
+			 if(null != leaveDTO.getUser() && !"".equalsIgnoreCase(leaveDTO.getUser())){
+				 applyUser = userService.getUserById(Long.parseLong(leaveDTO.getUser()));
+				 if(null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
+				 StringBuilder leaveUser =new StringBuilder();
+				 globalVarsMap.put("leaveUser", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("leaveUser",applyUser.getFirstName());
+			 }
+		 }
+			 
+			if(null != approverUser.getLastName() && !"".equalsIgnoreCase(approverUser.getLastName())){
 				 StringBuilder manager =new StringBuilder();
-				 globalVarsMap.put("approverUser", manager.append(approverUser).append(" ").toString());
+				 globalVarsMap.put("approverUser", manager.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
 			 }else{
 				 globalVarsMap.put("approverUser",approverUser.getFirstName());
 			 }
@@ -1032,9 +1047,17 @@ public class LeaveServiceImpl implements LeaveService{
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 
+			 EmailScenario  emailScenario = null;
+			 EmailScenario  notificationScenario = null;
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
-			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
+			 if(loginUser.getId().longValue() == applyUser.getId().longValue()) {
+				   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }else {
+				   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }
+			 
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -1052,7 +1075,7 @@ public class LeaveServiceImpl implements LeaveService{
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				emailScenerioUtil.sendNotification(null,loginUser, approverUser, orgLoc, notificationScenario);
-		}
+//		}
 }
 }
 
