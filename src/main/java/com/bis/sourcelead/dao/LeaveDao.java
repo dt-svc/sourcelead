@@ -69,4 +69,6 @@ public interface LeaveDao {
 
 	MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves);
 
+	MonthlyLeaves getMonthlyLeavesByLeaveId(String leaveId);
+
 }
