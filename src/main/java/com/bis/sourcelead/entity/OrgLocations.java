@@ -62,7 +62,7 @@ public class OrgLocations implements Serializable{
     private User user;
 	
 	
-	@OneToMany(mappedBy="responderLocationId",fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
 	
@@ -198,6 +198,12 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name="PAYMENT_REMITTANCE_EMIL")
 	private String remittanceEmail;
+	
+	@Column(name="FINANCIAL_YEAR_START_MONTH")
+	private String startMonth;
+	
+	@Column(name="FINANCIAL_YEAR_END_MONTH")
+	private String endMonth;
     
     @Transient
     private String orgName;
@@ -824,5 +830,27 @@ public class OrgLocations implements Serializable{
 	public void setRemittanceEmail(String remittanceEmail) {
 		this.remittanceEmail = remittanceEmail;
 	}
+
+	public String getStartMonth()
+	{
+		return startMonth;
+	}
+
+	public void setStartMonth(String startMonth)
+	{
+		this.startMonth = startMonth;
+	}
+
+	public String getEndMonth()
+	{
+		return endMonth;
+	}
+
+	public void setEndMonth(String endMonth)
+	{
+		this.endMonth = endMonth;
+	}
+
+	
 	
 }

@@ -153,8 +153,10 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 //		    		 }
 //		    	 }
 		    	 
+
 		    	 emails = toRecipantsEmailsList.toString();
 		    	 emails = emails.substring(0,emails.length()-1);
+
 		}
 		
 		String otherRecilistId = null;
@@ -675,7 +677,6 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 //			    			 toRecipantsEmailsList.append(",");
 //			    		 }
 //			    	 }
-			    	 
 			    	 emails = toRecipantsEmailsList.toString();
 			    	 emails = emails.substring(0,emails.length()-1);
 			}

@@ -41,7 +41,7 @@ function getAddApplicant(requirementId){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
+	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript);
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -104,9 +104,9 @@ function getAddApplicant(requirementId){
 	result = result + '<label class="col-md-4">Skills</label>';
 	result = result + '<div class="col-md-8">';
 	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
-	result = result + '<c:forEach var="skill" items="${skillsList}">';
-	result = result + '<option value="${skill.name}">${skill.name}</option>';
-	result = result + ' </c:forEach>';
+	            <c:forEach var="sk" items="${skillsList}">
+	result = result + "<option value='${sk.name}'>${sk.name}</option>";
+	            </c:forEach>
 	result = result + '</select>';
 	result = result + '		 </div>';
 	result = result + '	 </div>';

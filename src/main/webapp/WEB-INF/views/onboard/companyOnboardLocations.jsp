@@ -101,7 +101,7 @@ $(function(){
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
 				                    <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                   </c:if>
 				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
 				                     <img src="/resources/images/office-image.jpg">
@@ -259,7 +259,7 @@ function loadRegisteredOrgs(){
 	 				result = result +"<div class='user-profile'>";
 	 				result = result +"<div class='col-xs-4 col-sm-4'>";
 	 				result = result +"<div class='comLocaImg'>";
-	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src='"+orgLoc.fileUrl+"' alt='image'>";
 	 				result = result +"</div>";
 	 				result = result +"</div>";
 	 				result = result +"<div class='col-sm-8'>";

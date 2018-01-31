@@ -221,13 +221,12 @@ public class LeaveManagementUtil {
 		return totalLeaves;
 	}
 
-	public int getNumberOfExtraDaysByPeriod(LeaveType leaveType, LeaveDTO leaveDTO, OrgLocations orgLocations, User user) throws Exception
+	public int getNumberOfExtraDaysByPeriod(LeaveType leaveType, Leave leave, OrgLocations orgLocations, User user) throws Exception
 	{
 		int noOfExtraDays = 0;
-		Date fromDate = commonUtil.getDateFormat(leaveDTO.getFromDate());
-		Date[] dates = getMonthStartDateAndEndDate(fromDate);
+		Date[] dates = getMonthStartDateAndEndDate(leave.getFromDate());
 		if("Monthly".equalsIgnoreCase(leaveType.getPeriod())){
-			int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(commonUtil.getDateFormat(leaveDTO.getFromDate()), commonUtil.getDateFormat(leaveDTO.getToDate()));
+			int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 			List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndDuration(leaveType.getId(), orgLocations.getId(),user.getId(),dates[0],dates[1]);
 			if(leaveList.size() > 0){
 				noOfExtraDays = numberOfdays;
