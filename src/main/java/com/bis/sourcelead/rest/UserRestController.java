@@ -1607,9 +1607,9 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
            User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	
+	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, org); 
          
-           return null;
+           return "success";
 	 
 	 }
 	 

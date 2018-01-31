@@ -1357,7 +1357,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,orgLocations);
+				    				registrationController.saveUserRoleActions(tsModuleId,orgLoc);
 				    			}
 							
 							 
