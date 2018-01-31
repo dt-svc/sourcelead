@@ -2752,15 +2752,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						params.put("usercode",requirementSubmissionsDTO.getUserCode());
 						
 						//  this is if the  user is   Assign Team  Owner
-						String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
+						String subQuery3 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
 						params.put("userId",requirementSubmissionsDTO.getUserId());
 						
 						 //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
-						String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+						String subQuery5 = "reqSub.requirement.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
 						params.put("userId",requirementSubmissionsDTO.getUserId());
 						
 						if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery5 != "" || subQuery6 !="" ){
-							subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery6+")  OR ("+subQuery5+")   )";
+							subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery6+")  OR ("+subQuery5+")   )";
 							params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
 							params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
 						}
@@ -2907,13 +2907,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
 							params.put("usercode",requirementSubmissionsDTO.getUserCode());
 							//  this is if the  user is   Assign Team  Owner
-							String subQuery3 = "req.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
+							String subQuery3 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
 							params.put("userId",requirementSubmissionsDTO.getUserId());
 							//  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
-							String subQuery5 = "req.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+							String subQuery5 = "reqSub.requirement.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
 							params.put("userId",requirementSubmissionsDTO.getUserId());
 							if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery5 != "" || subQuery6 !=""  ){
-								subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery5+")    )";
+								subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery5+")    )";
 								params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
 								params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
 							}
