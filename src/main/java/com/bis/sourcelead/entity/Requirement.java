@@ -230,7 +230,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientSubmissionTemplateJsonString;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
