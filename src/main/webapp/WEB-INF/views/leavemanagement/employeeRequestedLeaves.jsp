@@ -100,6 +100,7 @@ function prepareRequestedEmployeesList(url){
 		result = result + '<th>Leave Type</th>';
 		result = result + '<th>Duration</th>';
 		result = result + '<th>No Of Days</th>';
+		result = result + '<th>No Of Extra Days</th>';
 		result = result + '<th>Leaves Taken</th>';
 		result = result + '<th>This Month</th>';
 		result = result + '<th>Balance leaves</th>';
@@ -176,7 +177,15 @@ function requestedEmployeesPagination(url){
             	      result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+' day(s)</div>';	 
             	    return result; 
               }
-            }, {
+            },{
+                "targets": colIndex++,
+                "data": "noOfDays",
+                "render": function ( data, type, opt, meta ) {
+              	   var result = "";
+              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+' day(s)</div>';	 
+              	    return result; 
+                }
+              },{
                 "targets": colIndex++,
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {

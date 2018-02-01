@@ -24,7 +24,7 @@ $(document).ready(function(){
 <div class="content-area content-new clearfix">
             <div class="clearfix mt col-md-12 mb">
              <div class="col-md-5 dropdown-select">
-               <label class="col-md-3">Imported Users</label>
+               <label class="col-md-3">Imported Users<span class="text-danger paddingLeft">*</span></label>
                <div class="col-md-9" id="errImportedUserIdDiv">
                <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId" field-name="Imported User" data-validation="required" onchange="removeImportValidation();">
                 <option value="" selected>-Select User-</option>
@@ -40,7 +40,7 @@ $(document).ready(function(){
                </div>
              </div>
              <div class="col-md-5">
-             <label class="col-md-3">Org Users</label>
+             <label class="col-md-3">Org Users<span class="text-danger paddingLeft">*</span></label>
                <div class="col-md-9" id="errOrgUserIdDiv">
                <select class="chosen-select" data-placeholder="Select Org User" id="slUserId" name="slUserId" field-name="Org User" data-validation="required" onchange="removeOrgValidation();">
                 <option value="" selected>-Select Org User-</option>
