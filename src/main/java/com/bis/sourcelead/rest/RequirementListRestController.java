@@ -51,9 +51,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -70,6 +72,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -80,6 +83,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -95,6 +99,7 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
@@ -179,6 +184,10 @@ public class RequirementListRestController {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -1668,25 +1677,34 @@ public class RequirementListRestController {
 	    }
 	   //Country
 		if(StringUtils.isNotEmpty(search.getCountry())){
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry()));
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
 	    }
-		//City
+	 
+		//multiple City
 		if(StringUtils.isNotEmpty(search.getCity())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("city", search.getCity()));
-	    }
+			ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(search.getCity());
+			if(cityArray != null && !cityArray.isEmpty()){
+				BoolQueryBuilder multiCityBoolQueryBuilder = new BoolQueryBuilder();
+				for(String keywd : cityArray){
+					multiCityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("city", keywd));
+				}
+				boolQueryBuilder.must(multiCityBoolQueryBuilder);
+			} 
+		}
+		
 		
 		if(StringUtils.isNotEmpty(search.getNoticePeriod())){
 			ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(search.getNoticePeriod());
 			if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
-				BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+				BoolQueryBuilder noticePeriodBoolQueryBuilder = new BoolQueryBuilder();
 				for(String keywd : noticePeriodArray){
-					edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
+					noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
 				}
-				boolQueryBuilder.must(edunBoolQueryBuilder);
+				boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 			} 
 		}
 			
@@ -2041,6 +2059,17 @@ public class RequirementListRestController {
         if(null != requirementIndex.getRequirementUUID()){
     		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
     	   }
+        
+    	List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				requirementLocationsList.add(location.getLocation());
+			}
+		}
+        
+		requirement.setLocationsList(requirementLocationsList);
+        
       	return requirement;
  	}
     private String getReqSkills(String[] skills) {
@@ -2060,6 +2089,61 @@ public class RequirementListRestController {
 		resultJson = commonUtil.toJSON(timezoneList);
 		return resultJson;
 	}
+	
+	
+	
+	@RequestMapping(value = "/getRequirementLocations")
+	public @ResponseBody List<RequirementLocationsDTO> getRequirementLocations(@RequestParam(value = "requirementUUID", required = true) String requirementUUID) throws Exception
+	{
+		
+		List<RequirementLocationsDTO> locationsDTOList = new ArrayList<>();
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations locations : locationsList) {
+				RequirementLocationsDTO locationsDTO = new RequirementLocationsDTO();
+				locationsDTO.setLocationName(locations.getLocation());
+				
+				if(!isNullOrEmpty(locations.getCountry())) {
+					locationsDTO.setCountry(locations.getCountry());
+				}else {
+					locationsDTO.setCountry("");
+				}
+				
+				if(!isNullOrEmpty(locations.getState())) {
+					locationsDTO.setState(locations.getState());
+				}else {
+					locationsDTO.setState("");
+				}
+				if(!isNullOrEmpty(locations.getCity())) {
+					locationsDTO.setCity(locations.getCity());
+				}else {
+					locationsDTO.setCity("");
+				}
+				if(!isNullOrEmpty(locations.getZipCode())) {
+					locationsDTO.setZipcode(locations.getZipCode());
+				}else {
+					locationsDTO.setZipcode("");
+				}
+				if(!isNullOrEmpty(locations.getLatitude())) {
+					locationsDTO.setLatitude(locations.getLatitude());
+				}else {
+					locationsDTO.setLatitude("");
+				}
+				if(!isNullOrEmpty(locations.getLongitude())) {
+					locationsDTO.setLongitude(locations.getLongitude());
+				}else {
+					locationsDTO.setLongitude("");
+				}
+				
+				locationsDTO.setLocationUUID(locations.getLocationUUID());
+				locationsDTO.setId(locations.getId());
+				locationsDTOList.add(locationsDTO);
+			}
+		}
+		return locationsDTOList;
+	}
+	
 	
 	@SuppressWarnings("unused")
 	public void modifiedReqStatusMailtoVendorContact(Requirement requirement, User loginUser, OrgLocations loginOrgLocation) throws Exception

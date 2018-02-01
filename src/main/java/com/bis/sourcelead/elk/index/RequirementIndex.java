@@ -190,6 +190,8 @@ public class RequirementIndex {
 	private String url;
 	private String generatedId;
 	
+	private List<String> locationsList;
+	
 	public String getManagerUserId() {
 		return managerUserId;
 	}
@@ -967,6 +969,14 @@ public class RequirementIndex {
 	public void setSpocId(String spocId)
 	{
 		this.spocId = spocId;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
 	}
 	
 }
