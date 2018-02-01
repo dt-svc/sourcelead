@@ -941,7 +941,7 @@ public class RegistrationRestController {
 		return "true";
 	}
 	
-	@RequestMapping(value = "/app/ws/getUserDetailsByRoleId", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/ws/getUserDetailsByRoleId", method = RequestMethod.POST)
 	public ModelAndView getUserDetailsByRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
