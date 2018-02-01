@@ -48,6 +48,7 @@
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
+        <div id="candidatesLoading"></div> 
           
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
@@ -55,38 +56,35 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
-       <%-- <div class="col-md-12 clearfix">
-        <div class="well clearfix">
-          
-          <div class="col-md-8 er selectUser col-md-offset-3">
-          <div class="row">
-          <div class="col-md-4 paddingRight">
-             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType();">
-                 <option value="" selected>--Employment Type--</option>
-                 <option value="All">All</option>
-                 <option value="C2C">C2C</option>
-                 <option value="C2C-1099">C2C-1099</option>
-                 <option value="W-2">W-2</option>
-                 <option value="C2H">C2H</option>
-                 <option value="C2H -1099">C2H -1099</option>
-                 <option value="Part Time">Part Time</option>
-                 <option value="Full Time">Full Time</option>
-                 <option value="Other">Other</option>
-             </select>
-             </div>
-           <div class="col-md-5 paddingLeft">
-           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
-	          <!--   <option value="">-Select Employment Type-</option> -->
-	            <option value=" " selected>-Select Associate-</option>
-	            <c:forEach var="option" items="${associateList}">
-					<option value="${option.id}">${option.displayName}</option>
-				</c:forEach>
-           </select>
-          </div> </div>
-          </div>
-           <input type="hidden" id="associateId" name="associateId"/>
-          </div>
-        </div>  --%>
+		        <div class="col-md-12 clearfix">
+		        <div class="well clearfix">
+		          
+		          <div class="col-md-8 er selectUser col-md-offset-3">
+		          <div class="row">
+		          <div class="col-md-4 paddingRight">
+		             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType();">
+		                 <option value="" selected>--Employment Type--</option>
+		                 <option value="All">All</option>
+		                 <option value="C2C">C2C</option>
+		                 <option value="C2C-1099">C2C-1099</option>
+		                 <option value="W-2">W-2</option>
+		                 <option value="C2H">C2H</option>
+		                 <option value="C2H -1099">C2H -1099</option>
+		                 <option value="Part Time">Part Time</option>
+		                 <option value="Full Time">Full Time</option>
+		                 <option value="Other">Other</option>
+		             </select>
+		             </div>
+		           <div class="col-md-5 paddingLeft">
+		           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
+			            <option value=" " selected>-Select Candidate-</option>
+			            
+		           </select>
+		          </div> </div>
+		          </div>
+		           <input type="hidden" id="associateId" name="associateId"/>
+		          </div>
+		        </div>  
               
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
@@ -892,13 +890,14 @@ function getAssociateUserDetails(){
  function getDesignationType(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
 	 if(employmentDesignationType){
+	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
-	        	output = output + "<option value=''>-- Select Associate --</option>"; 
+	        	output = output + "<option value=''>-- Select Candidate --</option>"; 
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
@@ -914,8 +913,10 @@ function getAssociateUserDetails(){
 	        	$("#employeementType").empty();
 		        $("#employeementType").append(output);
 		        $('#employeementType').trigger("chosen:updated");
+		        $("#candidatesLoading").removeAttr('style');
 	        },
 	    });
+	 
 	 }else{
 		 $("#employeementType").empty();
 	 }

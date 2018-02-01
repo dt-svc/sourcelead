@@ -814,7 +814,6 @@ public class RequirementServiceImpl implements RequirementService {
 						if(savedLocationDTO.getLatitude() != null && !savedLocationDTO.getLatitude().isEmpty()) {
 							reqLocation.setLatitude(savedLocationDTO.getLatitude());
 						}
-						
 						requirementLocationsService.saveRequirementLocations(reqLocation);
 					}
 					UUIDList.add(savedLocationDTO.getLocationUUID());
