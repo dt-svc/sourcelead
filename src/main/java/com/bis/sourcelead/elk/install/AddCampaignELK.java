@@ -9,10 +9,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -23,6 +27,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CampaignIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
@@ -140,8 +145,33 @@ public class AddCampaignELK {
 		return campaignIndexsList;
 	}
 	
-	
 	public void saveOrUpdateElkDocument(CampaignIndex campaignIndex,String index,String type,String id) {
+		String entityInJson = null;
+		 Map<String, Object> d = new HashMap<>();
+		try {
+		    entityInJson = toJSON(campaignIndex);
+		    JSONObject json = new JSONObject(entityInJson);
+		   
+		    Iterator<String> it = json.keys();
+		    while(it.hasNext()) {
+		    	String key = it.next();
+		    		d.put(key, json.isNull(key) ? null : json.get(key));
+		    }
+		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
+		    logger.info(type+" has been updated.");
+		} 
+        catch(DocumentMissingException e){
+        		client.getClient().prepareIndex(index, type,id)
+		    .setSource(d).execute().actionGet();
+		    logger.info(type+" has been indexed.");
+		}
+		catch (Exception e) {
+			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
+		}
+		
+     }
+	
+	/*public void saveOrUpdateElkDocument(CampaignIndex campaignIndex,String index,String type,String id) {
 		String entityInJson = null;
 		try {
 		    entityInJson = toJSON(campaignIndex);
@@ -157,7 +187,7 @@ public class AddCampaignELK {
 			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
 		}
 		
-     }
+     }*/
 	
 	 public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

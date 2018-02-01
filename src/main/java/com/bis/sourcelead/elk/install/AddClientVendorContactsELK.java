@@ -10,10 +10,14 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -220,20 +224,27 @@ public class AddClientVendorContactsELK {
 	
 	public void saveOrUpdateElkDocument(ClientVendorContactsIndex contactsIndex,String index,String type,String id) {
 		String entityInJson = null;
+		 Map<String, Object> d = new HashMap<>();
 		try {
 		    entityInJson = toJSON(contactsIndex);
-		    client.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		    JSONObject json = new JSONObject(entityInJson);
+		   
+		    Iterator<String> it = json.keys();
+		    while(it.hasNext()) {
+		    	String key = it.next();
+		    		d.put(key, json.isNull(key) ? null : json.get(key));
+		    }
+		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
 		    logger.info(type+" has been updated.");
 		} 
-        catch(DocumentMissingException e){
-        	client.getClient().prepareIndex(index, type,id)
-		    .setSource(entityInJson).execute().actionGet();
+       catch(DocumentMissingException e){
+       		client.getClient().prepareIndex(index, type,id)
+		    .setSource(d).execute().actionGet();
 		    logger.info(type+" has been indexed.");
 		}
 		catch (Exception e) {
 			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
 		}
-		
      }
 	
 	 public String toJSON(Object obj){

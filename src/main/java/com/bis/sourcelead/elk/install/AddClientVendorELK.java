@@ -238,7 +238,7 @@ public class AddClientVendorELK {
 
 	public void saveOrUpdateElkDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
 		String entityInJson = null;
-		Map<String, Object> d = new HashMap<>();
+		 Map<String, Object> d = new HashMap<>();
 		try {
 		    entityInJson = toJSON(clientVendorIndex);
 		    JSONObject json = new JSONObject(entityInJson);
@@ -248,11 +248,11 @@ public class AddClientVendorELK {
 		    	String key = it.next();
 		    		d.put(key, json.isNull(key) ? null : json.get(key));
 		    }
-		    client.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
 		    logger.info(type+" has been updated.");
 		} 
-        catch(DocumentMissingException e){
-        	client.getClient().prepareIndex(index, type,id)
+       catch(DocumentMissingException e){
+       		client.getClient().prepareIndex(index, type,id)
 		    .setSource(d).execute().actionGet();
 		    logger.info(type+" has been indexed.");
 		}

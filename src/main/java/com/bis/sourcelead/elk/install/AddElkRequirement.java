@@ -11,12 +11,16 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +29,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -45,7 +50,7 @@ public class AddElkRequirement {
 		ArrayList<RequirementIndex> requirementList = getElkRequirements();
 		if(null != requirementList && !requirementList.isEmpty()){
 			for (RequirementIndex requirementIndex :requirementList) {
-				saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,requirementIndex.getRequirementId().toString());
+				saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirementIndex.getRequirementId().toString());
 			}
 		}
 		  logger.info("Rquirements Successfully Added To Elk");
@@ -530,7 +535,7 @@ public class AddElkRequirement {
 	 * @param requirementId
 	 * @return void
 	 */
-	private void saveOrUpdateElkDocument(RequirementIndex requirementIndex, String index,String type, String requirementId) {
+	/*private void saveOrUpdateElkDocument(RequirementIndex requirementIndex, String index,String type, String requirementId) {
 		String entityInJson = null;
 		try {
 		    entityInJson = toJSON(requirementIndex);
@@ -546,7 +551,33 @@ public class AddElkRequirement {
 			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
 		}
 		
-	}
+	}*/
+	
+	public void saveOrUpdateElkDocument(RequirementIndex requirementIndex,String index,String type,String requirementId) {
+		String entityInJson = null;
+		 Map<String, Object> d = new HashMap<>();
+		try {
+		    entityInJson = toJSON(requirementIndex);
+		    JSONObject json = new JSONObject(entityInJson);
+		   
+		    Iterator<String> it = json.keys();
+		    while(it.hasNext()) {
+		    	String key = it.next();
+		    		d.put(key, json.isNull(key) ? null : json.get(key));
+		    }
+		    client.getClient().prepareUpdate(index, type,requirementId).setDoc(d).get();
+		    logger.info(type+" has been updated.");
+		} 
+        catch(DocumentMissingException e){
+        		client.getClient().prepareIndex(index, type,requirementId)
+		    .setSource(d).execute().actionGet();
+		    logger.info(type+" has been indexed.");
+		}
+		catch (Exception e) {
+			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
+		}
+		
+     }
 	/**
 	 * converts entity to JSOn Object
 	 * @param obj
