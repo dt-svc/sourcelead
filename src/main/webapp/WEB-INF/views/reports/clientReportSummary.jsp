@@ -212,7 +212,7 @@ $(document).ready(function(){
 			    	$("#hiredCount").html(data.offeracceptedCount);
 			    	$("#applicantCountID").html(data.applicantsCount);
 			    	$("#shortListCountID").html(data.shortlistedCount);
-			    	$("#submittoClientCountID").html(data.interviewsCount);
+			    	$("#submittoClientCountID").html(data.submitToClientCount);
 			    	$("#interviewdCountID").html(data.interviewsCount);
 			    	$("#offeredCountID").html(data.offeredCount);
 			    	$("#offerAcceptedCountID").html(data.offeracceptedCount);
