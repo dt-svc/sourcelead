@@ -1726,6 +1726,7 @@ public class VendorRestController {
 					requirementDTO.setCity(mainRequirement.getCity());
 					requirementDTO.setCountry(mainRequirement.getCountry());
 					requirementDTO.setManager(mainRequirement.getManager());
+					requirementDTO.setId(mainRequirement.getId());
 					requirementDTO.setRequirementSubmissionStatus((mainRequirement.getRequirementSubmissionStatus()).toString());
 					if (mainRequirement.getManagerUserId() != null) {
 						String managerFirstName = "";

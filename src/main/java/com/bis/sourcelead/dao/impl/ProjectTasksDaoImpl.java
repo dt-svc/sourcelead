@@ -410,11 +410,6 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
 					
 		}
-		
-		String qry = "";
-		if(StringUtils.isNotBlank(projectTasksDTO.getSortColumn())) {
-			qry = " order by pt."+ projectTasksDTO.getSortColumn() +" "+projectTasksDTO.getSortOrder();
-		}
 		 
 		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1'" ;
 		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
@@ -429,7 +424,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
 		 }
 		 
-		 Query query = session.createQuery(queryStr+subQueryStr+query1+qry);
+		 Query query = session.createQuery(queryStr+subQueryStr+query1+" ORDER BY pt.generatedId ASC");
 		
 		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 		
@@ -454,8 +449,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		
 		response.setData(projectTasksList);
 		return response;
-		
-	}
+		}
 
 	@SuppressWarnings("unchecked")
 	@Override
