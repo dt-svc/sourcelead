@@ -167,6 +167,9 @@ function editCandidate(candidateId){
             			 	
             			 	
 							var result ='';
+							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
+						    result  = result + '</div>';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
@@ -957,9 +960,13 @@ function removeSkillPopUp(candidateId){
 							if(result && result === "failed") {
 								$("#update_candidate").removeAttr("disabled");
 								showError("Invalid data");
-							}else{ 
-							$("#profileEditPopup").hide();
-							getProfessionalInfo();
+							}else{
+								//$("#profileEditPopup").hide();
+								$("#selector1").removeAttr("style");
+			         			 $("#selector1").css({ display: "block" });
+					        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
+					        	 candUpdateMsgFadeinFunction();
+								getProfessionalInfo();
 							}
 						},
 					});
@@ -976,6 +983,12 @@ function removeSkillPopUp(candidateId){
 	 
 </script>
 
+	<script>
+	function candUpdateMsgFadeinFunction() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script>
 function cancelEdit(){
 	$("#profileEditPopup").empty();
