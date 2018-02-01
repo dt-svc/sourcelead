@@ -2953,11 +2953,7 @@ function getJobLocations(){
 		 });
 	}else{
 		
-		 $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
-		        success: function(json) {
-		        	
+		 
 		        	 var result = "";
 		        	 var addlocation = 'addlocation0'
 		        	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
@@ -2982,8 +2978,7 @@ function getJobLocations(){
 		        	
 		        	 $("#jobLocationsList").empty();
 		        	 $("#jobLocationsList").append(result);
-		        }
-		 });
+		
 	}
 	
 	 

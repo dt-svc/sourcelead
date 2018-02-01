@@ -163,7 +163,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getPrimaryRole By UserId start");
 		userRole = session
-				.createQuery("from UserRole userRole left join fetch userRole.orgLocations where userRole.user.id=:userId and userRole.isPrimary = '1' ")
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.user where userRole.user.id=:userId and userRole.isPrimary = '1' ")
 				.setLong("userId", userId).list();
 		logger.debug("getPrimaryRole By UserId start");
 		if (userRole.size() > 0) {

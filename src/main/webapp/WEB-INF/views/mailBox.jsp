@@ -635,11 +635,11 @@ function getEmailDetails(uuid,type){
 	   			}
 	            
                 
-              if(opt.signature != null && opt.signature != "" && opt.signature != 'undefined'){
+             /*  if(opt.signature != null && opt.signature != "" && opt.signature != 'undefined'){
             	  result = result +'<p>'+opt.signature+'</p>';
               }else{
             	  result = result +'<p>Thanks,<br>'+opt.fromMail+'</p>';
-              }
+              } */
             
             $("#mailBoxList").empty(); 
             $("#mailDetails").empty(); 
