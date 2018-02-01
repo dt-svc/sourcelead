@@ -4,24 +4,24 @@
   	<div class="col-md-2 sitemap">
   	<h4>Site Map</h4>
 	 <ul class="list-unstyled">
-		  <li><a href="index.html">Home</a></li>
-		  <li><a href="candidate.html">Search Job</a></li>
-		  <li><a href="marketplace.html">Marketplace</a></li>
-		  <li><a href="aboutsourcelead.html">About Us</a></li>
-		  <li><a href="helpManuals.html">Help</a></li>
-		  <li><a href="blog.html">Blog</a></li>
-		  <li><a href="contactus.html">Contact</a></li>
+		  <li><a href="/index.html">Home</a></li>
+		  <li><a href="/sourceleadJobPage.html">Search Job</a></li>
+		  <li><a href="/marketplace.html">Marketplace</a></li>
+		  <li><a href="/about-us.html">About Us</a></li>
+		  <li><a href="/helpManuals.html">Help</a></li>
+		  <li><a href="/blog.html">Blog</a></li>
+		  <li><a href="/contact.html">Contact</a></li>
 	</ul>
   	</div>
   	<div class="col-md-2 sitemap">
   		<h4>Features</h4>
 		<ul class="list-unstyled">
-			<li><a href="ats.html">ATS</a></li>
-			<li><a href="vms.html">VMS</a></li>
-			<li><a href="crm.html">CRM</a></li>
-			<li><a href="pms.html">PMS</a></li>
-			<li><a href="HRMS.html">HRMS/Contracts</a></li>
-			<li><a href="ims.html">IMS</a></li>
+			<li><a href="/ats.html">ATS</a></li>
+			<li><a href="/vms.html">VMS</a></li>
+			<li><a href="/crm.html">CRM</a></li>
+			<li><a href="/pms.html">PMS</a></li>
+			<li><a href="/hrms.html">HRMS/Contracts</a></li>
+			<li><a href="/ims.html">IMS</a></li>
 		</ul>
   	</div>
   	<div class="col-md-3 col-sm-6">
@@ -63,9 +63,9 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
     </div>
     <div class="col-xs-12 col-sm-6 text-center footer-Qlinks">
       <ul class="list-unstyled list-inline">
-        <li><a href="termsnconditions.html">Terms and Conditions</a></li>
-        <li><a href="disclaimer.html">Disclaimer</a></li>
-        <li><a href="contactus.html">Contact Us</a></li>
+        <li><a href="/termsofuse.html">Terms of Use</a></li>
+        <li><a href="/privacypolicy.html">Privacy Policy</a></li>
+        <li><a href="/contact.html">Contact Us</a></li>
       </ul>
     </div>
   </div>
@@ -75,7 +75,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 <div class="customNavBar-inner resMenu">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<ul class="">
-	<li><a href="index.html" class="slactive">Home</a></li>
+	<li><a href="/index.html" class="slactive">Home</a></li>
 	 <li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)">Features
 			  <span class="fa fa-angle-down"></span></a>
@@ -83,22 +83,22 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 <!--
 				<li><a href="features.html">Features</a></li>
 -->
-				<li><a href="ats.html">ATS</a></li>
-				<li><a href="vms.html">VMS</a></li>
-				<li><a href="crms.html">CRM</a></li>
-				<li><a href="pms.html">PMS</a></li>
-				<li><a href="HRMS.html">HRMS/Contracts</a></li>
-				<li><a href="ims.html">IMS</a></li>
+				<li><a href="/ats.html">ATS</a></li>
+				<li><a href="/vms.html">VMS</a></li>
+				<li><a href="/crms.html">CRM</a></li>
+				<li><a href="/pms.html">PMS</a></li>
+				<li><a href="/hrms.html">HRMS/Contracts</a></li>
+				<li><a href="/ims.html">IMS</a></li>
 			</ul>
 	</li>
-	<li><a href="searchJob.html">Search Job</a></li>
-	<li><a href="marketplace.html">Marketplace</a></li>
-	<li><a href="aboutsourcelead.html">About Us</a></li>
+	<li><a href="/sourceleadJobPage.html">Search Job</a></li>
+	<li><a href="/marketplace.html">Marketplace</a></li>
+	<li><a href="/about-us.html">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
-	<li><a href="blog.html">Blog</a></li>
-	<li><a href="contactus.html">Contact</a></li>
-	<li><a class="loginbtn" href="http://sourcelead.com/login" title="Login">Login</a></li>
-	<li><a href="http://sourcelead.com/register" title="Login">Sign Up</a></li>
+	<li><a href="/blog.html">Blog</a></li>
+	<li><a href="/contact.html">Contact</a></li>
+	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
+	<li><a href="/register" title="Login">Sign Up</a></li>
 	</ul>
 		</div>
 <!--   Menu Responsive   -->

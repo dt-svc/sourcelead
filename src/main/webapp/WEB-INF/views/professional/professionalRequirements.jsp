@@ -1924,6 +1924,7 @@ function alertClose(){
 	$(".modal_createalert").removeClass("modal");
 	$(".pop_mask").fadeOut();
 	$(".modal.modal_createalert").fadeOut();
+	$("#createAlertPopUpDiv").empty();
 }
 </script>
 

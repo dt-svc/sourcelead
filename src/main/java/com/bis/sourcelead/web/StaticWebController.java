@@ -16,6 +16,16 @@ public class StaticWebController {
 		return "static-web/about-us";
 	}
 	
+	@RequestMapping("/termsofuse.html")
+	public String termsofuse() {
+		return "static-web/termsofuse";
+	}
+	
+	@RequestMapping("/privacypolicy.html")
+	public String privacypolicy() {
+		return "static-web/privacypolicy";
+	}
+	
 	@RequestMapping("/crms.html")
 	public String crms() {
 		return "static-web/crms";

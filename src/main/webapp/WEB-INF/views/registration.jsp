@@ -329,7 +329,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
+        <div class="company_logo pull-left mb10"><a href="<c:url value='/index.html'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
@@ -421,7 +421,7 @@ window.onload = function () {
             <div class='col-md-12 privacy_checkbox text-center'>
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="professionalRegistrationCheckTermsId">
-                    I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+                    I agree <a href="/termsofuse.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacypolicy.html" target="blank" class="text-succcess">privacy policy</a>
                     <input type="hidden" id="professionalRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
