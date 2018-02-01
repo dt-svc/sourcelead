@@ -426,10 +426,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
 	
-	document.getElementById("newUploadBtn123").onchange = function () {
-		$('#newUploadFile123').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	};
-	
 }
 </script>
 <script>
