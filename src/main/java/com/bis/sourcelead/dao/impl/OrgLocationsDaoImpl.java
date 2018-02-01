@@ -364,4 +364,18 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return orgList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from OrgLocations orgLocations where orgLocations.org.id = :orgId ";
+		List<Long> orgLocCount = session.createQuery(query.toString()).setLong("orgId", orgId).list();
+			Integer count = 0;
+			if(orgLocCount != null && !orgLocCount.isEmpty()){
+					count = orgLocCount.get(0).intValue();
+			}
+			return count;
+	}
+
 }

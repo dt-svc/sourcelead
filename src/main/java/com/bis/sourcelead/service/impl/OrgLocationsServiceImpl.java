@@ -374,4 +374,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception {
 		return orgLocationsDao.getAllRegisteredOrgLocationsExceptLoggedInLocation(orgLocationId, orgId);
 	}
+
+	@Override
+	public Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception {
+		return orgLocationsDao.getRegisteredOrgLoctionsCountByOrgId(orgId);
+	}
 }

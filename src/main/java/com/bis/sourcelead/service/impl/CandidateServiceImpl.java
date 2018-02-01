@@ -1841,14 +1841,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setDesignationType("Full Time");
 							
 							if(associateDTO.getBillRate() != null){
-								candidate.setCurrentRate(associateDTO.getBillRate().toString());
+								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
 							}
 							if(StringUtils.isNotBlank(associateDTO.getBillRateRateType())){
-								candidate.setCurrentRateType(associateDTO.getBillRateRateType());
+								vendorCandidate.setCurrentRateType(associateDTO.getBillRateRateType());
 							}
 							
 							if(StringUtils.isNotBlank(associateDTO.getBillRateCurrency())){
-								candidate.setCurrentRateCurrency(associateDTO.getBillRateCurrency());
+								vendorCandidate.setCurrentRateCurrency(associateDTO.getBillRateCurrency());
 							}
 							
 							vendorCandidate.setStatus(1);

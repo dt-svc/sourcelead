@@ -55,7 +55,7 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
-       <div class="col-md-12 clearfix">
+       <%-- <div class="col-md-12 clearfix">
         <div class="well clearfix">
           
           <div class="col-md-8 er selectUser col-md-offset-3">
@@ -86,7 +86,7 @@
           </div>
            <input type="hidden" id="associateId" name="associateId"/>
           </div>
-        </div> 
+        </div>  --%>
               
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
