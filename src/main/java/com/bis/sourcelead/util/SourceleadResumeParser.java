@@ -43,7 +43,7 @@ public class SourceleadResumeParser {
 	@Autowired
 	LookUpDataService lookUpDataService;
 
-	public String getCandidateDetailsFromResume(byte[] source, HttpServletRequest request) throws Exception {
+	public String getCandidateDetailsFromResume(byte[] source, String country) throws Exception {
 
 		BodyContentHandler htmlHandler = new BodyContentHandler();
 		ByteArrayInputStream stream = new ByteArrayInputStream(source);
@@ -62,9 +62,9 @@ public class SourceleadResumeParser {
 			jsonUtil.setName(name);
 		}
 		jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
-		jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString, request));
+		jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString, country));
 
-		HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString, request);
+		HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString);
 		if (skillsList != null && !skillsList.isEmpty()) {
 			String skills = String.join(", ", skillsList);
 			skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
@@ -73,7 +73,7 @@ public class SourceleadResumeParser {
 		return toJSON(jsonUtil);
 	}
 
-	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, HttpServletRequest request) throws Exception {
+	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country) throws Exception {
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		BodyContentHandler htmlHandler = new BodyContentHandler();
 		try (FileInputStream stream = new FileInputStream(file);) {
@@ -92,9 +92,9 @@ public class SourceleadResumeParser {
 				jsonUtil.setName(name);
 			}
 			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
-			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString, request));
+			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString, country));
 
-			HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString, request);
+			HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString);
 			if (skillsList != null && !skillsList.isEmpty()) {
 				String skills = String.join(", ", skillsList);
 				skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
@@ -112,7 +112,7 @@ public class SourceleadResumeParser {
 	 * 
 	 * @throws Exception
 	 */
-	private HashSet<String> skillFinderFromParsedTextFile(String parsedString, HttpServletRequest request)
+	private HashSet<String> skillFinderFromParsedTextFile(String parsedString)
 			throws Exception {
 		String[] totalLines = parsedString.split(System.getProperty("line.separator"));
 		HashSet<String> skills = new HashSet<String>();
@@ -284,8 +284,7 @@ public class SourceleadResumeParser {
 	 * class for resolving phone numbers from text file
 	 * (source:com.googlecode.libphonenumber.libphonenumber7.7.jar)
 	 */
-	private HashSet<String> phoneNumberFinderFromParsedTextFile(String parsedString, HttpServletRequest request) {
-		String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
+	private HashSet<String> phoneNumberFinderFromParsedTextFile(String parsedString, String country) {
 		HashSet<String> phoneNumbers = new HashSet<String>();
 		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 		String countryCode = "US";
