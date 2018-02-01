@@ -131,7 +131,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		referContacts = session
 				.createQuery(
 						"from ReferContacts contacts left join fetch contacts.referFromUser where contacts.contactUserUUID =:contactUUID")
-				.setString("contactUUID", contactUUID).setCacheable(true).list();
+				.setString("contactUUID", contactUUID).list();
 		logger.debug("getReferContactsByUUID end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
@@ -149,7 +149,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		logger.debug("getReferContactsByEmails start");
 		referContacts = session
 				.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser user where user.id =:userId and contacts.contactUserEmail = :toEmail")
-				.setLong("userId", userId).setString("toEmail", toEmail).setCacheable(true).list();
+				.setLong("userId", userId).setString("toEmail", toEmail).list();
 		logger.debug("getReferContactsByEmails end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
@@ -204,11 +204,11 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		queryObj.setMaxResults(contactsDTO.getLength());
 		
 		if(groupIdsList != null && groupIdsList.size() > 0){
-			queryObj.setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).setCacheable(true).list();
-			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).setCacheable(true).list();
+			queryObj.setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setParameterList("groupIdsList", groupIdsList).list();
 		}else{
-			queryObj.setLong("userId", userId).setCacheable(true).list();
-			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).setCacheable(true).list();
+			queryObj.setLong("userId", userId).list();
+			countlist = session.createQuery("select count(*) " + query).setLong("userId", userId).list();
 		}
 		List<ReferContacts> referContactsList = queryObj.list();
 		
@@ -267,7 +267,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ReferContacts contacts  where contacts.referFromUser.id = :userId and "
 				+ "contacts.contactUserEmail NOT IN (select refer.referToEmail from RequirementRefer refer where refer.referFromUser.id = :userId and refer.requirementId.id = :requirementId) ";
-		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setLong("requirementId", requirementId).setCacheable(true) .list();
+		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setLong("requirementId", requirementId) .list();
 		return referContactsList;
 	}
 
@@ -281,7 +281,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		referContacts = session
 				.createQuery(
 						"from ReferContacts contacts left join fetch contacts.referFromUser where contacts.id =:id")
-				.setLong("id", id).setCacheable(true).list();
+				.setLong("id", id).list();
 		logger.debug("getReferContactsById end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
@@ -298,7 +298,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		 boolean flag = false;
 		 if(email != null && loginUserId != null) {
 			 String query = "from ReferContacts referContacts where referContacts.referFromUser.id = :loginUserId and referContacts.contactUserEmail = :email ";
-				Collection<ReferContacts> referContactsList = session.createQuery(query.toString()).setLong("loginUserId", loginUserId).setString("email", email).setCacheable(true).list();
+				Collection<ReferContacts> referContactsList = session.createQuery(query.toString()).setLong("loginUserId", loginUserId).setString("email", email).list();
 				if (referContactsList != null && referContactsList.size() > 0) {
 					flag = true;
 				}
@@ -314,8 +314,8 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
 		logger.debug("getReferContactsByEmails start");
 		referContacts = session
-				.createQuery("from ReferContacts contacts contacts.contactUserEmail = :recipientMail")
-				.setString("recipientMail", recipientMail).setCacheable(true).list();
+				.createQuery("from ReferContacts contacts where contacts.contactUserEmail = :recipientMail")
+				.setString("recipientMail", recipientMail).list();
 		logger.debug("getReferContactsByEmails end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);
@@ -334,7 +334,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		referContacts = session
 				.createQuery("from ReferContacts contacts left join fetch contacts.referFromUser fromUser left join fetch contacts.contactUser toUser "
 						+ " where fromUser.id = :fromUserId and toUser.id = :toUserId ")
-				.setLong("fromUserId", fromUserId).setLong("toUserId", fromUserId).setCacheable(true).list();
+				.setLong("fromUserId", fromUserId).setLong("toUserId", fromUserId).list();
 		logger.debug("getReferContactsByFromUserIdAndToUserId end");
 		if (referContacts.size() > 0) {
 			return referContacts.get(0);

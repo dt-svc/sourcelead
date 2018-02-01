@@ -106,7 +106,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 				"c.TO_UID in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
 				"(select c.CONNECTION_UID from connections c where (c.from_uid = :loginUserId and c.to_uid = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID " +
 				"from user u, user_role ur, org_locations ol, connections c " + 
-				"where ur.user_id = u.id and ur.org_locations_id = ol.id and u.IS_VERIFIED = 'Y' and ur.IS_PRIMARY = 1 "; 
+				"where ur.user_id = u.id and ur.org_locations_id = ol.id and ur.IS_PRIMARY = 1 "; 
 		if(status.equalsIgnoreCase("sent")) {
 			resultSqlQuery = sqlQuery.concat("and c.FROM_UID = :loginUserId and c.TO_UID = u.id and c.CONNECTION_STATUS = :connectionStatus");
 		}else if(status.equalsIgnoreCase("received")) {
@@ -191,7 +191,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		connections = session
 				.createQuery(
 						"from Connections connections left join fetch connections.fromUser left join fetch connections.toUser where connections.connectionUID = :connectionUUID")
-				.setString("connectionUUID", connectionUUID).setCacheable(true).list();
+				.setString("connectionUUID", connectionUUID).list();
 		logger.debug("getConnectionByUUID end");
 		if (connections.size() > 0) {
 			return connections.get(0);

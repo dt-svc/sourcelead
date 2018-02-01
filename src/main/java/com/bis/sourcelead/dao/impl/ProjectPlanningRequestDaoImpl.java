@@ -61,7 +61,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId "
 				+ " where projectPlanningRequest.projectId = :projectId and projectPlanningRequest.status = '1' ";
-		List<ProjectPlanningRequest> projectPlanningRequestList =  session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+		List<ProjectPlanningRequest> projectPlanningRequestList =  session.createQuery(query.toString()).setLong("projectId", projectId).list();
 		
 		return projectPlanningRequestList;
 	}
@@ -76,7 +76,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 		
 		List<Long> requestsCount =   session.createQuery(query.toString())
 				                         .setLong("projectId", projectId)
-				                         .setCacheable(true)
+				                         
 				                         .list();
 			Integer count = 0;
 			if(requestsCount != null && !requestsCount.isEmpty()){
@@ -92,7 +92,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectPlanningRequest planningRequest left join fetch planningRequest.projectId left join fetch planningRequest.approverUser "
 				+ "where planningRequest.requestUUID = :requestUUID and planningRequest.status = '1' ";  
-		List<ProjectPlanningRequest> projectPlanningRequestList = session.createQuery(query).setString("requestUUID", requestUUID).setCacheable(true).list();
+		List<ProjectPlanningRequest> projectPlanningRequestList = session.createQuery(query).setString("requestUUID", requestUUID).list();
 		ProjectPlanningRequest projectPlanningRequest = null;
 		if(projectPlanningRequestList != null && !projectPlanningRequestList.isEmpty()){
 			projectPlanningRequest = projectPlanningRequestList.iterator().next();
@@ -106,7 +106,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectPlanningRequest planningRequest left join fetch planningRequest.projectId left join fetch planningRequest.approverUser "
 				+ "where planningRequest.id = :id and planningRequest.status = '1' ";  
-		List<ProjectPlanningRequest> projectPlanningRequestList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		List<ProjectPlanningRequest> projectPlanningRequestList = session.createQuery(query).setLong("id", id).list();
 		ProjectPlanningRequest projectPlanningRequest = null;
 		if(projectPlanningRequestList != null && !projectPlanningRequestList.isEmpty()){
 			projectPlanningRequest = projectPlanningRequestList.iterator().next();
@@ -126,13 +126,13 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
 					+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
 					+ " and projectPlanningRequest.requestStatus = :requestStatus and projectPlanningRequest.status = '1' ";
-			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).setCacheable(true).list();
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).list();
 			
 		}else {
 			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
 					+ " where  projectPlanningRequest.orgLocationId.id = :orgLocationId "
 					+ " and projectPlanningRequest.requestStatus = :requestStatus and projectPlanningRequest.status = '1' ";
-			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).setCacheable(true).list();
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).list();
 			
 		}
 		
@@ -149,13 +149,13 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
 					+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
 					+ " and projectPlanningRequest.status = '1' ";
-			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).list();
 			
 		}else {
 			String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
 					+ " where projectPlanningRequest.orgLocationId.id = :orgLocationId "
 					+ " and projectPlanningRequest.status = '1' ";
-			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			 projectPlanningRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 			
 		}
 		

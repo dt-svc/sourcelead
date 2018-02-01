@@ -819,9 +819,9 @@ width: 150px !important;
 
 /* job location styles */
 ul.joblocations-li {
-	position: relative; top:-5px;
+position: relative; top:-5px;
 }
 ul.joblocations-li li {
-	float:left; padding:5px 10px; background-color: rgba(3, 169, 244, 0.1);  margin: 0px 10px 10px 0;
-	border-radius: 5px; border: 1px solid rgba(3, 169, 244, 0.17); font-size: 12px;
+float:left; padding:5px 10px; background-color: rgba(3, 169, 244, 0.1); margin: 0px 10px 10px 0;
+border-radius: 5px; border: 1px solid rgba(3, 169, 244, 0.17); font-size: 12px;
 }

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,10 +46,6 @@ public class MigrateTimeEntriesToTimeDayEntries {
 					 while(timesheetEntriesResultSet.next()){
 						 Long  projectTaskId = timesheetEntriesResultSet.getLong("PROJECT_TASK");
 						 if(projectTaskId != null && StringUtils.isNotEmpty(projectTaskId.toString())) {
-						 Date  createdDate = timesheetEntriesResultSet.getDate("CREATED_DATE");
-						 String createdBy = timesheetEntriesResultSet.getString("CREATED_BY");
-						 Date  updatedDate = timesheetEntriesResultSet.getDate("UPDATED_DATE");
-						 String updatedBy = timesheetEntriesResultSet.getString("UPDATED_BY");
 						 	String Type = "SELECT BILLABLE_TYPE FROM sourcelead.PROJECT_TASKS where ID = "+projectTaskId+"";
 						 	ResultSet ptResultSet = stmt2.executeQuery(Type);
 						 	while(ptResultSet.next()){
@@ -179,24 +176,24 @@ public class MigrateTimeEntriesToTimeDayEntries {
 				 					}
 				 			
 						 		}
-						 		String query4 = " insert into sourcelead.TIMESHEET_DAY_ENTRIES (SUBMISSION_ID, PROJECT_TASK_ID, TIMESHEET_DATE, TASK_TYPE, BILLABLE_HOURS, NONBILLABLE_HOURS,TOTALHOURS, COMMENTS, CREATED_DATE,CREATED_BY,UPDATED_DATE,UPDATED_BY)"
-										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,?)";
+						 		
+						    		String query4 = " update sourcelead.TIMESHEET_DAY_ENTRIES set  TASK_TYPE = ? ,BILLABLE_HOURS = ?, NONBILLABLE_HOURS = ? , TOTALHOURS = ? ,COMMENTS = ? where SUBMISSION_ID = ? and PROJECT_TASK_ID =? and TIMESHEET_DATE = ?";
+						 		
+						 		/*String query4 = " insert sourcelead.TIMESHEET_DAY_ENTRIES (SUBMISSION_ID, PROJECT_TASK_ID, TIMESHEET_DATE, TASK_TYPE, BILLABLE_HOURS, NONBILLABLE_HOURS,TOTALHOURS, COMMENTS, CREATED_DATE,CREATED_BY,UPDATED_DATE,UPDATED_BY)"
+										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,?)";*/
 					    		
 					    		try {
 					    			
-					    			 PreparedStatement pstmt4 = con.prepareStatement(query4);
-						    		 pstmt4.setLong(1, submissionId);
-						    		 pstmt4.setLong(2, projectTaskId);
-						    		 pstmt4.setDate(3, date);
-						    		 pstmt4.setString(4, taskTypeSave);
-						    		 pstmt4.setString(5, billableHours);
-						    		 pstmt4.setString(6, nonbillableHours);
-						    		 pstmt4.setString(7, Hours);
-						    		 pstmt4.setString(8, comments);
-						    		 pstmt4.setDate(9,(java.sql.Date) createdDate);
-						    		 pstmt4.setString(10,createdBy);
-						    		 pstmt4.setDate(11,(java.sql.Date) updatedDate);
-						    		 pstmt4.setString(12,updatedBy);
+					    			 PreparedStatement pstmt4 = con.prepareStatement(query4); 
+					    			 pstmt4.setString(1, taskTypeSave);
+					    			 pstmt4.setString(2, billableHours);
+						    		 pstmt4.setString(3, nonbillableHours);
+						    		 pstmt4.setString(4, Hours);
+						    		 pstmt4.setString(5, comments);
+						    		
+						    		 pstmt4.setLong(6, submissionId);
+						    		 pstmt4.setLong(7, projectTaskId);
+						    		 pstmt4.setDate(8, date);
 						    		 pstmt4.executeUpdate();	
 						    		 
 					    		}catch (Exception e){   
@@ -218,35 +215,37 @@ public class MigrateTimeEntriesToTimeDayEntries {
 	}
 	
 	
-	
+	public static Date getNextDate(Date  curDate) throws ParseException {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(curDate);
+		calendar.add(Calendar.DAY_OF_YEAR, 1);
+		return calendar.getTime(); 
+	}
 	
 	 private LinkedHashMap<String,java.sql.Date> calculateDate(String startDate, String endDate) throws ParseException {
-		 
 		 LinkedHashMap<String,java.sql.Date> dateList = new LinkedHashMap<>();
 		 SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		 Date start = sdf1.parse(startDate);
-		 java.sql.Date sDate = new java.sql.Date(start.getTime());
-		 
-		 for(int i=0;i<=6;i++) {
-			 Calendar cal = Calendar.getInstance();
-			 cal.setTime(sDate);
-		     cal.add(Calendar.DATE, i);
-		     if(i==0) {
-		    	 dateList.put("Mon",new java.sql.Date(cal.getTime().getTime())); 
-		     } else if(i==1) {
-		    	 dateList.put("Tue",new java.sql.Date(cal.getTime().getTime()));
-		     } else if(i==2) {
-		    	 dateList.put("Wed",new java.sql.Date(cal.getTime().getTime()));
-		     }else if(i==3) {
-		    	 dateList.put("Thu",new java.sql.Date(cal.getTime().getTime()));
-		     }else if(i==4) {
-		    	 dateList.put("Fri",new java.sql.Date(cal.getTime().getTime()));
-		     }else if(i==5) {
-		    	 dateList.put("Sat",new java.sql.Date(cal.getTime().getTime()));
-		     }else if(i==6) {
-		    	 dateList.put("Sun",new java.sql.Date(cal.getTime().getTime()));
-		     }
-		 }
+		 Date end = sdf1.parse(endDate);
+		 while(start.before(end) || start.equals(end)){
+		     SimpleDateFormat sf = new SimpleDateFormat("E"); 
+			 if(sf.format(start).equalsIgnoreCase("Mon")) {
+				 dateList.put("Mon",new java.sql.Date(start.getTime())); 
+			 }else if(sf.format(start).equalsIgnoreCase("Tue")) {
+				 dateList.put("Tue",new java.sql.Date(start.getTime()));
+			 }else if(sf.format(start).equalsIgnoreCase("Wed")) {
+				 dateList.put("Wed",new java.sql.Date(start.getTime()));
+			 }else if(sf.format(start).equalsIgnoreCase("Thu")) {
+				 dateList.put("Thu",new java.sql.Date(start.getTime()));
+			 }else if(sf.format(start).equalsIgnoreCase("Fri")) {
+				 dateList.put("Fri",new java.sql.Date(start.getTime()));
+			 }else if(sf.format(start).equalsIgnoreCase("Sat")) {
+				 dateList.put("Sat",new java.sql.Date(start.getTime()));
+			 }else if(sf.format(start).equalsIgnoreCase("Sun")) {
+				 dateList.put("Sun",new java.sql.Date(start.getTime()));
+			 }
+			 start = getNextDate(end);
+	    }
 		return dateList;
 	}
 

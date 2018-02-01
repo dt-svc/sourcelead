@@ -101,7 +101,7 @@ $(function(){
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
 				                    <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                   </c:if>
 				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
 				                     <img src="/resources/images/office-image.jpg">
@@ -259,7 +259,7 @@ function loadRegisteredOrgs(){
 	 				result = result +"<div class='user-profile'>";
 	 				result = result +"<div class='col-xs-4 col-sm-4'>";
 	 				result = result +"<div class='comLocaImg'>";
-	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src='"+orgLoc.fileUrl+"' alt='image'>";
 	 				result = result +"</div>";
 	 				result = result +"</div>";
 	 				result = result +"<div class='col-sm-8'>";
@@ -952,10 +952,7 @@ var validationSettings = {
          $('body').on('submit', '#createOrg_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
-        		var frm = $('#createOrg_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+        		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
          		 var modulesList = [];
          		 $("input[name='modulesList[]']:checked").each( function (i) {
@@ -971,9 +968,8 @@ var validationSettings = {
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          	 	 	$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+          	      data: formData,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
                 			  
                 			  
                   	success: function(result) {
@@ -983,6 +979,9 @@ var validationSettings = {
 			        	else if((result == 'Invalid Sub Modules')){
 			        		$("#loading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
+			        	}else if((result == 'DataMissing')){
+			        		showError("Invalid data");
+			        		$("#loading").removeAttr('style');
 			        	}
 			        	
 			        },  

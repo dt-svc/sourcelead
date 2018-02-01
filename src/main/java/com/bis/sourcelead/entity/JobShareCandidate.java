@@ -22,9 +22,7 @@ import com.sun.star.util.DateTime;
 
 @Entity
 @Table(name = "JOB_SHARE_CANDIDATES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="jobShareCandidate")
 public class JobShareCandidate implements Serializable{
-	
 private static final long serialVersionUID = 1L;
 	
 	@Id

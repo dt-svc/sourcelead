@@ -969,7 +969,7 @@ function removeErr(){
 </script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
-<div id="recvPymntpop" class="modal" style="display: none;">
+<div id="recvPymntpop" class="modal zInd" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
 <!-- modal pop --> 
@@ -1023,7 +1023,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
 		 '</sec:authorize>'
 		 
-		 result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+		 result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();

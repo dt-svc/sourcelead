@@ -3100,7 +3100,7 @@ function forgotPassword(){
  function loginPopup(requirementUUID){
 	 var result = "";
 	 result = result +'<div class="pull-left">';
-	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply as Guest User</button>';
+	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply</button>';
 	 result = result +'</div>';
 	 $("#gustLoginId").empty();
 	 $("#gustLoginId").append(result);

@@ -81,7 +81,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		logger.debug("In RequirementInterviewHistoryDaoImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId  where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId ORDER BY rih.createdDate DESC";
-		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return interviewsList;
 	}
@@ -91,7 +91,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	public List<RequirementInterviewHistory> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from RequirementInterviewHistory rih left join fetch rih.interviewId ri left join fetch rih.submissionId submission left join fetch  submission.orgLocations where rih.interviewId.id IN(select interview.id from RequirementInterview interview where interview.status = 1 and interview.startTime > :date and interview.startTime < :triggerTime) and rih.status = 1";
-		List<RequirementInterviewHistory> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).setCacheable(true).list();
+		List<RequirementInterviewHistory> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).list();
 		return requirementInterviewList;
 	}
 	
@@ -149,7 +149,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			}
         }
 		
-		return queryExe.setCacheable(true).list();
+		return queryExe.list();
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		logger.debug("In RequirementInterviewHistoryDaoImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterviewHistory rih where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId ORDER BY rih.createdDate DESC";
-		List<RequirementInterviewHistory> interviewsHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<RequirementInterviewHistory> interviewsHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return interviewsHistoryList;
 	}
@@ -171,7 +171,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		     Session session = this.sessionFactory.getCurrentSession();
 			
 			String query ="select count(*) from RequirementInterviewHistory rih where rih.submissionId.id = :submissionId and rih.orgLocationId.id = :orgLocationsId";
-			List<Long> interviewsCount = session.createQuery(query.toString()).setLong("submissionId", submissionId).setCacheable(true).setLong("orgLocationsId", orgLocationsId).list();
+			List<Long> interviewsCount = session.createQuery(query.toString()).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 				Integer count = 0;
 				if(interviewsCount != null && !interviewsCount.isEmpty()){
 						count = interviewsCount.get(0).intValue();
@@ -206,7 +206,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 			}
         }
 		
-		return queryExe.setCacheable(true).list();
+		return queryExe.list();
 	}
 
 	@Override
@@ -216,7 +216,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "and (rih.submissionId.recruiterUserId.id =:recruiterUserId)";
 		String query = "from RequirementInterviewHistory rih where rih.submissionId.status = 1 and ( rih.interviewId.dateOfInterview >= :startDate and rih.interviewId.dateOfInterview <= :endDate) "+subQuery;
-    	List<RequirementInterviewHistory> interviewsHistoryList =  session.createQuery(query).setLong("recruiterUserId", userId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
+    	List<RequirementInterviewHistory> interviewsHistoryList =  session.createQuery(query).setLong("recruiterUserId", userId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).list();
 		
 		return interviewsHistoryList;
 	}
@@ -227,7 +227,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		logger.debug("In RequirementInterviewHistoryDaoImpl class getCrowdSorurcingInterviews method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId  where rih.submissionId.id = :submissionId  ORDER BY rih.createdDate DESC";
-		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();
+		List<RequirementInterviewHistory> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).list();
 		
 		return interviewsList;
 	}
@@ -237,7 +237,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	public RequirementInterviewHistory getRequirementInterviewHistoryByInterviewId(Long interviewId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterviewHistory rih  where rih.interviewId.id = :interviewId ";
-		List<RequirementInterviewHistory> requirementInterviewHistory = session.createQuery(query).setLong("interviewId", interviewId).setCacheable(true).list();
+		List<RequirementInterviewHistory> requirementInterviewHistory = session.createQuery(query).setLong("interviewId", interviewId).list();
 		RequirementInterviewHistory interviewHistory = null;
 		RequirementInterview interview = null;
 		if(requirementInterviewHistory != null && !requirementInterviewHistory.isEmpty()){

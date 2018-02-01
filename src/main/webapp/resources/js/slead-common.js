@@ -160,10 +160,13 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	var files = document.getElementById(id).files;
 	var invalidFiles = false;
 	var count = 0;
+	expr = /.zip/;
+	ecpr1=/.rar/;
 	for(var e in files) {
 		if(!$.isNumeric(e))
 			continue;
-		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+		//if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+			if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
 			continue;
 		data.append('file', files[e]);
 		count ++;
@@ -300,7 +303,7 @@ function saveUserProfileImage(formId,data){
 	
 	if ($('#'+formId).validate(false, validationSettings)){
   		var formData = getFormData(formId);
-        		
+        if(formId === "profileImage_form"){	
         $.ajax({
             	      type: "POST",
             	      data: formData,
@@ -311,7 +314,21 @@ function saveUserProfileImage(formId,data){
                   		  location.replace(sourceleadUrl+"/userProfile");  
 			          },  
         });
-        return true;         
+        
+        } else{
+        	$.ajax({
+      	      type: "POST",
+      	      data: formData,
+      	      url: sourceleadUrl+"/saveOrgImage?"+tokenParamName+"="+tokenValue,
+                success: function(result) {
+              	  if(result)
+              		  $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+            		  location.replace(sourceleadUrl+"/orgSettings");  
+		          },  
+  });
+        }
+        return true;
+        
 }else{ 
 return false;
 }

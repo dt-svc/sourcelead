@@ -19,8 +19,7 @@
 				<div class="col-md-3">
 					<div class="company-logo">
 						<div class="imageParent">
-							<img onerror="predefineOrgImage(this);"
-								src="${sourceleadUrl}/displayOrgImage/${requirement.orgLocationId.org.orgCode}"
+							<img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${requirement.orgLocationId.org.fileUrl}"
 								alt="Company" title="Company Logo" class="img-responsive">
 						</div>
 				</div>

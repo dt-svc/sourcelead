@@ -150,7 +150,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		
 		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
@@ -180,7 +180,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		
 		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery1+"  "+subQuery+" ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
@@ -269,14 +269,14 @@ public class CandidateDaoImpl implements CandidateDao {
 				                    .setDate("endDate", endDate)
 				                    .setLong("orgLocationId", orgLocationId)
 				                    .setLong("orgId", orgId)
-				                    .setCacheable(true)
+				                    
 				                    .list();
 		}else{
 			
 			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" ORDER BY cnadidate.id DESC";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
-					               .setLong("orgId", orgId).setCacheable(true).list();
+					               .setLong("orgId", orgId).list();
 		}
 		
 		return candidateList;
@@ -305,7 +305,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ "left join fetch cnadidate.parentCandidateId "
 				+ "left join fetch cnadidate.orgRelationId left "
 				+ "join fetch cnadidate.spocId left join fetch cnadidate.orgLocationId left join fetch cnadidate.orgLocationId.user where cnadidate.id =:candidateId";
-		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).list();
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty())
 		{
@@ -330,7 +330,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate left join fetch cnadidate.parentCandidateId  where cnadidate.id = :candidateId and cnadidate.orgLocationId.id =:orgLocationId";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Candidate> candidateList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty()){
 			candidate = candidateList.iterator().next();
@@ -358,7 +358,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("findByCandidateEmail start");
 		try{
 			candidate = session.createQuery("from Candidate can left join fetch can.consultantUser left join fetch can.orgRelationId left join fetch can.parentCandidateId left join fetch can.masterCandidateId where can.email=:email and can.orgLocationId.id = :orgLocationId ORDER BY can.id DESC" )
-					.setString( "email", email ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+					.setString( "email", email ).setLong("orgLocationId", orgLocationId ).list();
 			
 			logger.debug("findByCandidateEmail end");
 			if (candidate.size() > 0) {
@@ -381,7 +381,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :candidateType "
 				+ "and candidate.status = '1' and candidate.id NOT IN (select submission.candidate.id from RequirementSubmission submission "
 				+ "where submission.requirement.id = :requirementId) ORDER BY candidate.id DESC ");
-		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).setCacheable(true).list();
+		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).list();
 		return candidatesList;
 	}
 
@@ -390,7 +390,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId ORDER BY cnadidate.id DESC";  
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -412,7 +412,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		String query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.isFavourite = '1' and candidate.teamId IS NULL "+candidateTypeSubQuery+" ";  
 		List<Candidate> candidateList = session.createQuery(query)
-				               .setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+				               .setLong("orgLocationId", orgLocationId).list();
 		
 		return candidateList;
 	}
@@ -427,7 +427,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		String query = "from Candidate candidate  where candidate.id IN (:candidateId)";  
 		List<Candidate> candidateList = session.createQuery(query)
-				               .setParameterList("candidateId", candidateId).setCacheable(true).list();
+				               .setParameterList("candidateId", candidateId).list();
 		return candidateList;
 	}
 
@@ -455,7 +455,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.teamId.id = :teamId  ";  
 		List<Candidate> candidateList = session.createQuery(query)
-				               .setLong("orgLocationId", orgLocationId).setLong("teamId", teamId).setCacheable(true).list();
+				               .setLong("orgLocationId", orgLocationId).setLong("teamId", teamId).list();
 		return candidateList;
 	}
 
@@ -557,7 +557,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					    		 .setDate("endDate", endDate)
 					    		 .setLong("reportingManagerUserId", reportingManagerUserId)
 				                 .setLong("orgLocationId", orgLocationId)
-				                 .setCacheable(true)
+				                 
 				                .list();
 	  /*  System.err.println("das"+candidateList.size());*/
 	return candidateList;
@@ -570,7 +570,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.consultantUser =:userId and candidate.candidateType =:candidateType ";  
-		List<Candidate> candidateList =  session.createQuery(query).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
+		List<Candidate> candidateList =  session.createQuery(query).setLong("userId", userId).setString("candidateType", candidateType).list();
 		Candidate candidate = null;
 		if (candidateList != null && candidateList.size() > 0) {
 			candidate = (Candidate) candidateList.iterator().next();
@@ -583,7 +583,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate getCandidateByEmailAndRecruiterUserId(String email, Long recruiterUserId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.email = :email and candidate.candidateType = 'Candidate' and candidate.recruiterUserId.id = :recruiterUserId ";  
-		List<Candidate> candidateList =  session.createQuery(query).setLong("recruiterUserId", recruiterUserId).setString("email", email).setCacheable(true).list();
+		List<Candidate> candidateList =  session.createQuery(query).setLong("recruiterUserId", recruiterUserId).setString("email", email).list();
 		Candidate candidate = null;
 		if (candidateList != null && candidateList.size() > 0) {
 			candidate = (Candidate) candidateList.iterator().next();
@@ -606,7 +606,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Query candidateListQuery= session.createQuery("from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :candidateType "
 				+ "and candidate.status = '1' and candidate.id NOT IN (select submission.candidate.id from RequirementSubmission submission "
 				+ "where submission.requirement.id = :requirementId) "+subQuery+" ORDER BY candidate.id DESC ");
-		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).setCacheable(true).list();
+		candidatesList = candidateListQuery.setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setString("candidateType", candidateType).list();
 		return candidatesList;
 	}
 
@@ -630,7 +630,7 @@ public class CandidateDaoImpl implements CandidateDao {
 										       .setLong("orgLocationId", orgLocations.getId())
 										       .setString("userCode", user.getUserCode())
 										       .setDate("sqlCurrentDate", sqlCurrentDate)
-										       .setCacheable(true)
+										       
 										       .list();
 		
 		  Integer count = 0;
@@ -657,7 +657,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "
 				+subQuery+" ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
@@ -720,7 +720,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			
         }
 		
-		return query.setCacheable(true).list();
+		return query.list();
 	}
 	
 	
@@ -736,10 +736,10 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
 			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL "+subQuery+" ";
-			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).setCacheable(true).list();
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).list();
 		}else{
 			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NULL "+subQuery+" "; 
-			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		}
 		  
 		 
@@ -791,7 +791,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
         }
 		
-		return query.setCacheable(true).list();
+		return query.list();
 	}
 	
 	@Override
@@ -811,7 +811,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			
 			String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
-			List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 		
 		    return candidateList;
@@ -824,7 +824,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String query = "from Candidate candidate where candidate.teamId.id =:teamId and candidate.orgLocationId.id =:orgLocationId  ";
-		 List<Candidate> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 List<Candidate> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationId", orgLocationId).list();
 		 return candidateHotList;
 	}
 
@@ -845,7 +845,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.isFavouriteAssociate = '1' and candidate.isAssociate ='Y' and candidate.teamId IS NULL  ";  
-		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 		return candidateList;
 	}
@@ -858,7 +858,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("getCandidateById start");
-		candidate = session.createQuery("from Candidate candidate left join fetch candidate.consultantUser where candidate.id =:candidateId" ).setCacheable(true).setLong( "candidateId", candidateId ).setCacheable(true).list();
+		candidate = session.createQuery("from Candidate candidate left join fetch candidate.consultantUser where candidate.id =:candidateId" ).setLong( "candidateId", candidateId ).list();
 		logger.debug("getCandidateById end");
 		if (candidate.size() > 0) {
 			return candidate.get(0);
@@ -918,7 +918,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("getCandidateById start");
-		candidate = session.createQuery("from Candidate candidate where candidate.candidateUUID = :candidateUUID" ).setCacheable(true).setString("candidateUUID", candidateUUID ).setCacheable(true).list();
+		candidate = session.createQuery("from Candidate candidate where candidate.candidateUUID = :candidateUUID" ).setString("candidateUUID", candidateUUID ).list();
 		logger.debug("getCandidateById end");
 		if (candidate.size() > 0) {
 			return candidate.get(0);
@@ -932,7 +932,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' ORDER BY cnadidate.id DESC";  
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -941,7 +941,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status ='1' and candidate.isAssociate = 'Y' ORDER BY candidate.id DESC";  
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -952,7 +952,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
 				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.id NOT IN (:associatesIds) ";  
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameterList("associatesIds", associatesIds).list();
 	}
 
 	@Override
@@ -963,7 +963,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
 				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.spocId.id = :spocId and candidate.id NOT IN (:associatesIds) ";  
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).setParameterList("associatesIds", associatesIds).list();
 	}
 
 	@Override
@@ -973,7 +973,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
 				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.spocId.id = :spocId  ";  
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).list();
 	}
 
 	@Override
@@ -984,7 +984,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgRelationId.id =:vendorOrgRelationId and "
 				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.id NOT IN (:associatesIds) ";  
-        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setParameterList("associatesIds", associatesIds).list();
 	}
 
 	@Override
@@ -994,7 +994,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgRelationId.id =:vendorOrgRelationId and "
 				+ "candidate.status ='1' and candidate.isAssociate = 'Y' ";  
-        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setCacheable(true).list();
+        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).list();
 	}
 
 	@Override
@@ -1004,7 +1004,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Candidate candidate = null;
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId and candidate.orgRelationId.id= :orgRelationId";
-        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setLong("orgRelationId", orgRelationId).list();
 		if(null != candidateList && candidateList.size() >0){
 			candidate = candidateList.get(0);
 		}
@@ -1018,7 +1018,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Candidate candidate = null;
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
-        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setCacheable(true).list();
+        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).list();
 		if(null != candidateList && candidateList.size() >0){
 			candidate = candidateList.get(0);
 		}
@@ -1034,7 +1034,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.recruiterUserId.id = :userId and candidate.candidateType = :candidateType ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("candidateType", candidateType).list();
 		logger.debug("getCandidatesCountByCandidateTypeOrgLocationIDAndUserId() Method Ended..");
 		return results.get(0);
 	}
@@ -1045,7 +1045,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.recruiterUserId.id = :userId ";  
-        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 	}
 
 	@Override
@@ -1054,7 +1054,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.orgRelationId.id = :orgRelationId and candidate.isAssociate = 'Y'";
-		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).list();
 	}
 
 
@@ -1126,7 +1126,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryObj = session.createQuery(query);
 			queryObj.setFirstResult(candidateDTO.getStart());
 			queryObj.setMaxResults(candidateDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).list();
 			candidateList = queryObj.list();
 			
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).list();
@@ -1137,7 +1137,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryObj = session.createQuery(query);
 			queryObj.setFirstResult(candidateDTO.getStart());
 			queryObj.setMaxResults(candidateDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("associatesIds", associatesIds).list();
 			candidateList = queryObj.list();
 			
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("associatesIds", associatesIds).list();
@@ -1147,7 +1147,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryObj = session.createQuery(query);
 			queryObj.setFirstResult(candidateDTO.getStart());
 			queryObj.setMaxResults(candidateDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).list();
 			candidateList = queryObj.list();
 			
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).list();
@@ -1156,7 +1156,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryObj = session.createQuery(query);
 			queryObj.setFirstResult(candidateDTO.getStart());
 			queryObj.setMaxResults(candidateDTO.getLength());
-			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setCacheable(true).list();
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).list();
 			candidateList = queryObj.list();
 			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).list();
 		}
@@ -1236,7 +1236,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate where candidate.id =(SELECT MAX(candi.id) FROM Candidate candi where candi.orgLocationId.id =:orgLocationId)";  
-		List<Candidate> candidate  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Candidate> candidate  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(candidate.isEmpty()){
 			return null;
 		}
@@ -1276,10 +1276,10 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Candidate> associatesList = null;
 		if(Constants.Vendor_SOW.equalsIgnoreCase(sowType)){
 			String query = "from Candidate can where can.orgLocationId.id =:locationId and can.isAssociate = 'Y' and can.orgRelationId <> NULL and can.spocId <> NULL and can.designationType IN ('C2C' , 'C2C-1099')";
-		    associatesList = session.createQuery(query).setLong( "locationId", locationId).setCacheable(true).list();
+		    associatesList = session.createQuery(query).setLong( "locationId", locationId).list();
 		}else if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
 			String query = "from Candidate can where can.orgLocationId.id =:locationId and can.isAssociate = 'Y'";
-		    associatesList = session.createQuery(query).setLong( "locationId", locationId).setCacheable(true).list();
+		    associatesList = session.createQuery(query).setLong( "locationId", locationId).list();
 		}
 		return associatesList;
 	}
@@ -1290,8 +1290,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
-		logger.debug("getCandidateByParentCandidateId start");
-		candidate = session.createQuery("from Candidate candidate  left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setCacheable(true).setLong( "parentCandidateId", parentCandidateId ).setCacheable(true).list();
+		candidate = session.createQuery("from Candidate candidate  left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setLong( "parentCandidateId", parentCandidateId ).list();
 		logger.debug("getCandidateByParentCandidateId end");
 		if (candidate.size() > 0) {
 			return candidate.get(0);
@@ -1336,7 +1335,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Candidate getCandidateByShortURL(String shortURL) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select Candidate from Candidate r where r.Candidate =:shortURL";
-	    List<Candidate> Candidate = session.createQuery(query).setString("shortURL",shortURL).setCacheable(true).list();
+	    List<Candidate> Candidate = session.createQuery(query).setString("shortURL",shortURL).list();
 		if(!Candidate.isEmpty()){
 			return Candidate.get(0);
 		}else{

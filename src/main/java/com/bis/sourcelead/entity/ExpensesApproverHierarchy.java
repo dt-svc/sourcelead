@@ -47,7 +47,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "EXPENSES_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesApproverHierarchy")
 public class ExpensesApproverHierarchy implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -97,6 +96,9 @@ private Date updatedDate;
 
 @Column(name = "UPDATED_BY")
 private String updatedBy;
+
+@Column(name = "ACTION_BY_ORGLOC_ID")
+private Long actionbyorglocid;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
@@ -394,6 +396,16 @@ public String getExpenseLocationCode() {
 public void setExpenseLocationCode(String expenseLocationCode) {
 	this.expenseLocationCode = expenseLocationCode;
 }
+
+public Long getActionbyorglocid() {
+	return actionbyorglocid;
+}
+
+public void setActionbyorglocid(Long actionbyorglocid) {
+	this.actionbyorglocid = actionbyorglocid;
+}
+
+
 
 
 }	

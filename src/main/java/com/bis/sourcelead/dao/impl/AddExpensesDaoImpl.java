@@ -80,7 +80,7 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 	public Long checkExpensIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch proMembers.employee left join fetch expenses.orgLocationId  where  expenses.id =(SELECT MAX(exp.id)  FROM Expenses exp where exp.orgLocationId.id =:orgLocationId)";  
-		List<Expenses> expenses  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Expenses> expenses  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(expenses.isEmpty()){
 			return null;
 		}

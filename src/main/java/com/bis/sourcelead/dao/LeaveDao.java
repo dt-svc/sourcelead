@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.LeaveDTO;
@@ -14,6 +15,7 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -31,7 +33,7 @@ public interface LeaveDao {
 
 	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 	
-	int getNumberOfLeavesTakenByUser(Long userId, String leaveTypeId) throws Exception;
+	Map<String, Integer> getNumberOfLeavesTakenByUser(Long userId, String leaveTypeId) throws Exception;
 
 	int getThisMonthLeavesTakenByUser(Long userId, String leaveTypeId);
 
@@ -62,5 +64,11 @@ public interface LeaveDao {
 	void deleteAllHolidayOrRestrictDayById(String id, String type);
 
 	List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status);
+
+	List<Leave> getLeavesListByTypeIdAndDuration(String leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate);
+
+	MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves);
+
+	MonthlyLeaves getMonthlyLeavesByLeaveId(String leaveId);
 
 }
