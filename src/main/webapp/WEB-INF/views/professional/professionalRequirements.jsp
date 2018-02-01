@@ -964,7 +964,7 @@ function requirementsList(offset){
 			 					var sourceleadShareUrl = sourceleadUrl ;
 			 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
 			 					result = result +'<div class="openCtaRight">';
-				 				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				 				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
 				 				if(requirements.isJobSaved != 'Y'){
@@ -1102,8 +1102,8 @@ function requirementsList(offset){
    		    }
 	     
 	     window.setTimeout(function() {
-				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+				addthis.init(".addthis_inline_share_toolbox_g28q");
 				addthis.layers.refresh();
 	        }, 500);
 	     $("#requirementsListLoading").removeAttr("style"); 
@@ -1304,7 +1304,7 @@ function searchRequirement(offset){
 										 				 result = result +'<p>Share Job</p>';
 										 				 result = result +'<span>';
 										 				result = result +'	<div class="share">';			  
-														result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+														result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 														result = result +'	</div>';
 										 				result = result +'</span>'; 
 										 				result = result +'<div class="openPostBtns clearfix">';
@@ -1381,8 +1381,8 @@ function searchRequirement(offset){
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
 					       	window.setTimeout(function() {
-								addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-								addthis.init(".addthis_inline_share_toolbox_s1a2");
+								addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+								addthis.init(".addthis_inline_share_toolbox_g28q");
 								addthis.layers.refresh();
 					        }, 500);
 					       	
