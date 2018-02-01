@@ -722,23 +722,9 @@ function preventTabkey(e){
 						  
 						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
 						  	
-						 <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
-						 	<div class="subMenuView">
-						 	
-						 	
-<%-- 						 	<c:if test="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient'}"> --%>
-<!--                               <ul class="collapses" style="display: none"> -->
-<%--                                   <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
-<%--                                   <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
-<!--                               </ul> -->
-<%--                            </c:if> --%>
-                              
-<%--                            <c:if test="${sessionData.nav != 'Campaigns' || sessionData.nav != 'CampaignSender' || sessionData.nav != 'CampaignRecipient'}"> --%>
-<!--                            <ul class="collapses" style="display: none"> -->
-<%--                                <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
-<%--                                 <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
-<!--                            </ul> -->
-<%--                            </c:if> --%>
+						 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="campsubMenuView">
+						 
 						 	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 			
 			                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
@@ -823,7 +809,7 @@ function preventTabkey(e){
 
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
-		 type : "GET",
+		 type : "POST",
 	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
@@ -1765,6 +1751,16 @@ $("#searchType").selectpicker('refresh');
   
   <div class="popMask"></div>
   
+  <script>
+$(document).ready(function(){
+	$("#subMenu").click(function(){
+		$(".subMenuView").slideToggle(100);
+	});
+	$("#campSubMenu").click(function(){
+		$(".campsubMenuView").slideToggle(100);
+	});	
+});
+</script>
   
   <script>
   function flushInviteCompany(){
@@ -2043,11 +2039,5 @@ function zipcodeMask(country,zipCodeId){
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
-<script>
-$(document).ready(function(){
-	$("#subMenu").click(function(){
-		$(".subMenuView").slideToggle(100);
-	});
-});
-</script>
+
 

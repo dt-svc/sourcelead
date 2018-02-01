@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +30,14 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -76,6 +79,9 @@ public class RequirementReleaseRestController {
 	
 	@Autowired
 	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -552,6 +558,30 @@ public class RequirementReleaseRestController {
 		
 		requirement.setId(null);
         Requirement req= requirementService.addRequirement(requirement);
+        
+        
+        
+        List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(parentRequirement.getId());
+        if(locationsList != null && !locationsList.isEmpty()) {
+        	for(RequirementLocations locations : locationsList) {
+        		RequirementLocations requirementLocations = new RequirementLocations();
+				requirementLocations.setRequirementId(req);
+				requirementLocations.setLocation(locations.getLocation());
+				requirementLocations.setCountry(locations.getCountry());
+				requirementLocations.setState(locations.getState());
+				requirementLocations.setCity(locations.getCity());
+				if(StringUtils.isNotBlank(locations.getZipCode())) {
+					requirementLocations.setZipCode(locations.getZipCode());
+				}
+				
+				requirementLocations.setLongitude(locations.getLongitude());
+				requirementLocations.setLatitude(locations.getLatitude());
+				requirementLocations.setStatus(Constants.RECORD_ACTIVE);
+				requirementLocations.setLocationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				requirementLocationsService.saveRequirementLocations(requirementLocations);
+        		
+        	}
+        }
 		
 		//store recommended customizeScore
 	   RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.saveCustomizeScore(req);

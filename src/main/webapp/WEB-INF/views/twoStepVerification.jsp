@@ -37,7 +37,7 @@ window.onload = function() {
 function getUserDetailsByUserRoleId(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
-	      type : "GET",
+	      type : "POST",
 	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
 	       success :function(data) {
 	    	   if(data != null){

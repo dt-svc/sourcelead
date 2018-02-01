@@ -12,7 +12,8 @@
      1.usage     : onclick on requirementList() ; 
      
 --%>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tag-it/2.0/css/jquery.tagit.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tag-it/2.0/css/tagit.ui-zendesk.css"></script>
 <script>
 function clearList(){
 	location.reload();
@@ -91,7 +92,7 @@ $(document).ready(function() {
     $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
         e.stopPropagation();
     });	
-    
+    multicities = {}; 
     
 }); 
 
@@ -142,7 +143,9 @@ max-width:220px;
 .require_wrap_table select {
 	width: 100% !important;
 }
-
+.ref-top{
+top: 18px;height: 32px; line-height: 18px;
+}
 </style>
 <script>
  window.onload = function() { 
@@ -288,15 +291,14 @@ function statusvalidating(id){
 								</div>
 							</div>
 						</div>
-						<div class="clearfix">
+						<%-- <div class="clearfix">
 							<div class="col-md-4">
 								<label>Country</label>
 								<div class="clearfix adv-srh-chosen">
-									<select class="chosen-select" name="country" id="country"
-										field-name="Country">
+									<select class="chosen-select" name="country" id="country" field-name="Country">
 										<option value="">---select Country---</option>
 										<c:forEach var="cntry" items="${countryList}">
-											<option value="${cntry.name}">${cntry.name}</option>
+											<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -308,9 +310,9 @@ function statusvalidating(id){
 									<select class="chosen-select" name="state" id="state"
 										field-name="State">
 										<option value="">---select state---</option>
-										<%-- <c:forEach var="state" items="${statesList}">
+										<c:forEach var="state" items="${statesList}">
 											<option value="${state.stateName}">${state.stateName}</option>
-										</c:forEach> --%>
+										</c:forEach>
 									</select>
 								</div>
 							</div>
@@ -323,7 +325,7 @@ function statusvalidating(id){
 									</select>
 								</div>
 							</div>
-						</div>
+						</div> --%>
 						<div class="clearfix">
 							<div class="col-md-4 hidden">
 								<label>Client</label>
@@ -389,6 +391,36 @@ function statusvalidating(id){
 								</c:forEach>
 								</select>
 							 </div>
+						</div>
+						
+						<div class="clearfix">
+						
+						<div class="col-md-4">
+								<label>Country</label>
+								<div class="clearfix adv-srh-chosen">
+									<select class="chosen-select" name="country" id="country" field-name="Country">
+										<option value="">---select Country---</option>
+										<c:forEach var="cntry" items="${countryList}">
+											<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							
+						   <div class="col-md-8">
+								<label>Cities</label>
+								<div class="clearfix">
+								<div class="col-md-14">
+							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								 </div>
+								  <br>
+								   <select class="chosen-select form-control input-sm" multiple
+										data-placeholder="sletected cites" id="city" name="city">
+									</select>
+									
+								</div>
+							</div>
 						</div>
 					</div>
 					</div>
@@ -770,84 +802,19 @@ function getActions(){
 		 //Adding Customized Job Skills list this method is slead-common.js
 		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
+		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+		   
   });
   </script>
   
 
 <script type="text/javascript">
-			/* //Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
-		    select = $("#requirementTitle");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Title:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
-		    {
-		    	var reqTitle = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e) && (reqTitle != null  && reqTitle != '' && reqTitle != 'undefined'))
-		        {
-		        	preventTabkey(e); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(reqTitle).text(reqTitle);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#requirementTitle option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#requirementTitle").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    var selectone, chosenone;
-		    selectone = $("#jobId");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keydown keyup', function(e1)
-		    {
-		    	var reqId = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (reqId != null  && reqId != '' && reqId != 'undefined'))
-		        {
-		        	preventTabkey(e1); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(reqId).text(reqId);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#jobId option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#jobId").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#generatedId");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keydown keyup', function(e1)
-		    {
-		    	var genId = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (genId != null  && genId != '' && genId != 'undefined'))
-		        {
-		        	preventTabkey(e1); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(genId).text(genId);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#generatedId option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#generatedId").trigger("chosen:updated");
-	        		
-		        }
-		    });*/
-		    
 		      $("#country").on('change', function (e) {
-		    	   getStates();
+		    	  getcites('apiLocation','city');
+		    	  $("#apiLocation").val('');
+		    	  $("#city").val('').trigger("chosen:updated");
 		       }); 
-		       $("#state").on('change', function (e) {
-		    	   getCities();
-		       });
 				 for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -855,6 +822,7 @@ function getActions(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				}) 
+				
 </script>
 
 <script>
@@ -873,70 +841,6 @@ function loadChosenRequirementScripts(){
 	
 }
 </script>
-
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select state---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---select city---</option>');
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select state---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script>
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
 <script>
 function clearSearch(){
 	document.getElementById("requirement_form").reset();
@@ -954,4 +858,67 @@ function clearSearch(){
 	$('#generatedId').val('').trigger('chosen:updated');
 }
 </script>
+
+
+
+
+
+
+
+<!-- ============================ Laxman Google Api Location ============================= -->
+
+<!-- <script>
+ function getcites(locatinId,cityId){
+	 var countryName = $("#country").val().split(',');
+	 var countryCode = countryName[1];
+	 initialize(locatinId,countryCode,cityId);
+ }
+function initialize(locatinId,countryCode,cityId) {
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+    		types: ['geocode'],
+    		componentRestrictions: {
+	        	country: countryCode
+	        }
+        });
+    	
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+       case "route":
+    	 address.name=place.address_components[i].long_name;
+    	 break;
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        address.countryShortName = place.address_components[i].short_name;
+        
+    }
+  }
+ 
+  $("#"+locatinId).val(address.city).change();
+  multicities[address.city] = address.city;
+  
+  for(var e in multicities) {
+		 var option = $("<option>").val(multicities[e]).text(multicities[e]);
+		 $("#"+cityId).append(option);
+		 $("#"+cityId).find(option).prop('selected', true);
+		 $("#"+cityId).find(option).siblings("[value='"+ multicities[e].replace(",","")+"']").remove();
+		 $("#"+cityId).trigger("chosen:updated");
+  }
+});
+}
+function refreshGoogleApiCity(cityId){
+	$("#"+cityId).val('');
+}
+</script> -->
+
+
 <jsp:include page="../masterFooter.jsp" />
