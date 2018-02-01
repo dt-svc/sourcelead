@@ -44,6 +44,7 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")

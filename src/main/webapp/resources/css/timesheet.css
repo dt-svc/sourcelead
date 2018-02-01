@@ -7493,3 +7493,6 @@ font-weight: 500;
 .glyphicon-trash {
 	color: #fe4556 !important;	
 }
+.campsubMenuView {
+    display: none; background-color: #2970B1;
+}
