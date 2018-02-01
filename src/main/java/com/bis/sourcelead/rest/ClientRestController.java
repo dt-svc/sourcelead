@@ -1055,11 +1055,12 @@ public class ClientRestController {
 	   
 	@RequestMapping(value = {"/getClientReleasedRequirementList","/rest/getClientReleasedRequirementList"}, method = RequestMethod.POST)
 	@ResponseBody
-	List<RequirementDTO> getClientReleasedRequirementList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+	ResponseList<RequirementDTO> getClientReleasedRequirementList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 ResponseList<RequirementDTO> reqListDTOList = new ResponseList<>();
 		List<RequirementDTO> reqListDTO=new ArrayList<>();
 		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
 		//SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
@@ -1154,6 +1155,7 @@ public class ClientRestController {
 				RequirementDTO.setCountry(req.getCountry());
 				RequirementDTO.setJobOtherType(req.getOtherJobType());
 				RequirementDTO.setJobType(req.getJobType());
+				RequirementDTO.setId(req.getId());
 				
 				RequirementDTO.setManager(req.getManager());
 				RequirementDTO.setRequirementSubmissionStatus((req.getRequirementSubmissionStatus()).toString());
@@ -1162,8 +1164,8 @@ public class ClientRestController {
 				requirementSubmissionHistoryService.getCandidatesCountBySubmissionIdandRequirementId(rs.getId(), rs.getSubmissionStatus().toString());*/
 			}
 		}
-		
-		return reqListDTO;
+		reqListDTOList.setData(reqListDTO);
+		return reqListDTOList;
 	}
 	   
 	/**

@@ -37,7 +37,9 @@ import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -68,6 +70,9 @@ public class OpenJobsRestController {
 
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 
 	@RequestMapping(value = { "/app/ws/getOpenJobsELK", "/app/getOpenJobsELK" })
 	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
@@ -206,7 +211,6 @@ public class OpenJobsRestController {
 					boolQueryBuilder.must(qb);
 				}
 			}
-
 			// for employment type filter
 			String[] employmentType = null;
 			if (null != reqType && !"".equals(reqType)) {
@@ -277,6 +281,15 @@ public class OpenJobsRestController {
 					mapper.setDateFormat(df);
 					RequirementIndex requirementIndex = mapper.readValue(json.toString(), RequirementIndex.class);
 					requirementIndex.setNoOfSearchHits(searchHits.length);
+					
+					List<String> requirementLocationsList = new ArrayList<>();
+					List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+					if(locationsList != null && !locationsList.isEmpty()) {
+						for(RequirementLocations location : locationsList) {
+							requirementLocationsList.add(location.getLocation());
+						}
+					}
+					requirementIndex.setLocationsList(requirementLocationsList);
 					requirementList.add(requirementIndex);
 				}
 			}
@@ -628,12 +641,19 @@ public class OpenJobsRestController {
 	public @ResponseBody String openRequirementsSummary(
 			@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception {
 		Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
-		Requirement requirementDeatilsSummary = requirementService
-				.getRequirementByRequirementId(requirementDeatils.getId());
-		requirementDeatilsSummary
-				.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
-		requirementDeatilsSummary.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(
-				requirementDeatils.getOrgLocationId().getDateFormat(), requirementDeatilsSummary.getCreatedDate()));
+		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
+		requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
+		requirementDeatilsSummary.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(requirementDeatils.getOrgLocationId().getDateFormat(), requirementDeatilsSummary.getCreatedDate()));
+		
+		List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementDeatils.getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				requirementLocationsList.add(location.getLocation());
+			}
+		}
+		requirementDeatilsSummary.setLocationsList(requirementLocationsList);
+		
 		return commonUtil.toJSON(requirementDeatilsSummary);
 
 	}

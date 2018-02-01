@@ -342,7 +342,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
+			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status='1' and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
 			List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC) .list(); 
 			return projectTasksList;  
 	}
@@ -352,7 +352,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt  where pt.projectId.id = :projectId and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC and pt.taskType.name != 'General'" ;
+		String query = "from ProjectTasks pt  where pt.projectId.id = :projectId and pt.status='1' and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC and pt.taskType.name != 'General'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).list(); 
 		return projectTasksList;
 	}
@@ -449,8 +449,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		
 		response.setData(projectTasksList);
 		return response;
-		
-	}
+		}
 
 	@SuppressWarnings("unchecked")
 	@Override

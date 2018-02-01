@@ -48,6 +48,9 @@ textarea {
 .mr10{
 	margin-right: 10px !important;
 }
+.mr25 {
+	margin-right: 25px !important;
+}
 .mr5 {
 	margin-right: 5px;
 }
@@ -7905,6 +7908,16 @@ margin: 0 !important; padding: 5px 10px !important;
 ul.dropdown-morecustom li a:hover{
 color: #fff !important;
 }
+.show_Empdetails.showjoblist {
+position: absolute; right: 0;
+}
+ul.joblocations-public {
+position:relative; top: -15px; float: left;padding-left: 25px;
+}
+ul.joblocations-public li {
+float:left; padding:3px 10px; background-color: rgba(3, 169, 244, 0.1); margin: 0px 10px 10px 0;
+border-radius: 5px; border: 1px solid rgba(3, 169, 244, 0.17); font-size: 12px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -9899,4 +9912,6 @@ bottom: -14px; left: -30px !important; position: absolute;
 
 /* Animated Ends */
 
-
+.remove_uservalidation p.jquery_form_error_message {
+	position: absolute; bottom: 32px;
+}

@@ -1357,7 +1357,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,orgLocations);
+				    				registrationController.saveUserRoleActions(tsModuleId,orgLoc);
 				    			}
 							
 							 
@@ -1445,6 +1445,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(user.getUserCode());
 			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			orgRelations.setUpdatedBy(user.getUserCode());
 			orgRelations.setUpdatedDate(new Date());
 			

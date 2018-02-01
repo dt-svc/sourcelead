@@ -734,11 +734,11 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		String subQuery = " and candidate.id NOT IN (select onboarding.candidateId.id from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationId and onboarding.candidateId IS NOT NULL )";
 		
-		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
-			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL "+subQuery+" ";
+		if(!employeementType.equalsIgnoreCase("All")){
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL "+subQuery+" ";
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).list();
 		}else{
-			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NULL "+subQuery+" "; 
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1'  and candidate.consultantUser IS NULL "+subQuery+" "; 
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		}
 		  
@@ -1290,7 +1290,6 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
-		logger.debug("getCandidateByParentCandidateId start");
 		candidate = session.createQuery("from Candidate candidate  left join fetch candidate.orgRelationId where candidate.parentCandidateId.id =:parentCandidateId" ).setLong( "parentCandidateId", parentCandidateId ).list();
 		logger.debug("getCandidateByParentCandidateId end");
 		if (candidate.size() > 0) {
@@ -1356,6 +1355,184 @@ public class CandidateDaoImpl implements CandidateDao {
 					count = candidateCount.get(0).intValue();
 			}
 		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType)
+			throws Exception {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		List<Candidate> candidateList = null;
+		
+		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NOT NULL  ";
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).list();
+		}else{
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NOT NULL "; 
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		}
+		  
+		
+		return candidateList;
+	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO, Long orgLocationsId,
+			List<Long> roleIds, List<Long> associatesIds,Long loginOrgLocationId) throws Exception {
+		
+
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer filterCount = 0;
+		List<Candidate> candidateList = new ArrayList<>();
+		ResponseList<CandidateDTO> response = new ResponseList<>();
+		List<CandidateDTO> candidatesDTOList = new ArrayList<>();
+		List<Long> countlist = null;
+		StringBuilder query1 = new StringBuilder("");
+		if(candidateDTO.getSearchValue() !=null && !"".equalsIgnoreCase(candidateDTO.getSearchValue())) {
+			 query1.append(" and ").append("(").append(" candidate.firstName like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR candidate.lastName like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR candidate.email like '%" + candidateDTO.getSearchValue() + "%' ").append(")");
+						
+			}
+		
+		String subQuery1 = "";
+		String subQuery2 = "";
+		String subQuery3 = "";
+		String subQuery4 = "";
+		Query queryObj = null;
+		
+		if(associatesIds != null && associatesIds.size() == 0){
+			associatesIds = null;
+		}
+		
+		if(roleIds != null){
+			subQuery1 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.roles.id IN (:roleIds) )"; 
+		}
+		
+		subQuery2 = " and candidate.consultantUser.id NOT IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :loginOrgLocationId  )";
+		
+		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState != 'INACTIVE')";
+		
+		if(associatesIds != null){
+			subQuery4 = " and candidate.id NOT IN (:associatesIds)";
+		}
+		
+		
+		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+"  "+query1.toString()+" ";
+		
+		if(roleIds != null && associatesIds == null){
+			queryObj = session.createQuery(query);
+			queryObj.setFirstResult(candidateDTO.getStart());
+			queryObj.setMaxResults(candidateDTO.getLength());
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).setParameterList("roleIds", roleIds).list();
+			candidateList = queryObj.list();
+			
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).setParameterList("roleIds", roleIds).list();
+		
+		}
+		else if(associatesIds != null && roleIds == null){
+			
+			queryObj = session.createQuery(query);
+			queryObj.setFirstResult(candidateDTO.getStart());
+			queryObj.setMaxResults(candidateDTO.getLength());
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).setParameterList("associatesIds", associatesIds).list();
+			candidateList = queryObj.list();
+			
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).setParameterList("associatesIds", associatesIds).list();
+		}
+		else if(associatesIds != null && roleIds != null){
+			
+			queryObj = session.createQuery(query);
+			queryObj.setFirstResult(candidateDTO.getStart());
+			queryObj.setMaxResults(candidateDTO.getLength());
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).list();
+			candidateList = queryObj.list();
+			
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).list();
+		}
+		else{
+			queryObj = session.createQuery(query);
+			queryObj.setFirstResult(candidateDTO.getStart());
+			queryObj.setMaxResults(candidateDTO.getLength());
+			queryObj.setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).list();
+			candidateList = queryObj.list();
+			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setLong("loginOrgLocationId", loginOrgLocationId).list();
+		}
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			filterCount = candidateList.size();
+		}
+		
+			
+			if(candidateList != null && candidateList.size() > 0) {
+			 for(Candidate candidate : candidateList){
+				 CandidateDTO candDTO = new CandidateDTO();
+				 
+				 UserRole userRole = userRoleDao.getUserDetailsByUserIdAndLocationId(candidate.getConsultantUser().getId(), candidateDTO.getOrgLocationId());
+				 candDTO.setUserRole(userRole.getRoles().getDisplayName());
+				 if(userRole.getReportingManager() != null){
+					 StringBuilder reportingManager = new StringBuilder();
+					 if(!isNullOrEmpty(userRole.getReportingManager().getLastName())){
+						 reportingManager = reportingManager.append(userRole.getReportingManager().getFirstName()).append(" ").append(userRole.getReportingManager().getLastName());
+					 }else{
+						 reportingManager = reportingManager.append(userRole.getReportingManager().getFirstName());
+					 }
+					 candDTO.setReportingManager(reportingManager.toString());
+				 }else{
+					 candDTO.setReportingManager("----");
+				 }
+				 
+				 CandidateResumes candidateResumes = candidateResumesDao.getCandidateResumeByCandidateId(candidate.getId());
+				 if(candidateResumes != null){
+					 candDTO.setResumeUUID(candidateResumes.getResumeUUID());
+					 candDTO.setFileUrl(candidateResumes.getFileURL());
+					 candDTO.setFileName(candidateResumes.getFileName());
+				 }
+				 
+				 candDTO.setId(candidate.getId());
+				 StringBuilder candidateName = new StringBuilder();
+				 if(StringUtils.isNotBlank(candidate.getLastName())) {
+					 candidateName = candidateName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+				 }else {
+					 candidateName = candidateName.append(candidate.getFirstName());
+				 }
+				 
+				 candDTO.setCandidateName(candidateName.toString());
+				 candDTO.setCurrentRate(candidate.getCurrentRate());
+				 candDTO.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+				 candDTO.setCurrentRateType(candidate.getCurrentRateType());
+				 candDTO.setEmail(candidate.getEmail());
+				 
+				 candidatesDTOList.add(candDTO);
+			 }
+			}
+			
+			
+            int totalCount = 0;
+			
+			if (candidateDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			
+			
+			response.setData(candidatesDTOList);
+			return response;
+	
 	}
 
 }
