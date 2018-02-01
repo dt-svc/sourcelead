@@ -2563,8 +2563,9 @@ function cancel(){
 
 <script type="text/javascript">
 function customizeScore(requirementId){
+	multicities = {}; 
 	$("#customizeScoreDiv").show();
-	
+	var apiLocation = "apiLocation";
 	 $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -2655,27 +2656,41 @@ function customizeScore(requirementId){
 		        result = result +'		                  </div>                   ';
 		        result = result +'		           <div class="clearfix"></div>';
 		        //result = result +'		                </div> ';
-		        
+		      
 		        result = result +'		                <div class="clearfix mt">   ';
-		        result = result +'		                  <div class="col-md-3 paddingRight lblup">    ';
+		       /*  result = result +'		                  <div class="col-md-3 paddingRight lblup">    ';
 		        result = result +'		                   <label>Location</label>';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Country" id="country" name="customizeCountry" value="'+customizeCountry+'" readonly="readonly"> ';
-		        result = result +'		                    </select>                ';
-		        result = result + '                        <input type="hidden"  id="existingCountry" value="'+customizeCountry+'" >';
-		        result = result +'		                  </div>                     ';
+		        result = result +' <select class="chosen-select" name="country" id="country" field-name="Country">';
+		        result = result +'<option value="">--select Country--</option>';
+		        <c:forEach var="cntry" items="${allCountryList}">
+		        if('${cntry.name}' == customizeCountry){
+		        	result = result +'		<option value="${cntry.name},${cntry.code2}" selected >${cntry.name}</option>';
+		        }else{
+		        	result = result +'		<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>';
+		        }
+		        </c:forEach>
+		        result = result +'</select>';
+		        result = result +'		                  </div>                     '; */
 		        
-		        
-		        result = result +'		                    <div class="col-md-4 paddingLeft paddingRight">   ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="State" name="customizeState" id="state" value="'+customizeState+'" readonly="readonly">';
-		        result = result +'		                    </select>                    ';
-		        result = result + '                         <input type="hidden"  id="existingState" value="'+customizeState+'" >';
+		        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
+		        result = result +'		                   <label>Choose City</label>';
+		        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
+		        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2 ref-top" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
 		        result = result +'		                  </div>  ';
 		        
-		        
-		        result = result +'		                  <div class="col-md-3 paddingLeft paddingRight">         ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="City" name="customizedCity" id="city" value="'+customizeCity+'" readonly="readonly">    ';
+		        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   
+		        result = result +'		                   <label>Selected City</label>'; 
+		        result = result +'		                    <select class="chosen-select" multiple data-placeholder="City" name="customizedCity" id="city" value="'+customizeCity+'" readonly="readonly">    ';
+		     	if(json.customizeCity != null  && json.customizeCity != '' && json.customizeCity != 'undefiend'){
+		    		var cites = json.customizeCity;
+			    	var customizeCites = new Array();
+			    	customizeCites = cites.split(",");
+			        for (var i = 0; i < customizeCites.length; i++) { 
+			        	 var customCity = customizeCites[i];
+			        	 result = result +'	<option selected value=\''+customCity+'\'>'+customCity+'</option> ';
+			        }
+		    	}
 		        result = result +'		                    </select>                  ';
-		        result = result +'                           <input type="hidden"  id="existingCity" value="'+customizeCity+'" >';
 		        result = result +'		                  </div>                       ';
 		        
 		       
@@ -2955,7 +2970,7 @@ function customizeScore(requirementId){
 		        
 		        $("#customizeScoreDiv").empty();
 		    	$("#customizeScoreDiv").append(result);
-		    	getAllCountries();
+// 		    	getAllCountries();
 		    	var config = {
 		    			  '.chosen-select'           : {},
 		    			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -2967,17 +2982,15 @@ function customizeScore(requirementId){
 		    			  $(selector).chosen(config[selector]);
 		    			}
 		    	
-		    	    $("#country").chosen();
-		            $("#state").chosen();
 		            $("#city").chosen();
 		            
-		            $("#country").on('change', function (e) {
-		         	   getStates();
-		            });
-		           
-		            $("#state").on('change', function (e) {
-		         	   getCities();
-		            });
+		         /*    $("#country").on('change', function (e) {
+		            	  getcites('apiLocation','city');
+				    	  $("#apiLocation").val('');
+				    	  $("#city").val('').trigger("chosen:updated");
+		            }); */
+					getcites('apiLocation','city','recommendation');
+					
 		    			$('.chosen-select').each(function() {
 		    				var $this = $(this);
 		    				$this.next().css({'width': '100%'});
@@ -3002,7 +3015,8 @@ function customizeScore(requirementId){
 		    		  //Adding Customized Any Of Keyword to the list 
 		    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
 		    		     
-		    		   
+		   		     tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
 		    }
 	 });
 	
@@ -3029,127 +3043,6 @@ function minMaxExperience(){
 
 </script>
 
-<script type="text/javascript">
-function getAllCountries(){
-    setTimeout(function(){ 
-		var countryName = $("#existingCountry").val();
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?"+tokenParamName+"="+tokenValue+"",
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#country').empty();
-	        	$('#country').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == countryName){
-	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else if(json[i] == '${loginCountryName}'){
-	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            	
-	            }
-	            getStates();
-	            $('#country').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-    }, 75);
-} 
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("#state").val();
-	if(stateName == null || stateName == 'undefined' || stateName == ''){
-		stateName = document.getElementById("existingState").value;
-	}
-	//end state Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == stateName){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#state').trigger("chosen:updated");
-	            getCities();
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#city").val();
-	if(cityName == null || cityName == 'undefined' || cityName == ''){
-		cityName = document.getElementById("existingCity").value;
-	}
-	//end city Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == cityName){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
 
 <script>
 function updateCutomize(requirementId){
@@ -3465,7 +3358,13 @@ return result;
 }
 </script>
 
+<script>
+function getcites(locatinId,cityId,type){
+	alert("ddddddddddd")
+}
 
+
+</script>
 <!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
 

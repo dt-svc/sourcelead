@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RegistrationOptionalServicesService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -106,6 +108,9 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	private ContactsGroupService contactsGroupService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
@@ -391,7 +396,16 @@ public class ProfessionalRequirementsController {
 			    	}
 			    }
 				
-		        
+		        //requirement location list
+		        List<String> requirementLocationsList = new ArrayList<>();
+		        List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+						requirementLocationsList.add(location.getLocation());
+					}
+				}
+				requirement.setLocationsList(requirementLocationsList);
+				
 		        resultJson = commonUtil.toJSON(requirement);
 				return resultJson;
 	}

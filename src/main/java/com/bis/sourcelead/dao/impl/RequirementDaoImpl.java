@@ -388,7 +388,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();  
-		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId and reqassignto.roleId.orgLocations.id =:orgLocationId ";
+		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId and reqassignto.roleId.orgLocations.id =:orgLocationId and reqassignto.status <> '0' ";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 	}
 
