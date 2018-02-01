@@ -1676,13 +1676,13 @@ public class RequirementListRestController {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
 	    }
 	   //Country
-		if(StringUtils.isNotEmpty(search.getCountry())){
+		/*if(StringUtils.isNotEmpty(search.getCountry())){
 			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
-	    }
+	    }*/
 	 
 		//multiple City
 		if(StringUtils.isNotEmpty(search.getCity())){
