@@ -720,7 +720,7 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
 						  
-						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  	<%-- <li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li> --%>
 						  	
 						 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="campsubMenuView">
@@ -809,7 +809,7 @@ function preventTabkey(e){
 
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
-		 type : "GET",
+		 type : "POST",
 	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){

@@ -3,6 +3,8 @@ package com.bis.sourcelead.elk.index.helper;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -15,9 +17,11 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
@@ -35,6 +39,9 @@ public class RequirementHelper {
 	
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	/**
 	 * Prepares Requirement Index to store data into Elastic Search
@@ -117,9 +124,68 @@ public class RequirementHelper {
 			}
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
-			requirementIndex.setCountry(requirement.getCountry());
-			requirementIndex.setState(requirement.getState());
-			requirementIndex.setCity(requirement.getCity());
+			
+			StringBuilder country = new StringBuilder();
+			StringBuilder state = new StringBuilder();
+			StringBuilder city = new StringBuilder();
+			
+			Set<String> countrySet = new HashSet<>();
+			Set<String> stateSet = new HashSet<>();
+			Set<String> citySet = new HashSet<>();
+			
+			List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locations : locationsList) {
+					if(StringUtils.isNotBlank(locations.getCountry())) {
+						countrySet.add(locations.getCountry());
+					}
+					
+					if(StringUtils.isNotBlank(locations.getState())) {
+						stateSet.add(locations.getState());
+					}
+					
+					if(StringUtils.isNotBlank(locations.getCity())) {
+						citySet.add(locations.getCity());
+					}
+				}
+			}
+			
+			if(countrySet != null && !countrySet.isEmpty()) {
+				for(String reqCountry : countrySet) {
+					country = country.append(reqCountry).append(",");
+				}
+			}
+			
+			if(stateSet != null && !stateSet.isEmpty()) {
+				for(String reqState : stateSet) {
+					state = state.append(reqState).append(",");
+				}
+			}
+			
+			if(citySet != null && !citySet.isEmpty()) {
+				for(String reqCity : citySet) {
+					city = city.append(reqCity).append(",");
+				}
+			}
+			
+			if(country.toString() != null && !country.toString().isEmpty()) {
+				String countryStr = country.toString();
+				countryStr = countryStr.substring(0, countryStr.length() - 1);
+				requirementIndex.setCountry(countryStr);
+			}
+			
+			if(state.toString() != null && !state.toString().isEmpty()) {
+				String stateStr = state.toString();
+				stateStr = stateStr.substring(0, stateStr.length() - 1);
+				requirementIndex.setState(stateStr);
+			}
+			
+			if(city.toString() != null && !city.toString().isEmpty()) {
+				String cityStr = city.toString();
+				cityStr = cityStr.substring(0, cityStr.length() - 1);
+				requirementIndex.setCity(cityStr);
+			}
+			
 			requirementIndex.setLocation(requirement.getLocation());
 			requirementIndex.setZipCode(requirement.getZipCode());
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy().getId());
