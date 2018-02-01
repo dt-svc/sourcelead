@@ -132,7 +132,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,orgLocations.getId(),requirement.getId());
 		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
-			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"')  OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL) OR ('"+user.getId()+"' IN (SELECT rah.approverUserId.id FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = :requirementId))) ";
+			 subQuery2 = " and ((rs.createdBy = '"+user.getUserCode()+"')  OR (rs.vendorLocationId IS NOT NULL AND rs.requirement.releasedBy = '"+user.getId().toString()+"') OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL) OR ('"+user.getId()+"' IN (SELECT rah.approverUserId.id FROM RequirementApproverHierarchy rah WHERE rah.requirementId.id = :requirementId))) ";
 		 }
 		 
 		 
@@ -2662,19 +2662,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						sqlDate = new java.sql.Date(searchDate.getTime()); 
 						searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' )");
 				}else {
-				searchQuery.append(" and (reqSubCandidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSubCandidate.lastName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSubCandidate.email like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSubCandidate.mobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSubCandidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+				searchQuery.append(" and (reqSub.candidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidate.lastName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidate.email like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidate.mobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.createdUser like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidateScore like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSubCandidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
 					String[] nameBytes = requirementSubmissionsDTO.getSearchValue().split(" ");
 					for(String nameByte : nameBytes) {
-						searchQuery.append("OR reqSubCandidate.firstName like '%" + nameByte + "%' ")
-						.append("OR reqSubCandidate.lastName like '%" + nameByte + "%' ");
+						searchQuery.append("OR reqSub.candidate.firstName like '%" + nameByte + "%' ")
+						.append("OR reqSub.candidate.lastName like '%" + nameByte + "%' ");
 						
 					}
 					searchQuery.append(" )");
@@ -2841,14 +2841,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					}
 					 
 			        Map<String, Object> params = new HashMap<String,Object>();
-					String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate reqSubCandidate  left join fetch reqSub.candidateResumes "; 
+					String from = "from RequirementSubmission reqSub "; 
 					String subQuery = "";
 					
 					
 					// These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
 						if(null != releasedBy && releasedBy.length > 0){
 							
-							String subQueryForVendors = "where req.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
+							String subQueryForVendors = "where reqSub.requirement.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
 															params.put("userId",requirementSubmissionsDTO.getUserId());
 															params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
 															params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
@@ -2872,7 +2872,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								 for(RequirementSubmission rs :vendorSubmittedApplicants){
 										sourceSubmissionIds.add(rs.getId());
 									}
-									String sourceSubmissionIdQuery = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  " +statusSubQuery; 
+									String sourceSubmissionIdQuery = "from RequirementSubmission reqSub where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  " +statusSubQuery; 
 									List<RequirementSubmission> finalSourceList = null;
 											if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
 												finalSourceList =		session.createQuery(sourceSubmissionIdQuery.toString())
