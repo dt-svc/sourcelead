@@ -1293,13 +1293,26 @@ function flatPercentageType(){
 	  
 </script>
 
+<!-- <script type="text/javascript">
+    $(function () {
+        $("#endDate").bind("click", function () {
+            $("#status")[0].selectedIndex = 0;
+        });
+    });
+</script> -->
 
   <script>
  /* function clearStartDate(){
 	$("#startDate").val("");
 	}; */ 
 function clearProjectEndDate(){
-	$("#endDate").val("");
+		 $("#endDate").val("");
+		 $("#status").empty();
+		 $('#status').append('<option >Select Status</option>');
+		 $('#status').append('<option >In-Progress</option>');
+		 $('#status').append('<option >Not Started</option>');
+		 $('#status').append('<option >Completed</option>');
+		 $('#status').append('<option >On-Hold</option>');
+		 $('#status').append('<option >Dropped</option>');
 	};
-	
 </script> 

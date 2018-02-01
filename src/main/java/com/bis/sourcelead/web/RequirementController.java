@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -170,6 +172,9 @@ public class RequirementController {
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -181,10 +186,20 @@ public class RequirementController {
 		Requirement requirement ;
 		ModelAndView model = new ModelAndView();
 		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Requirement);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		
+		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
 		
 	    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
@@ -692,6 +707,12 @@ public class RequirementController {
 			model.addObject("requirementId",requirementId);
 			
 			model.addObject("requirement",requirement);
+			
+			List<Countries> allCountryList = countriesService.getAllCountries();
+			model.addObject("allCountryList", allCountryList);
+			
+			List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+			model.addObject("locationsList",locationsList);
 			
 			model.addObject("timezone",timezone.getTimeZoneId());
 			
