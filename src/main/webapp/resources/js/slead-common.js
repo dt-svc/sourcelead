@@ -160,10 +160,13 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	var files = document.getElementById(id).files;
 	var invalidFiles = false;
 	var count = 0;
+	expr = /.zip/;
+	ecpr1=/.rar/;
 	for(var e in files) {
 		if(!$.isNumeric(e))
 			continue;
-		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+		//if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
+		if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
 			continue;
 		data.append('file', files[e]);
 		count ++;
