@@ -7,6 +7,8 @@ import com.bis.sourcelead.annotations.Required;
 
 public class RequirementDTO extends CommonDTO {
 
+	private long id;
+	
 	private String staticPath;
 
 	private List<FileInfo> fileInfo;
@@ -1302,6 +1304,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setImportValue(String importValue) {
 		this.importValue = importValue;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 	
 }

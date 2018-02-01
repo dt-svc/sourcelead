@@ -197,7 +197,8 @@ public class CandidateRestController {
 		}
 		String resumeDetails = null;
 		if (null != multiFile) {
-			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), request);
+			String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
+			resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
 		}
 		return resumeDetails;
 	}

@@ -1155,6 +1155,7 @@ public class ClientRestController {
 				RequirementDTO.setCountry(req.getCountry());
 				RequirementDTO.setJobOtherType(req.getOtherJobType());
 				RequirementDTO.setJobType(req.getJobType());
+				RequirementDTO.setId(req.getId());
 				
 				RequirementDTO.setManager(req.getManager());
 				RequirementDTO.setRequirementSubmissionStatus((req.getRequirementSubmissionStatus()).toString());
