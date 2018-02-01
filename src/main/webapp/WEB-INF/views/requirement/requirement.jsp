@@ -560,11 +560,11 @@ $(document).ready(function () {
             </c:if>
 		     </c:if>
           
-          <div class="form-group">
+          <%-- <div class="form-group">
 				<label class="col-md-3">Address<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
 				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Address" data-validation="required"></input>
-          			<i class="fa fa-refresh btn btn-primary refresh-icon mr6" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
+<%--           			<i class="fa fa-refresh btn btn-primary refresh-icon mr6" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i> --%>
 				</div>
 		</div>
 		
@@ -594,7 +594,7 @@ $(document).ready(function () {
 				<div class="col-md-9">
 				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
 				</div>
-		</div>
+		</div> --%>
 	 
          <div class="form-group">
               <label class="col-md-3">Skills</label>
@@ -3071,7 +3071,7 @@ function deleteSavedLocation(id){
 <script>
 function addLocationAuto(locationId,rowId,longtitudeId,latitudeId) {
 	initialize1(locationId,rowId);
-    geolocate1(latitudeId,longtitudeId,rowId);
+//     geolocate1(latitudeId,longtitudeId,rowId);
 }
 function initialize1(locationId,rowId) {
 	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {

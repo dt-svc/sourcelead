@@ -60,7 +60,6 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isreceivingApplicants;
 
-	@Required(desc = "location")
 	private String location;
 
 	private String countryReq;

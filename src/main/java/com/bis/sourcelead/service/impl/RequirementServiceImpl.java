@@ -304,7 +304,7 @@ public class RequirementServiceImpl implements RequirementService {
 		else{
 			requirement.setPositions(null);
 		}
-		if (StringUtils.isNotBlank(requirementDTO.getCountryReq())) {
+		/*if (StringUtils.isNotBlank(requirementDTO.getCountryReq())) {
 			requirement.setCountry(requirementDTO.getCountryReq());
 			location.append(requirementDTO.getCountryReq());
 			location.append(",");
@@ -337,7 +337,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else{
 			requirement.setZipCode(null);
-		}
+		}*/
 		if (StringUtils.isNotBlank(requirementDTO.getMaxExp())) {
 			requirement.setMaxExp(requirementDTO.getMaxExp());
 		}

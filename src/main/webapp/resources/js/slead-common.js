@@ -507,6 +507,7 @@ function initializeCities(locatinId,countryCode,cityId,type) {
 
  $("#"+locatinId).val(address.city).change();
  multicities[address.city] = address.city;
+ 
  for(var e in multicities) {
 		 var option = $("<option>").val(multicities[e]).text(multicities[e]);
 		 $("#"+cityId).append(option);
@@ -519,4 +520,3 @@ function initializeCities(locatinId,countryCode,cityId,type) {
 function refreshGoogleApiCity(cityId){
 	$("#"+cityId).val('');
 }
-
