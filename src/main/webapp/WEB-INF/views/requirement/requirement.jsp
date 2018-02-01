@@ -564,32 +564,32 @@ $(document).ready(function () {
 				<label class="col-md-3">Address<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
 				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Address" data-validation="required"></input>
-<%--           			<i class="fa fa-refresh btn btn-primary refresh-icon mr6" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i> --%>
+          			<i class="fa fa-refresh btn btn-primary refresh-icon mr6" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
 				</div>
-		</div>
+		</div> --%>
 		
-		 <div class="form-group">
+		 <%-- <div class="form-group">
 			<label class="col-md-3">City</label>
 			<div class="col-md-9">
 			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City" >
 			</div>
-		</div>
+		</div> --%>
 		
-		 <div class="form-group">
+		 <%-- <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
 				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State">
 				</div>
-		 </div>
+		 </div> --%>
 		 
-		  <div class="form-group">
+		  <%-- <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
 			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code">
 			</div>
-		</div>
+		</div> --%>
 		
-		<div class="form-group">
+		<%-- <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
 				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
@@ -1207,7 +1207,7 @@ $(document).ready(function () {
 		          <h3>Locations</h3>
 		        </div>
 		       <div class="col-md-6">
-				 <label class="col-md-12">Job Locations<span class="text-danger paddingLeft">*</span>&nbsp;<i class='fa fa-info-circle' title='Location must be in city,state,country format'></i></label>
+				 <label class="col-md-12">Job Locations (Format  city,state,country)</label>
 				 <div class="clearfix"></div>
 					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom jobdocsCustom">
 		                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
@@ -3071,7 +3071,7 @@ function deleteSavedLocation(id){
 <script>
 function addLocationAuto(locationId,rowId,longtitudeId,latitudeId) {
 	initialize1(locationId,rowId);
-//     geolocate1(latitudeId,longtitudeId,rowId);
+    geolocate1(latitudeId,longtitudeId,rowId);
 }
 function initialize1(locationId,rowId) {
 	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {

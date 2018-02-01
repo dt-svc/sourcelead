@@ -19,7 +19,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "REQUIREMENT_LOCATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementLocations")
 public class RequirementLocations implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
