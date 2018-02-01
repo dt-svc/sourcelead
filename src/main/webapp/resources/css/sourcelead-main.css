@@ -48,6 +48,9 @@ textarea {
 .mr10{
 	margin-right: 10px !important;
 }
+.mr25 {
+	margin-right: 25px !important;
+}
 .mr5 {
 	margin-right: 5px;
 }
@@ -9909,5 +9912,6 @@ bottom: -14px; left: -30px !important; position: absolute;
 
 /* Animated Ends */
 
-
-
+.remove_uservalidation p.jquery_form_error_message {
+	position: absolute; bottom: 32px;
+}

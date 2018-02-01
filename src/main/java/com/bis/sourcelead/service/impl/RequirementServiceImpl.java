@@ -46,7 +46,9 @@ import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorsDocumentsDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Candidate;
@@ -66,6 +68,7 @@ import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
@@ -90,6 +93,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -173,6 +177,11 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
+	
+	
 	@Override
 	public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
@@ -295,7 +304,7 @@ public class RequirementServiceImpl implements RequirementService {
 		else{
 			requirement.setPositions(null);
 		}
-		if (StringUtils.isNotBlank(requirementDTO.getCountryReq())) {
+		/*if (StringUtils.isNotBlank(requirementDTO.getCountryReq())) {
 			requirement.setCountry(requirementDTO.getCountryReq());
 			location.append(requirementDTO.getCountryReq());
 			location.append(",");
@@ -328,7 +337,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		else{
 			requirement.setZipCode(null);
-		}
+		}*/
 		if (StringUtils.isNotBlank(requirementDTO.getMaxExp())) {
 			requirement.setMaxExp(requirementDTO.getMaxExp());
 		}
@@ -771,9 +780,116 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		
+		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
+			
+			List<String> savedUUIDList = requirementLocationsService.getRequirementLocationsUUIDByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
+			List<String> UUIDList = new ArrayList<>();
+			if(requirementDTO.getSavedLocationInfo() != null && !requirementDTO.getSavedLocationInfo().isEmpty()) {
+				for(RequirementLocationsDTO savedLocationDTO : requirementDTO.getSavedLocationInfo()) {
+					if(savedLocationDTO.getLocationUUID() != null && !savedLocationDTO.getLocationUUID().isEmpty()) {
+					RequirementLocations reqLocation = requirementLocationsService.getRequirementLocationsByLocationUUID(savedLocationDTO.getLocationUUID());
+					if(reqLocation != null) {
+						reqLocation.setLocation(savedLocationDTO.getLocationName());
+						
+						if(savedLocationDTO.getCountry() != null && !savedLocationDTO.getCountry().isEmpty()) {
+							reqLocation.setCountry(savedLocationDTO.getCountry());
+						}
+						
+						if(savedLocationDTO.getState() != null && !savedLocationDTO.getState().isEmpty()) {
+							reqLocation.setState(savedLocationDTO.getState());
+						}
+						
+						if(savedLocationDTO.getCity() != null && !savedLocationDTO.getCity().isEmpty()) {
+							reqLocation.setCity(savedLocationDTO.getCity());
+						}
+						
+						if(savedLocationDTO.getZipcode() != null && !savedLocationDTO.getZipcode().isEmpty()) {
+							reqLocation.setZipCode(savedLocationDTO.getZipcode());
+						}
+						
+						if(savedLocationDTO.getLongitude() != null && !savedLocationDTO.getLongitude().isEmpty()) {
+							reqLocation.setLongitude(savedLocationDTO.getLongitude());
+						}
+						
+						if(savedLocationDTO.getLatitude() != null && !savedLocationDTO.getLatitude().isEmpty()) {
+							reqLocation.setLatitude(savedLocationDTO.getLatitude());
+						}
+						reqLocation.setRequirementId(reqLocation.getRequirementId());
+						requirementLocationsService.saveRequirementLocations(reqLocation);
+					}
+					UUIDList.add(savedLocationDTO.getLocationUUID());
+					}
+				}
+				
+				
+				UUIDList.retainAll(savedUUIDList);
+				savedUUIDList.removeAll(UUIDList);
+				
+				if(savedUUIDList != null && !savedUUIDList.isEmpty()) {
+					for(String UUID : savedUUIDList) {
+						RequirementLocations reqLocation = requirementLocationsService.getRequirementLocationsByLocationUUID(UUID);
+						requirementLocationsService.deleteRequirementLocations(reqLocation);
+					}
+				}
+				
+			}
+		}
 		
 		
+		HashSet<RequirementLocations> requirementLocationsList = new HashSet<RequirementLocations>();
+		if(requirementDTO.getLocationInfo() != null && !requirementDTO.getLocationInfo().isEmpty()) {
+			for(RequirementLocationsDTO locationDTO : requirementDTO.getLocationInfo()) {
+				if(StringUtils.isNotBlank(locationDTO.getLocationName())) {
+					RequirementLocations requirementLocations = new RequirementLocations();
+					requirementLocations.setRequirementId(requirement);
+					requirementLocations.setLocation(locationDTO.getLocationName());
+					
+					if(locationDTO.getCountry() != null && !locationDTO.getCountry().isEmpty()) {
+						requirementLocations.setCountry(locationDTO.getCountry());
+					}
+					
+					if(locationDTO.getState() != null && !locationDTO.getState().isEmpty()) {
+						requirementLocations.setState(locationDTO.getState());
+					}
+					
+					if(locationDTO.getCity() != null && !locationDTO.getCity().isEmpty()) {
+						requirementLocations.setCity(locationDTO.getCity());
+					}
+					
+					if(locationDTO.getZipcode() != null && !locationDTO.getZipcode().isEmpty()) {
+						requirementLocations.setZipCode(locationDTO.getZipcode());
+					}
+					
+					if(locationDTO.getLongitude() != null && !locationDTO.getLongitude().isEmpty()) {
+						requirementLocations.setLongitude(locationDTO.getLongitude());
+					}
+					
+					if(locationDTO.getLatitude() != null && !locationDTO.getLatitude().isEmpty()) {
+						requirementLocations.setLatitude(locationDTO.getLatitude());
+					}
+					
+					if(locationDTO.getCountry() == null || locationDTO.getCountry().isEmpty()) {
+						String[] jobLocation = locationDTO.getLocationName().split(",");
+						if(jobLocation.length > 2) {
+							requirementLocations.setCity(jobLocation[0]);
+							requirementLocations.setState(jobLocation[1]);
+							requirementLocations.setCountry(jobLocation[2]);
+						}else if(jobLocation.length == 2) {
+							requirementLocations.setCity(jobLocation[0]);
+							requirementLocations.setState(jobLocation[1]);
+						}else if(jobLocation.length == 1) {
+							requirementLocations.setCity(jobLocation[0]);
+						}
+					}
+					
+					requirementLocations.setStatus(Constants.RECORD_ACTIVE);
+					requirementLocations.setLocationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					requirementLocationsList.add(requirementLocations);
+				}
+			}
+		}
 		
+		requirement.setRequirementLocations(requirementLocationsList);
 		
 		/*int teamCount = 0;
 			ArrayList<String> assignedTeamId = new ArrayList<String>();

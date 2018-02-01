@@ -325,7 +325,31 @@ function jpagination(url,sourceleadUrl){
 	            "data": "country",
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
-	            		if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
+	            		
+		            	    result = result +'<td>';
+		   		        	result = result +'<div class="positionRelative">';
+			   		         for(var k=0; k<1; k++){
+			   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+			   		         }
+		   		    	
+			   		        result = result +'<div class="show_Empdetails showjoblist">';
+		   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+	
+		   		        	result = result +'<div class="emailvalues">';
+		   		        	
+ 							for(var k=0; k<opt.locationsList.length; k++){
+ 								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+ 			   		        	
+		   		    	 	}
+		   		        	result = result +'</div>';
+		   		        	result = result +'</div>';
+		   
+
+	   		        	result = result +'</div>';
+	   		        	result = result +'</td>';
+	            		
+	            		
+	       /*      		if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
 	            	    }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
@@ -335,7 +359,7 @@ function jpagination(url,sourceleadUrl){
 	            	    		result = result +"<td><div><span title='"+opt.location+"'>"+opt.location+"</span></div></td>";
 	            	    }else{
 	            	   		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
-	            	   	 }
+	            	   	 }  */
 		                return result;
 	             }
 		    },

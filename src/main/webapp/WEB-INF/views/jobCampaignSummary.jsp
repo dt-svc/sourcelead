@@ -241,7 +241,17 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Min Experience - '+minExp+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Max Experience - '+maxExp+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 if(json.locationsList != null){
+					 result = result +'<li><i class="fa fa-map-marker pull-left mt5"></i>';
+					 result = result +'<ul class="list-unstyled joblocations-public">';
+	 					for(var k=0; k<json.locationsList.length; k++){
+	 						result = result +'<li>'+json.locationsList[k]+'</li>';
+	 					}
+	 					result = result +'</ul>';
+	 					result = result +'</li>';
+	 				}
+				 
+// 				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';
