@@ -124,7 +124,7 @@ $(document).ready(function(){
             <div class="clearfix mb"></div>
             <div class="clearfix mb row">
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Top 5 Receivables</h4>
                 <div id="top5receivablesDiv" style="width:100%; height:250px"></div>
                   <div id="top5receivables" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
                   
@@ -149,7 +149,7 @@ $(document).ready(function(){
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Top 5 Engaged Contracts</h4>
                 <div id="engagedContractsDiv" style="width:100%; height:250px"></div>
                   <div id="engagedContracts" style="width:100%; height:250px" class="amchartAnchor-Hide"></div>
                   <ul class="list-unstyled list-inline vendor-listcount mt">
@@ -175,12 +175,12 @@ $(document).ready(function(){
             </div>
             <div class="clearfix mt mb row">
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Average Time to Fill</h4>
                   <div id="timeToFill" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="projectDashboad clearfix positionRelative">
+                <div class="projectDashboad clearfix positionRelative"><h4>Success Percentage</h4>
                   <div id="successPercentage" style="width:100%; height: 250px" class="amchartAnchor-Hide"></div>
                 </div>
               </div>
@@ -477,7 +477,7 @@ function prepareContractChart(client1,client2,client3,client4,client5,client1Cou
                     "color": "#3F51B5",
                     "id": "Label-1",
                     "size": 15,
-                    "text": "Top 5 Engaged Contracts",
+//                     "text": "Top 5 Engaged Contracts",
                     "x": "5%",
                     "y": "5%"
                 }
@@ -655,17 +655,17 @@ function getAmchartData(data){
                 "export": {
                     "enabled": true
                 },
-                "allLabels": [
-                    {
-                        "bold": true,
-                        "color": "#CC0000",
-                        "id": "Label-1",
-                        "size": 15,
-                        "text": "Top 5 Receivables",
-                        "x": "5%",
-                        "y": "5%"
-                    }
-                ],
+//                 "allLabels": [
+//                     {
+//                         "bold": true,
+//                         "color": "#CC0000",
+//                         "id": "Label-1",
+//                         "size": 15,
+//                         "text": "Top 5 Receivables",
+//                         "x": "5%",
+//                         "y": "5%"
+//                     }
+//                 ],
                 "balloon": {},
                 "legend": {
                     "enabled": true,
@@ -819,12 +819,12 @@ function getTimeToFillAmchartData(data){
 "valueWidth": 35,
 "verticalGap": 15
 },
-"titles": [
-{
-    "id": "Title-1",
-    "text": "Average Time to Fill"
-}
-],
+// "titles": [
+// {
+//     "id": "Title-1",
+//     "text": "Average Time to Fill"
+// }
+// ],
 "dataProvider": [
 {
     "category": "Applicants",
@@ -909,23 +909,23 @@ function getSuccessPercentageAmchartData(data){
             ],
             "allLabels": [],
             "balloon": {},
-            "titles": [
-                {
-                    "id": "Title-1",
-                    "size": 15,
-                    "text": "Success Percentage"
-                }
-            ],
+//             "titles": [
+//                 {
+//                     "id": "Title-1",
+//                     "size": 15,
+//                     "text": "Success Percentage"
+//                 }
+//             ],
             "dataProvider": [
                 {
                     "category": "Applicants",
-                    "column-1": 100,
+                    "column-1": data.applicantsMove,
                     "color": "#9575CD"
                 },
                 {
                     "category": "Shortlisted",
                     "color": "#9575CD",
-                    "column-1": data.shortlistedMove
+                    "column-1": data.shortlistedMove,
                 },
                 {
                     "category": "Submit to Client",

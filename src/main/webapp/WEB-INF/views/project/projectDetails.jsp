@@ -48,6 +48,7 @@
 						var allowBidding = "";
 						var allowOffShore = "";
 						var flatPercentageId = "";
+						var invoiceFrequency = "";
 						
 						
 						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
@@ -140,6 +141,12 @@
 							flatPercentageId = "";
 						}
 						
+						if(json.invoiceFrequency != null && json.invoiceFrequency !='' && json.invoiceFrequency != 'undefined'){
+							invoiceFrequency = json.invoiceFrequency
+						}else{
+							invoiceFrequency = "--";
+						}
+						
 				 		var proStatus ='';
 						if(json.projectStatus == 'NOTSTARTED'){
 							proStatus = 'Not Started';
@@ -161,10 +168,13 @@
 						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
 					    result  = result + '</div>';
-						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}' && json.approverUserId == '${SourceLeadWeb_userId}'){
-						    result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-							result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-		   		    		result = result +'</sec:authorize>';
+						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
+							if(json.projectApprover == 'Y' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_ADMIN'){
+								result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+								result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+			   		    		result = result +'</sec:authorize>';
+							}
+							
 						}
 						
 	   		    		result = result + '</div>';
@@ -179,12 +189,20 @@
 						result = result + '	<strong>Project name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
-
+						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Manager 1:</strong><span>';
 						result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Invoice Frequency:</strong><span>';
+						result = result + '	<span title="'+invoiceFrequency+'">'+invoiceFrequency+'</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+
+						
+						
+						
 						if (json.manager2Name != null && json.manager2Name != "" && json.manager2Name != "undefined") {
 							result = result	+ '<div class="project_details_cta">';
 							result = result	+ '	<strong>Manager 2:</strong><span>';
