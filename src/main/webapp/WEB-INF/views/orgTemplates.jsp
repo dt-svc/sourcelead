@@ -143,7 +143,7 @@
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
 			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/loadAddPetitionTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="javascript:void(0)">View</a>
+			<a  class="btn btn-primary btn-sm" href="<c:url value='${appPath}/loadViewPetitionTemplate'/>">View</a>
 			</sec:authorize>
 		</span>
 		</div>
