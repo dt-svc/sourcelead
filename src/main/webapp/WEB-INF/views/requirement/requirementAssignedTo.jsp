@@ -88,7 +88,7 @@
 				<div class="pull-right mr" id="summaryButtonsDiv">
 					<c:choose>
 					  <c:when test="${!empty requirement.id}">
-					    <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('${requirement.id}');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>
+					    <button type="button" id = "editAssignedTeamsOrUsersBtn" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('${requirement.id}');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>
 					  </c:when>
 					  <c:otherwise>
 					    <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>

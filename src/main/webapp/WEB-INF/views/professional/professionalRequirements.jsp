@@ -34,12 +34,24 @@ padding:4px 12px; float: left;
 .bg-green {
 	background: #1ab394 !important;
 }
-
 .bg-red {
   background: #D84315 !important; 
 }
 
+.OpenJob h5 strong{
+	width: 70px !important; 
+}
+.ref-top{
+top: 22px;height: 32px; line-height: 18px;
+}
 </style>
+
+<script>
+$(document).ready(function() {
+    multicities = {}; 
+}); 
+</script>
+
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
@@ -304,7 +316,7 @@ window.onload = function () {
                 </div>
                 
               </div>
-              <div class="clearfix">
+              <%-- <div class="clearfix">
                 <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
@@ -334,7 +346,7 @@ window.onload = function () {
                                </select>
 				  </div>
 			  </div>
-              </div>
+              </div> --%>
               
               <div class="clearfix">
                 <div class="col-md-4">
@@ -361,6 +373,34 @@ window.onload = function () {
                   </div>
                 </div>
               </div>
+               <div class="clearfix">
+				<div class="col-md-4">
+						<label>Country</label>
+						<div class="clearfix adv-srh-chosen">
+							<select class="chosen-select" name="country" id="country" field-name="Country">
+								<option value="">---select Country---</option>
+								<c:forEach var="cntry" items="${countryList}">
+									<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+					
+				   <div class="col-md-8">
+						<label>Cities</label>
+						<div class="clearfix">
+						<div class="col-md-14">
+					      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+						  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+						 </div>
+						  <br>
+						   <select class="chosen-select form-control input-sm" multiple
+								data-placeholder="sletected cites" id="city" name="city">
+							</select>
+							
+						</div>
+					</div>
+				</div>
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 
@@ -575,6 +615,9 @@ function minMaxExperienceOfProfessional(){
 		    	         }
 			    });
 			    
+			    
+				tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
 		 // here call experience validation
 		       $("#maxExp").on('change', function (e) {
 		    	   minMaxExperienceOfProfessional();
@@ -585,10 +628,9 @@ function minMaxExperienceOfProfessional(){
 		       });
 		       
 		      $("#country").on('change', function (e) {
-		    	   getStates();
-		       });
-		       $("#state").on('change', function (e) {
-		    	   getCities();
+		    	  getcites('apiLocation','city');
+		    	  $("#apiLocation").val('');
+		    	  $("#city").val('').trigger("chosen:updated");
 		       });
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
@@ -782,7 +824,7 @@ function requirementsList(offset){
 			 				var jobType = '';
 			 				var experience = '';
 			 				var rate = '';
-			 				var location = '';
+			 				//var location = '';
 			 				var jobId = '';
 			 				var industryName = '';
 			 				var visaType ='';
@@ -809,11 +851,11 @@ function requirementsList(offset){
 			 					experience = '--';
 			 				}
 			 				
-			 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
+			 				/* if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
 			 					location = requirements.state+", "+requirements.country;
 			 				}else{
 			 					location = requirements.country;
-			 				}
+			 				} */
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 			 					rate = requirements.rate+" "+requirements.currentRateCurrency+" / "+requirements.rateType;
@@ -852,12 +894,22 @@ function requirementsList(offset){
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';
-			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
+			 				/* result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>'; */
 			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
+							result = result +'<strong>Locations : </strong>';
+			 				
+			 				result = result +'<ul>';
+			 				if(requirements.locationsList != null){
+			 					for(var k=0; k<requirements.locationsList.length; k++){
+			 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+			 					}
+			 				}
+			 				result = result +'</ul>';
+			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'<strong>Skills :</strong>';
 			 				result = result +'<ul>';
 			 				
@@ -1126,7 +1178,6 @@ function searchRequirement(offset){
 									 				var jobType = '';
 									 				var experience = '';
 									 				var rate = '';
-									 				var location = '';
 									 				var jobId = '';
 									 				var industryName = '';
 									 				var visaType ='';
@@ -1156,12 +1207,6 @@ function searchRequirement(offset){
 									 					experience = '--';
 									 				}
 									 				
-									 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
-									 					location = requirements.state+", "+requirements.country;
-									 				}else{
-									 					location = requirements.country;
-									 				}
-									 				
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
@@ -1189,12 +1234,22 @@ function searchRequirement(offset){
 									 				result = result +'<span>';
 									 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 									 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-									 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 									 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
 									 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 									 				result = result +'<b><i class="fa fa-plane" title="Industry"></i>'+visaType+'</b>';
 									 				result = result +'</span>';
 									 				result = result +'<h5>';
+									 				
+									 				result = result +'<strong>Locations : </strong>';
+									 				
+									 				result = result +'<ul>';
+									 				if(requirements.locationsList != null){
+									 					for(var k=0; k<requirements.locationsList.length; k++){
+									 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+									 					}
+									 				}
+									 				result = result +'</ul>';
+									 				
 									 				result = result +'<strong>Skills :</strong>';
 									 				result = result +'<ul>';
 									 				if(requirements.skillsList != null){

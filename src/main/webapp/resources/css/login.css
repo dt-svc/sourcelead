@@ -21,7 +21,7 @@ a { cursor:pointer;}
     transition: 0.2s all; -webkit-transition: 0.2s all; -moz-transition: 0.2s all; margin: 0px auto;
 }
 .forPassOut {
-	height: 50%; right: 10%; top: 25%; min-height: 50%;
+	min-height: 50%; margin-top: 12%;
 }
 .signin_wrap {
 	width:auto; text-align: center; padding: 35px 40px 30px; position: relative; background-color: #fff;
