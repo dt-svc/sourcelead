@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -62,16 +63,20 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	 private CommonUtil commonUtil;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
 	
 	
 	/**
 	 * To forward users List jsp page
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/usersList")
-	public ModelAndView usersList(@RequestParam(value="searchResult",required = false) String searchResult,@RequestParam(value="searchValue",required = false) String searchValue,HttpServletRequest request) {
+	public ModelAndView usersList(@RequestParam(value="searchResult",required = false) String searchResult,@RequestParam(value="searchValue",required = false) String searchValue,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -109,8 +114,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "userCreateMsg");
 		}
-		
 		model.addObject("rolesList", rolesList);
+		
+		
+		Integer orgLocationsCount = orgLocationService.getRegisteredOrgLoctionsCountByOrgId(org.getId());
+		model.addObject("orgLocationsCount", orgLocationsCount);
 		
 		return model;
 

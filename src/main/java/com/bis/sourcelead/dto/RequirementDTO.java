@@ -62,7 +62,6 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isreceivingApplicants;
 
-	@Required(desc = "location")
 	private String location;
 
 	private String countryReq;
@@ -172,6 +171,10 @@ public class RequirementDTO extends CommonDTO {
 	private String fileContentType;
 	
 	private String fileName;
+	
+	private List<RequirementLocationsDTO> locationInfo;
+	
+	private List<RequirementLocationsDTO> savedLocationInfo;
 
 	
 	/*
@@ -1298,12 +1301,29 @@ public class RequirementDTO extends CommonDTO {
 		this.fileName = fileName;
 	}
 
+
+	public List<RequirementLocationsDTO> getLocationInfo() {
+		return locationInfo;
+	}
+
+	public void setLocationInfo(List<RequirementLocationsDTO> locationInfo) {
+		this.locationInfo = locationInfo;
+	}
 	public String getImportValue() {
 		return importValue;
 	}
 
+	public List<RequirementLocationsDTO> getSavedLocationInfo() {
+		return savedLocationInfo;
+	}
+
+	public void setSavedLocationInfo(List<RequirementLocationsDTO> savedLocationInfo) {
+		this.savedLocationInfo = savedLocationInfo;
+	}
+
 	public void setImportValue(String importValue) {
 		this.importValue = importValue;
+
 	}
 
 	public long getId() {
