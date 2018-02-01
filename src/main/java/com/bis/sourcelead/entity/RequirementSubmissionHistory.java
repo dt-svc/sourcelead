@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -84,7 +85,12 @@ public class RequirementSubmissionHistory implements Serializable{
     @Transient
     private Long offerResumeid;
     
-      
+    @Transient
+    @Lob
+    private  byte[] docFile;
+    @Transient
+    private String fileContentType;
+    
     @Transient
     private String loginUserName;
     
@@ -390,6 +396,26 @@ public class RequirementSubmissionHistory implements Serializable{
 	public void setContentType(String contentType)
 	{
 		this.contentType = contentType;
+	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
 	}
 	
 
