@@ -203,6 +203,7 @@ padding: 2px
 </style>
 <body>
 	<header>
+	
 		<div class="logo">
 		<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
   <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead"></a>

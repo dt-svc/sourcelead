@@ -46,10 +46,6 @@ public class MigrateTimeEntriesToTimeDayEntries {
 					 while(timesheetEntriesResultSet.next()){
 						 Long  projectTaskId = timesheetEntriesResultSet.getLong("PROJECT_TASK");
 						 if(projectTaskId != null && StringUtils.isNotEmpty(projectTaskId.toString())) {
-						 Date  createdDate = timesheetEntriesResultSet.getDate("CREATED_DATE");
-						 String createdBy = timesheetEntriesResultSet.getString("CREATED_BY");
-						 Date  updatedDate = timesheetEntriesResultSet.getDate("UPDATED_DATE");
-						 String updatedBy = timesheetEntriesResultSet.getString("UPDATED_BY");
 						 	String Type = "SELECT BILLABLE_TYPE FROM sourcelead.PROJECT_TASKS where ID = "+projectTaskId+"";
 						 	ResultSet ptResultSet = stmt2.executeQuery(Type);
 						 	while(ptResultSet.next()){
@@ -180,24 +176,24 @@ public class MigrateTimeEntriesToTimeDayEntries {
 				 					}
 				 			
 						 		}
-						 		String query4 = " update sourcelead.TIMESHEET_DAY_ENTRIES (SUBMISSION_ID, PROJECT_TASK_ID, TIMESHEET_DATE, TASK_TYPE, BILLABLE_HOURS, NONBILLABLE_HOURS,TOTALHOURS, COMMENTS, CREATED_DATE,CREATED_BY,UPDATED_DATE,UPDATED_BY)"
-										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,?)";
+						 		
+						    		String query4 = " update sourcelead.TIMESHEET_DAY_ENTRIES set  TASK_TYPE = ? ,BILLABLE_HOURS = ?, NONBILLABLE_HOURS = ? , TOTALHOURS = ? ,COMMENTS = ? where SUBMISSION_ID = ? and PROJECT_TASK_ID =? and TIMESHEET_DATE = ?";
+						 		
+						 		/*String query4 = " insert sourcelead.TIMESHEET_DAY_ENTRIES (SUBMISSION_ID, PROJECT_TASK_ID, TIMESHEET_DATE, TASK_TYPE, BILLABLE_HOURS, NONBILLABLE_HOURS,TOTALHOURS, COMMENTS, CREATED_DATE,CREATED_BY,UPDATED_DATE,UPDATED_BY)"
+										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,?)";*/
 					    		
 					    		try {
 					    			
-					    			 PreparedStatement pstmt4 = con.prepareStatement(query4);
-						    		 pstmt4.setLong(1, submissionId);
-						    		 pstmt4.setLong(2, projectTaskId);
-						    		 pstmt4.setDate(3, date);
-						    		 pstmt4.setString(4, taskTypeSave);
-						    		 pstmt4.setString(5, billableHours);
-						    		 pstmt4.setString(6, nonbillableHours);
-						    		 pstmt4.setString(7, Hours);
-						    		 pstmt4.setString(8, comments);
-						    		 pstmt4.setDate(9,(java.sql.Date) createdDate);
-						    		 pstmt4.setString(10,createdBy);
-						    		 pstmt4.setDate(11,(java.sql.Date) updatedDate);
-						    		 pstmt4.setString(12,updatedBy);
+					    			 PreparedStatement pstmt4 = con.prepareStatement(query4); 
+					    			 pstmt4.setString(1, taskTypeSave);
+					    			 pstmt4.setString(2, billableHours);
+						    		 pstmt4.setString(3, nonbillableHours);
+						    		 pstmt4.setString(4, Hours);
+						    		 pstmt4.setString(5, comments);
+						    		
+						    		 pstmt4.setLong(6, submissionId);
+						    		 pstmt4.setLong(7, projectTaskId);
+						    		 pstmt4.setDate(8, date);
 						    		 pstmt4.executeUpdate();	
 						    		 
 					    		}catch (Exception e){   

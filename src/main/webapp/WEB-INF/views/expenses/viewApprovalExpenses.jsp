@@ -26,8 +26,8 @@
 				<div class="project_details project_detailsExp">
                 
                 
-					<div class="Expdit pull-right mr">
-					<div class="timeNewSe">
+					<div class="Expdit pull-right">
+					<div class="timeNewSe mr25">
 						  <c:if test="${submissionStatus == 'NEW'}">
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
@@ -42,7 +42,7 @@
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
 						       <b class='proj_closed pull-right'>${submissionStatus}</b>
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
 						      </i>
 						  </c:if>
