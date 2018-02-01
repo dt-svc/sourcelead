@@ -5,8 +5,8 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-<jsp:include page="addApplicant.jsp" />
-<jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
+<%-- <jsp:include page="addApplicant.jsp" />
+<jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
 <div id="popUp" ></div>
 <script>
@@ -85,7 +85,7 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
 		    result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
 		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
-		    result = result +'			<a class="comTextLi" title="Share" onclick="shareAllRecommendations('+requirementId+');" >Share</a>            ';
+		    result = result +'			<a class="comTextLi" title="Share" onclick="shareAllRecommendations('+requirementId+');" ><i class="fa fa-share-alt"></i></a>            ';
 
 		    result = result +'		        </div>';
 	    }
@@ -498,6 +498,13 @@ function shareRecomendedApplicant(requirementId,candidateId){
     	type: "POST",
         url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
         success: function(result) {
+        	$("#recommendationsLoading").removeAttr("style");
+    	    $("#selector4").removeAttr("style");
+   			$("#selector4").css({ display: "block" });
+   			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
+   			eduMsgFadeinFunction();
+   			toggleShareRecommendation();
+        	
         },
     });
 }
@@ -548,7 +555,6 @@ function checkShareRecommendation(elem) {
 }
 </script>
 <script>
-var candidateIds = new Array();
 function shareAllRecommendations(requirementId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateIds = new Array();
@@ -566,7 +572,7 @@ function shareAllRecommendations(requirementId){
 	        	   $("#recommendationsLoading").removeAttr("style");
 	        	    $("#selector4").removeAttr("style");
 	       			$("#selector4").css({ display: "block" });
-	       			$("#eduMsgDiv").html("Recommended candidates are shared");
+	       			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
 	       			eduMsgFadeinFunction();
 	       			toggleShareRecommendation();
 	           },

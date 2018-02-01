@@ -1645,7 +1645,7 @@ public class VendorRestController {
 		  * @throws Exception
 		  */
 			@RequestMapping(value ={ "/getVendorJobs","/rest/getVendorJobs"},method = RequestMethod.POST)
-			public List<RequirementDTO> getVendorJobs(@RequestParam(value = "orgRelationID", required = false) Long orgRelationID, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+			public ResponseList<RequirementDTO> getVendorJobs(@RequestParam(value = "orgRelationID", required = false) Long orgRelationID, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
 			{
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1661,6 +1661,7 @@ public class VendorRestController {
 				// List<Requirement> reqList =
 				// requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(),
 				// orgRelationID,null,null);
+				 ResponseList<RequirementDTO> mainReqListDTOList = new ResponseList<>();
 				List<Requirement> mainReqList = new ArrayList<>();
 				List<RequirementDTO> mainReqListDTO = new ArrayList<>();
 				Requirement mainRequirement = null;
@@ -1725,6 +1726,7 @@ public class VendorRestController {
 					requirementDTO.setCity(mainRequirement.getCity());
 					requirementDTO.setCountry(mainRequirement.getCountry());
 					requirementDTO.setManager(mainRequirement.getManager());
+					requirementDTO.setId(mainRequirement.getId());
 					requirementDTO.setRequirementSubmissionStatus((mainRequirement.getRequirementSubmissionStatus()).toString());
 					if (mainRequirement.getManagerUserId() != null) {
 						String managerFirstName = "";
@@ -1746,8 +1748,8 @@ public class VendorRestController {
 					}
 					
 				}
-				//return commonUtil.toJSON(mainReqList);
-				return mainReqListDTO;
+				mainReqListDTOList.setData(mainReqListDTO);
+				return mainReqListDTOList;
 			}
 	
 	

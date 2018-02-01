@@ -420,10 +420,10 @@ function preventTabkey(e){
   <i>
  	 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	 	<img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 
@@ -540,7 +540,7 @@ function preventTabkey(e){
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
 	        </li>
             <li class="reportsH">
-					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
@@ -576,7 +576,7 @@ function preventTabkey(e){
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 						                     </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -593,7 +593,7 @@ function preventTabkey(e){
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -609,7 +609,7 @@ function preventTabkey(e){
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -627,7 +627,7 @@ function preventTabkey(e){
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
 					                   <div class="imageParent org-imagelink ${links.id == SourceLeadWeb_orgLocationId  ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.org.orgCode}">
+					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.org.fileUrl}">
 					                     </div>
 					                   </div>
 					                   <div class="pull-left">
@@ -693,10 +693,13 @@ function preventTabkey(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
-	                     
-	                     <li><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="subMenuView">
+		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
+		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
+	                     	</div>
+	                     </li>
 	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
-	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
@@ -820,7 +823,7 @@ function preventTabkey(e){
 
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
-		 type : "GET",
+		 type : "POST",
 	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
@@ -1667,6 +1670,39 @@ $("#searchType").selectpicker('refresh');
    	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
 </div>
 <div class="sideMask"></div>
+<div class="modal modalBulkImport" class="invite" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Bulk Import</h4>
+        </div>
+        <form:form id="bulkImportForm" name="bulkImportForm" method="post">
+         
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-folder-open-o  paddingRight text-info" aria-hidden="true"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Folder Path" id="folderPath" name="folderPath" field-name="Folder Path" data-validation="required validate_Space">
+                </div>
+            </div>
+            <div id='bulkImportStatus' class="form-group clearfix">
+            </div>
+       </div>
+       
+       <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="paddingRight"></i>Continue</button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushBulkImportPath();"></i>Cancel
+            </button>
+                </div>
+        </div>
+     </form:form>
+   </div>
+  </div>
+</div>
 <div class="modal modalInvite" class="invite" role="dialog">
     <div class="modal-dialog">
     
@@ -1741,16 +1777,48 @@ $("#searchType").selectpicker('refresh');
   $(".modalInvite").fadeIn();
   $(".sideMask").fadeOut();
   });
+  $("#bulkImport").click(function(){
+	  $(".modalBulkImport").fadeIn();
+	  $(".sideMask").fadeOut();
+	  });
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
-	  });
+	  flushBulkImportPath();
+ });
   $(".btnClose").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
+	  flushBulkImportPath();
 	  });
+  
+  function flushBulkImportPath() {
+	  $("#folderPath").val('');
+  }
+  
+  function processCopiedFiles() {
+	  if ($('#bulkImportForm').validate(false, validationSettings)) {
+		  var val = $("#folderPath").val().trim();
+		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
+			  if(data && data.indexOf("Session timedout") !== -1) {
+				  alert(data);
+				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
+			  } else if(data) {
+				  $("#bulkImportStatus").html(data)
+				  if(data.indexOf("Invalid") === -1) {
+					  $("#folderPath").val('');
+				  }
+			  }
+		  });
+	  } else {
+			return false;
+		}
+	 
+  }
   </script>
 <!--  Company invite pop ends -->
 

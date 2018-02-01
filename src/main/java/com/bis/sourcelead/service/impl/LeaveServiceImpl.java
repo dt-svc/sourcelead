@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
@@ -141,12 +142,61 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setUpdatedDate(new Date());
 		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 		leave.setNumberOfDays(String.valueOf(numberOfdays));
+		leave.setExtraLeavesTaken(String.valueOf(0));
+		
 		Leave savedLeave =  leaveDao.saveLeave(leave);
+		
+		Map<String,Integer> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
+		saveMonthlyLeaves(monthlyLeaves,leave,user);
+		
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
-			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations);
+			for(String approverUserId :leaveDTO.getApproverUser()){
+			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
+			if(user.getId().longValue() != approverUser.getId().longValue())
+			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser);
+			}
 		}
 		return savedLeave;
+	}
+
+	private void saveMonthlyLeaves(Map<String, Integer> monthlyLeaves, Leave leave, User user)
+	{
+		MonthlyLeaves leaves = new MonthlyLeaves();
+		leaves.setLeaveId(leave);
+		for(String key : monthlyLeaves.keySet()){
+			switch (key){
+				case "January" : leaves.setJanuaryLeaves(monthlyLeaves.get(key));
+				break;
+				case "February" : leaves.setFebruaryLeaves(monthlyLeaves.get(key));
+				break;
+				case "March" : leaves.setMarchLeaves(monthlyLeaves.get(key));
+				break;
+				case "April" : leaves.setAprilLeaves(monthlyLeaves.get(key));
+				break;
+				case "May" : leaves.setMayLeaves(monthlyLeaves.get(key));
+				break;
+				case "June" : leaves.setJuneLeaves(monthlyLeaves.get(key));
+				break;
+				case "July" : leaves.setJulyLeaves(monthlyLeaves.get(key));
+				break;
+				case "August" : leaves.setAugustLeaves(monthlyLeaves.get(key));
+				break;
+				case "September" : leaves.setSeptLeaves(monthlyLeaves.get(key));
+				break;
+				case "October" : leaves.setOctoberLeaves(monthlyLeaves.get(key));
+				break;
+				case "November" : leaves.setNovLeaves(monthlyLeaves.get(key));
+				break;
+				case "December" : leaves.setDecLeaves(monthlyLeaves.get(key));
+				break;
+			}
+		}
+		leaves.setCreatedBy(user.getUserCode());
+		leaves.setCreatedDate(new Date());
+		leaves.setUpdatedBy(user.getUserCode());
+		leaves.setUpdatedDate(new Date());
+		saveMonthlyLeaves(leaves);
 	}
 
 	private Set<LeaveApproveHierarchy> getApproverList(LeaveDTO leaveDTO, Leave leave, User user) {
@@ -187,12 +237,12 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder sb = new StringBuilder();
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
-				int nuberOfLeavestaken = 0;
+				Map<String,Integer> nuberOfLeavestaken = null;
 				if (leave.getUser() != null) {
 					try {
 						 nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 						int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-						leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+						leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken.get("numberOfLeavsTaken")));
 						leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -217,10 +267,12 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setStatus(leave.getStatus());
 				
 				int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
-				int balLeaves = totalLeaves - nuberOfLeavestaken;
+				int balLeaves = totalLeaves - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
 				
 				leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
+				if(StringUtils.isNotBlank(leave.getExtraLeavesTaken()))
+					leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
 				leaveDto.setFromHalfDay(leave.getFromHalfDay());
 				if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
 					leaveDto.setNoOfDays("1/2");
@@ -309,18 +361,30 @@ public class LeaveServiceImpl implements LeaveService{
 		Employees emp = null;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveDao.getLeaveById(leaveId);
+		
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_YEAR, 1);
+        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
+        Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
+        
+		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),user.getId(),yearStartDate,fromDate);
+//		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocations.getId(),Constants.APPROVED,user.getId());
+		int carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
+		
 		leaveManagementHistory.setFromStage(leave.getStatus());
 		if (leave != null) {
 			if (Constants.LEAVE_APPROVED.equals(approveStatus)) {
 				leave.setStatus(Constants.LEAVE_APPROVED);
 				leave.setApprovedBy(user);
-					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-					
+//					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
 					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
-					
 					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 					
-					int numberOfLeavesPerYear = totalLeaves - Integer.parseInt(numberOfDays);
+					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
+					
+					leave.setExtraLeavesTaken(String.valueOf(Integer.parseInt(numberOfDays)-carryForwardLeaves));
+					
+					int numberOfLeavesPerYear = totalLeaves - Integer.parseInt(numberOfDays) + Integer.parseInt(leave.getExtraLeavesTaken());
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
@@ -348,6 +412,118 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	
+
+	private int calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate, LeaveType leaveType)
+	{
+		Calendar sDate = Calendar.getInstance();
+        Calendar eDate = Calendar.getInstance();
+        sDate.setTime(fromDate);
+        eDate.setTime(yearStartDate);
+        int difInMonths = eDate.get(Calendar.MONTH) - sDate.get(Calendar.MONTH) + 1;
+        int fromMonth = sDate.get(Calendar.MONTH);
+		
+		int carryForwardLeaves = 0;
+		int janLeaves = 0;
+		int febLeaves = 0;
+		int marLeaves = 0;
+		int aprLeaves = 0;
+		int mayLeaves = 0;
+		int junLeaves = 0;
+		int julLeaves = 0;
+		int augLeaves = 0;
+		int sepLeaves = 0;
+		int octLeaves = 0;
+		int novLeaves = 0;
+		int decLeaves = 0;
+		int monthlyAllowedLeaves = leaveType.getNoOfDays();
+		if("Mothly".equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+			for(Leave userLeave : leaveList){
+//				if("Mothly".equalsIgnoreCase(userLeave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(userLeave.getLeaveType().getLeavesCarryforward())){
+					MonthlyLeaves monthlyLeaves = getMonthlyLeavesByLeaveId(userLeave.getId());
+					int monthlyTotalLeaves = difInMonths * userLeave.getLeaveType().getNoOfDays();
+					janLeaves += monthlyLeaves.getJanuaryLeaves();
+					febLeaves += monthlyLeaves.getFebruaryLeaves();
+					marLeaves += monthlyLeaves.getMarchLeaves();
+					aprLeaves += monthlyLeaves.getAprilLeaves();
+					mayLeaves += monthlyLeaves.getMayLeaves();
+					junLeaves += monthlyLeaves.getJuneLeaves();
+					julLeaves += monthlyLeaves.getJulyLeaves();
+					augLeaves += monthlyLeaves.getAugustLeaves();
+					sepLeaves += monthlyLeaves.getSeptLeaves();
+					octLeaves += monthlyLeaves.getOctoberLeaves();
+					novLeaves += monthlyLeaves.getNovLeaves();
+					decLeaves += monthlyLeaves.getDecLeaves();
+//				}
+			}
+			
+			for(int i=0;i<= fromMonth; i++){
+				switch (i) {
+					case 0:
+						if(janLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 1:
+						if(febLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 2:
+						if(marLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 3:
+						if(aprLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 4:
+						if(mayLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 5:
+						if(junLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 6:
+						if(julLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 7:
+						if(augLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 8:
+						if(sepLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 9:
+						if(octLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 10:
+						if(novLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+					case 11:
+						if(decLeaves < monthlyAllowedLeaves){
+							carryForwardLeaves += 1;
+						}
+						break;
+				}
+			}
+		}
+		
+		return carryForwardLeaves;
+	}
 
 	private void sendApprovedAndRejectedLeaveMailToEmployee(OrgLocations orgLocations, User loginUser, LeaveManagementHistory leaveManagementHistory) throws Exception
 	{
@@ -419,13 +595,14 @@ public class LeaveServiceImpl implements LeaveService{
 
 //		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVER_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
+		String url = sourceleadUrl;
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
 		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, null, orgLocations.getOrg(), orgLocations);
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
@@ -751,7 +928,7 @@ public class LeaveServiceImpl implements LeaveService{
 								pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+								totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays())) + Integer.parseInt(leave.getExtraLeavesTaken());
 							}
 						}
 						   balanceLeaveCounts += totalLeaves;
@@ -794,15 +971,15 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 	
 	@Override
-	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc) throws Exception {
+	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception {
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		
 		 if(null != leaveDTO.getApproverUser()){
-		for(String approverUserId :leaveDTO.getApproverUser()){
-			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
+//		for(String approverUserId :leaveDTO.getApproverUser()){
+//			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
 			 StringBuilder sb = new StringBuilder();
-			 emailMessage.setFirstName(approverUser.getFileName());
+			 emailMessage.setFirstName(approverUser.getFirstName());
 			 emailMessage.setToEmail(approverUser.getEmail());
 			 emailMessage.setFromEmail(loginUser.getEmail());
 			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
@@ -824,9 +1001,20 @@ public class LeaveServiceImpl implements LeaveService{
 				 globalVarsMap.put("employeeUser",loginUser.getFirstName());
 			 }
 			 
-			if(null != approverUser.getFileName() && !"".equalsIgnoreCase(approverUser.getFileName())){
+			 User applyUser = null;
+			 if(null != leaveDTO.getUser() && !"".equalsIgnoreCase(leaveDTO.getUser())){
+				 applyUser = userService.getUserById(Long.parseLong(leaveDTO.getUser()));
+				 if(null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
+				 StringBuilder leaveUser =new StringBuilder();
+				 globalVarsMap.put("leaveUser", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("leaveUser",applyUser.getFirstName());
+			 }
+		 }
+			 
+			if(null != approverUser.getLastName() && !"".equalsIgnoreCase(approverUser.getLastName())){
 				 StringBuilder manager =new StringBuilder();
-				 globalVarsMap.put("approverUser", manager.append(approverUser).append(" ").toString());
+				 globalVarsMap.put("approverUser", manager.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
 			 }else{
 				 globalVarsMap.put("approverUser",approverUser.getFirstName());
 			 }
@@ -862,9 +1050,19 @@ public class LeaveServiceImpl implements LeaveService{
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 
+			 EmailScenario  emailScenario = null;
+			 EmailScenario  notificationScenario = null;
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
-			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
+			 if(applyUser != null){
+			 if(loginUser.getId().longValue() == applyUser.getId().longValue()) {
+				   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }
+			  }else {
+				   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }
+			 
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -882,7 +1080,7 @@ public class LeaveServiceImpl implements LeaveService{
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				emailScenerioUtil.sendNotification(null,loginUser, approverUser, orgLoc, notificationScenario);
-		}
+//		}
 }
 }
 
@@ -1156,8 +1354,25 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status)
 	{
-		
 		return leaveDao.getAllLeavesByLocationIdAndStatus(locationId, status);
+	}
+
+	@Override
+	public List<Leave> getLeavesListByTypeIdAndDuration(String leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate)
+	{
+		return leaveDao.getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocationId, userId, startDate, endDate);
+	}
+
+	@Override
+	public MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves)
+	{
+		return leaveDao.saveMonthlyLeaves(monthlyLeaves);
+	}
+
+	@Override
+	public MonthlyLeaves getMonthlyLeavesByLeaveId(String leaveId)
+	{
+		return leaveDao.getMonthlyLeavesByLeaveId(leaveId);
 	}
 
 }

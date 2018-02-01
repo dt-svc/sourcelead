@@ -76,7 +76,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			+ " where exp.id = :expenseId ";
 				
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("expenseId", expenseId).setCacheable(true).list();
+		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("expenseId", expenseId).list();
 		return tslist;
 	}
 	
@@ -259,7 +259,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		
 	    return response;
 		/*@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		return tslist;*/
 	}
 	
@@ -269,7 +269,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Query expenseApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense  where expense.id = :expenseId");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy>  expenseApproverHierarchyList=expenseApproverHierarchyListQuery.setLong("expenseId", expenseId).setCacheable(true).list();
+		List<ExpensesApproverHierarchy>  expenseApproverHierarchyList=expenseApproverHierarchyListQuery.setLong("expenseId", expenseId).list();
 	    if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
 	    	for(ExpensesApproverHierarchy eah :expenseApproverHierarchyList){
 	    		if(null != type && "notify".equalsIgnoreCase(type) && null != isSuperUser && isSuperUser.equalsIgnoreCase(Constants.YES)){
@@ -320,8 +320,10 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		User loginUser = userDao.getUserById(approverUserId);
 		String actionPerformedBy= "";
+		Long actionPerformedByLocationId = null;
 		if(location != null && StringUtils.isNotEmpty(location.getOrgLocationName())){
 			actionPerformedBy =location.getOrgLocationName();
+			actionPerformedByLocationId = location.getId();
 		}else{
 			actionPerformedBy = loginUser.getFullName();
 		}
@@ -367,6 +369,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
             	 	sah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setExpenseStatus(Submission_Status.REJECTED);
             	 	sah.setActionPerformedBy(""+actionPerformedBy);
+            	 	sah.setActionbyorglocid(actionPerformedByLocationId);
             	 	sah.setRejectedReason(rejectedReason);
             	 	sah.setReopenReason(null);
             	    sah.setReopenedUser(null);
@@ -380,6 +383,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
 	            	 sah.setActionPerformedBy(""+actionPerformedBy);
+	            	 sah.setActionbyorglocid(actionPerformedByLocationId);
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);
@@ -404,6 +408,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 				approver.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
                 				approver.setExpenseStatus(Submission_Status.REJECTED);
                 				approver.setActionPerformedBy(" "+actionPerformedBy);
+                				approver.setActionbyorglocid(actionPerformedByLocationId);
                 				approver.setRejectedReason(rejectedReason);
                 				approver.setReopenReason("");
                 				approver.setReopenedUser(null);
@@ -422,6 +427,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
     	            				 	 approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
     	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
     	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
+    	            	            	 approver.setActionbyorglocid(actionPerformedByLocationId);
     	            	            	 approver.setReopenReason("");
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");
@@ -435,6 +441,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 					      approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
     	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
     	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
+    	            	            	 approver.setActionbyorglocid(actionPerformedByLocationId);
     	            	            	 approver.setReopenReason("");
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");
@@ -470,7 +477,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Query expenseApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expenses where expenses.id = :expenseId");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy>  expensesApproverHierarchyList=expenseApproverHierarchyListQuery.setLong("expenseId", expenseId).setCacheable(true).list();
+		List<ExpensesApproverHierarchy>  expensesApproverHierarchyList=expenseApproverHierarchyListQuery.setLong("expenseId", expenseId).list();
 	    if(expensesApproverHierarchyList != null && !expensesApproverHierarchyList.isEmpty()){
 	    	for(ExpensesApproverHierarchy eah :expensesApproverHierarchyList){
 	    		if(status.equalsIgnoreCase("Draft")){
@@ -525,7 +532,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		
 		Query expensesApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense where expense.id = :expenseId  and eah.expenseApprovalStatus = :approvalStatus");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").setCacheable(true).list();
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").list();
 		ExpensesApproverHierarchy eah = null;
 		if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
 			eah = expenseApproverHierarchyList.iterator().next();
@@ -540,7 +547,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Query expensesApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense where expense.id = :expenseId  and eah.expenseApprovalStatus != :approvalStatus");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").setCacheable(true).list();
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").list();
 		Boolean flag = true;
 		if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
 			flag = false;
@@ -557,7 +564,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				+ " left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense where expense.id = :expenseId  and expense.expenseStatus = :approvalStatus"
 				+ "  and pc.orgLocationsId.id = :locationsId and (pc.level IN(select max(subEah.hierarchyId.projectClientsId.level) from ExpensesApproverHierarchy subEah where subEah.expenseId.id = expense.id) OR pc.level IN(select min(subEah.hierarchyId.projectClientsId.level) from ExpensesApproverHierarchy subEah where subEah.expenseId.id = expense.id)) ");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setLong("locationsId", locationsId).setString("approvalStatus", "APPROVED").setCacheable(true).list();
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setLong("locationsId", locationsId).setString("approvalStatus", "APPROVED").list();
 		Boolean flag = false;
 		if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
 			flag = true;
@@ -572,7 +579,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Query expensesApproverHierarchyListQuery= session.createQuery("from ExpensesApproverHierarchy eah left join fetch eah.hierarchyId left join fetch eah.expenseId expense  left join fetch expense.projectMembers pm where expense.id = :expenseId");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setCacheable(true).list();
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).list();
 		//return expensesApproverHierarchyList;
 		
 		Boolean isRejected = false; 

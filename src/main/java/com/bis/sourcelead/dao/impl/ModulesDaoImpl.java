@@ -50,7 +50,7 @@ public class ModulesDaoImpl implements ModulesDao{
 		
 		String query = "select modules.id from Modules modules where "+subQuery+" ";
 		List<Long> modulesIdList =  session.createQuery(query.toString())
-									.setCacheable(true).list();
+									.list();
 		
 		return modulesIdList;
 
@@ -63,7 +63,7 @@ public class ModulesDaoImpl implements ModulesDao{
 
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from Modules modules where modules.parentModule.id IS NULL and modules.id <> '5' ";
-	    List<Modules> modulesList = session.createQuery(query.toString()).setCacheable(true).list();
+	    List<Modules> modulesList = session.createQuery(query.toString()).list();
       
 	    return modulesList;
 	}
@@ -74,7 +74,7 @@ public class ModulesDaoImpl implements ModulesDao{
 
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from Modules modules where modules.parentModule.id = '1' ";
-	    List<Modules> modulesList = session.createQuery(query.toString()).setCacheable(true).list();
+	    List<Modules> modulesList = session.createQuery(query.toString()).list();
       
 	    return modulesList;
 	}
@@ -88,7 +88,7 @@ public class ModulesDaoImpl implements ModulesDao{
 		
 		String query = "select modules.id from Modules modules";
 		List<Long> modulesIdList =  session.createQuery(query.toString())
-									.setCacheable(true).list();
+									.list();
 		
 		return modulesIdList;
 
@@ -101,7 +101,7 @@ public class ModulesDaoImpl implements ModulesDao{
 
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from Modules modules where modules.parentModule.id = :moduleId ";
-	    List<Modules> modulesList = session.createQuery(query.toString()).setLong("moduleId", moduleId).setCacheable(true).list();
+	    List<Modules> modulesList = session.createQuery(query.toString()).setLong("moduleId", moduleId).list();
       
 	    return modulesList;
 	}
@@ -120,7 +120,7 @@ public class ModulesDaoImpl implements ModulesDao{
 			 
 		String query = "select modules.id from Modules modules where modules.id IN (:modulesList) ";
 		List<Long> modulesIdList =  session.createQuery(query.toString()).setParameterList("modulesList", modulesList)
-									.setCacheable(true).list();
+									.list();
 		
 		return modulesIdList;
 

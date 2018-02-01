@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +27,6 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "HOLIDAY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "holiday")
 public class Holiday implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -35,8 +35,7 @@ private static final long serialVersionUID = 1L;
 	@GenericGenerator(name = "uuid2" ,strategy = "uuid2")
 	private String id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	

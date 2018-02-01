@@ -857,10 +857,98 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()) && (jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))) || ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
 		 }
-		 
+		 if(jsonObj.has("guestApplicant") && !isNullOrEmpty(jsonObj.getString("guestApplicant")) && ("guestApplicant".equalsIgnoreCase(jsonObj.getString("guestApplicant")))){
+		 sendEmailToGuestUserForAppliedJob(candidate, requirement);
+		 }
 		return requirementSubmission;
 		
 	}
+	
+	
+	public void sendEmailToGuestUserForAppliedJob(Candidate user, Requirement requirement) throws Exception {
+		
+		 
+		 StringBuilder nameBuilder = new StringBuilder();
+		 StringBuilder expBuilder = new StringBuilder();
+		 StringBuilder locationBuilder = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String guestUserName = null;
+		 String experience = null;
+		 String location = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 guestUserName = nameBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 guestUserName = nameBuilder.append(user.getFirstName()).toString();
+		 }
+		 
+		 if(!isNullOrEmpty(requirement.getMinExp()) && !isNullOrEmpty(requirement.getMaxExp())){
+			 experience = expBuilder.append(requirement.getMinExp()).append(" to ").append(requirement.getMaxExp()).append(" Years").toString();
+		 }else if(!isNullOrEmpty(requirement.getMinExp())){
+			 experience = expBuilder.append(requirement.getMinExp()).append(" Years").toString();
+		 } else if(!isNullOrEmpty(requirement.getMaxExp())){
+			 experience = expBuilder.append(requirement.getMaxExp()).append(" Years").toString();
+		 }else{
+			 experience = "Not Mentioned";
+		 }
+		 
+		 if(!isNullOrEmpty(requirement.getCity())){
+			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").append(requirement.getCity()).toString();
+		 }else if(!isNullOrEmpty(requirement.getState()) && isNullOrEmpty(requirement.getCity())){
+			 location = locationBuilder.append(requirement.getCountry()).append(", ").append(requirement.getState()).append(", ").toString();
+		 }else{
+			 location = locationBuilder.append(requirement.getCountry()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setCreatedBy("sladmin");
+		 if (environment.equalsIgnoreCase("prod")) {
+			 emailMessage.setFromName("info@sourcelead.com");
+		 }else{
+			 emailMessage.setFromName("qa@sourcelead.com");	 
+		 }
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("guestUserName", guestUserName);
+		 globalVarsMap.put("employerName", requirement.getPostedOrgName());
+		// globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		 globalVarsMap.put("experience", experience);
+		 globalVarsMap.put("location", location);
+		 globalVarsMap.put("guestUserEmail", user.getEmail());
+		 
+		 if(requirement.getJobId() !=null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementTitle",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		 }
+		 
+		 else{
+			 globalVarsMap.put("requirementTitle", requirement.getJobTitle()); 
+			 
+		 }
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.GUEST_APPLIED_TO_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+	}
+	
 
 	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
@@ -2347,8 +2435,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String subject = "";
 			String body = "";
 			//String signature = user.getFirstName();
-			String url = "";
-			
+			String url = sourceleadUrl;
 			RequirementSubmission reqSub=null;
 			List<String> submissionIsd = Arrays.asList(submissionId);
 			for(String subIds :submissionIsd){

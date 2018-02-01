@@ -33,6 +33,7 @@ import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -206,7 +207,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception {
+	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,CandidateDTO candidateDTO) throws Exception {
 		
 		String[] registredModules =  modules.split(",");
 		Org org = null;
@@ -298,7 +299,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		 MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetails(registration,user);
 		 }

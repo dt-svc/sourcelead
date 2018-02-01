@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmission")
 public class RequirementSubmission implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,38 +44,39 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
    	private Candidate vendorCandidateId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne 
+	
+	@ManyToOne(fetch = FetchType.LAZY) 
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
 	
@@ -179,7 +179,7 @@ public class RequirementSubmission implements Serializable{
 	@Type(type="text")
 	private String updatedUser;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
@@ -540,26 +540,26 @@ public class RequirementSubmission implements Serializable{
     @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
 	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementInterviewHistory> requirementInterviewHistory;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOffers> requirementOffersList;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;
     

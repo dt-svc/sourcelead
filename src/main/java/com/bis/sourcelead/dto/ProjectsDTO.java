@@ -60,6 +60,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private Double flatPercentage;
 	
 	private String staticPath;
+	
+	private long approverUserId;
 
     private List<Map<String, String>> fileInfo;
 
@@ -825,7 +827,15 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.clientlocationId = clientlocationId;
 	}
 
-	
+	public long getApproverUserId()
+	{
+		return approverUserId;
+	}
+
+	public void setApproverUserId(long approverUserId)
+	{
+		this.approverUserId = approverUserId;
+	}
 	
 	
 }

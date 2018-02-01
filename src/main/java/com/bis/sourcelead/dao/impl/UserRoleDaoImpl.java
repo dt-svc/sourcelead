@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ConnectionsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -42,6 +46,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private ConnectionsDao connectionsDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -69,7 +76,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			invoiceFrequency = "Weekly";
 		 }
 		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp  where emp IS NOT NULL and proj.invoiceFrequency = :invoiceFrequency";
-		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
+		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
 			 logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+projectMemberList.size());
@@ -85,7 +92,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
 		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where emp IS NOT NULL and proj.id = :projectId and loc.id = :locationId ";
-		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setCacheable(true).list(); 
+		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
 			 projectMemberSet = new HashSet<>(projectMemberList);
@@ -102,7 +109,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			invoiceFrequency = "Weekly";
 		 }
 		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projectMemberCandidteId can left join fetch pm.employee emp where loc.id = :locationId and proj.invoiceFrequency = :invoiceFrequency and proj.id IN (select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy where hierarchy.approverUserId.id = :approverUserId) ";
-		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).setLong("locationId", locationId).setLong("approverUserId", approverUserId).setCacheable(true).list(); 
+		 projectMemberList = session.createQuery(query).setString("invoiceFrequency", invoiceFrequency).setLong("locationId", locationId).setLong("approverUserId", approverUserId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
 			 logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+projectMemberList.size());
@@ -121,7 +128,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	      Date previousDate = CalendarUtil.getCurrentWeekDay("MON"); 
 	      java.sql.Date previousDayDate = new java.sql.Date(previousDate.getTime()); 
 	      String query = "from User user left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.InvoiceFrequency = 'Weekly' and emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where ts.startDate = :startDate and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))"; 
-	      List<UserRole> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).setCacheable(true).list(); 
+	      List<UserRole> userList = session.createQuery(query.toString()).setDate("startDate", previousDayDate).list(); 
 	      logger.debug("The Total Employees which are not submitted the Time sheets within a week are : "+userList.size());
 	      HashSet<UserRole> userSet  = null;
 			if(userList != null && !userList.isEmpty()){
@@ -157,7 +164,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getPrimaryRole By UserId start");
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations where userRole.user.id=:userId and userRole.isPrimary = '1' ")
-				.setLong("userId", userId).setCacheable(true).list();
+				.setLong("userId", userId).list();
 		logger.debug("getPrimaryRole By UserId start");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -175,7 +182,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getNotPrimaryUser By UserId start");
 		userRole = session
 				.createQuery("from UserRole userRole where userRole.user.id=:userId and userRole.isPrimary = '0' and userRole.userState != 'INACTIVE' ")
-				.setLong("userId", userId).setCacheable(true).list();
+				.setLong("userId", userId).list();
 		logger.debug("getNotPrimaryUser By UserId start");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -204,7 +211,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session.createQuery(
 				"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "
 						+ subQuery + " ")
-				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
+				.setLong("locationId", locationId).setLong("userId", userId).list();
 	}
 
 	@Override
@@ -226,7 +233,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session
 				.createQuery("Select userRole from UserRole userRole where userRole.roles.id = :roleId "
 						+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' " + subQuery + "  ")
-				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
+				.setLong("roleId", roleId).setLong("locationId", locationId).setLong("userId", userId).list();
 	}
 
 	@Override
@@ -248,7 +255,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return session.createQuery("Select userRole from UserRole userRole where " + "((userRole.user.firstName LIKE '"
 				+ userName + "%') OR (userRole.user.lastName LIKE '" + userName + "%') OR (userRole.user.email LIKE '" + userName + "')) "
 				+ "and userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' " + subQuery + "  ")
-				.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
+				.setLong("locationId", locationId).setLong("userId", userId).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -355,7 +362,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         	
         }
 		List<UserRole>  list =null;
-		list = query.setCacheable(true).list();
+		list = query.list();
 		if(viewType != null && viewType.equalsIgnoreCase(Constants.VIEW_TYPE)){
 			return list;
 		}else{
@@ -386,7 +393,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				.createQuery(
 						"Select userRole from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and "
 								+ " userRole.user.id <> '1' and userRole.userState = :userState  ")
-				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).setCacheable(true).list();
+				.setLong("locationId", locationId).setString("userState", userState).setLong("userId", userId).list();
 	}
 
 	@Override
@@ -395,7 +402,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where role.roleName = 'ROLE_ADMIN'";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setCacheable(true).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
 		return userRoleList;
 
 	}
@@ -424,7 +431,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRoleList = session.createQuery(query.toString())
 				.setLong("roleId", roleId)
 				.setParameterList("projectIds", projectIds)
-				.setCacheable(true).list();
+				.list();
 		return userRoleList;
 
 	}
@@ -435,7 +442,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("..getUsersCountByOrgLocationID() Method Started..");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select count(*) from UserRole userRole where userRole.orgLocations.id = :orgLocationId ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("..getUsersCountByOrgLocationID() Method Ended..");
 		return results.get(0);
 	}
@@ -450,7 +457,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("isUserAdmin By UserId start");
 		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'ROLE_SOURCELEAD_ADMIN') and userRole.user =:userId")
 						   .setLong("userId", userId)
-						   .setCacheable(true).list();
+						   .list();
 		
 		logger.debug("isUserAdmin By UserId End");
 		
@@ -470,7 +477,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("isUserAdmin By UserId start");
 		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where (role.roleName = 'ROLE_ADMIN' OR  role.roleName = 'ROLE_SOURCELEAD_ADMIN') and userRole.user =:userId and userRole.orgLocations.id = :orgLocationId")
 						   .setLong("userId", userId)
-						   .setLong("orgLocationId", orgLocationId) .setCacheable(true).list();
+						   .setLong("orgLocationId", orgLocationId) .list();
 		
 		logger.debug("isUserAdmin By UserId End");
 		
@@ -491,7 +498,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
 						+ "left join fetch userRole.user where userRole.user.email = :email and userRole.orgLocations.id = :locationId")
-				.setString("email", email).setLong("locationId", locationId).setCacheable(true).list();
+				.setString("email", email).setLong("locationId", locationId).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -507,9 +514,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserRoleByUserIdAndLocationId method  start");
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles left join fetch userRole.reportingManager "
 						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
-				.setLong("userId", userId).setLong("locationId", locationId).setCacheable(true).list();
+				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserRoleByUserIdAndLocationId method ends");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -524,7 +531,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("isUserActive By UserId start");
-		userRole = session.createQuery("from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' ").setLong("userId", userId).setCacheable(true).list();
+		userRole = session.createQuery("from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' ").setLong("userId", userId).list();
 		logger.debug("isUserActive By UserId End");
 		Boolean flag = false;
 		if (userRole.size() > 0) {
@@ -538,7 +545,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<Long> getAllUserIdsByReportingManagerId(Long reportingManagerId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select userRole.user from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.userState != 'INACTIVE' and userRole.userState != 'NOT_LOGGEDIN' " ;
-	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setCacheable(true).list();
+	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).list();
         return userIds;
         
 	}
@@ -549,7 +556,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user left join fetch userRole.orgLocations where userRole.user.id = :userId and userRole.userState != 'INACTIVE' and userRole.isMailSent = 'Y' ";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 
 	}
@@ -565,7 +572,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId ";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 
 	}
@@ -579,7 +586,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getUserByUserId By UserId start");
 		userRole = session
 				.createQuery("from UserRole userRole where userRole.user.id = :userId  ")
-				.setLong("userId", userId).setCacheable(true).list();
+				.setLong("userId", userId).list();
 		logger.debug("getUserByUserId By UserId start");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -597,7 +604,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getUserByUserId By UserId start");
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles where userRole.id = :id  ")
-				.setLong("id", id).setCacheable(true).list();
+				.setLong("id", id).list();
 		logger.debug("getUserByUserId By UserId start");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -611,7 +618,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public UserRole getUserRoleByUserId(Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole where userRole.user.id=:userId";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList.get(0);
 	}
 
@@ -625,7 +632,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
 						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
-				.setLong("userId", userId).setLong("locationId", locationId).setCacheable(true).list();
+				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -657,11 +664,11 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		if(invoiceFrequency !=null && !"".equalsIgnoreCase(invoiceFrequency)){
 			//String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.invoiceFrequency = :invoiceFrequency and pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
 			String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp where proj.invoiceFrequency = :invoiceFrequency and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))";
-			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", previousDateFri).setString("invoiceFrequency", invoiceFrequency).setCacheable(true).list(); 
+			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", previousDateFri).setString("invoiceFrequency", invoiceFrequency).list(); 
 		}else{
 			String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.employee emp where pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where  (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))";
 			//String query = "from UserRole userRole left join fetch userRole.user user left join fetch userRole.orgLocations orglocation where user.id IN (select emp.user from Employees emp where emp.id IN(select pm.employee from ProjectMembers pm where pm.projects.orgLocationsId.id = orglocation.id and pm.id IN(select ts.projectMembers from TimesheetSubmissions ts where (ts.startDate > :startDate and ts.startDate < :endDate ) and ts.status ='1' and ts.Id IN(select sah.submissionId from SubmissionApproverHierarchy sah where sah.submissionStatus = 'NEW'))))";
-			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", previousDateFri).setCacheable(true).list(); 
+			projectMemberList = session.createQuery(query).setDate("startDate", previousDayDate).setDate("endDate", previousDateFri).list(); 
 		}
 		
 		logger.debug("The Total Employees which are not submitted the Time sheets within a week are : ***********************"+projectMemberList.size());
@@ -677,7 +684,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "select userRole.user.id from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId  " ;
-	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
+	    List<Long> userIds = session.createQuery(query).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).list();
         return userIds;
         
 	}
@@ -687,7 +694,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId ";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).setCacheable(true).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).list();
 		return userRoleList;
 	}
 
@@ -700,7 +707,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				+ " (userRole.user.id IN (select os.vendorUser.id from OrgSpoc os where os.clientUser.id =:loginUserId and  os.clientLocationId.id = :orgLocationId) "
 				+ "OR userRole.user.id IN (select os.clientUser.id from OrgSpoc os where os.vendorUser.id =:loginUserId and  os.vendorLocationId.id = :orgLocationId) )"
 				+ "OR (userRole.orgLocations.id =:orgLocationId) GROUP BY user.id ";
-		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setLong( "loginUserId", loginUserId).setCacheable(true).list();
+		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setLong( "loginUserId", loginUserId).list();
 		return usersList;
 	}
 
@@ -709,7 +716,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole where userRole.orgLocations.id = :orgLocationId and userRole.userState = 'ACTIVE' ";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).list();
 		return userRoleList;
 	}
 
@@ -724,7 +731,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where userRole.user =:userId "
 				+ "and userRole.orgLocations.id = :orgLocationId and userRole.isPrimary = '1' ")
 						   .setLong("userId", userId)
-						   .setLong("orgLocationId", orgLocationId) .setCacheable(true).list();
+						   .setLong("orgLocationId", orgLocationId) .list();
 		
 		logger.debug("isUserAdmin By UserId End");
 		
@@ -745,7 +752,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
 						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId and userRole.userType = :userType ")
-				.setLong("userId", userId).setLong("locationId", locationId).setString("userType", userType).setCacheable(true).list();
+				.setLong("userId", userId).setLong("locationId", locationId).setString("userType", userType).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -764,7 +771,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getIsProfessionalOrRecruiterExistsWithEmailAndUserType method  start");
 		userRole = session
 				.createQuery("from UserRole userRole where userRole.user.email = :email and userRole.userType = :userType ")
-				.setString("email", email).setString("userType", userType).setCacheable(true).list();
+				.setString("email", email).setString("userType", userType).list();
 		logger.debug("getIsProfessionalOrRecruiterExistsWithEmailAndUserType method ends");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -780,7 +787,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
 						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId and userRole.userType <> 'Admin' GROUP BY  userRole.userType")
-				.setLong("userId", userId).setLong("locationId", locationId).setCacheable(true).list();
+				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserRoleByUserIdAndLocationId method ends");
 		if (userRole.size() > 0) {
 			return userRole.get(0);
@@ -795,7 +802,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
-		userRole = session.createQuery("from UserRole userRole where userRole.verificationUUID = :uuid").setString("uuid", uuid).setCacheable(true).list();
+		userRole = session.createQuery("from UserRole userRole where userRole.verificationUUID = :uuid").setString("uuid", uuid).list();
 		if (userRole.size() > 0) {
 			return userRole.get(0);
 		}
@@ -841,13 +848,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
 			Query query = session.createQuery(listQuery+query1);
 			if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();	
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();	
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			}  else if(!"".equalsIgnoreCase(userState)){
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
 			}else {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).setCacheable(true).list();
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
 			}
 			
 			
@@ -855,13 +862,13 @@ public class UserRoleDaoImpl implements UserRoleDao {
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
 			Query query2 = session.createQuery(queryCount+query1);
 			if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).list();
 			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).list();
 			} else if(!"".equalsIgnoreCase(userState)){
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).list();
 			}else {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setCacheable(true).list();
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).list();
 			}
 			  
 		if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -887,34 +894,61 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<UserRoleDTO> getUserListForConnections(String searchByName, Integer offset,Long userId) throws Exception {
+	public List<ConnectionsDTO> getUserListForConnections(String searchByName, Integer offset,Long userId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		List<ConnectionsDTO> usersList = new ArrayList<ConnectionsDTO>();
 		String searchByValue = searchByName.trim();
 		StringBuilder subQuery = new StringBuilder("");
+		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',IFNULL(u.last_name, '')) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
+				"((select count(c.from_uid) from connections c where c.to_uid = u.id "+
+				"and (c.from_uid in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.from_uid in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from connections c where c.FROM_UID = u.id "+
+				"and (c.TO_UID in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"(select c.CONNECTION_UID from connections c where (c.FROM_UID = :loginUserId and c.TO_UID = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID, " +
+				"(select count(*) from connections c where c.from_uid = :loginUserId and c.to_uid = u.id and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
+				"(select count(*) from connections c where c.from_uid = u.id and c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
+				"from user u, user_role ur, org_locations ol " + 
+				"where ur.user_id = u.id and ur.org_locations_id = ol.id " + 
+				"and u.id not in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.id not in (select c.TO_UID from connections c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.id != :loginUserId and ur.IS_PRIMARY = 1";
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
-			subQuery.append(" and( (userRole.user.firstName like '" + searchByValue + "%' OR userRole.user.lastName like '%" + searchByValue + "' )")
-			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + searchByValue.replaceAll("[\\s]+", "").trim() + "%')" )
-			   .append("OR (concat(userRole.orgLocations.orgLocationName) like '%" + searchByValue + "%')" )
-			   .append("OR (concat(userRole.user.email) like '%" + searchByValue +"%')")
-			   .append("OR userRole.roles.displayName like '%" + searchByValue + "%' )");
+			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.email like :searchByValue)");
+			sqlQuery = sqlQuery.concat(subQuery.toString());
 		}
+		sqlQuery = sqlQuery.concat(" order by count DESC, userName");
 		
-		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles left join fetch userRole.orgLocations "
-				+ " where userRole.isPrimary = '1' and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId "+subQuery.toString();
-		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
-		
-		/*if(userRoleList.size() >= offset){
-			if(userRoleList.size() > offset + 18){
-				userRoleList = userRoleList.subList(offset, (offset+18));
-			}else{
-				userRoleList = userRoleList.subList(offset, (  offset + (userRoleList.size() - offset)));
-			}
-			*/
-			if(userRoleList != null && userRoleList.size() > 0) {
+		Query queryString = session.createSQLQuery(sqlQuery);
+		queryString.setParameter("loginUserId", userId); //setting same parameters multiple times in query
+		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
+			queryString.setParameter("searchByUserType",searchByValue)
+			.setParameter("searchByValue", "%" + searchByValue + "%");
+		}
+		System.out.println(queryString.getQueryString());
+		//Pagination                                                              //Converting custom DTO class list from Sql result 
+		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
+		usersList = queryString.list();
+		if(usersList.isEmpty()) {
+			ConnectionsDTO connectionsDTO = new ConnectionsDTO();
+			connectionsDTO.setCountFlag("true");
+			usersList.add(connectionsDTO);
+		}
+		System.out.println(usersList.get(0));
+		Map<String, BigInteger> countValues = connectionsDao.getCountValuesForSentReceivedConnected(userId);
+		if(!usersList.isEmpty()) {
+			usersList.get(0).setSentCount(countValues.get("sentCount"));
+			usersList.get(0).setReceivedCount(countValues.get("receivedCount"));
+			usersList.get(0).setConnectedCount(countValues.get("connectedCount"));
+		}
+		return usersList;
+	}
+			/*if(userRoleList != null && userRoleList.size() > 0) {
 				int requestSentCount = 0;
 				int requestReceivedCount = 0;
 				int connectedCount = 0;
@@ -943,7 +977,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 						userName = userName.append(userRole.getUser().getFirstName());
 					}
 					String queryMutual = "select count(connections) from Connections connections where (connections.fromUser.id = :userId or connections.toUser.id = :userId) and connections.fromUser.id <> :loginUserId and connections.toUser.id <> :loginUserId and connections.connectionStatus = :connectionStatus";
-					Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", userId).setLong("userId", userRole.getUser().getId()).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).setCacheable(true).uniqueResult();
+					Long count = (Long) session.createQuery(queryMutual).setLong("loginUserId", userId).setLong("userId", userRole.getUser().getId()).setString("connectionStatus", ConnectionStatus.CONNECTED.toString()).uniqueResult();
 					userRoleDTO.setMutualCount(count);
 					userRoleDTO.setUserName(userName.toString());
 					userRoleDTO.setUserRoleName(userRole.getRoles().getDisplayName());
@@ -985,7 +1019,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			return  null;
 		}
 		
-	}
+	}*/
 	
 	/*
      @SuppressWarnings("unchecked")
@@ -1076,7 +1110,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
         	
         }
 		List<UserRole>  list =null;
-		list = query.setCacheable(true).list();
+		list = query.list();
 		if(viewType != null && viewType.equalsIgnoreCase(Constants.VIEW_TYPE)){
 			return list;
 		}else{

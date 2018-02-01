@@ -357,6 +357,7 @@ public class Constants {
 	public static final String UPLOADED_REQUESTED_DOCUMENTS = "UploadedRequestForDocumentsToCandidates";
 	public static final String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static final String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
+	public static final String GUEST_APPLIED_TO_REQUIREMENT = "Guest Applied To Requirement";
 	public static final String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
 	public static final String ADD_NEW_USER_CONTACT = "Add New User Contact";
 	public static final String CROWD_SOURCING_SOURCE_SELF = "SELF";
@@ -984,6 +985,9 @@ public class Constants {
 	public static final String HOLIDAY_RESTRICTED = "Restricted";
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
+	
+	public static final String LEAVE_EMAIL_ON_BEHALF_EMAIL = "OnBehafLeaveEmail";
+	public static final String LEAVE_EMAIL_ON_BEHALF_NOTIFICATION = "OnBehafLeaveNotification";
 
 	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
 	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";

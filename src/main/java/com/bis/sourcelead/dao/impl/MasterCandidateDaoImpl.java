@@ -78,14 +78,14 @@ private static final Logger logger = LoggerFactory.getLogger(MasterCandidateDaoI
 /*		if(!isNullOrEmpty(phoneNumber)){
 			query = "from MasterCandidate masterCandidate  where (masterCandidate.email =:email  OR  masterCandidate.phoneNumber =:phoneNumber )";
 			masterCandidateList = session.createQuery(query).setString("email", email)
-																 .setString("phoneNumber", phoneNumber).setCacheable(true).list();
+																 .setString("phoneNumber", phoneNumber).list();
 		}else{
 			query = "from MasterCandidate masterCandidate  where (masterCandidate.email =:email)";
-			masterCandidateList = session.createQuery(query).setString("email", email).setCacheable(true).list();
+			masterCandidateList = session.createQuery(query).setString("email", email).list();
 		}*/
 		
 		query = "from MasterCandidate masterCandidate  where (masterCandidate.email =:email)";
-		masterCandidateList = session.createQuery(query).setString("email", email).setCacheable(true).list();
+		masterCandidateList = session.createQuery(query).setString("email", email).list();
 		
 		MasterCandidate masterCandidate = null;
 		if(masterCandidateList != null && !masterCandidateList.isEmpty())

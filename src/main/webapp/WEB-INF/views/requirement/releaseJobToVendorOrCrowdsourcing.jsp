@@ -178,10 +178,8 @@
             <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
         
 
-            <div class="share mt10">
-		   	<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('linkedin');"><i class="fa-2x fa fa-linkedin-square"></i></a>
-			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('twitter');"><i class="fa-2x fa fa-twitter-square paddingLeft paddingRight"></i></a>				  
-			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('facebook');"><i class="fa-2x fa fa-facebook-square"></i></a>
+            <div class="share mt10"> 
+			<div class="addthis_inline_share_toolbox_s1a2" data-url="${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"></div>
 			</div>
             </div>
 
@@ -257,6 +255,7 @@ $(document).ready(function(){
 	getVendorLists();
 	var referLink = "${sourceleadUrl}/openJobsPublicPage?requirementUUID=${requirementUUID}"
 	$("#referralLink").val(referLink);
+	 var sourceleadShareUrl ='${sourceleadShareUrl}';
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){
 		openVendors();
@@ -1325,5 +1324,5 @@ $('#selectorReleaseMsg').delay(2000).fadeOut('slow');
 .footer-area {
 display: none;}
 </style>
-
+<script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

@@ -20,7 +20,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "TABS_ACTIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class TabActions implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -34,12 +33,12 @@ public class TabActions implements Serializable{
 	@Type(type="text")
 	private String actionName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TAB_ID", nullable = false)
 	private Tabs tabs;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MODULE_ID", nullable = false)
 	private Modules modules;

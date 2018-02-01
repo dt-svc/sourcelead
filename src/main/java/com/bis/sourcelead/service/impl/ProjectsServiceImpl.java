@@ -588,12 +588,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 	}
 	
 	private Set<ProjectDocumentFolder> storeDocumentFolder(Projects projects, User user) throws Exception {
-		HashSet<ProjectDocumentFolder> projectDocumentFolderList = new HashSet<ProjectDocumentFolder>();
-		ProjectDocumentFolder pdf  = null;
+		Set<ProjectDocumentFolder> projectDocumentFolderList = new HashSet<ProjectDocumentFolder>();
+		ProjectDocumentFolder pdf = null;
 		if(projects.getId() != null) {
 			pdf = projectDocumentFolderService.getProjectDocumentFolderByProjectId(projects.getId());
-		}else {
-			pdf = new ProjectDocumentFolder();
+		}
+		if(pdf == null){
+			pdf  = new ProjectDocumentFolder();
 		}
 		pdf.setProjectId(projects);
 		pdf.setFoderName("Default Folder");
@@ -738,6 +739,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
+			projectTasks.setPercentage(0);
 			projectTasks.setProjectId(projects);
 			set.add(projectTasks);
 			generatedId++;

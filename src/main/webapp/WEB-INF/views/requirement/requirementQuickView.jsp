@@ -19,8 +19,7 @@
 				<div class="col-md-3">
 					<div class="company-logo">
 						<div class="imageParent">
-							<img onerror="predefineOrgImage(this);"
-								src="${sourceleadUrl}/displayOrgImage/${requirement.orgLocationId.org.orgCode}"
+							<img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${requirement.orgLocationId.org.fileUrl}"
 								alt="Company" title="Company Logo" class="img-responsive">
 						</div>
 				</div>
@@ -113,7 +112,9 @@
 					<div class="collpasePannel clearfix mt10"> 
 		              <a href="javascript:void(0)" class="assignedGrid1"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount1">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>  
 		           	  <a href="javascript:void(0)" class="assignedGrid2"><h4 class="pull-left">Assigned Members:</h4><div class="pull-left paddingLeft"><strong class="ml pull-left mt10" id="forAssignedToCount2">${requirementAssignToListCount}</strong></div><i title="view List" class="fa fa-sort-down pull-right"></i></a>
-		           	  <span class="pull-right cursorPointer edit-assignedMembers" title="Edit Assigned Members"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersListForEdit(${requirement.id});"><i class="fa fa-edit"></i></a></span>
+		           	  <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">
+		           	  	<span class="pull-right cursorPointer edit-assignedMembers" title="Edit Assigned Members"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersListForEdit(${requirement.id});"><i class="fa fa-edit"></i></a></span>
+		           	  </sec:authorize>
 		           </div> 
 		          
 			            

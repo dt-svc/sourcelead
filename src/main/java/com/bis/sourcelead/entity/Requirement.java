@@ -18,15 +18,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -35,7 +32,6 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	/**
@@ -44,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 */
 	@Entity
 	@Table(name = "REQUIREMENT")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
 	public class Requirement implements Serializable{
 
 	
@@ -570,6 +565,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Column(name = "FILE_URL")
 	private String fileURL;
+	
+	@Transient
+	@JsonProperty
+	private String assignedMembersCount;
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -1905,5 +1904,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.experienceLevel = experienceLevel;
 	}
 
+	public String getAssignedMembersCount()
+	{
+		return assignedMembersCount;
+	}
+
+	public void setAssignedMembersCount(String assignedMembersCount)
+	{
+		this.assignedMembersCount = assignedMembersCount;
+	}
 	
 }

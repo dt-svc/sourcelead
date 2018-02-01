@@ -14,6 +14,9 @@
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jquery-ui.css" rel="stylesheet">
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
@@ -21,15 +24,13 @@
 <link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
 <script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+
 
 <style>
 .viewTemplate {
@@ -186,7 +187,7 @@ $(document).ready(function() {
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
-	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
+	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId);
 	});
 </script>
 <script>
@@ -199,6 +200,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<h3>Application Form</h3>';
 		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
+		result = result + '<input type="hidden" id="guestApplicant" name="guestApplicant" value="guestApplicant">';
 		
 		result = result + '<div class="row">';
 		result = result + '<div class="venk clearfix">';

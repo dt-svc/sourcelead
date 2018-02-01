@@ -37,7 +37,7 @@ public class WebgeocitiesDaoImpl implements WebgeocitiesDao{
 		List<Webgeocities> citiesList = null;
 		if(stateCodes != null && !stateCodes.isEmpty()){
 			Query query= session.createQuery("from Webgeocities cities where cities.stateCode IN :stateCodes and cities.countryCode = :countryCode");
-			citiesList = query.setParameterList("stateCodes", stateCodes).setString("countryCode", countryCode).setCacheable(true).list();
+			citiesList = query.setParameterList("stateCodes", stateCodes).setString("countryCode", countryCode).list();
 		}
 		
 		return citiesList;

@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -41,7 +42,7 @@ public interface LeaveService {
 
 	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
 
-	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc) throws Exception;
+	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception;
 	
 	void LeaveCancelEmailToUser(User loginUser, LeaveManagementHistory leaveManagementHistory,String reason) throws Exception;
 
@@ -65,4 +66,9 @@ public interface LeaveService {
 
 	List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status);
 
+	List<Leave> getLeavesListByTypeIdAndDuration(String leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate);
+
+	MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves);
+	
+	MonthlyLeaves getMonthlyLeavesByLeaveId(String leaveId);
 }

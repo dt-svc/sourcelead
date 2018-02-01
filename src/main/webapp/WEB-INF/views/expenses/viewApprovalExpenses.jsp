@@ -22,11 +22,31 @@
    <div id='reOpenPopup'></div>
     <div id='reOpenRejectedPopup'></div>
     <div class="project_tabs"> 
-            <div class="project_tabs_inn_table">
+            <div class="clearfix">
 				<div class="project_details project_detailsExp">
                 
                 
-					<div class="Expdit pull-right mr">
+					<div class="Expdit pull-right">
+					<div class="timeNewSe mr25">
+						  <c:if test="${submissionStatus == 'NEW'}">
+						       <b class='proj_new pull-right'>${submissionStatus}</b>
+						  </c:if>
+						  <c:if test="${submissionStatus == 'DRAFT'}">
+						       <b class='proj_draft pull-right' >${submissionStatus}</b>
+						  </c:if>
+						   <c:if test="${submissionStatus == 'SUBMITTED'}">
+						       <b class='proj_process pull-right' style='width: 90% !important'>${submissionStatus}</b>
+						  </c:if>
+						   <c:if test="${submissionStatus == 'APPROVED'}">
+						       <b class='proj_active pull-right'>${submissionStatus}</b>
+						  </c:if>
+						  <c:if test="${submissionStatus == 'REJECTED'}">
+						       <b class='proj_closed pull-right'>${submissionStatus}</b>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
+					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
+						      </i>
+						  </c:if>
+						</div>
 					
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
@@ -45,13 +65,14 @@
 					     </c:if> 
 					     
 					     <c:if test="${isReopenButtonVisible && isSahReopened && !isSuperUser && !empty eah.reopenReason}">
-					          <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
+						      <p class=' ml' style='width: 165px;'>Re-Open Request sent</p>
+						      <i class=' glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 						      </i>
-						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
+						      <!-- <p class='pull-right ml' style='width: 165px;'>Re-Open Request sent<i class='pull-right glyphicon glyphicon-comment text-danger cursorPointer'></i></p> -->
 					     </c:if>
 					      <c:if test="${isReopenButtonVisible && submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
-					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
+					           <i class='glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
 					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
@@ -61,26 +82,7 @@
 					           </div> 
 					      </c:if>
 					     
-					     <div class="timeNewSe pull-right">
-						  <c:if test="${submissionStatus == 'NEW'}">
-						       <b class='proj_new pull-right'>${submissionStatus}</b>
-						  </c:if>
-						  <c:if test="${submissionStatus == 'DRAFT'}">
-						       <b class='proj_draft pull-right' >${submissionStatus}</b>
-						  </c:if>
-						   <c:if test="${submissionStatus == 'SUBMITTED'}">
-						       <b class='proj_process pull-right' style='width: 90% !important'>${submissionStatus}</b>
-						  </c:if>
-						   <c:if test="${submissionStatus == 'APPROVED'}">
-						       <b class='proj_active pull-right'>${submissionStatus}</b>
-						  </c:if>
-						  <c:if test="${submissionStatus == 'REJECTED'}">
-						       <b class='proj_closed pull-right'>${submissionStatus}</b>
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
-					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
-						      </i>
-						  </c:if>
-						</div>
+					     
 					</div>                
 
 					   <ul class="UiPado">

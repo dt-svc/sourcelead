@@ -46,7 +46,7 @@
 	type="text/css">
 
 <script
-	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU"
+	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
 	type="text/javascript"></script>
 <script
 	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
@@ -274,8 +274,13 @@ a.alertBtn {
 
 
 <!-- Content Area -->
-<<jsp:include page="../staticHeader.jsp" />
+<jsp:include page="../staticHeader.jsp" />
 <div class="innerPageSearch"> 
+<c:if test="${!empty guestusermsg}">
+	        <div class="success_pop" id="guestselector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${guestusermsg}</span>
+			</div>
+	     </c:if>
 	<section class="searchWrap" id="orgProfile" style="display:block">
 		<span><i class="fa fa-search"></i><input type="text"
 			placeholder="Search" id="openJobsRequirementTitleId"
@@ -300,6 +305,7 @@ a.alertBtn {
 			<b id="ADS">Advanced Search</b>
 		</h3>
 		<div class="clear"></div>
+		
 	</section>
 	
 </div>
@@ -884,6 +890,8 @@ a.alertBtn {
 
 <!-- this script is for load more...  -->
 <script>
+$("#guestselector").fadeIn(200);
+$('#guestselector').delay(2000).fadeOut('slow');
 	function loadMoreReq(){
     	var avilableCount = $("#openJobsOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(10); 
@@ -1221,7 +1229,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1810,7 +1818,11 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';					
 										result = result +'	<span>';
 										result = result +'	<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
-										result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
+										if(experience == 'undefined'){
+											result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
+										}else{
+											result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';
+										}
 										result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 										result = result +'	</span>';
 										result = result +'	</div>';
@@ -1947,6 +1959,7 @@ function getCities(){
 
 
 <script type="text/javascript">
+$.noConflict();
     	   var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -2299,7 +2312,7 @@ $(".LettSelec a").click(function(){
 <!-- Create Alert modal Popup -->
 <div class="pop_mask"></div>
 <!-- Modal -->
-<div class="modal_createalert" id="myModal" role="dialog">
+<div class="modal_createalert" id="myModal" role="dialog" >
 	<div id="createAlertPopUpDiv"></div>
 </div>
 <!-- Create Alert modal Popup Ends -->
@@ -2314,6 +2327,8 @@ function alertClose(){
 	$(".pop_mask").fadeOut();
 	$(".modal_createalert").removeClass("modal");
 	$(".modal.modal_createalert").fadeOut();
+	document.getElementById("myModal").style.display="none";
+	
 }
 </script>
 <!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
@@ -2715,6 +2730,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 
 
 <script type="text/javascript">
+jQuery.noConflict( true );
 (function ($) {
    $.fn.serializeFormJSON = function () {
 
@@ -3089,7 +3105,7 @@ function forgotPassword(){
  function loginPopup(requirementUUID){
 	 var result = "";
 	 result = result +'<div class="pull-left">';
-	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply as Guest User</button>';
+	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply</button>';
 	 result = result +'</div>';
 	 $("#gustLoginId").empty();
 	 $("#gustLoginId").append(result);

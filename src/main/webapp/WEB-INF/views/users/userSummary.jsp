@@ -1098,7 +1098,8 @@ function getChangeRole(userId,userRoleId){
                             url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
                             	if(result && result === "DataMissing") {
-                            	$("#update_user").attr("disabled", "disabled");
+                            		$("#update_user").removeAttr("disabled");
+            						$("#update_user").removeAttr('button').val('Update');	
            						showError("Invalid data");
            					}else{
                             	 $("#selectoruser").removeAttr("style");
@@ -1139,7 +1140,8 @@ function getChangeRole(userId,userRoleId){
                                   url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
                                 	  if(result && result === "DataMissing") {
-                                  		$("#update_user").attr("disabled", "disabled");
+                                		$("#update_user").removeAttr("disabled");
+                  						$("#update_user").removeAttr('button').val('Update');	
                  						showError("Invalid data");
                  					}else{
                                 	  $("#selectoruser").removeAttr("style");
@@ -1169,7 +1171,8 @@ function getChangeRole(userId,userRoleId){
                       url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
                     	  if(result && result === "DataMissing") {
-                      		$("#update_user").attr("disabled", "disabled");
+                    		$("#update_user").removeAttr("disabled");
+      						$("#update_user").removeAttr('button').val('Update');	
      						showError("Invalid data");
      					}else{
                     	  $("#selectoruser").removeAttr("style");
@@ -3149,7 +3152,7 @@ function profileDetails(candidateId){
 			             result = result + '<div id="tab-10" class="project_tabs_inn">';
 			             result = result+'     </div>';
 						 
-						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
+						 result = result + '<div id="tab-8" class="project_tabs_inn" >';
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';

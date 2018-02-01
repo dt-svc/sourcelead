@@ -273,6 +273,7 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   ProjectApproverHierarchy pah = projectApproverHierarchyService.getProjectApproverByProjectId(projectId);
 		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
@@ -327,6 +328,7 @@ public class ProjectsDashboardRestController {
 						
 					}
 				}
+				ProjectDetails.setApproverUserId(pah.getApproverUserId().getId());
 				ProjectDetails.setClientsList(clientsDTOList);
 		   
 		   return ProjectDetails;
