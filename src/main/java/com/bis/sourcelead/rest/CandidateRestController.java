@@ -614,6 +614,10 @@ public class CandidateRestController {
 				Object object = getCnadidateHistoryTimeConversion(diff, roh);
 				roh = (RequirementOfferHistory) object;
 				roh.setOfferResumeId(roh.getOfferId().getId());
+				if(roh.getOfferId().getDocFile() != null){
+				roh.setDocFile(roh.getOfferId().getDocFile());
+				roh.setFileContentType(roh.getOfferId().getFileContentType());
+			}
 				roh.setOfferSourceType(roh.getOfferSourceType());
 				roh.setNotifyToVendor(roh.getNotifyToVendor());
 				rsh.setRequirementOfferHistoryList(requirementOfferHistory);

@@ -11,12 +11,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jquery-ui.css" rel="stylesheet">
 <script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
@@ -58,6 +58,25 @@ padding-right:15px; border-right:1px solid #ededed;
 border-right:none;
 }
 </style>
+
+<script>
+$(document).ready(function() {
+	var requirementId = '${reqId}';
+	var jobTitle = '${reqName}'
+	var sourceleadUrl = '${sourceleadUrl}';
+	var skills = '${skills}';
+	var jobType = '${jobType}';
+	var experience = '${experience}';
+	var location = '${location}';
+	var rate = '${rate}';
+	var noticePeriod = '${noticePeriod}';
+	var visaTypes = '${visaTypes}';
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
+	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId); 
+	});
+</script>
 </head>
 <body>
 <div class="container new_side_wrap_inn applytoJobDiv">
@@ -172,24 +191,6 @@ border-right:none;
 	</div>
 </div>
 
-<script>
-$(document).ready(function() {
-	var requirementId = '${reqId}';
-	var jobTitle = '${reqName}'
-	var sourceleadUrl = '${sourceleadUrl}';
-	var skills = '${skills}';
-	var jobType = '${jobType}';
-	var experience = '${experience}';
-	var location = '${location}';
-	var rate = '${rate}';
-	var noticePeriod = '${noticePeriod}';
-	var visaTypes = '${visaTypes}';
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
-	}
-	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId);
-	});
-</script>
 <script>
 function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId){
 	  var finalDateFormatScript = 'dd-mm-yy'; 

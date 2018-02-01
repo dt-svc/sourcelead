@@ -314,7 +314,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		List<ReferContacts> referContacts = new ArrayList<ReferContacts>();
 		logger.debug("getReferContactsByEmails start");
 		referContacts = session
-				.createQuery("from ReferContacts contacts contacts.contactUserEmail = :recipientMail")
+				.createQuery("from ReferContacts contacts where contacts.contactUserEmail = :recipientMail")
 				.setString("recipientMail", recipientMail).list();
 		logger.debug("getReferContactsByEmails end");
 		if (referContacts.size() > 0) {
