@@ -795,7 +795,7 @@ top: 21px;height: 32px; line-height: 18px;
 				</div>
 				
 				<div class="clearfix">
-						<div class="col-md-4">
+						<%-- <div class="col-md-4">
 								<label>Country</label>
 								<div class="clearfix adv-srh-chosen">
 									<select class="chosen-select" name="country" id="country" field-name="Country">
@@ -805,22 +805,28 @@ top: 21px;height: 32px; line-height: 18px;
 										</c:forEach>
 									</select>
 								</div>
-							</div>
+							</div> --%>
 							
-						   <div class="col-md-8">
-								<label>Cities</label>
+						   <div class="col-md-4">
+								<label>Choose City</label>
 								<div class="clearfix">
 								<div class="col-md-14">
 							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
 								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
 								 </div>
-								  <br>
+								</div>
+							</div>
+							
+							<div class="col-md-8">
+								<label>Selected Cities</label>
+								<div class="clearfix">
 								   <select class="chosen-select form-control input-sm" multiple
 										data-placeholder="sletected cites" id="city" name="city">
 									</select>
 									
 								</div>
 							</div>
+							
 						</div>
 			</div>
 			<div class="row form-footer">
@@ -1819,7 +1825,6 @@ function openJobSearchRequirement(){
 						     var json = JSON.parse(data);
 					       	 var experience ="";
 					       	 var location = "";
-						     if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
 						   	 if(json.length > 0)	
 						   		{
 						 			    for(var i=0; i<json.length; i++){
@@ -1865,6 +1870,18 @@ function openJobSearchRequirement(){
 // 										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';
 // 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
+
+										result = result +'	<div class="clearfix"></div>';
+								    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
+								    	result = result +'<ul class="joblocations-li pull-left">';
+						 				if(requirements.locationsList != null){
+						 					for(var k=0; k<requirements.locationsList.length; k++){
+						 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+						 					}
+						 				}
+						 				result = result +'</ul>';
+										result = result +'	</div>';
+										
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
 										result = result +'  <span>'+skills+'</span>';
@@ -1876,7 +1893,6 @@ function openJobSearchRequirement(){
 										}else{
 											result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';
 										}
-										result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 										result = result +'	</span>';
 										result = result +'	</div>';
 										
@@ -1904,7 +1920,6 @@ function openJobSearchRequirement(){
 										$("#openJobsRequirementsList").append(result); 
 								}
 							}
-						}
 					}
 				});
 			}
@@ -2110,13 +2125,13 @@ $.noConflict();
 			  tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
 
 				   
-		      $("#country").on('change', function (e) {
+		      /* $("#country").on('change', function (e) {
 		    	  getcites('apiLocation','city');
 		    	  $("#apiLocation").val('');
 		    	  $("#city").val('').trigger("chosen:updated");
 		    	   getStates();
-		       });
-		       
+		       }); */
+		      getcites('apiLocation','city','recommendation');
 
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
@@ -2180,8 +2195,6 @@ $(".blogWrapRight h2").click(function(){
 <!--   FreeTrial Pop   -->
 <script>
 	$(document).ready(function() {
-		multicities = {}; 
-
 		$(".freeTrail").click(function() {
 			$("#freeTrial").addClass("activePop");
 			$(".clPop").addClass("clPopA");
