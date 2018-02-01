@@ -442,7 +442,7 @@ right: 15px;
  function getUserDetailsbyroleId(roleId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
-		 type : "GET",
+		 type : "POST",
 	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){

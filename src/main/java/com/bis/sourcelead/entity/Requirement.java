@@ -348,8 +348,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementLocations> requirementLocations = new HashSet<RequirementLocations>(0);
+	
+	
 	@Transient
 	private String searchType;;
+	
+	@Transient
+	@JsonProperty
+	private List<String> locationsList;
 	
 	@Transient
 	@JsonProperty
@@ -1904,6 +1915,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.experienceLevel = experienceLevel;
 	}
 
+
+	public Set<RequirementLocations> getRequirementLocations() {
+		return requirementLocations;
+	}
+
+	public void setRequirementLocations(Set<RequirementLocations> requirementLocations) {
+		this.requirementLocations = requirementLocations;
+	}
+
+
 	public String getAssignedMembersCount()
 	{
 		return assignedMembersCount;
@@ -1913,5 +1934,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	{
 		this.assignedMembersCount = assignedMembersCount;
 	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+
 	
 }
