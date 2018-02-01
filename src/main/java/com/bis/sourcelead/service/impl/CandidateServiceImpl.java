@@ -1922,6 +1922,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgRelations.setVendorRelationStatus("Sent");
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(user.getUserCode());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			orgRelations.setCreatedDate(new Date());
 			orgRelations.setUpdatedBy(user.getUserCode());
 			orgRelations.setUpdatedDate(new Date());

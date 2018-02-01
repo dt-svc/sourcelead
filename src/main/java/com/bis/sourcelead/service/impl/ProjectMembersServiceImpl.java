@@ -1445,6 +1445,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(user.getUserCode());
 			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			orgRelations.setUpdatedBy(user.getUserCode());
 			orgRelations.setUpdatedDate(new Date());
 			
