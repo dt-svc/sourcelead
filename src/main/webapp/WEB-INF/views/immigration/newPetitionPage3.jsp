@@ -1,4 +1,3 @@
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
 <!-- Content Area -->
     <section class="addImmiWrap">
       <div class="addImmiInnWrap">
@@ -146,9 +145,9 @@
           </div>
         </div>
         <div class="addImmiFoot">
-         <a href="javascript:void(0)" onclick="savePageOneContinue('two')" class="pull-left">Prev</a>
+         <a href="javascript:void(0)" onclick="immigration.savePageOneContinue('two')" class="pull-left">Prev</a>
          <a href="javascript:void(0)" class="nextBtn hidden">Next</a>
-         <a href="javascript:void(0)" onclick="savePageOneContinue('four')" class="nextBtn">Save &amp; Continue</a> <a href="javascript:void(0)" class="nextBtn">Save</a> <a href="javascript:void(0)">Skip</a>
+         <a href="javascript:void(0)" onclick="immigration.savePageOneContinue('four')" class="nextBtn">Save &amp; Continue</a> <a href="javascript:void(0)" class="nextBtn">Save</a> <a href="javascript:void(0)">Skip</a>
           <div class="clearfix"></div>
         </div>
       </div>

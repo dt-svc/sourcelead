@@ -1,4 +1,3 @@
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -71,9 +70,9 @@
  		</div>
    
 		<div class="addImmiFoot">
-			<a href="javascript:void(0)" onclick="savePageAndContinuePetitionTemplate('two')" class="pull-left">Prev</a>
-			<a href="javascript:void(0)" onclick="savePageAndContinuePetitionTemplate('four')" class="ml10">Next</a>
-			<a href="javascript:void(0)" onclick="savePageAndContinuePetitionTemplate('four')" class="nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('two')" class="pull-left">Prev</a>
+			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('four')" class="ml10">Next</a>
+			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('four')" class="nextBtn">Save &amp; Continue</a>
 			<a href="javascript:void(0)">Reset</a>
 			<div class="clearfix"></div>
 		</div>   

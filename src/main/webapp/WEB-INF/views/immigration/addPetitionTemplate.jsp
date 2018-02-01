@@ -23,7 +23,6 @@
   $( document ).ready(function() {
 	  $("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=one");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
-	  registerFunc();
 	});
   </script>
   <jsp:include page="../masterFooter.jsp" />

@@ -1,4 +1,4 @@
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/immigration.js"></script> -->
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -458,7 +458,7 @@
 		<div class="clearfix"></div>
 		<div class="addImmiFoot">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
-			<a href="javascript:void(0)" onclick="savePageOneContinue('two')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePageOneContinue('two')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
 			<a href="javascript:void(0)" class="nextBtn">Save</a>
 <!--
 			<a href="new-petition-step2.html" class="nextBtn">Send Request</a>

@@ -505,7 +505,6 @@
   $( document ).ready(function() {
 	  $("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=one");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
-	  registerFunc();
 	});
   </script>
   <jsp:include page="../masterFooter.jsp" />
