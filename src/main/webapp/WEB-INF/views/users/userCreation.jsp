@@ -16,6 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
+			getDesignationType();
 			getDepartmentsList();
 			maskme();
 			editMe(this);
@@ -54,25 +55,26 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
-      <%-- <div class="col-md-12 clearfix">
+       <%-- <div class="col-md-12 clearfix">
         <div class="well clearfix">
           
-          <div class="col-md-6 er selectUser col-md-offset-3">
+          <div class="col-md-8 er selectUser col-md-offset-3">
           <div class="row">
           <div class="col-md-4 paddingRight">
-             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType(this);">
-                <option value="">All</option>
-                 <option>C2C</option>
-                 <option>C2C-1099</option>
-                 <option>W-2</option>
-                 <option>C2H</option>
-                 <option>C2H -1099</option>
-                 <option>Part Time</option>
-                 <option>Full Time</option>
-                 <option>Other</option>
+             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType();">
+                 <option value="" selected>--Employment Type--</option>
+                 <option value="All">All</option>
+                 <option value="C2C">C2C</option>
+                 <option value="C2C-1099">C2C-1099</option>
+                 <option value="W-2">W-2</option>
+                 <option value="C2H">C2H</option>
+                 <option value="C2H -1099">C2H -1099</option>
+                 <option value="Part Time">Part Time</option>
+                 <option value="Full Time">Full Time</option>
+                 <option value="Other">Other</option>
              </select>
              </div>
-           <div class="col-md-8 paddingLeft">
+           <div class="col-md-5 paddingLeft">
            <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
 	          <!--   <option value="">-Select Employment Type-</option> -->
 	            <option value=" " selected>-Select Associate-</option>
@@ -84,7 +86,7 @@
           </div>
            <input type="hidden" id="associateId" name="associateId"/>
           </div>
-        </div> --%>
+        </div>  --%>
               
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
@@ -889,6 +891,7 @@ function getAssociateUserDetails(){
  <script>
  function getDesignationType(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
+	 if(employmentDesignationType){
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
@@ -913,7 +916,9 @@ function getAssociateUserDetails(){
 		        $('#employeementType').trigger("chosen:updated");
 	        },
 	    });
-	 
+	 }else{
+		 $("#employeementType").empty();
+	 }
  }
  
  
