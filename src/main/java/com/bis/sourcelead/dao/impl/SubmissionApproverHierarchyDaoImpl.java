@@ -850,8 +850,14 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
-				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
+			   List<TimeSheetDayEntries> tdeList = null;
+				 try {
+					tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(tslist.get(i).getSubmissionId().getId(), tslist.get(i).getSubmissionId().getStartDate(), tslist.get(i).getSubmissionId().getEndDate());
+				} catch (Exception e) {}
+			    if(tdeList != null && !tdeList.isEmpty()){
+				   for(TimeSheetDayEntries tde :tdeList) {
+					   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				   }
 			   }
 		   }  
 	   }
@@ -869,8 +875,14 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Float totalHours = 0.0F;
 		if(tslist !=null){
 		   for (int i = 0; i < tslist.size(); i++) {
-			   if(tslist.get(i).getSubmissionId().getTotalHours() != null && ! "".equalsIgnoreCase(tslist.get(i).getSubmissionId().getTotalHours())){
-				   totalHours = totalHours + Float.parseFloat(tslist.get(i).getSubmissionId().getTotalHours());
+			    List<TimeSheetDayEntries> tdeList = null;
+				 try {
+					tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(tslist.get(i).getSubmissionId().getId(), tslist.get(i).getSubmissionId().getStartDate(), tslist.get(i).getSubmissionId().getEndDate());
+				} catch (Exception e) {}
+			    if(tdeList != null && !tdeList.isEmpty()){
+				   for(TimeSheetDayEntries tde :tdeList) {
+					   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				   }
 			   }
 		   }  
 	   }
@@ -895,9 +907,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Float totalHours = 0.0F;
 		if(tslist !=null && !tslist.isEmpty()){
 			for(SubmissionApproverHierarchy sah :tslist){
-				if(sah.getSubmissionId() != null && sah.getSubmissionId().getTotalHours() != null){
-					 totalHours = totalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
-				}
+				 List<TimeSheetDayEntries> tdeList = null;
+				 try {
+					tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(sah.getSubmissionId().getId(), sah.getSubmissionId().getStartDate(), sah.getSubmissionId().getEndDate());
+				} catch (Exception e) {}
+			    if(tdeList != null && !tdeList.isEmpty()){
+				   for(TimeSheetDayEntries tde :tdeList) {
+					   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				   }
+			   }
 			}
 	    }
         float tsHours = totalHours;
@@ -930,9 +948,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Float totalHours = 0.0F;
 		if(tslist !=null && !tslist.isEmpty()){
 			for(SubmissionApproverHierarchy sah :tslist){
-				if(sah.getSubmissionId() != null && sah.getSubmissionId().getTotalHours() != null){
-					 totalHours = totalHours + Float.parseFloat(sah.getSubmissionId().getTotalHours());
-				}
+				List<TimeSheetDayEntries> tdeList = null;
+				 try {
+					tdeList = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(sah.getSubmissionId().getId(), sah.getSubmissionId().getStartDate(), sah.getSubmissionId().getEndDate());
+				} catch (Exception e) {}
+			    if(tdeList != null && !tdeList.isEmpty()){
+				   for(TimeSheetDayEntries tde :tdeList) {
+					   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				   }
+			   }
 			}
 	    }
         float tsHours = totalHours;
@@ -1454,13 +1478,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    				 float billableHours = 0f;
 	    				 float nonBillableHours = 0f;
 	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
-	    					 totalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+		 	    		   totalHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
 		    			 }
 		    			 if(StringUtils.isNotEmpty(tde.getBillableHours())){
-		    				 billableHours=Float.parseFloat(tde.getBillableHours().replaceAll(":", "."));
+		    				 billableHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getBillableHours().replaceAll(":", ".")), billableHours);
 		    			 }
 		    			 if(StringUtils.isNotEmpty(tde.getNonBillableHours())){
-		    				 nonBillableHours=Float.parseFloat(tde.getNonBillableHours().replaceAll(":", "."));
+		    				 nonBillableHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getNonBillableHours().replaceAll(":", ".")), nonBillableHours);
 		    			 }
 		    			 weekTotalHours = weekTotalHours+totalHours;
 		    			 weekBillableTotalHours= weekBillableTotalHours+billableHours;
@@ -1581,13 +1605,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    				 float billableHours = 0f;
 	    				 float nonBillableHours = 0f;
 	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
-	    					 totalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+			 	    		   totalHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
 		    			 }
 		    			 if(StringUtils.isNotEmpty(tde.getBillableHours())){
-		    				 billableHours=Float.parseFloat(tde.getBillableHours().replaceAll(":", "."));
+		    				 billableHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getBillableHours().replaceAll(":", ".")), billableHours);
 		    			 }
 		    			 if(StringUtils.isNotEmpty(tde.getNonBillableHours())){
-		    				 nonBillableHours=Float.parseFloat(tde.getNonBillableHours().replaceAll(":", "."));
+		    				 nonBillableHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getNonBillableHours().replaceAll(":", ".")), nonBillableHours);
 		    			 }
 		    			 weekTotalHours = weekTotalHours+totalHours;
 		    			 weekBillableTotalHours= weekBillableTotalHours+billableHours;
@@ -1868,15 +1892,16 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    				 float datyTotalHours = 0f;
 	    				 float dayBillableHours = 0f;
 	    				 float dayNonBillableHours = 0f;
-	    				 if(StringUtils.isNotEmpty(tde.getTotalHours())){
-	    					 datyTotalHours=Float.parseFloat(tde.getTotalHours().replaceAll(":", "."));
+	    			     if(StringUtils.isNotEmpty(tde.getTotalHours())){
+	    				    datyTotalHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), datyTotalHours);
 		    			 }
 		    			 if(StringUtils.isNotEmpty(tde.getBillableHours())){
-		    				 dayBillableHours=Float.parseFloat(tde.getBillableHours().replaceAll(":", "."));
+		    				 dayBillableHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getBillableHours().replaceAll(":", ".")), dayBillableHours);
 		    			 }
 		    			 if(StringUtils.isNotEmpty(tde.getNonBillableHours())){
-		    				 dayNonBillableHours=Float.parseFloat(tde.getNonBillableHours().replaceAll(":", "."));
+		    				 dayNonBillableHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getNonBillableHours().replaceAll(":", ".")), dayNonBillableHours);
 		    			 }
+			    			 
 		    			 weekTotalHours = weekTotalHours+datyTotalHours;
 		    			 weekBillableTotalHours= weekBillableTotalHours+dayBillableHours;
 		    			 weekNonBillableTotalHours = weekNonBillableTotalHours+dayNonBillableHours;
