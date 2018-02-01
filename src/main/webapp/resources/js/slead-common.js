@@ -459,3 +459,64 @@ function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 	}
 	 return ele;
 }
+
+//=========== getMultiple cites written by Laxman ==============
+function getcites(locatinId,cityId,type){
+	if(type == "recommendation"){
+		var countryCode = "";
+	}else{
+		 var countryName = $("#country").val().split(',');
+		 var countryCode = countryName[1];
+	}
+	 initializeCities(locatinId,countryCode,cityId,type);
+}
+function initializeCities(locatinId,countryCode,cityId,type) {
+	if(type == "recommendation"){
+		autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+			types: ['(cities)']
+	       });
+	}else{
+		autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+	   		types: ['geocode'],
+	   		componentRestrictions: {
+	        	country: countryCode
+	        }
+	       });
+	}
+   google.maps.event.addListener(autocomplete, 'place_changed', function() {
+   place = autocomplete.getPlace();
+   var address = {};
+   for (var i = 0; i < place.address_components.length; i++) {
+   var addressType = place.address_components[i].types[0];
+   switch (addressType) {
+      case "route":
+   	 address.name=place.address_components[i].long_name;
+   	 break;
+     case "locality":
+       address.city = place.address_components[i].long_name;
+       break;
+     case "administrative_area_level_1":
+       address.state = place.address_components[i].long_name;
+       break;
+     case "country":
+       address.country = place.address_components[i].long_name;
+       address.countryShortName = place.address_components[i].short_name;
+       
+   }
+ }
+
+ $("#"+locatinId).val(address.city).change();
+ multicities[address.city] = address.city;
+ for(var e in multicities) {
+		 var option = $("<option>").val(multicities[e]).text(multicities[e]);
+		 $("#"+cityId).append(option);
+		 $("#"+cityId).find(option).prop('selected', true);
+		 $("#"+cityId).find(option).siblings("[value='"+ multicities[e]+"']").remove();
+		 $("#"+cityId).trigger("chosen:updated");
+ }
+});
+}
+function refreshGoogleApiCity(cityId){
+	$("#"+cityId).val('');
+}
+

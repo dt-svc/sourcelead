@@ -708,6 +708,9 @@ public class RequirementController {
 			
 			model.addObject("requirement",requirement);
 			
+			List<Countries> allCountryList = countriesService.getAllCountries();
+			model.addObject("allCountryList", allCountryList);
+			
 			List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 			model.addObject("locationsList",locationsList);
 			

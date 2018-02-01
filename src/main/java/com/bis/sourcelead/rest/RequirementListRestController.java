@@ -1677,25 +1677,34 @@ public class RequirementListRestController {
 	    }
 	   //Country
 		if(StringUtils.isNotEmpty(search.getCountry())){
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry()));
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
 	    }
-		//City
+	 
+		//multiple City
 		if(StringUtils.isNotEmpty(search.getCity())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("city", search.getCity()));
-	    }
+			ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(search.getCity());
+			if(cityArray != null && !cityArray.isEmpty()){
+				BoolQueryBuilder multiCityBoolQueryBuilder = new BoolQueryBuilder();
+				for(String keywd : cityArray){
+					multiCityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("city", keywd));
+				}
+				boolQueryBuilder.must(multiCityBoolQueryBuilder);
+			} 
+		}
+		
 		
 		if(StringUtils.isNotEmpty(search.getNoticePeriod())){
 			ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(search.getNoticePeriod());
 			if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
-				BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+				BoolQueryBuilder noticePeriodBoolQueryBuilder = new BoolQueryBuilder();
 				for(String keywd : noticePeriodArray){
-					edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
+					noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
 				}
-				boolQueryBuilder.must(edunBoolQueryBuilder);
+				boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 			} 
 		}
 			

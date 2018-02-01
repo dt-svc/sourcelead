@@ -848,6 +848,18 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	    }
 			 	    	   
 			 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
+			 	    	    
+			 	    	    
+			 	    	   List<String> requirementLocationsList = new ArrayList<>();
+			 	  		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+			 	  		if(locationsList != null && !locationsList.isEmpty()) {
+			 	  			for(RequirementLocations location : locationsList) {
+			 	  				requirementLocationsList.add(location.getLocation());
+			 	  			}
+			 	  		}
+			 	          
+			 	  		requirementIndex.setLocationsList(requirementLocationsList);
+			 	  		
 			 	    	    requirementList.add(requirementIndex);
 			 	    	}
 			 	    }
@@ -933,16 +945,24 @@ public class CrowdSourcingRequirementsRestController {
 			    }
 			 //Country
 				if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country").split(",")[0]));
 			    }
 				 //State
 				if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
 			    }
-				//City
+				
+				//mukltiple cities
 				if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
-			    }
+					ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(jsonObj, "city");
+					if(cityArray != null && !cityArray.isEmpty()){
+						BoolQueryBuilder cityBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : cityArray){
+							cityBoolQueryBuilder.should(QueryBuilders.matchQuery("city", keywd));
+						}
+						boolQueryBuilder.must(cityBoolQueryBuilder);
+					} 	
+				}
 				
 				// currency
 			    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
@@ -1006,7 +1026,7 @@ public class CrowdSourcingRequirementsRestController {
 					} 	
 				}
 				
-				//Requirement Skills
+				//Requirement Organizations
 				if(jsonObj.has("organizations") && !"".equalsIgnoreCase(jsonObj.getString("organizations"))){
 					ArrayList<String> organizationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "organizations");
 					if(organizationArray != null && !organizationArray.isEmpty()){

@@ -203,6 +203,8 @@ public class RequirementListController {
 		ModelAndView model = new ModelAndView();
 		
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		List<Countries> countryList = countriesService.getAllCountries();
+		model.addObject("countryList", countryList);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirementUUID", requirementUUID);

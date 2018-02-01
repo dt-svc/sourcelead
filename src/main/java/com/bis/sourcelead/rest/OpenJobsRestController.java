@@ -211,7 +211,6 @@ public class OpenJobsRestController {
 					boolQueryBuilder.must(qb);
 				}
 			}
-
 			// for employment type filter
 			String[] employmentType = null;
 			if (null != reqType && !"".equals(reqType)) {
@@ -642,12 +641,19 @@ public class OpenJobsRestController {
 	public @ResponseBody String openRequirementsSummary(
 			@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception {
 		Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
-		Requirement requirementDeatilsSummary = requirementService
-				.getRequirementByRequirementId(requirementDeatils.getId());
-		requirementDeatilsSummary
-				.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
-		requirementDeatilsSummary.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(
-				requirementDeatils.getOrgLocationId().getDateFormat(), requirementDeatilsSummary.getCreatedDate()));
+		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
+		requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
+		requirementDeatilsSummary.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(requirementDeatils.getOrgLocationId().getDateFormat(), requirementDeatilsSummary.getCreatedDate()));
+		
+		List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementDeatils.getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				requirementLocationsList.add(location.getLocation());
+			}
+		}
+		requirementDeatilsSummary.setLocationsList(requirementLocationsList);
+		
 		return commonUtil.toJSON(requirementDeatilsSummary);
 
 	}

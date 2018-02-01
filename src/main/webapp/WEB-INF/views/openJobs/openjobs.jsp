@@ -270,6 +270,9 @@ a.alertBtn {
 .modal {
 	z-index: 10500 !important;
 }
+.ref-top{
+top: 21px;height: 32px; line-height: 18px;
+}
 </style>
 
 
@@ -722,7 +725,7 @@ a.alertBtn {
 				</div>
 				<div class="clearfix">
 				</div>
-				<div class="clearfix">
+				<%-- <div class="clearfix">
 					<div class="col-md-4">
 						<label>Country</label>
 						<div class="clearfix adv-srh-chosen">
@@ -757,7 +760,7 @@ a.alertBtn {
 							</select>
 						</div>
 					</div>
-				</div>
+				</div> --%>
 
 				<div class="clearfix">
 					<div class="col-md-4">
@@ -790,6 +793,35 @@ a.alertBtn {
 						</div>
 					</div>
 				</div>
+				
+				<div class="clearfix">
+						<div class="col-md-4">
+								<label>Country</label>
+								<div class="clearfix adv-srh-chosen">
+									<select class="chosen-select" name="country" id="country" field-name="Country">
+										<option value="">---select Country---</option>
+										<c:forEach var="cntry" items="${countryList}">
+											<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							
+						   <div class="col-md-8">
+								<label>Cities</label>
+								<div class="clearfix">
+								<div class="col-md-14">
+							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								 </div>
+								  <br>
+								   <select class="chosen-select form-control input-sm" multiple
+										data-placeholder="sletected cites" id="city" name="city">
+									</select>
+									
+								</div>
+							</div>
+						</div>
 			</div>
 			<div class="row form-footer">
 				<div class="pull-right mr">
@@ -1248,8 +1280,8 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<h4>--</h4>';
 				}
 				
-				result = result +'<strong>Locations : </strong>';
-				result = result +'<ul>';
+				result = result +'<strong class="pull-left mr10">Location(s) : </strong>';
+				result = result +'<ul class="joblocations-li">';
  				if(requirements.locationsList != null){
  					for(var k=0; k<requirements.locationsList.length; k++){
  						result = result +'<li>'+requirements.locationsList[k]+'</li>';
@@ -1529,7 +1561,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		      
 				result = result +'	<section class="innerContent">';
 				result = result +'  <div class="jobDetails positionRelative">';
-				result = result +'	<div class="jobResultsInn job_ResultsInn">';
+				result = result +'	<div class="jobResultsInn job_ResultsInn width100Percnt">';
 		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
@@ -1538,6 +1570,16 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	
 		    	}
+		    	result = result +'	<div class="clearfix"></div>';
+		    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
+		    	result = result +'<ul class="joblocations-li pull-left">';
+ 				if(json.locationsList != null){
+ 					for(var k=0; k<json.locationsList.length; k++){
+ 						result = result +'<li>'+json.locationsList[k]+'</li>';
+ 					}
+ 				}
+ 				result = result +'</ul>';
+				result = result +'	</div>';
 				
 		    	result = result +'	<div class="clearfix"></div>';
 		    	result = result +'	<div class="skills clearfix"><strong>Skills :</strong>';
@@ -1566,13 +1608,13 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 		        result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';		
 				}
-				if(null != json.city && json.city!='undefined'){
+			/* 	if(null != json.city && json.city!='undefined'){
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+','+json.state +','+json.city+'</b>';
 				}else if(null != json.state && json.state!='undefined'){
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+','+json.state +'</b>';	
 				}else{
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+'</b>';	
-				}
+				} */
 				if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod !='undefined'){
 				result = result +'	<b><i class="fa fa-bell"></i>'+json.noticePeriod+'</b>';
 				description =  description+'Notice Period :'+json.noticePeriod+";";
@@ -1610,13 +1652,13 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<p></p>'; 	
 				}
 				result = result +'	<h4>Other details:</h4>';
-				if(json.location != null && json.location != '' && json.location !='undefined'){
+			/* 	if(json.location != null && json.location != '' && json.location !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>&nbsp;'+json.location+'</b>';
 				description =  description+'Job Location: '+json.location+";";
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>--</b>';
 	
-				}
+				} */
 				if(json.positions != null && json.positions != '' && json.positions !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions:</label>'+json.positions+'</b>';
 				}else{
@@ -1901,72 +1943,7 @@ function openJobSearchRequirement(){
 	})(jQuery);
 </script>
 
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(countryName != null && countryName !='' && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	         success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---Select City---</option>');
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
+ 
 
 
 <script type="text/javascript">
@@ -2130,12 +2107,17 @@ $.noConflict();
 		    	         }
 			    });
 		    
+			  tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+				   
 		      $("#country").on('change', function (e) {
+		    	  getcites('apiLocation','city');
+		    	  $("#apiLocation").val('');
+		    	  $("#city").val('').trigger("chosen:updated");
 		    	   getStates();
 		       });
-		       $("#state").on('change', function (e) {
-		    	   getCities();
-		       });
+		       
+
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2198,6 +2180,8 @@ $(".blogWrapRight h2").click(function(){
 <!--   FreeTrial Pop   -->
 <script>
 	$(document).ready(function() {
+		multicities = {}; 
+
 		$(".freeTrail").click(function() {
 			$("#freeTrial").addClass("activePop");
 			$(".clPop").addClass("clPopA");

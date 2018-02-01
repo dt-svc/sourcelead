@@ -868,6 +868,20 @@ public class RequirementServiceImpl implements RequirementService {
 						requirementLocations.setLatitude(locationDTO.getLatitude());
 					}
 					
+					if(locationDTO.getCountry() == null || locationDTO.getCountry().isEmpty()) {
+						String[] jobLocation = locationDTO.getLocationName().split(",");
+						if(jobLocation.length > 2) {
+							requirementLocations.setCity(jobLocation[0]);
+							requirementLocations.setState(jobLocation[1]);
+							requirementLocations.setCountry(jobLocation[2]);
+						}else if(jobLocation.length == 2) {
+							requirementLocations.setCity(jobLocation[0]);
+							requirementLocations.setState(jobLocation[1]);
+						}else if(jobLocation.length == 1) {
+							requirementLocations.setCity(jobLocation[0]);
+						}
+					}
+					
 					requirementLocations.setStatus(Constants.RECORD_ACTIVE);
 					requirementLocations.setLocationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					requirementLocationsList.add(requirementLocations);

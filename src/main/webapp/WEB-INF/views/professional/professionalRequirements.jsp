@@ -41,8 +41,17 @@ padding:4px 12px; float: left;
 .OpenJob h5 strong{
 	width: 70px !important; 
 }
-
+.ref-top{
+top: 22px;height: 32px; line-height: 18px;
+}
 </style>
+
+<script>
+$(document).ready(function() {
+    multicities = {}; 
+}); 
+</script>
+
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
@@ -307,7 +316,7 @@ window.onload = function () {
                 </div>
                 
               </div>
-              <div class="clearfix">
+              <%-- <div class="clearfix">
                 <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
@@ -337,7 +346,7 @@ window.onload = function () {
                                </select>
 				  </div>
 			  </div>
-              </div>
+              </div> --%>
               
               <div class="clearfix">
                 <div class="col-md-4">
@@ -364,6 +373,34 @@ window.onload = function () {
                   </div>
                 </div>
               </div>
+               <div class="clearfix">
+				<div class="col-md-4">
+						<label>Country</label>
+						<div class="clearfix adv-srh-chosen">
+							<select class="chosen-select" name="country" id="country" field-name="Country">
+								<option value="">---select Country---</option>
+								<c:forEach var="cntry" items="${countryList}">
+									<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+					
+				   <div class="col-md-8">
+						<label>Cities</label>
+						<div class="clearfix">
+						<div class="col-md-14">
+					      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+						  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+						 </div>
+						  <br>
+						   <select class="chosen-select form-control input-sm" multiple
+								data-placeholder="sletected cites" id="city" name="city">
+							</select>
+							
+						</div>
+					</div>
+				</div>
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 
@@ -578,6 +615,9 @@ function minMaxExperienceOfProfessional(){
 		    	         }
 			    });
 			    
+			    
+				tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
 		 // here call experience validation
 		       $("#maxExp").on('change', function (e) {
 		    	   minMaxExperienceOfProfessional();
@@ -588,10 +628,9 @@ function minMaxExperienceOfProfessional(){
 		       });
 		       
 		      $("#country").on('change', function (e) {
-		    	   getStates();
-		       });
-		       $("#state").on('change', function (e) {
-		    	   getCities();
+		    	  getcites('apiLocation','city');
+		    	  $("#apiLocation").val('');
+		    	  $("#city").val('').trigger("chosen:updated");
 		       });
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
