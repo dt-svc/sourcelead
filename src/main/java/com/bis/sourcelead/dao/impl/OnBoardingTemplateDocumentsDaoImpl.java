@@ -139,7 +139,7 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query ="select count(*) from OnBoardingTemplateDocuments documents where documents.candidateOnBoardingId.id =:candidateOnBoardingId and "
-				+ " documents.documentType != 'Supported' ";
+				+ " documents.documentType != 'Supported' and documents.documentType != 'Policies' ";
 		List<Long> onboardCount = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).list();
 			Integer count = 0;
 			if(onboardCount != null && !onboardCount.isEmpty()){
