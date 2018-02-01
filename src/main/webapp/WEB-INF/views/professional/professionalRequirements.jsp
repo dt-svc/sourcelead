@@ -374,7 +374,7 @@ window.onload = function () {
                 </div>
               </div>
                <div class="clearfix">
-				<div class="col-md-4">
+				<%-- <div class="col-md-4">
 						<label>Country</label>
 						<div class="clearfix adv-srh-chosen">
 							<select class="chosen-select" name="country" id="country" field-name="Country">
@@ -384,16 +384,22 @@ window.onload = function () {
 								</c:forEach>
 							</select>
 						</div>
-					</div>
+					</div> --%>
 					
-				   <div class="col-md-8">
-						<label>Cities</label>
+					<div class="col-md-4">
+						<label>Choose City</label>
 						<div class="clearfix">
 						<div class="col-md-14">
 					      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
 						  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
 						 </div>
-						  <br>
+							
+						</div>
+					</div>
+					
+				   <div class="col-md-8">
+						<label>Selected Cities</label>
+						<div class="clearfix">
 						   <select class="chosen-select form-control input-sm" multiple
 								data-placeholder="sletected cites" id="city" name="city">
 							</select>
@@ -627,11 +633,12 @@ function minMaxExperienceOfProfessional(){
 		    	   minMaxExperienceOfProfessional();
 		       });
 		       
-		      $("#country").on('change', function (e) {
-		    	  getcites('apiLocation','city');
+		     /*  $("#country").on('change', function (e) {
+		    	  getcites('apiLocation','city','recommendation');
 		    	  $("#apiLocation").val('');
 		    	  $("#city").val('').trigger("chosen:updated");
-		       });
+		       }); */
+		      getcites('apiLocation','city','recommendation');
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
