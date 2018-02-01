@@ -509,14 +509,14 @@ function getClientBasedOnSelectedProject(){
 			 $('#expenseAutoId').val('${project.expenseId}');
 			 <c:forEach var="pm" items="${project.projectMembersList}">
 			     result = result + '<option ${expenses.masterCandidateId == pm.masterCandidateId ? "selected" : " " }  value="${pm.id}">${pm.name}</option>';
-			     var pmId = ${pm.id};
-			     $('#projectMemberIdHidden').val(pmId);
 			 </c:forEach>
 		 }  
  	    </c:forEach>
 	 }
 	 $("#projectMemberId").empty();
 	 $("#projectMemberId").append(result);
+	 var pmId = $("#projectMemberId").val();
+	 $("#projectMemberIdHidden").val(pmId);
   	 $("#projectMemberId").trigger("chosen:updated");
 }
 </script>

@@ -94,7 +94,7 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 		List<RequirementLocations> location = new ArrayList<RequirementLocations>();
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug("getRequirementLocationsByLocationUUID start");
-		location = session.createQuery("from RequirementLocations rl where rl.locationUUID = :locationUUID" ).setCacheable(true).setString("locationUUID", locationUUID ).setCacheable(true).list();
+		location = session.createQuery("from RequirementLocations rl left join fetch rl.requirementId where rl.locationUUID = :locationUUID" ).setCacheable(true).setString("locationUUID", locationUUID ).setCacheable(true).list();
 		logger.debug("getRequirementLocationsByLocationUUID end");
 		if (location.size() > 0) {
 			return location.get(0);
