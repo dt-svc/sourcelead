@@ -88,7 +88,7 @@
 </div>
 </c:if>
 <div class="clearfix"></div>
-<div class="timesheetNewTabs">
+<div id="timesheetNewTabs" class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
 	   <input type="hidden" name="timesheetSubmission.id" value="${timesheetSubmissionDTO.id}"/>
 	   <input type="hidden" id="currentTimeSubFrequency" name="currentTimeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
@@ -1559,6 +1559,12 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	        	    }); 
 	}
 </script> 
+<script type="text/javascript">
+$(".content-wraper").click(function() {
+	//alert("hello");
+	bodyClick();
+});
+</script>
 <!-- Tab Switching -->
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 

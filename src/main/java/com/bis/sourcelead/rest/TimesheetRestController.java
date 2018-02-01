@@ -642,7 +642,7 @@ public class TimesheetRestController {
 		sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(),projectId,masterCandidateId,orgLocations.getId(),frequencyStartDate, frequencyEndDate);
 	}
 	Submission_Status submissionStatus = sah.getSubmissionStatus();
-	Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(pm.getId(), loginUser);
+	Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(pm.getId(), loginUser,orgLocations);
 	String submissionStatusStr = submissionStatus.getValue();
     SubmissionApproverHierarchy isSah = submissionApproverHierarchyService.isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(projectId,masterCandidateId, frequencyStartDate, frequencyEndDate, "APPROVED");
     boolean isSahApproved = false;
@@ -2348,7 +2348,7 @@ public class TimesheetRestController {
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    String isSuperUser = Constants.NO;
-			    if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(projectMemberId, loginUser)){
+			    if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(projectMemberId, loginUser,orgLoc)){
 			    	isSuperUser = Constants.YES;
 			    }
 			    

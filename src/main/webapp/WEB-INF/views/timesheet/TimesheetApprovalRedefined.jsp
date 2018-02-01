@@ -18,7 +18,7 @@
 		       <div class="clearfix"></div>
 		   </section>
 		    <div  id="loadTimeHead"></div>
-		   <div id="timesheetApprovalDiv" class="datatable_filter" onclick="bodyClick();">
+		   <div id="timesheetApprovalDiv" class="datatable_filter" >
 			   <div class="timesheet_out">
 			     	<div class="timesheet_appr_wrap">
 			     	 <div id="timeApprovaldiv">
