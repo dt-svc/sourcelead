@@ -160,13 +160,10 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 	var files = document.getElementById(id).files;
 	var invalidFiles = false;
 	var count = 0;
-	expr = /.zip/;
-	ecpr1=/.rar/;
 	for(var e in files) {
 		if(!$.isNumeric(e))
 			continue;
-		//if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
-			if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
+		if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
 			continue;
 		data.append('file', files[e]);
 		count ++;
@@ -303,7 +300,7 @@ function saveUserProfileImage(formId,data){
 	
 	if ($('#'+formId).validate(false, validationSettings)){
   		var formData = getFormData(formId);
-        if(formId === "profileImage_form"){	
+        		
         $.ajax({
             	      type: "POST",
             	      data: formData,
@@ -314,21 +311,7 @@ function saveUserProfileImage(formId,data){
                   		  location.replace(sourceleadUrl+"/userProfile");  
 			          },  
         });
-        
-        } else{
-        	$.ajax({
-      	      type: "POST",
-      	      data: formData,
-      	      url: sourceleadUrl+"/saveOrgImage?"+tokenParamName+"="+tokenValue,
-                success: function(result) {
-              	  if(result)
-              		  $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-            		  location.replace(sourceleadUrl+"/orgSettings");  
-		          },  
-  });
-        }
-        return true;
-        
+        return true;         
 }else{ 
 return false;
 }
@@ -478,6 +461,7 @@ function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 }
 
 //=========== getMultiple cites written by Laxman ==============
+multicities = {};
 function getcites(locatinId,cityId,type){
 	if(type == "recommendation"){
 		var countryCode = "";
@@ -525,15 +509,17 @@ function initializeCities(locatinId,countryCode,cityId,type) {
  $("#"+locatinId).val(address.city).change();
  multicities[address.city] = address.city;
  
- for(var e in multicities) {
-		 var option = $("<option>").val(multicities[e]).text(multicities[e]);
-		 $("#"+cityId).append(option);
-		 $("#"+cityId).find(option).prop('selected', true);
-		 $("#"+cityId).find(option).siblings("[value='"+ multicities[e]+"']").remove();
-		 $("#"+cityId).trigger("chosen:updated");
- }
-});
+ var option = $("<option>").val(address.city).text(address.city);
+ $("#"+cityId).append(option);
+ $("#"+cityId).find(option).prop('selected', true);
+ $("#"+cityId).find(option).siblings("[value='"+ address.city+"']").remove();
+ $("#"+cityId).trigger("chosen:updated");
+	 
+   });
+   
 }
 function refreshGoogleApiCity(cityId){
 	$("#"+cityId).val('');
 }
+
+
