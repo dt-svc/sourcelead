@@ -551,7 +551,6 @@ function uploadAddApplicantCandidateDoc(){
   						
  		        		 $("#loading").removeAttr("style");
 						 validateSubmissionCandidateEmail();
-						 getUserByUserEmail();
 						
 					},
 				});
@@ -591,7 +590,6 @@ function uploadAddApplicantCandidateDoc(){
 		        		$("#save_button").removeAttr("disabled");
 		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
 		        		$('.jquery_form_error_message').remove();
-		        		isCoolingOff(requirementId);
 		        	} 
 		        },
 		    });
