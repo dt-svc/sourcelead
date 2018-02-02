@@ -189,17 +189,16 @@ public class TimesheetRestController {
 	@RequestMapping(value = "/rest/getTimesheetEntryDetails")
 	public TimesheetEntryDetailsDTO getTimesheetEntryDetailsMobile(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
 	{
-		
 		TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request);
 		TimeSheetSubmissionDTO tsDTO = tedDTO.getTimesheetSubmission();
 		if(tsDTO != null) {
 			Map<String, List<TimesheetEntriesDTO>> entriesMap =	getEntriesMapForDisplayMobile(tsDTO, request);
 			tsDTO.setEntriesMap(entriesMap);
+			Map<String, List<WeekDaysDTO>> weekDaysMap =   getWeekDaysMapForDisplayMobile(tedDTO, request);
+			tedDTO.setWeekDaysMap(weekDaysMap);
 			tedDTO.setTimesheetSubmission(tsDTO);
 		}
-		
 		return tedDTO;
-		
 	}
 	
 	@RequestMapping(value = "/getTimesheetEntryDetails")
@@ -329,6 +328,62 @@ public class TimesheetRestController {
 			 }
 		  } 
 		 
+		return entriesMap;
+	}
+	private  Map<String, List<WeekDaysDTO>> getWeekDaysMapForDisplayMobile(TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Map<String, List<WeekDaysDTO>> entriesMap = new LinkedHashMap<>();
+		if(orgLocations !=null) {
+				if(tedDTO != null && tedDTO.getTimeSubFrequencies() != null && !tedDTO.getTimeSubFrequencies().isEmpty()) {
+					for(String key :tedDTO.getTimeSubFrequencies().keySet()) {
+						 String[] frequency = key.split("To");
+					 	  String fStartDate = frequency[0].trim();
+					  	  String fEndDate = frequency[1].trim();
+					      Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),fStartDate.replaceAll("/", "-"));
+					      Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),fEndDate.replaceAll("/", "-"));	
+						  if(key != null && key.equalsIgnoreCase(tedDTO.getCurrentTimeSubFrequency())) {
+							  TimeSheetSubmissionDTO tsDTO = tedDTO.getTimesheetSubmission();
+							  List<WeekDaysDTO> weekDayDTOList = new LinkedList<>();
+							  while(actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)){
+								  String weekDayDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), actualStartDate);
+								  for(WeekDaysDTO weekDaysDTO : tsDTO.getWeekDays()) {
+									  if(weekDayDate.equalsIgnoreCase(weekDaysDTO.getDate())) {
+										  weekDayDTOList.add(weekDaysDTO);
+									  }
+								  }
+								  actualStartDate = CalendarUtil.getNextDate(actualStartDate);
+							   }
+							  entriesMap.put(key, weekDayDTOList);
+						  }else {
+							 		  	
+						      List<WeekDaysDTO> weekDayDTOList = new LinkedList<>();
+						      while(actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)){
+						    	    WeekDaysDTO weekDaysDTO	= new WeekDaysDTO();
+						    	    weekDaysDTO.setDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), actualStartDate));
+							        SimpleDateFormat sf = new SimpleDateFormat("E"); 
+									if(sf.format(actualStartDate).equalsIgnoreCase("Mon")) {
+										weekDaysDTO.setDayOfTheDate("Mon");
+									}else if(sf.format(actualStartDate).equalsIgnoreCase("Tue")) {
+										weekDaysDTO.setDayOfTheDate("Tue");
+									}else if(sf.format(actualStartDate).equalsIgnoreCase("Wed")) {
+										weekDaysDTO.setDayOfTheDate("Wed");
+									}else if(sf.format(actualStartDate).equalsIgnoreCase("Thu")) {
+										weekDaysDTO.setDayOfTheDate("Thu");
+									}else if(sf.format(actualStartDate).equalsIgnoreCase("Fri")) {
+										weekDaysDTO.setDayOfTheDate("Fri");
+									}else if(sf.format(actualStartDate).equalsIgnoreCase("Sat")) {
+										weekDaysDTO.setDayOfTheDate("Sat");
+									}else if(sf.format(actualStartDate).equalsIgnoreCase("Sun")) {
+										weekDaysDTO.setDayOfTheDate("Sun");
+									}
+									weekDayDTOList.add(weekDaysDTO);
+									actualStartDate = CalendarUtil.getNextDate(actualStartDate);
+								}
+						         entriesMap.put(key, weekDayDTOList);
+						    }
+					  	  }
+				 }
+		  }
 		return entriesMap;
 	}
 	private TimesheetEntryDetailsDTO getTimesheetEntryDetails(TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception
