@@ -6,7 +6,7 @@
 	<div class="registerbuttons clearfix">
 	<ul class="list-unstyled">
 	<li>
-		<a href="http://sourcelead.com/register" target="_blank">Sign Up</a>
+		<a href="/register" target="_blank">Sign Up</a>
 	</li>
 	<li>
 		<a href="javascript:void(0)" onClick="requestDemo()">GET A DEMO</a>
@@ -61,7 +61,7 @@
         </div>
       </div>
              <div class="item">
-        <img src="images/bannerCandidate.jpg" alt="Banner">
+        <img src="/resources/static-web/images/bannerCandidate.jpg" alt="Banner">
         <div class="carousel-caption animated slideInLeft">
        		<div class="col-md-6 col-md-offset-6">
        		<div class="pull-right">
@@ -74,7 +74,7 @@
         </div>      
       </div>
       <div class="item">
-        <img src="images/bannerSearchProfile.jpg" alt="Banner">
+        <img src="/resources/static-web/images/bannerSearchProfile.jpg" alt="Banner">
         <div class="carousel-caption animated slideInLeft">
        		<div class="col-md-6 col-md-offset-6">
        		<div class="pull-right">
@@ -87,7 +87,7 @@
         </div>      
       </div>
       <div class="item">
-        <img src="images/bannerCrowd.jpg" alt="Banner">
+        <img src="/resources/static-web/images/bannerCrowd.jpg" alt="Banner">
         <div class="carousel-caption animated slideInLeft">
        		<div class="col-md-6 col-md-offset-6">
        		<div class="pull-right">
@@ -124,7 +124,7 @@
 			<div class="col-md-6">
 			<div class="clearfix home-demovideo animated bounceIn">
 				<div class="gallery clearfix list-unstyled">
-					<a href="https://www.youtube.com/watch?v=Vbi24I70NYU&t=263s" rel="prettyPhoto" title="Know about Jobs"><img src="images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>
+					<a href="https://www.youtube.com/watch?v=Vbi24I70NYU&t=263s" rel="prettyPhoto" title="Know about Jobs"><img src="/resources/static-web/images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>
 				</div>
         	  </div>
 			</div>
@@ -232,28 +232,28 @@
         <div class="large-12 columns">
           <div class="owl-carousel owl-theme owlcarousel-custom">
             <div class="itemowl">
-              <img src="images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/soft.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
              <div class="itemowl">
-              <img src="images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/soft.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
           </div>
           </div>
@@ -299,7 +299,7 @@
  		</div>
   		<div class="col-md-12 clearfix">
   			<a href="javascript:void(0)" class="btn btn-custom mr" onClick="requestDemo();">GET A DEMO</a>
-  			<a href="http://sourcelead.com/register" class="btn btn-custom" target="_blank">SIGNUP</a>
+  			<a href="/register" class="btn btn-custom" target="_blank">SIGNUP</a>
   		</div>
   </div>
 </section>
