@@ -617,8 +617,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId,String searchValue, int start, int length) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length);
+			Long approverUserId,String searchValue, int start, int length,String timesheetFor) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length,timesheetFor);
 	}
 	
 	@Override
@@ -1357,7 +1357,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,orgLocations);
+				    				registrationController.saveUserRoleActions(tsModuleId,orgLoc);
 				    			}
 							
 							 
@@ -1445,6 +1445,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(user.getUserCode());
 			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			orgRelations.setUpdatedBy(user.getUserCode());
 			orgRelations.setUpdatedDate(new Date());
 			

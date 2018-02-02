@@ -19,7 +19,7 @@ function requirementHistory(candidateId){
 	/* result  = result + '<div class="success_pop" id="selector8" style="display: none;">'; */
 		result = result  +'<span class="pad-sea"></span>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div class="reqPop reqPopHeight" id="requirementHistoryPopDiv" ></div>';
+		result  = result + '   <div class="reqPop" id="requirementHistoryPopDiv" ></div>';
 		result  = result + '   <div id="requirementHistoryDiv" class="datatable_filter"></div>';
    /* result  = result + '   </div>'; */
    
@@ -169,7 +169,9 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 	          				result = result  +'			<li>';
 		            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		            		result = result  +'<span>Issued offer by '+port.clientName+' <b>'+port.createDateStr+'</b></span>';
+		            		if(port.fileContentType != null && port.fileContentType != '' && port.fileContentType!= 'undefined'){
 		            		result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		            		}
 		            		result = result  +'<div class="clearfix"></div>';
 		            		result = result  +'			</li>';
 	          			}

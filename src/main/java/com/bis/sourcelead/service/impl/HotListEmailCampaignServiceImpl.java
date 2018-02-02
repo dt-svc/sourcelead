@@ -505,6 +505,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "</tbody>";
 		tempHTML = tempHTML + " </table>";
 		      // table end
+		tempHTML = tempHTML + signature;
 		      tempHTML = tempHTML + " <table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
 		      tempHTML = tempHTML + " <tr>";
 		      tempHTML = tempHTML + "   <td><table bgcolor='#ededed'  width='650' align='center' style='background-color:#ededed; padding:10px 15px; border:solid #E0E0E0; border-width:0 1px 0px 1px; margin:0px;'>";

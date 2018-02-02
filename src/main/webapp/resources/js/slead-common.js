@@ -166,7 +166,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		if(!$.isNumeric(e))
 			continue;
 		//if(files[e].name.toLowerCase().endsWith(".zip") || files[e].name.toLowerCase().endsWith(".rar"))
-			if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
+		if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
 			continue;
 		data.append('file', files[e]);
 		count ++;
@@ -303,7 +303,7 @@ function saveUserProfileImage(formId,data){
 	
 	if ($('#'+formId).validate(false, validationSettings)){
   		var formData = getFormData(formId);
-        if(formId === "profileImage_form"){	
+        		
         $.ajax({
             	      type: "POST",
             	      data: formData,
@@ -314,21 +314,7 @@ function saveUserProfileImage(formId,data){
                   		  location.replace(sourceleadUrl+"/userProfile");  
 			          },  
         });
-        
-        } else{
-        	$.ajax({
-      	      type: "POST",
-      	      data: formData,
-      	      url: sourceleadUrl+"/saveOrgImage?"+tokenParamName+"="+tokenValue,
-                success: function(result) {
-              	  if(result)
-              		  $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-            		  location.replace(sourceleadUrl+"/orgSettings");  
-		          },  
-  });
-        }
-        return true;
-        
+        return true;         
 }else{ 
 return false;
 }
@@ -476,3 +462,67 @@ function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 	}
 	 return ele;
 }
+
+//=========== getMultiple cites written by Laxman ==============
+multicities = {};
+function getcites(locatinId,cityId,type){
+	if(type == "recommendation"){
+		var countryCode = "";
+	}else{
+		 var countryName = $("#country").val().split(',');
+		 var countryCode = countryName[1];
+	}
+	 initializeCities(locatinId,countryCode,cityId,type);
+}
+function initializeCities(locatinId,countryCode,cityId,type) {
+	if(type == "recommendation"){
+		autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+			types: ['(cities)']
+	       });
+	}else{
+		autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+	   		types: ['geocode'],
+	   		componentRestrictions: {
+	        	country: countryCode
+	        }
+	       });
+	}
+   google.maps.event.addListener(autocomplete, 'place_changed', function() {
+   place = autocomplete.getPlace();
+   var address = {};
+   for (var i = 0; i < place.address_components.length; i++) {
+   var addressType = place.address_components[i].types[0];
+   switch (addressType) {
+      case "route":
+   	 address.name=place.address_components[i].long_name;
+   	 break;
+     case "locality":
+       address.city = place.address_components[i].long_name;
+       break;
+     case "administrative_area_level_1":
+       address.state = place.address_components[i].long_name;
+       break;
+     case "country":
+       address.country = place.address_components[i].long_name;
+       address.countryShortName = place.address_components[i].short_name;
+       
+   }
+ }
+
+ $("#"+locatinId).val(address.city).change();
+ multicities[address.city] = address.city;
+ 
+ var option = $("<option>").val(address.city).text(address.city);
+ $("#"+cityId).append(option);
+ $("#"+cityId).find(option).prop('selected', true);
+ $("#"+cityId).find(option).siblings("[value='"+ address.city+"']").remove();
+ $("#"+cityId).trigger("chosen:updated");
+	 
+   });
+   
+}
+function refreshGoogleApiCity(cityId){
+	$("#"+cityId).val('');
+}
+
+
