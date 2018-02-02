@@ -426,10 +426,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
 	
-	document.getElementById("newUploadBtn123").onchange = function () {
-		$('#newUploadFile123').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	};
-	
 }
 </script>
 <script>
@@ -555,7 +551,6 @@ function uploadAddApplicantCandidateDoc(){
   						
  		        		 $("#loading").removeAttr("style");
 						 validateSubmissionCandidateEmail();
-						 getUserByUserEmail();
 						
 					},
 				});
@@ -595,7 +590,6 @@ function uploadAddApplicantCandidateDoc(){
 		        		$("#save_button").removeAttr("disabled");
 		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
 		        		$('.jquery_form_error_message').remove();
-		        		isCoolingOff(requirementId);
 		        	} 
 		        },
 		    });
