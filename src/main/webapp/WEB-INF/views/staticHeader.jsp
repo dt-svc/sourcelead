@@ -26,7 +26,7 @@
 	  <div class="container-fluid">
 		
 	    <div class="navbar-header">
-		  <a class="navbar-brand" href="/index.html">
+		  <a class="navbar-brand" href="index.html">
 			<img src="/resources/static-web/images/logo-sourceld.png">
 		  </a>
 		</div>
@@ -64,13 +64,10 @@
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
 	<li><a href="/blog.html">Blog</a></li>
 	<li><a href="/contact.html">Contact</a></li>
-	<li><a class="loginbtn" href="http://sourcelead.com/login" title="Login">Login</a></li>
-	<li><a href="http://sourcelead.com/register" title="Login">Sign Up</a></li>
+	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
+	<li><a href="/register" title="Login">Sign Up</a></li>
 	</ul>
 		</div>
 		
 	  </div>
 	</nav>
-<script>
- var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-</script>
