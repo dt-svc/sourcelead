@@ -6,7 +6,7 @@
 	<div class="registerbuttons clearfix">
 	<ul class="list-unstyled">
 	<li>
-		<a href="http://sourcelead.com/register" target="_blank">Sign Up</a>
+		<a href="/register" target="_blank">Sign Up</a>
 	</li>
 	<li>
 		<a href="javascript:void(0)" onClick="requestDemo()">GET A DEMO</a>
@@ -299,7 +299,7 @@
  		</div>
   		<div class="col-md-12 clearfix">
   			<a href="javascript:void(0)" class="btn btn-custom mr" onClick="requestDemo();">GET A DEMO</a>
-  			<a href="http://sourcelead.com/register" class="btn btn-custom" target="_blank">SIGNUP</a>
+  			<a href="/register" class="btn btn-custom" target="_blank">SIGNUP</a>
   		</div>
   </div>
 </section>
