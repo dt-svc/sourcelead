@@ -4,7 +4,7 @@
   	<div class="col-md-2 sitemap">
   	<h4>Site Map</h4>
 	 <ul class="list-unstyled">
-		  <li><a href="/index.html">Home</a></li>
+		  <li><a href="/">Home</a></li>
 		  <li><a href="/sourceleadJobPage.html">Search Job</a></li>
 		  <li><a href="/marketplace.html">Marketplace</a></li>
 		  <li><a href="/about-us.html">About Us</a></li>
@@ -75,7 +75,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 <div class="customNavBar-inner resMenu">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<ul class="">
-	<li><a href="/index.html" class="slactive">Home</a></li>
+	<li><a href="/" class="slactive">Home</a></li>
 	 <li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)">Features
 			  <span class="fa fa-angle-down"></span></a>
