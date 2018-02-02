@@ -300,25 +300,35 @@ function saveCandidateImage(candidateId, formId, data){
 
 
 function saveUserProfileImage(formId,data){
-	
-	if ($('#'+formId).validate(false, validationSettings)){
-  		var formData = getFormData(formId);
-        		
+    if ($('#'+formId).validate(false, validationSettings)){
+          var formData = getFormData(formId);
+        if(formId === "profileImage_form"){    
         $.ajax({
-            	      type: "POST",
-            	      data: formData,
-            	      url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
-                      success: function(result) {
-                    	  if(result)
-                    		  $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                  		  location.replace(sourceleadUrl+"/userProfile");  
-			          },  
+              type: "POST",
+              data: formData,
+              url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
+              success: function(result) {
+                  if(result)
+                      $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+                    location.replace(sourceleadUrl+"/userProfile");  
+              },  
         });
-        return true;         
-}else{ 
-return false;
-}
-	
+        } else{
+            $.ajax({
+                type: "POST",
+                data: formData,
+                url: sourceleadUrl+"/saveOrgImage?"+tokenParamName+"="+tokenValue,
+                success: function(result) {
+                    if(result)
+                        $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
+                      location.replace(sourceleadUrl+"/orgSettings");  
+                  },  
+              });
+        }
+        return true;
+     }else{ 
+           return false;
+     }
 }
 
 function uploadResumeOnSelect(formId) {

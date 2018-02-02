@@ -3357,14 +3357,7 @@ if(rateValue[1] == 'Yearly'){
 return result;
 }
 </script>
-
-<script>
-function getcites(locatinId,cityId,type){
-	alert("ddddddddddd")
-}
-
-
-</script>
+ 
 <!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
 
