@@ -179,7 +179,7 @@
         
 
             <div class="share mt10"> 
-			<div class="addthis_inline_share_toolbox_s1a2" data-url="${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"></div>
+			<div class="addthis_inline_share_toolbox_g28q" data-url="${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"></div>
 			</div>
             </div>
 
