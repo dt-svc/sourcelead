@@ -38,7 +38,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class AddCampaignELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddCampaignELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private SourceleadELKTC client;
+	 private SourceleadELKTC<CampaignIndex> client;
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -48,7 +48,7 @@ public class AddCampaignELK {
 		ArrayList<CampaignIndex> elkCampaignList = getElkCampaigns();
 		if(elkCampaignList != null && !elkCampaignList.isEmpty()){
 			for (CampaignIndex campaignIndex :elkCampaignList) {
-				saveOrUpdateElkDocument(campaignIndex, Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,campaignIndex.getMailBoxId().toString());
+				client.saveOrUpdateElkDocument(campaignIndex, Constants.ELK_CAMPAIGN_INDEX, Constants.ELK_CAMPAIGN_TYPE,campaignIndex.getMailBoxId().toString());
 			}
 		}
 		  logger.info("Campaigns Successfully Added To Elk");
@@ -145,59 +145,6 @@ public class AddCampaignELK {
 		return campaignIndexsList;
 	}
 	
-	public void saveOrUpdateElkDocument(CampaignIndex campaignIndex,String index,String type,String id) {
-		String entityInJson = null;
-		 Map<String, Object> d = new HashMap<>();
-		try {
-		    entityInJson = toJSON(campaignIndex);
-		    JSONObject json = new JSONObject(entityInJson);
-		   
-		    Iterator<String> it = json.keys();
-		    while(it.hasNext()) {
-		    	String key = it.next();
-		    		d.put(key, json.isNull(key) ? null : json.get(key));
-		    }
-		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
-		    logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        		client.getClient().prepareIndex(index, type,id)
-		    .setSource(d).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }
-	
-	/*public void saveOrUpdateElkDocument(CampaignIndex campaignIndex,String index,String type,String id) {
-		String entityInJson = null;
-		try {
-		    entityInJson = toJSON(campaignIndex);
-		    client.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
-		    logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        	client.getClient().prepareIndex(index, type,id)
-		    .setSource(entityInJson).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }*/
-	
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
-	 
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {

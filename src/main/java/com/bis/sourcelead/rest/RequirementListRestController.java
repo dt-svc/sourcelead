@@ -1929,7 +1929,7 @@ public class RequirementListRestController {
 		}
 		 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 		 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,
+				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
 						0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
 		
 		 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());

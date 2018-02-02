@@ -18,7 +18,9 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -42,12 +44,12 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class AddElkCandidate{
 	private static final Logger logger = LoggerFactory.getLogger(AddElkCandidate.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private SourceleadELKTC client;
+	private SourceleadELKTC<CandidateIndex> client;
 	public void addElkCandidate() throws IOException, SQLException {
 		ArrayList<CandidateIndex> elkCandidateList = getElkCandidates();
 		if(elkCandidateList != null && !elkCandidateList.isEmpty()){
 			for (CandidateIndex candidateIndex :elkCandidateList) {
-				saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
+				client.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
 			}
 		}
 		  logger.info("Candidates Successfully Added To Elk");
@@ -283,41 +285,6 @@ public class AddElkCandidate{
 		return false;
 	}
 
-	public void saveOrUpdateElkDocument(CandidateIndex candidateIndex,String index,String type,String id) {
-		String entityInJson = null;
-		 Map<String, Object> d = new HashMap<>();
-		try {
-		    entityInJson = toJSON(candidateIndex);
-		    JSONObject json = new JSONObject(entityInJson);
-		   
-		    Iterator<String> it = json.keys();
-		    while(it.hasNext()) {
-		    	String key = it.next();
-		    		d.put(key, json.isNull(key) ? null : json.get(key));
-		    }
-		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
-		    logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        		client.getClient().prepareIndex(index, type,id)
-		    .setSource(d).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }
-	
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
-	 
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {

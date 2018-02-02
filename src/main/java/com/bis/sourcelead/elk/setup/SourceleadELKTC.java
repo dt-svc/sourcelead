@@ -4,10 +4,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +19,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
+import com.bis.sourcelead.elk.index.UserIndex;
 
 /**
  * @purpose:Elastic Search Transport Client Configuration
  * @author: Naresh Bolisetty
  * @date: 06-December-2016
  */
-public class SourceleadELKTC {
+public class SourceleadELKTC<T> {
     private static final Logger logger = LoggerFactory.getLogger(SourceleadELKTC.class);
    
     private TransportClient client;
@@ -52,6 +56,24 @@ public class SourceleadELKTC {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
     }
+    
+    public void saveOrUpdateElkDocument(T userIndex, String index, String type, String id) {
+		String value = "";
+		try {
+			value = new ObjectMapper().writeValueAsString(userIndex);
+		    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
+		    logger.info(type+" has been updated.");
+		} 
+        catch(DocumentMissingException e){
+        	client.prepareIndex(index, type,id)
+		    .setSource(value, XContentType.JSON).execute().actionGet();
+		    logger.info(type+" has been indexed.");
+		}
+		catch (Exception e) {
+			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
+		}
+		
+     }
 
 	/** {@inheritDoc} */
     public Client getClient() {

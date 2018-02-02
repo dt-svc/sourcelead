@@ -42,7 +42,7 @@ public class AddClientVendorELK {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private SourceleadELKTC client;
+	 private SourceleadELKTC<ClientVendorIndex> client;
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -53,7 +53,7 @@ public class AddClientVendorELK {
 		if(elkclientVendorIndexList != null && !elkclientVendorIndexList.isEmpty()){
 			for (ClientVendorIndex clientVendorIndex :elkclientVendorIndexList) {
 				
-			       saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,clientVendorIndex.getId().toString());
+			      client.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,clientVendorIndex.getId().toString());
 			}
 		}
 		  logger.info("ORG_RELATIONS Successfully Added To Elk");
@@ -236,41 +236,6 @@ public class AddClientVendorELK {
 		return Long.parseLong(numberOfContacts);
 	}
 
-	public void saveOrUpdateElkDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
-		String entityInJson = null;
-		 Map<String, Object> d = new HashMap<>();
-		try {
-		    entityInJson = toJSON(clientVendorIndex);
-		    JSONObject json = new JSONObject(entityInJson);
-		   
-		    Iterator<String> it = json.keys();
-		    while(it.hasNext()) {
-		    	String key = it.next();
-		    		d.put(key, json.isNull(key) ? null : json.get(key));
-		    }
-		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
-		    logger.info(type+" has been updated.");
-		} 
-       catch(DocumentMissingException e){
-       		client.getClient().prepareIndex(index, type,id)
-		    .setSource(d).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }
-	
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
-	 
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {

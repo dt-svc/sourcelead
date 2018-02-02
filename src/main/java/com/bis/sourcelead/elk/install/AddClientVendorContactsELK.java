@@ -43,7 +43,7 @@ public class AddClientVendorContactsELK {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorContactsELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private SourceleadELKTC client;
+	 private SourceleadELKTC<ClientVendorContactsIndex> client;
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -54,7 +54,7 @@ public class AddClientVendorContactsELK {
 		if(elkclientVendorIndexList != null && !elkclientVendorIndexList.isEmpty()){
 			for (ClientVendorContactsIndex clientVendorContactsIndex :elkclientVendorIndexList) {
 				
-				saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,clientVendorContactsIndex.getId().toString());
+				client.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,clientVendorContactsIndex.getId().toString());
 					
 
 			}

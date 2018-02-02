@@ -19,6 +19,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -45,12 +47,12 @@ public class AddElkRequirement {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private SourceleadELKTC client;
+	private SourceleadELKTC<RequirementIndex> client;
 	public void addElkRequirement() throws IOException, SQLException {
 		ArrayList<RequirementIndex> requirementList = getElkRequirements();
 		if(null != requirementList && !requirementList.isEmpty()){
 			for (RequirementIndex requirementIndex :requirementList) {
-				saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirementIndex.getRequirementId().toString());
+				client.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirementIndex.getRequirementId().toString());
 			}
 		}
 		  logger.info("Rquirements Successfully Added To Elk");
@@ -527,70 +529,7 @@ public class AddElkRequirement {
 	}
 
 
-	/**
-	 * stores Requirement into elk
-	 * @param requirementIndex
-	 * @param eLK_REQUIREMENT_INDEX(index)
-	 * @param eLK_REQUIREMENT_INDEX2(type)
-	 * @param requirementId
-	 * @return void
-	 */
-	/*private void saveOrUpdateElkDocument(RequirementIndex requirementIndex, String index,String type, String requirementId) {
-		String entityInJson = null;
-		try {
-		    entityInJson = toJSON(requirementIndex);
-		    client.getClient().prepareUpdate(index, type,requirementId).setDoc(entityInJson).get();
-		   // logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        	client.getClient().prepareIndex(index, type,requirementId)
-		    .setSource(entityInJson).execute().actionGet();
-		   // logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-	}*/
 	
-	public void saveOrUpdateElkDocument(RequirementIndex requirementIndex,String index,String type,String requirementId) {
-		String entityInJson = null;
-		 Map<String, Object> d = new HashMap<>();
-		try {
-		    entityInJson = toJSON(requirementIndex);
-		    JSONObject json = new JSONObject(entityInJson);
-		   
-		    Iterator<String> it = json.keys();
-		    while(it.hasNext()) {
-		    	String key = it.next();
-		    		d.put(key, json.isNull(key) ? null : json.get(key));
-		    }
-		    client.getClient().prepareUpdate(index, type,requirementId).setDoc(d).get();
-		    logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        		client.getClient().prepareIndex(index, type,requirementId)
-		    .setSource(d).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }
-	/**
-	 * converts entity to JSOn Object
-	 * @param obj
-	 * @return
-	 */
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
 	 /**
 	  * getting connection
 	  * @return DataSource

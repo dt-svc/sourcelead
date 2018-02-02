@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,14 +10,9 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.elasticsearch.index.engine.DocumentMissingException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -28,25 +22,20 @@ import org.springframework.context.annotation.Bean;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 public class AddElkUser {
 	private static final Logger logger = LoggerFactory.getLogger(AddElkUser.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private SourceleadELKTC client;
+	private SourceleadELKTC<UserIndex> client;
 
 	public void addElkUser() throws IOException, SQLException {
 		ArrayList<UserIndex> elkUserList = getElkUsers();
 		if (null != elkUserList && !elkUserList.isEmpty()) {
 			for (UserIndex userIndex : elkUserList) {
-				saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,
+				client.saveOrUpdateElkDocument(userIndex, Constants.ELK_USER_INDEX, Constants.ELK_USER_TYPE,
 						userIndex.getUserRoleTableId().toString());
 			}
 		}
@@ -185,59 +174,7 @@ public class AddElkUser {
 		}
 		return userIndexsList;
 	}
-
-	/*public void saveOrUpdateElkDocument(UserIndex userIndex, String index, String type, String id) {
-		String entityInJson = null;
-		try {
-			entityInJson = toJSON(userIndex);
-			client.getClient().prepareUpdate(index, type, id).setDoc(entityInJson).get();
-			logger.info(type + " has been updated.");
-		} catch (DocumentMissingException e) {
-			client.getClient().prepareIndex(index, type, id).setSource(entityInJson).execute().actionGet();
-			logger.info(type + " has been indexed.");
-		} catch (Exception e) {
-			logger.error(type + " could not be serialized. " + e.getLocalizedMessage());
-		}
-
-	}
-	*/
 	
-	
-	public void saveOrUpdateElkDocument(UserIndex userIndex, String index, String type, String id) {
-		String entityInJson = null;
-		 Map<String, Object> d = new HashMap<>();
-		try {
-		    entityInJson = toJSON(userIndex);
-		    JSONObject json = new JSONObject(entityInJson);
-		   
-		    Iterator<String> it = json.keys();
-		    while(it.hasNext()) {
-		    	String key = it.next();
-		    		d.put(key, json.isNull(key) ? null : json.get(key));
-		    }
-		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
-		    logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        		client.getClient().prepareIndex(index, type,id)
-		    .setSource(d).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }
-
-	public String toJSON(Object obj) {
-		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-			public HierarchicalStreamWriter createWriter(Writer writer) {
-				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-			}
-		});
-		return xstream.toXML(obj);
-	}
-
 	@Bean
 	public DataSource comboPooledDataSource() {
 		@SuppressWarnings("resource")
