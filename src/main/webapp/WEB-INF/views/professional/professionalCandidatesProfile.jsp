@@ -182,7 +182,7 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_AlphaNumber required validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber required validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
