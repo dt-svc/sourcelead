@@ -116,7 +116,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		}
 		
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
-			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue)");
+			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");
 			resultSqlQuery = resultSqlQuery.concat(subQuery.toString());
 		}
 		resultSqlQuery = resultSqlQuery.concat(" order by count DESC, userName");
@@ -127,12 +127,10 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		}else {
 			queryString.setString("connectionStatus", ConnectionStatus.REQUEST_SENT.toString());
 		}
-		System.out.println(queryString.getQueryString());
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
 			queryString.setParameter("searchByUserType",searchByValue)
 			.setParameter("searchByValue", "%" + searchByValue + "%");
 		}
-		System.out.println(queryString.getQueryString());
 		//Pagination                                                              //Converting custom DTO class list from Sql result 
 		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
 		usersList = queryString.list();

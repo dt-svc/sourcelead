@@ -77,8 +77,13 @@ display: none;
           
 <div class="input-group positionRelative col-md-12 noPad">
 <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
+
+
+<!-- 		<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipientContactsList();"><i class="fa fa-refresh "></i></span>	 -->
+		
+		
 <span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 					 
-<!-- <a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a> -->
+<!-- <a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a>
 <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->
 </div>
             <!-- Modal content Multiple mail -->
@@ -1272,6 +1277,30 @@ function getSenders(){
 }
 </script>
 
+<script>
+function getRecipient(){
+	    var typeOfCampaign = "0";
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getRecipientList?"+tokenParamName+"="+tokenValue+"&typeOfCampaign="+typeOfCampaign,
+		success :function(json) {
+		var output = "";
+		output = output + "<option value=''>Select Recipient</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.listId+ "'>"+opt.recipientEmail+"("+opt.listName+")</option>";
+		
+		}
+		
+		$("#emailsList").empty();
+		$("#emailsList").append(output);
+		$('#emailsList').trigger("chosen:updated");
+		},
+		});
+}
+</script>
+
  <!-- Added by rajashekar -->
  <script>
 function getRecipientContactsList(){
@@ -1303,20 +1332,20 @@ function getRecipientContactsList(){
 	    $("#mailBoxVendorsList").empty();
 	    $("#mailBoxVendorsList").append(result);
 	    recepiantscontactsList = {}
-	    vendorContactDataTableList();
+	    vendorContactDataTableList1();
 	    
 	   
 }
 </script>
 
 <script>
-function vendorContactDataTableList(){
+function vendorContactDataTableList1(){
 	 var searchValue = $("#vendorContactsDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
 	 searchValue = searchValue ? searchValue : "";
 	 var typeOfCampaign = "0";
 	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
-	 vendorContactpagination(url);
+	 vendorContactpagination1(url);
 }
 </script>
 
@@ -1349,7 +1378,7 @@ $('input[class="myRecipantsContactsCheckbox"]').each(function(i) {
 </script>
 
 <script>
-	function vendorContactpagination(url){
+	function vendorContactpagination1(url){
 		var colIndex = 0;
 		 $('#vendorconDataTable').DataTable( { 
 	    	"processing": true,

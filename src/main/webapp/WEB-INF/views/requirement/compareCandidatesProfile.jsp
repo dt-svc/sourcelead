@@ -39,13 +39,13 @@ function compareRecommendedUsers(requirementId){
 		        }
 		 });
 	}else{
-		alertMessage(candidateIds);
+		recommendationAlertMessage(candidateIds);
 	}
 }
 </script>
 
 <script>
-function alertMessage(candidateIds){ 
+function recommendationAlertMessage(candidateIds){ 
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
