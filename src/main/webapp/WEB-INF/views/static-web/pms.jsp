@@ -1,4 +1,5 @@
 <jsp:include page="../staticHeader.jsp" /> 
+<div class="innerpagesBanner clearfix">
 <div class="container text-center">
   <div class="row">
   		<div class="col-md-12">
@@ -8,6 +9,7 @@
   		Implement the integration of various HR workflows which encompass multiple tasks.<br>SourceLead PMO helps you stay dedicated and disciplined on the regular project management track.
   	</p>
   		</div>
+  </div>
   </div>
   </div>
 		<div class="thim-click-to-bottom">
