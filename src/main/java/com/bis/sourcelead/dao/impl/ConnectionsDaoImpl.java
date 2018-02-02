@@ -116,7 +116,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		}
 		
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
-			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue)");
+			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");
 			resultSqlQuery = resultSqlQuery.concat(subQuery.toString());
 		}
 		resultSqlQuery = resultSqlQuery.concat(" order by count DESC, userName");
