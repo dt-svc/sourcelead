@@ -471,17 +471,17 @@ function prepareContractChart(client1,client2,client3,client4,client5,client1Cou
             "export": {
                 "enabled": true
             },
-            "allLabels": [
-                {
-                    "bold": true,
-                    "color": "#3F51B5",
-                    "id": "Label-1",
-                    "size": 15,
-//                     "text": "Top 5 Engaged Contracts",
-                    "x": "5%",
-                    "y": "5%"
-                }
-            ],
+//             "allLabels": [
+//                 {
+//                     "bold": true,
+//                     "color": "#3F51B5",
+//                     "id": "Label-1",
+//                     "size": 15,
+//                      "text": "Top 5 Engaged Contracts",
+//                     "x": "5%",
+//                     "y": "5%"
+//                 }
+//             ],
             "balloon": {},
             "legend": {
                 "enabled": true,
@@ -576,7 +576,6 @@ function getTopFiveReceivsblesReports(){
         type : "GET",
         url : sourceleadUrl+"/getTopFiveReceivablesReports?&dateFrequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&type=Receivable",
         success: function(data) {
-            getAmchartData(data);
             if(data.draftInvoiceTotal != null && data.draftInvoiceTotal != 'undefined' && data.draftInvoiceTotal != ''){
             	$("#draftTotalAmount").html(data.draftInvoiceTotal)
             }else{
@@ -597,13 +596,13 @@ function getTopFiveReceivsblesReports(){
             }else{
             	$("#openTotalAmount").html(0)
             }
+            getAmchartData(data);
          }
     });
 }
 function getAmchartData(data){
     var clientName = '';
     var amount = '';
-    var count = 1;
     var colors = ["#7E57C2", "#5C6BC0", "#64B5F6", "#81C784", "#FFB74D", "#FF7043"];
     var i = 0;
     var mainAmcahrt = [];
@@ -759,6 +758,9 @@ function topTenClientReports(){
                     $("#topTenClientContactList").hide();
                     $("#topClientloadingDiv").removeAttr('style');
                     $("#topTenClientList").append(result);
+                    
+                    $("#topTenClientSelect").empty();
+                    $("#topTenClientSelect").trigger("chosen:updated");
              }
             }
         });
@@ -1027,6 +1029,9 @@ function topTenClientContactReports(){
                     $("#topTenClientList").hide();
                     $("#topClientloadingDiv").removeAttr('style');
                     $("#topTenClientContactList").append(result);
+                    
+                    $("#topTenClientContactSelect").empty();
+                    $("#topTenClientContactSelect").trigger("chosen:updated");
                 }
              }
         });
