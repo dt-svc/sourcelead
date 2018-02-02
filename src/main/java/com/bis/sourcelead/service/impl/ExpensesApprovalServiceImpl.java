@@ -488,10 +488,10 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			if(null != expenseId.getStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				    if(eah.getReopenRejectedReason()== null) {
+				    if(eah.getReopenRejectedReason() != null) {
 				    	expenseArray[12] = "Rejected";
 				    }else {
-				    	expenseArray[12] = submissionStatus.getValue();	
+				    	expenseArray[12] = submissionStatus.getValue().toUpperCase();
 				    }
 			}else{
 				expenseArray[12] = "--";
