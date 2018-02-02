@@ -200,7 +200,7 @@ public class ConnectionsRestController {
 	private void connectionInvitationMailToUser(User loginUser, User toUser, Long locationId,String connectionUUID) throws Exception
 	{
 		OrgLocations locations = orgLocationService.getOrgLocations(locationId);
-		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(toUser.getId(), locationId);
+		UserRole userRole = userRoleService.getUserRoleByUserId(toUser.getId());
 		StringBuilder sb = new StringBuilder();
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(toUser.getFirstName());

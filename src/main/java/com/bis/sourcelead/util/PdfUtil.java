@@ -84,7 +84,7 @@ public class PdfUtil {
 
 	    StringBuilder fileSB = new StringBuilder();
 	    File file = File.createTempFile(fileSB.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
-
+	    System.out.println("***************************************"+file.getAbsolutePath());
 	    file.setReadable(true);
 	    
 	    try {
