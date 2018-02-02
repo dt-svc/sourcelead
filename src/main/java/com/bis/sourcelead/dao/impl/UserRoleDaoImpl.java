@@ -163,7 +163,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getPrimaryRole By UserId start");
 		userRole = session
-				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.user where userRole.user.id=:userId and userRole.isPrimary = '1' ")
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations where userRole.user.id=:userId and userRole.isPrimary = '1' ")
 				.setLong("userId", userId).list();
 		logger.debug("getPrimaryRole By UserId start");
 		if (userRole.size() > 0) {
@@ -904,19 +904,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String searchByValue = searchByName.trim();
 		StringBuilder subQuery = new StringBuilder("");
 		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',IFNULL(u.last_name, '')) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
-				"((select count(c.from_uid) from connections c where c.to_uid = u.id "+
-				"and (c.from_uid in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.from_uid in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
-				"(select count(c.TO_UID) from connections c where c.FROM_UID = u.id "+
-				"and (c.TO_UID in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.TO_UID in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
-				"(select c.CONNECTION_UID from connections c where (c.FROM_UID = :loginUserId and c.TO_UID = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID, " +
-				"(select count(*) from connections c where c.from_uid = :loginUserId and c.to_uid = u.id and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
-				"(select count(*) from connections c where c.from_uid = u.id and c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
-				"from user u, user_role ur, org_locations ol " + 
+				"((select count(c.from_uid) from CONNECTIONS c where c.to_uid = u.id "+
+				"and (c.from_uid in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.from_uid in (select c.to_uid from CONNECTIONS c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from CONNECTIONS c where c.FROM_UID = u.id "+
+				"and (c.TO_UID in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.to_uid from CONNECTIONS c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"(select c.CONNECTION_UID from CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID, " +
+				"(select count(*) from CONNECTIONS c where c.from_uid = :loginUserId and c.to_uid = u.id and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
+				"(select count(*) from CONNECTIONS c where c.from_uid = u.id and c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
+				"from USER u, USER_ROLE ur, ORG_LOCATIONS ol " + 
 				"where ur.user_id = u.id and ur.org_locations_id = ol.id " + 
-				"and u.id not in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
-				"and u.id not in (select c.TO_UID from connections c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.id not in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.id not in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
 				"and u.id != :loginUserId and ur.IS_PRIMARY = 1";
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
 			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.email like :searchByValue)");
