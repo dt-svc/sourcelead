@@ -226,7 +226,7 @@ display: none;}
   </div>
 </section>
 <!-- Clients Div -->
-<section class="container-fluid container-area-white">
+<section class="container-fluid container-area-white hidden">
   <!-- Clients Div -->
    <section class="clearfix clientsdiv-inner">
     <div class="container">
