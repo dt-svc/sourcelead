@@ -61,7 +61,7 @@
         </div>
       </div>
              <div class="item">
-        <img src="images/bannerCandidate.jpg" alt="Banner">
+        <img src="/resources/static-web/images/bannerCandidate.jpg" alt="Banner">
         <div class="carousel-caption animated slideInLeft">
        		<div class="col-md-6 col-md-offset-6">
        		<div class="pull-right">
@@ -74,7 +74,7 @@
         </div>      
       </div>
       <div class="item">
-        <img src="images/bannerSearchProfile.jpg" alt="Banner">
+        <img src="/resources/static-web/images/bannerSearchProfile.jpg" alt="Banner">
         <div class="carousel-caption animated slideInLeft">
        		<div class="col-md-6 col-md-offset-6">
        		<div class="pull-right">
@@ -87,7 +87,7 @@
         </div>      
       </div>
       <div class="item">
-        <img src="images/bannerCrowd.jpg" alt="Banner">
+        <img src="/resources/static-web/images/bannerCrowd.jpg" alt="Banner">
         <div class="carousel-caption animated slideInLeft">
        		<div class="col-md-6 col-md-offset-6">
        		<div class="pull-right">
@@ -299,7 +299,7 @@
  		</div>
   		<div class="col-md-12 clearfix">
   			<a href="javascript:void(0)" class="btn btn-custom mr" onClick="requestDemo();">GET A DEMO</a>
-  			<a href="http://sourcelead.com/register" class="btn btn-custom" target="_blank">SIGNUP</a>
+  			<a href="/register" class="btn btn-custom" target="_blank">SIGNUP</a>
   		</div>
   </div>
 </section>

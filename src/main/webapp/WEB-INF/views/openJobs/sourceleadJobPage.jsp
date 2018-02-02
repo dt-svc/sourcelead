@@ -219,9 +219,9 @@ display: none;}
  			<p>Integration which provides a one-stop solution to entire recruitment life cycle with a single login to Clients, Vendors and Candidates.</p>
  		</div>
   		<div class="col-md-12 clearfix">
-  			<a href="http://sourcelead.com/register" class="btn btn-custom mr" target="_blank">Register with Us</a>
+  			<a href="/register" class="btn btn-custom mr" target="_blank">Register with Us</a>
   			<span class="mr ml">--- OR ---</span>
-  			<a href="http://sourcelead.com/register" class="btn btn-custom mr" target="_blank">Upload your CV</a>
+  			<a href="/register" class="btn btn-custom mr" target="_blank">Upload your CV</a>
   		</div>
   </div>
 </section>
