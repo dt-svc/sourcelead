@@ -18,7 +18,7 @@
 		<ul class="list-unstyled">
 			<li><a href="/ats.html">ATS</a></li>
 			<li><a href="/vms.html">VMS</a></li>
-			<li><a href="/crm.html">CRM</a></li>
+			<li><a href="/crms.html">CRM</a></li>
 			<li><a href="/pms.html">PMS</a></li>
 			<li><a href="/hrms.html">HRMS/Contracts</a></li>
 			<li><a href="/ims.html">IMS</a></li>
