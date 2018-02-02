@@ -174,7 +174,7 @@ public class StaticWebController {
 		return "openJobs/sourceleadJobPage";
 	}
 	
-	@RequestMapping(value={ "/","/index.html.html"})
+	@RequestMapping(value={ "/","/index.html"})
 	public String index() {
 		return "static-web/index";
 	}

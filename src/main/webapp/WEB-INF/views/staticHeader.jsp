@@ -42,7 +42,7 @@
 	<div class="customNavBar-inner deskMenu">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<ul class="">
-	<li><a href="/index.html" class="slactive">Home</a></li>
+	<li><a href="/" class="slactive">Home</a></li>
 	 <li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)">Features
 			  <span class="fa fa-angle-down"></span></a>
