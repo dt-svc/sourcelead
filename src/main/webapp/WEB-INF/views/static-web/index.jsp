@@ -6,7 +6,7 @@
 	<div class="registerbuttons clearfix">
 	<ul class="list-unstyled">
 	<li>
-		<a href="http://sourcelead.com/register" target="_blank">Sign Up</a>
+		<a href="/register" target="_blank">Sign Up</a>
 	</li>
 	<li>
 		<a href="javascript:void(0)" onClick="requestDemo()">GET A DEMO</a>
@@ -118,13 +118,13 @@
 			<div class="aboutinner-content animated bounceIn">
 				<h2>SourceLead is</h2>
 				<p>a <span>SaaS based ATS</span>, which uses the most powerful and<br>cutting edge <span>Artificial Intelligence</span> for efficient sourcing.<br>Our next level technology enables you to easily manage, search, and track all applicants from Requisition to On Boarding. All it takes is a click to nail the best talent effectively.</p>
-				 <a href="aboutsourcelead.html" class="btn btn-primary mt">Read More</a>
+				 <a href="/about-us.html" class="btn btn-primary mt">Read More</a>
 			</div>
 			</div>
 			<div class="col-md-6">
 			<div class="clearfix home-demovideo animated bounceIn">
 				<div class="gallery clearfix list-unstyled">
-					<a href="https://www.youtube.com/watch?v=Vbi24I70NYU&t=263s" rel="prettyPhoto" title="Know about Jobs"><img src="images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>
+					<a href="https://www.youtube.com/watch?v=Vbi24I70NYU&t=263s" rel="prettyPhoto" title="Know about Jobs"><img src="/resources/static-web/images/videoBanner.jpg" alt="YouTube" class="img-responsive"/></a>
 				</div>
         	  </div>
 			</div>
@@ -232,28 +232,28 @@
         <div class="large-12 columns">
           <div class="owl-carousel owl-theme owlcarousel-custom">
             <div class="itemowl">
-              <img src="images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/soft.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
              <div class="itemowl">
-              <img src="images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/soft.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
           </div>
           </div>

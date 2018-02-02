@@ -5,7 +5,7 @@
   <div class="row">
   		<div class="col-md-12">
   	<h2 class="text-center">HRMS &amp; Contract Management</h2>
-  	<div class="clearfix mt mb"><img src=/resources/static-web/images/atsicons.png" alt="img"></div>
+  	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
   	<p>
   		We provide an advanced technology solution combining the workforce management and human capital management.<br>It connects the payroll, talent acquisition, employee on boarding, internal and exit HR policies and performance management.
   	</p>
