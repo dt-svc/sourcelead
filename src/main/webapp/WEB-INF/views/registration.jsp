@@ -379,7 +379,7 @@ window.onload = function () {
             <div class='col-md-12 privacy_checkbox text-center'>
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="professionalRegistrationCheckTermsId">
-                    I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+                    I agree <a href="/termsofuse.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacypolicy.html" target="blank" class="text-succcess">privacy policy</a>
                     <input type="hidden" id="professionalRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
