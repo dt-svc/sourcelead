@@ -934,8 +934,9 @@ public class ClientServiceImpl implements ClientService {
 				}
 				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 					org.setClientBillingAddress(clientDTO.getBillingAddress());
+				}else {
+					org.setClientBillingAddress("");
 				}
-				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
@@ -972,6 +973,9 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 				orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			} else {
+
+				orgLocations.setBillingAddress("");
 			}
 			orgLocationForELk = orgLocationService.updateOrgLocations(orgLocations);
 		} else {
@@ -1097,6 +1101,8 @@ public class ClientServiceImpl implements ClientService {
 			 
 			 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
 				 orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			 }else{
+				 orgLocations.setBillingAddress("");
 			 }
 			
 
