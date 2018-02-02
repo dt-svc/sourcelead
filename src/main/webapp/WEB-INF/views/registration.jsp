@@ -309,7 +309,7 @@ window.onload = function () {
                      <ul>
             		    <li onclick="socialinviter.socialconnect.auth('googleplus');" title="Google Plus"><i class="fa fa-google-plus"></i></li>
             			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB" title="Facebook"><i class="fa fa-facebook"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li>
+<!--             			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li> -->
             			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN" title="Linked In"><i class="fa fa-linkedin"></i></li>
             			<div class="clearfix"></div>
             		</ul>
@@ -405,7 +405,7 @@ window.onload = function () {
                      <ul>
             		    <li onclick="socialinviter.socialconnect.auth('googleplus');" title="Google Plus"><i class="fa fa-google-plus"></i></li>
             			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB" title="Facebook"><i class="fa fa-facebook"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li>
+<!--             			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li> -->
             			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN" title="Linked In"><i class="fa fa-linkedin"></i></li>
             			<div class="clearfix"></div>
             		</ul>
