@@ -504,7 +504,7 @@
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Total Hours Estimated</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
@@ -1844,7 +1844,7 @@ function hideCommonSOWFields(){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
 	            	  result = result + '<option value="">Select Applicant</option>';
-	                  for (var i = 0; i < json.length-1; i++) {
+	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
 	                  }
@@ -1853,7 +1853,7 @@ function hideCommonSOWFields(){
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
-	              	  refreshClientList(json[json.length-1].orgRelationId);
+	              	  refreshClientList(json[0].orgRelationId);
 	              }else{
 	            	  var result = "";
 	            	  result = result + '<option value="">Select Applicant</option>';

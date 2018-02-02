@@ -273,7 +273,6 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   ProjectApproverHierarchy pah = projectApproverHierarchyService.getProjectApproverByProjectId(projectId);
 		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
@@ -328,7 +327,19 @@ public class ProjectsDashboardRestController {
 						
 					}
 				}
-				ProjectDetails.setApproverUserId(pah.getApproverUserId().getId());
+				
+				List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId,loginOrgLocations.getId());
+				if(hierarchyList != null && !hierarchyList.isEmpty()){
+					for(ProjectApproverHierarchy hierarchy : hierarchyList){
+						if(hierarchy.getApproverUserId().getId().equals(user.getId())){
+							ProjectDetails.setProjectApprover(Constants.YES);
+							break;
+						}else{
+							ProjectDetails.setProjectApprover(Constants.NO);
+						}
+					}
+				}
+				
 				ProjectDetails.setClientsList(clientsDTOList);
 		   
 		   return ProjectDetails;
@@ -440,7 +451,7 @@ public class ProjectsDashboardRestController {
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
-				String sortColumnOrder = "desc"; //by default descending order
+				String sortColumnOrder = "asc"; //by default descending order
 				if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
 					sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
 					sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");

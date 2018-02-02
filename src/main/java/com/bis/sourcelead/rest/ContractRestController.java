@@ -547,16 +547,12 @@ public class ContractRestController {
 					if(null != requirementSubmission.getRequirement()){
 						requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
 					}
-					
+					if (req.getClientId() != null) 
+					requirementSubmission.setOrgRelationId(req.getClientId().getId());
 					
 				}
 			}
 			
-			if (req.getClientId() != null) {
-				RequirementSubmission reqSub = new RequirementSubmission();
-				reqSub.setOrgRelationId(req.getClientId().getId());
-				requirementSubmissionsList.add(reqSub);
-			}
 		}
 		
 		

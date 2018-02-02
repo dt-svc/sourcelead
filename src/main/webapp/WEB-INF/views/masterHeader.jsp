@@ -693,10 +693,13 @@ function preventTabkey(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
-	                     
-	                     <li><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="subMenuView">
+		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
+		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
+	                     	</div>
+	                     </li>
 	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
-	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
@@ -717,25 +720,11 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
 						  
-						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  	<%-- <li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li> --%>
 						  	
-						 <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
-						 	<div class="subMenuView">
-						 	
-						 	
-<%-- 						 	<c:if test="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient'}"> --%>
-<!--                               <ul class="collapses" style="display: none"> -->
-<%--                                   <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
-<%--                                   <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
-<!--                               </ul> -->
-<%--                            </c:if> --%>
-                              
-<%--                            <c:if test="${sessionData.nav != 'Campaigns' || sessionData.nav != 'CampaignSender' || sessionData.nav != 'CampaignRecipient'}"> --%>
-<!--                            <ul class="collapses" style="display: none"> -->
-<%--                                <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
-<%--                                 <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
-<!--                            </ul> -->
-<%--                            </c:if> --%>
+						 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="campsubMenuView">
+						 
 						 	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 			
 			                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
@@ -820,7 +809,7 @@ function preventTabkey(e){
 
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
-		 type : "GET",
+		 type : "POST",
 	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
@@ -1667,6 +1656,39 @@ $("#searchType").selectpicker('refresh');
    	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
 </div>
 <div class="sideMask"></div>
+<div class="modal modalBulkImport" class="invite" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Bulk Import</h4>
+        </div>
+        <form:form id="bulkImportForm" name="bulkImportForm" method="post">
+         
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-folder-open-o  paddingRight text-info" aria-hidden="true"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Folder Path" id="folderPath" name="folderPath" field-name="Folder Path" data-validation="required validate_Space">
+                </div>
+            </div>
+            <div id='bulkImportStatus' class="form-group clearfix">
+            </div>
+       </div>
+       
+       <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="paddingRight"></i>Continue</button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushBulkImportPath();"></i>Cancel
+            </button>
+                </div>
+        </div>
+     </form:form>
+   </div>
+  </div>
+</div>
 <div class="modal modalInvite" class="invite" role="dialog">
     <div class="modal-dialog">
     
@@ -1729,6 +1751,16 @@ $("#searchType").selectpicker('refresh');
   
   <div class="popMask"></div>
   
+  <script>
+$(document).ready(function(){
+	$("#subMenu").click(function(){
+		$(".subMenuView").slideToggle(100);
+	});
+	$("#campSubMenu").click(function(){
+		$(".campsubMenuView").slideToggle(100);
+	});	
+});
+</script>
   
   <script>
   function flushInviteCompany(){
@@ -1741,16 +1773,48 @@ $("#searchType").selectpicker('refresh');
   $(".modalInvite").fadeIn();
   $(".sideMask").fadeOut();
   });
+  $("#bulkImport").click(function(){
+	  $(".modalBulkImport").fadeIn();
+	  $(".sideMask").fadeOut();
+	  });
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
-	  });
+	  flushBulkImportPath();
+ });
   $(".btnClose").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
+	  flushBulkImportPath();
 	  });
+  
+  function flushBulkImportPath() {
+	  $("#folderPath").val('');
+  }
+  
+  function processCopiedFiles() {
+	  if ($('#bulkImportForm').validate(false, validationSettings)) {
+		  var val = $("#folderPath").val().trim();
+		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
+			  if(data && data.indexOf("Session timedout") !== -1) {
+				  alert(data);
+				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
+			  } else if(data) {
+				  $("#bulkImportStatus").html(data)
+				  if(data.indexOf("Invalid") === -1) {
+					  $("#folderPath").val('');
+				  }
+			  }
+		  });
+	  } else {
+			return false;
+		}
+	 
+  }
   </script>
 <!--  Company invite pop ends -->
 
@@ -1975,11 +2039,5 @@ function zipcodeMask(country,zipCodeId){
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
-<script>
-$(document).ready(function(){
-	$("#subMenu").click(function(){
-		$(".subMenuView").slideToggle(100);
-	});
-});
-</script>
+
 

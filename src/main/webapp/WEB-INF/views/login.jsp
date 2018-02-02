@@ -100,8 +100,8 @@ function directLoginValidateWhiteListIp(userRoleId,userName,password){
 function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
-	      type : "GET",
-	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName+"&password="+password,        
+	      type : "POST",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName,        
 	       success :function(data) {
 	    	   if(data != null){
 	    		   $("#signinDiv").removeAttr("style");

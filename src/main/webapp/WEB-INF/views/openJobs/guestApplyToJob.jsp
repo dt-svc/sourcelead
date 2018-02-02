@@ -11,12 +11,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jquery-ui.css" rel="stylesheet">
 <script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
@@ -58,6 +58,25 @@ padding-right:15px; border-right:1px solid #ededed;
 border-right:none;
 }
 </style>
+
+<script>
+$(document).ready(function() {
+	var requirementId = '${reqId}';
+	var jobTitle = '${reqName}'
+	var sourceleadUrl = '${sourceleadUrl}';
+	var skills = '${skills}';
+	var jobType = '${jobType}';
+	var experience = '${experience}';
+	var location = '${location}';
+	var rate = '${rate}';
+	var noticePeriod = '${noticePeriod}';
+	var visaTypes = '${visaTypes}';
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
+	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId); 
+	});
+</script>
 </head>
 <body>
 <div class="container new_side_wrap_inn applytoJobDiv">
@@ -173,26 +192,12 @@ border-right:none;
 </div>
 
 <script>
-$(document).ready(function() {
-	var requirementId = '${reqId}';
-	var jobTitle = '${reqName}'
-	var sourceleadUrl = '${sourceleadUrl}';
-	var skills = '${skills}';
-	var jobType = '${jobType}';
-	var experience = '${experience}';
-	var location = '${location}';
-	var rate = '${rate}';
-	var noticePeriod = '${noticePeriod}';
-	var visaTypes = '${visaTypes}';
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
-	}
-	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId);
-	});
-</script>
-<script>
+var sourceleadUrl = '${sourceleadUrl}';
+if(sourceleadUrl.indexOf("/app")!=-1){
+	sourceleadUrl = sourceleadUrl.split("/app")[0];
+}
 function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId){
-	  var finalDateFormatScript = 'dd-mm-yy'; 
+	var finalDateFormatScript = 'dd-mm-yy'; 
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		var result = "";
@@ -317,8 +322,10 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '		 </div>';
 		result = result + '	 </div>';
 		 */
-		
 		result = result + '<div class="form-footer clearfix mt">';
+		result = result + '<div class="pull-right mr">';
+		result = result + '<button type="button" id="save_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
+		result = result + '</div>';
 		result = result + '<div class="pull-right mr">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
 		result = result + '</div>';
@@ -425,10 +432,6 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
 	
-	document.getElementById("newUploadBtn123").onchange = function () {
-		$('#newUploadFile123').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	};
-	
 }
 </script>
 <script>
@@ -449,9 +452,9 @@ function importGuestAddApplicantDoc(){
 	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
 </script> -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 var sourceleadUrl ='${sourceleadUrl}';
-</script>
+</script> -->
 <!-- <script>
 function uploadAddApplicantCandidateDoc(){
 	fileUpload("newUploadBtns", "addApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
@@ -460,12 +463,8 @@ function uploadAddApplicantCandidateDoc(){
 }
 </script> -->
 <script>
+
  $(document.body).on('change', '#uploadBtn' ,function(){
-	 var sourceleadUrl = '${sourceleadUrl}';
-		if(sourceleadUrl.indexOf("/app")!=-1){
-			sourceleadUrl = sourceleadUrl.split("/app")[0];
-		}
- 
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -554,7 +553,6 @@ function uploadAddApplicantCandidateDoc(){
   						
  		        		 $("#loading").removeAttr("style");
 						 validateSubmissionCandidateEmail();
-						 getUserByUserEmail();
 						
 					},
 				});
@@ -594,7 +592,6 @@ function uploadAddApplicantCandidateDoc(){
 		        		$("#save_button").removeAttr("disabled");
 		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
 		        		$('.jquery_form_error_message').remove();
-		        		isCoolingOff(requirementId);
 		        	} 
 		        },
 		    });
@@ -650,7 +647,11 @@ function validate_fileupload(fileName)
 	})(jQuery);
 </script>
  
-
+<script>
+function guestCancel(){
+	 window.location = sourceleadUrl+"/jobs"
+}
+</script>
 <script type="text/javascript">
 function addApplicantSubmission(){
 	var requirementId = '${reqId}';
@@ -767,10 +768,7 @@ function addApplicantSubmission(){
      $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
     
-     /* $.post(sourceleadUrl + "/saveGuestAddApplicant", formData, function(result) {
-    	 window.location.href = "/jobs";
-    	 window.location = "http://localhost:8080/jobs";
-     }); */
+
      
      
      
@@ -784,8 +782,7 @@ function addApplicantSubmission(){
 		     dataType : 'json',
 	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	window.location.href = "/jobs";
-	        	 window.location = "http://localhost:8080/jobs"
+	        	 window.location = sourceleadUrl+"/jobs"
 	        },
 	    });  
     return true; 
