@@ -707,7 +707,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		  clientId = null;
 		}
 		String searchValue = "";
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0);
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0,"");
 		 HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
          if(projectMembers != null){
         	
@@ -1060,7 +1060,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Row writeRow = null;
 		// to get list of project members from data base.
 		String searchValue = "";
-		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0);
+		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0,"");
 		HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
         if(projectMembers != null){
        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
