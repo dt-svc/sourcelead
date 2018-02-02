@@ -226,7 +226,7 @@ display: none;}
   </div>
 </section>
 <!-- Clients Div -->
-<section class="container-fluid container-area-white hidden">
+<section class="container-fluid container-area-white">
   <!-- Clients Div -->
    <section class="clearfix clientsdiv-inner">
     <div class="container">
@@ -238,28 +238,28 @@ display: none;}
         <div class="large-12 columns">
           <div class="owl-carousel owl-theme owlcarousel-custom">
             <div class="itemowl">
-              <img src=/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src=/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src=/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src=/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
              <div class="itemowl">
-              <img src=/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src=/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src=/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src=/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
           </div>
           </div>
