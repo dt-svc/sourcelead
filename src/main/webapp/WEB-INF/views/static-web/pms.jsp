@@ -126,7 +126,7 @@
  		</div>
   		<div class="col-md-12 clearfix">
   			<a href="javascript:void(0)" class="btn btn-custom mr" onClick="requestDemo();">GET A DEMO</a>
-  			<a href="http://sourcelead.com/register" class="btn btn-custom" target="_blank">SIGNUP</a>
+  			<a href="/register" class="btn btn-custom" target="_blank">SIGNUP</a>
   		</div>
   </div>
 </section>
