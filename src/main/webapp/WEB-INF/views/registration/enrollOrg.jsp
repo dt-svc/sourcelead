@@ -154,7 +154,7 @@ function changeCountry(){
 	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
 <%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
-	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry();" >
+	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry(); getTimezonesList();" >
 		                    <option value="">Select Country</option>
 		                    <option value="Australia">Australia</option>
 			                <option value="France">France</option>
