@@ -1716,23 +1716,17 @@ function hideCommonSOWFields(){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
 	            	  result = result + '<option value="">Select Applicant</option>';
-	            	  if(sowType == "Vendor SOW"){
+	            	  
 	            		  for (var i = 0; i < json.length; i++) {
 	 	                 	 var opt = json[i]; 
 	 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
 	 	                  }  
-	            	  }else{
-	            		  for (var i = 0; i < json.length-1; i++) {
-	 	                 	 var opt = json[i]; 
-	 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
-	 	                  }
-	            	  }
 	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
-	              	  refreshClientList(json[json.length-1].orgRelationId);
+	              	  refreshClientList(json[0].orgRelationId);
 	              }else{
 	            	  var result = "";
 	            	  result = result + '<option value="">Select Applicant</option>';
