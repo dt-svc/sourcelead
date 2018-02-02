@@ -479,7 +479,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
 	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
@@ -499,8 +499,8 @@ function EditEducation(candidateId,candidateEducationId) {
 												}
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                  <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
+	result  = result + '                  <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();scoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -822,11 +822,7 @@ function recSelectType(){
 	}
 	
 	 var selectedText = document.getElementById("scoreType").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
+	
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
