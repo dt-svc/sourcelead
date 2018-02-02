@@ -16,6 +16,61 @@ public class StaticWebController {
 		return "static-web/about-us";
 	}
 	
+	@RequestMapping("/termsofuse.html")
+	public String termsofuse() {
+		return "static-web/termsofuse";
+	}
+	
+	@RequestMapping("/privacypolicy.html")
+	public String privacypolicy() {
+		return "static-web/privacypolicy";
+	}
+	
+	@RequestMapping("/crms.html")
+	public String crms() {
+		return "static-web/crms";
+	}
+	
+	@RequestMapping("/disclaimer.html")
+	public String disclaimer() {
+		return "static-web/disclaimer";
+	}
+	
+	@RequestMapping("/helpManuals.html")
+	public String helpManuals() {
+		return "static-web/helpManuals";
+	}
+	
+	@RequestMapping("/hrms.html")
+	public String hrms() {
+		return "static-web/hrms";
+	}
+	
+	@RequestMapping("/ims.html")
+	public String ims() {
+		return "static-web/ims";
+	}
+	
+	@RequestMapping("/marketplace.html")
+	public String marketplace() {
+		return "static-web/marketplace";
+	}
+	
+	@RequestMapping("/pms.html")
+	public String pms() {
+		return "static-web/pms";
+	}
+	
+	@RequestMapping("/searchprofile.html")
+	public String searchprofile() {
+		return "static-web/searchprofile";
+	}
+	
+	@RequestMapping("/termsnconditions.html")
+	public String termsnconditions() {
+		return "static-web/termsnconditions";
+	}
+	
 	@RequestMapping("/ats.html")
 	public String ats() {
 		return "static-web/ats";
@@ -112,11 +167,16 @@ public class StaticWebController {
 		return "static-web/home";
 	}
 	
-	@RequestMapping(value={ "/","/index.html"})
-	public String index(HttpServletRequest request) {
+	@RequestMapping(value={ "/","/sourceleadJobPage.html"})
+	public String sourceleadJobPage(HttpServletRequest request) {
 	    Map<String,String> map =new HashMap();
 	    map.put("SourceleadStaticUrl", request.getRequestURL().toString().split(request.getRequestURI())[0]);
 		return "openJobs/sourceleadJobPage";
+	}
+	
+	@RequestMapping("/index.html")
+	public String index() {
+		return "static-web/index";
 	}
 	
 	@RequestMapping("/job-details.html")
