@@ -173,10 +173,10 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			+ "          OR (((emp.user.id IS NULL) OR (emp.user.id  IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id)) )) "
 			+ "       )"
 			+ "      ) "
-		    /*
+		     /*
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
-				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and  "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForExp+") "
+				+ "  OR ( "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForExp+") "
 				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString()+"  ORDER BY sah.id DESC ";
 		
 		String countFrom = "";
@@ -192,7 +192,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
-						+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and  "
+						+ "  OR (  "
 						+ "   (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0' ))  "
 						+ "     ) "
 						+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+"  "+query1.toString();
@@ -320,8 +320,10 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		User loginUser = userDao.getUserById(approverUserId);
 		String actionPerformedBy= "";
+		Long actionPerformedByLocationId = null;
 		if(location != null && StringUtils.isNotEmpty(location.getOrgLocationName())){
 			actionPerformedBy =location.getOrgLocationName();
+			actionPerformedByLocationId = location.getId();
 		}else{
 			actionPerformedBy = loginUser.getFullName();
 		}
@@ -367,6 +369,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
             	 	sah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setExpenseStatus(Submission_Status.REJECTED);
             	 	sah.setActionPerformedBy(""+actionPerformedBy);
+            	 	sah.setActionbyorglocid(actionPerformedByLocationId);
             	 	sah.setRejectedReason(rejectedReason);
             	 	sah.setReopenReason(null);
             	    sah.setReopenedUser(null);
@@ -380,6 +383,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
 	            	 sah.setActionPerformedBy(""+actionPerformedBy);
+	            	 sah.setActionbyorglocid(actionPerformedByLocationId);
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);
@@ -404,6 +408,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 				approver.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
                 				approver.setExpenseStatus(Submission_Status.REJECTED);
                 				approver.setActionPerformedBy(" "+actionPerformedBy);
+                				approver.setActionbyorglocid(actionPerformedByLocationId);
                 				approver.setRejectedReason(rejectedReason);
                 				approver.setReopenReason("");
                 				approver.setReopenedUser(null);
@@ -422,6 +427,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
     	            				 	 approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
     	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
     	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
+    	            	            	 approver.setActionbyorglocid(actionPerformedByLocationId);
     	            	            	 approver.setReopenReason("");
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");
@@ -435,6 +441,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 					      approver.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
     	            	            	 approver.setExpenseStatus(Submission_Status.APPROVED);
     	            	            	 approver.setActionPerformedBy(" "+actionPerformedBy);
+    	            	            	 approver.setActionbyorglocid(actionPerformedByLocationId);
     	            	            	 approver.setReopenReason("");
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");

@@ -623,6 +623,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("status",1));
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+
 		     String visaType = null;
 		     if(recommendedCustomizeScore.getCustomizeVisatype() != null){
 		    	 visaType = recommendedCustomizeScore.getCustomizeVisatype();
@@ -646,7 +647,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolQueryBuilderForCount.should(QueryBuilders.matchQuery("skillsName", skill));
 				}
 			}
-			
+
 			String [] visatypeArr = null;
 			if(visaType != null){
 				visatypeArr = visaType.split(",");
@@ -827,7 +828,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					// get the locationPercentage
 					locationPercentage = getLocationPercentage(recommendedCustomizeScore,candidateIndex);
 					
-					
 					//keywords calculation
 				    float totalKeyWordPer = 0;
 					if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
@@ -923,34 +923,16 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
 			 reqCity = recommendedCustomizeScore.getCustomizeCity();
 		}
-		
-		String reqState = "";
-		if(null != recommendedCustomizeScore.getCustomizeState() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeState())){
-			reqState = recommendedCustomizeScore.getCustomizeState();
-		}
-		
-		String reqCountry = "";
-		if(null != recommendedCustomizeScore.getCustomizeCountry() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCountry())){
-			reqCountry = recommendedCustomizeScore.getCustomizeCountry();
-		}
-		
-		if((null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity())) && (null != candidateIndex.getState() && !"".equalsIgnoreCase(candidateIndex.getState())) && (null != candidateIndex.getCountry() && !"".equalsIgnoreCase(candidateIndex.getCountry()))){
-			if((candidateIndex.getCity().equalsIgnoreCase(reqCity)) && (candidateIndex.getState().equalsIgnoreCase(reqState)) && (candidateIndex.getCountry().equalsIgnoreCase(reqCountry))){
-				locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
+		if((null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity()))){
+			String[] multyCities = reqCity.split(",");
+			for(String city :multyCities) {
+				if((candidateIndex.getCity().equalsIgnoreCase(city))){
+					locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
+				}
 			}
+			
 		}
 		
-	/*	if(null != candidateIndex.getState() && !"".equalsIgnoreCase(candidateIndex.getState())){
-			if(candidateIndex.getState().equalsIgnoreCase(reqState)){
-				locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
-			}
-		}
-		
-		if(null != candidateIndex.getCountry() && !"".equalsIgnoreCase(candidateIndex.getCountry())){
-			if(candidateIndex.getCountry().equalsIgnoreCase(reqCountry)){
-				locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
-			}
-		}*/
 		return locationPercentage;
 	}
 

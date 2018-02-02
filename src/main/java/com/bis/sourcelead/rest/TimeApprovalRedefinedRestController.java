@@ -436,7 +436,7 @@ public class TimeApprovalRedefinedRestController {
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getClient()) && !timesheetApprovalDTO.getClient().equalsIgnoreCase("All")){
 	        	clientId =Long.parseLong(timesheetApprovalDTO.getClient());
 	        }
-	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),start,length);
+	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),start,length,"");
 	        
 	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
 			
@@ -610,10 +610,20 @@ public class TimeApprovalRedefinedRestController {
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			          	 ts.setRejectedReason(sah.getRejectedReason());
-			          	 ts.setActionPerformedBy(sah.getActionPerformedBy());
+			          	 if(sah.getActionPerformedByOrgLocationId() != null) {
+			          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
+			          		ts.setActionPerformedBy(orglocation.getOrgLocationName());
+			          	 }else {
+			          		ts.setActionPerformedBy(sah.getActionPerformedBy());
+			          	 }
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED){
+			    	 if(sah.getActionPerformedByOrgLocationId() != null) {
+		          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
+		          		 	ts.setActionPerformedBy(orglocation.getOrgLocationName());
+		          	 }else {
 			   	            ts.setActionPerformedBy(sah.getActionPerformedBy());
+		          	 }
 			     }  
 		     return ts;
        }

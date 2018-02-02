@@ -39,9 +39,8 @@ public class CandidateResumes implements Serializable{
     private OrgLocations orgLocationId;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
-	@JsonBackReference
 	private Candidate candidateId;
 	
 	@Transient

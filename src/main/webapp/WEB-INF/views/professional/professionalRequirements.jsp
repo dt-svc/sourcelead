@@ -34,12 +34,24 @@ padding:4px 12px; float: left;
 .bg-green {
 	background: #1ab394 !important;
 }
-
 .bg-red {
   background: #D84315 !important; 
 }
 
+.OpenJob h5 strong{
+	width: 70px !important; 
+}
+.ref-top{
+top: 22px;height: 32px; line-height: 18px;
+}
 </style>
+
+<script>
+$(document).ready(function() {
+    multicities = {}; 
+}); 
+</script>
+
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
@@ -304,7 +316,7 @@ window.onload = function () {
                 </div>
                 
               </div>
-              <div class="clearfix">
+              <%-- <div class="clearfix">
                 <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
@@ -334,7 +346,7 @@ window.onload = function () {
                                </select>
 				  </div>
 			  </div>
-              </div>
+              </div> --%>
               
               <div class="clearfix">
                 <div class="col-md-4">
@@ -361,6 +373,40 @@ window.onload = function () {
                   </div>
                 </div>
               </div>
+               <div class="clearfix">
+				<%-- <div class="col-md-4">
+						<label>Country</label>
+						<div class="clearfix adv-srh-chosen">
+							<select class="chosen-select" name="country" id="country" field-name="Country">
+								<option value="">---select Country---</option>
+								<c:forEach var="cntry" items="${countryList}">
+									<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div> --%>
+					
+					<div class="col-md-4">
+						<label>Choose City</label>
+						<div class="clearfix">
+						<div class="col-md-14">
+					      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+						  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+						 </div>
+							
+						</div>
+					</div>
+					
+				   <div class="col-md-8">
+						<label>Selected Cities</label>
+						<div class="clearfix">
+						   <select class="chosen-select form-control input-sm" multiple
+								data-placeholder="sletected cites" id="city" name="city">
+							</select>
+							
+						</div>
+					</div>
+				</div>
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 
@@ -575,6 +621,9 @@ function minMaxExperienceOfProfessional(){
 		    	         }
 			    });
 			    
+			    
+				tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
 		 // here call experience validation
 		       $("#maxExp").on('change', function (e) {
 		    	   minMaxExperienceOfProfessional();
@@ -584,12 +633,12 @@ function minMaxExperienceOfProfessional(){
 		    	   minMaxExperienceOfProfessional();
 		       });
 		       
-		      $("#country").on('change', function (e) {
-		    	   getStates();
-		       });
-		       $("#state").on('change', function (e) {
-		    	   getCities();
-		       });
+		     /*  $("#country").on('change', function (e) {
+		    	  getcites('apiLocation','city','recommendation');
+		    	  $("#apiLocation").val('');
+		    	  $("#city").val('').trigger("chosen:updated");
+		       }); */
+		      getcites('apiLocation','city','recommendation');
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -782,7 +831,7 @@ function requirementsList(offset){
 			 				var jobType = '';
 			 				var experience = '';
 			 				var rate = '';
-			 				var location = '';
+			 				//var location = '';
 			 				var jobId = '';
 			 				var industryName = '';
 			 				var visaType ='';
@@ -809,11 +858,11 @@ function requirementsList(offset){
 			 					experience = '--';
 			 				}
 			 				
-			 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
+			 				/* if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
 			 					location = requirements.state+", "+requirements.country;
 			 				}else{
 			 					location = requirements.country;
-			 				}
+			 				} */
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 			 					rate = requirements.rate+" "+requirements.currentRateCurrency+" / "+requirements.rateType;
@@ -852,12 +901,22 @@ function requirementsList(offset){
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';
-			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
+			 				/* result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>'; */
 			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
+							result = result +'<strong>Locations : </strong>';
+			 				
+			 				result = result +'<ul>';
+			 				if(requirements.locationsList != null){
+			 					for(var k=0; k<requirements.locationsList.length; k++){
+			 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+			 					}
+			 				}
+			 				result = result +'</ul>';
+			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'<strong>Skills :</strong>';
 			 				result = result +'<ul>';
 			 				
@@ -912,7 +971,7 @@ function requirementsList(offset){
 			 					var sourceleadShareUrl = sourceleadUrl ;
 			 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
 			 					result = result +'<div class="openCtaRight">';
-				 				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				 				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
 				 				if(requirements.isJobSaved != 'Y'){
@@ -1050,8 +1109,8 @@ function requirementsList(offset){
    		    }
 	     
 	     window.setTimeout(function() {
-				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+				addthis.init(".addthis_inline_share_toolbox_g28q");
 				addthis.layers.refresh();
 	        }, 500);
 	     $("#requirementsListLoading").removeAttr("style"); 
@@ -1126,7 +1185,6 @@ function searchRequirement(offset){
 									 				var jobType = '';
 									 				var experience = '';
 									 				var rate = '';
-									 				var location = '';
 									 				var jobId = '';
 									 				var industryName = '';
 									 				var visaType ='';
@@ -1156,12 +1214,6 @@ function searchRequirement(offset){
 									 					experience = '--';
 									 				}
 									 				
-									 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
-									 					location = requirements.state+", "+requirements.country;
-									 				}else{
-									 					location = requirements.country;
-									 				}
-									 				
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
@@ -1189,12 +1241,22 @@ function searchRequirement(offset){
 									 				result = result +'<span>';
 									 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 									 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-									 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 									 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
 									 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 									 				result = result +'<b><i class="fa fa-plane" title="Industry"></i>'+visaType+'</b>';
 									 				result = result +'</span>';
 									 				result = result +'<h5>';
+									 				
+									 				result = result +'<strong>Locations : </strong>';
+									 				
+									 				result = result +'<ul>';
+									 				if(requirements.locationsList != null){
+									 					for(var k=0; k<requirements.locationsList.length; k++){
+									 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+									 					}
+									 				}
+									 				result = result +'</ul>';
+									 				
 									 				result = result +'<strong>Skills :</strong>';
 									 				result = result +'<ul>';
 									 				if(requirements.skillsList != null){
@@ -1248,9 +1310,9 @@ function searchRequirement(offset){
 									 					result = result +'<div class="openCtaRight">';
 										 				 result = result +'<p>Share Job</p>';
 										 				 result = result +'<span>';
-									 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+										 				result = result +'	<div class="share">';			  
+														result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+														result = result +'	</div>';
 										 				result = result +'</span>'; 
 										 				result = result +'<div class="openPostBtns clearfix">';
 										 				
@@ -1325,6 +1387,12 @@ function searchRequirement(offset){
 		           		    	/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
+					       	window.setTimeout(function() {
+								addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+								addthis.init(".addthis_inline_share_toolbox_g28q");
+								addthis.layers.refresh();
+					        }, 500);
+					       	
 					        socialInviterScripts();
 						},
 					});  

@@ -45,6 +45,11 @@ display: none;
 			 $("#emailsList").empty();
 			 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
 			 $("#emailsList").trigger("chosen:updated");
+           var toEmail = '${toEmail}';
+			 
+			 $("#emailsList").empty();
+			 $("#emailsList").append("<option value='" +toEmail+ "' selected>"+toEmail+"</option>");
+			 $("#emailsList").trigger("chosen:updated");
 		 }
 	 }
 });
@@ -189,7 +194,7 @@ display: none;
   
 <script type="text/javascript">
 $(function() { 
-	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','skills');
 });
 </script> 
   

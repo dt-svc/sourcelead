@@ -72,8 +72,8 @@ $(document).ready(function(){
                 <div class="tblminwidth-175 pull-left"><a href="javascript:void(0)">Draft</a></div>
                 <span class="pull-right" id="draftCount"><b class="paddingRight text-muted"></b>0</span> </li>
               <li class="clearfix">
-                <div class="tblminwidth-175 pull-left"><a href="javascript:void(0)">Wating</a></div>
-                <span class="pull-right" id="watingCount"><b class="paddingRight text-muted"></b>0</span> </li>
+                <div class="tblminwidth-175 pull-left"><a href="javascript:void(0)">Waiting</a></div>
+                <span class="pull-right" id="waitingCount"><b class="paddingRight text-muted"></b>0</span> </li>
               <li class="clearfix">
                 <div class="tblminwidth-175 pull-left"><a href="javascript:void(0)">Sign</a></div>
                 <span class="pull-right" id="signCount"><b class="paddingRight text-muted"></b>0</span> </li>
@@ -202,7 +202,7 @@ $(document).ready(function(){
 			    	$("#totalPaidCount").html(data.totalPaidbillCount);
 			    	$("#totalRecevableAmount").html(data.totalReceivableAmount);
 			    	$("#draftCount").html(data.draftCount);
-			    	$("#watingCount").html(data.watingCount);
+			    	$("#waitingCount").html(data.waitingCount);
 			    	$("#signCount").html(data.signCount);
 			    	$("#counterSignCount").html(data.counterSignCount);
 			    	$("#expiredCount").html(data.expiredCount);
@@ -212,7 +212,7 @@ $(document).ready(function(){
 			    	$("#hiredCount").html(data.offeracceptedCount);
 			    	$("#applicantCountID").html(data.applicantsCount);
 			    	$("#shortListCountID").html(data.shortlistedCount);
-			    	$("#submittoClientCountID").html(data.interviewsCount);
+			    	$("#submittoClientCountID").html(data.submitToClientCount);
 			    	$("#interviewdCountID").html(data.interviewsCount);
 			    	$("#offeredCountID").html(data.offeredCount);
 			    	$("#offerAcceptedCountID").html(data.offeracceptedCount);

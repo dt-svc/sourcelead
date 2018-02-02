@@ -2215,7 +2215,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
          if(null != requirement.getParentRequirement()){
              Integer totalApplicatsCountForRequirement = 0;
-             Requirement req = requirement.getParentRequirement();
+             Requirement req = requirementService.getRequirementByRequirementId(requirement.getParentRequirement().getId()) ;
             //updating total number of applicants for requrement
              totalApplicatsCountForRequirement = getNumberOfApplicantsForRequirement(requirement.getParentRequirement().getOrgLocationId().getId(), requirement.getParentRequirement().getId());
 //             totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
@@ -2435,8 +2435,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String subject = "";
 			String body = "";
 			//String signature = user.getFirstName();
-			String url = "";
-			
+			//String url = sourceleadUrl;
 			RequirementSubmission reqSub=null;
 			List<String> submissionIsd = Arrays.asList(submissionId);
 			for(String subIds :submissionIsd){
@@ -2484,7 +2483,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
 			notificationScenario.setBody(notificationbody);
 			
-			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, url, loginOrgLocation.getOrg(),loginOrgLocation);
+			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, sourceleadUrl, loginOrgLocation.getOrg(),loginOrgLocation);
 			emailMessage.setSubject(subject);
 			emailMessage.setMessageBody(emailTemplate);
 			

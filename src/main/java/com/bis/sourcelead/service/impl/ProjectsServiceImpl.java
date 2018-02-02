@@ -722,7 +722,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			ProjectTasks projectTasks = new ProjectTasks();
 			projectTasks.setTaskName(taskName);
 			projectTasks.setDescription(taskName);
-			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName) && !Constants.SYSTEM_TASK_NONBILLABE.equalsIgnoreCase(taskName)) {
+			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName) && !Constants.SYSTEM_TASK_BILLABE.equalsIgnoreCase(taskName)) {
 				projectTasks.setBillableType(Constants.TASK_NON_BILLABLE);
 			} else {
 				projectTasks.setBillableType(Constants.TASK_BILLABLE);
@@ -739,6 +739,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
+			projectTasks.setPercentage(0);
 			projectTasks.setProjectId(projects);
 			set.add(projectTasks);
 			generatedId++;

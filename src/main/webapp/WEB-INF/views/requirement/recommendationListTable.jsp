@@ -5,8 +5,8 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-<jsp:include page="addApplicant.jsp" />
-<jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
+<%-- <jsp:include page="addApplicant.jsp" />
+<jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
 <div id="popUp" ></div>
 <script>
@@ -498,7 +498,13 @@ function shareRecomendedApplicant(requirementId,candidateId){
     	type: "POST",
         url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
         success: function(result) {
-        },
+            $("#recommendationsLoading").removeAttr("style");
+        	$("#selector4").removeAttr("style");
+   			$("#selector4").css({ display: "block" });
+   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
+   			eduMsgFadeinFunction();
+   			toggleShareRecommendation();
+         },
     });
 }
 function toggleShareRecommendation(source){

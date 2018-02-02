@@ -260,7 +260,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	}
 
 
-	private ExpensesApproverHierarchyDTO convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(ExpensesApproverHierarchy expensesApproverHierarchy) {
+	private ExpensesApproverHierarchyDTO convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception {
 		ExpensesApproverHierarchyDTO expensesApproverHierarchyDto = new ExpensesApproverHierarchyDTO();
 		expensesApproverHierarchyDto.setExpenseEmpUserFirstNameLastName(expensesApproverHierarchy.getExpenseEmpUserFirstNameLastName());
 		expensesApproverHierarchyDto.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseEmpUserEmail());
@@ -283,7 +283,12 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		}
 		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
 		expensesApproverHierarchyDto.setTdSpanLength("9");
-		expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
+		 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
+		 	expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
+		}else {
+			expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		}
 		expensesApproverHierarchyDto.setNoOfExpenses(expensesApproverHierarchy.getExpenseId().getNoOfExpenses());
 		expensesApproverHierarchyDto.setExpId(expensesApproverHierarchy.getExpenseId().getId());
 		expensesApproverHierarchyDto.setProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
@@ -483,7 +488,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			if(null != expenseId.getStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				    if(eah.getReopenRejectedReason()!= null) {
+				    if(eah.getReopenRejectedReason()== null) {
 				    	expenseArray[12] = "Rejected";
 				    }else {
 				    	expenseArray[12] = submissionStatus.getValue();	

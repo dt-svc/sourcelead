@@ -611,6 +611,8 @@ public class Constants {
 	public static final String MAIL_TRASH = "Trash";
 	public static final String MAIL_DELETE = "Deleted";
 	public static final String MAIL_REQUESTED = "Requested";
+	public static final String ELK_WEB_GEO_CITIES_INDEX = "webgeocities";
+	public static final String ELK_WEBGEO_CITIES_TYPE = "webgeocities";
 	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
@@ -985,6 +987,9 @@ public class Constants {
 	public static final String HOLIDAY_RESTRICTED = "Restricted";
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
+	
+	public static final String LEAVE_EMAIL_ON_BEHALF_EMAIL = "OnBehafLeaveEmail";
+	public static final String LEAVE_EMAIL_ON_BEHALF_NOTIFICATION = "OnBehafLeaveNotification";
 
 	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
 	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";
@@ -1006,6 +1011,7 @@ public class Constants {
 
 	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
 	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
+
 
 
 }
