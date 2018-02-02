@@ -167,14 +167,14 @@ public class StaticWebController {
 		return "static-web/home";
 	}
 	
-	@RequestMapping(value={ "/","/sourceleadJobPage.html"})
+	@RequestMapping("/sourceleadJobPage.html")
 	public String sourceleadJobPage(HttpServletRequest request) {
 	    Map<String,String> map =new HashMap();
 	    map.put("SourceleadStaticUrl", request.getRequestURL().toString().split(request.getRequestURI())[0]);
 		return "openJobs/sourceleadJobPage";
 	}
 	
-	@RequestMapping("/index.html")
+	@RequestMapping(value={ "/","/index.html.html"})
 	public String index() {
 		return "static-web/index";
 	}
