@@ -374,7 +374,7 @@ window.onload = function () {
                 </div>
               </div>
                <div class="clearfix">
-				<div class="col-md-4">
+				<%-- <div class="col-md-4">
 						<label>Country</label>
 						<div class="clearfix adv-srh-chosen">
 							<select class="chosen-select" name="country" id="country" field-name="Country">
@@ -384,16 +384,22 @@ window.onload = function () {
 								</c:forEach>
 							</select>
 						</div>
-					</div>
+					</div> --%>
 					
-				   <div class="col-md-8">
-						<label>Cities</label>
+					<div class="col-md-4">
+						<label>Choose City</label>
 						<div class="clearfix">
 						<div class="col-md-14">
 					      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
 						  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
 						 </div>
-						  <br>
+							
+						</div>
+					</div>
+					
+				   <div class="col-md-8">
+						<label>Selected Cities</label>
+						<div class="clearfix">
 						   <select class="chosen-select form-control input-sm" multiple
 								data-placeholder="sletected cites" id="city" name="city">
 							</select>
@@ -627,11 +633,12 @@ function minMaxExperienceOfProfessional(){
 		    	   minMaxExperienceOfProfessional();
 		       });
 		       
-		      $("#country").on('change', function (e) {
-		    	  getcites('apiLocation','city');
+		     /*  $("#country").on('change', function (e) {
+		    	  getcites('apiLocation','city','recommendation');
 		    	  $("#apiLocation").val('');
 		    	  $("#city").val('').trigger("chosen:updated");
-		       });
+		       }); */
+		      getcites('apiLocation','city','recommendation');
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -964,7 +971,7 @@ function requirementsList(offset){
 			 					var sourceleadShareUrl = sourceleadUrl ;
 			 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
 			 					result = result +'<div class="openCtaRight">';
-				 				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				 				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
 				 				if(requirements.isJobSaved != 'Y'){
@@ -1102,8 +1109,8 @@ function requirementsList(offset){
    		    }
 	     
 	     window.setTimeout(function() {
-				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+				addthis.init(".addthis_inline_share_toolbox_g28q");
 				addthis.layers.refresh();
 	        }, 500);
 	     $("#requirementsListLoading").removeAttr("style"); 
@@ -1303,9 +1310,9 @@ function searchRequirement(offset){
 									 					result = result +'<div class="openCtaRight">';
 										 				 result = result +'<p>Share Job</p>';
 										 				 result = result +'<span>';
-									 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+										 				result = result +'	<div class="share">';			  
+														result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+														result = result +'	</div>';
 										 				result = result +'</span>'; 
 										 				result = result +'<div class="openPostBtns clearfix">';
 										 				
@@ -1380,6 +1387,12 @@ function searchRequirement(offset){
 		           		    	/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
+					       	window.setTimeout(function() {
+								addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+								addthis.init(".addthis_inline_share_toolbox_g28q");
+								addthis.layers.refresh();
+					        }, 500);
+					       	
 					        socialInviterScripts();
 						},
 					});  

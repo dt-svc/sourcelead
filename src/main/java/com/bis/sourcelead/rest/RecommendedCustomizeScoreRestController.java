@@ -198,12 +198,12 @@ public class RecommendedCustomizeScoreRestController {
 					}else{
 						rcs.setCustomizeKeywords(null);
 					}
-		if(jsonObj.has("customizeCountry")){
+		/*if(jsonObj.has("customizeCountry")){
 			rcs.setCustomizeState(jsonObj.getString("customizeCountry").split(",")[0]);
 		 }
 		if(jsonObj.has("customizeState")  && null != jsonObj.getString("customizeState") && "" != jsonObj.getString("customizeState")){
 			rcs.setCustomizeState(jsonObj.getString("customizeState"));
-		 }
+		 }*/
 		 
 		if(jsonObj.has("customizedCity")){
 			String cityId =null;
@@ -212,7 +212,7 @@ public class RecommendedCustomizeScoreRestController {
 				cityId = jsonArray.toString();
 			}
 			catch(JSONException e){
-				cityId =jsonObj.getString("customizeSkills");
+				cityId =jsonObj.getString("customizedCity");
 			}
 			cityId = cityId.replaceAll("\\[", "").replaceAll("\\]","");
 			

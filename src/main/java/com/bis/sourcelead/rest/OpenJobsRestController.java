@@ -379,7 +379,17 @@ public class OpenJobsRestController {
 					RequirementIndex requirementIndex = mapper.readValue(json1.toString(), RequirementIndex.class);
 
 					requirementIndex.setNoOfSearchHits(searchHits.length);
+					
+					List<String> requirementLocationsList = new ArrayList<>();
+					List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+					if(locationsList != null && !locationsList.isEmpty()) {
+						for(RequirementLocations location : locationsList) {
+							requirementLocationsList.add(location.getLocation());
+						}
+					}
+					requirementIndex.setLocationsList(requirementLocationsList);
 					requirementList.add(requirementIndex);
+					
 				}
 			}
 
@@ -460,7 +470,7 @@ public class OpenJobsRestController {
 			if (jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))) {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("requirementTitle")));
 			}
-			// Country
+			/*// Country
 			if (jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))) {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
 			}
@@ -471,8 +481,21 @@ public class OpenJobsRestController {
 			// City
 			if (jsonObj.has("city") && !"".equalsIgnoreCase(jsonObj.getString("city"))) {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
-			}
+			}*/
 
+			//multiple City
+			if (jsonObj.has("city") && !"".equalsIgnoreCase(jsonObj.getString("city"))) {
+				ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(jsonObj, "city");
+				if(cityArray != null && !cityArray.isEmpty()){
+					BoolQueryBuilder multiCityBoolQueryBuilder = new BoolQueryBuilder();
+					for(String keywd : cityArray){
+						multiCityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("city", keywd));
+					}
+					boolQueryBuilder.must(multiCityBoolQueryBuilder);
+				} 
+			}
+			
+			
 			// currency
 			if (jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))) {
 				boolQueryBuilder
@@ -540,7 +563,7 @@ public class OpenJobsRestController {
 				}
 			}
 
-			// Requirement Skills
+			// Requirement organizations
 			if (jsonObj.has("organizations") && !"".equalsIgnoreCase(jsonObj.getString("organizations"))) {
 				ArrayList<String> organizationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "organizations");
 				if (organizationArray != null && !organizationArray.isEmpty()) {

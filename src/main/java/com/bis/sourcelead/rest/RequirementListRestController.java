@@ -1449,12 +1449,14 @@ public class RequirementListRestController {
 								&& requirementSubmissionHistoryServiceList.size() > 0) {
 							RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0);
 							User usr = userService.getUserByUserCode(requirementSubmissionHistory.getCreatedBy());
-							if (usr.getFirstName() != null && usr.getLastName() != null) {
+							if (usr != null && usr.getFirstName() != null && usr.getLastName() != null) {
 								StringBuilder name = new StringBuilder();
 								requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
+							}else if(usr != null && usr.getFirstName() != null) {
+								requirementSubmission.setSubmittedBy(usr.getFirstName());
 							}
 							else {
-								requirementSubmission.setSubmittedBy(usr.getFirstName());
+								requirementSubmission.setSubmittedBy("---");
 							}
 							requirementSubmission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
 						}
@@ -1676,13 +1678,13 @@ public class RequirementListRestController {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
 	    }
 	   //Country
-		if(StringUtils.isNotEmpty(search.getCountry())){
+		/*if(StringUtils.isNotEmpty(search.getCountry())){
 			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
-	    }
+	    }*/
 	 
 		//multiple City
 		if(StringUtils.isNotEmpty(search.getCity())){
