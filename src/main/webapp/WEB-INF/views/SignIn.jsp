@@ -30,7 +30,7 @@
 
 
 <div class="signin_wrap SignSlide">
-	<a href="/"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
+	<a href="/index.html"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
 		<h1>Sign In</h1>
 		<div id="loginWhiteListDiv" class="orgErrorMes"></div>
 	       	<c:if test="${not empty error}">

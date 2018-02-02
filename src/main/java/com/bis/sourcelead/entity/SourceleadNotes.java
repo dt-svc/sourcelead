@@ -13,6 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 
 @Entity
 @Table(name = "SOURCELEAD_NOTES")
@@ -25,43 +28,43 @@ public class SourceleadNotes {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
 	private OrgRelations orgRelationID;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationID;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="USER_ID", nullable=false )     
 	private User userId;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )     
 	private OrgSpoc spocId;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )     
 	private Requirement requirementId;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="CONTRACT_ID", nullable=false )     
 	private Contracts contractId;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoicdeId;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="ASSET_ID", nullable=false )     
 	private Asset assetId;
 	

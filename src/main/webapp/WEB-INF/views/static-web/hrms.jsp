@@ -23,7 +23,7 @@
  		<div class="clearfix">
   		<div class="col-md-4 text-center smallwidget">
   		<div class="iconimg">
-  			<img src=/resources/static-web/images/ats-simple.png" alt="Simple" class="img-responsive animated bounceIn">
+  			<img src="/resources/static-web/images/ats-simple.png" alt="Simple" class="img-responsive animated bounceIn">
   		</div>
   		<h4>Simple</h4>
   		<p>
@@ -32,7 +32,7 @@
 	  </div>
 	  <div class="col-md-4 text-center smallwidget">
 	  <div class="iconimg">
-  			<img src=/resources/static-web/images/ats-secure.png" alt="Simple" class="img-responsive animated bounceIn">
+  			<img src="/resources/static-web/images/ats-secure.png" alt="Simple" class="img-responsive animated bounceIn">
   		</div>
   		<h4>Secure</h4>
   		<p>
@@ -41,7 +41,7 @@
 	  </div>
 	  <div class="col-md-4 text-center smallwidget">
 	  <div class="iconimg">
-  			<img src=/resources/static-web/images/ats-scalable.png" alt="Simple" class="img-responsive animated bounceIn">
+  			<img src="/resources/static-web/images/ats-scalable.png" alt="Simple" class="img-responsive animated bounceIn">
   		</div>
   		<h4>Scalable</h4>
   		<p>
@@ -56,7 +56,7 @@
 <div class="clearfix container productfeatures">
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src=/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Integrated Payroll Management</h4>
 		<ul class="list-styles">
@@ -67,7 +67,7 @@
 </div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src=/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Unified workforce management access </h4>
 		<ul class="list-styles">
@@ -77,7 +77,7 @@
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src=/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Efficient resource planning &amp; transfers</h4>
 		<ul class="list-styles">
@@ -89,7 +89,7 @@
 	<div class="clearfix"></div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src=/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Smart Assets management</h4>
 		<ul class="list-styles">
@@ -100,7 +100,7 @@
 	
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src=/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Customizable templates</h4>
 		<ul class="list-styles">
@@ -110,7 +110,7 @@
 	</div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src=/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Integrated with SourceLead modules</h4>
 		<ul class="list-styles">
@@ -129,7 +129,7 @@
  		</div>
   		<div class="col-md-12 clearfix">
   			<a href="javascript:void(0)" class="btn btn-custom mr" onClick="requestDemo();">GET A DEMO</a>
-  			<a href="http://sourcelead.com/register" class="btn btn-custom" target="_blank">SIGNUP</a>
+  			<a href="/register" class="btn btn-custom" target="_blank">SIGNUP</a>
   		</div>
   </div>
 </section>
