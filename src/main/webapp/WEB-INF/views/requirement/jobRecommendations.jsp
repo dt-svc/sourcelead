@@ -28,7 +28,19 @@
 	   <div class="clearfix"></div>
     </div>
     </div>
+    <div class="content-area clearfix">
     <jsp:include page="jobRecommendationCandidtesListTable.jsp"></jsp:include>
+    
+    <div class="form-footer clearfix row">
+              <div class="col-lg-12">
+                <div class="pull-right">
+                  <input type="button" value="Go to list"  class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'"  class="btn btn-default ml">
+                </div>
+              </div>
+    </div>
+    
+    </div>
+    
   </section>
 <!-- Content Area Starts -->
 

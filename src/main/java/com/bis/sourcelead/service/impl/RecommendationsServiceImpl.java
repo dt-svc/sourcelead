@@ -828,7 +828,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					// get the locationPercentage
 					locationPercentage = getLocationPercentage(recommendedCustomizeScore,candidateIndex);
 					
-					
 					//keywords calculation
 				    float totalKeyWordPer = 0;
 					if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
@@ -924,15 +923,10 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
 			 reqCity = recommendedCustomizeScore.getCustomizeCity();
 		}
-		String reqCountry = "";
-		if(null != recommendedCustomizeScore.getCustomizeCountry() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCountry())){
-			reqCountry = recommendedCustomizeScore.getCustomizeCountry();
-		}
-		
 		if((null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity()))){
 			String[] multyCities = reqCity.split(",");
 			for(String city :multyCities) {
-				if((candidateIndex.getCity().equalsIgnoreCase(city)) && (candidateIndex.getCountry().equalsIgnoreCase(reqCountry))){
+				if((candidateIndex.getCity().equalsIgnoreCase(city))){
 					locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
 				}
 			}

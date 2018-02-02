@@ -43,7 +43,7 @@ public class UserRole implements Serializable {
 	private Long id;
 
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
