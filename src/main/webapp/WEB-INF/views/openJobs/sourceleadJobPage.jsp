@@ -95,13 +95,11 @@ display: none;}
 
 <div class="background slide">
 	<ul class="slider">
-	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg1.jpg);"></li>
-	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg3.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/static-web/images/jobSearch.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/static-web/images/jobSearch.jpg);"></li>
 	</ul> 
 <content>
-		<h1>
-			Welcome to<span>SourceLead job portal</span>
-		</h1>
+		<div style="margin-top:200px;">
 		<p><i class="fa fa-search"></i>Search for vacancies</p>
 		<section class="searchWrap">
 			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
@@ -111,60 +109,61 @@ display: none;}
 			<!-- <h3><b id="ADS">Advanced Search</b></h3> -->
 			<div class="clear"></div>
 		</section>
+		</div>
 	</content>		
 	
 </div>
 
 
 
-<div class="clearfix searchjob-banner">
-<form class="searchprofile-search jobsearch">
-   <p class="text-center">Search Job with us...</p>
-   <div class="row clearfix search-tools">
-    <div class="col-md-5 col-xs-12">
-      <input type="text" class="form-control" id= "openJobsRequirementTitleId" value="${openJobsTitle}" placeholder="Search" name="pwd">
-    </div>
-        <div class="col-md-4 col-xs-12">
-      <input type="text" class="form-control" id="openJobsLocationId" value="${openJobsLocation}" placeholder="Location" name="pwd">
-    </div>
-    <div class="col-md-2 col-xs-12 dropdown-select">
-      <select class="form-control">
-  <option selected="openJobsExperienceId" value="${openJobsExperience}">--Select Experience--</option>
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-  <option value="7">7</option>
-  <option value="8">8</option>
-  <option value="9">9</option>
-  <option value="10">10</option>
-  <option value="11">11</option>
-  <option value="12">12</option>
-  <option value="13">13</option>
-  <option value="14">14</option>
-  <option value="15">15</option>
-  <option value="16">16</option>
-  <option value="17">17</option>
-  <option value="18">18</option>
-  <option value="19">19</option>
-  <option value="20">20</option>
-  <option value="21">21</option>
-  <option value="22">22</option>
-  <option value="23">23</option>
-  <option value="24">24</option>
-  <option value="25">25</option>
-      </select>
-    </div>
-     <div class="col-md-1 col-xs-12">
-    <input type="button" value="Search" class="searchBtn" onclick="redirectPage();"><i class="fa fa-search" aria-hidden="true"></i>
-		</a>
-			</div>
-		</div>
+<!-- <div class="clearfix searchjob-banner"> -->
+<%-- <form class="searchprofile-search jobsearch"> --%>
+<!--    <p class="text-center">Search Job with us...</p> -->
+<!--    <div class="row clearfix search-tools"> -->
+<!--     <div class="col-md-5 col-xs-12"> -->
+<%--       <input type="text" class="form-control" id= "openJobsRequirementTitleId" value="${openJobsTitle}" placeholder="Search" name="pwd"> --%>
+<!--     </div> -->
+<!--         <div class="col-md-4 col-xs-12"> -->
+<%--       <input type="text" class="form-control" id="openJobsLocationId" value="${openJobsLocation}" placeholder="Location" name="pwd"> --%>
+<!--     </div> -->
+<!--     <div class="col-md-2 col-xs-12 dropdown-select"> -->
+<!--       <select class="form-control"> -->
+<%--   <option selected="openJobsExperienceId" value="${openJobsExperience}">--Select Experience--</option> --%>
+<!--   <option value="1">1</option> -->
+<!--   <option value="2">2</option> -->
+<!--   <option value="3">3</option> -->
+<!--   <option value="4">4</option> -->
+<!--   <option value="5">5</option> -->
+<!--   <option value="6">6</option> -->
+<!--   <option value="7">7</option> -->
+<!--   <option value="8">8</option> -->
+<!--   <option value="9">9</option> -->
+<!--   <option value="10">10</option> -->
+<!--   <option value="11">11</option> -->
+<!--   <option value="12">12</option> -->
+<!--   <option value="13">13</option> -->
+<!--   <option value="14">14</option> -->
+<!--   <option value="15">15</option> -->
+<!--   <option value="16">16</option> -->
+<!--   <option value="17">17</option> -->
+<!--   <option value="18">18</option> -->
+<!--   <option value="19">19</option> -->
+<!--   <option value="20">20</option> -->
+<!--   <option value="21">21</option> -->
+<!--   <option value="22">22</option> -->
+<!--   <option value="23">23</option> -->
+<!--   <option value="24">24</option> -->
+<!--   <option value="25">25</option> -->
+<!--       </select> -->
+<!--     </div> -->
+<!--      <div class="col-md-1 col-xs-12"> -->
+<!--     <input type="button" value="Search" class="searchBtn" onclick="redirectPage();"><i class="fa fa-search" aria-hidden="true"></i> -->
+<!-- 		</a> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
 		
-</form>
-  </div>
+<%-- </form> --%>
+<!--   </div> -->
 
 
 
@@ -220,9 +219,9 @@ display: none;}
  			<p>Integration which provides a one-stop solution to entire recruitment life cycle with a single login to Clients, Vendors and Candidates.</p>
  		</div>
   		<div class="col-md-12 clearfix">
-  			<a href="http://sourcelead.com/register" class="btn btn-custom mr" target="_blank">Register with Us</a>
+  			<a href="/register" class="btn btn-custom mr" target="_blank">Register with Us</a>
   			<span class="mr ml">--- OR ---</span>
-  			<a href="http://sourcelead.com/register" class="btn btn-custom mr" target="_blank">Upload your CV</a>
+  			<a href="/register" class="btn btn-custom mr" target="_blank">Upload your CV</a>
   		</div>
   </div>
 </section>
@@ -239,28 +238,28 @@ display: none;}
         <div class="large-12 columns">
           <div class="owl-carousel owl-theme owlcarousel-custom">
             <div class="itemowl">
-              <img src="images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/soft.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
              <div class="itemowl">
-              <img src="images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/soft.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/cloudious.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
             </div>
             <div class="itemowl">
-              <img src="images/sarian_logo.png" alt="Client Image" class="img-responsive">
+              <img src=/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
           </div>
           </div>
