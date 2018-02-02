@@ -988,6 +988,9 @@ public class Constants {
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
 	
+	public static final String ON_BEHALF_EMAIL = "onBehalfEmail";
+	public static final String ON_BEHALF_NOTIFICATION = "onBehalfNotification";
+	
 	public static final String LEAVE_EMAIL_ON_BEHALF_EMAIL = "OnBehafLeaveEmail";
 	public static final String LEAVE_EMAIL_ON_BEHALF_NOTIFICATION = "OnBehafLeaveNotification";
 

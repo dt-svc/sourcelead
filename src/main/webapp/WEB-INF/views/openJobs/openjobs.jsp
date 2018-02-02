@@ -77,9 +77,14 @@
 	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script>
 
 
- 
+ <style>
+ .navbar-default {
+ background: #fff !important; border-bottom: 1px solid #ededed !important;
+ }
+ </style>
 <!--  Modal Pop for apply Jobs -->
   <!-- Modal -->
   <div class="comMask"></div>
@@ -278,7 +283,7 @@ top: 21px;height: 32px; line-height: 18px;
 
 <!-- Content Area -->
 <jsp:include page="../staticHeader.jsp" />
-<div class="innerPageSearch"> 
+<div class="innerPageSearch" style="padding-top: 75px;"> 
 <c:if test="${!empty guestusermsg}">
 	        <div class="success_pop" id="guestselector"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${guestusermsg}</span>

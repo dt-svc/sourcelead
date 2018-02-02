@@ -451,7 +451,7 @@ public class ProjectsDashboardRestController {
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
-				String sortColumnOrder = "desc"; //by default descending order
+				String sortColumnOrder = "asc"; //by default descending order
 				if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
 					sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
 					sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
