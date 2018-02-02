@@ -930,7 +930,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			queryString.setParameter("searchByUserType",searchByValue)
 			.setParameter("searchByValue", "%" + searchByValue + "%");
 		}
-		System.out.println(queryString.getQueryString());
 		//Pagination                                                              //Converting custom DTO class list from Sql result 
 		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
 		usersList = queryString.list();
@@ -939,7 +938,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			connectionsDTO.setCountFlag("true");
 			usersList.add(connectionsDTO);
 		}
-		System.out.println(usersList.get(0));
 		Map<String, BigInteger> countValues = connectionsDao.getCountValuesForSentReceivedConnected(userId);
 		if(!usersList.isEmpty()) {
 			usersList.get(0).setSentCount(countValues.get("sentCount"));
