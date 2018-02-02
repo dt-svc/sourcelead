@@ -364,14 +364,14 @@ text-align: center;
 	position: relative; /*background-size: 100%; */
 }
 .contact-banner {
-	background-image: url(../images/contact-banner.jpg); min-height: 500px;
+	background-image: url(../images/contact-banner.jpg); min-height: 400px;
 	padding:0px; color: #fff; background-position: center center; background-repeat: no-repeat;
 	background-attachment: fixed; background-size: cover; text-align: center;
 	position: relative; /*background-size: 100%; */
 }
 
 .aboutSourcelead .aboutinner-content  {
-	position: absolute; padding: 0 30px; top: 65px;
+	position: relative; padding: 0 30px; top: 25px;
 }
 .aboutSourcelead h2{
 	margin: 0; margin-bottom: 15px;
@@ -390,8 +390,9 @@ text-align: center;
 	line-height: 35px;
 }
 .marketplace-banner {
-	min-height: 500px; background-image: url(../images/marketplace.jpg);
-	background-position: top center; background-repeat: no-repeat; background-size: cover; margin-top:0; border-bottom: 1px solid #BDBDBD; margin-bottom: 0px;
+	min-height: 450px; background-image: url(../images/marketplace.jpg);
+	background-position:center top; background-repeat: no-repeat; background-size: cover; margin-top:0;
+	border-bottom: 1px solid #BDBDBD; margin-bottom: 0px;
 }
 .testimonial-media img {
     max-height: 80px; margin: 0 auto; border: 1px solid #fff; background-color: #fff;
@@ -628,7 +629,7 @@ a.login:hover{
 }*/
 .navbar-default
 {
-	background: transparent; border-bottom: none; position: fixed; top: 0; z-index: 9; width: 100%;
+	background: transparent; border-bottom: none; position: fixed; top: 0; z-index: 999; width: 100%;
 }
 .navbar, #navHeader-scroll {
 	transition:  all 0.2s ease-in-out;
@@ -666,14 +667,13 @@ background-color: rgba(0,0,0,0.4); clear: both; width: 100%; padding: 0px 25px; 
 }
 .homeBanner .registerbuttons {
 	display: block; margin: 0 auto; position: relative; right: 0; bottom: 0;
-	-webkit-transition: all ease-in-out 0.5s; -ms-transition: all ease-in-out 0.5s; transition: all ease-in-out 0.5s;
+	
 	float: right;
 }
 .registerbuttons ul li{
 	text-transform: uppercase; padding: 5px 0; margin-bottom: 5px;
-	-webkit-transition: all ease-in-out 0.5s; -ms-transition: all ease-in-out 0.5s; transition: all ease-in-out 0.5s;
 	border-radius: 2px 0 0 2px; font-weight: 500; letter-spacing: 0.5px;
-	float: left; margin: 0 15px;
+	float: left; margin: 0 10px; min-width: 120px; text-align: center;
 }
 .registerbuttons ul li:first-child {
 	background-color: #25c16f;
@@ -852,7 +852,7 @@ a.btn-demo:hover{
 	line-height: 30px;
 }
 .contnetarea .medial-image img {
-	max-height: 300px;
+	max-height: 300px; margin: 0 auto;
 }
 .colorlogo {
 	color: #a21e23;
@@ -961,40 +961,11 @@ a.closebtn {
 	display: none;
 }
 /* Mobile Nav styles */
-/* New customNavBar styels */
-
-
 /* responsive styles */
 @media only screen and (max-width:1260px){
-
-/*	.customNavBar .customNavBar-inner ul > li ul.featureshome {
-		position: relative; width: 100%;
-	}
-	ul.featureshome {
-		margin-top: 0 !important;
-	}
-	.customNavBar-inner {
-		display: block; position: fixed; left: 0; top: 0px; width: 320px; background-color: #F9F9F9;
-		max-height: 100%; height: 100%; padding: 0px;
-		-moz-box-shadow:1px 1px 3px 0px #909090; -webkit-box-shadow:1px 1px 3px 0px #909090; box-shadow:1px 1px 3px 0px #909090;
-	}
-	.customNavBar-inner ul {
-		margin-top: 25px !important;
-	}
-	.customNavBar-inner ul li {
-		float: none; width: 100%; padding: 0 !important; padding: 4px 0 !important; border-bottom: 1px solid #ededed;
-	}
-	#mobileNav {
-	display: block;
-	}*/
 }
-
 /* responsive styles */
 @media only screen and (max-width:1020px){
-
-/*	.customNavBar-inner {
-		display: none;
-	}*/
 }
 
 

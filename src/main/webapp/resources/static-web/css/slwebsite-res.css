@@ -1,11 +1,6 @@
 
 /* terms */
-.termsBann {
-	 position: relative;
-}
-.termsBann .navbar-default {
-	background-color: #ededed; height: 78px;
-}
+
 .termsWrap {
 	width: 1100px; margin: 90px auto 15px; background-color: #fff; padding: 5px;
 }
@@ -16,8 +11,11 @@
 .termsWrapCta {
 	padding: 20px;
 }
+.termsWrapCta li {
+	list-style-type: none;  font-size: 14px; font-weight: 400; color: #545454; padding: 2px 0px 2px 10px;
+}
 .termsWrapCta h2 {
-	padding: 5px 0px 15px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #a21e23;
+	padding: 5px 0px 15px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #a21e23;
 }
 .termsWrapCta h3 {
 	padding: 0px 0px 12px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #2d3447; line-height: 22px;
@@ -35,14 +33,14 @@
 	clear: both;
 }
 .staticBan {
-	width:100%; position:relative;
+	width:100%; position:relative; margin: 76px auto 0px;
 }
 .staticBan.blogBan {
-	background-image:url(../images/blog-bg.jpg); margin: 55px 0px 0px 0px;
+	background-image:url(../images/blog-bg.jpg);
 	}	
 .staticBan.blogBan h4 {
-	float:right; display:inline-block; font-size:33px; font-weight:400; color:#fff; text-transform:uppercase; padding:80px 5% 20px 0px;
-	text-shadow:0px 1px 2px rgba(0,0,0,0.5);
+	float:right; display:inline-block; font-size:33px; font-weight:400; color:#fff; text-transform:uppercase;
+	padding:60px 5% 30px 0px; text-shadow:0px 1px 2px rgba(0,0,0,0.5); margin: 0px;
 	}
 
 .blogNewWrap {
@@ -161,8 +159,6 @@
 .blogRightBot a:hover {
 	background-color:#a21e23;
 	}
-
-
 /*blogs*/
 
 .resMenu {
@@ -204,7 +200,7 @@
 	}	
 	
 	.termsWrap {
-		width: auto;
+		width: auto; margin: 90px 15px 15px;
 	}
 	.termsWrapImg img {
 		width: 100%;
@@ -217,6 +213,9 @@
 	
 	.blogNewInn {
 		width: 100%; padding: 0px 10px;
+	}
+	.searchprofile-search.jobsearch {
+		left: 5%; width: 90%;
 	}
 	
 }
@@ -231,13 +230,47 @@
 	.footer-area .container .col-sm-6 {
 		width: 50%;
 	}
-.blogWrapRight {width:100%;}
+.blogWrapRight {display: none;}
 .blogWrapRight h2 i { display:block;}
 .blogWrapLeft { width:100%;}
 .blogNewInn article { width: 48%;}
-	
+	.home-caption h2 {
+		display: none;
+	}
+	.homeBanner .registerbuttons {
+		float: none; clear: both; display: block; width: 250px; text-align: center; margin: 0 auto;
+	}
+	.home-caption {
+		padding: 15px;
+	}
+	.registerbuttons ul li {
+		margin: 0; letter-spacing: 0; min-width: 115px; text-align: center; font-size: 13px;
+	}
+	.registerbuttons ul li:nth-child(1) {
+		margin-right: 10px;
+	}
+	.registerbuttons ul li:nth-child(2) {
+		margin-left:10px;
+	}
+	.homeBanner {
+		min-height: 500px;	
+	}
+	.aboutSourcelead .aboutinner-content {
+		top: 0px; margin-bottom: 30px;
+	}
+	.aboutSourcelead .img-responsive {
+		margin: 0 auto;
+		
+	}
+	.marketplace-banner {
+		background-position: center center; min-height: 300px;
+	}
+	.map {
+		margin: 20px 0px 0px 0px;
+	}
 }
 @media screen and (max-width:760px){
+	
 	.footer-area .container {
 		width: 100%; padding: 0px 0px;
 	}
@@ -245,9 +278,53 @@
 		width: 100%;
 	}
 	.blogNewInn article { width: 98%; margin: 1% 1% 2%;}
-	.staticBan.blogBan h4 {font-size: 25px; padding: 50px 20px 4px 0px;}
+	.blogNewWrap {
+		padding: 15px 0px;
+	}
+	.staticBan.blogBan h4 {font-size: 25px; padding: 35px 20px 15px 0px;}
+	.testiWrap {
+		padding: 20px 0px;
+	}
+	.navbar-default {
+		background-color: #fff;
+	}
+	.customNavBar, .customNavBar .navbar-header {
+		height: 63px;
+	}
+    .homeBanner {
+		background-position: top center;
+		background-size: 100%; min-height: 400px; top:15px 
+	}
+	.customNavBar .navbar-header img {
+    width: 220px; padding: 2px 0px;
+	}
+	.home-caption {
+		bottom: 25px;
+	}
+	.aboutSourcelead .aboutinner-content  {
+		padding: 0;
+	}
+	.contnetarea .media-left {
+		display: block;
+	}
+.termsWrap {
+    margin: 70px 10px 15px;
+}	
+	#mobileNav {
+		top: 20px;
+	}
+	.staticBan {
+		margin: 60px auto 0px;
+	}
+	.contact-banner {
+		min-height: 300px;
+	}
 }
-
+@media screen and (max-width:700px){
+	.homeBanner {
+		background-size: cover; min-height: 400px;
+	}
+}
 @media screen and (max-width:590px){
 	.termsWrapCta {
 		padding: 12px;
@@ -256,10 +333,10 @@
 		padding: 5px 10px;
 	}
 	.customNavBar, .customNavBar .navbar-header {
-		height: 62px;
+		height: 58px;
 	}
 	.customNavBar .navbar-header img {
-		width: 220px; padding: 2px 0px;
+		width: 210px; padding: 2px 0px;
 	}
 	#mobileNav {
 		right: 20px; top: 20px;
@@ -267,6 +344,116 @@
 	.customNavBar-inner {
 		left: -280px; top: 0px; width: 260px;
 	}
+	.homeBanner {
+		min-height: 275px; top:25px; background-size: cover;
+	}
+	.home-caption {
+		bottom: 30px;
+	}
+	.btn.btn-custom {
+		margin: 0 10px; font-size: 14px; min-width: 115px; padding: 10px 15px;
+	}
+	.registerbuttons ul li a {
+		font-size: 11px; padding: 5px 0; min-width: 50px;
+	}
+	.home-caption {
+    padding: 10px;
+}
+	.freeTrialPop {
+		width: 100%;
+	}
+	.clPop.clPopA { right: auto; left: 15px; border-radius: 100%;
+}
+	.contnetarea .medial-image img {
+		max-height: 225px;
+	}
+	.aboutpagesBanner {
+		min-height: 225px; background-position: 54% center;
+	}
+	.thim-click-to-bottom {
+		left: 45%;
+	}
+	.innerpagesBanner  {
+		min-height: 400px;
+	}
+	.innerpagesBanner h2 {
+		font-size: 25px;
+	}
+	.innerpagesBanner img {
+		max-height: 125px;
+	}
+	.innerpagesBanner p {
+		font-size: 15px; line-height: 26px;
+	}
+	.aboutSourcelead p {
+		line-height: 24px;
+	}
+	.testimonialDiv {
+		padding: 30px 10px;
+	}
+	.homewidget-benefitsdiv {
+		padding: 30px 0px;
+	}
+	.aboutSourcelead {
+		padding: 30px 0px;
+	}
+	.container-clientsdiv {
+		padding: 30px 0px;
+	}
+	.staticBan {
+    	margin: 55px auto 0px;
+	}
+	.blogNewInn article {
+		min-height: inherit; padding: 0px 0px 15px 0px;
+	}
+	.searchjob-banner {
+		min-height: 375px;
+	}
+	.container-area-white {
+		padding: 30px 0px;
+	}
+	.contnetarea p {
+		line-height: 24px;
+	}
+	.homewidget-benefitsdiv p {
+		line-height: 24px; padding: 15px 0px;
+	}
+	.h2, h2 {
+		font-size: 26px;
+	}
+	.resBtn a {
+		display: block;
+	}
+	.marketplace-banner {
+    background-position: center center; min-height: 250px;
+	}
+	.contact-banner {
+		min-height: 200px; background-position: 79% 0%;
+	}
+	.map iframe {
+		height: 250px !important;
+	}
+	.container-area-grey {
+		padding: 30px 0px;
+	}
+}
+@media screen and (max-width:400px){
+	.homeBanner {
+		min-height: 225px; top:35px; background-size: cover;
+	}
+	.registerbuttons ul li a {
+		padding: 3px 0;
+	}
+	.home-caption { padding: 10px; }
+	.innerpagesBanner img {
+		max-height: 100px;
+	}
+	.innerpagesBanner h2 {
+		font-size: 20px;
+	}
+	.innerpagesBanner p {
+    font-size: 14px; line-height: 22px;
+}
 }
 @media screen and (max-width:310px){
 	#mobileNav {
