@@ -98,14 +98,14 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		StringBuilder subQuery = new StringBuilder("");
 		String resultSqlQuery = null;
 		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',IFNULL(u.last_name, '')) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
-				"((select count(c.from_uid) from connections c where c.to_uid = u.id "+
-				"and (c.from_uid in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.from_uid in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
-				"(select count(c.TO_UID) from connections c where c.FROM_UID = u.id "+
-				"and (c.TO_UID in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.TO_UID in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
-				"(select c.CONNECTION_UID from connections c where (c.from_uid = :loginUserId and c.to_uid = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID " +
-				"from user u, user_role ur, org_locations ol, connections c " + 
+				"((select count(c.from_uid) from CONNECTIONS c where c.to_uid = u.id "+
+				"and (c.from_uid in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.from_uid in (select c.to_uid from CONNECTIONS c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from CONNECTIONS c where c.FROM_UID = u.id "+
+				"and (c.TO_UID in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.to_uid from CONNECTIONS c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"(select c.CONNECTION_UID from CONNECTIONS c where (c.from_uid = :loginUserId and c.to_uid = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID " +
+				"from USER u, USER_ROLE ur, ORG_LOCATIONS ol, CONNECTIONS c " + 
 				"where ur.user_id = u.id and ur.org_locations_id = ol.id and ur.IS_PRIMARY = 1 "; 
 		if(status.equalsIgnoreCase("sent")) {
 			resultSqlQuery = sqlQuery.concat("and c.FROM_UID = :loginUserId and c.TO_UID = u.id and c.CONNECTION_STATUS = :connectionStatus");
@@ -114,6 +114,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		}else if(status.equalsIgnoreCase("connected")) {
 			resultSqlQuery = sqlQuery.concat("and ((c.from_uid = u.id and c.TO_UID = :loginUserId and c.CONNECTION_STATUS = :connectionStatus) or (c.to_uid = u.id and c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = :connectionStatus))");
 		}
+		
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
 			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.email like :searchByValue)");
 			resultSqlQuery = resultSqlQuery.concat(subQuery.toString());
@@ -131,6 +132,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 			queryString.setParameter("searchByUserType",searchByValue)
 			.setParameter("searchByValue", "%" + searchByValue + "%");
 		}
+		System.out.println(queryString.getQueryString());
 		//Pagination                                                              //Converting custom DTO class list from Sql result 
 		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
 		usersList = queryString.list();
