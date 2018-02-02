@@ -21,6 +21,8 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private Long masterCandidateId;
 	
+    private Map<String, List<WeekDaysDTO>> weekDaysMap;
+    
     private Map<String,String> timeFrequencies;
 	
 	private String currentTimeFrequency;
@@ -182,6 +184,16 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	public void setLocDateFomat(String locDateFomat) {
 		this.locDateFomat = locDateFomat;
 	}
+
+	public Map<String, List<WeekDaysDTO>> getWeekDaysMap() {
+		return weekDaysMap;
+	}
+
+	public void setWeekDaysMap(Map<String, List<WeekDaysDTO>> weekDaysMap) {
+		this.weekDaysMap = weekDaysMap;
+	}
+
+	
 	
      
 }

@@ -26,6 +26,13 @@
      <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
     
 </head>
+
+<style>
+.paddingLeft {
+    padding-left: 0px;
+}
+</style>
+
 <script>
  function getProfileDetails(response,service){
 		var activeElement = $('.tab-pane.fade.in.active').attr('id');
@@ -125,7 +132,7 @@ window.onload = function () {
 					      <img src="https://socialinviter.com/assets/img/icons/avator.JPG" id="popProfessionalprofileimage">
 					   </div>
 				    </div>
-		            <div class="col-md-9">
+		            <div class="col-md-9 paddingLeft">
 		             <div class="form-group clearfix">
 		                  <label  class="col-md-4">User Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
@@ -172,6 +179,41 @@ window.onload = function () {
 		                   <b></b>
 		              </div>
 		            </div>
+		            
+<!-- 		            <div id="pwdDiv"> -->
+			       <div class="form-group clearfix">
+		              <label class="col-md-4">Password <span class="text-danger">*</span></label>
+		              <span class="col-md-8" id="popemailDiv">
+		                 <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" class="form-control"  >
+		                  <b></b>
+		              </span>
+		            </div>
+		            
+		            <div class="form-group clearfix">
+		              <label class="col-md-4">Confirm Password <span class="text-danger">*</span></label>
+		              <span class="col-md-8" id="popemailDiv">
+		                 <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" class="form-control"  >
+		                  <b></b>
+		              </span>
+		            </div> 
+<!-- 		            </div>  -->
+		            
+		            <!-- <div id="pwdDiv">
+	                	<div class="col-xs-12 col-md-12 mb10">
+		                    <i class="fa fa-unlock-alt"></i>
+		                    <label>Password <span class="text-danger">*</span></label>
+		                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+		                    <b></b>
+		                </div>
+		                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
+		                    <i class="fa fa-unlock-alt"></i>
+		                    <label>Confirm Password <span class="text-danger">*</span></label>
+		                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+		                    <b></b>
+		                </div>
+		           </div> -->
+		            
+		            
 		            </div>
 		            <div class="col-md-12 clearfix">
 		            <div class="form-group  empCheckbox">
@@ -193,7 +235,7 @@ window.onload = function () {
 		            
 		            <div class="form-group clearfix">
 		                <div class="pull-right">
-		                     <button type="submit" id="popregister_button"  class="btn btn-primary btn_styles mr" title="Register">
+		                     <button type="submit" id="popregister_button"  class="btn btn-primary btn_styles mr" title="Register" >
 		                        <i class="fa fa-paper-plane"></i>Register</button>
 		                </div>
 		            </div>                                                                                                          
@@ -293,7 +335,7 @@ window.onload = function () {
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
           <c:if test="${empty contactUUID}">
           <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;<span class="hidden-xs">Freelance</span> Recruiter</a></li>
-          <li><a data-toggle="tab" href="#employee"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employee</a></li>
+          <li><a data-toggle="tab" href="#employee"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employer</a></li>
           </c:if>
           <input type="hidden" id="tabType" />
       </ul>
@@ -309,7 +351,7 @@ window.onload = function () {
                      <ul>
             		    <li onclick="socialinviter.socialconnect.auth('googleplus');" title="Google Plus"><i class="fa fa-google-plus"></i></li>
             			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB" title="Facebook"><i class="fa fa-facebook"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li>
+<!--             			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li> -->
             			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN" title="Linked In"><i class="fa fa-linkedin"></i></li>
             			<div class="clearfix"></div>
             		</ul>
@@ -405,7 +447,7 @@ window.onload = function () {
                      <ul>
             		    <li onclick="socialinviter.socialconnect.auth('googleplus');" title="Google Plus"><i class="fa fa-google-plus"></i></li>
             			<li onclick="socialinviter.socialconnect.auth('facebook');" class="sFB" title="Facebook"><i class="fa fa-facebook"></i></li>
-            			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li>
+<!--             			<li onclick="socialinviter.socialconnect.auth('twitter');" class="sTW" title="Twitter"><i class="fa fa-twitter"></i></li> -->
             			<li onclick="socialinviter.socialconnect.auth('linkedin');" class="sIN" title="Linked In"><i class="fa fa-linkedin"></i></li>
             			<div class="clearfix"></div>
             		</ul>
@@ -1134,7 +1176,11 @@ var validationSettings = {
             	return false;	
                }
             });
-         $('#popprofessionalRegistration_form').showHelpOnFocus();
+         
+         $('body').on('blur', '#popprofessionalRegistration_form', function() {
+        		$("#popprofessionalRegistration_form").showHelpOnFocus();
+        		$("#popprofessionalRegistration_form").validateOnBlur(false, validationSettings);
+        	});
             
      
 	</script>
