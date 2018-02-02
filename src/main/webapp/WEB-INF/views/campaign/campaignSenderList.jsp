@@ -6,6 +6,12 @@
 <script type="text/javascript">
 $(document).ready(function(){
     getSendersList();
+    /* if('${msg}' == "success"){
+    	$("#selector1").removeAttr("style");
+		$("#selector1").css({ display: "block" });
+	    $("#msgDiv").html("Successfully Created sender identity");
+	    msgFadein();
+    } */
 });
 </script>
 
@@ -61,10 +67,13 @@ $(document).ready(function(){
 
 
 <script type="text/javascript">
-function getSendersList(){
+function getSendersList(type){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.get( sourceleadUrl+ "/getSendersByLocationId?&orgLocationId="+locationId, function(json) {
+		 
+		 
+		 
 	    	 var result = "";
 	    	 result += '<table id="sendersListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
@@ -128,6 +137,12 @@ function getSendersList(){
       		 result += '</table> ';
       		 $("#sendersListDiv").empty();
       		 $("#sendersListDiv").append(result);
+      		if(type == "success"){
+		    	$("#selector1").removeAttr("style");
+				$("#selector1").css({ display: "block" });
+			    $("#msgDiv").html("Successfully Created sender identity");
+			    msgFadein();
+			}
       		 $("#loading").removeAttr('style');
       		 senderListPagination();
     });
@@ -155,7 +170,7 @@ function getSendersList(){
  <script>
  function msgFadein() {
 	$("#selector1").fadeIn(300);
-    $('#selector1').delay(3000).fadeOut('slow');
+    $('#selector1').delay(5000).fadeOut('slow');
 }
 </script>
 
