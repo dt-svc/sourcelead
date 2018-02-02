@@ -51,7 +51,7 @@ public class SourceleadELKBaseIndexer<T> {
 	public void saveOrUpdateElkDocument(T entityClass, String index, String type, String id) {
 		String value = "";
 		try {
-			value = new ObjectMapper().writeValueAsString(entityClass);
+			value = toJSON(entityClass); //new ObjectMapper().writeValueAsString(entityClass);
 			sourceleadELKTransportClient.getClient().prepareUpdate(index, type, id).setDoc(value, XContentType.JSON).get();
 			logger.info(type + " has been updated.");
 		} catch (DocumentMissingException e) {

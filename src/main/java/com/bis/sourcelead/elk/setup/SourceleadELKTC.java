@@ -1,5 +1,6 @@
 package com.bis.sourcelead.elk.setup;
 
+import java.io.Writer;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -20,6 +21,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.UserIndex;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 /**
  * @purpose:Elastic Search Transport Client Configuration
@@ -60,7 +65,7 @@ public class SourceleadELKTC<T> {
     public void saveOrUpdateElkDocument(T userIndex, String index, String type, String id) {
 		String value = "";
 		try {
-			value = new ObjectMapper().writeValueAsString(userIndex);
+			value = toJSON(userIndex);
 		    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
 		    logger.info(type+" has been updated.");
 		} 
@@ -74,6 +79,16 @@ public class SourceleadELKTC<T> {
 		}
 		
      }
+
+	public String toJSON(Object obj) {
+		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+			public HierarchicalStreamWriter createWriter(Writer writer) {
+				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+			}
+		});
+		return xstream.toXML(obj);
+	}
+
 
 	/** {@inheritDoc} */
     public Client getClient() {
