@@ -8,6 +8,7 @@ function campaignSender(ele,senderId, fromType) {
 			$("#campaignSender").html(data);
 			// save sender details
 			 $("#saveCampaignSender").click(function () {
+				 $('#saveCampaignSender').attr("disabled","disabled");
 				 if ($('#capn_add_sender').validate(false, validationSettings)) {
 					  /*	var formData = $($('#capn_add_sender')[0]).serialize();*/
 					 var formData = getFormData('capn_add_sender');

@@ -871,7 +871,7 @@ function getTemplateResignationDocumentsDetails(templateId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='resignationdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' target='_blank'  href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				 result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
@@ -916,7 +916,7 @@ function getTemplateOffboardPackDocumentsDetails(templateId){
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='offboardPackdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save'  target='_blank' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				 result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";

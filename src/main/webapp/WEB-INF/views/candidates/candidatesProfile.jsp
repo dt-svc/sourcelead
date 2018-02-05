@@ -1590,23 +1590,22 @@ function employementType(){
 	           $('#vendorcontactName').trigger("chosen:updated");
 			 
 		}
-		
+
 		if(employementType == 'C2C-1099'){
 			if(employementType == preval){
 				document.getElementById("hideVendor").style.display="block";
-				 $('#vendorName').attr("data-validation","required"); 
-				 $('#vendorcontactName').attr("data-validation","required");
+				 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+				 $('#vendorcontactName').removeAttr("data-validation-optional", "true"); 
 				 getVendorsByOrgLocation();
 			}else{
 				document.getElementById("hideVendor").style.display="block";
-			 $('#vendorName').attr("data-validation","required"); 
-			 $('#vendorcontactName').attr("data-validation","required"); 
-			  $('#vendorName').val(''); 
+				$('#vendorName').removeAttr("data-validation-optional", "true"); 
+				 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+			    $('#vendorName').val(''); 
 			 
 	            $('#vendorName').trigger("chosen:updated");
 	            $('#vendorcontactName').empty();
-		//	 $('#vendorcontact').val(''); 
-	           $('#vendorcontactName').trigger("chosen:updated");
+	            $('#vendorcontactName').trigger("chosen:updated");
 			} 
 		}else{
 			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
@@ -1617,7 +1616,6 @@ function employementType(){
 			 
 			 $('#vendorName').trigger("chosen:updated");
 	            $('#vendorcontactName').empty();
-		//	 $('#vendorcontact').val(''); 
 	           $('#vendorcontactName').trigger("chosen:updated");
 			 
 		} 
