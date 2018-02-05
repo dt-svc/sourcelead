@@ -14,8 +14,8 @@
 <link
 	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="/resources/css/static-web/reset.css?staticTime=${staticTime}">
+<%-- <link rel="stylesheet"
+	href="/resources/css/static-web/reset.css?staticTime=${staticTime}"> --%>
 <link
 	href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
@@ -77,7 +77,7 @@
 	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script>
+<!-- <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script> -->
 
 
  <style>
@@ -2787,140 +2787,7 @@ var validationSettings = {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
-</script>
-
-<script type="text/javascript">
-function getAllCountriesJObalert(country){
-	var sourceleadUrl ='${sourceleadUrl}';
-}
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: sourceleadUrl + "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#countryjobalert').empty();
-        	$('#countryjobalert').append('<option value="">---Select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	
-            	if(country != 'undefined' && country != null && country != '' && json[i] == country){
-            		$('#countryjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else{
-            		$('#countryjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            		
-           	}
-            
-            $('#countryjobalert').trigger("chosen:updated");
-            if(country == "undefined" || country == null){
-            	 getStatesjobalert();
-            }
-           
-        },
-        error: function(e){
-        }
-    });
-</script>
-
-
-<script>
-function getStatesjobalert(country,state){
-	
-	var countryName = '';
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#countryjobalert").val();
-	
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#statejobalert').empty();
-	        	$('#statejobalert').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != '' && state != 'undefined' && json[i] == state){
-	            		$('#statejobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#statejobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            	
-	            }
-	            $('#statejobalert').trigger("chosen:updated");
-	            
-	            $('#cityjobalert').empty();
-	            $('#cityjobalert').append('<option value="">---Select City---</option>');
-	            $('#cityjobalert').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#statejobalert').empty();
-    	$('#statejobalert').append('<option value="">---Select State---</option>');
-    	$('#statejobalert').trigger("chosen:updated");
-    	$('#cityjobalert').empty();
-    	$('#cityjobalert').append('<option value="">---Select City---</option>');
-        $('#cityjobalert').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<script>
-function getCitiesjobalert(country,state,city){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var countryName = '';
-	var stateName = '';
-	
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#countryjobalert").val();
-	}
-	
-	if(state != null && state != '' && state != 'undefined'){
-		stateName = state;
-	}else{
-		stateName = $("#statejobalert").val();
-	}
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#cityjobalert').empty();
-	        	$('#cityjobalert').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	
-	            	if(city != null && city != '' && state != 'undefined' && json[i] == city){
-	            		$('#cityjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#cityjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            	
-	            }
-	            $('#cityjobalert').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#cityjobalert').empty();
-    	$('#cityjobalert').append('<option value="">---Select City---</option>');
-    	$('#cityjobalert').trigger("chosen:updated");
-	}
-}
-</script>
+</script> 
 
 <script>
 function getRate(){
