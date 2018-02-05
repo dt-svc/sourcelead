@@ -19,14 +19,12 @@ function campaignSender(ele,senderId, fromType) {
 					            	$(".popMask").fadeOut(200);
 				            		$(".popUpOut").fadeOut(100);
 					             }else{
-								     location.replace(sourceleadUrl+ "/campaignSendersList");
+					            	 getSendersList("success");
+//								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
 					             }
-								 $("#selector1").removeAttr("style");
-					  			 $("#selector1").css({ display: "block" });
-					  			 $("#msgDiv").html("Successfully Created sender identity");
 					  			 $("#popUp").empty();
 					 			 $(".project_inn_mask").fadeOut(200);
-					             msgFadein(500);	
+					             	
 							}
 						});
 						return true;

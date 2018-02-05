@@ -192,8 +192,12 @@ $(document).ready(function() {
 </div>
 
 <script>
+var sourceleadUrl = '${sourceleadUrl}';
+if(sourceleadUrl.indexOf("/app")!=-1){
+	sourceleadUrl = sourceleadUrl.split("/app")[0];
+}
 function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId){
-	  var finalDateFormatScript = 'dd-mm-yy'; 
+	var finalDateFormatScript = 'dd-mm-yy'; 
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		var result = "";
@@ -318,8 +322,10 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '		 </div>';
 		result = result + '	 </div>';
 		 */
-		
 		result = result + '<div class="form-footer clearfix mt">';
+		result = result + '<div class="pull-right mr">';
+		result = result + '<button type="button" id="save_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
+		result = result + '</div>';
 		result = result + '<div class="pull-right mr">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
 		result = result + '</div>';
@@ -446,9 +452,9 @@ function importGuestAddApplicantDoc(){
 	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
 </script> -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 var sourceleadUrl ='${sourceleadUrl}';
-</script>
+</script> -->
 <!-- <script>
 function uploadAddApplicantCandidateDoc(){
 	fileUpload("newUploadBtns", "addApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
@@ -457,12 +463,8 @@ function uploadAddApplicantCandidateDoc(){
 }
 </script> -->
 <script>
+
  $(document.body).on('change', '#uploadBtn' ,function(){
-	 var sourceleadUrl = '${sourceleadUrl}';
-		if(sourceleadUrl.indexOf("/app")!=-1){
-			sourceleadUrl = sourceleadUrl.split("/app")[0];
-		}
- 
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -645,7 +647,11 @@ function validate_fileupload(fileName)
 	})(jQuery);
 </script>
  
-
+<script>
+function guestCancel(){
+	 window.location = sourceleadUrl+"/jobs"
+}
+</script>
 <script type="text/javascript">
 function addApplicantSubmission(){
 	var requirementId = '${reqId}';
@@ -762,10 +768,7 @@ function addApplicantSubmission(){
      $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
     
-     /* $.post(sourceleadUrl + "/saveGuestAddApplicant", formData, function(result) {
-    	 window.location.href = "/jobs";
-    	 window.location = "http://localhost:8080/jobs";
-     }); */
+
      
      
      
@@ -779,8 +782,7 @@ function addApplicantSubmission(){
 		     dataType : 'json',
 	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	window.location.href = "/jobs";
-	        	 window.location = "http://localhost:8080/jobs"
+	        	 window.location = sourceleadUrl+"/jobs"
 	        },
 	    });  
     return true; 

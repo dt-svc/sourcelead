@@ -95,13 +95,11 @@ display: none;}
 
 <div class="background slide">
 	<ul class="slider">
-	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg1.jpg);"></li>
-	  <li class="para" style="background-image:url(/resources/css/jobs/images/bg3.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/static-web/images/jobSearch.jpg);"></li>
+	  <li class="para" style="background-image:url(/resources/static-web/images/jobSearch.jpg);"></li>
 	</ul> 
 <content>
-		<h1>
-			Welcome to<span>SourceLead job portal</span>
-		</h1>
+		<div style="margin-top:200px;">
 		<p><i class="fa fa-search"></i>Search for vacancies</p>
 		<section class="searchWrap">
 			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
@@ -111,191 +109,171 @@ display: none;}
 			<!-- <h3><b id="ADS">Advanced Search</b></h3> -->
 			<div class="clear"></div>
 		</section>
+		</div>
 	</content>		
 	
 </div>
-<section class="adSearch">
+
+
+
+<!-- <div class="clearfix searchjob-banner"> -->
+<%-- <form class="searchprofile-search jobsearch"> --%>
+<!--    <p class="text-center">Search Job with us...</p> -->
+<!--    <div class="row clearfix search-tools"> -->
+<!--     <div class="col-md-5 col-xs-12"> -->
+<%--       <input type="text" class="form-control" id= "openJobsRequirementTitleId" value="${openJobsTitle}" placeholder="Search" name="pwd"> --%>
+<!--     </div> -->
+<!--         <div class="col-md-4 col-xs-12"> -->
+<%--       <input type="text" class="form-control" id="openJobsLocationId" value="${openJobsLocation}" placeholder="Location" name="pwd"> --%>
+<!--     </div> -->
+<!--     <div class="col-md-2 col-xs-12 dropdown-select"> -->
+<!--       <select class="form-control"> -->
+<%--   <option selected="openJobsExperienceId" value="${openJobsExperience}">--Select Experience--</option> --%>
+<!--   <option value="1">1</option> -->
+<!--   <option value="2">2</option> -->
+<!--   <option value="3">3</option> -->
+<!--   <option value="4">4</option> -->
+<!--   <option value="5">5</option> -->
+<!--   <option value="6">6</option> -->
+<!--   <option value="7">7</option> -->
+<!--   <option value="8">8</option> -->
+<!--   <option value="9">9</option> -->
+<!--   <option value="10">10</option> -->
+<!--   <option value="11">11</option> -->
+<!--   <option value="12">12</option> -->
+<!--   <option value="13">13</option> -->
+<!--   <option value="14">14</option> -->
+<!--   <option value="15">15</option> -->
+<!--   <option value="16">16</option> -->
+<!--   <option value="17">17</option> -->
+<!--   <option value="18">18</option> -->
+<!--   <option value="19">19</option> -->
+<!--   <option value="20">20</option> -->
+<!--   <option value="21">21</option> -->
+<!--   <option value="22">22</option> -->
+<!--   <option value="23">23</option> -->
+<!--   <option value="24">24</option> -->
+<!--   <option value="25">25</option> -->
+<!--       </select> -->
+<!--     </div> -->
+<!--      <div class="col-md-1 col-xs-12"> -->
+<!--     <input type="button" value="Search" class="searchBtn" onclick="redirectPage();"><i class="fa fa-search" aria-hidden="true"></i> -->
+<!-- 		</a> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
 		
-          <form:form id="openJobsAdvancedForm" name="openJobsAdvancedForm"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();"><i class="fa fa-close"></i></a>
-            <div class="row">
-              <div class="col-md-4">
-                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
-                
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
-				 </div>
-              </div>
-              <div class="col-md-4">
-                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="All KeyWord" id="allReqKeyWord" name="allKeyWord"></select>
-				 </div>
-                
-              </div>
-              <div class="col-md-4">
-                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude KeyWord" id="excludeReqKeyWord" name="excludeKeyWord"></select>
-				 </div>
-                
-              </div>
+<%-- </form> --%>
+<!--   </div> -->
+
+
+
+
+
+
+
+<div class="container-fluid container-area-white">
+	<div class="clearfix">
+			<div class="container">
+			<h2 class="text-center mb">Best Places to Work</h2>
+			<div class="row contnetarea">
+				<p class="text-center" style="text-align: center !important;">
+					If you're looking for a job change or a career change, you can find it on Sourcelead.<br>You can take a look at our Popular Job Locations and Job Titles. Find your perfect career fit for today.<br>Whatever type of job you're looking for, you can find it on SourceLead.
+				</p>
+			</div>
+			<div class="row hidden">
+				<div class="col-md-3 text-center candidate-job">
+				<i class="material-icons">desktop_windows</i>
+									<div class="clearfix"></div>
+					<h4>Information Technology</h4>
+									<p>2000 Jobs</p>
+
+				</div>
+					<div class="col-md-3 text-center candidate-job2">
+					<i class="material-icons">donut_large</i>
+					<div class="clearfix"></div>
+						<h4>Manufacturing</h4>
+						<p>2000 Jobs</p>
+					</div>
+					<div class="col-md-3 text-center candidate-job">
+										<i class="material-icons">access_alarm</i>
+					<div class="clearfix"></div>
+						<h4>Services</h4>
+						<p>2000 Jobs</p>
+					</div>
+					<div class="col-md-3 text-center candidate-job2">
+										<i class="material-icons">language</i>
+					<div class="clearfix"></div>
+						<h4>All Jobs</h4>
+						<p>2000 Jobs</p>
+					</div>
+				</div>
+			</div>
+	</div>
+<div class="clearfix"></div>
+</div>
+
+<section class="homewidget-benefitsdiv text-center">
+  <div class="container-fluid bounceIn animated">
+ 		<div class="col-md-12">
+ 			<h2>Benefits of SourceLead</h2>
+ 			<p>Integration which provides a one-stop solution to entire recruitment life cycle with a single login to Clients, Vendors and Candidates.</p>
+ 		</div>
+  		<div class="col-md-12 clearfix">
+  			<a href="/register" class="btn btn-custom mr" target="_blank">Register with Us</a>
+  			<span class="mr ml">--- OR ---</span>
+  			<a href="/register" class="btn btn-custom mr" target="_blank">Upload your CV</a>
+  		</div>
+  </div>
+</section>
+<!-- Clients Div -->
+<section class="container-fluid container-area-white">
+  <!-- Clients Div -->
+   <section class="clearfix clientsdiv-inner">
+    <div class="container">
+       <div class="clearfix text-center animated bounceIn clientsdiv-hdr">
+	    <h2 class="text-center animated bounceIn">Our Clients</h2>
+	  </div>
+	  <section id="owl-carousel-div" class="mt">
+      <div class="row">
+        <div class="large-12 columns">
+          <div class="owl-carousel owl-theme owlcarousel-custom">
+            <div class="itemowl">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
             </div>
-            <div class="row">
-              <div class="col-md-12">
-                <h4>Details:</h4>
-              </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Job Title</label>
-                  <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
-                  </div>
-                </div>
-                <div class="col-md-8">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <label>Rate</label>
-                      <div class="input-group">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker" id="currencyCode" name="currencyCode" >
-                            <option selected disabled>INR</option>
-                            <option>AUD</option>
-                            <option>USD</option>
-                            <option>GPB</option>
-                            <option>SGD</option>
-                            <option>EUR</option>
-                          </select>
-                        </div>
-                        <input type="text" class="form-control input-sm" name="minRate" id="minRate" value="" placeholder="Min Rate">
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <label>&nbsp;</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control input-sm" value="" name="maxRate" id="maxRate" placeholder="Max Rate">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker">
-                            <option selected disabled>Per</option>
-                            <option>Hourly</option>
-                            <option>Weekly</option>
-                            <option>Bi-weekly</option>
-                            <option>Semi-Monthly</option>
-                            <option>Monthly</option>
-                            <option>Bi-Monthly</option>
-                            <option>Yearly</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Experience</label>
-                  <div class="clearfix row">
-                    <div class="col-md-6">
-                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
-                       <option value="" selected>Min Years</option>
-                       <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-                      </select>
-                    </div>
-                    <div class="col-md-6">
-                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
-                         <option value="" selected>Max Years</option>
-                         <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <label>Notice Period</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" name="noticePeriod" id="noticePeriod" data-placeholder="Notice Period" multiple>
-                      <option>Immediately available</option>
-                      <option>15 Days</option>
-                      <option>1 Month</option>
-                      <option>2 Months</option>
-                      <option>3 Months</option>
-                    </select>
-                  </div>
-                </div>
-                
-              </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-							  <label>Country</label>
-							  <div class="clearfix adv-srh-chosen">
-								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
-								  <option value="">--select Country--</option>
-								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
-						                </c:forEach>
-				                 </select>
-							  </div>
-						  </div>
-                <div class="col-md-4"> 
-							  <label>State</label>
-							  <div class="clearfix adv-srh-chosen">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
-								        <option value="">---Select State---</option>
-								        <c:forEach var="state" items="${statesList}">
-							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
-                                 </select>
-							  </div>
-						  </div>
-			  <div class="col-md-4">
-				  <label>City</label>
-				  <div class="clearfix adv-srh-chosen">
-					  <select  class="chosen-select" name="city" id="city" field-name="City"  >
-					      <option value="">---Select City---</option>
-                               </select>
-				  </div>
-			  </div>
-              </div>
-              
-              <div class="clearfix">
-                <div class="col-md-4">
-                <label>Organizations <i class="fa fa-info-circle" title="Organizations"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Organizations" id="organizations" name="organizations"></select>
-				 </div>
-                
-              </div>
-              
-                <div class="col-md-8">
-                  <label>Skills</label>
-                  <div class="clearfix">
-                     <select class="chosen-select"  id="skills" name="skills" multiple data-placeholder="Select Skills">
-                      <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  selected value="${skill.name}">${skill.name}</option>
-	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  value="${skill.name}">${skill.name}</option>
-	                		 </c:if>
-                    </c:forEach>
-                    </select>
-                  </div>
-                </div>
-              </div>
+            <div class="itemowl">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
             </div>
-            <div class="row form-footer">
-              <div class="pull-right mr"> 
-              <input type="button" value="Search" id="advancedOpenJobsSearch" onclick="openJobSearchRequirement();loadOpenJobsChosenRequirementScripts();redirectPage();" class="btn btn-sm btn-primary"/>
-               <input type="button" value="Cancel" onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();" class="btn btn-sm btn-default ml10"/> 
-              </div>
+            <div class="itemowl">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
+            </div>
+            <div class="itemowl">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
+            </div>
+             <div class="itemowl">
+              <img src="/resources/static-web/images/businessintelli_revised.png" alt="Client Image" class="img-responsive">
+            </div>
+            <div class="itemowl">
+              <img src="/resources/static-web/images/soft.png" alt="Client Image" class="img-responsive">
+            </div>
+            <div class="itemowl">
+              <img src="/resources/static-web/images/cloudious.png" alt="Client Image" class="img-responsive">
+            </div>
+            <div class="itemowl">
+              <img src="/resources/static-web/images/sarian_logo.png" alt="Client Image" class="img-responsive">
             </div>
           </div>
-   </form:form>
-	</section>        
-<!-- Content Area Ends-->
+          </div>
+          </div>
+    </section>
+	    
+	        
+    
+  </div>
+</section>
+<!-- Clients Div -->
+</section>
+<!-- Clients Div -->
+<!-- Benefits of sourcelead  -->
 
 <jsp:include page="../staticFooter.jsp" />
 
