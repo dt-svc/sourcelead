@@ -62,6 +62,10 @@ public void transferAssociates() throws IOException, SQLException {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
 		
+		 SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
+		 Date date = new Date();
+ 	     String currentDate = formatter1.format(date);
+		
 		Long INDOrgLocation = 2286L;
 		Long USOrgLocation = 2301L;
 		
@@ -72,6 +76,7 @@ public void transferAssociates() throws IOException, SQLException {
 		 ResultSet rs1 = stmt1.executeQuery(sql1);
 		 Long orgRelationId = null; 
 		 Long spocId = null;
+		 String userCode = null;
 		 
 		if(rs1.next()) {
 			 orgRelationId = rs1.getLong("ID");
@@ -81,17 +86,27 @@ public void transferAssociates() throws IOException, SQLException {
 			 if(spocRs.next()) {
 				 spocId = spocRs.getLong("ID");
 			 }
+			 
+			 String sql14 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+INDOrgLocation+"' ";
+			 Statement stmt14 = conn.createStatement();
+			 ResultSet rs14 = stmt14.executeQuery(sql14);
+			
+			 if(rs14.next()) {
+				Long userId = rs14.getLong("PRIMARY_CONTACT_USER_ID");
+				 String sql3 = "SELECT * FROM sourcelead.USER  user where  user.ID = '"+userId+"' ";
+				 Statement stmt16 = conn.createStatement();
+				 ResultSet rs15 = stmt16.executeQuery(sql3);
+				 if(rs15.next()) {
+					 userCode = rs15.getString("USER_CODE");
+				 }
+				 
+			 }
 				 
 		}else {
 			
-			 String userCode = null;
 			 Long userId = null;
 			 Long clientUserId = null;
 			 
-			 SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
-			 Date date = new Date();
-	 	     String currentDate = formatter1.format(date);
-			
 			 String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+INDOrgLocation+"' ";
 			 Statement stmt2 = conn.createStatement();
 			 ResultSet rs2 = stmt2.executeQuery(sql2);
@@ -452,7 +467,77 @@ public void transferAssociates() throws IOException, SQLException {
 		}
 	
 		for (String associateEmail : emailsList) {
-			System.out.println(associateEmail);
+			
+			
+			 String countcandidateSql = "SELECT count(*) FROM sourcelead.CANDIDATE candidate where  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+			 Statement countCandidateStmt = conn.createStatement();
+			 ResultSet countCandidateRs = countCandidateStmt.executeQuery(countcandidateSql);
+			if(countCandidateRs.next()) {
+				System.out.println(countCandidateRs.getRow());
+			}
+			 
+			
+			 String candidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+USOrgLocation+"' ";
+			 Statement candidateStmt = conn.createStatement();
+			 ResultSet candidateRs = candidateStmt.executeQuery(candidateSql);
+			 Long candidateId = null;
+			 Long vendorCandidateId = null;
+			 
+			 if(candidateRs.next()) {
+				 
+				 Long masterCandidateId = candidateRs.getLong("MASTER_CANDIDATE_ID");
+				 Long candidateUserId = candidateRs.getLong("CONSULTANT_USER_ID");
+				 String firstName = candidateRs.getString("FIRST_NAME");
+				 String lastName = candidateRs.getString("LAST_NAME");
+				 String country = candidateRs.getString("COUNTRY");
+				 
+				 candidateId = candidateRs.getLong("ID");
+				 
+				 
+				 String query3 = " insert into sourcelead.CANDIDATE (MASTER_CANDIDATE_ID, CONSULTANT_USER_ID, FIRST_NAME, LAST_NAME, EMAIL,  "
+    					+ "COUNTRY,STATUS,CANDIDATE_UUID,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY,ORG_LOCATION_ID,CANDIDATE_TYPE,DESIGNATION_TYPE)"
+    					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        		
+        		 try {
+        			 PreparedStatement candpstmt = conn.prepareStatement(query3);
+        			 candpstmt.setLong(1, masterCandidateId);
+        			 candpstmt.setLong(2,candidateUserId);
+        			 candpstmt.setString(3, firstName);
+        			 candpstmt.setString(4, lastName);
+        			 candpstmt.setString(5,associateEmail);
+        			 candpstmt.setString(6,country);
+        			 candpstmt.setString(7,"1");
+        			 candpstmt.setString(8,SourceLeadRandomCodeHelper.generateRandomUUID());
+        			 candpstmt.setString(9,currentDate);
+        			 candpstmt.setString(10,currentDate);
+        			 candpstmt.setString(11,userCode);
+        			 candpstmt.setString(12,userCode);
+        			 candpstmt.setLong(13, INDOrgLocation);
+        			 candpstmt.setString(14, "Candidate");
+        			 candpstmt.setString(15, "Full Time");
+        			candpstmt.execute();	
+    	    		 
+        		}catch (Exception e){   
+    				e.printStackTrace();
+    			}
+				 
+				 
+			 }
+			 
+			 
+
+			 String vendorcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+			 Statement vendorCandidateStmt = conn.createStatement();
+			 ResultSet vendorCandidateRs = vendorCandidateStmt.executeQuery(vendorcandidateSql);
+			 
+			 if(vendorCandidateRs.next()) {
+				 vendorCandidateId = vendorCandidateRs.getLong("ID");
+			 }
+			 
+			 String clientCandidateQry = " update sourcelead.CANDIDATE set PARENT_CANDIDATE_ID = '"+vendorCandidateId+"' and ORG_RELATION_ID = '"+orgRelationId+"' and SPOC_ID = '"+spocId+"' where ID = '"+candidateId+"' ";
+	    	 java.sql.PreparedStatement clientCandidatePstmt = conn.prepareStatement(clientCandidateQry); 
+	    	 clientCandidatePstmt.executeUpdate(); 
+			 
 		}
 			
 		
