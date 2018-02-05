@@ -240,10 +240,21 @@ public class UsersListRestController {
 
 	/* this method is used to display the users list onload */
 	@RequestMapping(value = "/detDynamicUserList", method = RequestMethod.POST)
-	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,HttpServletRequest request) throws Exception {
+	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "asc"; //by default descending order
+		if(userRoleDto.getOrder() != null && !userRoleDto.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(userRoleDto.getOrder().get(0).get("column"));
+			sortColumnOrder = userRoleDto.getOrder().get(0).get("dir");
+		}
+		userRoleDto.setSortColumn(tableColumns[sortColumnIndex]);
+		userRoleDto.setSortOrder(sortColumnOrder);
+		
 		ResponseList<UserRoleDTO> response = new ResponseList<UserRoleDTO>();
 		List<UserRoleDTO> userRolesList = new ArrayList<>();
 			Long userRoleType ;
@@ -252,30 +263,30 @@ public class UsersListRestController {
 			}else{
 				 userRoleType = null;
 			}
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
 				for(UserRole role : rolesList.getData()){
-					UserRoleDTO userRoleDto = new UserRoleDTO();
+					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
 					
-					userRoleDto.setUserRoleName(role.getRoles().getDisplayName());
-					userRoleDto.setIsMailSent(role.getIsMailSent().toString());
+					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
+					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
 					if(!isNullOrEmpty(role.getUser().getLastName())){
 						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
-						userRoleDto.setUserName(userName.toString());
+						userRoleDTO.setUserName(userName.toString());
 						
 					}else{
-						userRoleDto.setUserName(role.getUser().getFirstName());
+						userRoleDTO.setUserName(role.getUser().getFirstName());
 					}
-					userRoleDto.setUserEmail(role.getUser().getEmail());
-					userRoleDto.setUserId(role.getUser().getId());
-					userRoleDto.setUserCode(role.getUser().getUserCode());
-					userRoleDto.setUserState(role.getUserState().toString());
+					userRoleDTO.setUserEmail(role.getUser().getEmail());
+					userRoleDTO.setUserId(role.getUser().getId());
+					userRoleDTO.setUserCode(role.getUser().getUserCode());
+					userRoleDTO.setUserState(role.getUserState().toString());
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
-							userRoleDto.setFileUrl(role.getUser().getFileUrl());
+							userRoleDTO.setFileUrl(role.getUser().getFileUrl());
 						}
 					}
-					userRoleDto.setMobilePhone(role.getUser().getMobilePhone());
+					userRoleDTO.setMobilePhone(role.getUser().getMobilePhone());
 					if(role.getReportingManager() !=null){
 						StringBuilder reportingManagerName = new StringBuilder();
 						if(role.getReportingManager().getLastName() !=null && !"".equalsIgnoreCase(role.getReportingManager().getLastName())){
@@ -283,15 +294,15 @@ public class UsersListRestController {
 						}else{
 							reportingManagerName.append(role.getReportingManager().getFirstName());
 						}
-						userRoleDto.setReportingManagerName(reportingManagerName.toString());
+						userRoleDTO.setReportingManagerName(reportingManagerName.toString());
 					}
 					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(role.getUser().getId(),orgLocations.getId());
 					if(emp !=null){
 						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
-							userRoleDto.setEmployeMentType(emp.getUserEmploymentType());
+							userRoleDTO.setEmployeMentType(emp.getUserEmploymentType());
 						}
 					}
-					userRolesList.add(userRoleDto);
+					userRolesList.add(userRoleDTO);
 				}
 				response.setRecordsFiltered(rolesList.getRecordsFiltered());
 				response.setRecordsTotal(rolesList.getRecordsTotal());
