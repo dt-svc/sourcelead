@@ -223,32 +223,40 @@ if ($('#upload_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client", 	   
  		    success : function(data) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 		    	if(data == "empty"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Mandatory fields are required");
- 		    		msgFadein();
- 		    	}else if(data == "invalid"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Please import valid Template");
- 		    		msgFadein();
- 		    	}else if(data == "success"){
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Inserted successfully");
- 		    		msgFadein();
- 		    	}else{
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Processed successfully");
- 		    		msgFadein();
- 		    		prepareExcelDataDiv(data);
- 		    	}
+//  		    	if(data == "empty"){
+//  		    		$("#selector").removeAttr("style");
+//  	    			$("#selector").css({ display: "block" });
+//  		    		$("#msgDiv").html("Mandatory fields are required");
+//  		    		msgFadein();
+//  		    	}else if(data == "invalid"){
+//  		    		$("#selector").removeAttr("style");
+//  	    			$("#selector").css({ display: "block" });
+//  		    		$("#msgDiv").html("Please import valid Template or fill mandatory fields");
+//  		    		msgFadein();
+//  		    	}else if(data == "success"){
+//  		    		$("#selector").removeClass("remove_pop");
+//  		    		$("#selector").addClass("success_pop");
+//  		    		$("#selector").removeAttr("style");
+//  	    			$("#selector").css({ display: "block" });
+//  		    		$("#msgDiv").html("Inserted successfully");
+//  		    		msgFadein();
+//  		    	}else{
+	if(data != null && data != ''){
+		$("#selector").removeClass("remove_pop");
+ 		$("#selector").addClass("success_pop");
+ 		$("#selector").removeAttr("style");
+		$("#selector").css({ display: "block" });
+ 		$("#msgDiv").html("Processed successfully");
+ 		msgFadein();
+ 		prepareExcelDataDiv(data);
+		
+	}else{
+		$("#selector").removeAttr("style");
+		$("#selector").css({ display: "block" });
+		$("#msgDiv").html("Please import valid Template or fill mandatory fields");
+		msgFadein();
+	}
+//  		    	}
  		    },
  		   error: function(e){
 	        }
@@ -283,9 +291,9 @@ function prepareExcelDataDiv(data){
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
-	var json = JSON.parse(data);
-    for (var i = 0; i < json.length; i++) {
-    	var report= json[i];
+// 	var json = JSON.parse(data);
+    for (var i = 0; i < data.length; i++) {
+    	var report= data[i];
     	result = result + '<tr id="row'+report.id+'">';
         result = result + '<td>';
         if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'){
@@ -347,8 +355,8 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
         result = result + '<td>';
-        if(report.reason != null && report.reason != '' && report.reason !='undefined'){
-       		 result = result + "<div><a class='text-danger' title='"+report.reason+"'>"+report.reason+"</a></div>";
+        if(report.fileReason != null && report.fileReason != '' && report.fileReason !='undefined'){
+       		 result = result + "<div><a class='text-danger' title='"+report.fileReason+"'>"+report.fileReason+"</a></div>";
         }
         else{
 		    	result = result + "<div><span>---</span></div>";
