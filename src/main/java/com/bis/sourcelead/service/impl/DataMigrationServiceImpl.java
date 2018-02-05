@@ -43,6 +43,7 @@ import com.bis.sourcelead.dto.AssetsDataImportDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -298,6 +299,23 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					reqDTO.setFileInfo(fileInfoList);
 				}
 				
+				List<RequirementLocationsDTO> locationDTOList = new ArrayList<>();
+				RequirementLocationsDTO locationDTO = new RequirementLocationsDTO();
+				locationDTO.setLocationName(reqDTO.getLocation());
+				if(StringUtils.isNotBlank(reqDTO.getCountry())) {
+					locationDTO.setCountry(reqDTO.getCountry());
+				}
+				if(StringUtils.isNotBlank(reqDTO.getState())) {
+					locationDTO.setState(reqDTO.getState());
+				}
+				if(StringUtils.isNotBlank(reqDTO.getCity())) {
+					locationDTO.setCity(reqDTO.getCity());
+				}
+				if(StringUtils.isNotBlank(reqDTO.getZipCode())) {
+					locationDTO.setZipcode(reqDTO.getZipCode());
+				}
+				locationDTOList.add(locationDTO);
+				reqDTO.setLocationInfo(locationDTOList);
 				Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
 		    break;
 		    
