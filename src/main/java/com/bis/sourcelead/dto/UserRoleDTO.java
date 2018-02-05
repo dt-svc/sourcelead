@@ -1,8 +1,9 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UserRoleDTO {
+public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private Long id;
 	private String userName;
 	private Long userId;
