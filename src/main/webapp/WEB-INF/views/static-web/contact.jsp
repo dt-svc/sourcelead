@@ -1,5 +1,7 @@
   <!--   HTML   -->	  
 <jsp:include page="../staticHeader.jsp" /> 
+<div class="clearfix contact-banner">
+  </div>
 <section class="container-area-white">
 <div class="container">
 	<div class="contact-styles">

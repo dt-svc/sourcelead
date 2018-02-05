@@ -14,6 +14,7 @@
 	<link href="/resources/static-web/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/resources/static-web/css/slwebsite.css" rel="stylesheet">
 	<link href="/resources/static-web/css/slwebsite-res.css" rel="stylesheet">
+	<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -26,7 +27,7 @@
 	  <div class="container-fluid">
 		
 	    <div class="navbar-header">
-		  <a class="navbar-brand" href="index.html">
+		  <a class="navbar-brand" href="/">
 			<img src="/resources/static-web/images/logo-sourceld.png">
 		  </a>
 		</div>
@@ -42,7 +43,7 @@
 	<div class="customNavBar-inner deskMenu">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<ul class="">
-	<li><a href="/index.html" class="slactive">Home</a></li>
+	<li><a href="/" class="slactive">Home</a></li>
 	 <li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)">Features
 			  <span class="fa fa-angle-down"></span></a>
