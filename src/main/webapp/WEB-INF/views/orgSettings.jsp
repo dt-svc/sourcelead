@@ -155,6 +155,7 @@ function cancelOrgImg(){
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <div id="loading"></div>
+      <div id="regLoading"></div>
       <div id="popUp"></div>  
       <div id="signatureLoading"></div>
         <!-- Tab Pills navbar -->
@@ -2252,7 +2253,7 @@ function validateRegisterCompanyName(){
 							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyName').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2336,7 +2337,7 @@ function validateWebsite (){
 		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
 		    				$('input#companyWebsite').attr('record-exist','yes');
 		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' '+result+''); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Register');
+		    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
 			        	else{
@@ -2346,7 +2347,7 @@ function validateWebsite (){
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyWebsite').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2378,7 +2379,7 @@ function validateCompanyEmail(){
 			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
 			    				$('input#companyEmail').attr('record-exist','yes');
 			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
@@ -2388,7 +2389,7 @@ function validateCompanyEmail(){
 			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
 			    				$('input#companyEmail').attr('record-exist','yes');
 			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					    	 
 					     }
@@ -2399,7 +2400,7 @@ function validateCompanyEmail(){
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyEmail').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2631,7 +2632,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#regLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      data: formData,
@@ -2643,11 +2644,11 @@ var validationSettings = {
 			        		loadRegisteredOrgs();
 			        	}
 			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
+			        		$("#regLoading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
 			        	}else if((result == 'DataMissing')){
 			        		showError("Invalid data");
-			        		$("#loading").removeAttr('style');
+			        		$("#regLoading").removeAttr('style');
 			        	}
 			        	
 			        },  

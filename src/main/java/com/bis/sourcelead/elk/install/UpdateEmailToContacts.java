@@ -43,19 +43,20 @@ public void updateContactEmail() throws IOException, SQLException {
 				 Long  userId = rs1.getLong("CONTACT_USER_ID");
 				 Long contactId =  rs1.getLong("ID");
 				 
-				 String sql2 = "SELECT * from sourcelead.USER where ID = '"+userId+"' ";
-				 Statement stmt2 = conn.createStatement();
-				 ResultSet rs2 = stmt2.executeQuery(sql2);
-				 
-				 if (rs2.next()) {
+				 if(userId != null) {
+					 String sql2 = "SELECT * from sourcelead.USER where ID = '"+userId+"' ";
+					 Statement stmt2 = conn.createStatement();
+					 ResultSet rs2 = stmt2.executeQuery(sql2);
 					 
-					    String email = rs2.getString("EMAIL");
-					 
-					    String query1 = " update sourcelead.REFER_CONTACTS set CONTACT_USER_EMAIL = '"+email+"' where ID = '"+contactId+"' ";
-				    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
-						pstmt2.executeUpdate(); 
-			    	} 
-				
+					 if (rs2.next()) {
+						 
+						    String email = rs2.getString("EMAIL");
+						 
+						    String query1 = " update sourcelead.REFER_CONTACTS set CONTACT_USER_EMAIL = '"+email+"' where ID = '"+contactId+"' ";
+					    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
+							pstmt2.executeUpdate(); 
+				    	} 
+				 }
 			}
 			System.out.println("----Updating email to contacts ends-----");
 		
