@@ -971,7 +971,7 @@ function requirementsList(offset){
 			 					var sourceleadShareUrl = sourceleadUrl ;
 			 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
 			 					result = result +'<div class="openCtaRight">';
-				 				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				 				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
 				 				if(requirements.isJobSaved != 'Y'){
@@ -1109,8 +1109,8 @@ function requirementsList(offset){
    		    }
 	     
 	     window.setTimeout(function() {
-				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+				addthis.init(".addthis_inline_share_toolbox_g28q");
 				addthis.layers.refresh();
 	        }, 500);
 	     $("#requirementsListLoading").removeAttr("style"); 
@@ -1310,9 +1310,9 @@ function searchRequirement(offset){
 									 					result = result +'<div class="openCtaRight">';
 										 				 result = result +'<p>Share Job</p>';
 										 				 result = result +'<span>';
-									 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+										 				result = result +'	<div class="share">';			  
+														result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+														result = result +'	</div>';
 										 				result = result +'</span>'; 
 										 				result = result +'<div class="openPostBtns clearfix">';
 										 				
@@ -1387,6 +1387,12 @@ function searchRequirement(offset){
 		           		    	/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
+					       	window.setTimeout(function() {
+								addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+								addthis.init(".addthis_inline_share_toolbox_g28q");
+								addthis.layers.refresh();
+					        }, 500);
+					       	
 					        socialInviterScripts();
 						},
 					});  
@@ -1918,6 +1924,7 @@ function alertClose(){
 	$(".modal_createalert").removeClass("modal");
 	$(".pop_mask").fadeOut();
 	$(".modal.modal_createalert").fadeOut();
+	$("#createAlertPopUpDiv").empty();
 }
 </script>
 

@@ -70,10 +70,7 @@ left:0;
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
-			var result = "";
-	      
+	        success: function(json) {
 				var result = "";
 				result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
 	        	result = result +'<thead>';

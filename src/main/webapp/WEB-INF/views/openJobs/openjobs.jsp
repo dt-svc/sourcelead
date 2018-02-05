@@ -77,9 +77,14 @@
 	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script>
 
 
- 
+ <style>
+ .navbar-default {
+ background: #fff !important; border-bottom: 1px solid #ededed !important;
+ }
+ </style>
 <!--  Modal Pop for apply Jobs -->
   <!-- Modal -->
   <div class="comMask"></div>
@@ -278,7 +283,7 @@ top: 21px;height: 32px; line-height: 18px;
 
 <!-- Content Area -->
 <jsp:include page="../staticHeader.jsp" />
-<div class="innerPageSearch"> 
+<div class="innerPageSearch" style="padding-top: 75px;"> 
 <c:if test="${!empty guestusermsg}">
 	        <div class="success_pop" id="guestselector"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${guestusermsg}</span>
@@ -844,7 +849,7 @@ top: 21px;height: 32px; line-height: 18px;
 </section>
 <!-- Content Area Ends-->
 <footer>
-    <div class="footerInn">
+    <!-- <div class="footerInn">
         <div class="footerInnCta resFoot">
             <h3>SourceLead</h3>
             <ul>
@@ -852,10 +857,10 @@ top: 21px;height: 32px; line-height: 18px;
                         us</a></li>
                 <li><a href="/team.html"><i class="fa fa-caret-right"></i>Our
                         team</a></li>
-                <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
+                <li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>
                 <li><a href="/testimonial.html"><i
                         class="fa fa-caret-right"></i>Testimonial</a></li>
-                <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
+                <li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>
                 <li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact
                         us</a></li>
             </ul>
@@ -904,11 +909,11 @@ top: 21px;height: 32px; line-height: 18px;
             </div>
         </div>
         <div class="clear"></div>
-    </div>
+    </div> -->
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>Â© 2016 SourceLead. All rights reserved.</b> <span> <a
+            <b>© 2018 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
@@ -1360,7 +1365,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
 				result = result +'	<div class="share">';			  
-				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
@@ -1380,8 +1385,8 @@ function prepareOpenJobsElkList(data,offset){
 			}
 			
 			window.setTimeout(function() {
-				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+				addthis.init(".addthis_inline_share_toolbox_g28q");
 				addthis.layers.refresh();
 	        }, 500);
 			
@@ -1747,7 +1752,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 						jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
 				    } 
 					
-				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1758,8 +1763,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				$("#openJobsRequirementsSummary").empty();
 
 				window.setTimeout(function() {
-					addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-					addthis.init(".addthis_inline_share_toolbox_s1a2");
+					addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+					addthis.init(".addthis_inline_share_toolbox_g28q");
 					addthis.layers.refresh();
 		        }, 500);
 				
@@ -1906,7 +1911,7 @@ function openJobSearchRequirement(){
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 
 										result = result +'	<div class="share">';
-										result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+										result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
@@ -1925,8 +1930,8 @@ function openJobSearchRequirement(){
 			}
 	
 				 window.setTimeout(function() {
-						addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-						addthis.init(".addthis_inline_share_toolbox_s1a2");
+						addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+						addthis.init(".addthis_inline_share_toolbox_g28q");
 						addthis.layers.refresh();
 			        }, 500);
 				$('body').on('blur','#openJobsAdvancedForm',function() {

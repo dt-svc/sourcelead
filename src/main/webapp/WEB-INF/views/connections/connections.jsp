@@ -33,7 +33,7 @@ window.onload = function () {
     <h2>Connections</h2>
   </div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
-<div id="loading"></div>
+<div id="loadingConnectionDiv"></div>
 </section>
 
 
@@ -105,7 +105,7 @@ function getConnectionsList(type){
     		$("#orgOffset").val(0);
    		    offset = 0;
     	}
-		$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "POST",
 			url : sourceleadUrl+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
@@ -176,7 +176,7 @@ function getConnectionsList(type){
 	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
 	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
 	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
-	        $("#loading").removeAttr("style"); 
+	        $("#loadingConnectionDiv").removeAttr("style"); 
 			 },
 	        error: function(e){
 	        }
@@ -206,7 +206,7 @@ function eduMsgFadeinFunction(message) {
 function getConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/addNewConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
@@ -216,7 +216,7 @@ function getConnection(userCode,userName){
 	    			var sentCount = parseInt(localStorage.getItem("sentCount"));
 	    			sentCount = sentCount+1;
 	    			localStorage.setItem("sentCount", sentCount);
-	    			$("#loading").removeAttr("style");
+	    			$("#loadingConnectionDiv").removeAttr("style");
 	    			$("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
 	    	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
 	    	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount")); 
@@ -237,14 +237,14 @@ function getConnection(userCode,userName){
 function getWithdrawConnections(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
-	    			$("#loading").removeAttr("style");
+	    			$("#loadingConnectionDiv").removeAttr("style");
 	    			var sentCount =  parseInt(localStorage.getItem("sentCount"));
 	    			sentCount = sentCount-1;
 	    			localStorage.setItem("sentCount", sentCount);
@@ -269,14 +269,14 @@ function getWithdrawConnections(userCode,userName,connectionUUID){
 function ignoreConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
          	success: function(json) {
 	        	$("#selector4").removeAttr("style");
 	 			$("#selector4").css({ display: "block" });
-	 			$("#loading").removeAttr("style");
+	 			$("#loadingConnectionDiv").removeAttr("style");
 	 			var receivedCount =  parseInt(localStorage.getItem("receivedCount"));
     			receivedCount = receivedCount-1;
     			localStorage.setItem("receivedCount", receivedCount);
@@ -299,14 +299,14 @@ function ignoreConnection(userCode,userName,connectionUUID){
 function acceptConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
        		success: function(json) {
 	        	$("#selector4").removeAttr("style");
 				$("#selector4").css({ display: "block" });
-				$("#loading").removeAttr("style");
+				$("#loadingConnectionDiv").removeAttr("style");
 				var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
     			connectedCount = connectedCount+1;
     			localStorage.setItem("connectedCount", connectedCount);
@@ -333,14 +333,14 @@ function acceptConnection(userCode,userName,connectionUUID){
 /* function getDisconnectConnection(userCode,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loadingConnectionDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode+"&statusCode=connected",
             success: function(json) {
 	            	$("#selector4").removeAttr("style");
 	    			$("#selector4").css({ display: "block" });
-	    			$("#loading").removeAttr("style");
+	    			$("#loadingConnectionDiv").removeAttr("style");
 	    			var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
 	    			connectedCount = connectedCount-1;
 	    			localStorage.setItem("connectedCount", connectedCount);
