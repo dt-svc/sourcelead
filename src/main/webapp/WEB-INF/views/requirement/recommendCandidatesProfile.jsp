@@ -1736,13 +1736,13 @@ function employementType(){
 		if(employementType == 'C2C-1099'){
 			if(employementType == preval){
 				document.getElementById("hideVendor").style.display="block";
-				 $('#vendorName').attr("data-validation","required"); 
-				 $('#vendorcontactName').attr("data-validation","required");
+				$('#vendorName').removeAttr("data-validation-optional", "true"); 
+				 $('#vendorcontactName').removeAttr("data-validation-optional", "true"); 
 				 getVendorsByOrgLocation();
 			}else{
 				document.getElementById("hideVendor").style.display="block";
-			 $('#vendorName').attr("data-validation","required"); 
-			 $('#vendorcontactName').attr("data-validation","required"); 
+				$('#vendorName').removeAttr("data-validation-optional", "true"); 
+				 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
 			  $('#vendorName').val(''); 
 			 
 	            $('#vendorName').trigger("chosen:updated");
