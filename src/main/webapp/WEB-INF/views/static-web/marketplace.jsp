@@ -1,4 +1,7 @@
 <jsp:include page="../staticHeader.jsp" /> 
+<div class="clearfix marketplace-banner">
+</div>
+<div class="clearfix"></div>
 <section class="container-fluid container-area-white">
 <div class="clearfix container">
 	<div class="col-md-4 productfeatures">
