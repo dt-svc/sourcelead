@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,9 +62,8 @@ public class ClientImportRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_CLIENT_BULK_IMPORTS')")
 	@RequestMapping(value = "/clientExcelFileUpload", method = RequestMethod.POST)
 	@ResponseBody
-	public String fileUploaded(ClientVendorUploadDTO clientVendorUploadDTO,MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
+	public List<BulkClientDetails> fileUploaded(ClientVendorUploadDTO clientVendorUploadDTO,MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
 
-		String isSuccess =  "failure";
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -74,23 +74,20 @@ public class ClientImportRestController {
 			multipartFile = request.getFile(itrator.next());
 		}
 		
-		String isFileCreated = "";
+		List<BulkClientDetails> fileList = null;
 		if(multipartFile != null){
-		isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
+			fileList = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
 		}
-		if("empty".equalsIgnoreCase(isFileCreated)){
-			isSuccess = "empty";
-		}else if("invalid".equalsIgnoreCase(isFileCreated)){
-			isSuccess = "invalid";
-		}else{
-			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(clientVendorUploadDTO,orgLocation,user,org,"Y",responderType);
+		
+		if(fileList != null) {
+			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,"Y",responderType);
 			List<BulkClientDetails> filteredBulkClientDetailsList = bulkClientDetailsList.stream()
 					.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
 							&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
 					.collect(Collectors.toList());
-			return commonUtil.toJSON(filteredBulkClientDetailsList);
+			return filteredBulkClientDetailsList;
 		}
-		return isSuccess;
+		return null;
 	}
 	
 //	/deleteRecordFromBulk
