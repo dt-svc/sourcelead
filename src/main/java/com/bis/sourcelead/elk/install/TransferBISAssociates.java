@@ -75,7 +75,7 @@ public void transferAssociates() throws IOException, SQLException {
 		 Long USOrgLocation = 3L;
 		 String shortCode = null;
 		
-	     System.out.println("Adding BIS US locatino To IND Locations starts");
+	     System.out.println("----Adding BIS US locatino To IND Locations starts----");
 	     
 		 String sql1 = "SELECT * FROM sourcelead.ORG_RELATIONS orgRelations where (orgRelations.LOCATION_ID = '"+INDOrgLocation+"' and  orgRelations.RESPONDER_LOCATION_ID = '"+USOrgLocation+"'  and orgRelations.INITIATOR_TYPE = 'Vendor') "
 		 		+ " OR (orgRelations.RESPONDER_LOCATION_ID = '"+INDOrgLocation+"' and orgRelations.LOCATION_ID = '"+USOrgLocation+"'  and orgRelations.RESPONDER_TYPE = 'Client') ";
@@ -558,19 +558,18 @@ public void transferAssociates() throws IOException, SQLException {
     			}
 				 
         		 
-    			 String query5 = " insert into sourcelead.EMPLOYEE (USER_ID, ORG_LOCATIONS_ID, HIRE_DATE,  "
+    			 String query5 = " insert into sourcelead.EMPLOYEE (USER_ID, ORG_LOCATIONS_ID, "
      					+ "CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY)"
-     					+ " values (?, ?, ?, ?, ?, ?, ?)";
+     					+ " values (?, ?, ?, ?, ?, ?)";
          		
          		 try {
          			 PreparedStatement emppstmt = conn.prepareStatement(query5);
 	         			emppstmt.setLong(1, userId);
 	         			emppstmt.setLong(2,INDOrgLocation);
-	         			emppstmt.setString(3, currentDate);
+	         			emppstmt.setString(3,currentDate);
 	         			emppstmt.setString(4,currentDate);
-	         			emppstmt.setString(5,currentDate);
+	         			emppstmt.setString(5,userCode);
 	         			emppstmt.setString(6,userCode);
-	         			emppstmt.setString(7,userCode);
 	         			emppstmt.execute();	
          		}catch (Exception e){   
      				e.printStackTrace();
@@ -894,7 +893,7 @@ public void transferAssociates() throws IOException, SQLException {
 		}
 	}
 	
-	System.out.println("Adding BIS US locatino To IND Locations ends");
+	System.out.println("----Adding BIS US locatino To IND Locations ends----");
 }
 
 
