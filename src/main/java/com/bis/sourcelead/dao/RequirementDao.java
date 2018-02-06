@@ -165,4 +165,7 @@ public interface RequirementDao {
 	
 	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds)throws Exception;
 	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays,Long managerId) throws Exception;
+
+	
 }
