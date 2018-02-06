@@ -159,7 +159,10 @@ public class ProfessionalProfileController {
 		        }
 		        int percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		        candidate.setProfilePercentage(percentage);
-		        candidate.getConsultantUser().setPassword(null);
+		       if(candidate.getConsultantUser() != null){
+		    	   User user = candidate.getConsultantUser();
+			        user.setPassword(null);
+		       }
 				return candidate;
 	}
 	 
