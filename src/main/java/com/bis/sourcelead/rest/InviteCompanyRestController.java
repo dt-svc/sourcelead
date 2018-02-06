@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.dto.InviteCompanyDTO;
+import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.service.InviteCompanyService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -38,6 +39,10 @@ public class InviteCompanyRestController {
     	  String inviteCompany =  inviteCompanyService.saveInviteCompany(inviteCompanyDTO);
 	}
    
-     
+    //Schedule maintenace call
+    @RequestMapping(value = "/storeScheduleMaintenance", method = RequestMethod.POST)
+	public @ResponseBody  void storeScheduleMaintenance(ScheduleMaintenanceDTO scheduleMaintenanceDTO,HttpServletRequest request, HttpServletResponse response) throws Exception{
+    	  String scheduleMaintenance =  inviteCompanyService.storeScheduleMaintenance(scheduleMaintenanceDTO);
+	}
     
 }

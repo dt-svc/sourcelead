@@ -1858,7 +1858,7 @@ $("#searchType").selectpicker('refresh');
 				var formData = getFormData("scheduleMaintenance_form");
 				var sourceleadUrl = '${sourceleadUrl}';
 				alert(formData.scheduleMessage);
-				/* $.ajax({
+				$.ajax({
 						  type : "POST",
 						  data: formData,
 						url : sourceleadUrl+ "/storeScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}",
@@ -1871,7 +1871,7 @@ $("#searchType").selectpicker('refresh');
 		        			  companyMsgFadeinFunction();
 		        			  flushScheduleMaintenance();
 						},
-					}); */
+					}); 
 			return true;
 		} else {
 			return false;
