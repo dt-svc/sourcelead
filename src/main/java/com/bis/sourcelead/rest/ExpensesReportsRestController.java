@@ -140,7 +140,7 @@ public class ExpensesReportsRestController {
 			 if(count == 0)
 				 projectMember.setMonthsStringFormat(dateList);
 			 List<Expenses> expenses  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),convertedStartDate,convertedEndDate);
-			 List<Expenses> expensesClaimendAmount  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
+			 List<Expenses> expensesClaimendAmount  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
 			 if(expenses != null && !expenses.isEmpty()){
 			 for(Expenses exp:expenses){
 				 if(null != projectMember.getEmployee()){
@@ -148,7 +148,7 @@ public class ExpensesReportsRestController {
 							projectMember.setEmployementType(projectMember.getProjectMemberCandidteId().getDesignationType());
 						}
 						if(null != projectMember.getEmployee().getEmployeeId()){
-							projectMember.setEmployeeIdForExpenses(exp.getProjectMembers().getEmployee().getEmployeeId());
+							projectMember.setEmployeeIdForExpenses(projectMember.getEmployee().getEmployeeId());
 						}
 						if(null != projectMember.getProjectMemberCandidteId()){
 							if(null !=projectMember.getProjectMemberCandidteId().getLastName()){
