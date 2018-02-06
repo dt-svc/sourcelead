@@ -435,6 +435,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 }
 </script>
 <script>
+var sourceleadUrl = '${sourceleadUrl}';
 function importAddApplicantDoc(){
 	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form");
 	var uploadfiles = $("#uploadBtn").val();
@@ -467,6 +468,10 @@ function uploadAddApplicantCandidateDoc(){
  $(document.body).on('change', '#uploadBtn' ,function(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 if(sourceleadUrl.indexOf("/app")!=-1){
+	 	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	 }
 	 if(validate_fileupload(this.value)){
 	 var docFileSize = $('#uploadFile');
  		 var docSize = this.files[0].size;
