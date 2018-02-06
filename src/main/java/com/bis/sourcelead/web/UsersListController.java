@@ -33,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
@@ -141,7 +142,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_EXPORT_ASSOCIATE')")
 	@RequestMapping(value = "/getExportUsers")
-	public void getExportUsersData(UserDTO userDTO,HttpServletRequest request,
+	public void getExportUsersData(UserDTO userDTO,UserRoleDTO userRoleDTO,HttpServletRequest request,
 			@RequestParam(value="exportType", required=false) String exportType, HttpServletResponse response) throws Exception {
 		
 		 List<UserRole> activeList = null;
@@ -164,7 +165,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		}
  		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
  		try {
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,userRoleDTO,userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
  			if(null != rolesList){
  				for(UserRole role : rolesList.getData()){
  					role.setUserRoleName(role.getRoles().getDisplayName());
