@@ -238,7 +238,16 @@
 				            </div> 	
 				              <div class="require_wrap_details_cta"> <b>Experience Level:</b><span>${!empty requirement.experienceLevel.name ? requirement.experienceLevel.name : ' -- '}</span>
 				            	<div class="clearfix"></div> 
-				            </div> 			            
+				            </div>
+				            
+				            <c:if test="${not empty dataMapListJobs}">
+				            <c:forEach var="customJobData" items="${dataMapListJobs}">
+					             <div class="require_wrap_details_cta"> <b>${customJobData.key}:</b><span>${customJobData.value}</span>
+					            	<div class="clearfix"></div> 
+					            </div>
+				            </c:forEach> 
+				            </c:if>
+				             			            
 				            <div class="clearfix"></div> 
 			            </div> 
 
