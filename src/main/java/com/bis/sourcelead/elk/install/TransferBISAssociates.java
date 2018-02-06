@@ -149,7 +149,7 @@ public void transferAssociates() throws IOException, SQLException {
     		try {
     			 PreparedStatement pstmt2 = conn.prepareStatement(query2);
 	    		 pstmt2.setLong(1, USOrgLocation);
-	    		 pstmt2.setLong(2,5L);
+	    		 pstmt2.setLong(2,INDOrgLocation);
 	    		 pstmt2.setString(3, "Vendor");
 	    		 pstmt2.setString(4, "Client");
 	    		 pstmt2.setString(5,"Tier-5");
@@ -182,8 +182,8 @@ public void transferAssociates() throws IOException, SQLException {
         			 pstmt3.setString(4, "Accepted");
         			 pstmt3.setString(5,"Active");
         			 pstmt3.setString(6,"1");
-        			 pstmt3.setLong(7,5);
-        			 pstmt3.setLong(8,3);
+        			 pstmt3.setLong(7,INDOrgLocation);
+        			 pstmt3.setLong(8,USOrgLocation);
         			 pstmt3.setLong(9,clientUserId);
         			 pstmt3.setString(10,SourceLeadRandomCodeHelper.generateRandomUUID());
         			 pstmt3.setString(11,currentDate);
