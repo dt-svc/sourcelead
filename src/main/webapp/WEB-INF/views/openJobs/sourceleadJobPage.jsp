@@ -86,15 +86,16 @@ function getPostValueDetails(){
  
 <style>
 .footer-area {
-display: none;}
+ display: table; margin: 0 auto;
+}
 </style>
 
 <!-- Content Area -->
 <jsp:include page="../staticHeader.jsp" />	
 <section class="asMask" onclick="adSearchClose();"></section>
 
-<div class="background slide">
-	<ul class="slider">
+<div class="background background-searchjob slide">
+	<ul class="slider hidden">
 	  <li class="para" style="background-image:url(/resources/static-web/images/jobSearch.jpg);"></li>
 	  <li class="para" style="background-image:url(/resources/static-web/images/jobSearch.jpg);"></li>
 	</ul> 
