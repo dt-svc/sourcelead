@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InviteCompanyDao;
 import com.bis.sourcelead.dto.InviteCompanyDTO;
+import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.InviteCompany;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ScheduleMaintenance;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InviteCompanyService;
@@ -170,6 +173,15 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 				tempHTML.append("</body>");
 				tempHTML.append("</html>");
 		return tempHTML;
+	}
+
+	@Override
+	public void storeScheduleMaintenance(ScheduleMaintenanceDTO scheduleMaintenanceDTO) {
+		ScheduleMaintenance maintenance = new ScheduleMaintenance();
+		maintenance.setScheduleMessage(scheduleMaintenanceDTO.getScheduleMessage());
+		maintenance.setScheduleDate(scheduleMaintenanceDTO.getScheduleDate());
+		maintenance.setCreatedDate(new Date());
+		inviteCompanyDao.storeScheduleMaintenance(maintenance);
 	}
 	
 }

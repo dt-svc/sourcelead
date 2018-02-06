@@ -41,8 +41,8 @@ public class InviteCompanyRestController {
    
     //Schedule maintenace call
     @RequestMapping(value = "/storeScheduleMaintenance", method = RequestMethod.POST)
-	public @ResponseBody  void storeScheduleMaintenance(ScheduleMaintenanceDTO scheduleMaintenanceDTO,HttpServletRequest request, HttpServletResponse response) throws Exception{
-    	  String scheduleMaintenance =  inviteCompanyService.storeScheduleMaintenance(scheduleMaintenanceDTO);
+	public @ResponseBody void storeScheduleMaintenance(ScheduleMaintenanceDTO scheduleMaintenanceDTO,HttpServletRequest request, HttpServletResponse response) throws Exception{
+    	  inviteCompanyService.storeScheduleMaintenance(scheduleMaintenanceDTO);
 	}
     
 }

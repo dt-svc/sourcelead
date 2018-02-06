@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.InviteCompanyDao;
 import com.bis.sourcelead.entity.InviteCompany;
+import com.bis.sourcelead.entity.ScheduleMaintenance;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -53,5 +54,25 @@ public class InviteCompanyDaoImpl implements InviteCompanyDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return inviteCompany;
+	}
+
+	@Override
+	@Transactional
+	public void storeScheduleMaintenance(ScheduleMaintenance maintenance) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (maintenance != null) {
+				session.saveOrUpdate(maintenance);
+			}
+			logger.debug("Saving Schedule Maintenance");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"Schedule Maintenance"));
+				try {
+					throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+				} catch (SourceLeadConstraintViolationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 }

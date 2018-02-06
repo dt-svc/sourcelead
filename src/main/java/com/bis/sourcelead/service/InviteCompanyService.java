@@ -10,6 +10,6 @@ public interface InviteCompanyService {
 	
 	String  saveInviteCompany(InviteCompanyDTO inviteCompanyDTO) throws Exception;
 
-	String storeScheduleMaintenance(ScheduleMaintenanceDTO scheduleMaintenanceDTO);
+	void storeScheduleMaintenance(ScheduleMaintenanceDTO scheduleMaintenanceDTO);
 	
 }
