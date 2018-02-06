@@ -3768,5 +3768,10 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 	
 	}
+
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays, Long managerId) throws Exception {
+		return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(orgLocationId, userType, userId, userCode, numberOfDays, managerId);
+	}
 	
 }

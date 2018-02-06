@@ -1084,4 +1084,11 @@ public  class CalendarUtil {
     }
     return result;
 }
+ 
+ public static long getNumberOfDaysCount(Date date1, Date date2){
+		long diff = date2.getTime() - date1.getTime();
+		long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)+1;
+		return numberofDays;
+
+	}
 }
