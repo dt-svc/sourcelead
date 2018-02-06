@@ -1838,7 +1838,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setCountry(candidate.getCountry());
 							vendorCandidate.setOrgLocationId(orgLocations);
 							vendorCandidate.setIsAssociate(Constants.YES);
-							vendorCandidate.setDesignationType("Full Time");
+							vendorCandidate.setDesignationType("C2C");
 							
 							if(associateDTO.getBillRate() != null){
 								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
@@ -1884,6 +1884,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					employee.setUser(candidate.getConsultantUser());
 	    					employee.setOrgLocations(orgLocations);
 	    					employee.setCreatedBy(user.getUserCode());
+	    					employee.setHireDate(new Date());
 	    					
 	    					if(associateDTO.getBillRate() != null){
 	    						employee.setRate(associateDTO.getBillRate().toString());

@@ -9,13 +9,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -30,6 +34,7 @@ import com.bis.sourcelead.beans.BisAssociatesEmails;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -66,10 +71,12 @@ public void transferAssociates() throws IOException, SQLException {
 		 Date date = new Date();
  	     String currentDate = formatter1.format(date);
 		
-		Long INDOrgLocation = 2286L;
-		Long USOrgLocation = 2301L;
+		 Long INDOrgLocation = 5L;
+		 Long USOrgLocation = 3L;
+		 String shortCode = null;
 		
-	      
+	     System.out.println("Adding BIS US locatino To IND Locations starts");
+	     
 		 String sql1 = "SELECT * FROM sourcelead.ORG_RELATIONS orgRelations where (orgRelations.LOCATION_ID = '"+INDOrgLocation+"' and  orgRelations.RESPONDER_LOCATION_ID = '"+USOrgLocation+"'  and orgRelations.INITIATOR_TYPE = 'Vendor') "
 		 		+ " OR (orgRelations.RESPONDER_LOCATION_ID = '"+INDOrgLocation+"' and orgRelations.LOCATION_ID = '"+USOrgLocation+"'  and orgRelations.RESPONDER_TYPE = 'Client') ";
 		 stmt1 = conn.createStatement();
@@ -77,6 +84,7 @@ public void transferAssociates() throws IOException, SQLException {
 		 Long orgRelationId = null; 
 		 Long spocId = null;
 		 String userCode = null;
+		 Long userId = null;
 		 
 		if(rs1.next()) {
 			 orgRelationId = rs1.getLong("ID");
@@ -92,7 +100,8 @@ public void transferAssociates() throws IOException, SQLException {
 			 ResultSet rs14 = stmt14.executeQuery(sql14);
 			
 			 if(rs14.next()) {
-				Long userId = rs14.getLong("PRIMARY_CONTACT_USER_ID");
+				 shortCode = rs14.getString("GENERATED_USER_ID");
+				 userId = rs14.getLong("PRIMARY_CONTACT_USER_ID");
 				 String sql3 = "SELECT * FROM sourcelead.USER  user where  user.ID = '"+userId+"' ";
 				 Statement stmt16 = conn.createStatement();
 				 ResultSet rs15 = stmt16.executeQuery(sql3);
@@ -104,8 +113,8 @@ public void transferAssociates() throws IOException, SQLException {
 				 
 		}else {
 			
-			 Long userId = null;
-			 Long clientUserId = null;
+			 userId = null;
+			 Long clientUserId = 289L;
 			 
 			 String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+INDOrgLocation+"' ";
 			 Statement stmt2 = conn.createStatement();
@@ -113,6 +122,7 @@ public void transferAssociates() throws IOException, SQLException {
 			
 			 
 			 if(rs2.next()) {
+				 shortCode = rs2.getString("GENERATED_USER_ID");
 				 userId = rs2.getLong("PRIMARY_CONTACT_USER_ID");
 				 String sql3 = "SELECT * FROM sourcelead.USER  user where  user.ID = '"+userId+"' ";
 				 Statement stmt3 = conn.createStatement();
@@ -124,12 +134,12 @@ public void transferAssociates() throws IOException, SQLException {
 			 }
 			 
 			 
-			 String sql3 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+USOrgLocation+"' ";
+			/* String sql3 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+USOrgLocation+"' ";
 			 Statement stmt4 = conn.createStatement();
 			 ResultSet rs3 = stmt4.executeQuery(sql3);
 			 if(rs3.next()) {
 				 clientUserId = rs3.getLong("PRIMARY_CONTACT_USER_ID");
-			 }
+			 }*/
 			 
 			
 			String query2 = " insert into sourcelead.ORG_RELATIONS (RESPONDER_LOCATION_ID, LOCATION_ID, INITIATOR_TYPE, RESPONDER_TYPE, INITIATOR_LEVEL,  "
@@ -139,7 +149,7 @@ public void transferAssociates() throws IOException, SQLException {
     		try {
     			 PreparedStatement pstmt2 = conn.prepareStatement(query2);
 	    		 pstmt2.setLong(1, USOrgLocation);
-	    		 pstmt2.setLong(2,2286L);
+	    		 pstmt2.setLong(2,5L);
 	    		 pstmt2.setString(3, "Vendor");
 	    		 pstmt2.setString(4, "Client");
 	    		 pstmt2.setString(5,"Tier-5");
@@ -172,9 +182,9 @@ public void transferAssociates() throws IOException, SQLException {
         			 pstmt3.setString(4, "Accepted");
         			 pstmt3.setString(5,"Active");
         			 pstmt3.setString(6,"1");
-        			 pstmt3.setLong(7,2286);
-        			 pstmt3.setLong(8,2301);
-        			 pstmt3.setLong(9,3839);
+        			 pstmt3.setLong(7,5);
+        			 pstmt3.setLong(8,3);
+        			 pstmt3.setLong(9,clientUserId);
         			 pstmt3.setString(10,SourceLeadRandomCodeHelper.generateRandomUUID());
         			 pstmt3.setString(11,currentDate);
         			 pstmt3.setString(12,currentDate);
@@ -336,19 +346,8 @@ public void transferAssociates() throws IOException, SQLException {
 										ResultSet rs10 = stmt9.executeQuery(sql9);
 										if(rs10 != null){
 											 while(rs10.next()){
-												   Long responderorgId = rs10.getLong("ORG_ID");
-												   String sql10 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+responderorgId+"' ";
-													Statement stmt10 = conn.createStatement();
-													ResultSet rs11 = stmt10.executeQuery(sql10);
-													if(rs11 != null){
-														 while(rs11.next()){
-															   if(null != rs11.getString("ORG_NAME")){
-																   clientVendorContactsIndex.setClientOrgName(rs11.getString("ORG_NAME"));
-																   clientVendorContactsIndex.setOrgName(rs11.getString("ORG_NAME"));
-
-															   }
-													    }
-								    	           }
+												 clientVendorContactsIndex.setClientOrgName(rs10.getString("ORG_NAME"));
+												 clientVendorContactsIndex.setOrgName(rs10.getString("ORG_NAME"));
 										    }
 					    	           }
 										
@@ -469,14 +468,22 @@ public void transferAssociates() throws IOException, SQLException {
 		for (String associateEmail : emailsList) {
 			
 			
-			 String countcandidateSql = "SELECT count(*) FROM sourcelead.CANDIDATE candidate where  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+			 String existedcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+			 Statement existedcandidateStmt = conn.createStatement();
+			 ResultSet existedcandidateRs = existedcandidateStmt.executeQuery(existedcandidateSql);
+			 
+			 
+			if(!existedcandidateRs.next()) {
+				
+			 String countcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
 			 Statement countCandidateStmt = conn.createStatement();
 			 ResultSet countCandidateRs = countCandidateStmt.executeQuery(countcandidateSql);
-			if(countCandidateRs.next()) {
-				System.out.println(countCandidateRs.getRow());
-			}
+			 Integer canndidateCount = 0;
 			 
-			
+			 while(countCandidateRs.next()) {
+				 canndidateCount = canndidateCount+1;
+			 }
+				
 			 String candidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+USOrgLocation+"' ";
 			 Statement candidateStmt = conn.createStatement();
 			 ResultSet candidateRs = candidateStmt.executeQuery(candidateSql);
@@ -495,8 +502,8 @@ public void transferAssociates() throws IOException, SQLException {
 				 
 				 
 				 String query3 = " insert into sourcelead.CANDIDATE (MASTER_CANDIDATE_ID, CONSULTANT_USER_ID, FIRST_NAME, LAST_NAME, EMAIL,  "
-    					+ "COUNTRY,STATUS,CANDIDATE_UUID,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY,ORG_LOCATION_ID,CANDIDATE_TYPE,DESIGNATION_TYPE)"
-    					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    					+ "COUNTRY,STATUS,CANDIDATE_UUID,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY,ORG_LOCATION_ID,CANDIDATE_TYPE,DESIGNATION_TYPE,IS_ASSOCIATE,GENERATED_ID)"
+    					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         		
         		 try {
         			 PreparedStatement candpstmt = conn.prepareStatement(query3);
@@ -515,28 +522,361 @@ public void transferAssociates() throws IOException, SQLException {
         			 candpstmt.setLong(13, INDOrgLocation);
         			 candpstmt.setString(14, "Candidate");
         			 candpstmt.setString(15, "Full Time");
-        			candpstmt.execute();	
+        			 candpstmt.setString(16, "Y");
+        			 candpstmt.setString(17, shortCode+canndidateCount);
+        			 candpstmt.execute();	
+    	    		 
+        		}catch (Exception e){   
+    				e.printStackTrace();
+    			}
+        		 
+        		 
+        		 
+        		 
+				 String query4 = " insert into sourcelead.USER_ROLE (USER_ID, REPORTING_MANAGER_ID, ROLE_ID, ORG_LOCATIONS_ID, IS_PRIMARY,  "
+    					+ "USER_STATE,USER_TYPE,IS_MAIL_SENT,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY)"
+    					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        		
+        		 try {
+        			 PreparedStatement rolepstmt = conn.prepareStatement(query4);
+        			 rolepstmt.setLong(1, candidateUserId);
+        			 rolepstmt.setLong(2,userId);
+        			 rolepstmt.setLong(3, 11);
+        			 rolepstmt.setLong(4, INDOrgLocation);
+        			 rolepstmt.setString(5,"0");
+        			 rolepstmt.setString(6,"NOT_LOGGEDIN");
+        			 rolepstmt.setString(7,"Employee");
+        			 rolepstmt.setString(8,"Y");
+        			 rolepstmt.setString(9,currentDate);
+        			 rolepstmt.setString(10,currentDate);
+        			 rolepstmt.setString(11,userCode);
+        			 rolepstmt.setString(12,userCode);
+        			 rolepstmt.execute();	
     	    		 
         		}catch (Exception e){   
     				e.printStackTrace();
     			}
 				 
+        		 
+    			 String query5 = " insert into sourcelead.EMPLOYEE (USER_ID, ORG_LOCATIONS_ID, HIRE_DATE,  "
+     					+ "CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY)"
+     					+ " values (?, ?, ?, ?, ?, ?, ?)";
+         		
+         		 try {
+         			 PreparedStatement emppstmt = conn.prepareStatement(query5);
+	         			emppstmt.setLong(1, userId);
+	         			emppstmt.setLong(2,INDOrgLocation);
+	         			emppstmt.setString(3, currentDate);
+	         			emppstmt.setString(4,currentDate);
+	         			emppstmt.setString(5,currentDate);
+	         			emppstmt.setString(6,userCode);
+	         			emppstmt.setString(7,userCode);
+	         			emppstmt.execute();	
+         		}catch (Exception e){   
+     				e.printStackTrace();
+     			}
 				 
-			 }
+			  }
 			 
 			 
+			 try {
+				 String vendorcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+				 Statement vendorCandidateStmt = conn.createStatement();
+				 ResultSet vendorCandidateRs = vendorCandidateStmt.executeQuery(vendorcandidateSql);
+				 
+				 if(vendorCandidateRs.next()) {
+					 
+				    	CandidateIndex candidateIndex = new CandidateIndex();
+				    	candidateIndex.setCandidateId(vendorCandidateRs.getLong("ID"));
+				    	candidateIndex.setOrgLocationId(vendorCandidateRs.getLong("ORG_LOCATION_ID"));
+						candidateIndex.setFirstName(vendorCandidateRs.getString("FIRST_NAME"));
+						candidateIndex.setLastName(vendorCandidateRs.getString("LAST_NAME"));
+						
+						if(!isNullOrEmpty(vendorCandidateRs.getString("LAST_NAME"))){
+							candidateIndex.setFullName(vendorCandidateRs.getString("FIRST_NAME")+" "+vendorCandidateRs.getString("LAST_NAME"));
+						}else {
+							candidateIndex.setFullName(vendorCandidateRs.getString("FIRST_NAME"));
+						}
+						
+						candidateIndex.setEmail(vendorCandidateRs.getString("EMAIL"));
+						candidateIndex.setAlternateEmail(vendorCandidateRs.getString("ALTERNATE_EMAIL"));
+						candidateIndex.setMobilePhone(vendorCandidateRs.getString("MOBILE_PHONE"));
+						candidateIndex.setAlternateMobilePhone(vendorCandidateRs.getString("ALTERNATE_MOBILE_PHONE"));
+						candidateIndex.setCountry(vendorCandidateRs.getString("COUNTRY"));
+						candidateIndex.setState(vendorCandidateRs.getString("STATE"));
+						candidateIndex.setCity(vendorCandidateRs.getString("CITY"));
+						candidateIndex.setAddress(vendorCandidateRs.getString("ADDRESS"));
+						candidateIndex.setSummary(vendorCandidateRs.getString("SUMMARY"));
+						candidateIndex.setCandidateType(vendorCandidateRs.getString("CANDIDATE_TYPE"));
+						candidateIndex.setCandidateUUID(vendorCandidateRs.getString("CANDIDATE_UUID"));
+						candidateIndex.setLocation(vendorCandidateRs.getString("LOCATION"));
+						candidateIndex.setZipCode(vendorCandidateRs.getString("ZIPCODE"));
+						candidateIndex.setLatitude(vendorCandidateRs.getString("LATITUDE"));
+						candidateIndex.setLongitude(vendorCandidateRs.getString("LONGITUDE"));
+						
+						candidateIndex.setGeneratedId(vendorCandidateRs.getString("GENERATED_ID"));
+						candidateIndex.setMasterCandidateId(vendorCandidateRs.getLong("MASTER_CANDIDATE_ID"));
+						candidateIndex.setUserId(vendorCandidateRs.getLong("CONSULTANT_USER_ID"));
+						candidateIndex.setRecruiterUserId(0L);
+						candidateIndex.setTeamId(0L);
+						candidateIndex.setIsFavourite(0);
+						candidateIndex.setIsFavouriteAssociate(0);
+						candidateIndex.setIsAssociate(Constants.YES);
+						
+						 candidateIndex.setOrgRelationId(vendorCandidateRs.getLong("ORG_RELATION_ID"));
+						 candidateIndex.setSpocId(vendorCandidateRs.getLong("SPOC_ID"));
+						
+						if(!isNullOrEmpty(vendorCandidateRs.getString("DESIGNATION"))) {
+							candidateIndex.setDesignation(vendorCandidateRs.getString("DESIGNATION"));
+						}
+						
+						if(!isNullOrEmpty(vendorCandidateRs.getString("DESIGNATION_TYPE"))) {
+							candidateIndex.setDesignationType(vendorCandidateRs.getString("DESIGNATION_TYPE"));
+						}
+						
+						candidateIndex.setStatus(vendorCandidateRs.getInt("STATUS"));
+						 	
+						Timestamp createdDateTimestamp = vendorCandidateRs.getTimestamp("CREATED_DATE");
+					    if (createdDateTimestamp != null){
+					    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+							candidateIndex.setCreatedDate(df.format(new java.util.Date(createdDateTimestamp.getTime())));
+					    }
+					    candidateIndex.setCreatedBy(vendorCandidateRs.getString("CREATED_BY"));   
+						Timestamp updatedDateTimestamp = vendorCandidateRs.getTimestamp("UPDATED_DATE");
+						if (updatedDateTimestamp != null){
+							DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+							candidateIndex.setUpdatedDate(df.format(new java.util.Date(updatedDateTimestamp.getTime())));
+					    }
+						
+						if(StringUtils.isNotEmpty(vendorCandidateRs.getString("IS_PROFILE_PUBLIC"))){
+							candidateIndex.setIsProfilePublic(vendorCandidateRs.getString("IS_PROFILE_PUBLIC"));
+						}
+						
+						
+						candidateIndex.setUpdatedBy(vendorCandidateRs.getString("UPDATED_BY"));
+						
+						saveOrUpdateCandidateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
+					   
+					    vendorCandidateId = vendorCandidateRs.getLong("ID");
+					
+				 }
+				 
+				 
+				 try {
+					 String designationType = "C2C";
+					 String clientCandidateQry = " update sourcelead.CANDIDATE candidate set candidate.PARENT_CANDIDATE_ID = '"+vendorCandidateId+"', candidate.DESIGNATION_TYPE = '"+designationType+"', candidate.ORG_RELATION_ID = '"+orgRelationId+"', candidate.SPOC_ID = '"+spocId+"' where candidate.ID = '"+candidateId+"' ";
+			    	 java.sql.PreparedStatement clientCandidatePstmt = conn.prepareStatement(clientCandidateQry); 
+			    	 clientCandidatePstmt.executeUpdate(); 
+			    	 
+			    	 String clientcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+USOrgLocation+"' ";
+					 Statement clientCandidateStmt = conn.createStatement();
+					 ResultSet clientCandidateRs = clientCandidateStmt.executeQuery(clientcandidateSql);
+					 
+					 if(clientCandidateRs.next()) {
 
-			 String vendorcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
-			 Statement vendorCandidateStmt = conn.createStatement();
-			 ResultSet vendorCandidateRs = vendorCandidateStmt.executeQuery(vendorcandidateSql);
+					    	CandidateIndex candidateIndex = new CandidateIndex();
+					    	
+					    	candidateIndex.setCandidateId(clientCandidateRs.getLong("ID"));
+					    	candidateIndex.setOrgLocationId(clientCandidateRs.getLong("ORG_LOCATION_ID"));
+							candidateIndex.setFirstName(clientCandidateRs.getString("FIRST_NAME"));
+							candidateIndex.setLastName(clientCandidateRs.getString("LAST_NAME"));
+							
+							if(!isNullOrEmpty(clientCandidateRs.getString("LAST_NAME"))){
+								candidateIndex.setFullName(clientCandidateRs.getString("FIRST_NAME")+" "+clientCandidateRs.getString("LAST_NAME"));
+							}else {
+								candidateIndex.setFullName(clientCandidateRs.getString("FIRST_NAME"));
+							}
+							
+							candidateIndex.setEmail(clientCandidateRs.getString("EMAIL"));
+							candidateIndex.setAlternateEmail(clientCandidateRs.getString("ALTERNATE_EMAIL"));
+							candidateIndex.setMobilePhone(clientCandidateRs.getString("MOBILE_PHONE"));
+							candidateIndex.setAlternateMobilePhone(clientCandidateRs.getString("ALTERNATE_MOBILE_PHONE"));
+							candidateIndex.setCountry(clientCandidateRs.getString("COUNTRY"));
+							candidateIndex.setState(clientCandidateRs.getString("STATE"));
+							candidateIndex.setCity(clientCandidateRs.getString("CITY"));
+							candidateIndex.setAddress(clientCandidateRs.getString("ADDRESS"));
+							candidateIndex.setSummary(clientCandidateRs.getString("SUMMARY"));
+							candidateIndex.setCandidateType(clientCandidateRs.getString("CANDIDATE_TYPE"));
+							candidateIndex.setCandidateUUID(clientCandidateRs.getString("CANDIDATE_UUID"));
+							candidateIndex.setLocation(clientCandidateRs.getString("LOCATION"));
+							candidateIndex.setZipCode(clientCandidateRs.getString("ZIPCODE"));
+							candidateIndex.setLatitude(clientCandidateRs.getString("LATITUDE"));
+							candidateIndex.setLongitude(clientCandidateRs.getString("LONGITUDE"));
+							
+							candidateIndex.setGeneratedId(clientCandidateRs.getString("GENERATED_ID"));
+							
+							if(!isNullOrEmpty(clientCandidateRs.getLong("MASTER_CANDIDATE_ID"))){
+								candidateIndex.setMasterCandidateId(clientCandidateRs.getLong("MASTER_CANDIDATE_ID"));
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getLong("CONSULTANT_USER_ID"))){
+								candidateIndex.setUserId(clientCandidateRs.getLong("CONSULTANT_USER_ID"));
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getLong("RECRUITER_USER_ID"))){
+								candidateIndex.setRecruiterUserId(clientCandidateRs.getLong("RECRUITER_USER_ID"));
+							}else{
+								candidateIndex.setRecruiterUserId(0L);
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getString("TEAM_ID"))){
+								candidateIndex.setTeamId(clientCandidateRs.getLong("TEAM_ID"));
+							}else{
+								candidateIndex.setTeamId(0L);
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getString("IS_FAVOURITE"))){
+							candidateIndex.setIsFavourite(clientCandidateRs.getInt("IS_FAVOURITE"));
+							}else{
+								candidateIndex.setIsFavourite(0);
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getString("IS_FAVOURITE_ASSOCIATE"))){
+							    candidateIndex.setIsFavouriteAssociate(clientCandidateRs.getInt("IS_FAVOURITE_ASSOCIATE"));
+							}else{
+								candidateIndex.setIsFavouriteAssociate(0);
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getString("IS_ASSOCIATE"))){
+							    candidateIndex.setIsAssociate(clientCandidateRs.getString("IS_ASSOCIATE"));
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getLong("ORG_RELATION_ID"))){
+							    candidateIndex.setOrgRelationId(clientCandidateRs.getLong("ORG_RELATION_ID"));
+							}
+							
+							if(!isNullOrEmpty(clientCandidateRs.getLong("SPOC_ID"))){
+							    candidateIndex.setSpocId(clientCandidateRs.getLong("SPOC_ID"));
+							}
+							
+							
+							if(StringUtils.isNotEmpty(clientCandidateRs.getString("EXPERIENCE_YEARS"))){
+								if(clientCandidateRs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
+									candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
+								}
+								else{
+									candidateIndex.setExperienceYears(Integer.parseInt(clientCandidateRs.getString("EXPERIENCE_YEARS")));
+								}
+							}
+							
+							if(StringUtils.isNotEmpty(clientCandidateRs.getString("EXPERIENCE_MONTHS"))){
+								candidateIndex.setExperienceMonths(Integer.parseInt(clientCandidateRs.getString("EXPERIENCE_MONTHS")));
+							}
+							candidateIndex.setDesignation(clientCandidateRs.getString("DESIGNATION"));
+							candidateIndex.setDesignationType(clientCandidateRs.getString("DESIGNATION_TYPE"));
+							candidateIndex.setNoticePriod(clientCandidateRs.getString("NOTICE_PERIOD"));
+							candidateIndex.setCurrentRateType(clientCandidateRs.getString("CURRENT_RATE_TYPE"));
+							candidateIndex.setCurrentRateCurrency(clientCandidateRs.getString("CURRENT_RATE_CURRENCY"));
+							
+							if(StringUtils.isNotEmpty(clientCandidateRs.getString("CURRENT_RATE"))){
+								candidateIndex.setCurrentRate(clientCandidateRs.getString("CURRENT_RATE"));
+							}
+							
+							if(NumberUtils.isParsable(clientCandidateRs.getString("EXPECTED_RATE"))){
+								candidateIndex.setExpectedRate(Float.parseFloat(clientCandidateRs.getString("EXPECTED_RATE")));
+							}
+							candidateIndex.setRateType(clientCandidateRs.getString("RATE_TYPE"));
+							candidateIndex.setExpectedRateCurrencey(clientCandidateRs.getString("EXPECTED_RATE_CURRENCY"));
+							candidateIndex.setInvitationstatus(clientCandidateRs.getString("INVITATION_STATUS"));
+							candidateIndex.setStatus(clientCandidateRs.getInt("STATUS"));
+							candidateIndex.setTerminateReason(clientCandidateRs.getString("TERMINATE_REASON"));
+							 	
+							candidateIndex.setSkillsName(clientCandidateRs.getString("SKILLS_NAME"));
+							if(clientCandidateRs.getString("VISA_TYPE") !=null){
+								candidateIndex.setVisaType(clientCandidateRs.getString("VISA_TYPE").split(","));
+							}
+
+							Timestamp createdDateTimestamp = clientCandidateRs.getTimestamp("CREATED_DATE");
+						    if (createdDateTimestamp != null){
+						    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+								candidateIndex.setCreatedDate(df.format(new java.util.Date(createdDateTimestamp.getTime())));
+						    }
+						    candidateIndex.setCreatedBy(clientCandidateRs.getString("CREATED_BY"));   
+							Timestamp updatedDateTimestamp = clientCandidateRs.getTimestamp("UPDATED_DATE");
+							if (updatedDateTimestamp != null){
+								DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+								candidateIndex.setUpdatedDate(df.format(new java.util.Date(updatedDateTimestamp.getTime())));
+						    }
+							
+							if(StringUtils.isNotEmpty(clientCandidateRs.getString("IS_PROFILE_PUBLIC"))){
+								candidateIndex.setIsProfilePublic(clientCandidateRs.getString("IS_PROFILE_PUBLIC"));
+							}
+							
+							
+							candidateIndex.setUpdatedBy(clientCandidateRs.getString("UPDATED_BY"));
+						    
+						    Long clientcandidateId = clientCandidateRs.getLong("ID");
+				    	    if(clientcandidateId != null && clientcandidateId != 0){
+									
+								    String sql2 = "SELECT * FROM sourcelead.CANDIDATE_EMPLOYERS candidateEmployers where candidateEmployers.CANDIDATE_ID = '"+ clientcandidateId+"' ";
+									Statement stmt2 = conn.createStatement();
+									ResultSet rs2 = stmt2.executeQuery(sql2);
+									if(rs2 != null){
+										ArrayList<String> employerList = new ArrayList<>();
+										 while(rs2.next()){
+											 employerList.add(rs2.getString("NAME"));
+									    }
+									    if(null != employerList && !employerList.isEmpty()){
+											candidateIndex.setEmployer(employerList);
+										}
+				    	           }
+									
+								   String sql3= "SELECT * FROM sourcelead.CANDIDATE_EDUCATION candidateEducation where candidateEducation.CANDIDATE_ID = '"+ clientcandidateId+"' ";
+								   Statement stmt3 = conn.createStatement();
+									ResultSet rs3 = stmt3.executeQuery(sql3);
+									if(rs3 != null){
+										ArrayList<String> educationList = new ArrayList<>();
+										 while(rs3.next()){
+											 educationList.add(rs3.getString("NAME"));
+									    }
+									    if(null != educationList && !educationList.isEmpty()){
+											candidateIndex.setEducation(educationList);
+										}
+				    	           }
+									
+								   String sql5= "SELECT * FROM sourcelead.CANDIDATE_CERTIFICATIONS candidateCertifications where candidateCertifications.CANDIDATE_ID = '"+ clientcandidateId+"' ";
+								   Statement stmt5 = conn.createStatement();
+									ResultSet rs5 = stmt5.executeQuery(sql5);
+									if(rs5 != null){
+										ArrayList<String> certList = new ArrayList<>();
+										 while(rs5.next()){
+											 certList.add(rs5.getString("NAME"));
+									    }
+									    if(null != certList && !certList.isEmpty()){
+											candidateIndex.setCertifications(certList);
+										}
+				    	           }
+										
+								   String sql4= "SELECT * FROM sourcelead.CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ clientcandidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM sourcelead.CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
+								   Statement stmt4 = conn.createStatement();
+									ResultSet rs4 = stmt4.executeQuery(sql4);
+									if(rs4 != null){
+										 while(rs4.next()){
+											 candidateIndex.setCurrentResumeId(rs4.getLong("ID"));
+											 candidateIndex.setCurrentResumeName(rs4.getString("FILE_NAME"));
+											 candidateIndex.setResumeContent("");
+											 candidateIndex.setFileUrl(rs4.getString("FILE_URL"));
+											 candidateIndex.setFileContentType(rs4.getString("FILE_CONTENT_TYPE"));
+											 candidateIndex.setResumeName(rs4.getString("FILE_NAME"));
+									    }
+				    	           }
+				    	    }
+				    	    
+				    	    deleteElkDocument(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidateIndex.getCandidateId().toString());
+				    	    saveOrUpdateCandidateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
+						 
+					 }
+			    	 
+			    	 
+				 }catch (Exception e) {
+					 e.printStackTrace();
+				}
+				 
+			 }catch (Exception e) {
+				 e.printStackTrace();
+			  }
 			 
-			 if(vendorCandidateRs.next()) {
-				 vendorCandidateId = vendorCandidateRs.getLong("ID");
-			 }
-			 
-			 String clientCandidateQry = " update sourcelead.CANDIDATE set PARENT_CANDIDATE_ID = '"+vendorCandidateId+"' and ORG_RELATION_ID = '"+orgRelationId+"' and SPOC_ID = '"+spocId+"' where ID = '"+candidateId+"' ";
-	    	 java.sql.PreparedStatement clientCandidatePstmt = conn.prepareStatement(clientCandidateQry); 
-	    	 clientCandidatePstmt.executeUpdate(); 
+		}
 			 
 		}
 			
@@ -553,8 +893,46 @@ public void transferAssociates() throws IOException, SQLException {
 			e.printStackTrace();
 		}
 	}
+	
+	System.out.println("Adding BIS US locatino To IND Locations ends");
 }
 
+
+public void deleteElkDocument(String index, String type, String id) {
+	try {
+		client.prepareDelete(index, type, id).execute().actionGet();
+		// sourceleadELKTransportClient.shutdown();
+		logger.info(index + " Document With id :" + id + " has been deleted.");
+	} catch (Exception e) {
+		logger.error(index + " Document With id :" + id + " deletion fails " + ExceptionUtils.getFullStackTrace(e));
+	}
+
+}
+
+
+public void saveOrUpdateCandidateElkDocument(CandidateIndex candidateIndex,String index,String type,String id) {
+	String entityInJson = null;
+	try {
+	    entityInJson = toJSON(candidateIndex);
+	    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+	    logger.info(type+" has been updated.");
+	} 
+    catch(DocumentMissingException e){
+    	client.prepareIndex(index, type,id)
+	    .setSource(entityInJson).execute().actionGet();
+	    logger.info(type+" has been indexed.");
+	}
+	catch (Exception e) {
+		logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
+	}
+	
+ }
+
+
+private boolean isNullOrEmpty(long long1) {
+	// TODO Auto-generated method stub
+	return false;
+}
 
 public void saveOrUpdateElkclientVendorIndexDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
 	String entityInJson = null;
