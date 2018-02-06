@@ -1906,7 +1906,7 @@ function hideCommonSOWFields(){
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
 	         success :function(data) {
-		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		              if(data != null && data != 'undefined' && data != "" && data != '[]' && data != '{}'){
 		            	  var json = JSON.parse(data);
 		            	  document.getElementById("offerRateDiv").style.display="block";
 		            	  if(sowType!="Full time offer"){
