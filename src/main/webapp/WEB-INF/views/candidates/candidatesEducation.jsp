@@ -298,11 +298,12 @@ function addEducation(candidateId) {
 	result  = result + '					<div class="clearDate" onClick="clearCandidateEduEndDate();"></div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result  = result + '                   </div>';
+	result  = result + '                   </div>';
 
 	result = result  +'                                                                                                                                                       ';
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative">';
-	result = result  +'	                     <select class="newSelect"  name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <select class="newSelect valid"  name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';

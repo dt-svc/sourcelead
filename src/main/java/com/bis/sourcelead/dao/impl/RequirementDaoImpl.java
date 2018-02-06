@@ -1695,7 +1695,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 		
 		if(requirementDTO.getJobCampaignType().equalsIgnoreCase("openJobs")){
-			String query = "from Requirement requirement  where requirement.orgLocationId.id =:orglocationId and requirement.requirementSubmissionStatus = 'OPEN' ";
+			String query = "from Requirement requirement  where requirement.orgLocationId.id =:orglocationId and requirement.requirementSubmissionStatus = 'OPEN' or  requirement.requirementSubmissionStatus = 'NEW'";
 			 
 				if(query1.toString() != null && !query1.toString().isEmpty()){
 					 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
