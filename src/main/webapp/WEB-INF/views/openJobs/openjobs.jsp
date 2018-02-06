@@ -79,7 +79,7 @@
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script>
 
-
+ <title>.:: Jobs ::.</title>
  <style>
  .navbar-default {
  background: #fff !important; border-bottom: 1px solid #ededed !important;
@@ -913,7 +913,7 @@ top: 21px;height: 32px; line-height: 18px;
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>© 2018 SourceLead. All rights reserved.</b> <span> <a
+            <b>ï¿½ 2018 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
