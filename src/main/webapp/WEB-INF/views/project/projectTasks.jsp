@@ -211,7 +211,7 @@ function projectTaskPaginations(url){
         }),
         "columns": [
             { "data": "taskName" },
-            { "data": "taskstype"},
+            { "data": "taskType"},
             { "data": "priority"},
             { "data": "assignedTo" },
             { "data": "projectTaskStatus" },
@@ -232,7 +232,8 @@ function projectTaskPaginations(url){
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "taskstype",
+              "data": "taskType",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  result = result	+ '<td><div class="tbldata-dotdot_80" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
@@ -255,6 +256,7 @@ function projectTaskPaginations(url){
           }, {
               "targets": colIndex++,
               "data": "assignedTo",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
 						taskAssignedUsers = opt.taskAssignedUsers;
@@ -268,6 +270,7 @@ function projectTaskPaginations(url){
             }, {
                 "targets": colIndex++,
                 "data": "projectTaskStatus",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 	if(opt.taskStaus != null && opt.taskStaus != "" && opt.taskStaus !="undefined"){
 						taskStaus = opt.taskStaus;
@@ -281,6 +284,7 @@ function projectTaskPaginations(url){
           },{
               "targets": colIndex++,
               "data": "projectTaskActin",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
                
               	var result = "";
@@ -292,7 +296,7 @@ function projectTaskPaginations(url){
         }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+// 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

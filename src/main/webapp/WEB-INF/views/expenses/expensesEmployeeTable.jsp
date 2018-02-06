@@ -181,7 +181,7 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	        			  clientName = "--";
 	        		  }
 	    	  		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-	    	  		  result = result +'<td><div title="+clientName+"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+clientName+'"> '+clientName+' </a></div></td>';
+	    	  		  result = result +'<td><div title=""><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+clientName+'"> '+clientName+' </a></div></td>';
 	    	  		 '</sec:authorize>';
 	    	  		 
 	    	  		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';

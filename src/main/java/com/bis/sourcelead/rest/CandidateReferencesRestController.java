@@ -105,15 +105,11 @@ public class CandidateReferencesRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getCandidateReferencesListByCandidateId")
+	@RequestMapping(value = {"/getCandidateReferencesListByCandidateId","rest/getCandidateReferencesListByCandidateId"},method=RequestMethod.POST)
 	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode) throws Exception
 	{
-		// OrgLocations loginOrgLocation = (OrgLocations)
-			// SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		/* String resultJson; */
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		ResponseList<CandidateReferencesDTO> candidateReferencesList = candidateReferencesService.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId());
-		/* resultJson = commonUtil.toJSON(candidateReferencesList); */
 		return candidateReferencesList;
 	}
 	

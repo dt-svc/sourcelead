@@ -91,7 +91,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
-		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where emp IS NOT NULL and proj.id = :projectId and loc.id = :locationId ";
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId ";
 		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
@@ -814,7 +814,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		ResponseList<UserRole> response = new ResponseList<>();
 		List userRoleList = null;
@@ -835,7 +835,17 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
 					
 		}
-		
+		//usertList shorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userRoleDTO.getSortColumn())) {
+			if(userRoleDTO.getSortColumn().equalsIgnoreCase("displayName")) {
+				sortingQry = " order by userRole.roles."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
+			}else {
+				sortingQry = " order by userRole.user."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
+
+			}
+			
+		}
 		if(roleId != null) {
 			 subQuery = " and userRole.roles.id = :roleId ";
 			params.put("roleId",roleId);
@@ -846,7 +856,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		} 
 			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
-			Query query = session.createQuery(listQuery+query1);
+			Query query = session.createQuery(listQuery+query1+sortingQry);
 			if(roleId != null && !"".equalsIgnoreCase(userState)) {
 				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
@@ -903,23 +913,23 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<ConnectionsDTO> usersList = new ArrayList<ConnectionsDTO>();
 		String searchByValue = searchByName.trim();
 		StringBuilder subQuery = new StringBuilder("");
-		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',IFNULL(u.last_name, '')) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
-				"((select count(c.from_uid) from CONNECTIONS c where c.to_uid = u.id "+
-				"and (c.from_uid in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.from_uid in (select c.to_uid from CONNECTIONS c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
-				"(select count(c.TO_UID) from CONNECTIONS c where c.FROM_UID = u.id "+
-				"and (c.TO_UID in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.TO_UID in (select c.to_uid from CONNECTIONS c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
-				"(select c.CONNECTION_UID from CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID, " +
-				"(select count(*) from CONNECTIONS c where c.from_uid = :loginUserId and c.to_uid = u.id and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
-				"(select count(*) from CONNECTIONS c where c.from_uid = u.id and c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
-				"from USER u, USER_ROLE ur, ORG_LOCATIONS ol " + 
-				"where ur.user_id = u.id and ur.org_locations_id = ol.id " + 
-				"and u.id not in (select c.from_uid from CONNECTIONS c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
-				"and u.id not in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
-				"and u.id != :loginUserId and ur.IS_PRIMARY = 1";
+		String sqlQuery = "select distinct u.ID as id, u.USER_CODE as userCode, u.FILE_URL as fileUrl, concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) as userName, u.EMAIL as email, ur.USER_TYPE as userType, ol.ORG_NAME as orgName," + 
+				"((select count(c.FROM_UID) from sourcelead.CONNECTIONS c where c.TO_UID = u.ID "+
+				"and (c.FROM_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.FROM_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID "+
+				"and (c.TO_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"(select c.CONNECTION_UID from sourcelead.CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.ID) or (c.FROM_UID = u.ID and c.TO_UID = :loginUserId)) as connectionUUID, " +
+				"(select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.TO_UID = u.ID and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
+				"(select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
+				"from sourcelead.USER u, sourcelead.USER_ROLE ur, sourcelead.ORG_LOCATIONS ol " + 
+				"where ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID " + 
+				"and u.ID not in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.ID not in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.ID != :loginUserId and ur.IS_PRIMARY = 1";
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
-			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.email like :searchByValue)");
+			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");
 			sqlQuery = sqlQuery.concat(subQuery.toString());
 		}
 		sqlQuery = sqlQuery.concat(" order by count DESC, userName");
@@ -930,7 +940,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			queryString.setParameter("searchByUserType",searchByValue)
 			.setParameter("searchByValue", "%" + searchByValue + "%");
 		}
-		System.out.println(queryString.getQueryString());
 		//Pagination                                                              //Converting custom DTO class list from Sql result 
 		queryString.setFirstResult(offset).setMaxResults(18).setResultTransformer(Transformers.aliasToBean(ConnectionsDTO.class));
 		usersList = queryString.list();
@@ -939,7 +948,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			connectionsDTO.setCountFlag("true");
 			usersList.add(connectionsDTO);
 		}
-		System.out.println(usersList.get(0));
 		Map<String, BigInteger> countValues = connectionsDao.getCountValuesForSentReceivedConnected(userId);
 		if(!usersList.isEmpty()) {
 			usersList.get(0).setSentCount(countValues.get("sentCount"));

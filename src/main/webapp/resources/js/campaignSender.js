@@ -8,6 +8,7 @@ function campaignSender(ele,senderId, fromType) {
 			$("#campaignSender").html(data);
 			// save sender details
 			 $("#saveCampaignSender").click(function () {
+				 $('#saveCampaignSender').attr("disabled","disabled");
 				 if ($('#capn_add_sender').validate(false, validationSettings)) {
 					  /*	var formData = $($('#capn_add_sender')[0]).serialize();*/
 					 var formData = getFormData('capn_add_sender');
@@ -19,14 +20,12 @@ function campaignSender(ele,senderId, fromType) {
 					            	$(".popMask").fadeOut(200);
 				            		$(".popUpOut").fadeOut(100);
 					             }else{
-								     location.replace(sourceleadUrl+ "/campaignSendersList");
+					            	 getSendersList("success");
+//								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
 					             }
-								 $("#selector1").removeAttr("style");
-					  			 $("#selector1").css({ display: "block" });
-					  			 $("#msgDiv").html("Successfully Created sender identity");
 					  			 $("#popUp").empty();
 					 			 $(".project_inn_mask").fadeOut(200);
-					             msgFadein(500);	
+					             	
 							}
 						});
 						return true;
