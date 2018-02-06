@@ -365,7 +365,7 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
          result = result + '<td>';
-         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Client name is mandatory' || report.reason ==  'Client name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number' || report.reason ==  'First Name is mandatory' || report.reason ==  'Email is Mandatory'){
+         if(report.fileReason == 'Spoc existed' || report.fileReason == 'Current org user' || report.fileReason ==  'Client name is mandatory' || report.fileReason ==  'Client name should contain above 2 char' || report.fileReason ==  'Invalid email' || report.fileReason ==  'Invalid moblie number' || report.fileReason ==  'First Name is mandatory' || report.fileReason ==  'Email is Mandatory'){
         	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
         	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
