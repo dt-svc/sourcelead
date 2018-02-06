@@ -298,6 +298,7 @@ function addEducation(candidateId) {
 	result  = result + '					<div class="clearDate" onClick="clearCandidateEduEndDate();"></div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result  = result + '                   </div>';
+	result  = result + '                   </div>';
 
 	result = result  +'                                                                                                                                                       ';
 	result  = result + '                 <div class="clearfix mb10">';
