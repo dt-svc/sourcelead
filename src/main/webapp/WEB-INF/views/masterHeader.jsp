@@ -693,6 +693,9 @@ function preventTabkey(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
+	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="javascript:void(0)" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
+	                     </sec:authorize>
 	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
 		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
@@ -1747,11 +1750,133 @@ $("#searchType").selectpicker('refresh');
     </div>
   </div>
   
-  
+  <%-- <div class="modal modalInvite" class="invite" id="scheduleMPopDiv" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Schedule Maintenance</h4>
+        </div>
+        <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
+         
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Date <span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">                  
+					<div class="input-group errorInptgroup">
+						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleDate" readonly="readonly">
+	                    <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+					</div>                    
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Message</label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Message" name="message" id="scheduleMessage">
+                </div>
+            </div>
+        </div>
+        <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushInviteCompany();"></i>Cancel
+            </button>
+                </div>
+        </div>
+        </form:form>
+        
+      </div>
+      
+    </div>
+  </div> --%>
   
   <div class="popMask"></div>
-  
+  <div class="popUpOut" id="scheduleMPopDiv">
+		<div class="popupHead">
+			<h2>Schedule Maintenance</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		<form:form id="scheduleMaintenance_form" name="scheduleMaintenance_form" method="post">
+	<div class="popupMid clearfix">
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Date<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<div class="input-group errorInptgroup">
+						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleMDate" field-name="Schedule Date" readonly="readonly" data-validation="required">
+	                    <span class="input-group-addon" onclick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+					</div>
+				</div>
+			</div>	
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Message<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<textarea class="form-control" name="scheduleMessage" field-name="Schedule Message" rows="3" data-validation="required"></textarea>
+				</div>
+			</div>
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" onclick="saveScheduleMaintenance();" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>
+          </form:form>		
+	</div>
   <script>
+  $("#scheduleMPopup").click(function(){
+	  $("#scheduleMPopDiv").fadeIn();
+	  $(".popMask").fadeIn();
+  });
+  function flushScheduleMaintenance(){
+	  document.getElementById("scheduleMaintenance_form").reset();
+	  $("scheduleMaintenance_form").validate().resetForm();
+  }
+  $(function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#scheduleMDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true,
+	  	  minDate: 0
+	  });
+	  
+  });
+  function clearDate(){
+		$("#scheduleMDate").val("");
+  };
+  
+  $(".popCan").click(function(){
+	  $("#scheduleMPopDiv").fadeOut();
+	  $(".popMask").fadeOut();
+	  flushScheduleMaintenance();
+ });
+  function saveScheduleMaintenance() {
+		if ($('#scheduleMaintenance_form').validate(false, validationSettings)) {
+				var formData = getFormData("scheduleMaintenance_form");
+				var sourceleadUrl = '${sourceleadUrl}';
+				alert(formData.scheduleMessage);
+				/* $.ajax({
+						  type : "POST",
+						  data: formData,
+						url : sourceleadUrl+ "/storeScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}",
+						success : function(result) {
+							 $("#scheduleMPopDiv").fadeOut();
+							  $(".popMask").fadeOut(); 
+							  $("#inviteCompanyId").removeAttr("style");
+		            		  $("#inviteCompanyId").css({ display: "block" });
+		        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
+		        			  companyMsgFadeinFunction();
+		        			  flushScheduleMaintenance();
+						},
+					}); */
+			return true;
+		} else {
+			return false;
+		}
+	}
 $(document).ready(function(){
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
