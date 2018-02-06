@@ -79,7 +79,7 @@
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script>
 
-
+ <title>.:: Jobs ::.</title>
  <style>
  .navbar-default {
  background: #fff !important; border-bottom: 1px solid #ededed !important;
