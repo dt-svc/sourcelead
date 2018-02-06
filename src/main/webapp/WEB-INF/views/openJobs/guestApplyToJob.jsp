@@ -60,7 +60,7 @@ border-right:none;
 </style>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function($) { 
 	var requirementId = '${reqId}';
 	var jobTitle = '${reqName}'
 	var sourceleadUrl = '${sourceleadUrl}';
