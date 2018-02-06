@@ -1615,7 +1615,7 @@ public class RequirementListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "generatedId","jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
+		String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
 		
 		int sortColumnIndex = 8; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order

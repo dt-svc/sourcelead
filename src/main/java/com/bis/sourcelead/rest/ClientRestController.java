@@ -1508,17 +1508,17 @@ public class ClientRestController {
 		 */
 		String[] tableColumns1 = null;
 		if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "responderWebSite", "responderCity", "responderLevel", "createdBy", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "responderWebSite", "responderCity", "responderLevel", "createdBy.keyword", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "", "responderCity", "","createdBy","releasedJobsCount", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "responderCity", "","createdBy.keyword","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
 				Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			/**
 			 * this fields for job campaigns and hotlist campaigns
 			 */
-			String[] tableColumns = {"ischeck", "responderOrgName",  "website", "responderCity", "createdBy", "noContacts"};
+			String[] tableColumns = {"ischeck", "responderOrgName",  "website", "responderCity", "createdBy.keyword", "noContacts"};
 			tableColumns1 = tableColumns;
 		}
 		
@@ -1821,7 +1821,7 @@ public class ClientRestController {
 			response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 			SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
-							0, 10, "createdBy", SortOrder.DESC, boolQueryBuilderForCount);
+							0, 10, "createdBy.keyword", SortOrder.DESC, boolQueryBuilderForCount);
 			
 			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 		}
@@ -1897,7 +1897,7 @@ public class ClientRestController {
 				String[] tableColumns = {"", "orgName",  "spocName", "spocEmail", "spocStatus"};
 				tableColumns1 = tableColumns;
 			}else{
-				String[] tableColumns = {"clientLocationId", "clientUserFirstName", "clientUserEmail", "", "ownerUserId", "spocStatus","invitationStatus",""};
+				String[] tableColumns = {"clientLocationId", "clientUserFirstName.keyword", "clientUserEmail.keyword", "", "ownerUserId", "spocStatus","invitationStatus.keyword",""};
 				tableColumns1 = tableColumns;
 			}
 			
@@ -2270,7 +2270,7 @@ public class ClientRestController {
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
-								0, 10, "invitationStatus", SortOrder.DESC, boolQueryBuilderForCount);
+								0, 10, "invitationStatus.keyword", SortOrder.DESC, boolQueryBuilderForCount);
 				
 			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			response.setData(clientVendorContactsList);

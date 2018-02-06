@@ -688,7 +688,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			boolQueryBuilder.minimumShouldMatch("1");
 			boolQueryBuilderForCount.minimumShouldMatch("1");
-			String[] tableColumns = {"","firstName", "email", "city", "mobilePhone", "", "noOfReq","updatedDate","",""};
+			String[] tableColumns = {"","firstName.keyword", "email.keyword", "city.keyword", "mobilePhone.keyword", "", "noOfReq","updatedDate","",""};
 			
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			boolean sortColumnOrder = false; //by default descending order
@@ -904,7 +904,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				response.setRecordsFiltered(CandidateListcopy.size());
 				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-								0, 10, "firstName", SortOrder.DESC, boolQueryBuilderForCount);
+								0, 10, "updatedDate", SortOrder.DESC, boolQueryBuilderForCount);
 				
 				response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			 }

@@ -244,7 +244,7 @@ function getClientContactList(){
 		    	  }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[0,'desc']],
+		    	"aaSorting": [[6,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
