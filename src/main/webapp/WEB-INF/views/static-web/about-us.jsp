@@ -41,7 +41,7 @@
 		<div class="media">
 			<div class="media-body">
 			<h4 class="media-heading">Why Sourcelead</h4>
-			<p>We’ve designed an intuitive approach that focuses our innovative technology &amp; expertise into<br><strong>powerful, easy to use</strong> solutions. We help you make smarter decisions to improve your return on investment.</p>
+			<p>We have designed an intuitive approach that focuses our innovative technology &amp; expertise into<br><strong>powerful, easy to use</strong> solutions. We help you make smarter decisions to improve your return on investment.</p>
 			<p><strong>WHY?</strong> SourceLead provides a perfect solution to your business kind through automation &amp; integration.
 			<p>With SourceLead, we want to give you the ability to process like no one else can.</p>
 			</p>
