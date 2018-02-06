@@ -56,6 +56,7 @@
 	</div>
 	</section>
  <section class="container-area-white">
+<div id="features"></div>  
   <div class="container productfeatures">
   <h2 class="text-center colorlogo">Features</h2>
 <div class="col-md-4">
@@ -65,7 +66,7 @@
 	<div class="clearfix"></div>
 		<h4>Quick &amp; Easy Access to RDA</h4>
 		<ul class="list-styles">
-			<li>Create and get a quick view into the candidate’s multiple profiles.</li>
+			<li>Create and get a quick view into the candidates multiple profiles.</li>
 			<li>Effortlessly import and export the resume database</li>
 			<li>Intuitive outreach through Hotlist Campaigns</li>
 			<li>Access the large candidate database </li>
