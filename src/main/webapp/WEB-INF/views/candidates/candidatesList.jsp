@@ -1131,11 +1131,11 @@ function cancel(candidateId){
       </div>
       <div class="dropdown pull-left ml mt">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-share-alt cursorPointer" title="Share"></span></div>
-			  <ul class="dropdown-menu dropdown-morecustom">
-			    <li><a title="Share" href="#" onclick="shareJob();" data-toggle="modal" data-target="#myModal">Share Job</a></li>
-<!-- 			    <li><a href="#">Compose Email</a></li> -->
-			  </ul>
+			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
+			  <!-- <ul class="dropdown-menu dropdown-morecustom">
+			    <li><a title="Share"  data-toggle="modal" data-target="#myModal">Share Job</a></li>
+			    <li><a href="#">Compose Email</a></li>
+			  </ul> -->
 			</div>
 			
 			<!-- <div class="dropdown pull-left ml mt">
@@ -2319,7 +2319,7 @@ function checkShareCandidates(elem) {
 
 <!-- Modal share job -->
 <div class="sideMask"></div>
-  <div class="modal sharejob-pop" id="sharejob-pop">
+  <div class="modal sharejob-pop" id="sharejob-pop" style="z-index: 10000 !important;">
   </div>
 <script>
 function shareJob() {
@@ -2371,22 +2371,49 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '  </div>';
 	 result = result+ '  <div class="modal-body">';
 	 result = result+ '    <div class="clearfix mb">';
-	 result = result+ '    <label class="col-md-3">Posted from <span class="text-danger">&nbsp;*</label>';
+	 result = result+ '    <label class="col-md-3">Posted from <span class="text-danger">&nbsp;*</span></label>';
 	 result = result+ '    <div class="dropdown-select col-md-9">';
-	 result = result+ '    <select class="form-control" id="requirementsTimeRange" onchange="getRequirements();">';
+	 result = result+ '    <select class="form-control" id="requirementsTimeRange" onchange="getRequirements();rolecustomedates();">';
 	 result = result+ '    <option value="today">Today</option>';
 	 result = result+ '    <option value="yesterday">Yesterday</option>';
 	 result = result+ '    <option value="week" selected="">1 week</option>';
 	 result = result+ '    <option value="twoweeks">2 weeks</option>';
 	 result = result+ '    <option value="month">1 month</option>';
 	 result = result+ '    <option value="twomonths">2 months</option>';
+	 result = result+ '    <option value="custome">Custom</option>';
 	 result = result+ '    </select>';
 	 result = result+ '    </div>';
 	 result = result+ '  </div>';
+	 result = result+ '  <div class="clearfix mb" id="customedatesDiv" style="display:none">';
+	 result = result+ '    <label class="col-md-3">Custom Dates <span class="text-danger">&nbsp;*</span></label>';
+	 result = result+ '    <div class="col-md-9">';
+	 result = result+ '    <div class="row">';
+	 result = result+ '    <div class="col-md-6" id="StartErrMsg">';
+	 result = result+ '    <input type="text" class="form-control calendar" id="shareStartDate" placeholder="Start Date" field-name="Start Date" readonly>';
+	 result = result+ '    </div>';
+	 result = result+ '    <div class="col-md-6" id="EndErrMsg">';
+	 result = result+ '    <input type="text" class="form-control calendar" id="shareEndDate" placeholder="End Date" field-name="End Date" readonly>';
+	 result = result+ '    </div>';
+	 result = result+ '    </div>';
+	 result = result+ '    </div>';
+	 result = result+ '  </div>';
+	 
 	 result = result+ '  <div class="clearfix mb">';
-	 result = result+ '    <label class="col-md-3">Job<span class="text-danger">&nbsp;*</label>';
+	 result = result+ '    <label class="col-md-3">Managers</label>';
 	 result = result+ '    <div class="dropdown-select col-md-9">';
-	 result = result+ '    <select class="form-control chosen-select" id="shareRequirementsList" field-name="Job" data-validation="required">';
+	 result = result+ '    <select class="form-control chosen-select" id="requirementManagerlist" onchange="getRequirements();">';
+	 result = result + '    <option value=""> -- Select Manager -- </option>';
+	 result = result+ '        <c:forEach var="report" items="${requirementApproverList}">';
+	 result = result+ '	         	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
+	 result = result+ '        </c:forEach>  ';
+	 result = result+ '    </select>';
+	 result = result+ '    </div>';
+	 result = result+ '  </div>';
+	 
+	 result = result+ '  <div class="clearfix mb">';
+	 result = result+ '    <label class="col-md-3">Job<span class="text-danger">&nbsp;*</span></label>';
+	 result = result+ '    <div class="dropdown-select col-md-9" id="ErrMsgJob">';
+	 result = result+ '    <select data-live-search="true" class="form-control selectpicker" id="shareRequirementsList" field-name="Job" data-validation="required" onchange="removeErrMsg();">';
 	 result = result+ '    </select>';
 	 result = result+ '    </div>';
 	 result = result+ '  </div>';
@@ -2401,8 +2428,50 @@ function sharejobpopup(candidateCount) {
 	 $("#sharejob-pop").empty();
 	 $("#sharejob-pop").append(result);
 	 
-	 $("#shareRequirementsList").chosen();
-	 $("#shareRequirementsList").trigger("chosen:updated");
+	 $("#shareRequirementsList").selectpicker('refresh');
+	 
+	 $("#requirementManagerlist").chosen();
+	 $("#requirementManagerlist").trigger("chosen:updated");
+	 
+	 
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatProjectSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatProjectSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatProjectSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatProjectSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatProjectSave = 'yy-dd-mm'; 
+	  }
+	 
+	  
+	  $('#shareStartDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#shareEndDate").datepicker("option", "minDate", dt);
+				removeErrsgStartDate();
+				getRequirements();
+			}
+		});
+	  
+	  $('#shareEndDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#shareStartDate").datepicker("option", "maxDate", dt);
+				removeErrEndDate();
+				getRequirements();
+			}
+		});
 }
 </script>
 <script>
@@ -2447,37 +2516,56 @@ $('body').on('blur', '#shareJob-form', function() {
 	}
 </script>
 <script>
+//Role custome Dates
+function rolecustomedates(){
+	var roleval = $("#requirementsTimeRange").val();
+	if(roleval == "custome"){
+		document.getElementById("customedatesDiv").style.display ="block";
+		 $('#shareStartDate').attr("data-validation","required"); 
+		 $('#shareEndDate').attr("data-validation","required"); 
+	}else {
+		document.getElementById("customedatesDiv").style.display ="none";
+		$('#shareStartDate').removeAttr("data-validation","required");
+		$('#shareEndDate').removeAttr("data-validation","required");
+	}
+}
+
+function removeErrsgStartDate(){
+	$("#StartErrMsg").find("p.jquery_form_error_message").remove();
+}
+function removeErrEndDate(){
+	$("#EndErrMsg").find("p.jquery_form_error_message").remove();
+}
+function removeErrMsg(){
+	$("#ErrMsgJob").find("p.jquery_form_error_message").remove();
+}
+</script>
+<script>
 function getRequirements(){
 	var postedDateRange =$("#requirementsTimeRange").val();
+	var startDate = $("#shareStartDate").val();
+	var endDate = $("#shareEndDate").val();
+	var managerId = $("#requirementManagerlist").val();
 	$.ajax({
         type : "GET",
-        url: sourceleadUrl+"/getAllRequirementByOrgLocationIdAndUserIdAndPostedDate?postedDateRange="+postedDateRange,    
-         success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            	  var json = JSON.parse(data);
+        url: sourceleadUrl+"/getAllRequirementByOrgLocationIdAndUserIdAndPostedDateWithCustomDates?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
+         success :function(json) {
+              if(json != null && json != 'undefined' && json != "" && json != '[]'){
             	  var result = "";
             	  result = result + '<option value="">--- Select Job ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
-                 	var jobId = "";
-                 	if(null != opt.jobId && "" != opt.jobId && 'undefined' != opt.jobId){
-                 		jobId = " - "+opt.jobId;
-                 	}
-                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+jobId+'</option>';
+                 	 result = result +  '<option value="'+opt.id+'"> '+opt.generatedId+' - '+opt.jobTitle+' ('+opt.postedOnStr+')</option>';
                   }
                   $("#shareRequirementsList").empty();
                   $("#shareRequirementsList").append(result);
-                  $("#shareRequirementsList").chosen();
-              	  $("#shareRequirementsList").trigger('chosen:update');
-	              $('#shareRequirementsList') .find('option:first-child').prop('selected', true) .end().trigger('chosen:updated');
+                  $("#shareRequirementsList").selectpicker('refresh');
               }else{
             	  var result = "";
-            	  	 result = result + '<option value="">--- Select Job ---</option>';
+            	  result = result + '<option value="">--- Select Job ---</option>';
             	  $("#shareRequirementsList").empty();
                   $("#shareRequirementsList").append(result);
-                  $("#shareRequirementsList").chosen();
-              	  $("#shareRequirementsList").trigger('chosen:update');
-	              $('#shareRequirementsList').find('option:first-child').prop('selected', true).end().trigger('chosen:updated');
+                  $("#shareRequirementsList").selectpicker('refresh');
               }
            
        },
