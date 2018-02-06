@@ -3,7 +3,6 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +10,7 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,14 +213,14 @@ public class AddElkWebGeoCities {
 		comboPooledDataSource.setUser(dbconfig.getUser());
 		comboPooledDataSource.setPassword(dbconfig.getPassword());
 
-		try {
+		/*try {
 			Settings settings = Settings.settingsBuilder().put("cluster.name", dbconfig.getCluster())
 					.put("node.name", dbconfig.getNode()).put("path.home", dbconfig.getPath()).build();
 			client = TransportClient.builder().settings(settings).build().addTransportAddress(
 					new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
-		}
+		}*/
 
 		return comboPooledDataSource;
 	}
