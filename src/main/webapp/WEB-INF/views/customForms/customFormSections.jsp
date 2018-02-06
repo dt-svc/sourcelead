@@ -59,10 +59,11 @@
      </div>
  </c:forEach>
 
-
- 
- 
-  <!-- <!--   Popup Code  -->
+<div class="popMaskCustom popMask-zindex"></div>
+<div class="cusFielPopup cusFiel-popup " id="popUpDataCustom">
+  <jsp:include page="addCustomPopUp.jsp"></jsp:include>
+</div> 
+ <%--  <!-- <!--   Popup Code  -->
  
  
    <!-- <!--   Popup Code  -->
@@ -194,7 +195,7 @@
           </form>	
 		</div>
 
-<!--   Popup Code  -->
+<!--   Popup Code  --> --%>
  
  <script>
   function addOption(){

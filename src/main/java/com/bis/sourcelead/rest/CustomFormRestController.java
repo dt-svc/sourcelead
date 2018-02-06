@@ -1,7 +1,9 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,13 +17,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.OrglocationFormSubFields;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SourceleadFormSections;
+import com.bis.sourcelead.service.JobCustomFieldDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -44,6 +50,12 @@ public class CustomFormRestController {
 	
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private JobCustomFieldDataService jobCustomFieldDataService;
 	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
     public  ModelAndView getFormSectionsByActionId(@RequestParam(value="actionId", required=true) Long actionId,HttpServletRequest request) throws Exception {
@@ -70,10 +82,8 @@ public class CustomFormRestController {
     
     @RequestMapping(value="/getAllASectionCustomFields",method = RequestMethod.POST)
     public ModelAndView getAllCustomFormFieldsBySectionIdandOrgLocationIdWeb(@RequestParam(value="sectionId")Long sectionId,HttpServletRequest request) throws Exception {
-		
-    	
+    	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	List<OrglocationFormFields> orglocationFormFieldList  = getAllCustomFormFieldsBySectionIdandOrgLocationId(sectionId, request);
-    	
 		ModelAndView model = new ModelAndView();
 		List<OrglocationFormFieldsDTO> OrglocationFormFieldsDTOList =new ArrayList<>();
 		Long actionId = null;
@@ -94,8 +104,40 @@ public class CustomFormRestController {
     		OrglocationFormFieldsDTO customFormSectonsListDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(customForm, CustomFormSubFields);
     		OrglocationFormFieldsDTOList.add(customFormSectonsListDTO);
     	}
+    	
+    	
+    	if(actionId != null){
+			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
+			 if(sections != null && !sections.isEmpty()) {
+				 for(SourceleadSectionDTO sec:sections) {
+					 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+						 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+						 custom.setCustomFormFieldId(customFields.getId());
+						 formFieldId.add(custom);
+					 }
+				 }
+				 if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null) {
+				 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocation.getId());
+				 List<JobCustomFieldData> jobData = jobCustomFieldDataService.getJobCustomFieldDataByLocationId(orgLoc.getOrg().getId(),formFieldId);
+				 Map<String,String> dataMap = new HashMap<>();
+				 if(jobData!= null && !jobData.isEmpty()) {
+					 for(JobCustomFieldData jobCustomData:jobData) {
+						 String labelName = jobCustomData.getOrglocationsFormFields().getLabelName();
+						 String labelData = jobCustomData.getCustomFormFieldData();
+						 dataMap.put(labelName, labelData);
+						 model.addObject("dataMapList", dataMap);
+					 	}
+				 	}
+				 }
+			 }
+			}
+    	
+    	
+    	
     	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
 		model.addObject("currentIndex",currentIndex);
+		
     	model.setViewName("genericCustomFormFields");
     	return model;
     }

@@ -4,11 +4,25 @@
 	<c:forEach var="customForm" items="${customFieldsList}" varStatus="customFormIndex">
 	<c:if test="${customForm.fieldType == 'textfield'}">
 		<div class="form-group">
-	        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
-	    	 <div class="col-md-9">
-	    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-	     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
-	    	</div>
+		  <c:if test="${not empty dataMapList}">
+		        <c:forEach var="dataMap" items="${dataMapList}">
+			        <c:if test="${customForm.labelName eq dataMap.key}">
+				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+				    	 <div class="col-md-9">
+				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+				     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="${dataMap.value}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
+				    	</div>
+			        </c:if>
+		        </c:forEach>
+	        </c:if>
+	       <c:if test="${empty dataMapList}">
+		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+		    	 <div class="col-md-9">
+		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+		     	 	<input type="text" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" value="" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
+		    	</div>
+	    	</c:if>
+	    	
 	  </div>
 	 </c:if>
 	 

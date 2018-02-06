@@ -53,7 +53,7 @@ public class OrglocationFormFieldsRestController {
 		List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
 		model.addObject("customFormPopDetails",orglocationFormFieldsDTO);
 		model.addObject("SourceleadForm_Sections_pop",sections);
-		model.setViewName("customForms/customFormSections");
+		model.setViewName("customForms/addCustomPopUp");
 		return model;
     }
 	
