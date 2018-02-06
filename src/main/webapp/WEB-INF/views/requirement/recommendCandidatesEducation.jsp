@@ -246,7 +246,7 @@ function addEducation(candidateId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
-	result = result  +'	                     <select class=""  name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
+	result = result  +'	                     <select class="newSelect valid"  name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">%</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';

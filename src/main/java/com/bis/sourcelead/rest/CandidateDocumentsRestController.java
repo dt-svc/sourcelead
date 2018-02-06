@@ -126,15 +126,11 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getCandidateDocumentsListByCandidateId")
+	@RequestMapping(value = {"/getCandidateDocumentsListByCandidateId","rest/getCandidateDocumentsListByCandidateId"},method = RequestMethod.POST)
 	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
-		/*for (CandidateDocumentsDTO canDoc : candidateDocumentsList.getData()) {
-			canDoc.setUserIdStr(user.getId().toString());
-		}*/
 		return candidateDocumentsList;
 	}
 	
