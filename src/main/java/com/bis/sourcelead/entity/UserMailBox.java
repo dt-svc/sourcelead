@@ -64,6 +64,9 @@ public class UserMailBox implements Serializable{
 	@Type(type="text")
 	private String subject;
 	
+	@Column(name = "SALUTATION")
+	private String salutation;
+	
 	@Column(name = "BODY")
 	@Type(type="text")
 	private String body;
@@ -469,6 +472,15 @@ public class UserMailBox implements Serializable{
 	{
 		this.requirementId = requirementId;
 	}
+
+	public String getSalutation() {
+		return salutation;
+	}
+
+	public void setSalutation(String salutation) {
+		this.salutation = salutation;
+	}
+	
 	
 	
 }
