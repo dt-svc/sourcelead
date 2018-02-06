@@ -163,7 +163,9 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 	          				result = result  +'			<li>';
 		            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		            		result = result  +'<span>Issued offer by '+port.clientName+' <b>'+port.createDateStr+'</b></span>';
+		            		if(port.fileContentType != null && port.fileContentType != '' && port.fileContentType!= 'undefined'){
 		            		result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		            		}
 		            		result = result  +'<div class="clearfix"></div>';
 		            		result = result  +'			</li>';
 	          			}

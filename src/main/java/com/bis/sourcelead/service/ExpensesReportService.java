@@ -31,4 +31,6 @@ public interface ExpensesReportService {
 
 	public File expensesReportExportListExcel(String frequencyMonth, OrgLocations orgLoc, User loginUser)throws ParseException, IOException;
 
+	List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(Long proMembersId,Date startDate, Date endtDate) throws ParseException;
+
 }
