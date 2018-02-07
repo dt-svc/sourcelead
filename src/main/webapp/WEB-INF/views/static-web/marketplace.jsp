@@ -73,4 +73,10 @@
   </div>
 </section>
 <!-- Benefits of sourcelead  -->
-</section><jsp:include page="../staticFooter.jsp" />
+</section>
+<jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#marketplaceID").addClass("slactive");
+}
+</script>
