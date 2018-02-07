@@ -104,6 +104,8 @@ public interface RequirementService {
 	
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
 	
+	public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception;
+	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception;
 	
 	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
@@ -177,5 +179,8 @@ public interface RequirementService {
 	public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement, Candidate candidate)throws Exception;
 	
 	public Requirement getRequirementByShortURL(String shortURL) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays,Long managerId) throws Exception;
+
 	
 }
