@@ -3749,8 +3749,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		globalVarsMap.put("loginOrgName", orgLocation.getOrgLocationName());
 		globalVarsMap.put("loginUserName", loginUser.getFullName());
-		globalVarsMap.put("jobLocation", requirement.getLocation());
-
+		String locationTab = getloaactionList(requirement.getId());
+		globalVarsMap.put("jobLocation", locationTab);
 		
 		StringBuilder linkBuild = new StringBuilder();
 		globalVarsMap.put("viewJobLink", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>").toString());
@@ -3767,6 +3767,21 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 	
+	}
+
+	private String getloaactionList(Long requirementId) throws Exception {
+		String tempHTML = "";
+		String url = sourceleadUrl;
+		if(sourceleadUrl.indexOf("/app")!=-1){
+			url = sourceleadUrl.split("/app")[0];
+		}
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementId);
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				tempHTML = tempHTML + "<p><span><img src='"+url+"/resources/images/location-icon.png' style='width:20px;height: 20px;position: relative;top: 5px;' alet='Location' title='Location'></span>"+location.getLocation()+"</p>";
+			}
+		}
+		return tempHTML;
 	}
 
 	@Override
