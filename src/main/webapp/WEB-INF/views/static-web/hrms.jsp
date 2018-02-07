@@ -71,7 +71,7 @@
 	</div>
 		<h4>Unified workforce management access </h4>
 		<ul class="list-styles">
-			<li>Provides various modules for associate onboarding &amp; off boarding </li>
+			<li>Provides various modules for associate onboarding &amp; offboarding </li>
 			<li>Helps managing Attrition levels</li>
 		</ul>
 	</div>
