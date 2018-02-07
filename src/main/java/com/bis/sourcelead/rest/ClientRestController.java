@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
@@ -84,6 +85,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -194,6 +196,9 @@ public class ClientRestController {
 	
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
 	
 	/**
 	 * Handles to get Orgs
@@ -1159,6 +1164,17 @@ public class ClientRestController {
 				
 				RequirementDTO.setManager(req.getManager());
 				RequirementDTO.setRequirementSubmissionStatus((req.getRequirementSubmissionStatus()).toString());
+				
+				
+				List<String> requirementLocationsList = new ArrayList<>();
+				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(req.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+						requirementLocationsList.add(location.getLocation());
+					}
+				}
+				RequirementDTO.setLocationsList(requirementLocationsList);
+				
 				reqListDTO.add(RequirementDTO);
 			   /*RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndUserId(req.getId(), loginUser.getId());
 				requirementSubmissionHistoryService.getCandidatesCountBySubmissionIdandRequirementId(rs.getId(), rs.getSubmissionStatus().toString());*/
