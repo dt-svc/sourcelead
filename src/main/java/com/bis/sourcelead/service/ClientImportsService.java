@@ -24,9 +24,9 @@ public interface ClientImportsService {
 
 	String clientBulkSavingImp(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String isMailCheck, String responderType)throws Exception;
 
-	String clientExcelDataSave(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String email, String responderType)throws Exception;
+	List<BulkClientDetails> clientExcelDataSave(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String email, String responderType)throws Exception;
 
-	List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(ClientVendorUploadDTO clientVendorUploadDTO,OrgLocations orgLocation, User user, Org org, String isMailSent, String responderType) throws Exception;
+	List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(List<BulkClientDetails> fileList,ClientVendorUploadDTO clientVendorUploadDTO,OrgLocations orgLocation, User user, Org org, String isMailSent, String responderType) throws Exception;
 
 	BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation,String responderType)throws Exception;
 
