@@ -14,8 +14,8 @@
 <link
 	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="/resources/css/static-web/reset.css?staticTime=${staticTime}">
+<%-- <link rel="stylesheet"
+	href="/resources/css/static-web/reset.css?staticTime=${staticTime}"> --%>
 <link
 	href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
@@ -77,9 +77,9 @@
 	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script>
+<!-- <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script> -->
 
-
+ <title>.:: Jobs ::.</title>
  <style>
  .navbar-default {
  background: #fff !important; border-bottom: 1px solid #ededed !important;
@@ -913,7 +913,7 @@ top: 21px;height: 32px; line-height: 18px;
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>© 2018 SourceLead. All rights reserved.</b> <span> <a
+            <b>ï¿½ 2018 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
@@ -1292,7 +1292,7 @@ function prepareOpenJobsElkList(data,offset){
 				}
 				
 				result = result +'<strong class="pull-left mr10">Location(s) : </strong>';
-				result = result +'<ul class="joblocations-li">';
+				result = result +'<ul class="joblocations-li list-unstyled">';
  				if(requirements.locationsList != null){
  					for(var k=0; k<requirements.locationsList.length; k++){
  						result = result +'<li>'+requirements.locationsList[k]+'</li>';
@@ -1583,7 +1583,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	}
 		    	result = result +'	<div class="clearfix"></div>';
 		    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
-		    	result = result +'<ul class="joblocations-li pull-left">';
+		    	result = result +'<ul class="joblocations-li list-unstyled pull-left">';
  				if(json.locationsList != null){
  					for(var k=0; k<json.locationsList.length; k++){
  						result = result +'<li>'+json.locationsList[k]+'</li>';
@@ -1878,7 +1878,7 @@ function openJobSearchRequirement(){
 
 										result = result +'	<div class="clearfix"></div>';
 								    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
-								    	result = result +'<ul class="joblocations-li pull-left">';
+								    	result = result +'<ul class="joblocations-li pull-left list-unstyled">';
 						 				if(requirements.locationsList != null){
 						 					for(var k=0; k<requirements.locationsList.length; k++){
 						 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
@@ -2591,7 +2591,7 @@ function createAlert(requirementUUID){
         	 result = result +'         	<div class="col-md-9">';
         	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple field-name="Keywords/Skills" id="candidateSkills" data-validation="required" name="skills">';
         	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
-        	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+        	 result = result + "<option value='${skill.name}'>${skill.name}</option>";
         	 result = result +'						</c:forEach>;'
         	 result = result +'         		</select>';
         	 result = result +'         	</div>';
@@ -2787,140 +2787,7 @@ var validationSettings = {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
-</script>
-
-<script type="text/javascript">
-function getAllCountriesJObalert(country){
-	var sourceleadUrl ='${sourceleadUrl}';
-}
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: sourceleadUrl + "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#countryjobalert').empty();
-        	$('#countryjobalert').append('<option value="">---Select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	
-            	if(country != 'undefined' && country != null && country != '' && json[i] == country){
-            		$('#countryjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else{
-            		$('#countryjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            		
-           	}
-            
-            $('#countryjobalert').trigger("chosen:updated");
-            if(country == "undefined" || country == null){
-            	 getStatesjobalert();
-            }
-           
-        },
-        error: function(e){
-        }
-    });
-</script>
-
-
-<script>
-function getStatesjobalert(country,state){
-	
-	var countryName = '';
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#countryjobalert").val();
-	
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#statejobalert').empty();
-	        	$('#statejobalert').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != '' && state != 'undefined' && json[i] == state){
-	            		$('#statejobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#statejobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            	
-	            }
-	            $('#statejobalert').trigger("chosen:updated");
-	            
-	            $('#cityjobalert').empty();
-	            $('#cityjobalert').append('<option value="">---Select City---</option>');
-	            $('#cityjobalert').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#statejobalert').empty();
-    	$('#statejobalert').append('<option value="">---Select State---</option>');
-    	$('#statejobalert').trigger("chosen:updated");
-    	$('#cityjobalert').empty();
-    	$('#cityjobalert').append('<option value="">---Select City---</option>');
-        $('#cityjobalert').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<script>
-function getCitiesjobalert(country,state,city){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var countryName = '';
-	var stateName = '';
-	
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#countryjobalert").val();
-	}
-	
-	if(state != null && state != '' && state != 'undefined'){
-		stateName = state;
-	}else{
-		stateName = $("#statejobalert").val();
-	}
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#cityjobalert').empty();
-	        	$('#cityjobalert').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	
-	            	if(city != null && city != '' && state != 'undefined' && json[i] == city){
-	            		$('#cityjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#cityjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            	
-	            }
-	            $('#cityjobalert').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#cityjobalert').empty();
-    	$('#cityjobalert').append('<option value="">---Select City---</option>');
-    	$('#cityjobalert').trigger("chosen:updated");
-	}
-}
-</script>
+</script> 
 
 <script>
 function getRate(){

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <title>.::Welcome to SourceLead Website::.</title>
-  <meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
 <meta name="Description" content="SourceLead">
 <meta name="Keywords" content="">

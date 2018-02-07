@@ -32,7 +32,7 @@
   		</div>
   		<div class="reachus mt clearfix">
   			<h5>USA</h5>
-  			<p>3535 Victory Group Way #4, Dallas<br>Tel.: + (214) 295-5535</p>
+  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br>Tel.: + (214) 295-5535</p>
   		</div>
   	</div>
   	<div class="col-md-5 col-sm-6">
