@@ -60,7 +60,7 @@ border-right:none;
 </style>
 
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function($) { 
 	var requirementId = '${reqId}';
 	var jobTitle = '${reqName}'
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -247,7 +247,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 		result = result + '<c:forEach var="skill" items="${skillsList}">';
-		result = result + '<option value="${skill.name}">${skill.name}</option>';
+		result = result + "<option value='${skill.name}'>${skill.name}</option>";
 		result = result + ' </c:forEach>';
 		result = result + '</select>';
 		result = result + '		 </div>';
@@ -309,19 +309,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '</div>';
 		
 		
-/* 		result = result + '<div class="row">';
-		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv">';
-		result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
-		result = result + '		<div class="col-md-8">';
-		result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
-		result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-		result = result + '                   <input type="file" style="display: none;"  id="newUploadBtns"  class="upload">';
-		result = result + '			          </span> </label>';
-		result = result + '			          <input type="text" class="form-control" readonly id="newUploadFiles" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
-		result = result + '			    </div>';
-		result = result + '		 </div>';
-		result = result + '	 </div>';
-		 */
+
 		result = result + '<div class="form-footer clearfix mt">';
 		result = result + '<div class="pull-right mr">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
