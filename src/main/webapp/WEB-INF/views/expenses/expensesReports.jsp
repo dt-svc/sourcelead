@@ -20,7 +20,7 @@
 		</div>
         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Expenses Reports </div>
 	</section>
-
+	<div id="loadingId"></div>
 	<div class="content-area content-new clearfix">
 		<form:form id="expenses_Reports_form" name="expenses_Reports_form"	enctype='multipart/form-data'>
 			<div class="timesheet_head timesheetRep">
@@ -167,10 +167,12 @@ function getQuaters(){
  <script>
 function expensesReportList(){
 var datequarterly = $("#selectedQuarter").val();
+$("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesReportList?"+tokenParamName+"="+tokenValue+"&datequarterly="+datequarterly,       
      success :function(data) {
+    	 $("#loadingId").removeAttr('style');
     	 	var json = JSON.parse(data);
     	 if(json != null && json != '' && json != 'undefined'){
     	 	var result = '';
