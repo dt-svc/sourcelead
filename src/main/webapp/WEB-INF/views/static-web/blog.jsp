@@ -50,3 +50,8 @@ When you are searching for a job change, previous relationships with recruiter p
 </section>
 
  <jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#blogID").addClass("slactive");
+}
+</script>

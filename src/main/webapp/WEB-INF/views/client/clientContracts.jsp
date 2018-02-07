@@ -283,24 +283,24 @@ function clientContractsList(orgRelationId){
 		                		         opt = opt + '</td>';
 		                		         
 		                		         opt = opt + '<td class="noPad">';
-		                		         opt = opt + '<div class="tblminwidth-75">';
+		                		         opt = opt + '<div class="tblminwidth-125">';
 		                		     		  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		                		     			 if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-			                	     	        	 opt = opt +'<div class="pull-left CurDiv mr10" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\','+orgRelationId+');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\','+orgRelationId+');"></i></div>';
+			                	     	        	 opt = opt +'<div class="pull-left CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\','+orgRelationId+');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\','+orgRelationId+');"></i></div>';
 			                	     	         }
 		                		     		  }
 		                		     		  
 		                		     		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		                		     		 if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (output.templateSubmissionStatus == "WAITING_TO_BE_SIGNED") && (null != output.parentContractId && '' != output.parentContractId && 'undefined' != output.parentContractId)){
-		                		     			 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><small class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
+		                		     			 opt = opt + '<div class="pull-left"><a href="#" title="Preview"><small class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
 		                			         }else if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (output.templateSubmissionStatus == "PENDING") && (null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId)){
 		                			        	 opt = opt + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a></div>'; 
 		                			         }else if(output.typeOfContract == "Existing"){
-		                			        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><small class="fa fa-eye" onclick="viewFile(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></small></a></div>';
+		                			        	 opt = opt + '<div class="pull-left mt2"><a href="#" title="Preview"><small class="fa fa-eye" onclick="viewFile(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></small></a></div>';
 		                			         }else if(output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" || output.templateSubmissionStatus == "FINALIZED"){
-		                			        	 opt = opt + '<a href="#" title="Preview"><small class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></small></a>';
+		                			        	 opt = opt + '<a href="#" title="Preview" class="pull-left"><small class="fa fa-eye" onClick="viewFile(\''+output.templateFileURL+'\', \''+output.contractType+'\', \'application/pdf\')"></small></a>';
 		                			         }else{
-		                			        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><small class="fa fa-eye" onclick="viewFile(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></small></a></div>';
+		                			        	 opt = opt + '<div class="pull-left mt2"><a href="#" title="Preview"><small class="fa fa-eye" onclick="viewFile(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></small></a></div>';
 		                			         }
 		                		     		'</sec:authorize>';
 		                		     		  
@@ -311,16 +311,16 @@ function clientContractsList(orgRelationId){
 		                	       			if(output.templateSubmissionStatus == "DRAFT" || output.templateSubmissionStatus == "WAITING_FOR_APPROVER" || output.templateSubmissionStatus == "REJECTED" ){
 		                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		                	     	     		if(output.typeOfContract == "New"){
-		                	     	     			opt = opt + '<div class="pull-left ml10"><a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+		                	     	     			opt = opt + '<div class="pull-left mt2"><a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 		                	     	     		}else if(output.typeOfContract == "Custom"){
-		                	     	     			opt = opt + '<div class="pull-left"><a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+		                	     	     			opt = opt + '<div class="pull-left mt2"><a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 		                	     	     		}
 		                	       			'</sec:authorize>';
 		                	       			}
 		                	     	         
 		                	       			if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
 			                	   	        	 if(output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
-			                	   		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
+			                	   		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up pull-left" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
 			                	   		     		}
 		                	   	         	}
 		                		     		
