@@ -1,8 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
-
-import org.apache.poi.ss.formula.functions.T;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.entity.JobCustomFieldData;
@@ -10,6 +9,8 @@ import com.bis.sourcelead.entity.JobCustomFieldData;
 public interface JobCustomFieldDataService {
 
 	public JobCustomFieldData savejobCustomFieldData(JobCustomFieldData jobCustomFields);
-
-	public List<JobCustomFieldData> getJobCustomFieldDataByLocationId(Long orgLocation, List<CustomFormFieldDTO> formFieldId);
+	
+	public JobCustomFieldData getJobCustomFieldDataById(Long jobCustomFieldsID);
+	
+	public Map<Long, String[]> getJobCustomFieldDataMapByLocationId(Long orgId, List<CustomFormFieldDTO> formFieldId,Long requirementId);
 }

@@ -1,8 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +23,14 @@ public class JobCustomFieldDataServiceImpl implements JobCustomFieldDataService 
 	}
 
 	@Override
-	public List<JobCustomFieldData> getJobCustomFieldDataByLocationId(Long orgId,List<CustomFormFieldDTO> formFieldId) {
-		return jobCustomFieldDataDao.getJobCustomFieldDataByLocationId(orgId, formFieldId);
+	public JobCustomFieldData getJobCustomFieldDataById(Long jobCustomFieldsID) {
+		return jobCustomFieldDataDao.getJobCustomFieldDataById(jobCustomFieldsID);
+	}
+
+	
+	@Override
+	public Map<Long, String[]> getJobCustomFieldDataMapByLocationId(Long orgId,List<CustomFormFieldDTO> formFieldId,Long requirementId) {
+		return jobCustomFieldDataDao.getJobCustomFieldDataMapByLocationId(orgId, formFieldId,requirementId);
 	}
 
 }

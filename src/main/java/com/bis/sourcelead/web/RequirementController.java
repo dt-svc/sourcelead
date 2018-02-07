@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
@@ -809,12 +810,12 @@ public class RequirementController {
 					 }
 					 if(formFieldId != null && !formFieldId.isEmpty() && orgLocations != null) {
 						OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
-					 List<JobCustomFieldData> jobData = jobCustomFieldDataService.getJobCustomFieldDataByLocationId(orgLoc.getOrg().getId(),formFieldId);
+					 Map<Long, String[]> jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,requirement.getId());
 					 Map<String,String> dataMap = new HashMap<>();
 					 if(jobData!= null && !jobData.isEmpty()) {
-						 for(JobCustomFieldData jobCustomData:jobData) {
-							 String labelName = jobCustomData.getOrglocationsFormFields().getLabelName();
-							 String labelData = jobCustomData.getCustomFormFieldData();
+						 for(Entry<Long, String[]> jobCustomData:jobData.entrySet()) {
+							 String labelName = jobCustomData.getValue()[0];
+							 String labelData = jobCustomData.getValue()[1];
 							 dataMap.put(labelName, labelData);
 							 model.addObject("dataMapListJobs", dataMap);
 						 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -81,7 +82,7 @@ public class CustomFormRestController {
     }
     
     @RequestMapping(value="/getAllASectionCustomFields",method = RequestMethod.POST)
-    public ModelAndView getAllCustomFormFieldsBySectionIdandOrgLocationIdWeb(@RequestParam(value="sectionId")Long sectionId,HttpServletRequest request) throws Exception {
+    public ModelAndView getAllCustomFormFieldsBySectionIdandOrgLocationIdWeb(@RequestParam(value="sectionId")Long sectionId,@RequestParam(value="requirementId")Long requirementId,HttpServletRequest request) throws Exception {
     	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	List<OrglocationFormFields> orglocationFormFieldList  = getAllCustomFormFieldsBySectionIdandOrgLocationId(sectionId, request);
 		ModelAndView model = new ModelAndView();
@@ -106,7 +107,7 @@ public class CustomFormRestController {
     	}
     	
     	
-    	if(actionId != null){
+    	if(actionId != null && requirementId != null && StringUtils.isNotEmpty(requirementId.toString())){
 			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
 			 if(sections != null && !sections.isEmpty()) {
@@ -119,21 +120,11 @@ public class CustomFormRestController {
 				 }
 				 if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null) {
 				 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocation.getId());
-				 List<JobCustomFieldData> jobData = jobCustomFieldDataService.getJobCustomFieldDataByLocationId(orgLoc.getOrg().getId(),formFieldId);
-				 Map<String,String> dataMap = new HashMap<>();
-				 if(jobData!= null && !jobData.isEmpty()) {
-					 for(JobCustomFieldData jobCustomData:jobData) {
-						 String labelName = jobCustomData.getOrglocationsFormFields().getLabelName();
-						 String labelData = jobCustomData.getCustomFormFieldData();
-						 dataMap.put(labelName, labelData);
-						 model.addObject("dataMapList", dataMap);
-					 	}
-				 	}
+				 Map<Long, String[]> jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,requirementId);
+				 model.addObject("dataMapList", jobData);
 				 }
 			 }
 			}
-    	
-    	
     	
     	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
 		model.addObject("currentIndex",currentIndex);
