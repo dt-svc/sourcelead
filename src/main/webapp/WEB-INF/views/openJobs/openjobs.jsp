@@ -1479,8 +1479,10 @@ function getOrgsList(alphabet,type){
 		    	}
 // 	    		if(json.length > 5){
 // 	    			var orgCount = json.length - 5 ;
+				if(opt.noOfDays != '' && opt.noOfDays != 'undfined' && opt.noOfDays != null){
 			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+opt.noOfDays+' More</a>';
-// 	    		}
+
+				}
 				var org = "";    	
 				for(var i=0; i<json.length; i++){
 					var opt1 = json[i];
