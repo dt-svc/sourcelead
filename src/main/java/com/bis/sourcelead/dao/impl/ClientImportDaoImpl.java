@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -89,6 +90,18 @@ public class ClientImportDaoImpl implements ClientImportDao{
 			bulkClientDetails = bulkClientDetailsList.get(0);
 		}
 		return bulkClientDetails;
+	}
+
+	@Override
+	@Transactional
+	public void updateBulkImportedClients() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    // Update Employee
+        Query query = session.createQuery("update BulkClientDetails bulk set bulk.recordStatus = '1' ");
+        int result = query.executeUpdate();
+        if(result > 0) {
+        	logger.debug("Staus changed successfully");
+        }
 	}
 
 	
