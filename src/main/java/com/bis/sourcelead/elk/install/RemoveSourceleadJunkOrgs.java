@@ -37,6 +37,10 @@ public void removeOrgs() throws IOException, SQLException {
 			
 		String[] orgLocationsList = BisJunkOrgLocations.ORG_lOCATIONS;
 		
+		 String foriegnChecks = "set foreign_key_checks = 0";
+		 stmt1 = conn.createStatement();
+		 stmt1.executeQuery(foriegnChecks);
+		
 		for (String orgLocation : orgLocationsList) {
 			
 			 System.out.println("----Deletion of org locations starts-----");
@@ -330,6 +334,11 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 System.out.println("Removing User Data....");
 					 
+					 
+					 sqlQuery = "delete from sourcelead.CANDIDATE  where CONSULTANT_USER_ID = '"+primaryUserId+"' ";
+					 Statement stmt26 = conn.createStatement();
+					 stmt26.executeUpdate(sqlQuery);
+					 
 					 sqlQuery = "delete from sourcelead.USER  where ID = '"+primaryUserId+"' ";
 					 Statement stmt25 = conn.createStatement();
 					 stmt25.executeUpdate(sqlQuery);
@@ -337,8 +346,13 @@ public void removeOrgs() throws IOException, SQLException {
 					 System.out.println("---------Removed "+orgLocationName+" Successfully------");
 			}
 			 
-		}	 
-			System.out.println("----Deletion of org locations ends-----");
+		}	
+		
+		 String endforiegnChecks = "set foreign_key_checks = 1";
+		 Statement stmt2 = conn.createStatement();
+		 stmt2.executeQuery(endforiegnChecks);
+		 
+		 System.out.println("----Deletion of org locations ends-----");
 		
 	}catch(Exception e){
 		e.printStackTrace();
