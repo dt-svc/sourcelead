@@ -3788,5 +3788,11 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays, Long managerId) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(orgLocationId, userType, userId, userCode, numberOfDays, managerId);
 	}
+
+	@Override
+	public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception
+	{
+		return requirementDao.getRequirementByAccessibleUserIdAndRequirementUUID(userId, requirementUUID);
+	}
 	
 }
