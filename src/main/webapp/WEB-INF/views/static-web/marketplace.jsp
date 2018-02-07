@@ -6,7 +6,7 @@
 <div class="clearfix container">
 	<div class="col-md-4 productfeatures">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/crowdsouring.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Crowdsourcing</h4>
 		<p>SourceLead Crowdsourcing helps firms to make the recruiting process faster other than traditional approaches.Through building the relationship with vast resources &amp; recruiters. Due to the nature of the marketplace, all independent recruiters find the most qualified candidates.</p>
@@ -20,7 +20,7 @@
 	</div>
 	<div class="col-md-4 productfeatures">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/jobseeker.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Job Seeker</h4>
 		<p>
@@ -39,7 +39,7 @@
 	</div>
 	<div class="col-md-4 productfeatures">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/freelancerecriter.png" alt="Image" class="animated bounceIn">
 	</div>
 
 		<h4>Freelance Recruiter</h4>
