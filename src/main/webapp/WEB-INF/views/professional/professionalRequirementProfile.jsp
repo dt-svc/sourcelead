@@ -14,7 +14,7 @@ height: 225px;
 .profile_details h4 {width: 68%;}
 ul.can-perdt li span { max-width: 80%;}
 ul.can-perdt li {
-display: inline-block; width:100%; clear:both;
+clear:both;
 }
  </style>
 
@@ -208,8 +208,8 @@ function requirementProfile(requirementUUID){
 				 
 				 
 				 if(json.locationsList != null){
-					 result = result +'<li><i class="fa fa-map-marker pull-left mt5"></i>';
-					 result = result +'<ul class="list-unstyled joblocations-public">';
+					 result = result +'<li><i class="fa fa-map-marker pull-left"></i>';
+					 result = result +'<ul class="list-unstyled list-inline joblocations pull-left">';
 	 					for(var k=0; k<json.locationsList.length; k++){
 	 						result = result +'<li>'+json.locationsList[k]+'</li>';
 	 					}

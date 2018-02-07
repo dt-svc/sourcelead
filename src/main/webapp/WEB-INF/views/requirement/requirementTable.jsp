@@ -244,7 +244,7 @@ function jpagination(url,sourceleadUrl){
 		 },{
 	   	  	"targets": colIndex++,
 		  	"data": "generatedId",
-		  	"sortable": false,
+		  	"sortable": true,
 		  	"render": function(data, type, opt, meta) {
 		  		 var result = "";
 		  		 result = result +"<td>";
