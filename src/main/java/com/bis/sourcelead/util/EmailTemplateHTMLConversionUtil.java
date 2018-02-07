@@ -27,6 +27,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		 * 
 		 * src='http://vannamnew.xp3.biz/html/images/mail-logo.png'
 		 */
+		
 		String newUrl = null;
 		if(StringUtils.isNotEmpty(url)) {
 			newUrl = StringUtils.removeEnd(url, url.substring(url.lastIndexOf("/")));

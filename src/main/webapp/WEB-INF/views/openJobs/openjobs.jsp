@@ -1292,7 +1292,7 @@ function prepareOpenJobsElkList(data,offset){
 				}
 				
 				result = result +'<strong class="pull-left mr10">Location(s) : </strong>';
-				result = result +'<ul class="joblocations-li">';
+				result = result +'<ul class="joblocations-li list-unstyled">';
  				if(requirements.locationsList != null){
  					for(var k=0; k<requirements.locationsList.length; k++){
  						result = result +'<li>'+requirements.locationsList[k]+'</li>';
@@ -1583,7 +1583,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	}
 		    	result = result +'	<div class="clearfix"></div>';
 		    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
-		    	result = result +'<ul class="joblocations-li pull-left">';
+		    	result = result +'<ul class="joblocations-li list-unstyled pull-left">';
  				if(json.locationsList != null){
  					for(var k=0; k<json.locationsList.length; k++){
  						result = result +'<li>'+json.locationsList[k]+'</li>';
@@ -1878,7 +1878,7 @@ function openJobSearchRequirement(){
 
 										result = result +'	<div class="clearfix"></div>';
 								    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
-								    	result = result +'<ul class="joblocations-li pull-left">';
+								    	result = result +'<ul class="joblocations-li pull-left list-unstyled">';
 						 				if(requirements.locationsList != null){
 						 					for(var k=0; k<requirements.locationsList.length; k++){
 						 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
