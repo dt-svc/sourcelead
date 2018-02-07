@@ -2,6 +2,11 @@ package com.bis.sourcelead.beans;
 
 public class BisAssociatesEmails {
 	
-	public static final String[] ASSOCIATE_EMAILS = { "saicharan.ss30@gmail.com", "priya.padmapriya003@gmail.com"};
+	public static final String[] ASSOCIATE_EMAILS = { "raju@businessintelli.com", "sairam@businessintelli.com", "rajkoti@businessintelli.com", "Chandan.b@businessintelli.com", 
+			 "rajender.rikkala@businessintelli.com", "surya@businessintelli.com", "steve@businessintelli.com", "mannava@businessintelli.com", "baskar@businessintelli.com", 
+			 "yogiswar@businessintelli.com", "raviteja@businessintelli.com", "aruny@businessitelli.com", "avinsah@businessintelli.com", "prasanna.k@businessintelli.com", 
+			 "ksrikanth@businessintelli.com", "divya@businessintelli.com", "soniya@businessintelli.com", "anjali@businessintelli.com", "hemanth@isxchange.com", "parmeshsagar@isxchang.com", 
+			 "manohar@isxchange.com", "swaroop.c@businessintelli.com", "anil.k@businessintelli.com", "manu.m@businessintelli.com", "vamsi.p@businessintelli.com", "suresh@businessintelli.com", 
+			 "sekhar@businessintelli.com", "pradeepmg@businessintelli.com" };
 	
 }
