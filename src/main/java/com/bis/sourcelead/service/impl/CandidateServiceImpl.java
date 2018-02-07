@@ -1838,7 +1838,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setCountry(candidate.getCountry());
 							vendorCandidate.setOrgLocationId(orgLocations);
 							vendorCandidate.setIsAssociate(Constants.YES);
-							vendorCandidate.setDesignationType("C2C");
+							vendorCandidate.setDesignationType("Offshore C2C");
 							
 							if(associateDTO.getBillRate() != null){
 								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
