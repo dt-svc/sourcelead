@@ -131,13 +131,11 @@ public class CandidateResumeRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/candidateResumesListByCandidateId", method = RequestMethod.POST)
+	@RequestMapping(value = {"/candidateResumesListByCandidateId","rest/candidateResumesListByCandidateId"}, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateResumeDTO> candidateResumesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		ResponseList<CandidateResumeDTO> resumeList = new ResponseList<>();
-		String msg = "";
-		String resultJson = null;
 		Integer status = Constants.CANDIDATE_ACTIVE;
 		List<CandidateResumeDTO> candidateResumesDTOList = new ArrayList<>();
 		if (candidateId != null) {

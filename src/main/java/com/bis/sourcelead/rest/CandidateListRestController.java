@@ -672,9 +672,8 @@ public class CandidateListRestController {
 	   * 
 	   * @throws Exception
 	   */
-	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
+	 @RequestMapping(value = {"/getCandidateById","/rest/getCandidateById"} , method = RequestMethod.POST)
 	 public @ResponseBody  CandidateDTO getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-			String resultJson ="" ;
 			
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());

@@ -5,7 +5,7 @@
       <div class="col-md-12">
         <h2 class="text-center">Client Relevance Management System</h2>
         <div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
-        <p> SourceLead’s constant endeavor to build sincere relationship with clients gave an insight to our unique Client Relevance Management System (CRMS). With an emphasis on ‘RELEVANCE’, SorceLead helps in finding the most relevant profiles in the network. </p>
+        <p> SourceLead&rsquo;s constant endeavor to build sincere relationship with clients gave an insight to our unique Client Relevance Management System (CRMS). With an emphasis on &rsquo;RELEVANCE&rsquo;, SorceLead helps in finding the most relevant profiles in the network. </p>
       </div>
     </div>
   </div>

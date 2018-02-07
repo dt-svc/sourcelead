@@ -448,7 +448,7 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-	/* $('#countrySearch').val('').trigger('chosen:updated'); */
+	$('#countrySearch').val('').trigger('chosen:updated'); 
 	$('#stateSearch').val('').trigger('chosen:updated');
 	$('#citySearch').val('').trigger('chosen:updated');
 	$('#tierAdvanced').val('').trigger('chosen:updated');

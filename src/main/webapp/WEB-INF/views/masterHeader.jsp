@@ -1931,10 +1931,10 @@ function geolocate() {
 
 <script>
 function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
-    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId);
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId);
     geolocate(latitudeId,longtitudeId);
 }
-function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId) {
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId) {
     if(type == "invite"){
     	 var input = (document.getElementById(locationId));
     	    var options = {
@@ -1982,6 +1982,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   $("#"+countryId).val(address.country).change();
   $("#"+countryId).trigger("chosen:updated");
 
+  $("#"+latitudeId).val(place.geometry.location.lat());
+  $("#"+longtitudeId).val(place.geometry.location.lng());
+  
   if(type == "invite"){
 	  getTimezonesList();
   }
@@ -1996,10 +1999,10 @@ function geolocate(latitudeId,longtitudeId) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
             if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
-                document.getElementById("latitude").value = latitude;
+            	$("#"+latitudeId).val(latitude);
             }
             if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
-                document.getElementById("longitude").value = longitude;
+                $("#"+longtitudeId).val(longitude);
             }
             autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
         });
