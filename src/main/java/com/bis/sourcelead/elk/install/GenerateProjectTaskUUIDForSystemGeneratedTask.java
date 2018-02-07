@@ -42,24 +42,28 @@ public class GenerateProjectTaskUUIDForSystemGeneratedTask {
 			conn = dataSource.getConnection();
 			for(String task:taskName) {
 				String taskNameArray[]  = task.split(",");
-				 String sql = "SELECT * FROM sourcelead.project_tasks where TASK_NAME = '"+taskNameArray[0]+"' and BILLABLE_TYPE = '"+taskNameArray[1]+"';";
+				 String sql = "SELECT distinct PROJECT_ID FROM sourcelead.PROJECT_TASKS";
 				 stmt1 = conn.prepareStatement(sql);
 				 ResultSet rs = stmt1.executeQuery();
-				 System.out.println("----Adding unique UUID project tasks starts-----");
 				 while(rs.next()){
-					 String projectTasksUUID = rs.getString("PROJECT_TASKS_UUID");
-					 Long id = rs.getLong("ID");
-					 if(projectTasksUUID == null) {
-						 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-						 String query = "update sourcelead.PROJECT_TASKS set PROJECT_TASKS_UUID = ? where ID = ?";
-						 PreparedStatement pstmt = conn.prepareStatement(query);
-						 pstmt.setString(1, uuid);
-						 pstmt.setLong(2, id);
-						 pstmt.executeUpdate(); 
+					 Long projectId = rs.getLong("PROJECT_ID");
+					 
+					 if(projectId != null && projectId > 0) {
+					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
+					 String query = " INSERT INTO sourcelead.PROJECT_TASKS(`PROJECT_TASKS_UUID`,`TASK_NAME`, `DESCRIPTION`, `BILLABLE_TYPE`,`PROJECT_ID`,`TASK_TYPE`,`TASK_STATUS`,`STATUS`) VALUES (?,?,?,?,?,?,?,?)";
+					 PreparedStatement pstmt = conn.prepareStatement(query);
+					 pstmt.setString(1, uuid);
+					 pstmt.setString(2, taskNameArray[0]);
+					 pstmt.setString(3, taskNameArray[0]);
+					 pstmt.setString(4, taskNameArray[1]);
+					 pstmt.setLong(5, projectId);
+					 pstmt.setLong(6, 1060);
+					 pstmt.setLong(7, 1069);
+					 pstmt.setString(8, "1");
+					 pstmt.executeUpdate();
 					 }
 				 }
 				 
-				 System.out.println("----Adding unique UUID project tasks ends-----");
 		}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -96,7 +100,7 @@ public class GenerateProjectTaskUUIDForSystemGeneratedTask {
 		}
 	 
 	public static void main(String[] args) throws IOException, SQLException {
-		GenerateProjectTaskUUID dump = new GenerateProjectTaskUUID();
+		GenerateProjectTaskUUIDForSystemGeneratedTask dump = new GenerateProjectTaskUUIDForSystemGeneratedTask();
 		dump.projectTaskUUID();
 	}
 

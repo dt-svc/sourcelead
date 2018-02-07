@@ -60,7 +60,7 @@
 			</div>
 		</td>
 	</c:if>
-	<td><div class="sm" title="New" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>
+	<td><div class="sm" title="${timesheetSubmission.submissionStatus}" id="status${timesheetSubmission.projectMemberId}">${timesheetSubmission.submissionStatus}</div></td>
 <c:if test="${!empty timesheetSubmission.submissionStatus && timesheetSubmission.submissionStatus == 'SUBMITTED FOR APPROVAL'}">
 <td>
 	<div class="sm text-center" id="action${timesheetSubmission.projectMemberId}">

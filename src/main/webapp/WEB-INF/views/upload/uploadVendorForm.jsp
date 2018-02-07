@@ -229,34 +229,36 @@ function saveBulkImport(){
 	        contentType:false,
     	    dataType : 'json',
 		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Vendor", 	   
- 		    success : function(data) {
+ 		    success : function(json) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 		    	if(data == "empty"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Mandatory fields are required");
- 		    		msgFadein();
- 		    	}else if(data == "invalid"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Please import valid Template");
- 		    		msgFadein();
- 		    	}else if(data == "success"){
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Inserted successfully");
- 		    		msgFadein();
- 		    	}else{
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Processed successfully");
- 		    		msgFadein();
- 		    		prepareExcelDataDiv(data);
- 		    	}
+
+ 		    	var statusCode = "";
+ 				if(json != null){
+ 					statusCode = json.statusCode;
+ 				}
+ 				if(json != null && json != ''){
+ 					if(statusCode == "success"){
+ 						$("#selector").removeClass("remove_pop");
+ 				 		$("#selector").addClass("success_pop");
+ 				 		$("#selector").removeAttr("style");
+ 						$("#selector").css({ display: "block" });
+ 				 		$("#msgDiv").html("Processed successfully");
+ 				 		msgFadein();
+ 				 		prepareExcelDataDiv(json);
+ 					}else if(statusCode == "invalid"){
+ 						$("#selector").removeAttr("style");
+ 						$("#selector").css({ display: "block" });
+ 						$("#msgDiv").html("Please fill mandatory fields");
+ 						msgFadein();
+ 					}
+ 				}else if(statusCode == ""){
+ 					$("#selector").removeAttr("style");
+ 					$("#selector").css({ display: "block" });
+ 					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
+//  					msgFadein();
+ 				}
+ 		    		
+//  		    	}
  		    },
  		   error: function(e){
  			  alert(e);
@@ -275,7 +277,7 @@ function saveBulkImport(){
 </script> 
 
 <script>
-function prepareExcelDataDiv(data){
+function prepareExcelDataDiv(json){
 	var result = '';
 	result = result +  '<table id="excelimportDataTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -292,9 +294,9 @@ function prepareExcelDataDiv(data){
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
-	var json = JSON.parse(data);
-    for (var i = 0; i < json.length; i++) {
-    	var report= json[i];
+// 	var json = JSON.parse(data);
+    for (var i = 0; i < json.data.length; i++) {
+    	var report= json.data[i];
     	result = result + '<tr id="row'+report.id+'">';
         result = result + '<td>';
         if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'){
@@ -356,8 +358,8 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
         result = result + '<td>';
-        if(report.reason != null && report.reason != '' && report.reason !='undefined'){
-       		 result = result + "<div><a class='text-danger' title='"+report.reason+"'>"+report.reason+"</a></div>";
+        if(report.fileReason != null && report.fileReason != '' && report.fileReason !='undefined'){
+       		 result = result + "<div><a class='text-danger' title='"+report.fileReason+"'>"+report.fileReason+"</a></div>";
         }
         else{
 		    	result = result + "<div><span>---</span></div>";
@@ -366,7 +368,7 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
          result = result + '<td>';
-         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Vendor name is mandatory' || report.reason ==  'Vendor name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number' || report.reason ==  'First Name is mandatory' || report.reason ==  'Email is Mandatory'){
+         if(report.fileReason == 'Spoc existed' || report.fileReason == 'Current org user' || report.fileReason ==  'Vendor name is mandatory' || report.fileReason ==  'Vendor name should contain above 2 char' || report.fileReason ==  'Invalid email' || report.fileReason ==  'Invalid moblie number' || report.fileReason ==  'First Name is mandatory' || report.fileReason ==  'Email is Mandatory'){
         	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
         	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
