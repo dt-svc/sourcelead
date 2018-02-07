@@ -662,7 +662,7 @@ public void transferAssociates() throws IOException, SQLException {
 				 
 				 
 				 try {
-					 String designationType = "C2C";
+					 String designationType = "Offshore C2C";
 					 String clientCandidateQry = " update sourcelead.CANDIDATE candidate set candidate.PARENT_CANDIDATE_ID = '"+vendorCandidateId+"', candidate.DESIGNATION_TYPE = '"+designationType+"', candidate.ORG_RELATION_ID = '"+orgRelationId+"', candidate.SPOC_ID = '"+spocId+"' where candidate.ID = '"+candidateId+"' ";
 			    	 java.sql.PreparedStatement clientCandidatePstmt = conn.prepareStatement(clientCandidateQry); 
 			    	 clientCandidatePstmt.executeUpdate(); 

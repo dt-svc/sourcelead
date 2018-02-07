@@ -35,10 +35,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
@@ -70,6 +72,9 @@ public class OpenJobsRestController {
 
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
@@ -685,28 +690,47 @@ public class OpenJobsRestController {
 	@RequestMapping(value = { "/app/ws/getOrgsListforOpenJobs", "/app/getOrgsListforOpenJobs" })
 	public @ResponseBody String getOrgsListforOpenJobs(
 			@RequestParam(value = "alphabet", required = false) String alphabet,
-			@RequestParam(value = "country", required = false) String country) throws Exception {
-		List<OrgLocations> locationsList = null;
+			@RequestParam(value = "country", required = false) String country,@RequestParam(value = "type", required = false) String type) throws Exception {
+		List<Org> orgList = null;
 		String json;
 		if ("none".equalsIgnoreCase(alphabet)) {
-			locationsList = orgLocationService.getAllOrgLocations();
+			orgList = orgService.getOpenJobsOrgs();
 		} else {
-			locationsList = orgLocationService.getAllOrgsStartsWithAlphabet(alphabet);
+			orgList = orgService.getAllOpenJobsOrgsStartsWithAlphabet(alphabet);
 		}
-		List<OrgLocations> countryfiltered = new ArrayList<>();
-		for (OrgLocations loc : locationsList) {
-			if (null != country && country.equalsIgnoreCase(loc.getCountry())) {
-				loc.setOrgName(loc.getOrgLocationName());
-				countryfiltered.add(loc);
-			} else {
-				loc.setOrgName(loc.getOrgLocationName());
+		List<Org> tobereturnedOrgList = new ArrayList<>();
+		if("main".equalsIgnoreCase(type)){
+			int i = 1;
+			for (Org org : orgList) {
+				if(i<=5){
+					org.setNoOfDays(orgList.size());
+					tobereturnedOrgList.add(org);
+				}else
+					break;
+				i++;
+				
+				
+				/*if (null != country && country.equalsIgnoreCase(loc.getCountry())) {
+					loc.setOrgName(loc.getOrgLocationName());
+					countryfiltered.add(loc);
+				} else {
+					loc.setOrgName(loc.getOrgLocationName());
+				}*/
 			}
 		}
+		
+		
 
+		
 		if (null != country && !"".equalsIgnoreCase(country)) {
-			json = commonUtil.toJSON(countryfiltered);
-		} else {
-			json = commonUtil.toJSON(locationsList);
+			json = commonUtil.toJSON(tobereturnedOrgList);
+		}
+		else if("sub".equalsIgnoreCase(type)){
+					
+			json = commonUtil.toJSON(orgList);
+				}
+		else {
+			json = commonUtil.toJSON(tobereturnedOrgList);
 		}
 		return json;
 	}
