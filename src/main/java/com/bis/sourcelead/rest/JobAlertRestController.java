@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
@@ -185,10 +185,10 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 									 
 									 for(String keywd : skillsOrKeyWordList){
 										 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-										ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-										if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-											for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-												anyBoolSubQueryBuilder.should(matchQueryBuilder);
+										ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+										if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+											for(QueryBuilder QueryBuilder :QueryBuilderList){
+												anyBoolSubQueryBuilder.should(QueryBuilder);
 											}
 											anySkillOrKeyWordBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 										}
@@ -222,34 +222,34 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 	}
 		
 		
-		private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
 			   
-			   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			   ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+			    QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+			    QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
 				
 				
 				Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 				if(matcher.find()){
 					Float expYears = Float.valueOf(matcher.group());
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+					QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+					QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+					QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 				}
 
 					
-				return matchQueryBuilderList; 
+				return QueryBuilderList; 
 		 }
 		
 		
