@@ -92,6 +92,9 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		if(customList.getCustomDependantField() != null) {
 			customDTO.setCustomDependentField(customList.getCustomDependantField().getId());
 		}
+		if(customList.getSourceLeadDependantField()!= null) {
+			customDTO.setSlDependedntField(customList.getSourceLeadDependantField().getId());
+		}
 		customDTO.setId(customList.getId());
 		customDTO.setFieldDescription(customList.getFieldDesc());
 		customDTO.setFieldName(customList.getFieldName());

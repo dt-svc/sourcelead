@@ -15,6 +15,8 @@
 	<!-- <div class="cusFielPopup cusFiel-popup " id="popUpDataCustom"> -->
 	 <form id="saveAddForm_form" name="saveAddForm_form">
 	    <input name="id" id="customFieldId" value="${customFormPopDetails.id}" type="hidden"/>
+	    <input type="hidden" value="${customFormPopDetails.customDependentField}" id="customDependndentFieldId">
+	    <input type="hidden" value="${customFormPopDetails.slDependedntField}" id="slDependedntFieldId">
 		<div class="popupHead">
 			<h2>Add New Field</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>

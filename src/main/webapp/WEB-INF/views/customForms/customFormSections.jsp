@@ -99,6 +99,7 @@ $(document).ready(function() {
  
  <script>
  function getDependentFieldList(){
+	 var slDependedntFieldId = $('#slDependedntFieldId').val();
 	 var selectedSectionID = $("#addFieldSection").val();
 	 $.ajax({
 			type : "POST" , 
@@ -111,7 +112,13 @@ $(document).ready(function() {
 			        	var opt = json[i];
 			        	if(opt != null && opt !='' && opt != 'undefined'){
 			        		if(opt.labelName != null && opt.labelName !='' && opt.labelName != 'undefined'){
-			        		output = output + "<option value='"+opt.id+"'>"+opt.labelName+"</option>";
+			        			if(slDependedntFieldId == opt.id){
+			        				output = output + "<option selected value='"+opt.id+"'>"+opt.labelName+"</option>";
+			        				$("#dependentFieldDiv").attr("disabled","disabled");
+			        			}else{
+			        				output = output + "<option value='"+opt.id+"'>"+opt.labelName+"</option>";
+			        			}
+			        		
 			        		}
 			        	}
 					}
@@ -126,6 +133,7 @@ $(document).ready(function() {
  
   <script>
  function getCustomDependentFieldList(){
+	 var customDependentField = $('#customDependndentFieldId').val();
 	 var selectedSectionID = $("#addFieldSection").val();
 	 $.ajax({
 			type : "POST" , 
@@ -138,7 +146,13 @@ $(document).ready(function() {
 			        	var opt = json[i];
 			        	if(opt != null && opt !='' && opt != 'undefined'){
 			        		if(opt.labelName != null && opt.labelName !='' && opt.labelName != 'undefined'){
-			        		output = output + "<option value='"+opt.id+"'>"+opt.labelName+"</option>";
+			        			if(opt.id == customDependentField){
+			        				output = output + "<option selected disabled value='"+opt.id+"'>"+opt.labelName+"</option>";
+			        				$("#customDependentField").attr("disabled","disabled");
+			        			}else{
+			        				output = output + "<option value='"+opt.id+"'>"+opt.labelName+"</option>";
+			        			}
+			        		
 			        		}
 			        	}
 					}
