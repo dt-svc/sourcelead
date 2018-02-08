@@ -66,7 +66,7 @@
 	<div class="clearfix"></div>
 		<h4>Quick &amp; Easy Access to RDA</h4>
 		<ul class="list-styles">
-			<li>Create and get a quick view into the candidates multiple profiles.</li>
+			<li>Create and get a quick view into the candidates multiple profiles</li>
 			<li>Effortlessly import and export the resume database</li>
 			<li>Intuitive outreach through Hotlist Campaigns</li>
 			<li>Access the large candidate database </li>
@@ -81,10 +81,10 @@
 	<div class="clearfix"></div>
 		<h4>Job Advertising</h4>
 		<ul class="list-styles">
-			<li>Effective strategy for job posting on free and premium job boards.</li>
+			<li>Effective strategy for job posting on free and premium job boards</li>
 			<li>Increase profile potential by posting on Company Career Page and Sourcelead Marketplace</li>
-			<li>Design the Job Template your way.</li>
-			<li>Spearhead the job postings among social communities.</li>
+			<li>Design the Job Template your way</li>
+			<li>Spearhead the job postings among social communities</li>
 		</ul>
 	</div>
 	
@@ -98,9 +98,9 @@
 		<h4>Refined by Integration</h4>
 		<ul class="list-styles">
 			<li>VMS, HRMS, and PMO integration</li>
-			<li>Integrated VMS minimizes time and efforts and provides streamlined hiring process.</li>
-			<li>HRMS integration enables simple and automated On Boarding process.</li>
-			<li>Project management integration helps strategic resource planning and contract creation for candidate and vendor, track  offer letter acceptance and rejections.</li>
+			<li>Integrated VMS minimizes time and efforts and provides streamlined hiring process</li>
+			<li>HRMS integration enables simple and automated On Boarding process</li>
+			<li>Project management integration helps strategic resource planning and contract creation for candidate and vendor, track  offer letter acceptance and rejections</li>
 		</ul>
 	</div>
 
@@ -112,11 +112,11 @@
 		<div class="clearfix"></div>
 		<h4>Perfected with the Versatility</h4>
 		<ul class="list-styles">
-			<li>Data recommendation gives the best suitable profiles in marketplace.</li>
-			<li>Skill/Trait based resume scoring mechanism.</li>
-			<li>Compare and pick the best using resume comparison.</li>
-			<li>Adapting AI for resume screening and scoring.</li>
-			<li>Automated Notifications on Interview Schedule and Progress.</li>
+			<li>Data recommendation gives the best suitable profiles in marketplace</li>
+			<li>Skill/Trait based resume scoring mechanism</li>
+			<li>Compare and pick the best using resume comparison</li>
+			<li>Adapting AI for resume screening and scoring</li>
+			<li>Automated Notifications on Interview Schedule and Progress</li>
 			<li>Smart Email alerts and Avoids duplicate applications, Online Salary Negotiation, Online Offer acceptance, Interview Notes</li>
 		</ul>
 	</div>
@@ -127,9 +127,9 @@
 	<div class="clearfix"></div>
 		<h4>Building Corporate Community </h4>
 		<ul class="list-styles">
-			<li>Automated alerts for employee referrals.</li>
-			<li>Track the referrals interview progress through the integrated system.</li>
-			<li>Efficient hiring through refer and earn program.</li>
+			<li>Automated alerts for employee referrals</li>
+			<li>Track the referrals interview progress through the integrated system</li>
+			<li>Efficient hiring through refer and earn program</li>
 		</ul>
 	</div>
 
@@ -140,8 +140,8 @@
 		<div class="clearfix"></div>
 		<h4>Additional Features</h4>
 		<ul class="list-styles">
-			<li>Task assignment to teams.</li>
-			<li>Customized fields.</li>
+			<li>Task assignment to teams</li>
+			<li>Customized fields</li>
 			<li>Customizable Dashboards and Reports</li>
 		</ul>
 	</div>
@@ -163,4 +163,9 @@
 </section>
 <!-- Benefits of sourcelead  -->
 <jsp:include page="../staticFooter.jsp" />
-
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#atsID").addClass("slactive");
+}
+</script>

@@ -1110,3 +1110,8 @@ function redirectPage(){
 				});	 */	  
 </script>
 <jsp:include page="../socialinviterscripts.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#searchjobID").addClass("slactive");
+}
+</script>
