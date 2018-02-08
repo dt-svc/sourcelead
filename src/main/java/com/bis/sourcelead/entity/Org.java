@@ -154,6 +154,9 @@ public class Org implements Serializable{
 	@Transient
 	private Long primaryOrgLocationId;
 	
+	@Transient
+	private int noOfDays;
+	
 	public Long getId() {
 		return id;
 	}
@@ -415,6 +418,14 @@ public class Org implements Serializable{
 		this.fileUrl = fileUrl;
 	}
 
-	
+	public int getNoOfDays()
+	{
+		return noOfDays;
+	}
+
+	public void setNoOfDays(int noOfDays)
+	{
+		this.noOfDays = noOfDays;
+	}
 
 }
