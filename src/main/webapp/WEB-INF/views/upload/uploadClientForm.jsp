@@ -249,7 +249,6 @@ if ($('#upload_form').validate(false, validationSettings)){
  					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
  					msgFadein();
  				}
-		//  		    	}
 		 		    },
 		 		   error: function(e){
 			        }
