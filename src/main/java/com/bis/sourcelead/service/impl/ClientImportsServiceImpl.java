@@ -738,7 +738,8 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 	private boolean isMobileNumberValid(String mobileNmber)
 	{
 		String phoneNumber = mobileNmber.trim();
-		String regex = "^\\+?[0-9 ()-]{10,25}$";
+		//String regex = "^\\+?[0-9 ()-]{10,25}$";
+		String regex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag;
 		if (phoneNumber.length() > 9 && phoneNumber.length() <= 20) {
 			flag = phoneNumber.matches(regex);
