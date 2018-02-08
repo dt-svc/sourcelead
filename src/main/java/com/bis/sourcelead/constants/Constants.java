@@ -691,6 +691,10 @@ public class Constants {
 	public static final String CANDIDATE_ADDRESS = "Address";
 	public static final String CANDIDATE_DESIGNATION = "Designation";
 	public static final String CANDIDATE_TYPE = "Type";
+	
+	public static final String CANDIDATE_VENDOR_NAME = "Vendor";
+	public static final String CANDIDATE_VENDOR_CONTACT = "Vendor Contact(Email)";
+	
 	public static final String CANDIDATE_EXPERIENCE = "Experience";
 	public static final String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
 	public static final String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
