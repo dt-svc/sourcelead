@@ -91,7 +91,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
-		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where emp IS NOT NULL and proj.id = :projectId and loc.id = :locationId ";
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId ";
 		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
@@ -814,7 +814,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		ResponseList<UserRole> response = new ResponseList<>();
 		List userRoleList = null;
@@ -835,7 +835,17 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
 					
 		}
-		
+		//usertList shorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userRoleDTO.getSortColumn())) {
+			if(userRoleDTO.getSortColumn().equalsIgnoreCase("displayName")) {
+				sortingQry = " order by userRole.roles."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
+			}else {
+				sortingQry = " order by userRole.user."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
+
+			}
+			
+		}
 		if(roleId != null) {
 			 subQuery = " and userRole.roles.id = :roleId ";
 			params.put("roleId",roleId);
@@ -846,7 +856,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		} 
 			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
-			Query query = session.createQuery(listQuery+query1);
+			Query query = session.createQuery(listQuery+query1+sortingQry);
 			if(roleId != null && !"".equalsIgnoreCase(userState)) {
 				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			}else if(roleId != null && "".equalsIgnoreCase(userState)) {

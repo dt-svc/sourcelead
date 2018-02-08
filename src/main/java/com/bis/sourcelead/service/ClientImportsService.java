@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.ClientVendorUploadDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -24,9 +25,9 @@ public interface ClientImportsService {
 
 	String clientBulkSavingImp(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String isMailCheck, String responderType)throws Exception;
 
-	String clientExcelDataSave(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String email, String responderType)throws Exception;
+	List<BulkClientDetails> clientExcelDataSave(MultipartFile multipartFile, User user, OrgLocations orgLocation, Org org, String email, String responderType)throws Exception;
 
-	List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(ClientVendorUploadDTO clientVendorUploadDTO,OrgLocations orgLocation, User user, Org org, String isMailSent, String responderType) throws Exception;
+	ResponseList<BulkClientDetails> getbulkClientDetailsByOrgLocationId(List<BulkClientDetails> fileList,ClientVendorUploadDTO clientVendorUploadDTO,OrgLocations orgLocation, User user, Org org, String isMailSent, String responderType) throws Exception;
 
 	BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation,String responderType)throws Exception;
 
