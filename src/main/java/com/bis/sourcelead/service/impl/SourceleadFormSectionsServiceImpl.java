@@ -85,6 +85,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		OrglocationFormFieldsDTO customDTO = new OrglocationFormFieldsDTO();
 		if(customList.getSourceleadFormSections() != null && StringUtils.isNotBlank(customList.getSourceleadFormSections().toString())) {
 			customDTO.setSectionId(customList.getSourceleadFormSections().getId());
+			customDTO.setSectionData(sourceleadFormSectionsDTOConverter(customList.getSourceleadFormSections(),null,null));
 		}
 		if(customList.getCustomDependantField() != null) {
 			customDTO.setCustomDependentField(customList.getCustomDependantField().getId());

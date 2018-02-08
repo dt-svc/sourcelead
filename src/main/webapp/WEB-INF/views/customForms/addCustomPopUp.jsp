@@ -50,7 +50,7 @@
 			  
 			  <div class="col-sm-12 noPad mt clearfix">
 				  	  <div class="col-md-3 noPad labHeight">Is Required? <span class="text-danger paddingLeft">*</span></div>
-					  <div class="col-md-6"><input name="isRequired" value="${empty customFormPopDetails.isRequired ? '0' : customFormPopDetails.isRequired}" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" field-name="isRequired" type="checkbox" data-validation="required"></div>
+					  <div class="col-md-6"><input name="isRequired" value="${empty customFormPopDetails.isRequired ? '0' : customFormPopDetails.isRequired}" ${customFormPopDetails.isRequired == '1'?'checked':''} id="isRequired" class="toggle-required" field-name="isRequired" type="checkbox"></div>
 				</div>
 			  
 				<div class="clearfix"></div>
@@ -72,12 +72,19 @@
             <div  id="selectFieldDiv" style="display: none">
 				<div class="col-sm-12 noPad mt clearfix">
 					   <div class="col-md-3 noPad labHeight"><p>Options</p></div>
-						<div class="col-md-6"><input name="optionData[0].option" id ="selectOptionId" class="field-label form-control input-sm" type="text"> </div>
+						<c:if test="${not empty customFormPopDetails.optionData}">
+							<c:forEach var="options" items="${customFormPopDetails.optionData}" varStatus="optionStatus">
+								<div class="col-md-6"><input name="optionData[${optionStatus.index}].option" value="${options.option}" id ="selectOptionId" class="field-label form-control input-sm" type="text"> </div>
+							</c:forEach>	
+						</c:if>
+						<c:if test="${empty customFormPopDetails.optionData}">
+							<div class="col-md-6"><input name="optionData[0].option" value="" id ="selectOptionId" class="field-label form-control input-sm" type="text"> </div>
+						</c:if>
 						<div class="col-md-3 lblHeight"><span>&nbsp;</span>
 					</div>
 				</div>
 				
-				<input type="hidden" id="optionCounter" value="1"/>
+				<input type="hidden" id="optionCounter" value="${fn:length(customFormPopDetails.optionData)}"/>
 				<div id="optionsDiv"></div>	
 				 <div class="col-sm-12 noPad mt clearfix">
 				  <div class="col-md-3 noPad labHeight">&nbsp;</div>
@@ -134,3 +141,24 @@
 		<!-- </div> -->
 
 <!--   Popup Code  -->
+
+ <script>
+ $(function(){
+	    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	    $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		 $("#addFieldSection").chosen();
+	    $("#fieldsDropDown").chosen();
+	    $("#fieldsDropDown").trigger("chosen:updated");
+	    $("#addFieldSection").trigger("chosen:updated");
+	    
+	}); 
+ </script>

@@ -7,7 +7,7 @@
 	   <div>
 	    <i class="fa fa-sort paddingRight" title="Drag"></i>
 		<i class="fa fa-eye"></i>
-		<i class="fa fa-file-text-o" title="edit file" onclick="editFileDetails(${customFormDetails.id});"></i>
+		<i class="fa fa-file-text-o" title="edit file" onclick="editFileDetails(${customFormDetails.id},'editCustomRowField');"></i>
 		<i class="fa fa-trash" title="Remove" onclick="deleteCustomField(${customFormDetails.id});"></i>
 	  </div>
 	</td>

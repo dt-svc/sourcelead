@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,12 +46,24 @@ public class OrglocationFormFieldsRestController {
     }
     
 	@RequestMapping(value="/editNewCustomFormField",method = RequestMethod.POST)
-    public ModelAndView editNewCustomFormField(OrglocationFormFieldsDTO orgLocFormFieldsDTO,HttpServletRequest request,@RequestParam (value="actionId") Long actionId) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		OrglocationFormFields orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
-		OrglocationFormFieldsDTO orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, null);
+    public ModelAndView editNewCustomFormField(OrglocationFormFieldsDTO orgLocFormFieldsDTO,HttpServletRequest request,@RequestParam (value="actionId") Long actionId,@RequestParam (value="type") String type) throws Exception {
 		ModelAndView model = new ModelAndView();
-		List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
+		OrglocationFormFields orglocationFormFields = null;
+		OrglocationFormFieldsDTO orglocationFormFieldsDTO = null;
+		List<SourceleadSectionDTO> sections  = null;
+		if(type.equalsIgnoreCase("addNewCustomField")) {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
+		if(orglocationFormFields!= null) {
+		orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, null);
+		}
+		sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
+		}else if(type.equalsIgnoreCase("editCustomRowField")) {
+		orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
+		orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, null);
+		sections  = new ArrayList<>();
+		sections.add(orglocationFormFieldsDTO.getSectionData());
+		}
 		model.addObject("customFormPopDetails",orglocationFormFieldsDTO);
 		model.addObject("SourceleadForm_Sections_pop",sections);
 		model.setViewName("customForms/addCustomPopUp");
