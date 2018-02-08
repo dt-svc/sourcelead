@@ -5,7 +5,7 @@
   <div class="row">
   		<div class="col-md-12">
   	<h2 class="text-center">HRMS &amp; Contract Management</h2>
-  	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
+  	<div class="clearfix mt mb"><img src="/resources/static-web/images/hrmsicons.png" alt="img"></div>
   	<p>
   		We provide an advanced technology solution combining the workforce management and human capital management.<br>It connects the payroll, talent acquisition, employee on boarding, internal and exit HR policies and performance management.
   	</p>
@@ -56,7 +56,7 @@
 <div class="clearfix container productfeatures">
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/hrms-payrollmanagement.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Integrated Payroll Management</h4>
 		<ul class="list-styles">
@@ -67,7 +67,7 @@
 </div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/hrms-workforcemanagement.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Unified workforce management access </h4>
 		<ul class="list-styles">
@@ -77,7 +77,7 @@
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/hrms-efficientresourceplanning.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Efficient resource planning &amp; transfers</h4>
 		<ul class="list-styles">
@@ -89,7 +89,7 @@
 	<div class="clearfix"></div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/hrms-assetmanagement.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Smart Assets management</h4>
 		<ul class="list-styles">
@@ -100,7 +100,7 @@
 	
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/hrms-customizetemplate.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Customizable templates</h4>
 		<ul class="list-styles">
@@ -110,7 +110,7 @@
 	</div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/crms-integrate.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Integrated with SourceLead modules</h4>
 		<ul class="list-styles">
@@ -136,3 +136,9 @@
 <!-- Benefits of sourcelead  -->
 
 </section><jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#hrmsID").addClass("slactive");
+}
+</script>

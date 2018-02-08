@@ -3,7 +3,6 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,8 +20,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -662,7 +659,7 @@ public void transferAssociates() throws IOException, SQLException {
 				 
 				 
 				 try {
-					 String designationType = "C2C";
+					 String designationType = "Offshore C2C";
 					 String clientCandidateQry = " update sourcelead.CANDIDATE candidate set candidate.PARENT_CANDIDATE_ID = '"+vendorCandidateId+"', candidate.DESIGNATION_TYPE = '"+designationType+"', candidate.ORG_RELATION_ID = '"+orgRelationId+"', candidate.SPOC_ID = '"+spocId+"' where candidate.ID = '"+candidateId+"' ";
 			    	 java.sql.PreparedStatement clientCandidatePstmt = conn.prepareStatement(clientCandidateQry); 
 			    	 clientCandidatePstmt.executeUpdate(); 
@@ -1025,18 +1022,6 @@ public DataSource comboPooledDataSource() {
 	comboPooledDataSource.setJdbcUrl(dbconfig.getJdbcUrl());
 	comboPooledDataSource.setUser(dbconfig.getUser());
 	comboPooledDataSource.setPassword(dbconfig.getPassword());
-	
-	try {
-    	  Settings settings = Settings.settingsBuilder()
-    			  .put("cluster.name", dbconfig.getCluster())
-                  .put("node.name", dbconfig.getNode())
-         		  .put("path.home", dbconfig.getPath())
-                  .build();
-		client = TransportClient.builder().settings(settings).build().
-		      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-     } catch (Exception exception) {
-		logger.error(ExceptionUtils.getFullStackTrace(exception));
-	}
 	
 	return comboPooledDataSource;
 }

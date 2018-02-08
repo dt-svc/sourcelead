@@ -519,6 +519,7 @@ public class TimeApprovalRedefinedRestController {
 	 private TimesheetApprovalSubmissionDetailsDTO getTimesheetApprovalRowDetails(TimesheetApprovalDTO timesheetApprovalDTO,ProjectMembers projectMember,OrgLocations orgLocations,Date actualStartDate,Date actualEndDate,User loginUser,int tdSpanLength) throws Exception {
 			 TimesheetApprovalSubmissionDetailsDTO ts = new TimesheetApprovalSubmissionDetailsDTO();
 			 ProjectMembers pm = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
+			 projectMember =  projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId(),orgLocations.getId());
 			 String fileUrl = "";
 			 if(pm != null && pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getConsultantUser() != null)
 				 fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
