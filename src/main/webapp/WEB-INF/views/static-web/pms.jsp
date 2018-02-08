@@ -4,7 +4,7 @@
   <div class="row">
   		<div class="col-md-12">
   	<h2 class="text-center">Project Management</h2>
-  	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
+  	<div class="clearfix mt mb"><img src="/resources/static-web/images/pmsicons.png" alt="img"></div>
   	<p>
   		Implement the integration of various HR workflows which encompass multiple tasks.<br>SourceLead PMO helps you stay dedicated and disciplined on the regular project management track.
   	</p>
@@ -59,7 +59,7 @@
 <h2 class="text-center colorlogo mb">Features</h2>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/pms-manageprojects.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Manage internal &amp; clients projects  </h4>
 		<ul class="list-styles">
@@ -69,7 +69,7 @@
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/crms-resourcebudget.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Resource &amp; budget planning</h4>
 		<ul class="list-styles">
@@ -79,7 +79,7 @@
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/pms-documentmanage.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Tasks and Document management</h4>
 		<ul class="list-styles">
@@ -89,7 +89,7 @@
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/pms-advancedprojectreport.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Advanced project reports</h4>
 		<ul class="list-styles">
@@ -99,7 +99,7 @@
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-community.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/pms-timesheetexpenses.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Timesheet &amp; expenses management</h4>
 		<ul class="list-styles">
@@ -109,7 +109,7 @@
 	</div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/crms-integrate.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Integrated with SourceLead modules</h4>
 		<ul class="list-styles">
@@ -134,3 +134,9 @@
 </section>
 <!-- Benefits of sourcelead  -->
 </section><jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#pmsID").addClass("slactive");
+}
+</script>

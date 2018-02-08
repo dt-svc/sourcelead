@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -3388,25 +3388,25 @@ public class RequirementServiceImpl implements RequirementService {
 		return keyWordList;
 	}
 	
-	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd)
+	private ArrayList<QueryBuilder> getQueryBuilderListForUniversalSearch(String keywd)
 	{
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
 		}
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 	
 	public String UpdateOnToDate(String updatedOn)
@@ -3787,6 +3787,12 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays, Long managerId) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(orgLocationId, userType, userId, userCode, numberOfDays, managerId);
+	}
+
+	@Override
+	public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception
+	{
+		return requirementDao.getRequirementByAccessibleUserIdAndRequirementUUID(userId, requirementUUID);
 	}
 	
 }

@@ -500,7 +500,8 @@ top: 21px;height: 32px; line-height: 18px;
 
 		<div id="companiesListDiv" class="filterCta">
 				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
-				<ul id="orgList"></ul>
+				<ul id="orgList">
+				</ul>
 			</div>	
 
 		<!-- <div class="filLoad">
@@ -1431,7 +1432,7 @@ function getOrgsList(alphabet,type){
 	var selectedCompanies = companies.split(",");
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country+"&type="+type,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
@@ -1476,10 +1477,12 @@ function getOrgsList(alphabet,type){
 		    			
 		    		}
 		    	}
-	    		if(json.length > 5){
-	    			var orgCount = json.length - 5 ;
-			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+orgCount+' More</a>';
-	    		}
+// 	    		if(json.length > 5){
+// 	    			var orgCount = json.length - 5 ;
+				if(opt.noOfDays != '' && opt.noOfDays != 'undfined' && opt.noOfDays != null){
+			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+opt.noOfDays+' More</a>';
+
+				}
 				var org = "";    	
 				for(var i=0; i<json.length; i++){
 					var opt1 = json[i];
@@ -2591,7 +2594,7 @@ function createAlert(requirementUUID){
         	 result = result +'         	<div class="col-md-9">';
         	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple field-name="Keywords/Skills" id="candidateSkills" data-validation="required" name="skills">';
         	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
-        	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+        	 result = result + "<option value='${skill.name}'>${skill.name}</option>";
         	 result = result +'						</c:forEach>;'
         	 result = result +'         		</select>';
         	 result = result +'         	</div>';
