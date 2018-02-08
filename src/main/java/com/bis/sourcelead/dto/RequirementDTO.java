@@ -176,7 +176,7 @@ public class RequirementDTO extends CommonDTO {
 	
 	private List<RequirementLocationsDTO> savedLocationInfo;
 
-	
+	private List<String> locationsList;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -1333,5 +1333,12 @@ public class RequirementDTO extends CommonDTO {
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
 }

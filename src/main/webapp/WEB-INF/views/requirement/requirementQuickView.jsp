@@ -34,11 +34,21 @@
 									  <i class="fa ${!empty requirement.currencyCode && requirement.currencyCode == 'INR'  ? 'fa-rupee' :!empty requirement.currencyCode && requirement.currencyCode == ('USD' || 'AUD' || 'SGD' ) ? 'fa-dollar': !empty requirement.currencyCode && requirement.currencyCode == 'EUR' ? 'fa-eur' : !empty requirement.currencyCode && requirement.currencyCode == 'GBP' ? 'fa-gbp' : 'fa-rupee' } " title="Job Rate"></i>
 								      <span>${!empty requirement.rate ? requirement.rate : '---'}${!empty requirement.maxRate ? ' - ':''}${!empty requirement.maxRate ? requirement.maxRate : ''}  ${!empty requirement.currencyCode ? requirement.currencyCode : ''}${!empty requirement.rateType ? ' / ':''}${!empty requirement.rateType ? requirement.rateType : ''} </span>
 									</li>
-									<li><i class="fa fa-map-marker" title="Location"></i>
+									<%-- <li><i class="fa fa-map-marker" title="Location"></i>
 									<c:forEach var ="reqLocs" items="${locationsList}">
 									 <span title="${reqLocs.location}">${reqLocs.location}</span>
 									</c:forEach>
+									</li> --%>
+									
+									<li><i class="fa fa-map-marker pull-left mt5"></i>
+									<ul class="list-unstyled joblocations-public col-md-10">
+									<c:forEach var ="reqLocs" items="${locationsList}">
+									 <li title="${reqLocs.location}">${reqLocs.location}</li>
+									</c:forEach>
+									</ul>
 									</li>
+									
+									
 									<li><i class="fa fa-cab" title="Travel allowance"></i><span title="${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}">${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}</span></li>
 								</ul>
 							</div>

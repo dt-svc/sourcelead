@@ -466,6 +466,13 @@ public class ContractController {
 				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
 				contract.setStartDateStr(currentDateInTimezone);
 			}
+			if(null != contract && null != contract.getJoinDate()){
+				String currentTimeStr = Constants.TZ_DF.format(contract.getJoinDate());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+				contract.setJoinedDateStr(currentDateInTimezone);
+			}
 			if(null != contract && null != contract.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);

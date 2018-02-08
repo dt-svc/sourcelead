@@ -87,12 +87,6 @@ function requirementHistoryList(candidateId){
            	 }else{
            		rate = "--";
            	 }
-           	 if(report.country != null && report.country != '' && report.country != 'undefined'){
-           		country  = report.country;
-           	 }else{
-           		country = "--"
-           	 }
-           	 
            	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
             		clientName  = report.clientName;
             	 }else{
@@ -101,7 +95,28 @@ function requirementHistoryList(candidateId){
 	           	result = result  +'	          <tr>';
 	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+jobType+'">'+jobType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span" title="'+country+'">'+country+'</span></div></td>';
+	    		
+	    		result = result +'<td>';
+	    		result = result +'<div class="positionRelative">';
+  		         for(var k=0; k<1; k++){
+  		        	result = result + '<p class="tbldata-dotdot-sm pull-left">'+report.locationsList[k]+'</p>';
+  		         }
+		    	
+  		        result = result +'<div class="show_Empdetails showjoblist">';
+		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+		        	result = result +'<div class="emailvalues">';
+		        	
+				for(var k=0; k<report.locationsList.length; k++){
+					result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+   		        	
+		    	 	}
+		        	result = result +'</div>';
+		        	result = result +'</div>';
+
+	        	result = result +'</div>';
+	        	result = result +'</td>';
+	    		
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+clientName+'">'+clientName+'</span></div></td>';
