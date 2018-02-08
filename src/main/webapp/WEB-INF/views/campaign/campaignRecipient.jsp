@@ -36,7 +36,7 @@ z-index: 1040 !important;
 		</c:if>
 		</div>
 		
-		<div id="loading"></div>
+		<div id="loadingRecipient"></div>
 		<div class="popupMid popupMidPad clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
