@@ -21,6 +21,7 @@
  	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
+     <div id="senderLoading"></div>
 		<form:form id="capn_add_sender" name="capn_add_sender" method="post">
 		<div class="popupHead">
 			<h2 id="addSender">Add Sender</h2><a onclick="senderClose();"  href="javascript:void(0)" class="fa fa-close"></a>
