@@ -68,4 +68,9 @@
   </div>
 </section>
 <!-- Benefits of sourcelead  -->
-<jsp:include page="../staticFooter.jsp" />
+<jsp:include page="../staticFooter.jsp" />\
+<script type="text/javascript">
+window.onload = function() {
+	$("#aboutusID").addClass("slactive");
+}
+</script>
