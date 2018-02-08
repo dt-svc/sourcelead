@@ -61,7 +61,7 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 			 System.out.println("----Adding Monthly Leaves starts-----");
 			 while(rs1.next()){
 				 Leave leave = new Leave();
-				 leave.setId(rs1.getString("ID"));
+				 leave.setId(rs1.getLong("ID"));
 				 leave.setFromDate(rs1.getDate("FROM_DATE"));
 				 leave.setToDate(rs1.getDate("TO_DATE"));
 				 leave.setCreatedBy(rs1.getString("CREATED_BY"));
@@ -82,7 +82,7 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 		    			 
 		    			 
 		    			 pstmt1.setString(18, RandomStringUtils.randomAlphanumeric(16));
-			    		 pstmt1.setString(1, leave.getId());
+			    		 pstmt1.setLong(1, leave.getId());
 			    		 
 			    		 int jan = 0;
 		    			 int feb = 0;

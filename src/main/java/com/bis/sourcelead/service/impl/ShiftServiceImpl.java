@@ -16,6 +16,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 @Service
 public class ShiftServiceImpl implements ShiftService {
 	
@@ -39,6 +40,9 @@ public class ShiftServiceImpl implements ShiftService {
 			shift = shiftDao.getShiftById(shiftDTO.getShiftId());
 		}else{
 			shift = new Shift();
+			shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			shift.setCreatedBy(user.getUserCode());
+			shift.setCreatedDate(new Date());
 		}
 		shift.setOrgLocations(orgLocation);
 		shift.setShiftName(shiftDTO.getShiftName());
@@ -57,11 +61,11 @@ public class ShiftServiceImpl implements ShiftService {
 		}else{
 			shift.setShiftDescription("");
 		}
+		
 		shift.setStatus(Constants.RECORD_ACTIVE.toString());
 		shift.setUpdatedBy(user.getUserCode());
 		shift.setUpdatedDate(new Date());
-		shift.setCreatedBy(user.getUserCode());
-		shift.setCreatedDate(new Date());
+		
 		return shiftDao.saveShift(shift);
 	}
 
