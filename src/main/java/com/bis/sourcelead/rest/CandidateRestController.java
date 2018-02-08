@@ -51,6 +51,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -135,6 +137,9 @@ public class CandidateRestController {
 	RequirementService requirementService;
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -519,7 +524,15 @@ public class CandidateRestController {
 			 }else{
 				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
 			 }
-			
+			 List<String> requirementLocationsList = new ArrayList<>();
+				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(req.getRequirement().getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+						requirementLocationsList.add(location.getLocation());
+					}
+				}
+				req.setLocationsList(requirementLocationsList);
+				
 			 if(null != req.getRequirement().getSpocId()){
 				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName()) && null != req.getRequirement().getSpocId().getClientUser().getLastName() ){
 					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() +""+req.getRequirement().getSpocId().getClientUser().getLastName());

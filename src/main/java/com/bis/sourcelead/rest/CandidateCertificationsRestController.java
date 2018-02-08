@@ -99,12 +99,10 @@ public class CandidateCertificationsRestController {
 	   * @throws Exception
 	   */
 	//@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
-	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
+	 @RequestMapping(value = {"/getCandidateCertificationListByCandidateIdAndOrgLocationID","rest/getCandidateCertificationListByCandidateIdAndOrgLocationID"},method=RequestMethod.POST) 
 	 public ResponseList<CandidateCertificationDTO> getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
 		 ResponseList<CandidateCertificationDTO> certificationList = new ResponseList<>();
-		 String msg = "";
-		String resultJson;
 		List<CandidateCertificationDTO> candidateCertificationDTOList = new ArrayList<>();
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -123,20 +121,6 @@ public class CandidateCertificationsRestController {
 		    candidateCertificationDTO.setCandidatevalidToDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidateCertifications.getValidTo()));
 		    candidateCertificationDTOList.add(candidateCertificationDTO);
 			
-			/*msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "addCertification");
-			if(msg == null){
-				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editCertification");
-			}
-			if(msg == null){
-				msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "deleteCertification");
-			}
-			if(msg != null && msg != ""){
-				candidateCertifications.setMsg(msg);
-			}
-				 SourceLeadSessionManager.removeSessionAttribute(request, "deleteCertification");
-			    SourceLeadSessionManager.removeSessionAttribute(request, "addCertification");
-			    SourceLeadSessionManager.removeSessionAttribute(request, "editCertification");
-			*/
 		}
 		certificationList.setData(candidateCertificationDTOList);
 		return certificationList;

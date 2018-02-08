@@ -28,18 +28,17 @@
   		<h4>Reach Us &#64;</h4>
   		<div class="reachus">
   			<h5>INDIA</h5>
-			<p>Hyderabad, Telangana.<br>Tel.: + 91. 40-6700-7676</p>
+			<p>Hyderabad, Telangana.<br><i class="fa fa-phone"></i>  91. 40-6700-7676</p>
   		</div>
   		<div class="reachus mt clearfix">
   			<h5>USA</h5>
-  			<p>3535 Victory Group Way #4, Dallas<br>Tel.: + (214) 295-5535</p>
+  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br><i class="fa fa-phone"></i>  (214) 295-5535</p>
   		</div>
   	</div>
   	<div class="col-md-5 col-sm-6">
   	<div class="clearfix needinfo">
   		<h4>Need more information?</h4>
-  		<p>Contact our experts for more information. We will assist you
-with your questions.  For a live demonstration of our recruitment software, <br>
+  		<p>Contact our experts for more information. <br> For a live demonstration of our recruitment software, <br>
 mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</strong></a></p>
 		</div>
 			  <div class="social-links social-icons mt">

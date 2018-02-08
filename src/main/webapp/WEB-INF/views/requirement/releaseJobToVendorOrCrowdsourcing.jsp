@@ -258,9 +258,10 @@ function getPercentageValue(){
 <script> 
 $(document).ready(function(){
 	getVendorLists();
-	var referLink = "${sourceleadUrl}/openJobsPublicPage?requirementUUID=${requirementUUID}"
-	$("#referralLink").val(referLink);
 	 var sourceleadShareUrl ='${sourceleadShareUrl}';
+	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
+			
+	$("#referralLink").val(referLink);
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){
 		openVendors();

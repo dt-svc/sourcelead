@@ -249,7 +249,7 @@ public class MissingTimesheetsReoprtsRestController {
 					            	mtr.setFrequency(unfilledFrequency);
 					            	mtr.setDueDays(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()));
 					                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate,frequencyEndDate ,pm.getId());
-					                mtr.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sah.getCreatedDate()));
+					                mtr.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sah.getUpdatedDate()));
 					            	List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(pm.getProjects().getId(),orgLocations.getId()) ;
 							    	String approverName = "";
 							    	String seperator = "";

@@ -112,6 +112,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "PAYMENT_TERM")
 	private String paymentTerm;
 	
+	@Column(name = "FILE_REASON")
+	private String fileReason;
+	
 	@Transient
 	private String reason;
 
@@ -357,5 +360,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setPaymentTerm(String paymentTerm) {
 		this.paymentTerm = paymentTerm;
 	}
-	
+
+	public String getFileReason() {
+		return fileReason;
+	}
+
+	public void setFileReason(String fileReason) {
+		this.fileReason = fileReason;
+	}
 }

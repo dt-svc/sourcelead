@@ -390,35 +390,35 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseById(ex.getExpId());
 			if(null != expenseId.getProjectMembers()){
-				if(null != expenseId.getProjectMembers().getEmployee()){
-					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+				//if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
 							StringBuffer sb = new StringBuffer();
-							expenseArray[0] = sb.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString();
-						}else if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
-							expenseArray[0] = expenseId.getProjectMembers().getEmployee().getUser().getFirstName();
+							expenseArray[0] = sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString();
+						}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
+							expenseArray[0] = expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName();
 						}
 						else
 						{
 							expenseArray[0] = "--";
 						}
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
 
-							expenseArray[1] = expenseId.getProjectMembers().getEmployee().getUser().getEmail();
+							expenseArray[1] = expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail();
 						}else{
 							expenseArray[1] = "--";
 						}
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone())){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone())){
 
-							expenseArray[2] = expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone();
+							expenseArray[2] = expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone();
 						}else{
 							expenseArray[2] = "--";
 						}
 						
 					}
-					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getEmployee().getUserEmploymentType())){
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType())){
 
-						expenseArray[3] = expenseId.getProjectMembers().getEmployee().getUserEmploymentType();
+						expenseArray[3] = expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType();
 					}else{
 						expenseArray[3] = "--";
 					}
@@ -435,7 +435,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 							expenseArray[4] = "--";
 						}
 					}
-				}
+				//}
 				if(null != expenseId.getProjectMembers().getProjects()){
 					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
 						expenseArray[5] = expenseId.getProjectMembers().getProjects().getProjectName();
@@ -580,32 +580,32 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			Expenses expenseId =expensesService.getExpenseById(expensesList.getExpId());
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
-					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
 						
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
 							StringBuffer sb = new StringBuffer();
-							writeRow.createCell(0).setCellValue(sb.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString());
+							writeRow.createCell(0).setCellValue(sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString());
 							createExcelsheet.autoSizeColumn(0);
-						}else if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
-							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
+						}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
+							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 							createExcelsheet.autoSizeColumn(0);
 						}
 						
-						/*if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
-							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
+						/*if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
+							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 							createExcelsheet.autoSizeColumn(0);
 						}*/
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
-							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getEmail());
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
+							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail());
 							createExcelsheet.autoSizeColumn(1);
 						}
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone()){
-							writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone());
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone()){
+							writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone());
 							createExcelsheet.autoSizeColumn(2);
 						}
 					}
-					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType()){
-						writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getEmployee().getUserEmploymentType());
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType()){
+						writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType());
 						createExcelsheet.autoSizeColumn(3);
 					}
 					

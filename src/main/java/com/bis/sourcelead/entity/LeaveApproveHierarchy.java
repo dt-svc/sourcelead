@@ -36,14 +36,14 @@ public class LeaveApproveHierarchy {
     private Long id;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_ID", nullable = false)
 	private Leave leaveid;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "APPROVER_USER_ID", nullable = false)
