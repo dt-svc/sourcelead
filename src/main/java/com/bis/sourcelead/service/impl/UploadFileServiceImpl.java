@@ -1448,7 +1448,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			
 			 Name namedEmploymentTypeCel = wb.createName();
 			 namedEmploymentTypeCel.setNameName("employmentTypehidden");
-			 namedEmploymentTypeCel.setRefersToFormula("employmentTypehidden!$A$1:$DZ$1" + usersList.length);
+			 namedEmploymentTypeCel.setRefersToFormula("employmentTypehidden!$A$1:$DZ$1" + employmentTypesList.length);
 			 DVConstraint employmentTypeConstraint = DVConstraint.createFormulaListConstraint("employmentTypehidden");
 			 CellRangeAddressList empTypeAddressList = new CellRangeAddressList(1, 20, 12, 12);
 			 HSSFDataValidation empTypeValidation = new HSSFDataValidation(empTypeAddressList, employmentTypeConstraint);
