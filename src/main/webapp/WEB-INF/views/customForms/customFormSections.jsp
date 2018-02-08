@@ -289,12 +289,13 @@ var validationSettings = {
 
 
  <script>
- function deleteCustomField(customRowId){
+ function activateOrDeactivateCustomField(customRowId,status){
 	 $.ajax({
 		 type : "POST",
-		 url : sourceleadUrl+"/deleteCustomField?&customID="+customRowId,
+		 url : sourceleadUrl+"/deleteCustomField?&customID="+customRowId+"&status="+status,
 		 	 	success : function(data) {
-		 	 		$("#custom"+customRowId).remove();
+		 	 		$("#deletFildRow"+customRowId).removeAttr("class");
+		 	 		$("#deletFildRow"+customRowId).attr("class","fa fa-check");
 		},
 	});
  }
@@ -312,6 +313,8 @@ var validationSettings = {
 			        $("#popUpDataCustom").append(data);
 			        addFieldPopUp(selectedSectionID);
 			        getSelectedFieldDetails();
+			        getCustomDependentFieldList();
+			        getDependentFieldList();
 			        
 		},
 	});

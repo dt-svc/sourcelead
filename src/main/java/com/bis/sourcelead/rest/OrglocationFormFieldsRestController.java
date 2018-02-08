@@ -17,8 +17,10 @@ import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.OrglocationFormSubFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.OrglocationFormSubFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -31,6 +33,9 @@ public class OrglocationFormFieldsRestController {
 	
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
+	@Autowired
+	private OrglocationFormSubFieldsService orglocationFormSubFieldsService;
 	
 	@RequestMapping(value="/storeNewCustomFormField",method = RequestMethod.POST)
     public ModelAndView storeNewCustomFormField(OrglocationFormFieldsDTO orgLocFormFieldsDTO,HttpServletRequest request) throws Exception {
@@ -51,28 +56,35 @@ public class OrglocationFormFieldsRestController {
 		OrglocationFormFields orglocationFormFields = null;
 		OrglocationFormFieldsDTO orglocationFormFieldsDTO = null;
 		List<SourceleadSectionDTO> sections  = null;
+		List<OrglocationFormSubFields> orglocationFormSubFields = null;
+		String disableFields =  null;
 		if(type.equalsIgnoreCase("addNewCustomField")) {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
-		if(orglocationFormFields!= null) {
-		orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, null);
+		if(orglocationFormFields != null) {
+			orglocationFormSubFields = orglocationFormSubFieldsService.getOrgCustomSufieldsBySectionId(orgLocFormFieldsDTO.getId());	
+			orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields,orglocationFormSubFields);
 		}
 		sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
+		
 		}else if(type.equalsIgnoreCase("editCustomRowField")) {
 		orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
-		orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, null);
+		orglocationFormSubFields = orglocationFormSubFieldsService.getOrgCustomSufieldsBySectionId(orgLocFormFieldsDTO.getId());
+		orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, orglocationFormSubFields);
 		sections  = new ArrayList<>();
 		sections.add(orglocationFormFieldsDTO.getSectionData());
+		disableFields = "disabled";
 		}
 		model.addObject("customFormPopDetails",orglocationFormFieldsDTO);
 		model.addObject("SourceleadForm_Sections_pop",sections);
+		model.addObject("disableFields",disableFields);
 		model.setViewName("customForms/addCustomPopUp");
 		return model;
     }
 	
 	@RequestMapping(value="/deleteCustomField",method = RequestMethod.POST)
-    public String deleteCustomField(@RequestParam(value="customID")Long customID,HttpServletRequest request) throws Exception {
-		String result  = orglocationFormFieldsService.deleteCustomFieldById(customID);
+    public String deleteCustomField(@RequestParam(value="customID")Long customID,@RequestParam(value="status")String status,HttpServletRequest request) throws Exception {
+		String result  = orglocationFormFieldsService.deleteCustomFieldById(customID,status);
 		return result;
     }
 	

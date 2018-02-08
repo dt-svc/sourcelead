@@ -3,6 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <style>
+	.mb {
+	margin: 0px;
+    margin-bottom: 15px !important;
+	}
+</style>
  
    <!-- <!--   Popup Code  -->
   <!-- <div class="popMaskCustom popMask-zindex"></div> -->
@@ -15,14 +21,14 @@
 		<div class="cuspopHead clearfix">
 			<div class="col-md-6 padding_left">
 			<c:if test="${!empty SourceleadForm_Sections}">
-			<select class="chosen-select form-control" id="addFieldSection" name="sectionId" onchange="getDependentFieldList();getCustomDependentFieldList();">
+			<select class="chosen-select form-control" id="addFieldSection" name="sectionId" onchange="getDependentFieldList();getCustomDependentFieldList();" ${disableFields}>
 				 <c:forEach var="section" items="${SourceleadForm_Sections}" varStatus="sectionStatus">
 				  <option value="${section.id}">${section.sectionName}</option>
 				  </c:forEach>
 			</select> 
 			</c:if>
 			<c:if test="${!empty SourceleadForm_Sections_pop}">
-			<select class="chosen-select form-control" id="addFieldSection" name="sectionId" onchange="getDependentFieldList();getCustomDependentFieldList();">
+			<select class="chosen-select form-control" id="addFieldSection" name="sectionId" onchange="getDependentFieldList();getCustomDependentFieldList();" ${disableFields}>
 				 <c:forEach var="section" items="${SourceleadForm_Sections_pop}" varStatus="sectionStatus">
 				  <option ${section.id == customFormPopDetails.sectionId ?'selected':''} value="${section.id}">${section.sectionName}</option>
 				  </c:forEach>
@@ -30,7 +36,7 @@
 			</c:if>
 			</div>
 			<div class="col-md-6 noPad">
-				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();">
+				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();" ${disableFields}>
 				  <option value="">--Select Field Type--</option>
 				  <option value ="textfield" ${customFormPopDetails.fieldType =='textfield' ? 'selected':''} selected>Text field</option>
 				  <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
@@ -73,9 +79,11 @@
 				<div class="col-sm-12 noPad mt clearfix">
 					   <div class="col-md-3 noPad labHeight"><p>Options</p></div>
 						<c:if test="${not empty customFormPopDetails.optionData}">
+							<div class="col-md-6">
 							<c:forEach var="options" items="${customFormPopDetails.optionData}" varStatus="optionStatus">
-								<div class="col-md-6"><input name="optionData[${optionStatus.index}].option" value="${options.option}" id ="selectOptionId" class="field-label form-control input-sm" type="text"> </div>
-							</c:forEach>	
+								<input name="optionData[${optionStatus.index}].option" value="${options.option}" id ="selectOptionId" class="field-label form-control input-sm mb" type="text">
+							</c:forEach>
+							 </div>	
 						</c:if>
 						<c:if test="${empty customFormPopDetails.optionData}">
 							<div class="col-md-6"><input name="optionData[0].option" value="" id ="selectOptionId" class="field-label form-control input-sm" type="text"> </div>

@@ -53,13 +53,15 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 	private SourceleadSectionDTO sourceleadFormSectionsDTOConverter(SourceleadFormSections slFormSections,List<SourceleadFormFields> fieldsList,List<OrglocationFormFields> customFieldsList) {
 		SourceleadSectionDTO sectionDTO = new SourceleadSectionDTO();
 		sectionDTO.setId(slFormSections.getId());
-		sectionDTO.setSourceleadActionId(slFormSections.getSourceleadActions().getId());
-		sectionDTO.setSourceleadActionName(slFormSections.getSourceleadActions().getActionName());
-		sectionDTO.setTabID(slFormSections.getTabs().getId());
-		sectionDTO.setTabName(slFormSections.getTabs().getTabName());
-		sectionDTO.setSectionName(slFormSections.getSectionName());
-		sectionDTO.setSectionDescription(slFormSections.getSectionDesc());
-		sectionDTO.setStatus(slFormSections.getStatus());
+		if(slFormSections != null && slFormSections.getSourceleadActions() != null) {
+			sectionDTO.setSourceleadActionId(slFormSections.getSourceleadActions().getId());
+			sectionDTO.setSourceleadActionName(slFormSections.getSourceleadActions().getActionName());
+			sectionDTO.setTabID(slFormSections.getTabs().getId());
+			sectionDTO.setTabName(slFormSections.getTabs().getTabName());
+			sectionDTO.setSectionName(slFormSections.getSectionName());
+			sectionDTO.setSectionDescription(slFormSections.getSectionDesc());
+			sectionDTO.setStatus(slFormSections.getStatus());
+		}
 		List<SourceleadFormFieldsDTO> fieldsDTOList = new ArrayList<>();
 		if(fieldsList != null && !fieldsList.isEmpty()) {
 			for(SourceleadFormFields formFields :fieldsList) {

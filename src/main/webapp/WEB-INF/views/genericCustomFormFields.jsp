@@ -96,9 +96,10 @@
 		    	 <div class="col-md-9">
 		    	 <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		     	 	<select class="chosen-select form-control" id="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
-		     	 		<c:forEach var="optionValue" items="${customForm.optionData}">
-		     	 			<option value="${optionValue.option}">${optionValue.option}</option>
-		     	 		</c:forEach>
+		     	 		<option value="" selected disabled>-select option-</option>
+			     	 		<c:forEach var="optionValue" items="${customForm.optionData}">
+			     	 			<option value="${optionValue.option}">${optionValue.option}</option>
+			     	 		</c:forEach>
 		     	 	</select>
 		    	</div>
 		    </c:if>
