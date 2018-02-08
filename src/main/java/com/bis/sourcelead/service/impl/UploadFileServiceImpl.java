@@ -374,7 +374,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setDateOfJoin(hireDate);
 							}
 							userImport.setRole(row.getCell(9).toString());
-							userImport.setManager(row.getCell(11).toString());
+							
 							/*if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 								userImport.setInvoiceFrequency("");
 							} else {
@@ -386,6 +386,32 @@ public class UploadFileServiceImpl implements UploadFileService {
 							} else {
 								userImport.setDayHours("");
 							}
+							
+							userImport.setManager(row.getCell(11).toString());
+							
+							if(row.getCell(12) != null) {
+							userImport.setEmploymentType(row.getCell(12).toString());
+							}else {
+								userImport.setEmploymentType("");
+							}
+							
+							// Cell Vendor
+							if(row.getCell(13) != null) {
+								String vendor = getCellValueAsString(row.getCell(13), fileName);
+								userImport.setVendor(vendor);
+							}else {
+								userImport.setVendor("");
+							}
+							
+							// Cell Vendor Contact
+							
+							if(row.getCell(14) != null) {
+								String vendorContact = getCellValueAsString(row.getCell(14), fileName);
+								userImport.setVendorContact(vendorContact);
+							}else {
+								userImport.setVendorContact("");
+							}
+							
 							  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
@@ -676,6 +702,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws Exception {
 		String[] rolesList = getRolesList(org,orgLocations.getId(),roleHierarchyId);
 		String[] usersList = getUsersList(orgLocations.getId());
+		
+		String[] employmentTyesList = getEmploymentTypeList();
+		
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 			
@@ -768,6 +797,15 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			writeRow.createCell(9).setCellValue("");
 		}
+		
+		if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+
+            String dayHours = getCellValueAsString(row.getCell(10), fileName);
+              writeRow.createCell(10).setCellValue(dayHours);
+		} else {
+			writeRow.createCell(10).setCellValue("");
+		}
+		
 		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
 			if(!fileName.endsWith("xlsx")){
 				createExcelsheet.addValidationData(getDropDownListForCell(usersList,11,fileName));
@@ -783,6 +821,45 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			writeRow.createCell(11).setCellValue("");
 		}
+		
+		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(employmentTyesList,12,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(employmentTyesList,12,createExcelsheet));
+			}
+	        writeRow.createCell(12).setCellValue(row.getCell(12).toString());
+		} else {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(employmentTyesList,12,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(employmentTyesList,12,createExcelsheet));
+			}
+			writeRow.createCell(12).setCellValue("");
+		}
+		
+		
+		/*if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+			String employmentType = getCellValueAsString(row.getCell(12), fileName);
+			 writeRow.createCell(12).setCellValue(employmentType);
+		} else {
+		  writeRow.createCell(12).setCellValue("");
+		}
+		*/
+		if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+			String vendor = getCellValueAsString(row.getCell(13), fileName);
+			 writeRow.createCell(13).setCellValue(vendor);
+		} else {
+		  writeRow.createCell(13).setCellValue("");
+		}
+		
+		if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+			String vendorContact = getCellValueAsString(row.getCell(14), fileName);
+			 writeRow.createCell(14).setCellValue(vendorContact);
+		} else {
+		  writeRow.createCell(14).setCellValue("");
+		}
+		
 	/*	if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 			if(!fileName.endsWith("xlsx")){
 				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
@@ -798,15 +875,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 		     writeRow.createCell(9).setCellValue("");
 		}*/
-			if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-
-                String dayHours = getCellValueAsString(row.getCell(10), fileName);
-                  writeRow.createCell(10).setCellValue(dayHours);
-			} else {
-				writeRow.createCell(10).setCellValue("");
-			}
+			
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(12).setCellValue(userImport.getReason());
+			writeRow.createCell(15).setCellValue(userImport.getReason());
 		} 
 	}
 	/**
@@ -1039,6 +1110,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(9).setCellValue(Constants.ROLE);
 		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
 		excelHeader.createCell(11).setCellValue(Constants.MANAGER+"(Email)");
+		excelHeader.createCell(12).setCellValue(Constants.EMPLOYMENT_TYPE);
+		excelHeader.createCell(13).setCellValue(Constants.ASSOCIATE_VENDOR);
+		excelHeader.createCell(14).setCellValue(Constants.ASSOCIATE_VENDOR_CONTACT);
 		return sheet;
 	}
 	
@@ -1153,6 +1227,34 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			Cell cell11 = writeRow.createCell(11);
 			cell11.setCellValue("");
 		}
+		
+		// Employment Type,Vendor,Vendor Contact
+		
+		if (record.get(Constants.EMPLOYMENT_TYPE) != null && !"".equalsIgnoreCase(record.get(Constants.EMPLOYMENT_TYPE))) {
+			Cell cell12 = writeRow.createCell(12);
+			cell12.setCellValue(record.get(Constants.EMPLOYMENT_TYPE));
+		} else {
+			Cell cell12 = writeRow.createCell(12);
+			cell12.setCellValue("");
+		}
+		
+		
+		if (record.get(Constants.ASSOCIATE_VENDOR) != null && !"".equalsIgnoreCase(record.get(Constants.ASSOCIATE_VENDOR))) {
+			Cell cell13 = writeRow.createCell(13);
+			cell13.setCellValue(record.get(Constants.ASSOCIATE_VENDOR));
+		} else {
+			Cell cell13 = writeRow.createCell(13);
+			cell13.setCellValue("");
+		}
+		
+		if (record.get(Constants.ASSOCIATE_VENDOR_CONTACT) != null && !"".equalsIgnoreCase(record.get(Constants.ASSOCIATE_VENDOR_CONTACT))) {
+			Cell cell14 = writeRow.createCell(14);
+			cell14.setCellValue(record.get(Constants.ASSOCIATE_VENDOR_CONTACT));
+		} else {
+			Cell cell14 = writeRow.createCell(13);
+			cell14.setCellValue("");
+		}
+		
 		
 		if (userImport.getReason() !=null) {
 			writeRow.createCell(12).setCellValue(userImport.getReason());
@@ -1356,6 +1458,30 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			 HSSFDataValidation userValidation = new HSSFDataValidation(userAddressList, userConstraint);
 			 wb.setSheetHidden(2, true);
 			 sheet.addValidationData(userValidation);
+			 
+			 // Employment Type List
+			 
+		 String[] employmentTypesList = getEmploymentTypeList();
+		 HSSFSheet employmentTypehidden = (HSSFSheet) wb.createSheet("employmentTypehidden");
+			HSSFRow employmentTypeRow = employmentTypehidden.createRow(0);
+			for (int i = 0, length= employmentTypesList.length; i < length; i++) {
+			   String name = employmentTypesList[i];
+			   try {
+			   HSSFCell cell = employmentTypeRow.createCell(i);
+			   cell.setCellValue(name);
+			   }catch (Exception e) {
+				
+			    }
+			 }
+			
+			 Name namedEmploymentTypeCel = wb.createName();
+			 namedEmploymentTypeCel.setNameName("employmentTypehidden");
+			 namedEmploymentTypeCel.setRefersToFormula("employmentTypehidden!$A$1:$DZ$1" + usersList.length);
+			 DVConstraint employmentTypeConstraint = DVConstraint.createFormulaListConstraint("employmentTypehidden");
+			 CellRangeAddressList empTypeAddressList = new CellRangeAddressList(1, 20, 12, 12);
+			 HSSFDataValidation empTypeValidation = new HSSFDataValidation(empTypeAddressList, employmentTypeConstraint);
+			 wb.setSheetHidden(2, true);
+			 sheet.addValidationData(empTypeValidation);
 		 
 	    //Day hours list
 	    HSSFSheet hidden = (HSSFSheet) wb.createSheet("hidden");
@@ -1410,5 +1536,15 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		String [] userList = list.toArray(new String[list.size()]);
 		 return userList;
+	}
+	
+	private String[] getEmploymentTypeList() throws Exception {
+		List<String> list = new ArrayList<>();  
+		String[] employmentTypeList = {"W-2","C2H","C2H-1099","C2C","C2C-1099","Part Time","Full Time","Other"};
+		for(String empType :employmentTypeList){
+			list.add(empType);
+		}
+		String [] employmentTypesList = list.toArray(new String[list.size()]);
+		 return employmentTypesList;
 	}
 }
