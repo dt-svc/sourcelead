@@ -49,6 +49,7 @@ function clearAllStatus(){
 
 <script>
 $(document).ready(function() {
+	getcites('apiLocation','city','recommendation');
 	 $("#filter1ApprovePop").click(function(){
 			$("#filter1ApprovedPop").slideToggle(200);
 			$(".export_pop, .action-pop, #exportPop, #filter2ApprovedPop").slideUp(200);
@@ -92,8 +93,6 @@ $(document).ready(function() {
     $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
         e.stopPropagation();
     });	
-    multicities = {}; 
-    
 }); 
 
 </script>
@@ -395,7 +394,7 @@ function statusvalidating(id){
 						
 						<div class="clearfix">
 						
-						<div class="col-md-4">
+						<%-- <div class="col-md-4">
 								<label>Country</label>
 								<div class="clearfix adv-srh-chosen">
 									<select class="chosen-select" name="country" id="country" field-name="Country">
@@ -405,20 +404,24 @@ function statusvalidating(id){
 										</c:forEach>
 									</select>
 								</div>
-							</div>
+							</div> --%>
 							
-						   <div class="col-md-8">
-								<label>Cities</label>
+						   <div class="col-md-4">
+								<label>Choose City</label>
 								<div class="clearfix">
 								<div class="col-md-14">
 							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
 								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
 								 </div>
-								  <br>
+								</div>
+							</div>
+							
+							<div class="col-md-8">
+								<label>Selected Cities</label>
+								<div class="clearfix">
 								   <select class="chosen-select form-control input-sm" multiple
 										data-placeholder="sletected cites" id="city" name="city">
 									</select>
-									
 								</div>
 							</div>
 						</div>
@@ -810,11 +813,11 @@ function getActions(){
   
 
 <script type="text/javascript">
-		      $("#country").on('change', function (e) {
-		    	  getcites('apiLocation','city');
+		     /*  $("#country").on('change', function (e) {
+		    	  getcites('apiLocation','city','recommendation');
 		    	  $("#apiLocation").val('');
 		    	  $("#city").val('').trigger("chosen:updated");
-		       }); 
+		       });  */
 				 for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}

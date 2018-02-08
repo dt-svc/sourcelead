@@ -31,7 +31,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -1449,12 +1449,14 @@ public class RequirementListRestController {
 								&& requirementSubmissionHistoryServiceList.size() > 0) {
 							RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0);
 							User usr = userService.getUserByUserCode(requirementSubmissionHistory.getCreatedBy());
-							if (usr.getFirstName() != null && usr.getLastName() != null) {
+							if (usr != null && usr.getFirstName() != null && usr.getLastName() != null) {
 								StringBuilder name = new StringBuilder();
 								requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
+							}else if(usr != null && usr.getFirstName() != null) {
+								requirementSubmission.setSubmittedBy(usr.getFirstName());
 							}
 							else {
-								requirementSubmission.setSubmittedBy(usr.getFirstName());
+								requirementSubmission.setSubmittedBy("---");
 							}
 							requirementSubmission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
 						}
@@ -1613,7 +1615,7 @@ public class RequirementListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "generatedId","jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
+		String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
 		
 		int sortColumnIndex = 8; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
@@ -1637,10 +1639,10 @@ public class RequirementListRestController {
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForUniversalSearch(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderListForUniversalSearch(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							DateFormat df = orgLocation.getLocFullFormDateFormatter();
 							try{
@@ -1676,13 +1678,13 @@ public class RequirementListRestController {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
 	    }
 	   //Country
-		if(StringUtils.isNotEmpty(search.getCountry())){
+		/*if(StringUtils.isNotEmpty(search.getCountry())){
 			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
-	    }
+	    }*/
 	 
 		//multiple City
 		if(StringUtils.isNotEmpty(search.getCity())){
@@ -1927,7 +1929,7 @@ public class RequirementListRestController {
 		}
 		 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 		 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,
+				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
 						0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
 		
 		 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
@@ -1948,28 +1950,28 @@ public class RequirementListRestController {
 		
        return keyWordList;
    }
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
-		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobId", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("client", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("priority", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+	 private ArrayList<QueryBuilder> getQueryBuilderListForUniversalSearch(String keywd){
+		    ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		    QueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobTitle", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobId", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchPhraseQuery("skills", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("client", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobType", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("priority", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 //				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
 			}
-			return matchQueryBuilderList; 
+			return QueryBuilderList; 
 	 }
       public String UpdateOnToDate(String updatedOn){
 		

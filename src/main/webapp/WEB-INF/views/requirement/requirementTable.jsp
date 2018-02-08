@@ -211,7 +211,7 @@ function jpagination(url,sourceleadUrl){
 		      	        '</sec:authorize>';
 		      	        
 		      	      	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
-	         				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assing To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-user-secret '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
+	         				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assing To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-address-book '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
 	         		 	'</sec:authorize>';
 		      	        
 		      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
@@ -244,7 +244,7 @@ function jpagination(url,sourceleadUrl){
 		 },{
 	   	  	"targets": colIndex++,
 		  	"data": "generatedId",
-		  	"sortable": false,
+		  	"sortable": true,
 		  	"render": function(data, type, opt, meta) {
 		  		 var result = "";
 		  		 result = result +"<td>";

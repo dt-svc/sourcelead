@@ -97,25 +97,26 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		String searchByValue = searchValue.trim();
 		StringBuilder subQuery = new StringBuilder("");
 		String resultSqlQuery = null;
-		String sqlQuery = "select distinct u.id as id, u.user_code as userCode, u.file_url as fileUrl, concat(u.first_name,' ',IFNULL(u.last_name, '')) as userName, u.email as email, ur.user_type as userType, ol.org_name as orgName," + 
-				"((select count(c.from_uid) from connections c where c.to_uid = u.id "+
-				"and (c.from_uid in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.from_uid in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
-				"(select count(c.TO_UID) from connections c where c.FROM_UID = u.id "+
-				"and (c.TO_UID in (select c.from_uid from connections c where c.to_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.TO_UID in (select c.to_uid from connections c where c.from_uid = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
-				"(select c.CONNECTION_UID from connections c where (c.from_uid = :loginUserId and c.to_uid = u.id) or (c.from_uid = u.id and c.TO_UID = :loginUserId)) as connectionUUID " +
-				"from user u, user_role ur, org_locations ol, connections c " + 
-				"where ur.user_id = u.id and ur.org_locations_id = ol.id and ur.IS_PRIMARY = 1 "; 
+		String sqlQuery = "select distinct u.ID as id, u.USER_CODE as userCode, u.FILE_URL as fileUrl, concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) as userName, u.EMAIL as email, ur.USER_TYPE as userType, ol.ORG_NAME as orgName," + 
+				"((select count(c.FROM_UID) from sourcelead.CONNECTIONS c where c.TO_UID = u.ID "+
+				"and (c.FROM_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.FROM_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID "+
+				"and (c.TO_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"(select c.CONNECTION_UID from sourcelead.CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.ID) or (c.FROM_UID = u.ID and c.TO_UID = :loginUserId)) as connectionUUID " +
+				"from sourcelead.USER u, sourcelead.USER_ROLE ur, sourcelead.ORG_LOCATIONS ol, sourcelead.CONNECTIONS c " + 
+				"where ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID and ur.IS_PRIMARY = 1 "; 
 		if(status.equalsIgnoreCase("sent")) {
-			resultSqlQuery = sqlQuery.concat("and c.FROM_UID = :loginUserId and c.TO_UID = u.id and c.CONNECTION_STATUS = :connectionStatus");
+			resultSqlQuery = sqlQuery.concat("and c.FROM_UID = :loginUserId and c.TO_UID = u.ID and c.CONNECTION_STATUS = :connectionStatus");
 		}else if(status.equalsIgnoreCase("received")) {
-			resultSqlQuery = sqlQuery.concat("and c.TO_UID = :loginUserId and c.FROM_UID = u.id and c.CONNECTION_STATUS = :connectionStatus");
+			resultSqlQuery = sqlQuery.concat("and c.TO_UID = :loginUserId and c.FROM_UID = u.ID and c.CONNECTION_STATUS = :connectionStatus");
 		}else if(status.equalsIgnoreCase("connected")) {
-			resultSqlQuery = sqlQuery.concat("and ((c.from_uid = u.id and c.TO_UID = :loginUserId and c.CONNECTION_STATUS = :connectionStatus) or (c.to_uid = u.id and c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = :connectionStatus))");
+			resultSqlQuery = sqlQuery.concat("and ((c.FROM_UID = u.ID and c.TO_UID = :loginUserId and c.CONNECTION_STATUS = :connectionStatus) or (c.TO_UID = u.ID and c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = :connectionStatus))");
 		}
+		
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
-			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.email like :searchByValue)");
+			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");
 			resultSqlQuery = resultSqlQuery.concat(subQuery.toString());
 		}
 		resultSqlQuery = resultSqlQuery.concat(" order by count DESC, userName");
@@ -126,7 +127,6 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		}else {
 			queryString.setString("connectionStatus", ConnectionStatus.REQUEST_SENT.toString());
 		}
-		System.out.println(queryString.getQueryString());
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
 			queryString.setParameter("searchByUserType",searchByValue)
 			.setParameter("searchByValue", "%" + searchByValue + "%");
@@ -232,9 +232,9 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 	@Transactional
 	public Map<String, BigInteger> getCountValuesForSentReceivedConnected(Long userId){
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select (select count(*) from connections c where c.FROM_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as sentCount, " + 
-				"(select count(*) from connections c where c.TO_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as receivedCount, " + 
-				"(select count(*) from connections c where (c.TO_UID = :userId or c.FROM_UID = :userId) and c.CONNECTION_STATUS = 'CONNECTED') as connectedCount";
+		String query = "select (select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as sentCount, " + 
+				"(select count(*) from sourcelead.CONNECTIONS c where c.TO_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as receivedCount, " + 
+				"(select count(*) from sourcelead.CONNECTIONS c where (c.TO_UID = :userId or c.FROM_UID = :userId) and c.CONNECTION_STATUS = 'CONNECTED') as connectedCount";
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("userId", userId);
 		List data = queryString.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP).list();

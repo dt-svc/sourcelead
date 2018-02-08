@@ -611,6 +611,8 @@ public class Constants {
 	public static final String MAIL_TRASH = "Trash";
 	public static final String MAIL_DELETE = "Deleted";
 	public static final String MAIL_REQUESTED = "Requested";
+	public static final String ELK_WEB_GEO_CITIES_INDEX = "webgeocities";
+	public static final String ELK_WEBGEO_CITIES_TYPE = "webgeocities";
 	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
@@ -689,6 +691,10 @@ public class Constants {
 	public static final String CANDIDATE_ADDRESS = "Address";
 	public static final String CANDIDATE_DESIGNATION = "Designation";
 	public static final String CANDIDATE_TYPE = "Type";
+	
+	public static final String CANDIDATE_VENDOR_NAME = "Vendor";
+	public static final String CANDIDATE_VENDOR_CONTACT = "Vendor Contact(Email)";
+	
 	public static final String CANDIDATE_EXPERIENCE = "Experience";
 	public static final String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
 	public static final String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
@@ -986,6 +992,9 @@ public class Constants {
 	public static final String LEAVE_EMAIL_TO_APPROVERS = "LeaveEmailToApprovers";
 	public static final String LEAVE_NOTIFICATION_TO_APPROVERS = "LeaveNotificationToApprovers";
 	
+	public static final String ON_BEHALF_EMAIL = "onBehalfEmail";
+	public static final String ON_BEHALF_NOTIFICATION = "onBehalfNotification";
+	
 	public static final String LEAVE_EMAIL_ON_BEHALF_EMAIL = "OnBehafLeaveEmail";
 	public static final String LEAVE_EMAIL_ON_BEHALF_NOTIFICATION = "OnBehafLeaveNotification";
 
@@ -1009,6 +1018,7 @@ public class Constants {
 
 	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
 	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
+
 
 
 }

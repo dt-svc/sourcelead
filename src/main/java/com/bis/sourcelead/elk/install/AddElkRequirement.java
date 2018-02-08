@@ -3,7 +3,6 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,16 +11,18 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -30,7 +31,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -44,12 +47,12 @@ public class AddElkRequirement {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private TransportClient client;
+	private SourceleadELKTC<RequirementIndex> client;
 	public void addElkRequirement() throws IOException, SQLException {
 		ArrayList<RequirementIndex> requirementList = getElkRequirements();
 		if(null != requirementList && !requirementList.isEmpty()){
 			for (RequirementIndex requirementIndex :requirementList) {
-				saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,requirementIndex.getRequirementId().toString());
+				client.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirementIndex.getRequirementId().toString());
 			}
 		}
 		  logger.info("Rquirements Successfully Added To Elk");
@@ -526,44 +529,7 @@ public class AddElkRequirement {
 	}
 
 
-	/**
-	 * stores Requirement into elk
-	 * @param requirementIndex
-	 * @param eLK_REQUIREMENT_INDEX(index)
-	 * @param eLK_REQUIREMENT_INDEX2(type)
-	 * @param requirementId
-	 * @return void
-	 */
-	private void saveOrUpdateElkDocument(RequirementIndex requirementIndex, String index,String type, String requirementId) {
-		String entityInJson = null;
-		try {
-		    entityInJson = toJSON(requirementIndex);
-		    client.prepareUpdate(index, type,requirementId).setDoc(entityInJson).get();
-		   // logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        	client.prepareIndex(index, type,requirementId)
-		    .setSource(entityInJson).execute().actionGet();
-		   // logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-	}
-	/**
-	 * converts entity to JSOn Object
-	 * @param obj
-	 * @return
-	 */
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
+	
 	 /**
 	  * getting connection
 	  * @return DataSource
@@ -583,18 +549,6 @@ public class AddElkRequirement {
 			comboPooledDataSource.setUser(dbconfig.getUser());
 			comboPooledDataSource.setPassword(dbconfig.getPassword());
 			
-			try {
-		    	  Settings settings = Settings.settingsBuilder()
-		    			  .put("cluster.name", dbconfig.getCluster())
-		                  .put("node.name", dbconfig.getNode())
-		         		  .put("path.home", dbconfig.getPath())
-		                  .build();
-				client = TransportClient.builder().settings(settings).build().
-				      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-		     } catch (Exception exception) {
-				logger.error(ExceptionUtils.getFullStackTrace(exception));
-			}
-			
 			return comboPooledDataSource;
 		}
 	 
@@ -602,7 +556,9 @@ public class AddElkRequirement {
 			
 			try {
 				AddElkRequirement addElkCandidate = new AddElkRequirement();
+				addElkCandidate.client = new SourceleadELKTC();
 				   addElkCandidate.addElkRequirement();
+				   addElkCandidate.client.shutdown();
 			}catch (Exception e){
 				e.printStackTrace();
 			}

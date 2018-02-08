@@ -22,6 +22,8 @@
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 
+ <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+
 <script type="text/javascript">
 window.onload = function () {
 	loadRegisteredOrgs();
@@ -951,10 +953,12 @@ var validationSettings = {
    };  
          $('body').on('submit', '#createOrg_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
+        		  
         		e.preventDefault();
         		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
-         		 var modulesList = [];
+         		
+         		var modulesList = [];
          		 $("input[name='modulesList[]']:checked").each( function (i) {
          			modulesList[i] = $(this).val();
          		});
@@ -964,7 +968,7 @@ var validationSettings = {
          		 $("input[name='submodulesList[]']:checked").each( function (i) {
          			submodulesList[i] = $(this).val();
          		});
-         		
+         		 
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          	 	 	$.ajax({
           	      type: "POST",

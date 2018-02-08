@@ -624,7 +624,7 @@ public class TimesheetApprovalRestController {
 		        }
 		        
 		        String searchValue = "";
-				ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue ,0,0);
+				ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, actualStartDate, actualEndDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue ,0,0,"");
 		        HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
 		        if(projectMembers != null && !projectMembers.getData().isEmpty()){
 		        	

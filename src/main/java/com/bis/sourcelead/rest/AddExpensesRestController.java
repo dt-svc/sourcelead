@@ -205,7 +205,7 @@ public class AddExpensesRestController {
 			//DateFormat format = simpleDateFormat;
 			if(expenseId != null){
 				Expenses expenses = expensesService.getExpenseById(expenseId);
-				if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(expenses.getProjectMembers().getId(), loginUser)){
+				if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(expenses.getProjectMembers().getId(), loginUser,orgLoc)){
 			    	isSuperUser = Constants.YES;
 			    }
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);

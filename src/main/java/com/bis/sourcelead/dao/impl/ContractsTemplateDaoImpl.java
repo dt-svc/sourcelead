@@ -460,7 +460,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Contracts  contracts =  null;
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contractsTemplate left join fetch ct.requirementSubmission left join fetch ct.ownerUserId left join fetch ct.orgLocationId left join fetch ct.orgRelations left join fetch ct.parentContractId left join fetch ct.contractOrgLocationId left join fetch ct.contactUser left join fetch ct.approverUser where ct.contractUUID =:contractUUID").setString("contractUUID", contractUUID).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contractsTemplate left join fetch ct.requirementSubmission reqsub left join fetch reqsub.requirement left join fetch ct.ownerUserId left join fetch ct.orgLocationId left join fetch ct.orgRelations left join fetch ct.parentContractId left join fetch ct.contractOrgLocationId left join fetch ct.contactUser left join fetch ct.approverUser where ct.contractUUID =:contractUUID").setString("contractUUID", contractUUID).list();
 		if(null != contractsList && contractsList.size() >0){
 			contracts = contractsList.get(0);
 		}

@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
 import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OffboardTasks;
+import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
@@ -967,9 +968,21 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedResignationAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						    templateDocument.setCandidateOffBoardingId(offBoarding);
-		                    templateDocument.setUpdatedDate(CommonUtil.currentDate());
-		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
+		                    
+		                    OffBoardingDocuments documents = new OffBoardingDocuments();
+		       		        documents.setCandidateOffBoardingId(offBoarding);
+		       		       
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+	          	            documents.setFileURL(templateDocument.getFileURL());
+			       		    documents.setDocumentType(templateDocument.getDocumentType());
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
 		                    offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
 					 
 					 }
@@ -1007,9 +1020,20 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedOffboardPackAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						    templateDocument.setCandidateOffBoardingId(offBoarding);
-		                    templateDocument.setUpdatedDate(CommonUtil.currentDate());
-		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
+
+						    OffBoardingDocuments documents = new OffBoardingDocuments();
+		       		        documents.setCandidateOffBoardingId(offBoarding);
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+	          	            documents.setFileURL(templateDocument.getFileURL());
+			       		    documents.setDocumentType(templateDocument.getDocumentType());
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
 		                    offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
 					 
 					 }

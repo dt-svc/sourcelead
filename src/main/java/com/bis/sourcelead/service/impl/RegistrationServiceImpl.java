@@ -1673,6 +1673,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 					user.setCountry(jsonObj.getString("location"));
 				}
 				
+				if(jsonObj.has("confirmPassword") && !isNullOrEmpty(jsonObj.getString("confirmPassword"))){
+					user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("confirmPassword")));
+				}
+				
 				user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 					user.setUserName(jsonObj.getString("userName"));

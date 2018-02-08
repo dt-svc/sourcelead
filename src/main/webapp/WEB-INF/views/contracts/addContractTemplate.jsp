@@ -42,7 +42,7 @@
 								<input type="text" id="templateName" name="templateName"
 									value="${contractsTemplate.templateName}"
 									field-name="Template Name"
-									data-validation="required validate_Space"
+									data-validation="required validate_Space validate_length length2-200"
 									onblur="validateContractTemplateName();" type="text"
 									class="form-control">
 							</div>

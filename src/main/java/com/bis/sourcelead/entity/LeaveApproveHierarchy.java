@@ -35,13 +35,15 @@ public class LeaveApproveHierarchy {
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	private String id;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_ID", nullable = false)
 	private Leave leaveid;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JsonBackReference
 	@JoinColumn(name = "APPROVER_USER_ID", nullable = false)

@@ -179,7 +179,7 @@
         
 
             <div class="share mt10"> 
-			<div class="addthis_inline_share_toolbox_s1a2" data-url="${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"></div>
+			<div class="addthis_inline_share_toolbox_g28q" data-url="${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"></div>
 			</div>
             </div>
 
@@ -258,9 +258,10 @@ function getPercentageValue(){
 <script> 
 $(document).ready(function(){
 	getVendorLists();
-	var referLink = "${sourceleadUrl}/openJobsPublicPage?requirementUUID=${requirementUUID}"
-	$("#referralLink").val(referLink);
 	 var sourceleadShareUrl ='${sourceleadShareUrl}';
+	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
+			
+	$("#referralLink").val(referLink);
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){
 		openVendors();

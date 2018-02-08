@@ -27,6 +27,11 @@ function campaignRecipient(ele,listId, fromType) {
 					 			 $(".project_inn_mask").fadeOut(200);
 					             msgFadein();	
 					             if(fromType == "hotList" || fromType == "jobList"){
+					            	 if(fromType == "hotList"){
+					            		 location.replace(sourceleadUrl+ "/hotlistMail");
+					            	 }else if(fromType == "jobList"){
+					            		 location.replace(sourceleadUrl+ "/joblistMail");
+					            	 }
 					            	$(".popMask").fadeOut(200);
 				            		$(".popUpReci").fadeOut(100);
 					             }else{

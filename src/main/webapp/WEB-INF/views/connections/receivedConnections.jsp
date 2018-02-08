@@ -24,7 +24,7 @@
     <h2>Connections</h2>
   </div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
-  <div id="loading"></div>
+  <div id="loadingConnReceivedDiv"></div>
 </section>
 
 
@@ -106,7 +106,7 @@ function eduMsgFadeinFunction(message) {
     		$("#orgOffset").val(0);
    		    offset = 0;
     	} 
-		$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loadingConnReceivedDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "GET",
 			url : sourceleadUrl+"/getConnectionsList?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset+"&status=received",
@@ -160,7 +160,7 @@ function eduMsgFadeinFunction(message) {
 	        $("#sentCountVal").empty().append(localStorage.getItem("sentCount"));
 	        $("#receivedCountVal").empty().append(localStorage.getItem("receivedCount"));
 	        $("#connectedCountVal").empty().append(localStorage.getItem("connectedCount"));
-	        $("#loading").removeAttr("style");
+	        $("#loadingConnReceivedDiv").removeAttr("style");
 			 },
 	        error: function(e){
 	        }
@@ -176,14 +176,14 @@ function eduMsgFadeinFunction(message) {
 function ignoreConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loadingConnReceivedDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type : "GET",
 				url : sourceleadUrl+"/withdrawConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
 	         success: function(json) {
 		        	 $("#selector4").removeAttr("style");
 		 			$("#selector4").css({ display: "block" });
-		 			$("#loading").removeAttr("style");
+		 			$("#loadingConnReceivedDiv").removeAttr("style");
 		 			var receivedCount =  parseInt(localStorage.getItem("receivedCount"));
 	    			receivedCount = receivedCount-1;
 	    			localStorage.setItem("receivedCount", receivedCount);
@@ -205,14 +205,14 @@ function ignoreConnection(userCode,userName,connectionUUID){
 function acceptConnection(userCode,connectionUUID,userName){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
-			$("#loading").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loadingConnReceivedDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type : "GET",
 					url : sourceleadUrl+"/ws/acceptConnection?${_csrf.parameterName}=${_csrf.token}&connectionUUID="+connectionUUID,
 		        	success: function(json) {
 				        	$("#selector4").removeAttr("style");
 							$("#selector4").css({ display: "block" });
-							$("#loading").removeAttr("style");
+							$("#loadingConnReceivedDiv").removeAttr("style");
 							var connectedCount =  parseInt(localStorage.getItem("connectedCount"));
 			    			connectedCount = connectedCount+1;
 			    			localStorage.setItem("connectedCount", connectedCount);

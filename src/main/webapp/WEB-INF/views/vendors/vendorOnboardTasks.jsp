@@ -85,7 +85,7 @@
                                       Vendor </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -166,6 +166,7 @@
               </div>
             
              <form:form id="finishOnboardTask_form" name="finishOnboardTask_form" method="post">    
+                 <div id="onboardTasksLoading"></div>
                  <div id="onboardTasksList"></div>
             </form:form>  
               
@@ -178,7 +179,7 @@ function getVendorOnboardTasksList(){
 	var vendorOnboardId = document.getElementById("vendorOnboardId").value;
 	if(orgRelationId && vendorOnboardId){
 		
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#onboardTasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			   	type: "GET",
 			    url: sourceleadUrl+"/getVendorOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&vendorOnboardId="+vendorOnboardId,	    	   
@@ -256,7 +257,7 @@ function getVendorOnboardTasksList(){
 		    		 $("#onboardTasksList").empty();
 		           	 $("#onboardTasksList").append(result); 
 		    		
-		           	 $("#loading").removeAttr("style");
+		           	 $("#onboardTasksLoading").removeAttr("style");
 			    }
 		   });
 	}
@@ -342,7 +343,7 @@ function saveAndFinishVendorOnbord(){
 	
 	   var formData = getFormData("finishOnboardTask_form");
 	   var vendorOnboardId = document.getElementById("vendorOnboardId").value;
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#onboardTasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
        
       $.ajax({
     	type : "POST",

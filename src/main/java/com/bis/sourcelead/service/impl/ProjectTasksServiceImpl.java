@@ -497,7 +497,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	     projectTasks.setUpdatedDate(commonUtil.currentDate());
 	     tasksDao.updateTasks(projectTasks);
 	    
-	     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+	     if(oldData.getPercentage() != null) {
+		     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+	     }else {
+		     activitySummary.append('0').append(" to ").append(projectTasks.getPercentage());
+	     }
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 		
 	}

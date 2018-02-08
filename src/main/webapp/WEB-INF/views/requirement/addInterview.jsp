@@ -905,16 +905,19 @@ function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
+	        success: function(json) {
 	        var output = "";
 	        if(json.length > 0){
 	        	output = output + "<option value=''>--select Template--</option>";
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
-	 	        		
-	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 	        		 if(opt.isDefault == "Y"){
+	 	 	        		output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+	 	        		}else{
+		 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+
+	 	        		} 
 	 			}
 	 			$("#interviewSubmissionTemplate").empty();
 	        	$("#interviewSubmissionTemplate").append(output);

@@ -1270,7 +1270,11 @@ function getTaskPercentge(data){
 					if(report.taskAssignedUsers.length == 0){
 						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/qmrk-userImg.png" title="Not Assigned">';
 					}else if(report.taskAssignedUsers.length == 1){
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src='+report.userFileUrl+' title="'+report.userName+'">';
+						if(report.userFileUrl != null){
+							result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src='+report.userFileUrl+' title="'+report.userName+'">';
+						}else{
+							result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/userprofile-img.png" title="'+report.userName+'">';
+						}
 					}else {
 						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
 					}

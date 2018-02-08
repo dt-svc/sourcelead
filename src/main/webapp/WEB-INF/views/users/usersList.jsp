@@ -776,12 +776,12 @@ function dynamicUserListPagination(url){
           pages: 10
         }),
         "columns": [
-            { "data": "userNme" },
-            { "data": "emailId"},
-            { "data": "phoneNo"},
-            { "data": "role"},
+            { "data": "userName" },
+            { "data": "email"},
+            { "data": "mobilePhone"},
+            { "data": "displayName"},
             { "data": "manager"},
-            { "data": "employmentType"},
+            { "data": "userEmploymentType"},
             { "data": "status"}
         ],
 		 "columnDefs": [ {
@@ -807,7 +807,7 @@ function dynamicUserListPagination(url){
 		    	  	}
 		      },{
 		    	  "targets": colIndex++,
-		          "data": "emailId",
+		          "data": "email",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
 		        	  if(userRole.userEmail !=null && userRole.userEmail !='' && userRole.userEmail !='undefined'){
@@ -820,7 +820,7 @@ function dynamicUserListPagination(url){
 		          }
 		          },{
 		        "targets": colIndex++,
-		        "data": "phoneNo",
+		        "data": "mobilePhone",
 		        "render": function ( data, type, userRole, meta ) {
 		        	if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
 					    	mobilePhone = userRole.mobilePhone;
@@ -828,16 +828,12 @@ function dynamicUserListPagination(url){
 					    	mobilePhone = "--"
 					    }
 		        	  var result = "";
-		        	  if(mobilePhone !=null && mobilePhone !='' && mobilePhone !='undefined'){
 							result = result + ' <td><div class="tbldata-dotdot-100">'+mobilePhone+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
-						}
 		        	 return result;
 		        }
 		      }, {
 		          "targets": colIndex++,
-		          "data": "role",
+		          "data": "displayName",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
 		        	  result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.userRoleName+'</div></td>';
@@ -846,6 +842,7 @@ function dynamicUserListPagination(url){
 		        }, {
 		            "targets": colIndex++,
 		            "data": "manager",
+		            "sortable": false,
 		            "render": function ( data, type, userRole, meta ) {
 		            	var result = "";
 		            	if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
@@ -858,7 +855,8 @@ function dynamicUserListPagination(url){
 		      },
 		      {
 		          "targets": colIndex++,
-		          "data": "employmentType",
+		          "data": "userEmploymentType",
+		          "sortable": false,
 		          "render": function ( data, type, userRole, meta ) {
 		          	var result = "";
 		          	 if(userRole.employeMentType !=null && userRole.employeMentType !='' && userRole.employeMentType !='undefined'){
@@ -872,6 +870,7 @@ function dynamicUserListPagination(url){
 		    {
 		        "targets": colIndex++,
 		        "data": "status",
+		        "sortable": false,
 		        "render": function ( data, type, userRole, meta ) {
 		        	var result = "";
 		            if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
@@ -889,7 +888,7 @@ function dynamicUserListPagination(url){
 		  }],
 		    "scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+// 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

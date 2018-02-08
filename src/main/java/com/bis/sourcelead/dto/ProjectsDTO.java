@@ -61,7 +61,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String staticPath;
 	
-	private long approverUserId;
+	private boolean approverUserId;
 
     private List<Map<String, String>> fileInfo;
 
@@ -172,6 +172,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private Map<String,String> projectCustomFieldlabelNameAndValue;
 	
 	private List<CustomFormFieldDTO> customFormData;
+	
+	private String projectApprover;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -827,15 +829,31 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.clientlocationId = clientlocationId;
 	}
 
-	public long getApproverUserId()
+	public boolean isApproverUserId()
 	{
 		return approverUserId;
 	}
 
-	public void setApproverUserId(long approverUserId)
+	public void setApproverUserId(boolean approverUserId)
 	{
 		this.approverUserId = approverUserId;
 	}
+
+	public String getProjectApprover()
+	{
+		return projectApprover;
+	}
+
+	public void setProjectApprover(String projectApprover)
+	{
+		this.projectApprover = projectApprover;
+	}
+
+
+
+	
+
+
 	
 	
 }

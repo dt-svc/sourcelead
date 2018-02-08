@@ -26,6 +26,7 @@ function changeCountry(){
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
+   <div id="enrollOrgLoading"></div>
     <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
       <div class="row">
@@ -154,7 +155,7 @@ function changeCountry(){
 	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
 <%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
-	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry();" >
+	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry(); getTimezonesList();" >
 		                    <option value="">Select Country</option>
 		                    <option value="Australia">Australia</option>
 			                <option value="France">France</option>
@@ -268,8 +269,9 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         		 	$.ajax({
+         		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		 	
+          		$.ajax({
           	      type: "POST",
           	    	data: formData,
                 	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
@@ -280,15 +282,15 @@ var validationSettings = {
 			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
 			        	}
 			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
+			        		$("#enrollOrgLoading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
 			        	}else if((result == 'DataMissing')){
 			        		showError("Invalid data");
-			        		$("#loading").removeAttr('style');
+			        		$("#enrollOrgLoading").removeAttr('style');
 			        	}
 			        	
 			        },  
-               });  
+               });   
                 
             	    return true;
             }
