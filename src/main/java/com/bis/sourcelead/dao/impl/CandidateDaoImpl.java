@@ -28,13 +28,11 @@ import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1533,6 +1531,19 @@ public class CandidateDaoImpl implements CandidateDao {
 			response.setData(candidatesDTOList);
 			return response;
 	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.email = :email and candidate.candidateType = 'Candidate' and candidate.orgLocationId.id = :orgLocationId ";  
+		List<Candidate> candidateList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", email).list();
+		Candidate candidate = null;
+		if (candidateList != null && candidateList.size() > 0) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
 	}
 
 }
