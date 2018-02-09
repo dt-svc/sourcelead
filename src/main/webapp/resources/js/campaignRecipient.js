@@ -53,7 +53,8 @@ function campaignRecipient(ele,listId, fromType) {
 			 $("#resetForm").click(function(){
 				 $('#recipientEmailDiv').find('p.jquery_form_error_message').remove();
 				 $('#cpnListNameDiv').find('p.jquery_form_error_message').remove();
-				 $("#capn_add_Recipient_List")[0].reset();
+				// $("#capn_add_Recipient_List")[0].reset();
+				 $("#cpnListName").val("");
 				 $("#recipientEmail").empty();
 				  $("#recipientEmail").trigger("chosen:updated");
 			 });
@@ -68,7 +69,13 @@ $('body').on('blur', '#capn_add_Recipient_List', function() {
 	$("#capn_add_Recipient_List").validateOnBlur(false, validationSettings);
 });
 
+function refreshPage()
+{
+	location.reload();
+
+}
 function recipientClose() {
+	refreshPage();
 	$(".popMask").fadeOut(200);
 	$(".popUpReci").fadeOut(100);
 };
