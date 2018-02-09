@@ -76,24 +76,24 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 		
 		if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
 			if (isadmin) {
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
+				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
 				spocsList = query.setLong("orgRelationId", orgRelationId).list();
 			}else if(ids != null && !ids.isEmpty()){
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.vendorUser.id = :userId OR spoc.vendorUser IN (:ids))");
+				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.vendorUser.id = :userId OR spoc.vendorUser IN (:ids))");
 				spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).list();
 			}else{
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '0' ");
+				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId and spoc.vendorUser.id = :userId and spoc.status <> '0' ");
 				spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).list();
 			}
 		}else{
 			if (isadmin) {
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
+				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' ");
 				spocsList = query.setLong("orgRelationId", orgRelationId).list();
 			}else if(ids != null && !ids.isEmpty()){
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.clientUser.id = :userId OR spoc.clientUser IN (:ids))");
+				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId and spoc.status <> '0' and (spoc.clientUser.id = :userId OR spoc.clientUser IN (:ids))");
 				spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).setParameterList("ids", ids).list();
 			}else{
-				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser where spoc.orgRelations.id = :orgRelationId and spoc.clientUser.id = :userId and spoc.status <> '0' ");
+				Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser clientUser left join fetch spoc.vendorUser vendorUser left join fetch spoc.ownerUser where spoc.orgRelations.id = :orgRelationId and spoc.clientUser.id = :userId and spoc.status <> '0' ");
 				spocsList = query.setLong("orgRelationId", orgRelationId).setLong("userId", userId).list();
 			}
 		}

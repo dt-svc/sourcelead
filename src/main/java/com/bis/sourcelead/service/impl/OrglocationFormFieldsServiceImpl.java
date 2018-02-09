@@ -92,6 +92,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 			for(OrglocationFormSubFieldsDTO optionData:orgLocFormFieldsDTO.getOptionData()) {
 				if(optionData != null && StringUtils.isNotBlank(optionData.getOption())) {
 				OrglocationFormSubFields subFields = new OrglocationFormSubFields();
+				subFields.setId(optionData.getId());
 				subFields.setFormField(orgLocFormFields);
 				subFields.setLabelName(optionData.getOption());
 				subFields.setStatus(1);
