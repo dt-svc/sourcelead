@@ -105,7 +105,7 @@ function getVendorDetails(){
 	var vendorOrgLocationId = document.getElementById("vendorOrgLocationId").value;
 	var orgRelationId = document.getElementById("orgRelationId").value;
 	if(orgRelationId){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			
 	        $.ajax({
 		    	type: "GET",
@@ -213,7 +213,7 @@ function getVendorDetails(){
 	        			
         			   $("select[name=spocStatus]").val(json.spocStatus);
 	        		   
-	      			   $("#loading").removeAttr("style");
+	      			   $("#vendorDetailsLoading").removeAttr("style");
 			        
 		        },
 		    }); 
@@ -252,7 +252,7 @@ function getVendorDetails(){
 		</div>
 	</section>
 	
-	<div id="loading"></div>
+	<div id="vendorDetailsLoading"></div>
 	<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
@@ -817,7 +817,7 @@ function getRolesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(orgName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=ATS", 
@@ -833,7 +833,7 @@ function getRolesList(){
 	        	$("#role").empty();
 		        $("#role").append(output);
 		        $('#role').trigger("chosen:updated");
-		        $("#loading").removeAttr("style"); 
+		        $("#vendorDetailsLoading").removeAttr("style"); 
 	        },
 	    });
 	}else{
@@ -872,12 +872,12 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						$("#vendorOrgLocationId").val(data.id); 
 						$("#orgRelationId").val(data.vendorOrgRelationId);
 						$("#vendorOnboardId").val(data.vendorOnboardId);
-						$("#loading").removeAttr("style");
+						$("#vendorDetailsLoading").removeAttr("style");
 						 var vendorDocuments = document.getElementById("vendorDocuments");
 						 document.getElementById("vendorDocuments").removeAttribute("class");
 						 vendorDocuments.href="#tab-b";
@@ -905,9 +905,9 @@ function updateVendor(){
 	if ($('#client_form').validate(false, validationSettings)) {
 		var orgRelationId = document.getElementById("orgRelationId").value;
 	  	var formData = $($('#client_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.post(sourceleadUrl+"/updateVendor?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, formData, function(data) {
-					 $("#loading").removeAttr("style");
+					 $("#vendorDetailsLoading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");
 					 $("#vendorDocuments").removeClass("disabledLink");
 					 vendorDocuments.href="#tab-b"; 
@@ -1018,7 +1018,7 @@ function validateClientName(){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (vendor != null && vendor != '') {
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		$.ajax({
 			type : "GET",
@@ -1056,7 +1056,7 @@ function validateClientName(){
 					});
 				}
 				
-				$("#loading").removeAttr("style");
+				$("#vendorDetailsLoading").removeAttr("style");
 			},
 
 		});

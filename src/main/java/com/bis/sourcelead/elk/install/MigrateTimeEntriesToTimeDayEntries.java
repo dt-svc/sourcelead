@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 import javax.sql.DataSource;
 
@@ -26,12 +27,13 @@ public class MigrateTimeEntriesToTimeDayEntries {
 	private ComboPooledDataSource comboPooledDataSource;
 	
 	private void migrateTimesheetEntriesData() {
+		System.out.println("Updation Started....");
 		DataSource dataSource = comboPooledDataSource();
 		try (Connection con = dataSource.getConnection()) {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
 			Statement stmt2 = con.createStatement();
-			
+			Statement stmt3 = con.createStatement();
 			/*Fetching distinct date using submission id from time-sheet submission table*/
 			String fetchDates = "SELECT * FROM sourcelead.TIMESHEET_SUBMISSIONS";
 			ResultSet resultSet = stmt.executeQuery(fetchDates);
@@ -199,19 +201,43 @@ public class MigrateTimeEntriesToTimeDayEntries {
 					    		}catch (Exception e){   
 									e.printStackTrace();
 								}
-						 		}
+					    		
+					    		 String duplicateDayEntries = "SELECT ID FROM sourcelead.TIMESHEET_DAY_ENTRIES where SUBMISSION_ID = '"+submissionId+"' and PROJECT_TASK_ID = '"+projectTaskId+"' and TIMESHEET_DATE = '"+new java.sql.Date(date.getTime())+"' ";
+                                 ResultSet dlresultSet = stmt3.executeQuery(duplicateDayEntries);
+                                 LinkedList<Long> duplicateList = new LinkedList<>();
+                 		 	     while(dlresultSet.next()){
+                     		 		Long dayEntryId = dlresultSet.getLong("ID");
+                     		 		duplicateList.add(dayEntryId);
+						 		 }
+                     		 	 if(duplicateList.size()>1) {
+                     		 		 int flag = 0;
+                     		 		 for(Long id :duplicateList) {
+                     		 			 if(flag > 0) {
+                     		 				String delHistory = "delete from sourcelead.TIMESHEET_DAY_ENTRIES_HISTORY where ENTRY_ID = '"+id+"' ";
+                             		 		Statement delHistoryStmt = con.createStatement();
+                             		 		delHistoryStmt.executeUpdate(delHistory);
+                             		 		
+                             		 		String delQuery = "delete from sourcelead.TIMESHEET_DAY_ENTRIES where ID = '"+id+"' ";
+                             		 		Statement delQueryStmt = con.createStatement();
+                             		 		delQueryStmt.executeUpdate(delQuery); 
+                     		 			 }
+                         		 		flag++;
+                     		 		 }
+                     		 		 
+                     		 		
+                     		 		//System.out.println("Entry IDs :"+duplicateList+">>>>>>>>>>>>>> Project_Task_ID  :"+projectTaskId+">>>>>>>> SubmissionId : "+submissionId);
+                     		 	 }
+						 	   }
 						 	}
 					 	}	
 						 		 	
 					 }
 				 
 			}
-			
-			
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("Updation Ended....");
 	}
 	
 	
@@ -244,7 +270,7 @@ public class MigrateTimeEntriesToTimeDayEntries {
 			 }else if(sf.format(start).equalsIgnoreCase("Sun")) {
 				 dateList.put("Sun",new java.sql.Date(start.getTime()));
 			 }
-			 start = getNextDate(end);
+			 start = getNextDate(start);
 	    }
 		return dateList;
 	}

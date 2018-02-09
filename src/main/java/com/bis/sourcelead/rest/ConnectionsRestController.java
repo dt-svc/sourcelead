@@ -185,7 +185,7 @@ public class ConnectionsRestController {
 			e.printStackTrace();
 			}
 			if(result == "success"){
-				return new ModelAndView("redirect:/app/loadConnectedList");
+				return new ModelAndView("redirect:/app/loadConnectedList?status=connected");
 			}else{
 				model.setViewName("login");
 				return model;
@@ -244,7 +244,8 @@ public class ConnectionsRestController {
 //		String actionLink = "";
 		
 		 StringBuilder actionUrlBuilder = new StringBuilder();
-		 String actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("loadReceivedConnections").toString();
+		 String actionLink = "";
+//		 String actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("loadReceivedConnections").toString();
 		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, locations, noificationEmailScenario);
 	}
