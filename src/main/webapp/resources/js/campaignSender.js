@@ -12,7 +12,7 @@ function campaignSender(ele,senderId, fromType) {
 				 if ($('#capn_add_sender').validate(false, validationSettings)) {
 					  /*	var formData = $($('#capn_add_sender')[0]).serialize();*/
 					 var formData = getFormData('capn_add_sender');
-						$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						$("#senderLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == true){
 								senderClose();
@@ -24,6 +24,7 @@ function campaignSender(ele,senderId, fromType) {
 //								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
 					             }
 					  			 $("#popUp").empty();
+//					  			$("#senderLoading").removeAttr("style");
 					 			 $(".project_inn_mask").fadeOut(200);
 					             	
 							}
