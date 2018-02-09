@@ -134,7 +134,7 @@ window.onload = function () {
 		getDropDownCount(); */
 	}else{
 		getDropDownCount();
-		getOpenJobsELKList();
+		getOpenJobsELKList('','manual');
 		
 	}
 	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
@@ -145,6 +145,33 @@ window.onload = function () {
 	}
  };
 </script>
+
+
+
+<script>
+
+
+$(document).scroll(function(e){
+    // grab the scroll amount and the window height
+    var scrollAmount = $(window).scrollTop();
+    var documentHeight = $(document).height();
+    offset = $("#orgOffset").val();
+    // calculate the percentage the user has scrolled down the page
+    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+    	var avilableCount = $("#openJobsOffset").val();
+    	avilableCount = parseInt(avilableCount) + parseInt(10); 
+    	$("#openJobsOffset").val(avilableCount);
+    	 //getConnectionsList("scroll");
+    	 //requirementsFilter("scroll");
+	if('${requirementUUID}' == null || '${requirementUUID}' == '' || '${requirementUUID}' == 'undefined'){
+    	 getOpenJobsELKList('',"scroll")
+	}
+    }
+    
+});
+</script>
+
+
 
 <script>
  function socialPostSucess(service,status){
@@ -330,7 +357,7 @@ top: 21px;height: 32px; line-height: 18px;
 	<div class="filter" id="filterDiv">
 		<h2>
 			Filter your search <i class="fa fa-refresh" aria-hidden="true"
-				onclick="clearFilters(); getOpenJobsELKList();"
+				onclick="clearFilters(); getOpenJobsELKList('','manual');"
 				style="cursor: pointer;"></i>
 		</h2>
 		<div class="filterCta" id="dateFilterId">
@@ -500,7 +527,8 @@ top: 21px;height: 32px; line-height: 18px;
 
 		<div id="companiesListDiv" class="filterCta">
 				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
-				<ul id="orgList"></ul>
+				<ul id="orgList">
+				</ul>
 			</div>	
 
 		<!-- <div class="filLoad">
@@ -935,12 +963,12 @@ top: 21px;height: 32px; line-height: 18px;
 <script>
 $("#guestselector").fadeIn(200);
 $('#guestselector').delay(2000).fadeOut('slow');
-	function loadMoreReq(){
+	/* function loadMoreReq(){
     	var avilableCount = $("#openJobsOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(10); 
     	$("#openJobsOffset").val(avilableCount);
     	requirementsFilter("more");
-	}
+	} */
 </script>
 
 
@@ -1016,7 +1044,7 @@ function requirementsFilter(type){
     });
 	
 	var offset = 0;
-	if(type == "more"){
+	if(type == "scroll"){
 		offset = $("#openJobsOffset").val();
 	}
 	
@@ -1115,7 +1143,8 @@ function getOpenJobsELKListJOBS(){
 </script>
 
 <script>
-function getOpenJobsELKList(orgLocationId){
+function getOpenJobsELKList(orgLocationId,type){
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	
@@ -1147,6 +1176,15 @@ function getOpenJobsELKList(orgLocationId){
 		orgLocationIds.push($(this).val());
 // 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
+	var offset = 0;
+	if(type === "scroll"){
+		offset = $("#openJobsOffset").val();
+	}
+	if(type === "manual"){
+		$("#openJobsRequirementsList").empty();
+		$("#openJobsOffset").val(0);
+		    offset = 0;
+	}
 // 	if(orgLocationId != null){
 	var orgListType = '${specificCompany}';
 		if(orgListType !=null && orgListType !='' && orgListType !='undefined' && orgListType == 'specificCompany') {
@@ -1156,13 +1194,12 @@ function getOpenJobsELKList(orgLocationId){
 		 $("#companiesListDiv").hide();
 // 		 document.getElementById("jobResultHeadId").style.display="block";
 	}
-	var offset = '${offset}';
-	if(offset == ''){
-		offset = 0;
-	}else{
-		$("#openJobsOffset").val(offset)
-	}
-	
+// 	var offset = '${offset}';
+// 	if(offset == ''){
+// 		offset = 0;
+// 	}else{
+// 		$("#openJobsOffset").val(offset)
+// 	}
 	
 	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
 	if(openJobsRequirementTitle)
@@ -1190,20 +1227,27 @@ function getOpenJobsELKList(orgLocationId){
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
 				var newOffset = parseInt(offset) + 10;
-	    		if(json[0].noOfSearchHits < newOffset){
-	    			$("#loadMoreReq").css("display", "none");
-	    		}else{
-	    			$("#loadMoreReq").css("display", "block");
-	    		}
+				if(json.length< 10){
+					$('#loadMoreDiv').empty();
+					$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
+	 			}else if(json.length != null && json.length >= 10 && json.length > offset){
+	 				$('#loadMoreDiv').empty();
+	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
+	 			}else{
+	 				$('#loadMoreDiv').empty();
+	 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
+	 			}
 	    		prepareOpenJobsElkList(data,offset);
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
+	    		
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
 				$("#loadMoreReq").css("display", "none");
 				$("#noResultsDiv").css("display", "block");
+	
 	        }
 	    }
 	 });  
@@ -1376,9 +1420,10 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	</div>';
 			}
 			$("#openJobsRequirementsSummary").empty();
-			if(offset > 0){
+			if(json.length > 0){
+				$("#openJobsRequirementsList").empty();
 // 				$('#loadMoreDiv').empty(); 
-				$("#loadMoreDiv").append(result); 
+				$("#openJobsRequirementsList").append(result); 
 			}else{
 				$("#openJobsRequirementsList").empty();
 				$("#openJobsRequirementsList").append(result); 
@@ -1414,7 +1459,7 @@ function getPostedOrgJobs(id){
 		 
 	}
 	$("#companiesListDiv").hide();
-	getOpenJobsELKList(locationId);
+	getOpenJobsELKList(locationId,'manual');
 // 	requirementsFilter("postedOrg");
 }
 </script>
@@ -1431,7 +1476,7 @@ function getOrgsList(alphabet,type){
 	var selectedCompanies = companies.split(",");
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country+"&type="+type,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
@@ -1476,10 +1521,12 @@ function getOrgsList(alphabet,type){
 		    			
 		    		}
 		    	}
-	    		if(json.length > 5){
-	    			var orgCount = json.length - 5 ;
-			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+orgCount+' More</a>';
-	    		}
+// 	    		if(json.length > 5){
+// 	    			var orgCount = json.length - 5 ;
+				if(opt.noOfDays != '' && opt.noOfDays != 'undfined' && opt.noOfDays != null){
+			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+opt.noOfDays+' More</a>';
+
+				}
 				var org = "";    	
 				for(var i=0; i<json.length; i++){
 					var opt1 = json[i];
@@ -1781,7 +1828,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 }
 
 function backtoList(){
-	getOpenJobsELKList();
+	getOpenJobsELKList('','manual');
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	if(maxJobCount > 10){
