@@ -185,9 +185,11 @@ public class OpenJobsRestController {
 
 			BoolQueryBuilder openJobsLocationQueryBuilder = QueryBuilders.boolQuery();
 			BoolQueryBuilder openJobscombinedQueryBuilder = QueryBuilders.boolQuery();
+			if(null != openJobsLocation && !"".equalsIgnoreCase(openJobsLocation)){
 			openJobscombinedQueryBuilder.should(QueryBuilders.matchQuery("country", openJobsLocation));
 			openJobscombinedQueryBuilder.should(QueryBuilders.matchQuery("city", openJobsLocation));
 			openJobscombinedQueryBuilder.should(QueryBuilders.matchQuery("state", openJobsLocation));
+			}
 			openJobsLocationQueryBuilder.must(openJobscombinedQueryBuilder);
 
 			BoolQueryBuilder combinedOpenToPublicAndCrowdSourcingQueryBuilder = QueryBuilders.boolQuery();
@@ -723,7 +725,7 @@ public class OpenJobsRestController {
 
 		
 		if (null != country && !"".equalsIgnoreCase(country)) {
-			json = commonUtil.toJSON(tobereturnedOrgList);
+			json = commonUtil.toJSON(orgList);
 		}
 		else if("sub".equalsIgnoreCase(type)){
 					
