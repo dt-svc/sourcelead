@@ -38,7 +38,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 	@Override
 	public OrglocationFormFields saveNewCustomFormFields(OrglocationFormFieldsDTO orgLocFormFieldsDTO, OrgLocations orgLocation,Org org,User loginUser) throws Exception {
 		OrglocationFormFields orgLocFormFields = null;
-		if(orgLocFormFieldsDTO.getId() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getId().toString())) {
+		if(orgLocFormFieldsDTO != null && orgLocFormFieldsDTO.getId() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getId().toString())) {
 			orgLocFormFields = getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
 		}else {
 			 orgLocFormFields = new OrglocationFormFields();
@@ -92,6 +92,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 			for(OrglocationFormSubFieldsDTO optionData:orgLocFormFieldsDTO.getOptionData()) {
 				if(optionData != null && StringUtils.isNotBlank(optionData.getOption())) {
 				OrglocationFormSubFields subFields = new OrglocationFormSubFields();
+				subFields.setId(optionData.getId());
 				subFields.setFormField(orgLocFormFields);
 				subFields.setLabelName(optionData.getOption());
 				subFields.setStatus(1);
@@ -110,8 +111,8 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 
 
 	@Override
-	public String deleteCustomFieldById(Long customID) {
-		return orglocationFormFieldsDao.deleteCustomFieldById(customID);
+	public String deleteCustomFieldById(Long customID,String status) {
+		return orglocationFormFieldsDao.deleteCustomFieldById(customID,status);
 	}
 
 

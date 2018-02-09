@@ -49,6 +49,12 @@ private String reason;
 
 private String manager;
 
+private String vendor;
+
+private String vendorContact;
+
+private String employmentType;
+
 
 
 public String getReason() {
@@ -179,6 +185,30 @@ public String getManager() {
 
 public void setManager(String manager) {
 	this.manager = manager;
+}
+
+public String getVendor() {
+	return vendor;
+}
+
+public void setVendor(String vendor) {
+	this.vendor = vendor;
+}
+
+public String getVendorContact() {
+	return vendorContact;
+}
+
+public void setVendorContact(String vendorContact) {
+	this.vendorContact = vendorContact;
+}
+
+public String getEmploymentType() {
+	return employmentType;
+}
+
+public void setEmploymentType(String employmentType) {
+	this.employmentType = employmentType;
 }
 
 
