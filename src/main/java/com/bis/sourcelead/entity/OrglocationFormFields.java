@@ -13,10 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "ORGLOCATION_FORM_FIELDS", catalog = "sourcelead")
@@ -67,11 +64,13 @@ public class OrglocationFormFields implements Serializable{
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
     @JoinColumn(name="SL_DEPENDANT_FIELD", nullable=false )        
     private SourceleadFormFields sourceLeadDependantField;
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
     @JoinColumn(name="CUSTOM_DEPENDANT_FIELD", nullable=false )        
     private OrglocationFormFields customDependantField;
 	

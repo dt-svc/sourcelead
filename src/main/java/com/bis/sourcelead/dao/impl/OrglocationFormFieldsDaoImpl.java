@@ -50,7 +50,7 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationId(Long sectionId,Long orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc  where slSection.id =:sectionId and orgLoc.id =:orgLocation and orgForm.status = '1'";
+		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc  where slSection.id =:sectionId and orgLoc.id =:orgLocation";
 		List<OrglocationFormFields> orglocaFormField = session.createQuery(query).setLong("sectionId", sectionId).setLong("orgLocation", orgLocation).list();
 		return orglocaFormField;
 	}
@@ -68,21 +68,28 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String deleteCustomFieldById(Long customID) {
+	public String deleteCustomFieldById(Long customID,String status) {
+		Long statusValue = null;
+		if(status.equalsIgnoreCase("deactivate")) {
+			 statusValue = 0L;
+		}else {
+			 statusValue = 1L;
+		}
+		
 		String returnResult = "";
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "update OrglocationFormSubFields subFields set subFields.status ='0' where subFields.formField in(:customID)";
+		String query = "update OrglocationFormSubFields subFields set subFields.status ='"+statusValue+"' where subFields.formField in(:customID)";
 		 Query result = session.createQuery(query).setLong("customID", customID);
 		 int count = result.executeUpdate();
 		 if(count > 0) {
-			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='0' where  formField.id =:customID";
+			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='"+statusValue+"' where  formField.id =:customID";
 			 Query resultformField = session.createQuery(formFieldQuery).setLong("customID", customID);
 			  int formFieldResult = resultformField.executeUpdate();
 			  if(formFieldResult > 0) {
 				  returnResult =  "success"; 
 			  }
 		 }else {
-			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='0' where  formField.id =:customID";
+			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='"+statusValue+"' where  formField.id =:customID";
 			 Query resultformField = session.createQuery(formFieldQuery).setLong("customID", customID);
 			 int formFieldResult = resultformField.executeUpdate();
 			  if(formFieldResult > 0) {
