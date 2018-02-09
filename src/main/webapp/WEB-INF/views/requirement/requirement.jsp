@@ -1628,7 +1628,7 @@ function validate_fileupload(fileName)
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		checkTemplateforDouplicate();
 		validateJobId();
 		$('#addClient').empty();
