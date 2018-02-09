@@ -3,6 +3,7 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +21,11 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -907,15 +912,15 @@ public void deleteElkDocument(String index, String type, String id) {
 
 
 public void saveOrUpdateCandidateElkDocument(CandidateIndex candidateIndex,String index,String type,String id) {
-	String entityInJson = null;
+	String value = "";
 	try {
-	    entityInJson = toJSON(candidateIndex);
-	    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		value = toJSON(candidateIndex);
+	    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
 	    logger.info(type+" has been updated.");
 	} 
     catch(DocumentMissingException e){
     	client.prepareIndex(index, type,id)
-	    .setSource(entityInJson).execute().actionGet();
+	    .setSource(value, XContentType.JSON).execute().actionGet();
 	    logger.info(type+" has been indexed.");
 	}
 	catch (Exception e) {
@@ -931,15 +936,15 @@ private boolean isNullOrEmpty(long long1) {
 }
 
 public void saveOrUpdateElkclientVendorIndexDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
-	String entityInJson = null;
+	String value = "";
 	try {
-	    entityInJson = toJSON(clientVendorIndex);
-	    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		value = toJSON(clientVendorIndex);
+	    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
 	    logger.info(type+" has been updated.");
 	} 
     catch(DocumentMissingException e){
     	client.prepareIndex(index, type,id)
-	    .setSource(entityInJson).execute().actionGet();
+	    .setSource(value, XContentType.JSON).execute().actionGet();
 	    logger.info(type+" has been indexed.");
 	}
 	catch (Exception e) {
@@ -949,15 +954,15 @@ public void saveOrUpdateElkclientVendorIndexDocument(ClientVendorIndex clientVen
  }
 
 public void saveOrUpdateElkclientVendorContactsIndexDocument(ClientVendorContactsIndex contactsIndex,String index,String type,String id) {
-	String entityInJson = null;
+	String value = "";
 	try {
-	    entityInJson = toJSON(contactsIndex);
-	    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		value = toJSON(contactsIndex);
+	    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
 	    logger.info(type+" has been updated.");
 	} 
     catch(DocumentMissingException e){
     	client.prepareIndex(index, type,id)
-	    .setSource(entityInJson).execute().actionGet();
+	    .setSource(value, XContentType.JSON).execute().actionGet();
 	    logger.info(type+" has been indexed.");
 	}
 	catch (Exception e) {
@@ -1022,6 +1027,23 @@ public DataSource comboPooledDataSource() {
 	comboPooledDataSource.setJdbcUrl(dbconfig.getJdbcUrl());
 	comboPooledDataSource.setUser(dbconfig.getUser());
 	comboPooledDataSource.setPassword(dbconfig.getPassword());
+	
+    try {
+   	 	try {
+	    	  Settings settings = Settings.builder()
+	    			  .put("cluster.name", dbconfig.getCluster())
+	                  .put("node.name", dbconfig.getNode())
+	         		  .put("path.home", dbconfig.getPath())
+	                  .build();
+			client = new PreBuiltTransportClient(settings)
+					.addTransportAddress(new TransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
+	     } catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		
+    } catch (Exception exception) {
+		logger.error(ExceptionUtils.getFullStackTrace(exception));
+	}
 	
 	return comboPooledDataSource;
 }
