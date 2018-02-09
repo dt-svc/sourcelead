@@ -255,10 +255,9 @@ function saveBulkImport(){
  					$("#selector").removeAttr("style");
  					$("#selector").css({ display: "block" });
  					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
-//  					msgFadein();
+ 					msgFadein();
  				}
  		    		
-//  		    	}
  		    },
  		   error: function(e){
  			  alert(e);

@@ -22,8 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -662,7 +664,7 @@ public void transferAssociates() throws IOException, SQLException {
 				 
 				 
 				 try {
-					 String designationType = "C2C";
+					 String designationType = "Offshore C2C";
 					 String clientCandidateQry = " update sourcelead.CANDIDATE candidate set candidate.PARENT_CANDIDATE_ID = '"+vendorCandidateId+"', candidate.DESIGNATION_TYPE = '"+designationType+"', candidate.ORG_RELATION_ID = '"+orgRelationId+"', candidate.SPOC_ID = '"+spocId+"' where candidate.ID = '"+candidateId+"' ";
 			    	 java.sql.PreparedStatement clientCandidatePstmt = conn.prepareStatement(clientCandidateQry); 
 			    	 clientCandidatePstmt.executeUpdate(); 
@@ -910,15 +912,15 @@ public void deleteElkDocument(String index, String type, String id) {
 
 
 public void saveOrUpdateCandidateElkDocument(CandidateIndex candidateIndex,String index,String type,String id) {
-	String entityInJson = null;
+	String value = "";
 	try {
-	    entityInJson = toJSON(candidateIndex);
-	    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		value = toJSON(candidateIndex);
+	    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
 	    logger.info(type+" has been updated.");
 	} 
     catch(DocumentMissingException e){
     	client.prepareIndex(index, type,id)
-	    .setSource(entityInJson).execute().actionGet();
+	    .setSource(value, XContentType.JSON).execute().actionGet();
 	    logger.info(type+" has been indexed.");
 	}
 	catch (Exception e) {
@@ -934,15 +936,15 @@ private boolean isNullOrEmpty(long long1) {
 }
 
 public void saveOrUpdateElkclientVendorIndexDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
-	String entityInJson = null;
+	String value = "";
 	try {
-	    entityInJson = toJSON(clientVendorIndex);
-	    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		value = toJSON(clientVendorIndex);
+	    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
 	    logger.info(type+" has been updated.");
 	} 
     catch(DocumentMissingException e){
     	client.prepareIndex(index, type,id)
-	    .setSource(entityInJson).execute().actionGet();
+	    .setSource(value, XContentType.JSON).execute().actionGet();
 	    logger.info(type+" has been indexed.");
 	}
 	catch (Exception e) {
@@ -952,15 +954,15 @@ public void saveOrUpdateElkclientVendorIndexDocument(ClientVendorIndex clientVen
  }
 
 public void saveOrUpdateElkclientVendorContactsIndexDocument(ClientVendorContactsIndex contactsIndex,String index,String type,String id) {
-	String entityInJson = null;
+	String value = "";
 	try {
-	    entityInJson = toJSON(contactsIndex);
-	    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		value = toJSON(contactsIndex);
+	    client.prepareUpdate(index, type,id).setDoc(value, XContentType.JSON).get();
 	    logger.info(type+" has been updated.");
 	} 
     catch(DocumentMissingException e){
     	client.prepareIndex(index, type,id)
-	    .setSource(entityInJson).execute().actionGet();
+	    .setSource(value, XContentType.JSON).execute().actionGet();
 	    logger.info(type+" has been indexed.");
 	}
 	catch (Exception e) {
@@ -1026,15 +1028,20 @@ public DataSource comboPooledDataSource() {
 	comboPooledDataSource.setUser(dbconfig.getUser());
 	comboPooledDataSource.setPassword(dbconfig.getPassword());
 	
-	try {
-    	  Settings settings = Settings.settingsBuilder()
-    			  .put("cluster.name", dbconfig.getCluster())
-                  .put("node.name", dbconfig.getNode())
-         		  .put("path.home", dbconfig.getPath())
-                  .build();
-		client = TransportClient.builder().settings(settings).build().
-		      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-     } catch (Exception exception) {
+    try {
+   	 	try {
+	    	  Settings settings = Settings.builder()
+	    			  .put("cluster.name", dbconfig.getCluster())
+	                  .put("node.name", dbconfig.getNode())
+	         		  .put("path.home", dbconfig.getPath())
+	                  .build();
+			client = new PreBuiltTransportClient(settings)
+					.addTransportAddress(new TransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
+	     } catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		
+    } catch (Exception exception) {
 		logger.error(ExceptionUtils.getFullStackTrace(exception));
 	}
 	
