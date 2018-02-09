@@ -17,7 +17,7 @@ public interface OrglocationFormFieldsService {
 	
 	public Long getCurrentIndexBySourceleadActionIdAndOrders(Long actionId,List<Long> orders);
 
-	public String deleteCustomFieldById(Long customID);
+	public String deleteCustomFieldById(Long customID, String status);
 
 	public List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation);
 
