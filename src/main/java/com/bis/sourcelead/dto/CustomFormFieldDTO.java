@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 public class CustomFormFieldDTO {
 	
-	long entityId;
+	Long entityId;
 	String customFormFieldData;
 	long customFormFieldId;
 	
@@ -14,11 +14,11 @@ public class CustomFormFieldDTO {
 		this.customFormFieldData = customFormFieldData;
 	}
 
-	public long getEntityId() {
+	public Long getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityId(long entityId) {
+	public void setEntityId(Long entityId) {
 		this.entityId = entityId;
 	}
 
