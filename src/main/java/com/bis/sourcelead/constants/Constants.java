@@ -38,6 +38,9 @@ public class Constants {
 	public static final String DATEOFJOIN = "Date of Join";
 	public static final String ROLE = "Role*";
 	public static final String MANAGER = "Manager*";
+	public static final String EMPLOYMENT_TYPE ="Employment Type";
+	public static final String ASSOCIATE_VENDOR="Vendor";
+	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";

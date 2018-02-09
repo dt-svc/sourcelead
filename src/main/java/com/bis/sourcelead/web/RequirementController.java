@@ -5,8 +5,12 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
@@ -28,9 +32,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -54,7 +62,9 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectClientService;
@@ -96,8 +106,8 @@ public class RequirementController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	/*@Autowired
-	RequirementDao requirementDao;*/
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired
 	RequirementService requirementService;
@@ -174,6 +184,9 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	private JobCustomFieldDataService jobCustomFieldDataService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -571,8 +584,6 @@ public class RequirementController {
 				}
 		   }
 		model.addObject("usersListForAssignTeam", usersListForAssignTeam);*/
-		
-
 		return model;
 
 	}
@@ -788,6 +799,53 @@ public class RequirementController {
 				}
 				
 			}
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+			}
+			model.addObject("requirementUUID",requirementUUID);
+			if(!isNullOrEmpty(type)){
+				model.addObject("type",type);
+			}
+			
+			if(!isNullOrEmpty(candidateUUID)){
+				Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
+				model.addObject("candidateId", canidate.getId());
+			}
+			
+			if(!isNullOrEmpty(submissionId)){
+				model.addObject("submissionId", submissionId);
+			}
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
+		     model.addObject("actionId",action.getId());
+		   
+			if(action != null && action.getId()!= null){
+				 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+				 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+				 if(sections != null && !sections.isEmpty()) {
+					 for(SourceleadSectionDTO sec:sections) {
+						 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+							 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+							 custom.setCustomFormFieldId(customFields.getId());
+							 formFieldId.add(custom);
+						 }
+					 }
+					 if(formFieldId != null && !formFieldId.isEmpty() && orgLocations != null) {
+						OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
+					 Map<Long, String[]> jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,requirement.getId());
+					 Map<String,String> dataMap = new HashMap<>();
+					 if(jobData!= null && !jobData.isEmpty()) {
+						 for(Entry<Long, String[]> jobCustomData:jobData.entrySet()) {
+							 String labelName = jobCustomData.getValue()[0];
+							 String labelData = jobCustomData.getValue()[1];
+							 dataMap.put(labelName, labelData);
+							 model.addObject("dataMapListJobs", dataMap);
+						 	}
+					 	}
+					 }
+				 }
+				}
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

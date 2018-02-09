@@ -23,7 +23,7 @@ z-index: 1040 !important;
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-     
+     <div id="loadingRecipient"></div>
 	<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
 	
 		<div class="popupHead">
@@ -36,7 +36,6 @@ z-index: 1040 !important;
 		</c:if>
 		</div>
 		
-		<div id="loadingRecipient"></div>
 		<div class="popupMid popupMidPad clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
