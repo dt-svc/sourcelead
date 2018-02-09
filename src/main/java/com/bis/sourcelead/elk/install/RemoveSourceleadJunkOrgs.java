@@ -40,10 +40,11 @@ public void removeOrgs() throws IOException, SQLException {
 		 String foriegnChecks = "set foreign_key_checks = 0";
 		 stmt1 = conn.createStatement();
 		 stmt1.executeQuery(foriegnChecks);
+		 
+		 System.out.println("----Deletion of org locations starts-----");
 		
 		for (String orgLocation : orgLocationsList) {
 			
-			 System.out.println("----Deletion of org locations starts-----");
 			 
 			 sqlQuery = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ORG_NAME = '"+orgLocation+"' ";
 			 stmt1 = conn.createStatement();
@@ -252,7 +253,7 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 
 					 System.out.println("Removing Vendor Relation Data....");
-					 sqlQuery = "SELECT * from sourcelead.ORG_RELATIONS orl where orl.RESPONDER_LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from sourcelead.ORG_RELATIONS orl where (orl.RESPONDER_LOCATION_ID = '"+orgLocations+"' or  orl.LOCATION_ID = '"+orgLocations+"') ";
 					 Statement stmt17 = conn.createStatement();
 					 ResultSet rs14 = stmt17.executeQuery(sqlQuery);
 					 
