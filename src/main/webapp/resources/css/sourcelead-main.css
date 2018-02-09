@@ -7935,7 +7935,7 @@ float: left; clear: none; padding: 3px 10px;
 background-color: rgba(3, 169, 244, 0.1); margin: 0px 10px 10px 0; border-radius: 5px;
 border: 1px solid rgba(3, 169, 244, 0.17); font-size: 12px;
 }
-uploadfile-onboard {
+.uploadfile-onboard {
 opacity: 0; left: 0%; position: absolute; -moz-transform: translateY(0px); -webkit-transform: translateY(0px);
 transform: translateY(0px); -moz-transition: all ease-in-out 0.5s; -webkit-transition: all ease-in-out 0.5s;
 -o-transition: all ease-in-out 0.5s; box-shadow: 0px 0px 10px 5px #e1e6fa; display: inline-block;
