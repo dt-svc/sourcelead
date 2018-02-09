@@ -34,7 +34,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class AddProjectsELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddProjectsELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private SourceleadELKTC client;
+	 private SourceleadELKTC<ProjectsIndex> client;
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -44,7 +44,7 @@ public class AddProjectsELK {
 		ArrayList<ProjectsIndex> elkProjectsList = getElkProjects();
 		if(elkProjectsList != null && !elkProjectsList.isEmpty()){
 			for (ProjectsIndex projectsIndex :elkProjectsList) {
-				saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projectsIndex.getId().toString());
+				client.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projectsIndex.getId().toString());
 			}
 		}
 		  logger.info("Projectss Successfully Added To Elk");
@@ -202,34 +202,6 @@ public class AddProjectsELK {
 	}
 	
 	
-	public void saveOrUpdateElkDocument(ProjectsIndex projectsIndex,String index,String type,String id) {
-		String entityInJson = null;
-		try {
-		    entityInJson = toJSON(projectsIndex);
-		    client.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
-		    logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        	client.getClient().prepareIndex(index, type,id)
-		    .setSource(entityInJson).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }
-	
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
-	 
-	 
 	@Bean
 	public DataSource comboPooledDataSource() {
 		@SuppressWarnings("resource")

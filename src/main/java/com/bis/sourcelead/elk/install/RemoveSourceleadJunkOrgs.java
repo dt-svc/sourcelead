@@ -200,7 +200,7 @@ public void removeOrgs() throws IOException, SQLException {
 						    Statement stmt16 = conn.createStatement();
 						    stmt16.executeUpdate(sqlQuery);
 						    
-						    sqlQuery = "delete from sourcelead.EMPLOYEE  where USER_ID = '"+userId+"' ";
+						    sqlQuery = "delete from sourcelead.EMPLOYEE  where USER_ID = '"+userId+"' and ORG_LOCATIONS_ID = '"+orgLocations+"' ";
 						    Statement stmt17 = conn.createStatement();
 						    stmt17.executeUpdate(sqlQuery);
 					 }
@@ -336,13 +336,21 @@ public void removeOrgs() throws IOException, SQLException {
 					 System.out.println("Removing User Data....");
 					 
 					 
-					 sqlQuery = "delete from sourcelead.CANDIDATE  where CONSULTANT_USER_ID = '"+primaryUserId+"' ";
+					 sqlQuery = "SELECT * from sourcelead.USER_ROLE userRole where userRole.USER_ID = '"+primaryUserId+"' and userRole.ORG_LOCATIONS_ID != '"+orgLocations+"' ";
 					 Statement stmt26 = conn.createStatement();
-					 stmt26.executeUpdate(sqlQuery);
+					 ResultSet rs16 = stmt26.executeQuery(sqlQuery);
+					 Integer userRolesCount = 0;
+					
+					 while(rs16.next()) {
+						 userRolesCount = userRolesCount+1;
+					 }
 					 
-					 sqlQuery = "delete from sourcelead.USER  where ID = '"+primaryUserId+"' ";
-					 Statement stmt25 = conn.createStatement();
-					 stmt25.executeUpdate(sqlQuery);
+					 if(userRolesCount == 0) {
+						 sqlQuery = "delete from sourcelead.USER  where ID = '"+primaryUserId+"' ";
+						 Statement stmt25 = conn.createStatement();
+						 stmt25.executeUpdate(sqlQuery);
+					 }
+					
 					 
 					 System.out.println("---------Removed "+orgLocationName+" Successfully------");
 			}

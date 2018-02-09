@@ -2186,8 +2186,8 @@ function createAlert(requirementUUID){
 					        	 result = result +'         	<label class="col-md-3">Keywords / Skills<span class="text-danger paddingLeft">*</span></label>';
 					        	 result = result +'         	<div class="col-md-9">';
 					        	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" field-name="Keywords/Skills" data-validation="required" multiple id="candidateSkills" name="skills">';
-					        	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
-					        	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+					        	 result = result + 			'<c:forEach var="skill" items="${skillsList}">';
+					     		 result = result + 			"<option value='${skill.name}'>${skill.name}</option>";
 					        	 result = result +'						</c:forEach>;'
 					        	 result = result +'         		</select>';
 					        	 result = result +'         	</div>';
