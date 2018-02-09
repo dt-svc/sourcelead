@@ -77,6 +77,4 @@ public class SourceleadSectionDTO {
 	public void setCustomFieldsList(List<OrglocationFormFieldsDTO> customFieldsList) {
 		this.customFieldsList = customFieldsList;
 	}
-	
-	
 }
