@@ -23,7 +23,9 @@
 		<div class="cuspopHead clearfix">
 			<div class="col-md-6 padding_left">
 			<c:if test="${!empty SourceleadForm_Sections}">
-			<input type="hidden" id="addFieldSectionHidden" name="sectionId">
+			<c:if test="${not empty disableFields}">
+				<input type="hidden" id="addFieldSectionHidden" name="sectionId">
+			</c:if>
 			<select class="chosen-select form-control" id="addFieldSection" name="sectionId" onchange="getDependentFieldList();getCustomDependentFieldList();" ${disableFields}>
 				 <c:forEach var="section" items="${SourceleadForm_Sections}" varStatus="sectionStatus">
 				  <option value="${section.id}">${section.sectionName}</option>
@@ -31,7 +33,9 @@
 			</select> 
 			</c:if>
 			<c:if test="${!empty SourceleadForm_Sections_pop}">
-			<input type="hidden" id="addFieldSectionHidden" name="sectionId">
+			<c:if test="${not empty disableFields}">
+				<input type="hidden" id="addFieldSectionHidden" name="sectionId">
+			</c:if>	
 			<select class="chosen-select form-control" id="addFieldSection" name="sectionId" onchange="getDependentFieldList();getCustomDependentFieldList();" ${disableFields}>
 				 <c:forEach var="section" items="${SourceleadForm_Sections_pop}" varStatus="sectionStatus">
 				  <option ${section.id == customFormPopDetails.sectionId ?'selected':''} value="${section.id}">${section.sectionName}</option>
@@ -40,7 +44,9 @@
 			</c:if>
 			</div>
 			<div class="col-md-6 noPad">
-				<input type="hidden" id="fieldsDropDownHidden" name="fieldType">
+				<c:if test="${not empty disableFields}">
+					<input type="hidden" id="fieldsDropDownHidden" name="fieldType">
+				</c:if>
 				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();" ${disableFields}>
 				  <option value="">--Select Field Type--</option>
 				  <option value ="textfield" ${customFormPopDetails.fieldType =='textfield' ? 'selected':''} selected>Text field</option>

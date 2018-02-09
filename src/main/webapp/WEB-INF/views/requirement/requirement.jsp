@@ -1530,7 +1530,7 @@ function getCustomDependentField(sectionId){
 	var requirementId = '${requirement.id}';
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"requestFrom="+'requirement',
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
