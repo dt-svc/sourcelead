@@ -1227,22 +1227,27 @@ function getOpenJobsELKList(orgLocationId,type){
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
 				var newOffset = parseInt(offset) + 10;
-				if(offset< 10){
+				if(json.length< 10){
 					$('#loadMoreDiv').empty();
 					$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
-	 			}else if(offset != null && offset >= 10 && offset != 0 ){
+	 			}else if(json.length != null && json.length >= 10 && json.length > offset){
 	 				$('#loadMoreDiv').empty();
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
+	 			}else{
+	 				$('#loadMoreDiv').empty();
+	 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
 	 			}
 	    		prepareOpenJobsElkList(data,offset);
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
+	    		
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
 				$("#loadMoreReq").css("display", "none");
 				$("#noResultsDiv").css("display", "block");
+	
 	        }
 	    }
 	 });  
@@ -1415,10 +1420,10 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	</div>';
 			}
 			$("#openJobsRequirementsSummary").empty();
-			if(offset > 0){
+			if(json.length > 0){
 				$("#openJobsRequirementsList").empty();
 // 				$('#loadMoreDiv').empty(); 
-				$("#openJobsRequirementsList").append(result);  
+				$("#openJobsRequirementsList").append(result); 
 			}else{
 				$("#openJobsRequirementsList").empty();
 				$("#openJobsRequirementsList").append(result); 

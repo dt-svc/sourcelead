@@ -198,7 +198,7 @@ window.onload = function () {
 		  </span>	
 		  
 		  <div class="cand-advsrch">
-            <a href="javascript:void(0)" class=" AdSer" id="advancedSearch" style="display: block;" title="Advanced Search" onClick="openPop()"> Advanced Search</a>
+            <a href="javascript:void(0)" class="btn btn-primary anchorWhite AdSer" id="advancedSearch" style="display: block;" title="Advanced Search" onClick="openPop()">Advanced Search <i class="fa fa-search"></i></a>
           
           <form:form id="professional_requirement_search_form" name="professional_requirement_search_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();loadChosenRequirementScripts();"><i class="fa fa-close"></i></a>
@@ -2186,8 +2186,8 @@ function createAlert(requirementUUID){
 					        	 result = result +'         	<label class="col-md-3">Keywords / Skills<span class="text-danger paddingLeft">*</span></label>';
 					        	 result = result +'         	<div class="col-md-9">';
 					        	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" field-name="Keywords/Skills" data-validation="required" multiple id="candidateSkills" name="skills">';
-					        	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
-					        	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+					        	 result = result + 			'<c:forEach var="skill" items="${skillsList}">';
+					     		 result = result + 			"<option value='${skill.name}'>${skill.name}</option>";
 					        	 result = result +'						</c:forEach>;'
 					        	 result = result +'         		</select>';
 					        	 result = result +'         	</div>';

@@ -14,7 +14,7 @@ public interface OrglocationFormFieldsDao {
 	
     Long getCurrentIndexBySourceleadActionIdAndOrders(Long actionId,List<Long> orders);
 
-	String deleteCustomFieldById(Long customID);
+	String deleteCustomFieldById(Long customID, String status);
 
 	OrglocationFormFields getOrglocationFormFieldsById(Long id) throws Exception;
 
