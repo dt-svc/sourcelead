@@ -57,6 +57,11 @@ public class OrgServiceImpl implements OrgService {
 	public List<Org> getOrgs() throws Exception {
 		return orgDao.getOrgs();
 	}
+	
+	@Override
+	public List<Org> getOpenJobsOrgs() throws Exception {
+		return orgDao.getOrgs();
+	}
 
 	@Override
 	public String websiteValidation(String website,String sourceleadBLockedwebsites) {
@@ -127,5 +132,10 @@ public class OrgServiceImpl implements OrgService {
 	{
 		return orgDao.getuserListForOrgChart(orgLocationId);
 	}
-	
+
+	@Override
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet)
+	{
+		return orgDao.getAllOpenJobsOrgsStartsWithAlphabet(alphabet);
+	}
 }
