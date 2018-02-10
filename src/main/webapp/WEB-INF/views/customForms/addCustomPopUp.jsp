@@ -162,6 +162,17 @@
 
 <!--   Popup Code  -->
 
+
+ <script>
+ $('#isRequired').click(function() {
+	        var value = $(this).val();
+	        if( $( this ).attr( 'type' ) === 'checkbox' ) {
+	            value = +$(this).is( ':checked' );
+	            $('#isRequired').attr("value",value);
+	        }
+});	
+ </script>
+
  <script>
  $(function(){
 	    var config = {

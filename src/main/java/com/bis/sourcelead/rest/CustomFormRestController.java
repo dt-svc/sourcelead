@@ -156,12 +156,12 @@ public class CustomFormRestController {
 		 		 if(customFieldsRequestTypeDTO != null && StringUtils.isNotEmpty(customFieldsRequestTypeDTO.getRequestFrom())) {
 		 		 switch (customFieldsRequestTypeDTO.getRequestFrom()) {
 		 		 	case "requirement":
-			 			if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null) {
+			 			if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null && customFieldsRequestTypeDTO.getRequirementId()!= null) {
 							 jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getRequirementId());
 						 }
 			 			break;
 		 		 	case "candidate":
-		 		 		if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null) {
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null && customFieldsRequestTypeDTO.getCandidateId() != null) {
 							 jobData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getCandidateId());
 						 }
 			 			break;
