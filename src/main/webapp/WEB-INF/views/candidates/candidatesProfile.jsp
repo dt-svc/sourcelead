@@ -4,6 +4,19 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+
+<style type="text/css">
+.columnfields-custom label {
+width: 100%; clear:both; display: inline-table; display: none;
+}
+.columnfields-custom .col-md-9 {
+width: 100%;
+}
+.columnfields-custom .col-md-9 select {
+width: 100%; padding: 3px 20px 3px 15px;
+}
+</style>
+
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -131,7 +144,7 @@ function editCandidate(candidateId){
 							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
 						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
 						    result  = result + '</div>';
-							result = result + '		    <div class="candidate-editdetails col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+							result = result + '		    <div class="candidate-editdetails col-md-10 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
@@ -412,6 +425,7 @@ function editCandidate(candidateId){
 							
 							result = result + '</span>';
 							
+							result = result + '<div id="customFieldDataId" class="col-md-6 columnfields-custom"></div>';
 							
 							result = result + '<div class="clearfix mb10 mt">';
 							result = result + '<div class="col-md-12">';
@@ -433,7 +447,8 @@ function editCandidate(candidateId){
 							result = result + '		  </div>';
 							
 							$("#profileEditPopup").empty(); 
-							$("#profileEditPopup").append(result); 
+							$("#profileEditPopup").append(result);
+							preapareCustomFieldDetails(candidateId);
 							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','','address');
 							zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
@@ -488,7 +503,19 @@ function editCandidate(candidateId){
 }
 </script>
 
-
+	
+<script>
+function preapareCustomFieldDetails(candidateId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&candidateId="+candidateId+"&requestFrom=candidate",        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
 
 <%-- 
      @author : Venkat Kesav
