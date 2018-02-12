@@ -32,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import com.bis.sourcelead.beans.BisAssociatesEmails;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
@@ -675,7 +674,9 @@ public void transferAssociates() throws IOException, SQLException {
 					 
 					 if(clientCandidateRs.next()) {
 
-					    	CandidateIndex candidateIndex = new CandidateIndex();
+					    	String associateUserId = clientCandidateRs.getString("CONSULTANT_USER_ID"); 
+						 
+						    CandidateIndex candidateIndex = new CandidateIndex();
 					    	
 					    	candidateIndex.setCandidateId(clientCandidateRs.getLong("ID"));
 					    	candidateIndex.setOrgLocationId(clientCandidateRs.getLong("ORG_LOCATION_ID"));
@@ -865,6 +866,23 @@ public void transferAssociates() throws IOException, SQLException {
 				    	    
 				    	    deleteElkDocument(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidateIndex.getCandidateId().toString());
 				    	    saveOrUpdateCandidateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
+				    	    
+				    	    
+				    	     String employeeSql = "SELECT * FROM sourcelead.EMPLOYEE employee  where employee.USER_ID = '"+associateUserId+"' and  employee.ORG_LOCATIONS_ID = '"+USOrgLocation+"' ";
+							 Statement employeeStmt = conn.createStatement();
+							 ResultSet employeeRs = employeeStmt.executeQuery(employeeSql);
+							 
+							 
+				    	    if(employeeRs.next()) {
+				    	    	
+				    	    	 String empId = employeeRs.getString("ID");
+				    	    	
+				    	    	 String clientemplQry = " update sourcelead.EMPLOYEE employee set employee.EMPLOYMENT_TYPE = '"+designationType+"', employee.ORG_RELATION_ID = '"+orgRelationId+"', employee.SPOC_ID = '"+spocId+"' where employee.ID = '"+empId+"' ";
+						    	 java.sql.PreparedStatement clientemplPstmt = conn.prepareStatement(clientemplQry); 
+						    	 clientemplPstmt.executeUpdate();
+				    	    }
+				    	     
+					    	 
 						 
 					 }
 			    	 
