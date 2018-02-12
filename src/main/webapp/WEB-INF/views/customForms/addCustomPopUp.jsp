@@ -139,7 +139,7 @@
 			  <div class="col-md-6"><input type="text" name="labelinfo" id="labelinfo" value="${customFormPopDetails.labelinfo}" class="field-label form-control input-sm" > </div>
 			</div>
 			
-			<div class="col-sm-12 noPad mt clearfix">
+			<!-- <div class="col-sm-12 noPad mt clearfix">
 			  <div class="col-md-3 noPad labHeight">Dependent Fields</div>
 			  <div class="col-md-6 dropdown-select"><select name="slDependedntField" class="field-label form-control input-sm" id="dependentFieldDiv"> 
 			  </select>
@@ -149,7 +149,7 @@
 			<div class="col-sm-12 noPad mt clearfix" id="customDependentFieldDiv">
 			  <div class="col-md-3 noPad labHeight">Custom Dependent Fields</div>
 			  <div class="col-md-6"><select name="customDependentField" class="field-label form-control input-sm" id="customDependentField"> </select></div>
-			</div>
+			</div> -->
 			
 			</div>
 		
