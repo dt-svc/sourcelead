@@ -2130,7 +2130,7 @@ function getCities(){
 					  
 					  <div class="col-md-4 mt">
                           <div class="small-widget bgGreen">
-                              <a href="<c:url value='${appPath}/bulk-resume-import.html'/>" title="Bulk Imports">
+                              <a href="<c:url value='${appPath}/bulk-resume-import.html'/>" title="Bulk Imports" target="_blank">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-upload fa-4x"></i>
                                       <span class="fa fa-plus"></span>

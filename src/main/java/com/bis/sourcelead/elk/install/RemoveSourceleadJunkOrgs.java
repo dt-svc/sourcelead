@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.bis.sourcelead.beans.BisJunkOrgLocations;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -40,10 +39,11 @@ public void removeOrgs() throws IOException, SQLException {
 		 String foriegnChecks = "set foreign_key_checks = 0";
 		 stmt1 = conn.createStatement();
 		 stmt1.executeQuery(foriegnChecks);
+		 
+		 System.out.println("----Deletion of org locations starts-----");
 		
 		for (String orgLocation : orgLocationsList) {
 			
-			 System.out.println("----Deletion of org locations starts-----");
 			 
 			 sqlQuery = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ORG_NAME = '"+orgLocation+"' ";
 			 stmt1 = conn.createStatement();
@@ -199,7 +199,7 @@ public void removeOrgs() throws IOException, SQLException {
 						    Statement stmt16 = conn.createStatement();
 						    stmt16.executeUpdate(sqlQuery);
 						    
-						    sqlQuery = "delete from sourcelead.EMPLOYEE  where USER_ID = '"+userId+"' ";
+						    sqlQuery = "delete from sourcelead.EMPLOYEE  where USER_ID = '"+userId+"' and ORG_LOCATIONS_ID = '"+orgLocations+"' ";
 						    Statement stmt17 = conn.createStatement();
 						    stmt17.executeUpdate(sqlQuery);
 					 }
@@ -252,7 +252,7 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 
 					 System.out.println("Removing Vendor Relation Data....");
-					 sqlQuery = "SELECT * from sourcelead.ORG_RELATIONS orl where orl.RESPONDER_LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from sourcelead.ORG_RELATIONS orl where (orl.RESPONDER_LOCATION_ID = '"+orgLocations+"' or  orl.LOCATION_ID = '"+orgLocations+"') ";
 					 Statement stmt17 = conn.createStatement();
 					 ResultSet rs14 = stmt17.executeQuery(sqlQuery);
 					 
@@ -335,13 +335,21 @@ public void removeOrgs() throws IOException, SQLException {
 					 System.out.println("Removing User Data....");
 					 
 					 
-					 sqlQuery = "delete from sourcelead.CANDIDATE  where CONSULTANT_USER_ID = '"+primaryUserId+"' ";
+					 sqlQuery = "SELECT * from sourcelead.USER_ROLE userRole where userRole.USER_ID = '"+primaryUserId+"' and userRole.ORG_LOCATIONS_ID != '"+orgLocations+"' ";
 					 Statement stmt26 = conn.createStatement();
-					 stmt26.executeUpdate(sqlQuery);
+					 ResultSet rs16 = stmt26.executeQuery(sqlQuery);
+					 Integer userRolesCount = 0;
+					
+					 while(rs16.next()) {
+						 userRolesCount = userRolesCount+1;
+					 }
 					 
-					 sqlQuery = "delete from sourcelead.USER  where ID = '"+primaryUserId+"' ";
-					 Statement stmt25 = conn.createStatement();
-					 stmt25.executeUpdate(sqlQuery);
+					 if(userRolesCount == 0) {
+						 sqlQuery = "delete from sourcelead.USER  where ID = '"+primaryUserId+"' ";
+						 Statement stmt25 = conn.createStatement();
+						 stmt25.executeUpdate(sqlQuery);
+					 }
+					
 					 
 					 System.out.println("---------Removed "+orgLocationName+" Successfully------");
 			}

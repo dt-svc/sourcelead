@@ -115,7 +115,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
-	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
+	@Column(name = "DESCRIPTION" , columnDefinition = "LONGTEXT default NULL")
 	private String description;
 	
 	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
