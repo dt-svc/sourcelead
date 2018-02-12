@@ -14,6 +14,12 @@
    <div class="success_pop" id="selector4" style="display: none;"> 
      <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
    </div>  
+   <script type="text/javascript">
+window.onload = function () {
+	var tabType = '${tabType}';
+	candidateSideBar(candidateId);
+ };
+</script>
 <script>
   function noAccess(id){ 	
 	 
@@ -101,6 +107,7 @@ function candidateSideBar(candidateId){
 	  var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
+	  var tabType = '${tabType}';
 	  $.ajax({
 		  type: "GET",
 		    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
@@ -534,6 +541,13 @@ function candidateSideBar(candidateId){
 					 result = result+"  </div> "; 
 					$("#candidateSideDiv").empty();
 				    $("#candidateSideDiv").append(result); 
+                }
+                if(tabType != null && tabType != '' && tabType != 'undefined'){
+   				 if(tabType == "documents"){
+   					 alert("documents")
+   					 document.getElementById('candidateDocumentsTab').className = 'current';
+   					candidateDocuments(candidateId);
+   				 }
                 }
          },
            
