@@ -55,7 +55,8 @@
 				  <%-- <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option> --%>
 				  <%-- <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option> --%>
 				</select>				
-			</div>			
+			</div>	
+				<input type="hidden" id="disableFieldsId" value="${disableFields == 'disabled' ? '1':'0'}">		
 		</div>
 		
 		<div class="popupMid clearfix">
