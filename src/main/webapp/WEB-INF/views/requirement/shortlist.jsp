@@ -169,7 +169,6 @@ function viewResumeRequirementSummary(resumeUUID,title){
 function shortListPagination(){
     $('#shortlistedPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"bPaginate": true,
     	"bLengthChange": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
