@@ -24,9 +24,9 @@ import org.hibernate.annotations.NotFoundAction;
 public class Option {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
@@ -72,20 +72,21 @@ public class Option {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "OPTION_UUID")
+	private String optionUUID;
+	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leavesOptionId")
 	private Set<LeaveRole> leaverolesSet;
 	
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-
-
 
 	public OrgLocations getOrgLocations() {
 		return orgLocations;
@@ -199,5 +200,14 @@ public class Option {
 		this.deleteReason = deleteReason;
 	}
 
+	public String getOptionUUID()
+	{
+		return optionUUID;
+	}
+
+	public void setOptionUUID(String optionUUID)
+	{
+		this.optionUUID = optionUUID;
+	}
 	
 }

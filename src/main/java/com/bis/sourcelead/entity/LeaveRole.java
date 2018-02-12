@@ -29,10 +29,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 public class LeaveRole {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-//	@Column(columnDefinition = "BINARY(16)")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
@@ -75,11 +74,11 @@ public class LeaveRole {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
