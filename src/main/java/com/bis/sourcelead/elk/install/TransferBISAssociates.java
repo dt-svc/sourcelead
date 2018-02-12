@@ -249,7 +249,7 @@ public void transferAssociates() throws IOException, SQLException {
 									  clientVendorIndex.setCreatedBy(createdBy);
 									   if(null != rs6.getString("FIRST_NAME") && null != rs6.getString("LAST_NAME")){
 										   StringBuilder sb =  new StringBuilder();
-										   clientVendorIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append("").append(rs6.getString("LAST_NAME")).toString());
+										   clientVendorIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append(" ").append(rs6.getString("LAST_NAME")).toString());
 									   }else if(null != rs6.getString("FIRST_NAME")){
 										   StringBuilder sb =  new StringBuilder();
 										   clientVendorIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).toString());
