@@ -279,6 +279,8 @@ function cpagination(url){
 			            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
 			            			 location = opt.city+", "+location;
 				            	}
+		            		}else{
+		            			location = "------";
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
