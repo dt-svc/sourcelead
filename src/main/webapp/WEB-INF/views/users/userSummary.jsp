@@ -1473,6 +1473,7 @@ $("#editRoleDetailsList").empty();
 						result = result + ' <option '+(json.userEmploymentType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
 						result = result + '<option  '+(json.userEmploymentType == "Part Time" ? "selected" : '') +'>Part Time</option>';
 						result = result + '<option  '+(json.userEmploymentType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Offshore C2C" ? "selected" : '') +'>Offshore C2C</option>';
 						result = result + '<option  '+(json.userEmploymentType == "Other" ? "selected" : '') +'>Other</option>';
 						result = result + ' </select>';
 						result = result + '</div>';
@@ -1712,7 +1713,7 @@ function getEmployeementType(){
 	//var abc = document.getElementById('hiddenId').value();
 	var preval = document.getElementById("hiddenId").value;
 	
-		if(employementType == 'C2C' || employementType == 'C2C-1099'){
+		if(employementType == 'C2C' || employementType == 'C2C-1099' ||  employementType == 'Offshore C2C'){
 			if(employementType == preval){
 				document.getElementById("hideVendor").style.display="block";
 				 $('#vendors').attr("data-validation","required"); 

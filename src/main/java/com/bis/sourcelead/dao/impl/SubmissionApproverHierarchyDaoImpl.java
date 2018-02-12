@@ -1485,9 +1485,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		    			 if(StringUtils.isNotEmpty(tde.getNonBillableHours())){
 		    				 nonBillableHours = commonUtil.getCombinedHours(Float.parseFloat(tde.getNonBillableHours().replaceAll(":", ".")), nonBillableHours);
 		    			 }
-		    			 weekTotalHours = weekTotalHours+totalHours;
-		    			 weekBillableTotalHours= weekBillableTotalHours+billableHours;
-		    			 weekNonBillableTotalHours = weekNonBillableTotalHours+nonBillableHours;
+		    			 weekTotalHours =commonUtil.getCombinedHours( weekTotalHours,totalHours);
+		    			 weekBillableTotalHours= commonUtil.getCombinedHours(weekBillableTotalHours,billableHours);
+		    			 weekNonBillableTotalHours = commonUtil.getCombinedHours(weekNonBillableTotalHours,nonBillableHours);
 		    			 
 	    			 }
 	    		}
