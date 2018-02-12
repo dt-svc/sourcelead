@@ -107,8 +107,8 @@ function populategShiftList(json){
            result = result +'  <td>';
            result = result +'     <div class="tblminwidth-50">'    
            if(report.status == 1){
-           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.id+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
-           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
+           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.shiftUUID+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
+           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.shiftUUID+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
            }else{
         	   result = result +'          <span class="paddingRight" >NA</span>'; 
            }
@@ -147,7 +147,7 @@ function shiftPagination(){
 
 <script type="text/javascript">
 function editShift(shiftId) {
-	window.location.href = sourceleadUrl + "/editleaveshift?&shiftId="+shiftId;
+	window.location.href = sourceleadUrl + "/editleaveshift?shiftUUID="+shiftId;
 }
 </script>
 
@@ -156,7 +156,7 @@ function deleteShift(shiftId){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
       $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/deleteShift?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftId="+shiftId,       
+       url: sourceleadUrl+"/deleteShift?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftUUID="+shiftId,       
        success :function(data) {
     	   location.replace(sourceleadUrl+ "/viewShift");
       }
