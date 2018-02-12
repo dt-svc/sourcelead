@@ -74,7 +74,6 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		System.out.println("inside loadImmigrationList...");
 		model.setViewName("/immigration/immigrationList");
 		return model;
 	}
@@ -116,7 +115,6 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		System.out.println("inside method call ----> ");
 		model.setViewName("/immigration/addPetitionTemplate");
 		return model;
 	}
@@ -133,7 +131,6 @@ public class ImmigrationRestController {
 	@RequestMapping(value={"/addPetitionTemplate"})
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
 		ModelAndView model = new ModelAndView();
-		System.out.println("inside method call ----> AddPetitionTemplatePage called--->");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if(status.equalsIgnoreCase("one")) {
 			model.setViewName("/immigration/petitionTemplateDetails");
