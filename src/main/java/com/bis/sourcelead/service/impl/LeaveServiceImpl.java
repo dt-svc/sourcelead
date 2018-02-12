@@ -1017,7 +1017,12 @@ public class LeaveServiceImpl implements LeaveService{
 								pendingLeaveCounts = pendingLeaveCounts + (Integer.valueOf(leave.getNumberOfDays()));
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays())) + Integer.parseInt(leave.getExtraLeavesTaken());
+								if(leave.getExtraLeavesTaken() != null) {
+									totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays())) + Integer.parseInt(leave.getExtraLeavesTaken());
+								}else {
+									totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+								}
+								
 							}
 						}
 						   balanceLeaveCounts += totalLeaves;

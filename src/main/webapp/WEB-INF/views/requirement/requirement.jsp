@@ -204,7 +204,7 @@ $(document).ready(function () {
   	
   </section>
   <div class="content-area content-new clearfix">
-  <div id="loading"></div>
+  <div id="requirementLoading"></div>
    
    <div class="newPrDetails newPrDetailsPMO"> 
  		<div class="newPrTabs">
@@ -1530,7 +1530,7 @@ function getCustomDependentField(sectionId){
 	var requirementId = '${requirement.id}';
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"&requestFrom=requirement",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -1628,7 +1628,7 @@ function validate_fileupload(fileName)
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		checkTemplateforDouplicate();
 		validateJobId();
 		$('#addClient').empty();
@@ -1702,7 +1702,7 @@ function validate_fileupload(fileName)
 		     if ($('#requirement_form').validate(false, validationSettings)){ 
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1710,7 +1710,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
 					  	success : function(result) {
-					  	//$("#loading").removeAttr("style");	
+					  	//$("#requirementLoading").removeAttr("style");	
 					  	if(saveType != 'saveAndContinue'){
 					  		location.replace(sourceleadUrl+"/jobs");
 					  	}
@@ -2897,7 +2897,7 @@ function getJobLocations(){
 	var requirementUUID = '${requirementUUID}';
 	
 	if(requirementUUID){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
@@ -2913,7 +2913,7 @@ function getJobLocations(){
 		         		 result = result +"<div class='positionRelative mt5' id='location"+opt.id+"'>";
 		         		 result = result +'<input type="text" value="'+opt.locationName+'" placeholder="Location" id="'+j+'addlocation" onclick="addLocationAuto(\''+j+'addlocation\','+j+',\''+j+'longitude\',\''+j+'latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="savedLocationInfo['+i+'].locationName">';
 		         		 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon pull-right" title="Clear" onClick="refreshLocation('+j+');"></div>';
-		         		 result = result +"<span class='fa fa-trash jobloc-trash' onclick='deleteSavedLocation("+opt.id+")'></span>";
+		         		 result = result +"<span class='fa fa-trash jobloc-trash cursorPointer' onclick='deleteSavedLocation("+opt.id+")'></span>";
 		         		 result = result +'<input type="hidden" value="'+opt.country+'"  name="savedLocationInfo['+i+'].country" id="'+j+'country">';
 			        	 result = result +'<input type="hidden" value="'+opt.state+'"  name="savedLocationInfo['+i+'].state" id="'+j+'state">';
 			        	 result = result +'<input type="hidden" value="'+opt.city+'" name="savedLocationInfo['+i+'].city" id="'+j+'city">';
@@ -2948,7 +2948,7 @@ function getJobLocations(){
 		        	
 		        	 $("#jobLocationsList").empty();
 		        	 $("#jobLocationsList").append(result);
-		        	 $("#loading").removeAttr("style");	
+		        	 $("#requirementLoading").removeAttr("style");	
 		        }
 		 });
 	}else{
@@ -3047,7 +3047,8 @@ function refreshLocation(rowId){
 
 
 function deleteSavedLocation(id){
-	document.getElementById("location"+id).remove();
+	var elem =document.getElementById("location"+id);
+	elem.parentNode.removeChild(elem);
 	
 	var savedlocationsMaxRowNumber = parseInt($("input[name = 'savedlocationsMaxRowNumber']").val());
 	$("input[name = 'savedlocationsMaxRowNumber']").val(savedlocationsMaxRowNumber - 1);
