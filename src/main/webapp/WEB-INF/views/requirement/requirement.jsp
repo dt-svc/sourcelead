@@ -3066,9 +3066,9 @@ function deleteSavedLocation(id){
 <script>
 function addLocationAuto(locationId,rowId,longtitudeId,latitudeId) {
 	initialize1(locationId,rowId);
-    geolocate1(latitudeId,longtitudeId,rowId);
+    geolocate1(rowId);
 }
-function initialize1(locationId,rowId) {
+function initialize1(locationId,rowId,latitudeId,longtitudeId) {
 	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
 		types: ['geocode'],
   
@@ -3102,21 +3102,19 @@ function initialize1(locationId,rowId) {
   $("#"+rowId+"state").val(address.state).change();
   $("#"+rowId+"city").val(address.city).change();
   $("#"+rowId+"zipcode").val(address.zipcode).change();
+  $("#"+rowId+"latitude").val(place.geometry.location.lat());
+  $("#"+rowId+"longitude").val(place.geometry.location.lng());
   
 });
 }
-function geolocate1(latitudeId,longtitudeId,rowId) {
+function geolocate1(rowId) {
 	if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
-            	  $("#"+rowId+"latitude").val(latitudeId);
-            }
-            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
-                  $("#"+rowId+"longitude").val(longtitudeId);
-            }
+       	     $("#"+rowId+"latitude").val(latitude);
+             $("#"+rowId+"longitude").val(longitude);
             autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
         });
     }

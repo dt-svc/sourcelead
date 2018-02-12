@@ -566,7 +566,12 @@ public class RequirementSubmission implements Serializable{
     @Transient
     @JsonProperty
 	private Long orgRelationId;
-
+    
+    @Transient
+	@JsonProperty
+	private List<String> locationsList;
+    
+    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1675,5 +1680,12 @@ public class RequirementSubmission implements Serializable{
 	public void setReqReleaseAllJobUserStatus(String reqReleaseAllJobUserStatus)
 	{
 		this.reqReleaseAllJobUserStatus = reqReleaseAllJobUserStatus;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
 	}
 }

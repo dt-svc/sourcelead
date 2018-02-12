@@ -185,9 +185,11 @@ public class RequirementListController {
 		
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
-			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("jobRecommendations", "jobRecommendations");
-			model.addObject("requirementUUID", requirementUUID);
+			String sourceleadShareUrl = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
+			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("requirement", requirement);
 			model.setViewName("requirement/requirementRelease");
 			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{

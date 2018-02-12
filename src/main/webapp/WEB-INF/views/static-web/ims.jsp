@@ -5,7 +5,7 @@
   <div class="row">
   		<div class="col-md-12">
   	<h2 class="text-center">Invoice Management</h2>
-  	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
+  	<div class="clearfix mt mb"><img src="/resources/static-web/images/imsicons.png" alt="img"></div>
   	<p>
   		A comprehensive solution with streamlined and automated end-to-end invoice management process. <br> This provides a quick and easy access to information for bill generation and payments.
   	</p>
@@ -58,38 +58,38 @@
 <div class="clearfix container productfeatures">
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ims-billgeneration.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Manual &amp; automated invoice/bill generation</h4>
 		<ul class="list-styles">
-			<li>Provides both manual and automated bill generation options.</li>
+			<li>Provides both manual and automated bill generation options</li>
 			<li>Suitable for any organization irrespective of the size</li>
 		</ul>
 	</div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ims-payment.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Payment updates &amp; automated reminders</h4>
 		<ul class="list-styles">
-			<li>The function integration triggers automatic reminders for end-to-end invoice process.</li>
+			<li>The function integration triggers automatic reminders for end-to-end invoice process</li>
 			<li>Helps you avoid delays and disruptions</li>
 		</ul>
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ims-emailinvoice.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Invoice / bill emailing </h4>
 		<ul class="list-styles">
-			<li>Facilitates invoice/bill mailing directly from the application.</li>
+			<li>Facilitates invoice/bill mailing directly from the application</li>
 			<li>Reduces flipping over multiple web pages</li>
 		</ul>
 	</div>
 	<div class="clearfix"></div>
 	<div class="col-md-4">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/ims-onlinepayment.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Online Payment (Paypal)</h4>
 		<ul class="list-styles">
@@ -99,7 +99,7 @@
 	</div>
 	<div class="col-md-4">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-community.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/crms-integrate.png" alt="Image" class="animated bounceIn">
 	</div>
 		<h4>Integrated with SourceLead modules</h4>
 		<ul class="list-styles">
@@ -125,3 +125,9 @@
 <!-- Benefits of sourcelead  -->
 
 </section><jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#imsID").addClass("slactive");
+}
+</script>

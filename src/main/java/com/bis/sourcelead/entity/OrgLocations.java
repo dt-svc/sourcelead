@@ -52,7 +52,7 @@ public class OrgLocations implements Serializable{
     private Org org;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "TIMEZONE_ID")
     private Timezone timezone;
 	

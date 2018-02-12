@@ -55,6 +55,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -145,6 +146,7 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setUpdatedDate(new Date());
 		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 		leave.setNumberOfDays(numberOfdays);
+		leave.setLeaveUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 //		leave.setExtraLeavesTaken(String.valueOf(0));
 		
 		Leave savedLeave =  leaveDao.saveLeave(leave);
@@ -1019,7 +1021,7 @@ public class LeaveServiceImpl implements LeaveService{
 								pendingLeaveCounts = pendingLeaveCounts + leave.getNumberOfDays();
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								totalLeaves = totalLeaves - leave.getNumberOfDays() + leave.getExtraLeavesTaken();
+								totalLeaves = totalLeaves - leave.getNumberOfDays();
 							}
 						}
 						   balanceLeaveCounts += totalLeaves;

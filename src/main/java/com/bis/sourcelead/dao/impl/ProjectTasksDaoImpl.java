@@ -424,7 +424,13 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
 		 }
 		 
-		 Query query = session.createQuery(queryStr+subQueryStr+query1+" ORDER BY pt.generatedId ASC");
+		//usertList sorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(projectTasksDTO.getSortColumn())) {
+				sortingQry = " order by pt."+ projectTasksDTO.getSortColumn() +" "+projectTasksDTO.getSortOrder();
+		}
+		
+		 Query query = session.createQuery(queryStr+subQueryStr+query1+sortingQry);
 		
 		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 		

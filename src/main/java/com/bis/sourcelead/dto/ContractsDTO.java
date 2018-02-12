@@ -61,6 +61,7 @@ public class ContractsDTO {
 	private String spocUUID;
 	
 	private List<CustomFormFieldDTO> customFormData;
+	private String joinedDateStr;
 	
 	public String getStaticPath()
 	{
@@ -543,7 +544,16 @@ public class ContractsDTO {
 	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 		this.customFormData = customFormData;
 	}
-	
+
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
 	
 
 }

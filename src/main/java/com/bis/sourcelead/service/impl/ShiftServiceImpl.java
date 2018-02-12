@@ -36,7 +36,7 @@ public class ShiftServiceImpl implements ShiftService {
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.valueOf(shiftDTO.getOrgLocationId()));
 		
 		Shift shift = null;
-		if(StringUtils.isNotBlank(shiftDTO.getShiftId())){
+		if(StringUtils.isNotBlank(shiftDTO.getShiftUUID())){
 			shift = shiftDao.getShiftById(shiftDTO.getShiftId());
 		}else{
 			shift = new Shift();

@@ -4,8 +4,8 @@
     <div class="row">
       <div class="col-md-12">
         <h2 class="text-center">Client Relevance Management System</h2>
-        <div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
-        <p> SourceLead’s constant endeavor to build sincere relationship with clients gave an insight to our unique Client Relevance Management System (CRMS). With an emphasis on ‘RELEVANCE’, SorceLead helps in finding the most relevant profiles in the network. </p>
+        <div class="clearfix mt mb"><img src="/resources/static-web/images/crmicons.png" alt="img"></div>
+        <p> SourceLead&rsquo;s constant endeavor to build sincere relationship with clients gave an insight to our unique Client Relevance Management System (CRMS). With an emphasis on &rsquo;RELEVANCE&rsquo;, SorceLead helps in finding the most relevant profiles in the network. </p>
       </div>
     </div>
   </div>
@@ -37,7 +37,7 @@
 <section class="container-fluid container-area-grey">
   <div class="clearfix container productfeatures">
    <div class="col-md-4">
-      <div class="featuresImages"> <img src="/resources/static-web/images/ats-community.png" alt="Image" class="animated bounceIn"> </div>
+      <div class="featuresImages"> <img src="/resources/static-web/images/crms-hotlisticon.png" alt="Image" class="animated bounceIn"> </div>
       <h4>Hotlist campaigns</h4>
       <ul class="list-styles">
         <li>Publish the hotlist candidates to the clients</li>
@@ -46,7 +46,7 @@
       </ul>
     </div>
     <div class="col-md-4">
-      <div class="featuresImages"> <img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn"> </div>
+      <div class="featuresImages"> <img src="/resources/static-web/images/crms-recruiternetwork.png" alt="Image" class="animated bounceIn"> </div>
       <h4>Build Recruiter Network</h4>
       <ul class="list-styles">
         <li>Invite your client to join the network to manage jobs and submissions directly</li>
@@ -54,7 +54,7 @@
       </ul>
     </div>
     <div class="col-md-4">
-     <div class="featuresImages"> <img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn"> </div>
+     <div class="featuresImages"> <img src="/resources/static-web/images/crms-connectbest.png" alt="Image" class="animated bounceIn"> </div>
       <h4>Connect to find the best</h4>
       <ul class="list-styles">
         <li>Automatically tags the candidate with the client</li>
@@ -63,7 +63,7 @@
       </ul>
     </div>
     <div class="col-md-4">
-     <div class="featuresImages"> <img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn"> </div>
+     <div class="featuresImages"> <img src="/resources/static-web/images/crms-clientsreport.png" alt="Image" class="animated bounceIn"> </div>
       <h4>Clients reports</h4>
       <ul class="list-styles">
         <li>Generate Client Reports and identify the value propositions for business growth</li>
@@ -72,7 +72,7 @@
       </ul>
     </div>
     <div class="col-md-4">
-      <div class="featuresImages"> <img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn"> </div>
+      <div class="featuresImages"> <img src="/resources/static-web/images/crms-customtemplate.png" alt="Image" class="animated bounceIn"> </div>
       <h4>Customization</h4>
       <ul class="list-styles">
         <li>Provides customizable submission templates for each client</li>
@@ -80,7 +80,7 @@
       </ul>
     </div>
     <div class="col-md-4">
-      <div class="featuresImages"> <img src="/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn"> </div>
+      <div class="featuresImages"> <img src="/resources/static-web/images/crms-integrate.png" alt="Image" class="animated bounceIn"> </div>
       <h4>Integrated with Sourcelead ATS</h4>
       <ul class="list-styles">
         <li>Customized data integration options</li>
@@ -103,3 +103,9 @@
 </section>
 <!-- Benefits of sourcelead  --> 
 <jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#crmID").addClass("slactive");
+}
+</script>

@@ -265,6 +265,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 					clientOrgLocations.setTimezone(timezone);
 					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				} 
+			}else {
+				clientOrgLocations.setTimezone(orgLocations.getTimezone());
 			}
 			
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));

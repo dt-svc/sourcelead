@@ -19,8 +19,8 @@ $(document).ready(function(){
 <!-- Content Area -->
   <section class="content-wraper">
    <section class="content-header clearfix">
-    <div class="success_pop" id="selector1" style="display: none;">
- 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+    <div class="success_pop" id="campainSenderAlertMsg" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="campainSenderAlertMsgDiv"></span>
      </div>
       <div class="pull-left">
         <h2>Senders list</h2>
@@ -138,10 +138,10 @@ function getSendersList(type){
       		 $("#sendersListDiv").empty();
       		 $("#sendersListDiv").append(result);
       		if(type == "success"){
-		    	$("#selector1").removeAttr("style");
-				$("#selector1").css({ display: "block" });
-			    $("#msgDiv").html("Successfully Created sender identity");
-			    msgFadein();
+		    	$("#campainSenderAlertMsg").removeAttr("style");
+				$("#campainSenderAlertMsg").css({ display: "block" });
+			    $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
+			    campainSenderAlertMsgFadein();
 			}
       		 $("#loading").removeAttr('style');
       		 senderListPagination();
@@ -168,9 +168,9 @@ function getSendersList(type){
  </script>
  
  <script>
- function msgFadein() {
-	$("#selector1").fadeIn(300);
-    $('#selector1').delay(5000).fadeOut('slow');
+ function campainSenderAlertMsgFadein() {
+	$("#campainSenderAlertMsg").fadeIn(200);
+    $('#campainSenderAlertMsg').delay(2000).fadeOut('slow');
 }
 </script>
 
@@ -197,12 +197,12 @@ function deleteIdentity(senderId){
 	 $("#deleteIdentityDiv").empty();
 	 $.get( sourceleadUrl+ "/deleteSenderIdentity?"+tokenParamName+"="+tokenValue+"&senderId="+senderId, function(data) {
 			if(data == true) {
-				 $("#selector1").removeAttr("style");
-	  			 $("#selector1").css({ display: "block" });
-	  			 $("#msgDiv").html("Successfully deleted sender identity");
+				 $("#campainSenderAlertMsg").removeAttr("style");
+	  			 $("#campainSenderAlertMsg").css({ display: "block" });
+	  			 $("#campainSenderAlertMsgDiv").html("Successfully deleted sender identity");
 	  			 $("#popUp").empty();
 	 			 $(".project_inn_mask").fadeOut(200);
-	             msgFadein();	
+	             campainSenderAlertMsgFadein();	
 	             location.replace(sourceleadUrl+ "/campaignSendersList");
 			}
 		});
