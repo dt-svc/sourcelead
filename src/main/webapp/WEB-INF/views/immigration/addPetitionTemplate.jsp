@@ -21,7 +21,7 @@
   <!-- Content Area -->
   <script type="text/javascript">
   $( document ).ready(function() {
-	  $("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=one");
+	  $("#addNewPetitionTemplateDiv").load("/app/immigration/addPetitionTemplate?status=one");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	});
   </script>

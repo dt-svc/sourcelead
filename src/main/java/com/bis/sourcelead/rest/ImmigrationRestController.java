@@ -48,7 +48,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/app/immigration")
 public class ImmigrationRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ImmigrationRestController.class);
 	
@@ -69,7 +69,7 @@ public class ImmigrationRestController {
 	UserRoleService userRoleService;
 	
 
-	@RequestMapping(value={"/loadImmigrationList"})
+	@RequestMapping(value={"/viewImmigrationList"})
 	public ModelAndView loadImmigrationList(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -111,36 +111,38 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-	@RequestMapping(value={"/loadAddPetitionTemplate"})
+	@RequestMapping(value={"/addNewPetitionTemplate"})
 	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		System.out.println("inside method call ----> ");
 		model.setViewName("/immigration/addPetitionTemplate");
 		return model;
 	}
 	
-	@RequestMapping(value={"/loadViewPetitionTemplate"})
+	@RequestMapping(value={"/viewImmigrationTemplateList"})
 	public ModelAndView loadViewPetitionTemplate(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		model.setViewName("/immigration/petitionTemplate");
+		model.setViewName("/immigration/immigrationTemplateList");
 		return model;
 	}
 	
-	@RequestMapping(value={"/loadAddPetitionTemplatePage"})
-	public ModelAndView loadAddPetitionTemplatePage(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
+	@RequestMapping(value={"/addPetitionTemplate"})
+	public ModelAndView addPetitionTemplatePage(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
 		ModelAndView model = new ModelAndView();
+		System.out.println("inside method call ----> AddPetitionTemplatePage called--->");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if(status.equalsIgnoreCase("one")) {
-			model.setViewName("/immigration/addPetitionTemplate1");
+			model.setViewName("/immigration/petitionTemplateDetails");
 		}else if(status.equalsIgnoreCase("two")) {
-			model.setViewName("/immigration/addPetitionTemplate2");
+			model.setViewName("/immigration/petitionTemplateDocDetails");
 		}else if(status.equalsIgnoreCase("three")) {
-			model.setViewName("/immigration/addPetitionTemplate3");
+			model.setViewName("/immigration/petitionTemplateFormDetails");
 		}else if(status.equalsIgnoreCase("four")) {
-			model.setViewName("/immigration/addPetitionTemplate4");
+			model.setViewName("/immigration/immigrationTemplateTaskList");
 		}
 		return model;
 	}
@@ -150,7 +152,6 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		System.out.println("inside viewImmigration URL....");
 		model.setViewName("/immigration/immigrationView");
 		return model;
 	}

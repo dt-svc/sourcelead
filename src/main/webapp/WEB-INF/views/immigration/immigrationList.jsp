@@ -191,7 +191,7 @@
 					  </div>
 					</td>
 					<td>
-					  <div class="proj_show tbldata-dotdot-100"><a href="<c:url value='${appPath}/viewImmigration'/>">
+					  <div class="proj_show tbldata-dotdot-100"><a href="<c:url value='${appPath}/immigration/viewImmigration'/>">
 						  <div class="pull-left tbldata-dotdot_80" title="BIS10041">BIS10041</div>
 						  <i class="fa fa-binoculars pull-right"></i></a>
 					  </div>

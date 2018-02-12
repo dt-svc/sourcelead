@@ -22,13 +22,13 @@ function Immigration(){
 	this.savePageAndContinuePetitionTemplate = function (status){
 		$("#addNewPetitionTemplateDiv").empty();
 		if(status == 'one'){
-			$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=one");
+			$("#addNewPetitionTemplateDiv").load("/app/immigration/addPetitionTemplate?status=one");
 		}else if(status == 'two'){
-			$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=two");
+			$("#addNewPetitionTemplateDiv").load("/app/immigration/addPetitionTemplate?status=two");
 		}else if(status == 'three'){
-			$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=three");
+			$("#addNewPetitionTemplateDiv").load("/app/immigration/addPetitionTemplate?status=three");
 		}else if(status == 'four'){
-			$("#addNewPetitionTemplateDiv").load("/app/loadAddPetitionTemplatePage?status=four");
+			$("#addNewPetitionTemplateDiv").load("/app/immigration/addPetitionTemplate?status=four");
 		}
 	}
 }

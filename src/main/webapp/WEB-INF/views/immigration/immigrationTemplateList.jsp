@@ -23,7 +23,7 @@
 	  <div class="cusFielInn">
 
 		<div class="immigraTabsHead">
-		  	<a href="<c:url value='${appPath}/loadAddPetitionTemplate'/>"><i class="glyphicon glyphicon-plus"></i> Add Template</a> 
+		  	<a href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>"><i class="glyphicon glyphicon-plus"></i> Add Template</a> 
 		  	<span><input class="immigraTabSerach" type="text"></span>
 		</div>
 		

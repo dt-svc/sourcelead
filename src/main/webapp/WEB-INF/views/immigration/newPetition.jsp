@@ -503,7 +503,7 @@
   <!-- Content Area -->
   <script type="text/javascript">
   $( document ).ready(function() {
-	  $("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=one");
+	  $("#newPetitionTemplateDiv").load("/app/petitionTemplateDetails?status=one");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	});
   </script>
