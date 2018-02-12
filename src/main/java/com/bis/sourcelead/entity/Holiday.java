@@ -31,9 +31,9 @@ public class Holiday implements Serializable {
 private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator = "uuid2" ,strategy = GenerationType.IDENTITY)
-	@GenericGenerator(name = "uuid2" ,strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", nullable = false)
+	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
@@ -81,17 +81,20 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@Column(name = "HOLIDAY_UUID")
+	private String holidayUUID;
+	
 	@Transient
 	private String fromDateStr;
 	
 	@Transient
 	private String toDateStr;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -241,6 +244,19 @@ private static final long serialVersionUID = 1L;
 	public void setToDateStr(String toDateStr) {
 		this.toDateStr = toDateStr;
 	}
-	
-	
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
+	}
+
+	public String getHolidayUUID()
+	{
+		return holidayUUID;
+	}
+
+	public void setHolidayUUID(String holidayUUID)
+	{
+		this.holidayUUID = holidayUUID;
+	}
 }

@@ -61,11 +61,11 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public RestrictDay getRestrictDayById(String restrictDayId) {
+	public RestrictDay getRestrictDayById(Long restrictDayId) {
 		List<RestrictDay> restrictDayList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RestrictDay resDay  where resDay.id = :restrictDayId";
-		restrictDayList = session.createQuery(query).setString("restrictDayId", restrictDayId).list();
+		restrictDayList = session.createQuery(query).setLong("restrictDayId", restrictDayId).list();
 		if(restrictDayList != null) {
 			return restrictDayList.get(0);
 		}else {
@@ -85,6 +85,21 @@ public class RestrictDayDaoImpl implements RestrictDayDao{
 		String query = "from RestrictDay resDay  where resDay.orgLocationId = :orgLocationId  and resDay.status = '1' and ((resDay.startDate <= :fromDate and resDay.endDate >= :fromDate) or (resDay.startDate <= :toDate and resDay.endDate >= :toDate ))";
 		List<RestrictDay> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).list();
 		return restrictDayList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RestrictDay getRestrictDayByUUID(String restrictUUID)
+	{
+		List<RestrictDay> restrictDayList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RestrictDay resDay  where resDay.restrictUUID = :restrictUUID";
+		restrictDayList = session.createQuery(query).setString("restrictUUID", restrictUUID).list();
+		if(restrictDayList != null) {
+			return restrictDayList.get(0);
+		}else {
+			return null;
+		}
 	}
 
 }
