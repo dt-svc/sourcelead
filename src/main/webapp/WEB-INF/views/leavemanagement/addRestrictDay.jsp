@@ -5,6 +5,13 @@
 
 <script>
  window.onload = function() {
+	 var restrictdayId = '${restrictDay.id}';
+		if(restrictdayId != null && restrictdayId != '' && restrictdayId != 'undefined'){
+			$("#restrictDayId").val(restrictdayId);
+		}else{
+			$("#restrictDayId").val(0);
+		}
+	 
 	 var applicable = '${restrictDay.applicableToAll}';
 	 if(applicable == 'N'){
 		 $("#selectRoles").show();
@@ -31,7 +38,7 @@
     <div class="form-group">
        <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
        <div class="col-md-9">
-       <input type="hidden" id="restrictDayId" name="restrictDayId" value="${restrictDay.id}"/>
+       <input type="hidden" id="restrictDayId" name="restrictDayId" value=""/>
        <input type="text" name="restrictName" placeholder="Restrict Name" value="${restrictDay.restrictName}" field-name="Restrict Name" class="form-control" data-validation="required validate_length length1-250">
        </div>
     </div>
