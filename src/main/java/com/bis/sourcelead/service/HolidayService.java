@@ -23,4 +23,6 @@ public interface HolidayService {
 
 	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,Date endDate,Long orgLocationId)throws Exception;
 
+	public Holiday getHolidaysByUUID(String holidayUUID);
+
 }

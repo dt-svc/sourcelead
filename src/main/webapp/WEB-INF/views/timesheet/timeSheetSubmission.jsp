@@ -324,7 +324,7 @@
 						</div>
 						<div class="timesheet_bot">
 							<div class="timesheet_button">
-							   <div class="totalWrap pull-left">
+							   <div class="totalWrap pull-left timesheethours-li">
 									<ul>
 										<li><span>Billable Hours</span><input
 											id="grandBillableTotal"

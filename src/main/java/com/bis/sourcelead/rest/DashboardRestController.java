@@ -348,8 +348,14 @@ public class DashboardRestController {
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     UserRole userRole = null;
+		     if(!isNullOrEmpty(switchUserType) && (switchUserType.equalsIgnoreCase("Professional") || switchUserType.equalsIgnoreCase("Recruiter"))){
+		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
+		     }else {
+		    	 userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     }
+		     
+		     
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
   			    userRole.setUserState(Status.ACTIVE);
   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
