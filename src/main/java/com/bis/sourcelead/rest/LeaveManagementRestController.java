@@ -304,7 +304,7 @@ public class LeaveManagementRestController {
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						totalLeaves = totalLeaves - (leave.getNumberOfDays() + leave.getExtraLeavesTaken());
+						totalLeaves = totalLeaves - leave.getNumberOfDays();
 //						else
 //							totalLeaves = totalLeaves - leave.getNumberOfDays();
 						
@@ -824,10 +824,10 @@ public class LeaveManagementRestController {
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
 	@RequestMapping(value = {"/deleteRestrictedDay"})
 	@ResponseBody
-	public  boolean deleteRestrictedDay(@RequestParam(value = "id", required = false) Long restrictId,@RequestParam(value = "reason", required = false) String reason) throws Exception
+	public  boolean deleteRestrictedDay(@RequestParam(value = "restrictUUID", required = false) String restrictUUID,@RequestParam(value = "reason", required = false) String reason) throws Exception
 	{
 		boolean isDeleted = false;
-		 RestrictDay restrictDay = restrictDayService.getRestrictDayById(restrictId);
+		 RestrictDay restrictDay = restrictDayService.getRestrictDayByUUID(restrictUUID);
 		 if(restrictDay !=null) {
 			 restrictDay.setStatus("0");
 			 restrictDay.setDeleteReason(reason);
@@ -1051,7 +1051,7 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public LeaveType leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request) throws Exception
 	{
-		LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
+		LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
 		return leaveType;
 	}
 	
@@ -1233,11 +1233,12 @@ public class LeaveManagementRestController {
 			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 			leaveDto.setApproverUsers(String.join(",", aphlist)); 
 			Map<String,Integer> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken));
+			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken.get("numberOfLeavsTaken")));
 			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
-			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
+//			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
+			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken");
 			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
 		}
 		return leaveDto;
@@ -1552,7 +1553,7 @@ public class LeaveManagementRestController {
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 								approvedCounts = approvedCounts + 1;
 								
-								noOfDays = noOfDays + (Integer.valueOf(leave.getNumberOfDays()) - leave.getExtraLeavesTaken());
+								noOfDays = noOfDays + leave.getNumberOfDays();
 								if(noOfDays > totalLeavesperYear) {
 									int totalLeaves =  totalLeavesperYear - noOfDays;
 									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totalLeaves));
