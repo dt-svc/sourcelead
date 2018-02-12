@@ -1910,7 +1910,7 @@ public class ClientRestController {
 		    String[] tableColumns1 = null;
 			if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
 					Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-				String[] tableColumns = {"", "orgName",  "spocName", "spocEmail", "spocStatus"};
+				String[] tableColumns = {"", "orgName.keyword",  "spocName.keyword", "spocEmail.keyword", "spocStatus"};
 				tableColumns1 = tableColumns;
 			}else{
 				String[] tableColumns = {"clientLocationId", "clientUserFirstName.keyword", "clientUserEmail.keyword", "", "ownerUserId", "spocStatus","invitationStatus.keyword",""};
