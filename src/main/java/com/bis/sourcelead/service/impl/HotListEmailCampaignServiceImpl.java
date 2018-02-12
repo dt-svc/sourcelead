@@ -225,7 +225,7 @@ public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignServ
 		 
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		signature = sourceleadSignatureService.buildSignature(user, orgLocation);
-		String str =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature,UUID);
+		String str =  getHotListCandidatesTable(hotlistedCandidates,hotListEmailCampaignDTO,signature);
 		String table = str.replace("\"","\'");
 		JobListEmailCampaignDTO jobListEmailCampaignDTO = new JobListEmailCampaignDTO();
 		 jobListEmailCampaignDTO.setSenderIdentity(hotListEmailCampaignDTO.getSenderIdentity());
@@ -366,7 +366,7 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 }
 
 
-	private String getHotListCandidatesTable(String[] hotlistedCandidates,HotListEmailCampaignDTO hotListEmailCampaignDTO, String signature, String UUID) throws Exception{
+	private String getHotListCandidatesTable(String[] hotlistedCandidates,HotListEmailCampaignDTO hotListEmailCampaignDTO, String signature) throws Exception{
 		
 		String tempHTML = "";
 		String bodyText = "";
@@ -504,7 +504,6 @@ private UserMailBox saveUserMailBox(User user,OrgLocations orgLocation,InternetA
 		tempHTML = tempHTML + "</tr>";
 		tempHTML = tempHTML + "</tbody>";
 		tempHTML = tempHTML + " </table>";
-		tempHTML = tempHTML + "<a href='"+sourceleadUrl+"/"+"requestForCandidateResume?UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Request For Resume</div></a>";
 		      // table end
 		tempHTML = tempHTML + signature;
 		      tempHTML = tempHTML + " <table width='650' bgcolor='#ededed' align='center' cellpadding='0' cellspacing='0' style='background-color:#ededed; padding:0px; margin-top: 15px;'>";
