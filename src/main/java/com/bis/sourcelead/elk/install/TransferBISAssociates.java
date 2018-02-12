@@ -32,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import com.bis.sourcelead.beans.BisAssociatesEmails;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
@@ -250,7 +249,7 @@ public void transferAssociates() throws IOException, SQLException {
 									  clientVendorIndex.setCreatedBy(createdBy);
 									   if(null != rs6.getString("FIRST_NAME") && null != rs6.getString("LAST_NAME")){
 										   StringBuilder sb =  new StringBuilder();
-										   clientVendorIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append("").append(rs6.getString("LAST_NAME")).toString());
+										   clientVendorIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append(" ").append(rs6.getString("LAST_NAME")).toString());
 									   }else if(null != rs6.getString("FIRST_NAME")){
 										   StringBuilder sb =  new StringBuilder();
 										   clientVendorIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).toString());

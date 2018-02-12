@@ -212,6 +212,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String vendorSpocId;
 	
+	private List<CustomFormFieldDTO> customFormData;
+	
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -1021,4 +1023,13 @@ public class CandidateDTO extends SearchDTO{
 	{
 		this.vendorSpocId = vendorSpocId;
 	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+	
 }

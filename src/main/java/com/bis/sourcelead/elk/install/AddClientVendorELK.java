@@ -111,7 +111,7 @@ public class AddClientVendorELK {
 								  clientVendorIndex.setCreatedBy(createdBy);
 								   if(null != rs1.getString("FIRST_NAME") && null != rs1.getString("LAST_NAME")){
 									   StringBuilder sb =  new StringBuilder();
-									   clientVendorIndex.setCreatedBy(sb.append(rs1.getString("FIRST_NAME")).append("").append(rs1.getString("LAST_NAME")).toString());
+									   clientVendorIndex.setCreatedBy(sb.append(rs1.getString("FIRST_NAME")).append(" ").append(rs1.getString("LAST_NAME")).toString());
 								   }else if(null != rs1.getString("FIRST_NAME")){
 									   StringBuilder sb =  new StringBuilder();
 									   clientVendorIndex.setCreatedBy(sb.append(rs1.getString("FIRST_NAME")).toString());
