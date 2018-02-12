@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "APP_MAINTENANCE")
@@ -23,6 +25,14 @@ public class ScheduleMaintenance {
 	
 	@Column(name = "SCHEDULE_DATE")
 	private Date scheduleDate;
+	
+	@Temporal(TemporalType.TIME)
+	@Column(name = "START_TIME")
+	private Date startTime;
+	
+	@Temporal(TemporalType.TIME)
+	@Column(name = "END_TIME")
+	private Date endTime;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -57,6 +67,22 @@ public class ScheduleMaintenance {
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 }

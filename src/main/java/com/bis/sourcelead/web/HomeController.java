@@ -1,6 +1,11 @@
 package com.bis.sourcelead.web;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -26,9 +31,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -36,6 +43,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InviteCompanyService;
 import com.bis.sourcelead.service.LoginService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -78,6 +86,9 @@ public class HomeController {
 
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	public InviteCompanyService inviteCompanyService;
 
 	@Value("${jdbc.username}")
 	private String user;
@@ -294,6 +305,7 @@ public class HomeController {
 		return model;
 	}
 
+	
 	/*@RequestMapping(value = { "/ehCacheTest" ,  "/app/ehCacheTest"}, method = RequestMethod.GET)
 	public ModelAndView ehCachePage() {
 		ModelAndView model = new ModelAndView();
@@ -369,5 +381,52 @@ public class HomeController {
 		return "redirect:/";
 
 	}
+	
+	@RequestMapping(value = "/getScheduleStatus")
+	public @ResponseBody ScheduleMaintenanceDTO getScheduleStatus(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    	ScheduleMaintenanceDTO dto = inviteCompanyService.getScheduleStatus();
+    	if(dto != null) {
+    		String dateString = getConvertedStartEndDateString(dto.getScheduleDate(), dto.getStartTime(), dto.getEndTime());
+    		String maintenanceText = "Please note that we will be experiencing server downtime on the "+dateString+" due to "+dto.getScheduleMessage();
+    		dto.setMainMessage(maintenanceText);
+    	}
+    	return dto;
+	}
+    
+    
+    public String getConvertedStartEndDateString(String scheduleDate, String scheduleStartTime, String scheduleEndTime) throws NumberFormatException, Exception {
+    	String startTime = getTime(scheduleDate, scheduleStartTime);
+    	String endTime = getTime(scheduleDate, scheduleEndTime);
+    	DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd");
+		String parsedDate = dateFormat.format(dateFormat.parse(scheduleDate));
+		String dateTime = parsedDate+" "+scheduleStartTime;
+		DateFormat dateFormat1 = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		Calendar now = Calendar.getInstance();
+		TimeZone timezone = now.getTimeZone();
+		Date startDateWithTime = dateFormat1.parse(dateTime);
+		DateFormat df1 = new SimpleDateFormat("dd MMM yyyy");
+		DateFormat df3 = new SimpleDateFormat("z");
+        df1.setTimeZone(TimeZone.getTimeZone(timezone.getID()));
+        String IST1 = df1.format(startDateWithTime);
+        df3.setTimeZone(TimeZone.getTimeZone(timezone.getID()));
+        String IST3 = df3.format(startDateWithTime);
+        System.out.println(IST1+" "+startTime+" "+endTime+" "+IST3);
+        String convertedDateString = IST1+" from "+startTime+" to "+endTime+" "+IST3;
+    	return convertedDateString;
+    }
+    
+    public String getTime(String scheduleDate, String scheduleTime) throws NumberFormatException, Exception {
+    	DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd");
+		String parsedDate = dateFormat.format(dateFormat.parse(scheduleDate));
+		String dateTime = parsedDate+" "+scheduleTime;
+		DateFormat dateFormat1 = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		Calendar now = Calendar.getInstance();
+		TimeZone timezone = now.getTimeZone();
+		Date dateWithTime = dateFormat1.parse(dateTime);
+		DateFormat df = new SimpleDateFormat("hh:mm a");
+        df.setTimeZone(TimeZone.getTimeZone(timezone.getID()));
+        String time = df.format(dateWithTime);
+    	return time;
+    }
 
 }

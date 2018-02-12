@@ -1,8 +1,13 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
@@ -176,12 +181,33 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 	}
 
 	@Override
-	public void storeScheduleMaintenance(ScheduleMaintenanceDTO scheduleMaintenanceDTO) {
+	public void storeScheduleMaintenance(ScheduleMaintenanceDTO maintenanceDTO) throws ParseException {
 		ScheduleMaintenance maintenance = new ScheduleMaintenance();
-		maintenance.setScheduleMessage(scheduleMaintenanceDTO.getScheduleMessage());
-		maintenance.setScheduleDate(scheduleMaintenanceDTO.getScheduleDate());
+		maintenance.setScheduleMessage(maintenanceDTO.getScheduleMessage());
+		DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
+		DateFormat dateFormat1 = new SimpleDateFormat ("yyyy-MM-dd");
+		DateFormat dateFormat2 = new SimpleDateFormat ("hh:mma");
+		Calendar calender = Calendar.getInstance();
+		calender.setTime(dateFormat.parse(maintenanceDTO.getScheduleDate()));
+		maintenance.setScheduleDate(dateFormat1.parse(dateFormat1.format(calender.getTime())));
+		maintenance.setStartTime(dateFormat2.parse(maintenanceDTO.getStartTime()));
+		maintenance.setEndTime(dateFormat2.parse(maintenanceDTO.getEndTime()));
 		maintenance.setCreatedDate(new Date());
 		inviteCompanyDao.storeScheduleMaintenance(maintenance);
 	}
-	
+
+	@Override
+	public ScheduleMaintenanceDTO getScheduleStatus() throws ParseException {
+		ScheduleMaintenance scheduleMaintenance = inviteCompanyDao.getScheduleStatus(new Date());
+		ScheduleMaintenanceDTO maintenanceDTO = null;
+		if(scheduleMaintenance != null) {
+			maintenanceDTO = new ScheduleMaintenanceDTO();
+			maintenanceDTO.setScheduleDate(scheduleMaintenance.getScheduleDate().toString());
+			maintenanceDTO.setScheduleMessage(scheduleMaintenance.getScheduleMessage());
+			maintenanceDTO.setStartTime(scheduleMaintenance.getStartTime().toString());
+			maintenanceDTO.setEndTime(scheduleMaintenance.getEndTime().toString());
+		}
+		return maintenanceDTO;
+	}
+
 }

@@ -14,6 +14,7 @@
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+    <script src="/resources/js/jquery-2.1.4.min.js"></script> 
 
  
 <script>
@@ -27,10 +28,23 @@ window.onload = function() {
 	}
 }
 </script>
+<script>
+$(document).ready(function(){
+	var temp = window.location.href.split("/login");
+	 $.ajax({
+        url: temp[0]+"/getScheduleStatus",
+        success: function(data) {
+        	if(data !== ""){
+        		$("#maintenanceStatus").append(data.mainMessage);
+        	}
+        }
+	}); 
+});
+</script>
  
  
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
- 
+ <div id="maintenanceStatus"></div>
  <div class="signWrap">
 <!--  <div id="loading"></div> -->
  <c:if test="${!empty login_2_Step_Process_Enabled}">

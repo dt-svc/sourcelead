@@ -47,6 +47,7 @@
 <link href="/resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/bootstrap-datetimepicker.min.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -136,6 +137,8 @@
 <script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
+
 
 <!--  Data tables script files -->
 <!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
@@ -1798,20 +1801,32 @@ $("#searchType").selectpicker('refresh');
 			<h2>Schedule Maintenance</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
 		<form:form id="scheduleMaintenance_form" name="scheduleMaintenance_form" method="post">
-	<div class="popupMid clearfix">
+	<div class="popupMid popupMidHeight clearfix">
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Date<span class="text-danger paddingLeft">*</span></label>
               	<div class="col-md-8 padding_right">
               		<div class="input-group errorInptgroup">
-						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleMDate" field-name="Schedule Date" readonly="readonly" data-validation="required">
+						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleMDate" field-name="Schedule Date" data-validation="required">
 	                    <span class="input-group-addon" onclick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 					</div>
+				</div>
+			</div>
+			 <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Start Time<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input class="form-control" name="startTime" id="startTime" field-name="Start Time" data-validation="required"></input>
+				</div>
+			</div>
+			 <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">End Time<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input class="form-control" name="endTime" id="endTime" field-name="End Time" data-validation="required"></input>
 				</div>
 			</div>	
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Message<span class="text-danger paddingLeft">*</span></label>
               	<div class="col-md-8 padding_right">
-              		<textarea class="form-control" name="scheduleMessage" field-name="Schedule Message" rows="3" data-validation="required"></textarea>
+              		<textarea class="form-control" name="scheduleMessage" id="scheduleMessage" maxlength="250" field-name="Schedule Message" rows="3" data-validation="required"></textarea>
 				</div>
 			</div>
 		</div>
@@ -1826,23 +1841,37 @@ $("#searchType").selectpicker('refresh');
   $("#scheduleMPopup").click(function(){
 	  $("#scheduleMPopDiv").fadeIn();
 	  $(".popMask").fadeIn();
+	  clearDate();
   });
   function flushScheduleMaintenance(){
 	  document.getElementById("scheduleMaintenance_form").reset();
 	  $("scheduleMaintenance_form").validate().resetForm();
   }
+  
   $(function() {
+	  
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
-	  //end
 	  $('#scheduleMDate').datepicker({
-	      dateFormat: finalDateFormat,
+		  minDate:new Date(),
+		  dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
-	  	  minDate: 0
 	  });
-	  
+	  $("#startTime").timepicker({
+		  	timeFormat: 'g:ia',
+		  	'showDuration': true,
+			'disableTextInput': true
+		}).on('changeTime', function() {
+          $("#endTime").timepicker('option', 'minTime', $(this).val());
+      });
+		
+	 $("#endTime").timepicker({
+			'showDuration': true,
+			 'maxTime': '23:30:00',
+			'disableTextInput': true
+		}) 
   });
   function clearDate(){
 		$("#scheduleMDate").val("");
@@ -1857,19 +1886,14 @@ $("#searchType").selectpicker('refresh');
 		if ($('#scheduleMaintenance_form').validate(false, validationSettings)) {
 				var formData = getFormData("scheduleMaintenance_form");
 				var sourceleadUrl = '${sourceleadUrl}';
-				alert(formData.scheduleMessage);
 				$.ajax({
-						  type : "POST",
-						  data: formData,
-						url : sourceleadUrl+ "/storeScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}",
+						type : "POST",
+						 data: formData,
+						url : sourceleadUrl+"/storeScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
-							 $("#scheduleMPopDiv").fadeOut();
-							  $(".popMask").fadeOut(); 
-							  $("#inviteCompanyId").removeAttr("style");
-		            		  $("#inviteCompanyId").css({ display: "block" });
-		        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
-		        			  companyMsgFadeinFunction();
-		        			  flushScheduleMaintenance();
+							$("#scheduleMPopDiv").fadeOut();
+							$(".popMask").fadeOut(); 
+   	        			    flushScheduleMaintenance();
 						},
 					}); 
 			return true;
