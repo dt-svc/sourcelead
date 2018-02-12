@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
@@ -213,6 +214,8 @@ public class CandidateDTO extends SearchDTO{
 	private String vendorSpocId;
 	
 	private List<CustomFormFieldDTO> customFormData;
+	
+	 private Map<String,String> candidateCustomFieldData;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1030,6 +1033,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 		this.customFormData = customFormData;
+	}
+
+	public Map<String, String> getCandidateCustomFieldData() {
+		return candidateCustomFieldData;
+	}
+
+	public void setCandidateCustomFieldData(Map<String, String> candidateCustomFieldData) {
+		this.candidateCustomFieldData = candidateCustomFieldData;
 	}
 	
 }

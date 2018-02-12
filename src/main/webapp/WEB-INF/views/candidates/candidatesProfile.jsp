@@ -755,6 +755,9 @@ function candidateProfile(candidateId,candidateType){
 														
 							result = result + '<div class="clearfix"></div> ';
 							
+							
+							
+							
 							//visa type start
 							result = result +'		    <div id="visa" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="visa-summary positionRelative">                                                                                                            ';
@@ -804,9 +807,29 @@ function candidateProfile(candidateId,candidateType){
 							result = result +'</div>';
 							//visa Type End
 							
+							
+								
 							result = result +'</div>';
 							result = result +'</div>';
-							result = result +'</div> ';
+							result = result +'</div> ';						
+							
+							
+							result = result +'<div class="design-view visaresult">';                                                                                                             		          
+							result = result +'<div class="clearfix">';		  
+							result = result +'<h2 class="education  pull-left">Additional Details:</h2>';		
+							result = result +'</div>';
+							result = result +'<ul class="list-unstyled listUlLi">';
+							if(json.candidateCustomFieldData != null && json.candidateCustomFieldData != '' && json.candidateCustomFieldData != 'undefined'){
+					              $.each(json.candidateCustomFieldData, function(key, value) {
+					              	result = result+'<li><span class="col-md-3 padding_left paddingRight text-muted">'+key+':</span><span class="col-md-8 padding_left padding_right">'+value+'</span><div class="clearfix"></div></li>';
+					              });
+				              }
+							result = result +'<div class="clearfix"></div>';
+							result = result +'</ul>';
+							result = result +'</div>';
+							
+							
+
 							
 							
 							//Employee Div
