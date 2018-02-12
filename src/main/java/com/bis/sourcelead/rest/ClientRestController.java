@@ -1524,10 +1524,10 @@ public class ClientRestController {
 		 */
 		String[] tableColumns1 = null;
 		if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "responderWebSite", "responderCity", "responderLevel", "createdBy.keyword", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "responderWebSite", "responderCity.keyword", "responderLevel", "createdBy.keyword", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "", "responderCity", "","createdBy.keyword","releasedJobsCount", "noContacts"};
+			String[] tableColumns = {"responderOrgName", "", "responderCity.keyword", "","createdBy.keyword","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
 				Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
