@@ -526,6 +526,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	private int saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked, int savedRecordCount) throws Exception {
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
+		OrgRelations orgRelation = null;
+		OrgSpoc orgspoc = null;
+		
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 		User reportUser = userService.findByEmailAndOrgLocationsId(userImport.getManager(), orgLocations.getId());
 		userRole.setReportingManager(reportUser);
@@ -539,14 +542,18 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setRatePer(userImport.getRatePer());
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
+		
 		employee.setUserEmploymentType(userImport.getEmploymentType());
-		Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
 		
-		OrgRelations orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
-		employee.setOrgRelationId(orgRelation);
-		
-		OrgSpoc orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
-		employee.setSpocId(orgspoc);
+		if("C2C".equalsIgnoreCase(userImport.getEmploymentType()) || "C2C-1099".equalsIgnoreCase(userImport.getEmploymentType())) {
+			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
+			
+			orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
+			employee.setOrgRelationId(orgRelation);
+			
+			orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
+			employee.setSpocId(orgspoc);
+		}
 		
 		employee.setHireDate(userImport.getDateOfJoin());
 		
@@ -583,28 +590,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				masterCandidate = storeMasterCandidate(userExisted);
 			}
 			
-			userExisted.setEmploymentType(userExisted.getEmploymentType()); 
-			
-			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-			Long vendorId = 0l;
-			for(OrgRelations rel : vendorsList) {
-				if((userExisted.getVendorName().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (userExisted.getVendorName().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
-					vendorId = rel.getId();
-				}
-			}
-			if(vendorId > 0) {
-				userExisted.setVendorName(String.valueOf(vendorId));
-			}
-			
-			List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
-			
-			for(OrgSpoc vendorContacts : vendorContactsList) {
-				if(userExisted.getVendorContactName().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
-					userExisted.setVendorContactName(String.valueOf(vendorContacts.getId()));
-				}
-			}
-			
-			storeCandidate(userExisted, orgLocations, masterCandidate);
+			storeCandidate(userExisted, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
 			savedRecordCount++;
 		}else{
 			User user  = new User();
@@ -628,11 +614,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			userRole.setIsMailSent(userImport.getIsMailChecked());
 		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
-		    employee.setUserEmploymentType(user.getEmploymentType());
-		    
-		    
-		  /* employee.setOrgRelationId(user.getVendorName());
-		    employee.setVendorContactName(user.getVendorContactName());*/
+		   
 			employee.setUser(user);
 			employeesService.addEmployee(employee);
 			if(isMailChecked !=null){
@@ -646,7 +628,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if(null == masterCandidate){
 				masterCandidate = storeMasterCandidate(user);
 			}
-			storeCandidate(user, orgLocations, masterCandidate);
+			storeCandidate(user, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
 			savedRecordCount++;
 		}
 		return savedRecordCount;
@@ -708,8 +690,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		return masterCandidate;
 	}
 	
-	private void storeCandidate(User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception{
-		    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+	private void storeCandidate(User user,OrgLocations orgLocations,MasterCandidate masterCandidate,OrgRelations orgRelations, OrgSpoc orgspoc,UsersImport userImport) throws Exception{
+		    Candidate candidate = candidateService.getCandidateByEmailAndOrgLocationId(user.getEmail(), orgLocations.getId());
 		    if(null == candidate){
 		    	candidate = new Candidate();
 				candidate.setConsultantUser(user);
@@ -734,7 +716,41 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setMasterCandidateId(masterCandidate);
 		    }
 		    
-		
+		    if(orgRelations != null) {
+		    	OrgLocations vendorOrgLocations = null;
+		    	if(orgRelations.getLocationId().getId().equals(orgLocations.getId())) {
+		    		vendorOrgLocations = orgRelations.getResponderLocationId();
+		    	}else {
+		    		vendorOrgLocations = orgRelations.getLocationId();
+		    	}
+		    	 Candidate vendorCandidate = candidateService.getCandidateByEmailAndOrgLocationId(user.getEmail(), vendorOrgLocations.getId());
+		    	 if(vendorCandidate == null) {
+		    		 vendorCandidate = new Candidate();
+		    		 vendorCandidate.setMasterCandidateId(masterCandidate);
+		    		 vendorCandidate.setOrgLocationId(vendorOrgLocations);
+		    		 vendorCandidate.setCandidateType(Constants.CANDIDATE);
+		    		 vendorCandidate.setFirstName(user.getFirstName());
+		    		 vendorCandidate.setLastName(user.getLastName());
+		    		 vendorCandidate.setCountry(vendorOrgLocations.getCountry());
+		    		 vendorCandidate.setIsAssociate(Constants.YES);
+		    		 vendorCandidate.setEmail(user.getEmail());
+		    		 vendorCandidate.setStatus(Constants.RECORD_ACTIVE);
+		    		 vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		    		 vendorCandidate.setCreatedDate(commonUtil.currentDate());
+		    		 vendorCandidate.setUpdatedDate(commonUtil.currentDate());
+		    		 vendorCandidate.setMobilePhone(user.getMobilePhone());
+		    		 vendorCandidate.setDesignationType("Full Time");
+		    		 vendorCandidate.setGeneratedId(candidateService.getCandidateId(vendorOrgLocations));
+		    		 vendorCandidate =  candidateService.addCandidate(vendorCandidate);
+		    		 candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
+		    		 
+		    	 }
+		    	 
+		    	 candidate.setParentCandidateId(vendorCandidate);
+		    	 candidate.setDesignationType(userImport.getEmploymentType());
+		    	 candidate.setOrgRelationId(orgRelations);
+		    	 candidate.setSpocId(orgspoc);
+		    }
 		    
 		    candidateService.addCandidate(candidate);
 		    candidateService.saveOrUpdateCandidateElkDocument(candidate);
