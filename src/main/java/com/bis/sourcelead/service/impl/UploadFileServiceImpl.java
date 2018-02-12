@@ -921,18 +921,29 @@ private String getCellValueAsString(Cell cell, String fileName) {
 
 		boolean isValidated; 
 		if (row.getRowNum() > 0) { // Excluding column names
-
+			
+           
+			if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString()))
+			{
+				isValidated = isIdValid(row.getCell(0).toString());
+				if(isValidated == false){
+					userImport.setReason("should contain 2-20 characters");
+					return isValidated;
+				}
+			}
+			
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
 				isValidated = isFnameLnameValid(row.getCell(1).toString());
 				if(isValidated == false){
-					userImport.setReason("should contain above 2 char");
+					userImport.setReason("should contain above 2 char and should not allowed special charecters");
 					return isValidated;
 				}
 			}
 			
+					
 			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
 				userImport.setReason("Email fields is not filled");
 				return false;
@@ -1428,16 +1439,32 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	
 	private boolean isFnameLnameValid(String name){
 		boolean flag = false;
-		boolean istabSpace = name.matches("\\s*");
-		if(istabSpace){
+		boolean istabSpace = name.matches("^[A-Za-z][A-Z a-z 0-9]*$");
+		if(istabSpace==false){
 			flag = false;
 		}else{
 			if(name.length() > 2 && name.length() <= 200){
 				flag = true;
 			}
 	}
+		
 		return flag;
 	}
+	
+
+	private boolean isIdValid(String id)
+	{		
+		String Id=id.substring(0, id.length() - 2);
+		boolean flag = false;
+		if(Id.length()<2){
+			flag = false;
+		}else{
+			flag = true;
+			}
+		
+		return flag;
+	}
+	
 	
 	private boolean isDayHourValid(String dayHours) {
 		String regex = "\\d+";
