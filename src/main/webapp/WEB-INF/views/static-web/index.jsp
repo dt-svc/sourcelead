@@ -1,4 +1,9 @@
   <!--   HTML   -->	  
+  <%
+    if (request.getRequestURL().toString().indexOf("www.") == -1 
+            && request.getRequestURL().toString().indexOf("localhost") == -1) {
+        response.sendRedirect("https://www.sourcelead.com/");
+    } %>
 <jsp:include page="../staticHeader.jsp" /> 
 <div class="homeBanner">
 <div class="home-caption">

@@ -27,11 +27,46 @@
 	  </div>
 	 </c:if>
 	 
-	 <c:if test="${customForm.fieldType == 'checkBox'}">
+	 
+	 <c:if test="${customForm.fieldType == 'selectfield'}">
+		<div class="form-group">
+		<c:if test="${not empty dataMapList}">
+		<c:forEach var="dataMap" items="${dataMapList}"> 
+		    <c:if test="${customForm.id eq dataMap.key}">
+			   <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+		    	 <div class="col-md-9">
+		    	 <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+		    	 <input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
+		     	 	<select class="chosen-select form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
+		     	 		<option value="">-select option-</option>
+		     	 		<c:forEach var="optionValue" items="${customForm.optionData}">
+		     	 			<option value="${optionValue.option}" ${dataMap.value[1] == optionValue.option ? 'selected="selected"':''}>${optionValue.option}</option>
+		     	 		</c:forEach>
+		     	 	</select>
+		    	</div>
+		    </c:if>
+		  </c:forEach>
+		</c:if>
+			<c:if test="${empty dataMapList}">
+		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+		    	 <div class="col-md-9">
+		    	 <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
+		     	 	<select class="chosen-select form-control" id="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
+		     	 		<option value="" selected disabled>-select option-</option>
+			     	 		<c:forEach var="optionValue" items="${customForm.optionData}">
+			     	 			<option value="${optionValue.option}">${optionValue.option}</option>
+			     	 		</c:forEach>
+		     	 	</select>
+		    	</div>
+		    </c:if>
+	  </div>
+	 </c:if> 
+	 
+	<%--  <c:if test="${customForm.fieldType == 'checkBox'}">
 	   <div class="form-group">
 	   	  <c:if test="${not empty dataMapList}">
 	   	  		<c:forEach var="dataMap" items="${dataMapList}">
-	   	  			<c:if test="${customForm.labelName eq dataMap.orglocationsFormFields.labelName}">
+	   	  			<c:if test="${customForm.id eq dataMap.key}">
 	   	  			<label class="col-md-3"></label>
 		              <div class="col-md-9">
 		                <div class="checkbox checkBox">
@@ -71,40 +106,7 @@
                         </div>
                   </div>
 	   </c:if>
-	   
-	   <c:if test="${customForm.fieldType == 'selectfield'}">
-		<div class="form-group">
-		<c:if test="${not empty dataMapList}">
-		<c:forEach var="dataMap" items="${dataMapList}"> 
-		    <c:if test="${customForm.id eq dataMap.key}">
-			   <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
-		    	 <div class="col-md-9">
-		    	 <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		    	 <input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
-		     	 	<select class="chosen-select form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
-		     	 		<option value="">-select option-</option>
-		     	 		<c:forEach var="optionValue" items="${customForm.optionData}">
-		     	 			<option value="${optionValue.option}" ${dataMap.value[1] == optionValue.option ? 'selected="selected"':''}>${optionValue.option}</option>
-		     	 		</c:forEach>
-		     	 	</select>
-		    	</div>
-		    </c:if>
-		  </c:forEach>
-		</c:if>
-			<c:if test="${empty dataMapList}">
-		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
-		    	 <div class="col-md-9">
-		    	 <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		     	 	<select class="chosen-select form-control" id="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${customForm.isRequired == 1 ? 'data-validation="Required"':''} ${customForm.isRequired == 0 ? 'data-validation-optional="true"':''}>
-		     	 		<option value="" selected disabled>-select option-</option>
-			     	 		<c:forEach var="optionValue" items="${customForm.optionData}">
-			     	 			<option value="${optionValue.option}">${optionValue.option}</option>
-			     	 		</c:forEach>
-		     	 	</select>
-		    	</div>
-		    </c:if>
-	  </div>
-	 </c:if> 
+	    --%>
 	</c:forEach>
 
 

@@ -484,7 +484,9 @@
              var formData = getFormData("editClient_form");
              var sourceleadUrl ='${sourceleadUrl}';
 		 $.post(sourceleadUrl+"/clientDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
-				location.replace(sourceleadUrl+ "/clientDashboard");
+			 clientDetails(clientLocationId,orgRelationId);
+			 
+			 //location.replace(sourceleadUrl+ "/clientDashboard");
 			});
 	     	return true;
          }else{
