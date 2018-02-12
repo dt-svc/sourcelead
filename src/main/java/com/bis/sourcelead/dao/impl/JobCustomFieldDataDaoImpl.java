@@ -67,7 +67,7 @@ public class JobCustomFieldDataDaoImpl implements  JobCustomFieldDataDao{
 		if(jobCustomFieldData != null && !jobCustomFieldData.isEmpty()) {
 			for(JobCustomFieldData jobData:jobCustomFieldData) {
 				String jobDataArray[] =  new String[4];
-				jobDataArray[0] = jobData.getOrglocationsFormFields().getFieldName();
+				jobDataArray[0] = jobData.getOrglocationsFormFields().getLabelName();
 				jobDataArray[1] = jobData.getCustomFormFieldData();
 				jobDataArray[2] = jobData.getId().toString();
 				jobCustomFieldDataMap.put(jobData.getOrglocationsFormFields().getId(), jobDataArray);

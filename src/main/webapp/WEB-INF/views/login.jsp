@@ -14,7 +14,11 @@
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-
+<%
+    if (request.getRequestURL().toString().indexOf("www.") == -1 
+            && request.getRequestURL().toString().indexOf("localhost") == -1) {
+        response.sendRedirect("https://www.sourcelead.com/login");
+    } %>
  
 <script>
 window.onload = function() {

@@ -223,17 +223,12 @@ function getSelectedFieldDetails(){
 </script>
  
  <script>
- $('#isRequired').click(function() {
-	        var value = $(this).val();	
-	        if( $( this ).attr( 'type' ) === 'checkbox' ) {
-	            value = +$(this).is( ':checked' );
-	            $('#isRequired').attr("value",value);
-	        }
-});	
- </script>
- 
- <script>
  function saveAddFormField(customRowId){
+	 var disabled = '${disableFields}';
+	 if(disabled != null && disabled != '' && disabled !='undefined'){
+		 $("#addFieldSectionHidden").val($("#addFieldSection").val());
+		 $("#fieldsDropDownHidden").val($("#fieldsDropDown").val());
+	 }
 	 if ($('#saveAddForm_form').validate(false, validationSettings)){
 	    var formData = getFormData1("saveAddForm_form");
 	    var selectedSectionID = $("#addFieldSection").val();
