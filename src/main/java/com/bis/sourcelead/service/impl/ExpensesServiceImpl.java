@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -38,11 +39,11 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -91,9 +92,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private ConversionUtil conversionUtil;
 	
 	@Autowired
-	private CountriesService countriesService;
-	
-	@Autowired
 	private CandidateService candidateService;
 	
 	@Autowired
@@ -103,12 +101,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
-	private OrgRelationsService orgRelationsService;
+	private ExpensesApprovalService expensesApprovalService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
 	@Override
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate) throws Exception {
+	public ResponseList<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate,String searchValue,int start,int length) throws Exception {
 			Date endDateUTC = null;
 			Date startDateUTC = null;
 			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
@@ -130,7 +128,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 				endDateUTC = TZ_DF_TS.parse(endDateString);
 			}
 			//orgLoc.getId(),loginUser.getId()
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(candidate.getMasterCandidateId().getId(),expenseStatus, startDateUTC, endDateUTC);
+		ResponseList<Expenses> expensesList =  expensesDao.getAllExpenses(candidate.getMasterCandidateId().getId(),expenseStatus, startDateUTC, endDateUTC,searchValue,start,length,orgLoc);
 
 		return expensesList;
 
@@ -246,6 +244,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder edDate=new StringBuilder();
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
+		            StringBuilder statusStringBuilder = new StringBuilder();
 		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
@@ -272,6 +271,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
 			        	}
+			      
 			        if(expenses.getTotalAmount() != 0){
 			        	StringBuilder str = new StringBuilder();
 			        	BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
@@ -280,6 +280,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));	
 			        	}
+			        if(null != expenses.getExpenseStatus()){
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append(expenses.getExpenseStatus()).toString()));
+			        }else {
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append("--").toString()));	
+			        }
 			       }else if(approverType.equalsIgnoreCase("APPROVER")){
 			    	   StringBuilder expenseId=new StringBuilder();
 			    	   	StringBuilder nameBuilder=new StringBuilder();
@@ -341,7 +346,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            if(pm.getProjectClientsId()!=null && pm.getProjectClientsId().getOrgRelationId()!= null){
 			            	orderedList.add(new ListItem(client.append("Client :").append(pm.getProjectClientsId().getOrgRelationId().getClientName()).toString()));	
 			            }else{
-			            	client.append("--").toString();
+			            	orderedList.add(new ListItem(client.append("Client :").append("--").toString()));
 			            }
 				        if(null != expenses.getStartDate()){
 				        	String StartDate = dateFormatter.format(expenses.getStartDate());
@@ -448,8 +453,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 			 }
 			 
 			 if(approverType.equalsIgnoreCase("APPROVER")){
-				 if(expEntries.getExpensesId().getExpenseStatus() != null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().toString())){	
-					   userArray[7] = expEntries.getExpensesId().getExpenseStatus().getValue();
+				 if(expEntries.getExpensesId() != null){	
+					 ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expEntries.getExpensesId().getId(),orgLoc.getId());
+					   userArray[7] = eah.getExpenseStatus().getValue().toUpperCase();
 				   }else{
 					   userArray[7] = "--";
 				 } 
@@ -922,7 +928,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell23.setCellStyle(style);
 
 		Cell cell24 = writeRow.createCell(1);
-		StringBuilder str = new StringBuilder();
 		BigDecimal bd = new BigDecimal(Double.toString(expenseDetails.getTotalAmount()));
 		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 		cell24.setCellValue(bd.toString());
@@ -1246,15 +1251,28 @@ public class ExpensesServiceImpl implements ExpensesService{
 		List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
 		for(ExpensesEntries entries : entriesList){
-			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
-			expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
-			expensesEntriesDTO.setEntryDescription(entries.getDescription());
-			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
-			expensesEntriesDTO.setAmount(entries.getAmount());
-			expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
-			expensesEntriesDTOList.add(expensesEntriesDTO);
+			if(Submission_Status.APPROVED == entries.getExpensesId().getExpenseStatus()) {
+				ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
+				expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+				expensesEntriesDTO.setEntryDescription(entries.getDescription());
+				expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+				expensesEntriesDTO.setAmount(entries.getAmount());
+				expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
+				expensesEntriesDTOList.add(expensesEntriesDTO);
+			}
 		}
 		return expensesEntriesDTOList;
+	}
+
+	@Override
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId, Long masterCandidateId)
+			throws Exception {
+		return expensesDao.getExpensesByProjectIdAndMasterCandidateId(projectId, masterCandidateId);
+	}
+
+	@Override
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception {
+		return expensesDao.getAllExpensesByOrgLocationId(orgLocationId);
 	}
 	
 }

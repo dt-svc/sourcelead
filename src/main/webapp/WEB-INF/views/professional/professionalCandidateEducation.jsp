@@ -141,7 +141,7 @@ function candidateEducationList(candidateId){
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
 	                    	 }
-	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.gradeType  != 'undefined'){
 			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
 			                 }else{
 			                 result  = result + '<td><div><span>----</span></div></td>'; 
@@ -265,20 +265,27 @@ function addEducation(candidateId) {
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearProfCanEduStartDate();"></div>';
+	result  = result + '                   </div>';
+
 	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearProfCanEduEndDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-5 dropdown-select positionRelative paddingRight">';
-	result = result  +'	                     <select class="form-control"  name="scoreType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="newSelect"  name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -286,8 +293,8 @@ function addEducation(candidateId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -317,17 +324,7 @@ function addEducation(candidateId) {
 	}
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat1 = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat1 = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat1 = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat1 = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat1 = 'yy-dd-mm'; 
-	  }
-	  
+	  var finalDateFormat1 = getJSDateFormat(locationDate);
 	  
 	  $('#startDate').datepicker({
 	      dateFormat: finalDateFormat1,
@@ -440,6 +437,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
+	result = result  +'                    <div class="col-md-12">                                                                                                            ';
 	result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 						
 				    	 $.each(json.allAndCandidateEducations, function( i, eduName){
@@ -461,6 +459,7 @@ function EditEducation(candidateId,candidateEducationId) {
 							});
     result = result + "</select>";
 	result = result  +'                  </div>                                                                                                                               ';
+	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
@@ -471,22 +470,39 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
 								if(json.startDateStr !=null && json.startDateStr !='undefined' && json.startDateStr !=''){
+	
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="'+ json.startDateStr +'" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="editProfCandEduStartDate();"></div>';
+	result  = result + '                   </div>';
+
 								}else{
+	result  = result + '                   <div>';
 	result = result  +'					  <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+	result  = result + '					<div class="clearDate" onClick="editProfCandEduStartDate();"></div>';
+	result  = result + '                   </div>';
+
 								}
 									
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
 								if(json.endDateStr !=null && json.endDateStr !='undefined' && json.endDateStr !=''){
+							
+	result  = result + '                   <div>';					
 	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDateEdit"  onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="'+ json.endDateStr +'" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="editProfCandEduEndDate();"></div>';
+	result  = result + '                   </div>';				
+								
 								}
 								else{
+	result  = result + '                   <div>';									
 	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDateEdit" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="editProfCandEduEndDate();"></div>';
+	result  = result + '                   </div>';						
 								}
 	result = result  +'                    </div>    ';
 	result = result  +'                  </div>                                                                                                                               ';
@@ -494,7 +510,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
+	result = result  +'	                     <select class="newSelect" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="eduSelectScoreType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -514,8 +530,8 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
 	result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="eduSelectScoreType();eduScoreAndScoreType();"';
+	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-3" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
 	
@@ -553,50 +569,12 @@ function EditEducation(candidateId,candidateEducationId) {
 	var proEduEndDate = $("#endDateEdit").val(); 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	var proEduStartDateSplit = proEduStartDate.split("-");
-	 var proEduEndDateSplit = proEduEndDate.split("-");
-	 
-	 var finalDateFormatEduEditOneSave = '';
-	  var eduStartDateEdit = '';
-	  var eduEndDateEdit = '';
-	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[2])+parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[0])+parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[0])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[2])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
-	  }
-	  
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[2])-parseInt(1));
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[0])-parseInt(1));
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[0])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[2])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
-	  }
-	  var finalDateFormat3 = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat3 = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat3 = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat3 = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat3 = 'yy-dd-mm'; 
-	  }
+	
+	 // written common method in slead-common.js for date formats start
+	  var eduStartDateEdit = getJSDate(proEduStartDate,locationDate);
+	  var eduEndDateEdit = getJSDate(proEduEndDate,locationDate);
+	  var finalDateFormat3 = getJSDateFormat(locationDate);
+	  //end
 	  
 	  $('#startDateEdit').datepicker({
 	      dateFormat: finalDateFormat3,
@@ -750,7 +728,7 @@ $('body').on('blur', '#education_form', function() {
   
   <script type="text/javascript">
 function deleteEduPopup(){
-	$("#remove_user_pop, .project_inn_mask").fadeOut();
+		$("#remove_user_Edu_pop, .project_inn_mask").fadeOut();
 }
 </script>
 
@@ -760,14 +738,14 @@ function deleteEduPopup(){
 function removeEducation(candidateEducationId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_Edu_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Education</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteEduPopUp").empty();
 	$("#deleteEduPopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_Edu_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
 }
@@ -811,7 +789,7 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
-             			$("#remove_user_pop, .project_inn_mask").fadeOut();
+             			$("#remove_user_Edu_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
              			eduMsgFadeinFunction();
 			    	}
@@ -923,7 +901,14 @@ function clearSearchKey() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		
+		var scoreType = document.getElementById("scoreType").value; 
+		 if(scoreType != null && scoreType != ""){
+			 $('#candidateScore').removeAttr('data-validation-optional');
+			 $('#candidateScore').attr("data-validation","required"); 
+		 }else{
+			 $('#candidateScore').removeAttr('data-validation');
+			 $('#candidateScore').attr("data-validation-optional","true"); 
+		 }
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
@@ -992,3 +977,21 @@ function toDate(selector) {
 }
 </script>
 <!-- script for dateformat in datepicker End -->
+
+<script>
+function clearProfCanEduStartDate(){
+	$("#startDate").val("");
+	};
+function clearProfCanEduEndDate(){
+	$("#endDate").val("");
+	};
+</script>
+
+<script>
+function editProfCandEduStartDate(){
+	$("#startDateEdit").val("");
+	};
+ function editProfCandEduEndDate(){
+	$("#endDateEdit").val("");
+	}; 
+</script> 

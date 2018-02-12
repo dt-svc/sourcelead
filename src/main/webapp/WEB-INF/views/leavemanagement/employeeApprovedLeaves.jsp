@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Approved Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
     </section>
  <div id="popUp"></div>
 <div class="content-area content-new clearfix">
@@ -101,6 +101,7 @@ function prepareApprovedEmployeesList(url){
 		result = result + '<th>Leave Type</th>';
 		result = result + '<th>Duration</th>';
 		result = result + '<th>No Of Days</th>';
+		result = result + '<th>No Of Extra Days</th>';
 		result = result + '<th>Leaves Taken</th>';
 		result = result + '<th>Approved By</th>';
 		result = result + '<th>Approved On</th>';
@@ -142,7 +143,7 @@ function approvedEmployeesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		  result = result + '     <div class="proj_show divmax-width">';
-	    	  		  result = result + ' <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');"></i>'; 
+	    	  		  result = result + ' <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');"></i>'; 
 	    	  		  result = result + '     </div>';
 	    	  		  return result; 
 	    	  	}
@@ -171,7 +172,15 @@ function approvedEmployeesPagination(url){
             	   result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
             	    return result; 
               }
-            }, {
+            },{
+                "targets": colIndex++,
+                "data": "noOfDays",
+                "render": function ( data, type, opt, meta ) {
+              	   var result = "";
+              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
+              	    return result; 
+                }
+              }, {
                 "targets": colIndex++,
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
@@ -201,7 +210,7 @@ function approvedEmployeesPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	   '<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
-                       result = result + '<a href="javascript:void(0)" title="CANCEL" onclick="CancelLeave(\''+opt.id+'\');"><div><b class="proj_closed cursorPointer">CANCEL</b></div></a>';
+                       result = result + '<a href="javascript:void(0)" title="CANCEL" onclick="CancelLeave(\''+opt.leaveUUID+'\');"><div><b class="proj_closed cursorPointer">CANCEL</b></div></a>';
 	                   '</sec:authorize>';
 	                   '<sec:authorize access="!hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
 	                       result = result + '<a><b>---</b></a>';
@@ -247,7 +256,7 @@ $(".proj_close, .side_mask").click(function(){
   
  
 <script>
-function CancelLeave(id){
+function CancelLeave(leaveUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -255,7 +264,7 @@ function CancelLeave(id){
 	result = result +"		<p>Are you sure you want to Cancel ?</p>";
 	result = result +"		<textarea  id='reasonForCancel' name='reasonForCancel'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForCancelDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="confirmCancel(\''+id+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="confirmCancel(\''+leaveUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -265,7 +274,7 @@ function CancelLeave(id){
 </script>
 
 <script>
-function confirmCancel(id){
+function confirmCancel(leaveUUID){
 	var reason = $("#reasonForCancel").val();
 	var userId = '${SourceLeadWeb_userId}';
 	if(reason != null && reason != ''){
@@ -275,7 +284,7 @@ function confirmCancel(id){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/storeCancelReason?"+tokenParamName+"="+tokenValue+"&id="+id+"&reason="+reason+"&userId="+userId,
+				    url: sourceleadUrl+"/storeCancelReason?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
@@ -300,8 +309,8 @@ function cancelTermination(){
 
 
 <script>
-function getRequestedAproveSummary(leaveId,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+function getRequestedAproveSummary(leaveUUID,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
 		   if(data != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
@@ -309,7 +318,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +' <span class="btn btn-primary btn-sm mr10">APPROVED</span>';
-			 result = result +' <span class="btn btn-danger btn-sm" title="CANCEL" onClick="CancelLeave(\''+leaveId+'\')">CANCEL</span>';
+			 result = result +' <span class="btn btn-danger btn-sm" title="CANCEL" onClick="CancelLeave(\''+leaveUUID+'\')">CANCEL</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';
@@ -351,7 +360,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +' </div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
-			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
+			 result = result +'<label class="col-md-2 control-label"><b>Role:</b></label>';
 			 result = result +' <div class="col-md-8">';
 			 if(data.empType != null && data.empType !='' && data.empType !='undefined'){
 				 result = result +'<span>'+data.empType+'</span>';
@@ -445,7 +454,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
              if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-            	 result = result+'<div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
+            	 result = result+'<div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
             	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a></div>';
              }else{
             	 result = result +'<span>--</span>'; 

@@ -60,17 +60,17 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<LeaveType> leaveTypeList = null;
-		leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId" ).setLong("orgLocationId", Long.parseLong(orgLocationId)).setCacheable(true).list();
+		leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId" ).setLong("orgLocationId", Long.parseLong(orgLocationId)).list();
 		return leaveTypeList;
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public LeaveType getLeaveTypeById(String leaveTypeId)
+	public LeaveType getLeaveTypeById(Long leaveTypeId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<LeaveType> leaveTypeList = null;
-		leaveTypeList = session.createQuery("from LeaveType lt where lt.id =:leaveTypeId" ).setString("leaveTypeId", leaveTypeId).setCacheable(true).list();
+		leaveTypeList = session.createQuery("from LeaveType lt where lt.id =:leaveTypeId" ).setLong("leaveTypeId", leaveTypeId).list();
 		if(leaveTypeList != null && leaveTypeList.size() > 0)
 			return leaveTypeList.get(0);
 		else
@@ -83,8 +83,23 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<LeaveType> leaveTypeList = null;
-		leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId and lt.status = '1'" ).setLong("orgLocationId", Long.parseLong(orgLocationId)).setCacheable(true).list();
+		leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId and lt.status = '1'" ).setLong("orgLocationId", Long.parseLong(orgLocationId)).list();
 		return leaveTypeList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LeaveType getLeaveTypeByUUID(String leaveTypeUUID)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LeaveType> leaveTypeList = null;
+		leaveTypeList = session.createQuery("from LeaveType lt where lt.leaveTypeUUID =:leaveTypeUUID" ).setString("leaveTypeUUID", leaveTypeUUID).list();
+		if(leaveTypeList != null && leaveTypeList.size() > 0){
+			return leaveTypeList.get(0);
+		}else{
+			return null;
+		}
+		
 	}
 
 

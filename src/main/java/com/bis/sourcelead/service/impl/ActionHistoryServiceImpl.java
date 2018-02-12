@@ -23,10 +23,20 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	}
 	
 	@Override
+	public List<ActionHistory> getAllActionPerformedByUserActionUUID(String actionUUID, Long orgLocation) {
+		return actionHistoryDao.getAllActionHistoryListByActionUUID(actionUUID, orgLocation);
+	}
+	
+	@Override
 	public List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId) {
 		return actionHistoryDao.getAllOrglocationsActionHistoryList(userSessionId);
 	}
 
+	@Override
+	public List<ActionHistory> getAllOrglocationsActionHistoryListActionUUID(String actionUUID) {
+		return actionHistoryDao.getAllOrglocationsActionHistoryListActionUUID(actionUUID);
+	}
+	
 	@Override
 	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations orgLocations,String type) {
 		try {

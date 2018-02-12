@@ -103,13 +103,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	}else{
         	candidateEmployers.setDesignation("");
         	}
-        	if(StringUtils.isNotBlank(candidateEmployerDTO.getIsCurrentPosition())){
-	        	
-        		currentEmployer = candidateEmployersDao.getCandidateCurrentEmployer(candidateId, orgLocationId.getId());
-        		if(null != currentEmployer){
-        			currentEmployer.setIsCurrentPosition(Constants.NO);
-        		}
-        		
+        	
         		if(StringUtils.isNotBlank(candidateEmployerDTO.getIsCurrentPosition())){
         			if(candidateEmployers != null && candidateEmployers.getIsCurrentPosition() != null && candidateEmployers.getIsCurrentPosition() != "" && !candidateEmployers.getIsCurrentPosition().equalsIgnoreCase(candidateEmployerDTO.getIsCurrentPosition())){
         				activitySummary.append("Is Current Position").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getIsCurrentPosition()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getIsCurrentPosition()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -117,7 +111,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	        		candidateEmployers.setIsCurrentPosition(candidateEmployerDTO.getIsCurrentPosition());
 	        	}
         		
-        	}else{
+        	else{
         		if(candidateEmployers != null && candidateEmployers.getIsCurrentPosition() != null && candidateEmployers.getIsCurrentPosition() != "" && !candidateEmployers.getIsCurrentPosition().equalsIgnoreCase("N")){
     				activitySummary.append("Is Current Position").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getIsCurrentPosition()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append("N").append(Constants.NEW_VALUE_TAG_END).append(" ");
     			}

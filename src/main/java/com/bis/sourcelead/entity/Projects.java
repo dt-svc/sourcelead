@@ -40,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projects")
 public class Projects implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -62,6 +61,9 @@ public class Projects implements Serializable{
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
     private String description;
  
+    @Column(name = "WEEK_START_DATE")
+    private Date weekStartDate;
+    
     @Column(name = "START_DATE")
     private Date startDate;
     
@@ -104,8 +106,8 @@ public class Projects implements Serializable{
     @Column(name="OVERTIME_RATE_TYPE")
     private String overtimeRateType;
 
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
    	private User superiorUser;
     
@@ -127,13 +129,13 @@ public class Projects implements Serializable{
 	@Column(name = "IS_TIMESHEET_ATTACHMENT_REQUIRED")
 	private Integer isTimesheetAttachmentRequired;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+	
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
 	
@@ -177,7 +179,7 @@ public class Projects implements Serializable{
    	private String notifyBudgetAt;
 	
      
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@OneToMany(mappedBy = "projectId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectBudget> projectBudget = new HashSet<ProjectBudget>(0);
@@ -186,19 +188,19 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectBudget>  projectBudgetList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectMembers> projectMembers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectApproverHierarchy> projectApprovers;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
@@ -211,11 +213,18 @@ public class Projects implements Serializable{
     private Set<ProjectClients> projectClients;
   
 
-    @NotFound(action=NotFoundAction.IGNORE)
-    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
+    
+    @OneToMany(mappedBy="projects")
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;
+    
+    
+    @OneToMany(mappedBy="projectId")
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<ProjectDocumentFolder> ProjectDocumentFolder;
+    
     
     @Column(name="CURRENCY")
     private String currency;
@@ -333,6 +342,7 @@ public class Projects implements Serializable{
     @JsonProperty
     Set<ProjectDocuments>  projectDocumentsList;
     
+    
     @Column(name = "GENERATED_ID")
 	private String generatedId;
     
@@ -403,7 +413,8 @@ public class Projects implements Serializable{
 		this.timesheetFrequency = timesheetFrequency;
 	}
 	
-	
+
+
 	@JsonIgnore
 	public User getSuperiorUser() {
 		return superiorUser;
@@ -572,7 +583,7 @@ public class Projects implements Serializable{
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = null;
-			if(StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
+			if(orgLocationsId != null && orgLocationsId.getDateFormat() != null && StringUtils.isNotEmpty(orgLocationsId.getDateFormat())){
 				dateFormat = new SimpleDateFormat(orgLocationsId.getDateFormat());
 			}
 			else{
@@ -583,7 +594,7 @@ public class Projects implements Serializable{
 		return startDateStr;
 	}
 
-	public void setStartDateStr(String startDateStr) {
+	public void setStartDateStr(String startDateStr) { 
 		this.startDateStr = startDateStr;
 	}
 
@@ -1000,4 +1011,21 @@ public class Projects implements Serializable{
 	public void setProjectbudgetCurrency(String projectbudgetCurrency) {
 		this.projectbudgetCurrency = projectbudgetCurrency;
 	}
+
+	public Set<ProjectDocumentFolder> getProjectDocumentFolder() {
+		return ProjectDocumentFolder;
+	}
+
+	public void setProjectDocumentFolder(Set<ProjectDocumentFolder> projectDocumentFolder) {
+		ProjectDocumentFolder = projectDocumentFolder;
+	}
+
+	public Date getWeekStartDate() {
+		return weekStartDate;
+	}
+
+	public void setWeekStartDate(Date weekStartDate) {
+		this.weekStartDate = weekStartDate;
+	}
+	
 }

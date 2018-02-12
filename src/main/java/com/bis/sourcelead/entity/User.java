@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -30,12 +30,12 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "USER", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
+@Table(name = "USER")
 public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -82,14 +82,18 @@ public class User implements Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	
+	@Column(name = "SSN")
+	private Integer ssn;
+	
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
 	@Column(name = "FILE_URL")
 	private String fileUrl;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 	
@@ -143,22 +147,22 @@ public class User implements Serializable{
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "consultantUser")
 	private Set<Candidate> candidateSet;
 	
@@ -170,10 +174,6 @@ public class User implements Serializable{
 		this.candidateSet = candidateSet;
 	}
 
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -189,6 +189,18 @@ public class User implements Serializable{
 	
 	@Column(name ="REGISTER_OPTIONAL_SERVICE_ID")
 	private String registerOptionalServiceId;
+	
+	@Column(name = "VERIFICATION_UUID")
+	private String verificationUUID;
+    
+    @Column(name = "IS_VERIFIED")
+	private String isVerified;
+    
+    @Column(name = "URL_SENTTIME")
+	private Date urlSentTime;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
 	
 	@Transient
 	private String isPrimaryAdmin;
@@ -373,15 +385,6 @@ public class User implements Serializable{
 		this.status = status;
 	}
 	
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -763,4 +766,58 @@ public class User implements Serializable{
 	public void setIsMailSent(String isMailSent) {
 		this.isMailSent = isMailSent;
 	}
+
+
+	public Integer getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(Integer ssn) {
+		this.ssn = ssn;
+	}
+
+	public String getVerificationUUID()
+	{
+		return verificationUUID;
+	}
+
+	public void setVerificationUUID(String verificationUUID)
+	{
+		this.verificationUUID = verificationUUID;
+	}
+
+	public String getIsVerified()
+	{
+		return isVerified;
+	}
+
+	public void setIsVerified(String isVerified)
+	{
+		this.isVerified = isVerified;
+	}
+
+	public Date getUrlSentTime()
+	{
+		return urlSentTime;
+	}
+
+	public void setUrlSentTime(Date urlSentTime)
+	{
+		this.urlSentTime = urlSentTime;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
+
+	
+
+	
+	
 }

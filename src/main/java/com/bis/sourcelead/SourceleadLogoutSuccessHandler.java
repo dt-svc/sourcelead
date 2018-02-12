@@ -43,10 +43,13 @@ public class SourceleadLogoutSuccessHandler implements LogoutSuccessHandler{
 		
 		String userSessionId = request.getParameter("userSessionId");
 		String orgLocationId = request.getParameter("orgLocationId");
+		String allowed = request.getParameter("allowed");
 		
 		if(StringUtils.isNotEmpty(userSessionId)){
+			String actionUUID = null;
 			if(StringUtils.isNotEmpty(orgLocationId)){
 				UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(Long.parseLong(userSessionId));
+				actionUUID = userLoginLogoutSession.getActionUUID();
 				OrgLocations orgLocations;
 				try {
 					orgLocations = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
@@ -54,11 +57,11 @@ public class SourceleadLogoutSuccessHandler implements LogoutSuccessHandler{
 				}  catch (Exception e) {}
 			}
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.sendRedirect(request.getContextPath()+"/getActionHistoryList?userSessionId="+userSessionId);
+			response.sendRedirect(request.getContextPath()+"/app/getActionHistoryList/"+actionUUID);
 		}
 		else{
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.sendRedirect(request.getContextPath()+"/login");
+			response.sendRedirect(request.getContextPath()+"/login"+(StringUtils.isNotEmpty(allowed) ? "?allowed=false" : ""));
 		}
 		
 		

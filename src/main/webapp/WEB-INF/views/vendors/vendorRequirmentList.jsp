@@ -145,9 +145,9 @@ function vendorRequirementListInclude(orgRelationID){
 		            result = result + '	 </tr>';
 		            result = result +'</thead>';
 		            result = result + '<tbody>';
-			          for (var i=0; i<json.length; i++)
+			          for (var i=0; i<json.data.length; i++)
 					  { 
-			        	  var opt = json[i];
+			        	  var opt = json.data[i];
 			        	  result = result + "<tr>";
 			            	// result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>"; 
 			           	result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";

@@ -126,6 +126,11 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDate(Long proMembersId,Date startDate, Date endtDate) throws ParseException {
 		  return expensesReportDao.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(proMembersId,startDate,endtDate);
 	}
+	
+	@Override
+	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(Long proMembersId,Date startDate, Date endtDate) throws ParseException {
+		  return expensesReportDao.getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(proMembersId,startDate,endtDate);
+	}
 
 	@Override
 	public Map<String, String> getmonthStringNamefromStartAndEndDate(Date convertedStartDate, Date convertedEndDate,List<ProjectMembers> projectMembers) {
@@ -377,6 +382,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 			           	    	expensesArray[5] = "--";
 								expensesArray[6] = "--";
 			           	     }
+							
+							
 							
 							 /*if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());

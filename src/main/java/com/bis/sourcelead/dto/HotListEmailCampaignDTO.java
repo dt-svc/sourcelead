@@ -28,6 +28,7 @@ public class HotListEmailCampaignDTO {
 	
 	private String comment;
 	
+	private String senderIdentity;
 	
 	public String getStaticPath() {
 		return staticPath;
@@ -123,6 +124,16 @@ public class HotListEmailCampaignDTO {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getSenderIdentity()
+	{
+		return senderIdentity;
+	}
+
+	public void setSenderIdentity(String senderIdentity)
+	{
+		this.senderIdentity = senderIdentity;
 	}
 	
 }

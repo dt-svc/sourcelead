@@ -183,7 +183,7 @@ function getClientList(){
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
 		    	  		if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
-		    				result = result +' <td><div>'+report.createdBy+'</div></td>';
+		    				result = result +' <td><div class="tbldata-dotdot">'+report.createdBy+'</div></td>';
 		    		   	}else{
 		    		   		result = result +'<td><div>---</div></td>';
 		    		   	}
@@ -194,7 +194,7 @@ function getClientList(){
 		    	  	"data": "noContacts",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		result = result +'<td><div >'+report.noContacts+'</div></td>';
+		    	  		result = result +'<td><div class="tblminwidth-75">'+report.noContacts+'</div></td>';
 		    	  		 return result;
 		    	  	}
 		    	  }],

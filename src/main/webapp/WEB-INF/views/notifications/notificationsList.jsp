@@ -38,7 +38,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>Notifications</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Notifications</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Notifications</div>
     </section>
     <div class="content-dashboard clearfix">
       <section class="action-btns clearfix hidden">
@@ -136,7 +136,7 @@ function getNotificationtLists(){
 					if(report.notificationImage != null && report.notificationImage !='' && report.notificationImage !="undefined"){
 						result = result +'			<img data-id= "userProfileImage" class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="'+report.notificationImage+'">';
 					}else{
-					result = result +'			<img data-id= "userProfileImage" class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="resources/images/userprofileImg.jpg">';
+					result = result +'			<img data-id= "userProfileImage" class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="/resources/images/userprofileImg.jpg">';
 	
 					}
 					result = result +'		</div>';					
@@ -314,7 +314,7 @@ function deleleteAll() {
 </script>
 <script type="text/javascript">
 function loadingDiv(){
-	$("#loadAcceptDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadAcceptDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 }
 </script>
 

@@ -1,27 +1,33 @@
 package com.bis.sourcelead.beans;
 
+import java.math.BigDecimal;
+
 public class BillingGraphBean {
 		private String date;
-		private double income;
-		private double expenses;
+		private BigDecimal income;
+		private BigDecimal expenses;
 		
-		public void setExpenses(double expenses) {
-			this.expenses = expenses;
-		}
+		 
 		public String getDate() {
 			return date;
 		}
 		public void setDate(String date) {
 			this.date = date;
 		}
-		
-		public double getIncome() {
+		public BigDecimal getIncome()
+		{
 			return income;
 		}
-		public void setIncome(double income) {
+		public void setIncome(BigDecimal income)
+		{
 			this.income = income;
 		}
-		public double getExpenses() {
+		public BigDecimal getExpenses()
+		{
 			return expenses;
+		}
+		public void setExpenses(BigDecimal expenses)
+		{
+			this.expenses = expenses;
 		}
 }

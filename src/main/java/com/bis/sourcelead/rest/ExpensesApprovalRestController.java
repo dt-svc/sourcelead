@@ -25,8 +25,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ExpensesApproverDTO;
+import com.bis.sourcelead.dto.ExpensesApproverHierarchyDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -38,7 +41,6 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
-import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
@@ -52,6 +54,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.math.BigDecimal;
 
 @RestController
+@RequestMapping("/app")
 public class ExpensesApprovalRestController {
 
 	@Autowired
@@ -88,39 +91,66 @@ public class ExpensesApprovalRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	@RequestMapping(value = "/getExpensesApprovalList")
+
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	/*@RequestMapping(value = "/getExpensesApprovalList")
 	public List<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate);
 			return expApperoverHierarchy;
+   }*/
+	
+	
+	@RequestMapping(value = "/getExpensesApprovalList")
+	public ModelAndView getExpensesApprovalList(HttpServletRequest request, ExpensesApproverDTO expensesApproverDTO) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		ExpensesApproverDTO expApperoverdto = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		model.addObject("totalRows",expApperoverdto.getTotalRows());
+		model.addObject("pageCount",expApperoverdto.getPageCount());
+		model.addObject("pageSize",expApperoverdto.getPageSize());
+		model.addObject("searchValue",expApperoverdto.getSearchValue());
+		model.addObject("expenseStatus",expApperoverdto.getExpenseStatus());
+		model.addObject("orgLocationDateFormat",orgLoc.getDateFormat());
+		model.addObject("expApperoverHierarchydto",expApperoverdto.getExpensesApproverHierarchyDTO());
+		model.setViewName("expenses/expensesApprovalListDataTable");
+		return model;
    }
 	
+	
+	
 	@RequestMapping(value = "/getExpensesApprovalListForExports")
-	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="type", required=false) String type,@RequestParam(value="expenseStatus", required=false) String expenseStatus,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="endDate", required=false) String endDate) throws Exception {
+	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,ExpensesApproverDTO expensesApproverDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		File file=null;
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate);
-		if(type.equalsIgnoreCase("pdf"))
-			file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
-		else
-			file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser);
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		StringBuilder fileName = new StringBuilder();
-		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();	
-		if(file != null){
-			file.delete();
+		ExpensesApproverDTO expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		List<ExpensesApproverHierarchyDTO> expApperoverHierarchy = expApperoverHierarchyList.getExpensesApproverHierarchyDTO();
+		if(expApperoverHierarchy != null && !expApperoverHierarchy.isEmpty()) {
+			if(expensesApproverDTO.getType().equalsIgnoreCase("pdf"))
+				file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
+			else
+				file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser);
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+			if(file != null){
+				file.delete();
+			}
 		}
    }
 	
@@ -159,7 +189,7 @@ public class ExpensesApprovalRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason);
+	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc);
 	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId());
 	 	if(eah != null && eah.getExpenseId() != null){
 	 		 String submissionStatusStr = eah.getExpenseId().getExpenseStatus().getValue();
@@ -168,12 +198,12 @@ public class ExpensesApprovalRestController {
 		 		     || submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))
 		 	    )
 		 	   {
-	 			    ProjectMembers projectMembers = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(eah.getExpenseId().getProjectMembers().getId());
+	 			    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(eah.getExpenseId().getProjectMembers().getId());
 	 			    DateFormat TZ_DF_TS = new SimpleDateFormat (orgLoc.getDateFormat());
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
 	 			    //For Employee
-			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName(), projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName(), projectMembers.getProjectMemberCandidteId().getConsultantUser().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 			 		 
 			 		//For Approvers of EndClient
 			 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
@@ -225,7 +255,7 @@ public class ExpensesApprovalRestController {
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 //			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
 //			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-		     globalVarsMap.put("employeename",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
+		     globalVarsMap.put("employeename",projectMembers.getProjectMemberCandidteId().getFullName());
 			
 //			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
 //			 globalVarsMap.put("managerLastName",projectManager.getLastName());
@@ -236,7 +266,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("orgname",user.getFirstName()+(orgLoc.getOrg().getOrgName()));
 			 
 			 StringBuilder loginURLSB = new StringBuilder();
-			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 globalVarsMap.put("loginlink",loginURLSB.toString());
 			 StringBuilder amountCurrencyType = new StringBuilder();
 			 BigDecimal amountCurrencyType1 = new BigDecimal(Double.toString(amount));
@@ -310,7 +340,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("managerUser",loginUser.getFirstName());
 		 }
 		 
-		 globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
+		 globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getFullName());
 		 globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName());
 		 globalVarsMap.put("expenseId",expenses.getExpenseId());
 		 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
@@ -346,7 +376,7 @@ public class ExpensesApprovalRestController {
 		 }
 		 
 		 StringBuilder loginURLSB = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

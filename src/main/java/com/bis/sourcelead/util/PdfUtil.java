@@ -80,11 +80,11 @@ public class PdfUtil {
 
 	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+	    sbUser.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
-
+	    File file = File.createTempFile(fileSB.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    System.out.println("***************************************"+file.getAbsolutePath());
 	    file.setReadable(true);
 	    
 	    try {
@@ -96,7 +96,7 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Users");
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Associates");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -108,28 +108,19 @@ public class PdfUtil {
             int activeCount = 0; 
             int notLoggedInCount = 0; 
 	        List orderedList = new List(List.ORDERED);
-	        
-	        if("ACTIVE".equalsIgnoreCase(userState)){
-	        	activeCount = userRolesList.size();
-			 }else{
-				 if(activeList !=null){
-					 activeCount = activeList.size();
-				 }
-			 }
-	        if("INACTIVE".equalsIgnoreCase(userState)){
-	        	inActiveCount = userRolesList.size();
-			 }else{
-				 if(inactiveList !=null){
-					 inActiveCount = inactiveList.size();
-				 }
-			 }
-	        if("NOT_LOGGEDIN".equalsIgnoreCase(userState)){
-	        	notLoggedInCount = userRolesList.size(); 
-			 }else{
-				 if(notLoggedInList != null){
-					 notLoggedInCount = notLoggedInList.size();
-				 }
-			 }
+	        //userRole list developed by laxman  
+	        for(UserRole ur:userRolesList) {
+	        	if("ACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		activeCount++;
+	        	} 
+	        	if("INACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		inActiveCount++;
+	        	} 
+	        	if("NOT_LOGGEDIN".equalsIgnoreCase(ur.getUserState().toString())){
+	        		notLoggedInCount++;
+	        	} 
+	        }
+	      
 	        orderedList.add(new ListItem("Active:"+activeCount));
 	        orderedList.add(new ListItem("Inactive:"+inActiveCount));
 	        orderedList.add(new ListItem("Not Loggedin:"+notLoggedInCount));
@@ -166,7 +157,7 @@ public class PdfUtil {
                 }
                 table.completeRow();
             }
-	        document.addTitle("Users Table");
+	        document.addTitle("Associates Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -237,16 +228,22 @@ public class PdfUtil {
 			   userArray[8] = userRoles.getRoles().getDisplayName();
 		   }else{
 			   userArray[8] = "--";
-		   }
+		   }StringBuilder fullName=new StringBuilder();
 		   if(userRoles.getReportingManager() !=null){
-			   userArray[9] = userRoles.getReportingManager().getFirstName();
+			   if(userRoles.getReportingManager().getLastName()!=null)
+			   {
+			   userArray[9] = fullName.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getReportingManager().getLastName()).toString();
+			   }else
+			   {
+				   userArray[9] = userRoles.getReportingManager().getFirstName();
+			   }
 		   }else{
 			   userArray[9] = "--";
 		   }
 		   
-		   if(userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
 			   userArray[10] =  "Invite";
-	   		   }else if((userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
+	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
 	   		   userArray[10] =  "Resend";
 	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
 	   			 userArray[10] =  "Active";

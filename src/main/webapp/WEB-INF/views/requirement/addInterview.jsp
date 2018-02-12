@@ -10,7 +10,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <style type="text/css">
 .addinterTable .chosen-container{
 width:125px !important;
@@ -141,15 +141,17 @@ function addInterview(requirementId){
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	 result = result +'<div class="col-md-6 chooRadius">';
-	 result = result +'<div class="input-group col-md-10 pull-left">';
+	 result = result +'<div class="col-md-6 chooRadius mb">';
+	 result = result +'<div class="input-group col-md-10 pull-left chooOverFlow">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="interviewTemplate();"><i class="fa fa-refresh "></i></span>';
 	result = result + '</div>';
-	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/interViewFeedBackTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
-	 result = result +'</sec:authorize>';
+	result = result +'<span class="col-md-2 noPad clearfix">';
+	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';	
+	result = result +'<a href="<c:url value="/app/interViewFeedBackTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
+	result = result +'</sec:authorize>';	
+	result = result + '</span>';
 	result = result + '</div>';
 	
 	
@@ -491,7 +493,7 @@ function validateTimeZone(){
 	    	getUpdatedShortListCandidates();
 	    }); */ 
 	    
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	/* 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -512,7 +514,7 @@ function validateTimeZone(){
 			  onSelect : function(selected) {
 				checkAvailability();
 		 	  }
-		    });
+		    }); */
 		    
 		    
 				
@@ -643,14 +645,16 @@ function getNotifyToOtersValInterview(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var requirementId = '${requirementId}';
+        var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+        var rowNum = maxRowNum - 1;
+        var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
         
-        var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
         
         
         if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
-	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
@@ -901,16 +905,19 @@ function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
+	        success: function(json) {
 	        var output = "";
 	        if(json.length > 0){
 	        	output = output + "<option value=''>--select Template--</option>";
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
-	 	        		
-	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 	        		 if(opt.isDefault == "Y"){
+	 	 	        		output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+	 	        		}else{
+		 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+
+	 	        		} 
 	 			}
 	 			$("#interviewSubmissionTemplate").empty();
 	        	$("#interviewSubmissionTemplate").append(output);
@@ -994,18 +1001,93 @@ function showCal(id){
 	document.getElementById("button_id").value = id;
 	
 	 var result1 ="";
-		result1 = result1 + ' <div class="row">                                            ';
-		result1 = result1 + '	<div class="dataTables_empty">                                     ';
-		result1 = result1 + '	</div>                                                      ';
-		result1 = result1 + ' </div>                                                      ';
+		result1 = result1 + ' <div class="row">';
+		result1 = result1 + '	<div class="dataTables_empty">';
+		result1 = result1 + '	</div>';
+		result1 = result1 + ' </div>';
 		  $("#interviewer").empty();
 		  $("#interviewer").append(result1);
 		  $("#applicant").empty();
 		  $("#applicant").append(result1);
 		  $("#selectedDate").append("Please select the date to check available slots");
+		  
+		  
+		  
+		    var bid = document.getElementById("button_id").value;
+			bid = bid.replace("Avail", "");
+			var applicantSubId = '';
+			var interviewerIds = '';
+			
+			if($("#"+bid+"applicant").val() != null && $("#"+bid+"applicant").val() != '' && $("#"+bid+"applicant").val() != 'undefined'){
+				applicantSubId = $("#"+bid+"applicant").val();
+			}
+			
+			if($("#"+bid+"interviewer").val() != null && $("#"+bid+"interviewer").val() != '' && $("#"+bid+"interviewer").val() != 'undefined'){
+				interviewerIds = $("#"+bid+"interviewer").val(); 
+			}
+			
+			var sourceleadUrl ='${sourceleadUrl}';
+			 $.ajax({
+				type: "POST",
+		        url: sourceleadUrl+"/getInterviewSlotDates?${_csrf.parameterName}=${_csrf.token}&applicantSubmissionIds="+applicantSubId+"&interviewerIds="+interviewerIds,
+		        success: function(data) {
+		        	var dates = {};
+		       	 if(data.length > 0){
+		       		 for(var i=0; i<data.length; i++){
+		       			dates[new Date(data[i]).getTime()]='visible';
+		       		 }
+		       	 }
+		       	 eventCalendar(dates);
+	       		 checkAvailability();
+		        }
+			}); 
 }
 
 </script>
+
+
+  <script>
+  function eventCalendar(dates) {
+	  
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+		  $( "#scheduleCalendar" ).datepicker('destroy');
+		$( "#scheduleCalendar" ).datepicker({
+			  changeMonth: true,
+		      changeYear: true,
+		      dateFormat : finalDateFormatProjectSave,
+		      minDate: 0  ,
+			  onSelect : function(selected) {
+				checkAvailability();
+		 	  },
+		 	  beforeShowDay: function(date) {
+		 		  if(dates && dates[date.getTime()])
+			  		 var hlText = dates[date.getTime()];
+				     return (hlText)?[true, "Highlighted", '']: [true, '', ''];
+		 		 
+			  	}
+		    });
+
+  } 
+
+  </script> 
+  
+ <style>
+  .Highlighted a{
+	   background-color : #9ACD32 !important;
+	   font-weight:bold !important;
+	   font-size: 12pt;
+}
+  </style> 
 
 <!-- <script>
     $( "#scheduleCalendar" ).datepicker({
@@ -1023,7 +1105,25 @@ function checkAvailability(){
 	 $('.fullCount').hide();
 		$('.particalCount').hide();
 	var timezone = '${timezone}';
+	
+	
+	
 	var date = $("#scheduleCalendar").val();
+	
+	if(date == null || date == '' || date == 'undefined'){
+		date = new Date(); 
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  if(locationDate.match("yyyy-MM-dd")){
+			date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  date = date.getFullYear()+"-"+date.getDate()+"-"+date.getMonth()+1;
+		  }
+	}
+	
 	var bid = document.getElementById("button_id").value;
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	bid = bid.replace("Avail", "");

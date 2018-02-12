@@ -42,7 +42,7 @@ function saveDocuments(){
 	   if ($('#vendorOnboardUploadedDocuments_form').validate(false, validationSettings)){ 
 	   $("#save_continue_doc_button").attr("disabled", "disabled");
 	   var formData = getFormData("vendorOnboardUploadedDocuments_form");
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		$.ajax({
 		      type : "POST",
@@ -106,7 +106,7 @@ function getOnboardDocuments(){
                 	 
                 	 if(opt.uploadedFileUrl != null){
                 		 result = result +"<td class='inputpadding positionRelative'>";
-                		 result = result +"<i class=''><a class='downloadbtn glyphicon glyphicon-save' href=\""+opt.uploadedFileUrl+"\"></a></i>";
+                		 result = result +"<i class=''><a class='downloadbtn glyphicon glyphicon-save' target='_blank' href=\""+opt.uploadedFileUrl+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.uploadedFileName+"' class='tbldata-dotdot'>";
            				 result = result +"</td>";
            				 result = result +"<td><i class='fa fa-times'  onClick='deleteVendorUploadedDocument("+opt.id+");'></i></td>";
@@ -144,7 +144,7 @@ function deleteVendorUploadedDocument(documentId){
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteVendorUploadedOnboardDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
 	         success: function(result) {
-	        	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	 getOnboardDocuments();
 	        	 $("#loading").removeAttr("style");
 	        }

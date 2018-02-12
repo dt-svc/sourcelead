@@ -57,7 +57,7 @@
 							paymentTerms1 = 'selected';
 							} 
 						
-						if(json.PaymentTerm == '15 days'){
+						if(json.paymentTerms == '15 days'){
 							paymentTerms2 = 'selected';
 							} 
 						
@@ -118,14 +118,21 @@
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta">';
-							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
-							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
+							result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
+							result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" readonly="readonly"  field-name="Address" placeholde="Address" data-validation="required">';
+// 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
 							result = result + '</div>';
 							
-							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<div class="user_summary_edit_cta" id="errCountryMsg">';
 							result = result + '<label>Country</label>';
-							result = result + '<input type="text" name="country" id="existingCountry" value="'+country+'" placeholder="Country" readonly="readonly" >';
+							result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" disabled onchange="changeCountry();">';
+							result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
+							result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
+							result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
+							result = result + '<option  '+ (country == "Singapore" ? "selected" : '') +'>Singapore</option>';
+							result = result + '<option  '+ (country == "United Kingdom" ? "selected" : '') +'>United Kingdom</option>';
+							result = result + '<option  '+ (country == "United States" ? "selected" : '') +'>United States</option>';
+			                result = result + ' </select>';
 							result = result + '</div>  ';
 							
 							result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
@@ -140,7 +147,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Zip Code</label>';
-							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="existingZipCode" value="'+zipcode+'" field-name="Zip Code"  > ';
+							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" readonly="readonly" id="existingZipCode" value="'+zipcode+'" field-name="Zip Code"  > ';
 							result = result + '</div> ';
 						}else{
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -150,35 +157,43 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 							result = result + '<label>Website</label>';
-							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+website+'" placeholder="website" ></div>';
+							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" onblur="validateWebsite()" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+website+'" placeholder="website" ></div>';
 							result = result + '</div>';
 							
 							
 							result = result + '<div class="user_summary_edit_cta">';
-							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
-							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
+							result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
+							result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" readonly="readonly" value="'+location+'" field-name="Address" placeholde="Enter a Address" data-validation="required">';
+// 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
 							result = result + '</div>';
 							
 							
-							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<div class="user_summary_edit_cta" id="errCountryMsg">';
 							result = result + '<label>Country</label>';
-							result = result + ' <input type="text" class="form-control" name="country" value="'+country+'"  id="clientCountry" field-name="Country" readonly >';
+							result = result + ' <select class="form-control chosen-select" name="country" id="clientCountry" disabled field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+							result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
+							result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
+							result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
+							result = result + '<option  '+ (country == "Singapore" ? "selected" : '') +'>Singapore</option>';
+							result = result + '<option  '+ (country == "United Kingdom" ? "selected" : '') +'>United Kingdom</option>';
+							result = result + '<option  '+ (country == "United States" ? "selected" : '') +'>United States</option>';
+			                result = result + ' </select>';
+			                
 							result = result + '</div>  ';
 							
 							result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 							result = result + '<label>State</label>';
-							result = result + '<input type="text"  class="form-control" name="state" value="'+state+'" id="clientState" field-name="State"  readonly> ';
+							result = result + '<input type="text"  class="form-control" name="state" value="'+state+'" id="clientState" field-name="State" readonly="readonly" > ';
 							result = result + '</div> ';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>City</label>';
-							result = result + '<input type="text"  class="form-control" name="city" id="clientCity" value="'+city+'" field-name="City" readonly > ';
+							result = result + '<input type="text"  class="form-control" name="city" id="clientCity" value="'+city+'" field-name="City" readonly="readonly"> ';
 							result = result + '</div> ';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Zip Code</label>';
-							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipcode+'" field-name="Zip Code"  > ';
+							result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipcode+'" field-name="Zip Code" readonly="readonly" > ';
 							result = result + '</div> ';
 							
 						}
@@ -196,9 +211,9 @@
 						result = result + ' </div>';	
 						
 						 result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Address</label>';
+						result = result + '<label>Street Address</label>';
 						if(json.address != null && json.address !='' && json.address != 'undefined'){
-						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
+						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" readonly="readonly" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
 						}else{
 							result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
 						}
@@ -236,10 +251,10 @@
 						$("#editVendorDetailsDiv").empty();
 				        $("#editVendorDetailsDiv").append(result);
 				        if(json.orgType == 'Company'){
-				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite');
-				        	zipcodeMask(country,'existingZipCode');
+// 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite','addressId');
+// 				        	zipcodeMask(country,'existingZipCode');
 				        }else{
-				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite');	
+				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite','addressId');	
 				        	zipcodeMask(country,'clientZipCode');
 				        }
 				        
@@ -252,17 +267,8 @@
 				        		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 				        		  '.chosen-select-width'     : {width:"95%"}
 				        		}
-				          /*   $("#spocCountry").chosen();
-				            $("#spocState").chosen();
-				            $("#spocCity").chosen();
 				            
-				            $("#spocCountry").on('change', function (e) {
-				         	   getAllStates();
-				            });
-				           
-				            $("#spocState").on('change', function (e) {
-				         	   getAllCities();
-				            }); */
+				            $("#clientCountry").chosen();
 				           
 				            $('.chosen-select').each(function() {
 				        			var $this = $(this);
@@ -273,6 +279,9 @@
 				}); 
 		      getAllCountries();
 	}
+function changeCountry(){
+	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
+}
 </script>
 <script type="text/javascript">
         var validationSettings = {
@@ -289,7 +298,9 @@
              var formData = getFormData("editClient_form");
 		 $.post(sourceleadUrl+"/vendorDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
 			 vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
-		    	getVendorListsElk();
+		    	//getVendorListsElk();
+		    	getVendorList();
+		    	
 			});
 	     	return true;
          }else{
@@ -329,13 +340,13 @@
 		if(website.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
-		
+		$("#save_vendor").attr("disabled", "disabled");
 		if (website != null && website != '') {
 			//$("#save_client").attr("disabled", "disabled");
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -344,7 +355,6 @@
 						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
 						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
 						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
-						$("#save_vendor").attr("disabled", "disabled");
 						
 					} else {
 						//New WebSite class="form-control"
@@ -381,7 +391,7 @@ function validateClientName(vName,orgRelationId){
 	//	$( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendorName+"&orgRelationId="+orgRelationId,
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendorName+"&orgRelationId="+orgRelationId,
 			success : function(data) {
 				var result = data;
 				if (result == true) {

@@ -4,18 +4,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  * Entity for CONTRACT_REQUEST_DOCUMENTS
@@ -24,8 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "CONTRACT_REQUEST_DOCUMENTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractRequestDocuments")
+@Table(name = "CONTRACT_REQUEST_DOCUMENTS")
 public class ContractRequestDocuments {
 	
 	private static final long serialVersionUID = 1L;
@@ -35,8 +29,8 @@ public class ContractRequestDocuments {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne 
+	
+	@ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name="CONTRACT_ID", nullable=false )  
 	private Contracts contractId; 
 	 
@@ -57,10 +51,6 @@ public class ContractRequestDocuments {
 
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
-	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
 	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
@@ -175,16 +165,6 @@ public class ContractRequestDocuments {
 	public void setFileName(String fileName)
 	{
 		this.fileName = fileName;
-	}
-
-	public byte[] getDocFile()
-	{
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile)
-	{
-		this.docFile = docFile;
 	}
 
 	public String getFileType()

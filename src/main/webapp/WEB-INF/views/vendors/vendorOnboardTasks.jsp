@@ -85,7 +85,7 @@
                                       Vendor </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -98,7 +98,9 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:<span class="text-danger">*</span></strong></label>
+
+                                      <label><strong>Due Before:<span class="text-danger">*</span></strong></label>
+
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -106,7 +108,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<c:forEach begin="1" end="12" varStatus="loop">
 															<option>${loop.index}</option>
@@ -164,6 +166,7 @@
               </div>
             
              <form:form id="finishOnboardTask_form" name="finishOnboardTask_form" method="post">    
+                 <div id="onboardTasksLoading"></div>
                  <div id="onboardTasksList"></div>
             </form:form>  
               
@@ -176,7 +179,7 @@ function getVendorOnboardTasksList(){
 	var vendorOnboardId = document.getElementById("vendorOnboardId").value;
 	if(orgRelationId && vendorOnboardId){
 		
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#onboardTasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			   	type: "GET",
 			    url: sourceleadUrl+"/getVendorOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&vendorOnboardId="+vendorOnboardId,	    	   
@@ -254,7 +257,7 @@ function getVendorOnboardTasksList(){
 		    		 $("#onboardTasksList").empty();
 		           	 $("#onboardTasksList").append(result); 
 		    		
-		           	 $("#loading").removeAttr("style");
+		           	 $("#onboardTasksLoading").removeAttr("style");
 			    }
 		   });
 	}
@@ -296,13 +299,15 @@ function saveOnboardTask(){
 	
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
 		  	
-	        var formData = getFormData("addonboardTask_form");
+	        var formData = getFormData1("addonboardTask_form");
 	        var vendorOnboardId = document.getElementById("vendorOnboardId").value;
 	        
-	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
+  	    	    processData: false,
+		         contentType:false, 
 	    	    url: sourceleadUrl+"/saveVendorOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
 		        success: function(result) {
 		        	
@@ -338,7 +343,7 @@ function saveAndFinishVendorOnbord(){
 	
 	   var formData = getFormData("finishOnboardTask_form");
 	   var vendorOnboardId = document.getElementById("vendorOnboardId").value;
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#onboardTasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
        
       $.ajax({
     	type : "POST",
@@ -359,11 +364,10 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	for (var i=0; i<json.length; i++)
-			{
+	    success: function(json) {
+	    	 var result = "";
+        	 for (var i=0; i<json.length; i++)
+ 			{
         		var report = json[i];
         		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
 			}

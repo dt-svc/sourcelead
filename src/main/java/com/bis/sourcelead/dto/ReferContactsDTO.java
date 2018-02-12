@@ -27,13 +27,17 @@ public class ReferContactsDTO {
 		
 	 private String sortOrder;
 	 
-	 private List<Map<String, String>> order;
+	 private List<Map<String, String>> order; 
+	 
+	 private String groupIdsList;
 	 
 	 private String searchValue;
 	 
 	 private int start;
 	 
 	 private int length;
+	 
+	 List<String> groupsList;
 
 	public String getFirstName()
 	{
@@ -165,6 +169,26 @@ public class ReferContactsDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public List<String> getGroupsList()
+	{
+		return groupsList;
+	}
+
+	public void setGroupsList(List<String> groupsList)
+	{
+		this.groupsList = groupsList;
+	}
+
+	public String getGroupIdsList()
+	{
+		return groupIdsList;
+	}
+
+	public void setGroupIdsList(String groupIdsList)
+	{
+		this.groupIdsList = groupIdsList;
 	}
 	 
 }

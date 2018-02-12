@@ -1,6 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,8 +14,11 @@ import com.bis.sourcelead.dao.ProjectTaskActivityDao;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
+import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -22,6 +29,9 @@ public class ProjectTaskActivityServiceImpl implements ProjectTaskActivityServic
 	
 	@Autowired
 	 CommonUtil commonUtil;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Override
 	public ProjectTaskActivity saveProjectTaskActivity(ProjectTaskActivity projectTaskActivity) throws Exception {
@@ -37,14 +47,14 @@ public class ProjectTaskActivityServiceImpl implements ProjectTaskActivityServic
 	
 	@Override
 	public void saveProjectTaskActivities(String activity, String activityDescription, ProjectTasks projectTasks, User user) throws Exception {
-		ProjectTaskActivity projectTaskActivity = new ProjectTaskActivity();
+		 ProjectTaskActivity projectTaskActivity = new ProjectTaskActivity();
 		 projectTaskActivity.setProjecId(projectTasks.getProjectId());
 		 projectTaskActivity.setProjectTaskId(projectTasks);
 		 projectTaskActivity.setActivity(activity);
 		 projectTaskActivity.setUserId(user);
 		 projectTaskActivity.setCreatedUserName(user.getFullName());
 		 projectTaskActivity.setActivityDescription(activityDescription);
-		 projectTaskActivity.setCreatedDate(commonUtil.currentDate());
+		 projectTaskActivity.setCreatedDate(CalendarUtil.getUTCDateTimeForGivenDate(new Date(), projectTasks.getProjectId().getOrgLocationsId().getDateFormat()));
 		 projectTaskActivityDao.saveProjectTaskActivity(projectTaskActivity);
 	}
 
@@ -58,7 +68,7 @@ public class ProjectTaskActivityServiceImpl implements ProjectTaskActivityServic
 		 projectTaskActivity.setTaskStatus(data);
 		 projectTaskActivity.setCreatedUserName(user.getFullName());
 		 projectTaskActivity.setActivityDescription(activityDescription);
-		 projectTaskActivity.setCreatedDate(commonUtil.currentDate());
+		 projectTaskActivity.setCreatedDate(CalendarUtil.getUTCDateTimeForGivenDate(new Date(), projectTasks.getProjectId().getOrgLocationsId().getDateFormat()));
 		 projectTaskActivityDao.saveProjectTaskActivity(projectTaskActivity);
 		
 	}
@@ -73,7 +83,7 @@ public class ProjectTaskActivityServiceImpl implements ProjectTaskActivityServic
 		 projectTaskActivity.setPriority(data);
 		 projectTaskActivity.setCreatedUserName(user.getFullName());
 		 projectTaskActivity.setActivityDescription(activityDescription);
-		 projectTaskActivity.setCreatedDate(commonUtil.currentDate());
+		 projectTaskActivity.setCreatedDate(CalendarUtil.getUTCDateTimeForGivenDate(new Date(), projectTasks.getProjectId().getOrgLocationsId().getDateFormat()));
 		 projectTaskActivityDao.saveProjectTaskActivity(projectTaskActivity);
 		
 	}

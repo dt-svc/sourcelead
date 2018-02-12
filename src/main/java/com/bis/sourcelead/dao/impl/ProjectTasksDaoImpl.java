@@ -5,9 +5,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
@@ -21,12 +19,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -39,6 +40,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	ProjectMembersDao projectMembersDao;
+	
+	@Autowired
+	CandidateDao candidateDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -88,7 +95,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public ProjectTasks getTasksId(String projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt left join fetch pt.severity severity left join fetch pt.taskType taskType left join fetch pt.priority priority where pt.id = :projectTaskId " ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setString("projectTaskId", projectTaskId).setCacheable(true) .list(); 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setString("projectTaskId", projectTaskId) .list(); 
 		ProjectTasks projectTasks = null;
 		if(projectTasksList != null && !projectTasksList.isEmpty())
 		{
@@ -132,7 +139,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public List<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true) 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()) 
 			    .list(); 
 		return projectTasksList;  
 		
@@ -190,7 +197,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public ProjectTasks validateTaskNameByTaskId(Long taskId, String taskName, Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks projectsTasks where projectsTasks.projectId =:projectId and projectsTasks.taskName =:taskName and projectsTasks.id =:taskId";
-		List<ProjectTasks> projectTasksList =session.createQuery(query) .setString("taskName", taskName).setLong("taskId", taskId).setLong("projectId", projectId).setCacheable(true).list();
+		List<ProjectTasks> projectTasksList =session.createQuery(query) .setString("taskName", taskName).setLong("taskId", taskId).setLong("projectId", projectId).list();
 		ProjectTasks projectTasks = null;
 		if(projectTasksList != null && !projectTasksList.isEmpty())
 		{
@@ -204,7 +211,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId, Long TaskType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType = :TaskType" ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("TaskType", TaskType).setCacheable(true).list(); 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("TaskType", TaskType).list(); 
 		return projectTasksList; 
 	}
 
@@ -214,7 +221,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.taskType <> :subTaskType" ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("subTaskType", subTaskType).setCacheable(true).list(); 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setLong("subTaskType", subTaskType).list(); 
 		return projectTasksList; 
 	} 
 	
@@ -251,15 +258,15 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		if((taskType != null && taskType != "")  || (taskStatus != null && taskStatus != "")) {
 			if(taskType != null && taskType != "") {
 				 query = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.taskType.id IN (:taskTypeList)" ;
-				 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("taskTypeList", taskTypeList).setCacheable(true).list(); 
+				 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("taskTypeList", taskTypeList).list(); 
 			}
 			if(taskStatus != null && taskStatus != "") {
 				query = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.taskStatus.id IN (:taskStatusList)" ;
-				 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("taskStatusList", taskStatusList).setCacheable(true).list(); 
+				 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("taskStatusList", taskStatusList).list(); 
 			}
 		}else {
 			 query = "from ProjectTasks pt where pt.projectId.id = :projectId" ;
-			 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setCacheable(true).list(); 
+			 projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).list(); 
 			
 		}
 	   return projectTasksList;  
@@ -269,8 +276,8 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId, Long parentTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query  = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.parentTaskId =:parentTaskId" ;
-		List<ProjectTasks>  projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setLong("parentTaskId", parentTaskId).setCacheable(true).list(); 
+		String query  = "from ProjectTasks pt where pt.projectId.id = :projectId  and pt.parentTaskId =:parentTaskId and pt.status ='1'" ;
+		List<ProjectTasks>  projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setLong("parentTaskId", parentTaskId).list(); 
 		 return projectTasksList;  
 	}
 	
@@ -307,7 +314,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public ProjectTasks getProjectTasksByUUID(String taskUUD) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt left join fetch pt.severity severity left join fetch pt.taskType taskType left join fetch pt.priority priority where pt.projectTasksUUID = :taskUUD " ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setString("taskUUD", taskUUD).setCacheable(true) .list(); 
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setString("taskUUD", taskUUD) .list(); 
 		ProjectTasks projectTasks = null;
 		if(projectTasksList != null && !projectTasksList.isEmpty())
 		{
@@ -323,7 +330,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		int totalCount = 0;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt where pt.projectId.id =:projectId and pt.taskStatus =:status";
-		List<ProjectTasks> ptList = session.createQuery(query).setLong("projectId",projectId).setString("status", status).setCacheable(true).list();
+		List<ProjectTasks> ptList = session.createQuery(query).setLong("projectId",projectId).setString("status", status).list();
 		if(!ptList.isEmpty() && ptList.size() > 0){
 			totalCount = ptList.size();
 		}
@@ -335,8 +342,8 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
-			List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true) .list(); 
+			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status='1' and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
+			List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC) .list(); 
 			return projectTasksList;  
 	}
 
@@ -345,8 +352,8 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt  where pt.projectId.id = :projectId and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC and pt.taskType.name != 'General'" ;
-		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).setCacheable(true).list(); 
+		String query = "from ProjectTasks pt  where pt.projectId.id = :projectId and pt.status='1' and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC and pt.taskType.name != 'General'" ;
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).list(); 
 		return projectTasksList;
 	}
 
@@ -363,6 +370,28 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			}
 			return count;
 	}
+	
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })*/
+	public List<ProjectTasks> addProjectTasksForLoginUserAndLeaveType(User user,Long orgLocationId,String leaveType,String billableType) throws Exception {
+		List<ProjectTasks> projectTaskList = new ArrayList<>();
+		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocationId);
+		if(candidate != null){
+			List<ProjectMembers> projectMembersList =  projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocationId,candidate.getId());
+			if(projectMembersList != null && !projectMembersList.isEmpty()){
+				
+			}
+		}
+		
+		/*Session session = this.sessionFactory.getCurrentSession();
+		String query ="select count(*) from ProjectTasks pt where pt.projectId.id = :projectId ";
+		List<Long> tasksCount = session.createQuery(query.toString()).setLong("projectId", projectId).list();
+			Integer count = 0;
+			if(tasksCount != null && !tasksCount.isEmpty()){
+					count = tasksCount.get(0).intValue();
+			}*/
+			return projectTaskList;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -377,13 +406,13 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
 		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
 		       .append("OR pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
-			   .append("OR pt.taskType.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+			   .append("OR pt.taskType.name = '%" + projectTasksDTO.getSearchValue() + "%' ")
 			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
 					
 		}
 		 
-		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
-		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1'" ;
+		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
 		 String subQueryStr = "";
 		 if(StringUtils.isNotEmpty(taskType)) {
 			 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+taskType+")";
@@ -395,13 +424,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
 		 }
 		 
-		 Query query = session.createQuery(queryStr+subQueryStr+query1);
+		//usertList sorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(projectTasksDTO.getSortColumn())) {
+				sortingQry = " order by pt."+ projectTasksDTO.getSortColumn() +" "+projectTasksDTO.getSortOrder();
+		}
 		
-		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).setCacheable(true).list();
+		 Query query = session.createQuery(queryStr+subQueryStr+query1+sortingQry);
+		
+		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 		
 		 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
 		 
-		 countlist =countQuery.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).setCacheable(true).list();
+		 countlist =countQuery.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 		 
 		
 		int totalCount = 0;
@@ -420,6 +455,21 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		
 		response.setData(projectTasksList);
 		return response;
-		
+		}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId, String taskName)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectTasks projectsTasks left join fetch projectsTasks.projectId where projectsTasks.projectId =:projectId and projectsTasks.taskName =:taskName";
+		List<ProjectTasks> projectTasksList =session.createQuery(query) .setString("taskName", taskName).setLong("projectId", projectId).list();
+		ProjectTasks projectTasks = null;
+		if(projectTasksList != null && !projectTasksList.isEmpty())
+		{
+			projectTasks = (ProjectTasks) projectTasksList.iterator().next();
+		}
+		return projectTasks;
 	}
 }

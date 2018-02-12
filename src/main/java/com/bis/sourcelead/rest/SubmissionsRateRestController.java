@@ -51,6 +51,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class SubmissionsRateRestController {
 	
 	@Autowired
@@ -92,7 +93,7 @@ public class SubmissionsRateRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
-	@RequestMapping(value = "/storeReject", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/storeReject", method = RequestMethod.POST)
 	public @ResponseBody String storeReject(@RequestParam(value = "submissionId", required = false) Long submissionId,
 			@RequestParam(value = "rejectreason", required = false) String rejectreason,@RequestParam(value = "type", required = false) String type) throws Exception {
 		 
@@ -275,6 +276,7 @@ public class SubmissionsRateRestController {
 	}
 	
 
+	
 	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
 															 @RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -618,7 +620,7 @@ public class SubmissionsRateRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/storeApplicantRejectReason", method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/storeApplicantRejectReason", method = RequestMethod.POST)
 		public @ResponseBody String storeApplicantRejectReason(@RequestParam(value = "submissionId", required = false) Long submissionId,
 				@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
 			 

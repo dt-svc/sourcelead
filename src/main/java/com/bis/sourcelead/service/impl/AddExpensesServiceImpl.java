@@ -39,7 +39,6 @@ import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.ibm.icu.math.BigDecimal;
@@ -69,13 +68,13 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	private EmailScenarioService emailScenarioService;
 	
 	@Autowired
-	private UserService userService;
-	
-	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;	
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -83,7 +82,7 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
 		//String expensesId = SourceLeadRandomCodeHelper.generateRandomExpensesIdCode();
-		Long number = 000001L;
+		/*Long number = 000001L;
 		String expensesId = null;
 		Expenses checkNumber = addExpensesDao.checkExpensIdNumberInDatebase(orgLoc.getId());
 		if(checkNumber == null){
@@ -93,12 +92,38 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 		Long expId = Long.parseLong(expIdNumber)+1;
 			expensesId = expId.toString();
 		}
-		
         final DecimalFormat decimalFormat = new DecimalFormat("0000");                
         String ConvetredexpensesId = decimalFormat.format(Long.parseLong(expensesId));
+		return ConvetredexpensesId;*/
 		
-		return ConvetredexpensesId;
-		
+		String companyShortCode = null;
+    	Long number = 1L;
+		String expId = null;
+		Integer generatedIdcount =0;
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(orgLoc.getGeneratedUserId()).append(Constants.EXPENSES_ENTITY);
+		String generatedUsreId = sbuilder.toString();
+		for(int i=0;i< generatedUsreId.length();i++){
+			char ch = generatedUsreId.charAt(i);
+			if(Character.isAlphabetic(ch)){
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount+1;
+		Long checkNumber = addExpensesDao.checkExpensIdNumberInDatebase(orgLoc.getId(),generatedIdcount);
+		if(checkNumber == null){
+			expId = number.toString();
+		}else{
+		Long reqId = checkNumber+1;
+		expId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");                
+        String convetredExpId = decimalFormat.format(Long.parseLong(expId));
+        StringBuffer sb = new StringBuffer();
+        if(orgLoc.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLoc.getGeneratedUserId())){
+        	 companyShortCode = orgLoc.getGeneratedUserId();
+        }
+		return sb.append(companyShortCode).append(Constants.EXPENSES_ENTITY).append(convetredExpId).toString();
 	}
 	
 @Override
@@ -257,7 +282,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
-		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
+		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
 	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
@@ -330,7 +355,7 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 
 
 			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 
 		 
 		 //setting the Recipient information

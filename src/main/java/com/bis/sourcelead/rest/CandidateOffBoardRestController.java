@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
 import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OffboardTasks;
+import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
@@ -69,6 +70,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class CandidateOffBoardRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
@@ -78,6 +80,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
     @Autowired
 	CommonUtil commonUtil;
@@ -222,14 +227,14 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 	 if(StringUtils.isNotBlank(offBoardingTemplateDTO.getTemplateId())){
 	 		offBoardingTemplate = offBoardingTemplateService.getOffBoardingTemplateById(Long.valueOf(offBoardingTemplateDTO.getTemplateId()));
 	 		offBoardingTemplate.setTemplateName(offBoardingTemplateDTO.getTemplateName());
-	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription());
+	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription().trim());
 	 		offBoardingTemplate.setUpdatedBy(user.getUserCode());
 	 		offBoardingTemplate.setUpdatedDate(new Date());
 	 	 
 	 	 }else{
 	 		offBoardingTemplate = new OffBoardingTemplate();
 	 		offBoardingTemplate.setTemplateName(offBoardingTemplateDTO.getTemplateName());
-	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription());
+	 		offBoardingTemplate.setDescription(offBoardingTemplateDTO.getDescription().trim());
 	 		offBoardingTemplate.setOrgLocationId(orgLocations);
 		 	
 		 	 StringBuilder userName = new StringBuilder();
@@ -608,7 +613,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		 @RequestMapping(value = "/downloadOffboardDocument", method = RequestMethod.GET)
+		 /*@RequestMapping(value = "/downloadOffboardDocument", method = RequestMethod.GET)
 		    public void downloadOffboardDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
 				
 				
@@ -635,7 +640,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					} 
 
-			}  
+			}*/  
 			
 			
 			@RequestMapping(value = "/deleteOffBoardingDocumentByDocumentUUID" , method = RequestMethod.POST)
@@ -780,46 +785,62 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/getOffboardCandidateList")
-		 public String getOffboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
+		 public List<CandidateOffBoardingDTO> getOffboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
 
-			String resultJson;
 			OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 			//SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
 			List<CandidateOffBoarding> candidateOffBoardingList = candidateOffBoardingService.getCandidateOffBoardingListByOrgLocationId(loginOrgLocation.getId());
-			List<CandidateOffBoarding> offBoardingList = new ArrayList<CandidateOffBoarding>();
+			List<CandidateOffBoardingDTO> offBoardingList = new ArrayList<CandidateOffBoardingDTO>();
 			
 			if(null != candidateOffBoardingList && candidateOffBoardingList.size() > 0){
 				for(CandidateOffBoarding candidateOffBoarding : candidateOffBoardingList){
 					
+					CandidateOffBoardingDTO candidateOffBoardingDTO=new CandidateOffBoardingDTO();
+					
 					if(null != candidateOffBoarding.getDateOfJoin()){
-						candidateOffBoarding.setDateOfJoinStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getDateOfJoin()));
+						candidateOffBoardingDTO.setDateOfJoinStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getDateOfJoin()));
 					}
 					
 					if(null != candidateOffBoarding.getEffectiveDate()){
-						candidateOffBoarding.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getEffectiveDate()));
+						candidateOffBoardingDTO.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getEffectiveDate()));
 					}
 					
 					if(null != candidateOffBoarding.getEndDate()){
-						candidateOffBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getEndDate()));
+						candidateOffBoardingDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOffBoarding.getEndDate()));
 					}
+					
+					if(null != candidateOffBoarding.getOffboardUUID()){
+						candidateOffBoardingDTO.setOffboardUUID(candidateOffBoarding.getOffboardUUID());
+					}
+					
+					if(null != candidateOffBoarding.getOffboardUUID()){
+						candidateOffBoardingDTO.setOffboardUUID(candidateOffBoarding.getOffboardUUID());
+					}
+					
+					if(null != candidateOffBoarding.getOffBoardStatus()){
+						candidateOffBoardingDTO.setOffBoardStatus(candidateOffBoarding.getOffBoardStatus());
+					}
+					
+					if(null != candidateOffBoarding.getOffboardSubmitted()){
+						candidateOffBoardingDTO.setOffboardSubmitted(candidateOffBoarding.getOffboardSubmitted());
+					}
+					
 					
 					StringBuilder candidateName = new StringBuilder();
 					
 					if(null != candidateOffBoarding.getLastName()){
-						candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
+						candidateOffBoardingDTO.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
 					}else{
-						candidateOffBoarding.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
+						candidateOffBoardingDTO.setCandidateName(candidateName.append(candidateOffBoarding.getFirstName()).toString());
 					}
 					
 					
-					offBoardingList.add(candidateOffBoarding);
+					offBoardingList.add(candidateOffBoardingDTO);
 					
 				}
 			}
 			
-			resultJson = commonUtil.toJSON(offBoardingList);
-			
-			return resultJson;
+			return offBoardingList;
 		 }
 		 
 		 
@@ -899,6 +920,10 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					candidateOffBoardingDTO.setSavedoffboardId(candidateOffBoarding.getId().toString());
 				}
 				
+				if(candidateOffBoarding.getRating() != null) {
+					candidateOffBoardingDTO.setRating(candidateOffBoarding.getRating());
+				}
+				
 				
 			}
 			
@@ -943,9 +968,21 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedResignationAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						    templateDocument.setCandidateOffBoardingId(offBoarding);
-		                    templateDocument.setUpdatedDate(CommonUtil.currentDate());
-		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
+		                    
+		                    OffBoardingDocuments documents = new OffBoardingDocuments();
+		       		        documents.setCandidateOffBoardingId(offBoarding);
+		       		       
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+	          	            documents.setFileURL(templateDocument.getFileURL());
+			       		    documents.setDocumentType(templateDocument.getDocumentType());
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
 		                    offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
 					 
 					 }
@@ -983,9 +1020,20 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 String[] savedDocumentIds = candidatedOffboardingDTO.getSavedOffboardPackAttcahments().split(",");
 					 for(int i=0; i < savedDocumentIds.length; i++){
 						    OffBoardingDocuments templateDocument = offBoardingDocumentsService.getOffBoardingDocumentsById(Long.valueOf(savedDocumentIds[i]));
-						    templateDocument.setCandidateOffBoardingId(offBoarding);
-		                    templateDocument.setUpdatedDate(CommonUtil.currentDate());
-		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
+
+						    OffBoardingDocuments documents = new OffBoardingDocuments();
+		       		        documents.setCandidateOffBoardingId(offBoarding);
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+	          	            documents.setFileURL(templateDocument.getFileURL());
+			       		    documents.setDocumentType(templateDocument.getDocumentType());
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
 		                    offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
 					 
 					 }
@@ -1464,7 +1512,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
 		        
 		         StringBuilder linkBuild = new StringBuilder();
-		         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		        
 		                
 		        

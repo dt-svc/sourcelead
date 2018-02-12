@@ -33,8 +33,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CANDIDATE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
+@Table(name = "CANDIDATE")
 public class Candidate implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -44,10 +43,11 @@ public class Candidate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
     private MasterCandidate masterCandidateId;
+	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -55,21 +55,21 @@ public class Candidate implements Serializable{
     private Candidate parentCandidateId;
 	
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CONSULTANT_USER_ID")        
     private User consultantUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_ID", nullable = false)
    	private Org orgId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId ;
@@ -95,19 +95,19 @@ public class Candidate implements Serializable{
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY",columnDefinition = "TEXT default NULL" )
 	private String city;
 	
-	@Column(name = "ADDRESS")
+	@Column(name = "ADDRESS", columnDefinition = "TEXT default NULL")
 	private String address;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
 	@Column(name = "ZIPCODE")
@@ -161,10 +161,6 @@ public class Candidate implements Serializable{
 	@Column(name = "VISA_TYPE", columnDefinition = "TEXT default NULL")
 	private String visaType;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -180,8 +176,8 @@ public class Candidate implements Serializable{
 	@Column(name="FILE_URL")
 	private String fileUrl;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="TEAM_ID")        
     private Team teamId; 
 	
@@ -215,15 +211,12 @@ public class Candidate implements Serializable{
 	@Column(name="IS_ASSOCIATE")
 	private String isAssociate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_RELATION_ID")        
     private OrgRelations orgRelationId; 
 	   
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
     @JoinColumn(name="SPOC_ID" )        
     private OrgSpoc spocId; 
@@ -269,23 +262,20 @@ public class Candidate implements Serializable{
 	@Transient
     private String fullName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
 	/*@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);*/
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	
 	
@@ -358,9 +348,11 @@ public class Candidate implements Serializable{
 	 private String postedDateStr;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String vendorName;
 	 
 	 @Transient
+	 @JsonProperty
 	 private String vendorContactName;
 	 
 	 @Transient
@@ -705,17 +697,6 @@ public class Candidate implements Serializable{
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
-
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 
 	public String getFileContentType() {
 		return fileContentType;

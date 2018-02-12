@@ -95,6 +95,7 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			
 			userMailBox.setIsMailRead(0);
 			userMailBox.setStatus(1);
+			userMailBox.setMailType(2);
 			userMailBox.setCreatedDate(new Date());
 			userMailBox.setUpdatedDate(new Date());
 			
@@ -227,13 +228,13 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	}
 
 	@Override
-	public UserMailBox getUserPreviousMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
-		return userMailBoxDao.getUserPreviousMail(Id, userId, orgLocationId,type);
+	public UserMailBox getUserPreviousMail(Long Id, Long userId, Long orgLocationId,String type,String mailType) throws Exception {
+		return userMailBoxDao.getUserPreviousMail(Id, userId, orgLocationId,type,mailType);
 	}
 	
 	@Override
-	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type) throws Exception {
-		return userMailBoxDao.getUserNextMail(Id, userId, orgLocationId,type);
+	public UserMailBox getUserNextMail(Long Id, Long userId, Long orgLocationId,String type,String mailType) throws Exception {
+		return userMailBoxDao.getUserNextMail(Id, userId, orgLocationId,type,mailType);
 	}
 
 	@Override

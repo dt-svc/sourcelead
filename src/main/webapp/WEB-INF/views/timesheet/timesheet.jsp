@@ -6,11 +6,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <script>
 // project side bar tabs
 $(document).ready(function() {
+	// to flush files from form
 	timesheetEntriesDiv();
 });
 </script>  
@@ -31,7 +32,7 @@ $(document).ready(function() {
 	function timesheetEntriesDiv(){ 
 	               var sourceleadUrl ='${sourceleadUrl}';
 	               $("#timesheetEntriesDiv").empty();
-	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
@@ -89,7 +90,7 @@ $(document).ready(function() {
 	         var projectMemberId = $("#projectMemberId").val();
 	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         $("#timesheetEntriesDivByProjectMemberId").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -122,7 +123,7 @@ $(document).ready(function() {
 	         var projectMemberId = $("#projectMemberId").val();
 	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         $("#timesheetDivByFrequency").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -181,7 +182,7 @@ $(document).ready(function() {
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         $("#timesheetDivByTab").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
@@ -228,7 +229,7 @@ function withdrawMyTimesheet(projectMemberId,timesheetFrequency){
 	/* var frm = $('#timesheet_form').serializeFormJSON(); */
 	var sourceleadUrl ='${sourceleadUrl}';
 	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
-	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
      	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&dateFormat="+dateFormat,		
@@ -883,7 +884,7 @@ function addAttachment(){
           <div class="pull-left">
             <h2>Timesheets</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
         </section>
          <div  id="loadTime"></div> 
          <div id="timesheetEntriesDiv"> 
@@ -1071,7 +1072,7 @@ function cancel(){
 function newSaveTimesheet(status,savingType){ 
 	
 	 $(".time_btn").attr("disabled", "disabled");
-	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	 checkHours();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
@@ -1086,6 +1087,7 @@ function newSaveTimesheet(status,savingType){
 		 if (attr!= null && attr != "" && attr !='undefined' && attr != 'hidden') {}
 		 else{
 			 var currentInputValue = $(this).prev("input").val();
+			 alert(currentInputValue);
 			 if(currentInputValue != null && currentInputValue !='undefined' && currentInputValue != ''){
 				 unfilledDates.push(currentInputValue);
 			 }
@@ -1127,12 +1129,6 @@ function newSaveTimesheet(status,savingType){
 </script>
 
 
-
-
-
-
-
-
 <script>
  function timesheetDbSave(status,savingType){
 	     $("#choicepopUp").empty(); 
@@ -1161,6 +1157,9 @@ function newSaveTimesheet(status,savingType){
 		    	  maskme();
 		    	  var startDate = $("#tabStartDate").val();
 		    	  var endDate = $("#tabEndDate").val();
+	    		  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
+	    			$("#timesheet_form input[data-id*=docFile]").remove();
+	    		  }
 		    	  if(startDate != null && startDate != '' && startDate != 'undefined' && 
 		    			  endDate != null && endDate != '' && endDate != 'undefined'){
 		    		  timesheetDivAfterSaving(startDate,endDate,status);
@@ -1255,5 +1254,5 @@ function timesheetEntriesExport(startDate,endDate,projectMemberId,exportType,sub
 }
 </script>
  <!-- this script is for save Timesheet -->  
-<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>   
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>   
     

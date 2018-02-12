@@ -32,8 +32,8 @@ width: 100% !important;
 		
 	});
 </script>
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
@@ -47,7 +47,7 @@ width: 100% !important;
 		<div class="pull-left">
 			<h2>Job Template</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/template'/>">Job Template List </a> &raquo; Add Job Template
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/template'/>">Job Template List </a> &raquo; Add Job Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -60,75 +60,8 @@ width: 100% !important;
 					<div class="clearfix"></div>
 					<div class="mt pras">
 					
-					<div class="col-md-6">
+					<div class="col-md-12 myForm">
 					
-					<div class="form-group" id="jobTitleDiv">
-							<label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
-							<div class="col-md-9">
-									<input type="text" id="jobTitle" name="jobTitle"
-										value="${requirement.jobTitle}" field-name="Job Title"
-										data-validation="required validate_Space validate_length length2-250"
-										value="" class="form-control" >
-                                     <input type="hidden" value="${requirement.id}" name="requirementId">
-                                      <input type="hidden" value="Y" name="isTemplate">
-									<div class="input-group-btn selp-custom-min">
-									</div>
-							</div>
-					</div>
-						
-					<div class="form-group">
-								<label class="col-md-3">Employment Type</label>
-									<div class="col-md-9">
-										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-											<option value="">Select</option>
-											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
-											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
-											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
-											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
-											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
-											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
-											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
-										</select>
-								</div>
-					</div>
-						<div class="form-group">
-								<label class="col-md-3">Experience</label>
-								<div class="col-md-9">
-									<div class="row">
-										<div class="col-md-6">
-											<input type="text" class="form-control" placeholder="MinExp"
-												id="minExp" name="minExp" value="${requirement.minExp}"
-												field-name="MinExp"
-												data-validation="validate_Space validate_float validate_length length1-5"
-												data-validation-optional="true" onblur="minMaxExperience();"
-												value="">
-										</div>
-										<div class="col-md-6">
-											<input type="text" class="form-control" id="maxExp"
-												name="maxExp" placeholder="MaxExp"
-												value="${requirement.maxExp}" field-name="MaxExp"
-												data-validation="validate_Space validate_float validate_length length1-5"
-												data-validation-optional="true" onblur="minMaxExperience();"
-												value="">
-										</div>
-									</div>
-									<div class="row" id="expId">
-										<input type="hidden" name="expValidation" id="expValidation">
-									</div>
-	
-								</div>
-							</div>
-
-					<div class="form-group" id="jobTypeDiv" style="display: none">
-							<label class="col-md-3">Employment Type</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
-								</div>
-					</div>
-					
-					</div>
-	
-	                  <div class="col-md-6">     
 	                       <div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
@@ -193,8 +126,190 @@ width: 100% !important;
 									data-validation-optional="true">${requirement.description}</textarea>
 							</div>
 						</div> --%>
+
+					<div class="form-group" id="jobTitleDiv">
+							<label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
+							<div class="col-md-9">
+									<input type="text" id="jobTitle" name="jobTitle"
+										value="${requirement.jobTitle}" field-name="Job Title"
+										data-validation="required validate_Space validate_length length2-250"
+										value="" class="form-control" >
+                                     <input type="hidden" value="${requirement.id}" name="requirementId">
+                                      <input type="hidden" value="Y" name="isTemplate">
+									<div class="input-group-btn selp-custom-min">
+									</div>
+							</div>
+					</div>
 						
-						</div>
+					<div class="form-group">
+								<label class="col-md-3">Employment Type</label>
+									<div class="col-md-9">
+										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+											<option value="">Select</option>
+											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
+											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
+											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
+											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
+											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
+											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
+											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
+										</select>
+								</div>
+					</div>
+						<div class="form-group">
+								<label class="col-md-3">Experience</label>
+								<div class="col-md-9">
+									<div class="row">
+										<div class="col-md-6">
+											<input type="text" class="form-control" placeholder="MinExp"
+												id="minExp" name="minExp" value="${requirement.minExp}"
+												field-name="MinExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+										<div class="col-md-6">
+											<input type="text" class="form-control" id="maxExp"
+												name="maxExp" placeholder="MaxExp"
+												value="${requirement.maxExp}" field-name="MaxExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+									</div>
+									<div class="row" id="expId">
+										<input type="hidden" name="expValidation" id="expValidation">
+									</div>
+	
+								</div>
+							</div>
+    <div class="form-group" >
+            <label class="col-md-3">Experience Level</label>
+            <div class="col-md-9 dropdown-select"> 
+            <select name="experienceLevel">
+            	<option value="">--Select Level--</option>
+            	<c:forEach var="level" items="${experienceLevelList}">
+                   <option value="${level.uniqueKey}" ${requirement.experienceLevel.name  == level.name ? 'selected' : ''} >${level.name}</option>  
+            	</c:forEach>
+            </select>
+            
+            </div>
+          </div>
+           <!--  Verificaiton Radio Buttons -->
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Medical  Clearance </label>
+				<div class="col-md-9">
+				<c:if test="${requirement.medicalClearence == 'Y'}">
+				<span class="paddingRight"><input type="radio"  checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.medicalClearence == 'N'}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" checked  value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.medicalClearence}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio"   value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Security Clearance</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.securityClearance == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.securityClearance == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				<c:if test="${empty requirement.securityClearance}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">OT</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.overTime == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.overTime == 'N'}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.overTime}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Background Check</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.backgroundCheck == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.backgroundCheck == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.backgroundCheck}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div> 
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Gender ${requirement.gender}</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.gender == 'Male'}">
+				<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'Female'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'All'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${empty requirement.gender}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				
+				</div>
+		 </div> 
+		 
+		 
+		 <!--  Radio Buttons -->
+					<div class="form-group" id="jobTypeDiv" style="display: none">
+							<label class="col-md-3">Employment Type</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
+								</div>
+					</div>
+					
+					</div>
+	
+	                  
 						
 						<div class="clearfix"></div>
 						<div class="clearfix mb">
@@ -218,7 +333,7 @@ width: 100% !important;
 						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/template'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/template'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -251,7 +366,7 @@ width: 100% !important;
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#store_RequirementTemplate").attr("disabled", "disabled");
 				$("#store_RequirementTemplate").addClass('button').val('Processing..');
-		        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,

@@ -162,12 +162,12 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
  
 	
 	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
-		String projectNmae = projects.getProjectName();
-		String companyShortCode = null;
+//		String projectNmae = projects.getProjectName();
+//		String companyShortCode = null;
 		Integer generatedIdcount = 0;
 		Long number = 1L;
 		String requirementId = null;
-		String[] splitName = projects.getProjectName().split(" ");
+		/*String[] splitName = projects.getProjectName().split(" ");
 		int count = 0;
 		StringBuilder sb = new StringBuilder();
 		String splitProjectName ="";
@@ -199,13 +199,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				 splitProjectName = sb.toString().substring(0, 2).toUpperCase();
 		        break;
 		}
+		*/
 		
-		
-		if(StringUtils.isNotBlank(projects.getOrgLocationsId().getGeneratedUserId())) {
+		/*if(StringUtils.isNotBlank(projects.getOrgLocationsId().getGeneratedUserId())) {
 			companyShortCode = projects.getOrgLocationsId().getGeneratedUserId();
-		}
+		}else {
+			companyShortCode = "";
+		}*/
 		StringBuilder sbuilder = new StringBuilder();
-		sbuilder.append(companyShortCode).append(splitProjectName);
+//		sbuilder.append(companyShortCode).append(splitProjectName);
+		sbuilder.append(projects.getProjectShortCode());
 		String generatedUsreId = sbuilder.toString();
 		for (int i = 0; i < generatedUsreId.length(); i++) {
 			char ch = generatedUsreId.charAt(i);
@@ -307,6 +310,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
         tasks.setPercentage(Constants.CANDIDATE_IN_ACTIVE);
+        tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
         tasks.setGeneratedId(getProjectTaskGenaratedId(projects));
         tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         tasks.setCreatedDate(commonUtil.currentDate());
@@ -385,7 +389,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			 projectTasks.setPriority(data);
 		}else {
 			nullOldData = lookUpDataService.getTasksById(projectTasks.getPriority().getId());
-			activity.append("Priority");
+			activity.append("Priority updated from");
 			projectTasks.setPriority(null);
 		}
 		 projectTasks.setUpdatedDate(commonUtil.currentDate());
@@ -422,7 +426,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			projectTasks.setSeverity(data);
 		}else {
 			nullOldData = lookUpDataService.getTasksById(projectTasks.getSeverity().getId());
-			activity.append("Severity");
+			activity.append("Severity updated from");
 			projectTasks.setSeverity(null);
 		}
 		 projectTasks.setUpdatedDate(commonUtil.currentDate());
@@ -450,7 +454,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		    LookUpData  oldData = lookUpDataService.getTasksById(projectTasks.getTaskStatus().getId());
 		    StringBuffer activity = new StringBuffer();
 		    StringBuffer activitySummary = new StringBuffer();
-		    activity.append("Status");
+		    activity.append("Status updated from");
 		    
 			projectTasks.setTaskStatus(data);
 		    projectTasks.setUpdatedDate(commonUtil.currentDate());
@@ -468,7 +472,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		    ProjectTasks  oldData = tasksDao.getTasksId(taskId);
 		    StringBuffer activity = new StringBuffer();
 		    StringBuffer activitySummary = new StringBuffer();
-		    activity.append("Task Name");
+		    activity.append("Task Name updated from");
 		    
 		    projectTasks.setTaskName(taskName);
 		    projectTasks.setUpdatedDate(commonUtil.currentDate());
@@ -488,12 +492,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
 	     StringBuffer activity = new StringBuffer();
 	     StringBuffer activitySummary = new StringBuffer();
-	     activity.append("Task Percentage");
+	     activity.append("Task Percentage updated from");
 	     projectTasks.setPercentage(percentage);
 	     projectTasks.setUpdatedDate(commonUtil.currentDate());
 	     tasksDao.updateTasks(projectTasks);
 	    
-	     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+	     if(oldData.getPercentage() != null) {
+		     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+	     }else {
+		     activitySummary.append('0').append(" to ").append(projectTasks.getPercentage());
+	     }
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 		
 	}
@@ -534,7 +542,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
 	     StringBuffer activity = new StringBuffer();
 	     StringBuffer activitySummary = new StringBuffer();
-	     activity.append("Billing Type");
+	     activity.append("Billing Type updated from");
 	     projectTasks.setBillableType(billing);
 	     projectTasks.setUpdatedDate(commonUtil.currentDate());
 	     tasksDao.updateTasks(projectTasks);
@@ -546,5 +554,153 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	@Override
 	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
 		return tasksDao.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,projectId,taskType,taskStatus,userRole,assignedMembers);
+	}
+
+	@Override
+	public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId, String taskName)
+			throws Exception {
+		return tasksDao.getProjectTasksByProjectIdAndProjectIdAndTaskName(projectId, taskName);
+	}
+
+	@Override
+	public void updateDueDate(String dueDate, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);	
+		
+		//Task Due Date 
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Due Date updated from");
+	     if(dueDate != null && dueDate != "" && dueDate != "undefined") {
+		     projectTasks.setDueDate(commonUtil.orgLocationDateFormat(projectTasks.getProjectId().getOrgLocationsId().getDateFormat(), dueDate));
+	     }else {
+		     projectTasks.setDueDate(null);
+	     }
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	     if(projectTasks.getDueDate() != null && oldData.getDueDate() != null){
+		     activitySummary.append(commonUtil.dateStrFromOrgDateFormatter(oldData.getProjectId().getOrgLocationsId().getDateFormat(), oldData.getDueDate())).append(" to ").append(commonUtil.dateStrFromOrgDateFormatter(projectTasks.getProjectId().getOrgLocationsId().getDateFormat(), projectTasks.getDueDate()));
+	     }else  if(projectTasks.getDueDate() != null) {
+		     activitySummary.append("Unassigned").append(" to ").append(commonUtil.dateStrFromOrgDateFormatter(projectTasks.getProjectId().getOrgLocationsId().getDateFormat(), projectTasks.getDueDate()));
+	     }else if(oldData.getDueDate() != null){
+		     activitySummary.append(commonUtil.dateStrFromOrgDateFormatter(oldData.getProjectId().getOrgLocationsId().getDateFormat(), oldData.getDueDate())).append(" to ").append("Unassigned");
+	     }
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+	     
+	}
+
+	@Override
+	public void updateEstimatedTime(String estimatedTime, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);	
+		
+		//Task Estimated time 
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Estimated Time updated from");
+	     if(estimatedTime != null && estimatedTime != "" && estimatedTime != "undefined") {
+		     projectTasks.setEstimateTime(estimatedTime);
+	     }else {
+		     projectTasks.setEstimateTime(null);
+	     }
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	     if(projectTasks.getEstimateTime() != null && oldData.getEstimateTime() != null){
+		     activitySummary.append(oldData.getEstimateTime()).append(" to ").append(projectTasks.getEstimateTime());
+	     }else  if(projectTasks.getEstimateTime() != null) {
+		     activitySummary.append("Unassigned").append(" to ").append(projectTasks.getEstimateTime());
+	     }else if(oldData.getEstimateTime() != null){
+		     activitySummary.append(oldData.getEstimateTime()).append(" to ").append("Unassigned");
+	     }
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+	}
+
+	@Override
+	public void updateOwner(Long ownerId, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);	
+		//Task owner 
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Owner updated from");
+	     if(ownerId != null) {
+	    	 User ownerUser = userService.getUserById(ownerId);
+		     projectTasks.setOwnerUserId(ownerUser);;
+	     }else {
+		     projectTasks.setOwnerUserId(null);
+	     }
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	     
+	     if(projectTasks.getOwnerUserId()  != null && oldData.getOwnerUserId() != null){
+		     activitySummary.append(oldData.getOwnerUserId().getFullName()).append(" to ").append(projectTasks.getOwnerUserId().getFullName());
+	     }else  if(projectTasks.getOwnerUserId() != null) {
+		     activitySummary.append("Unassigned").append(" to ").append(projectTasks.getOwnerUserId().getFullName());
+	     }else if(oldData.getOwnerUserId() != null){
+		     activitySummary.append(oldData.getOwnerUserId().getFullName()).append(" to ").append("Unassigned");
+	     }
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+	     
+		
+	}
+
+	@Override
+	public void updateEpic(Long epicId, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);	
+		//Task Epic 
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("Epic updated from");
+	     if(epicId != null) {
+	    	 ProjectTasks parentTaskId = tasksDao.getTasksId(String.valueOf(epicId));
+		     projectTasks.setParentTaskId(parentTaskId);
+	     }else {
+		     projectTasks.setParentTaskId(null);
+	     }
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	     
+	     if(projectTasks.getParentTaskId()  != null && oldData.getParentTaskId() != null){
+		     activitySummary.append(oldData.getParentTaskId().getGeneratedId() +"-"+oldData.getParentTaskId().getTaskName()).append(" to ").append(projectTasks.getParentTaskId().getGeneratedId() +"-"+projectTasks.getParentTaskId().getTaskName());
+	     }else  if(projectTasks.getParentTaskId() != null) {
+		     activitySummary.append("Unassigned").append(" to ").append(projectTasks.getParentTaskId().getGeneratedId() +"-"+projectTasks.getParentTaskId().getTaskName());
+	     }else if(oldData.getParentTaskId() != null){
+		     activitySummary.append(oldData.getParentTaskId().getGeneratedId() +"-"+oldData.getParentTaskId().getTaskName()).append(" to ").append("Unassigned");
+	     }
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		
+	}
+
+	@Override
+	public void updateUserStory(Long userStoryId, String taskId, Long userId) throws Exception {
+		User user = userService.getUserById(userId);
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);	
+		//Task User Story 
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+	     StringBuffer activity = new StringBuffer();
+	     StringBuffer activitySummary = new StringBuffer();
+	     activity.append("UserStory updated from");
+	     if(userStoryId != null) {
+	    	 ProjectTasks parentTaskId = tasksDao.getTasksId(String.valueOf(userStoryId));
+		     projectTasks.setParentTaskId(parentTaskId);
+	     }else {
+		     projectTasks.setParentTaskId(null);
+	     }
+	     projectTasks.setUpdatedDate(commonUtil.currentDate());
+	     tasksDao.updateTasks(projectTasks);
+	     
+	     if(projectTasks.getParentTaskId()  != null && oldData.getParentTaskId() != null){
+		     activitySummary.append(oldData.getParentTaskId().getGeneratedId() +"-"+oldData.getParentTaskId().getTaskName()).append(" to ").append(projectTasks.getParentTaskId().getGeneratedId() +"-"+projectTasks.getParentTaskId().getTaskName());
+	     }else  if(projectTasks.getParentTaskId() != null) {
+		     activitySummary.append("Unassigned").append(" to ").append(projectTasks.getParentTaskId().getGeneratedId() +"-"+projectTasks.getParentTaskId().getTaskName());
+	     }else if(oldData.getParentTaskId() != null){
+		     activitySummary.append(oldData.getParentTaskId().getGeneratedId() +"-"+oldData.getParentTaskId().getTaskName()).append(" to ").append("Unassigned");
+	     }
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 	}
 }

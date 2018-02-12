@@ -14,10 +14,14 @@ public class ProjectMemberDTOConverter {
 				  pmDTO.setClientName(projectMembers.getProjects().getOrgRelationId().getClientName());
 			    }
 			    pmDTO.setProjectName(projectMembers.getProjects().getProjectName());
-			    pmDTO.setProjectStartDate(projectMembers.getProjects().getStartDateStr());
-			    pmDTO.setProjectEndDate(projectMembers.getProjects().getEndDateStr());
+			    if(projectMembers.getProjects().getStartDateStr() != null) {
+			    	pmDTO.setProjectStartDate(projectMembers.getProjects().getStartDateStr());
+			    }
+			    if(projectMembers.getProjects().getEndDateStr() != null) {
+			    	pmDTO.setProjectEndDate(projectMembers.getProjects().getEndDateStr());
+			    }
 		}
 		pmDTO.setMasterCandidateId(projectMembers.getMasterCandidateId().getId());
 		return pmDTO;
-	}
+	} 
 }

@@ -71,5 +71,11 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception {
 		return lookUpDataDao.getTasksTypeByUniqueKey(uniqueKey);
 	}
+
+	@Override
+	public LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception
+	{
+		return lookUpDataDao.getRequirementExperienceLevelyUniqueKey(uniqueKey);
+	}
 	
 }

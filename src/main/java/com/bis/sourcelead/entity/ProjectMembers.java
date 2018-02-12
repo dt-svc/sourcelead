@@ -39,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembers")
 public class ProjectMembers implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -50,29 +49,29 @@ public class ProjectMembers implements Serializable {
 	private Long id;
 
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
     private MasterCandidate masterCandidateId;
 	
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_CLIENTS_ID")
 	@JsonBackReference
     private ProjectClients projectClientsId;
@@ -184,6 +183,7 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private String userId;
+	
 	@Transient
 	@Enumerated(EnumType.STRING)
 	private Status userState;
@@ -434,7 +434,19 @@ public class ProjectMembers implements Serializable {
 	
 	@Transient
 	@JsonProperty
+	private Long userRoleId;
+	
+	@Transient
+	@JsonProperty
 	private String projectClientUUID;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private int timeReportsTotalCountValue;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -448,8 +460,8 @@ public class ProjectMembers implements Serializable {
 	private List<Contracts> contractsList;
 
 	@JsonIgnore
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	
+	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
@@ -1484,11 +1496,36 @@ public class ProjectMembers implements Serializable {
 		}
 		return projectClientUUID;
 	}
+	
+	public String getOrgRelationUUID() {
+		if(projectClientsId != null && projectClientsId.getOrgRelationId() != null) {
+			orgRelationUUID = projectClientsId.getOrgRelationId().getUUID();
+		}
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
 
 	public void setProjectClientUUID(String projectClientUUID) {
 		this.projectClientUUID = projectClientUUID;
 	}
 
-	
-	
+	public Long getUserRoleId() {
+		return userRoleId;
+	}
+
+	public void setUserRoleId(Long userRoleId) {
+		this.userRoleId = userRoleId;
+	}
+
+	public int getTimeReportsTotalCountValue() {
+		return timeReportsTotalCountValue;
+	}
+
+	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
+		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
+	}
+
 }

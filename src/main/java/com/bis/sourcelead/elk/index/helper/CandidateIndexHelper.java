@@ -31,6 +31,15 @@ public class CandidateIndexHelper {
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
 			candidateIndex.setFirstName(candidate.getFirstName());
 			candidateIndex.setLastName(candidate.getLastName());
+			
+			if(StringUtils.isNoneBlank(candidate.getLastName())) {
+				StringBuilder fullName = new StringBuilder();
+				fullName = fullName.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+				candidateIndex.setFullName(fullName.toString());
+			}else {
+				candidateIndex.setFullName(candidate.getFirstName());
+			}
+			
 			candidateIndex.setEmail(candidate.getEmail());
 			candidateIndex.setAlternateEmail(candidate.getAlternateEmail());
 			candidateIndex.setMobilePhone(candidate.getMobilePhone());
@@ -110,7 +119,8 @@ public class CandidateIndexHelper {
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
 				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
-				candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
+				//candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileUrl(candidateResumes.getFileURL());
 				candidateIndex.setResumeContent("");
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){

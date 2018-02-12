@@ -54,6 +54,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
+@RequestMapping("/app")
 public class CandidateDocumentsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateDocumentsRestController.class);
 	@Value("${sourceleadUrl}")
@@ -125,15 +126,11 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getCandidateDocumentsListByCandidateId")
+	@RequestMapping(value = {"/getCandidateDocumentsListByCandidateId","rest/getCandidateDocumentsListByCandidateId"},method = RequestMethod.POST)
 	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
-		for (CandidateDocumentsDTO canDoc : candidateDocumentsList.getData()) {
-			canDoc.setUserIdStr(user.getId().toString());
-		}
 		return candidateDocumentsList;
 	}
 	
@@ -173,7 +170,7 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadDoc", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadDoc", method = RequestMethod.GET)
 	public void downloadDoc(@RequestParam(value = "documentUUID", required = false) String documentUUID, HttpServletResponse response) throws Exception
 	{
 		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);
@@ -195,7 +192,7 @@ public class CandidateDocumentsRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * @author Prasad K
@@ -256,7 +253,7 @@ public class CandidateDocumentsRestController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "/uploadRequestedDocuments", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/uploadRequestedDocuments", method = RequestMethod.POST)
 	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
 		

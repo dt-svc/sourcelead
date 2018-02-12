@@ -44,6 +44,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class BillingPayableRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BillingPayableRestController.class);
@@ -236,7 +237,7 @@ public class BillingPayableRestController {
 			return resultJson;
 	 }
 	 
-	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
+	/* @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
 			
 			
@@ -263,7 +264,7 @@ public class BillingPayableRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		}  
+		} */ 
 	 
 	 
 	 @RequestMapping(value = "/deleteInvoiceDocumentBydocumentId")

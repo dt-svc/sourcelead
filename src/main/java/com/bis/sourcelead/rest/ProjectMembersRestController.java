@@ -20,7 +20,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
 
 @RestController
-@RequestMapping(value = "/projectMembers")
+@RequestMapping(value = "/app/projectMembers")
 public class ProjectMembersRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectMembersRestController.class);

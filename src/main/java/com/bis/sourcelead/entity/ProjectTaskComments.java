@@ -21,8 +21,7 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "PROJECT_TASK_COMMENTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTaskComments")
+@Table(name = "PROJECT_TASK_COMMENTS")
 public class ProjectTaskComments implements Serializable{
 	
 private static final long serialVersionUID = 1L;

@@ -73,22 +73,8 @@ function vendorContacts(orgRelationID,clientLocationId){
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor", 
 	        success: function(json) {
 	        	
-	        //	var json = JSON.parse(data);
-	        	
-	        	/* for (var i = 0; i < 1; i++) { 
-	 				var val= json.data[i];
-	 				var opt = "";
-	 					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	     					opt  = opt + '<div class="success_pop" id="vendorConactMsgSelector" style="display: block;">';
-	     					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	     					opt  = opt + '</div>';
-	 						}
-	 					$("#vendorConactMsgDiv").empty();
-	 					$("#vendorConactMsgDiv").append(opt);
-	 				} */
 	        	
 	        	$("#vendorContactListDiv").empty();
-	    		if(json.data.length != null && json.data.length != ''){
 	    			var result = "";
 	    			result = result +"<table id='vendorContactsPagination' class='display' cellspacing='0' width='100%' >"; 
 		    	    result = result +'<thead>';
@@ -222,22 +208,6 @@ function vendorContacts(orgRelationID,clientLocationId){
 					    $("#vendorContactListDiv").append(result);
 			    	    contactPagination();
 			    	    vendorContactMsgFadein();
-			    	    
-	        }else{
-	        	var result ="";
-	    	     result = result+"   <div class='row'>"; 
-				 result = result+"	<div class='col-lg-12'>"; 
-				 result = result+"		<div class='content-area clearfix'>"; 
-				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				 result = result+"			        <p>No Contacts Found</p>";
-				 result = result+"			 </div>";
-				 result = result+"		</div>"; 
-				 result = result+"	</div>"; 
-				 result = result+"  </div> "; 
-   			$("#vendorContactListDiv").empty();
-		    $("#vendorContactListDiv").append(result); 
-   		 }
 	        },
 	    });
 	}
@@ -336,7 +306,7 @@ $(".project_inn_mask").fadeOut(200);
 function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId,spocId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
-	//	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	//	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
@@ -758,14 +728,14 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 </script>
 
 <script type="text/javascript">
-function validateEmail(orgRelationID){
+function validateEmail(orgRelationId){
 	 //getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=vendor",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {

@@ -19,4 +19,9 @@ public interface ProjectClientService {
 	ProjectClients getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(Long projectId,Long orgLocationsId,Long orgRelationId) throws Exception;
 	
 	ProjectClients getProjectClientsByUUID(String uuid) throws Exception;
+	
+	ProjectClients getProjectClientsByProjectID(Long projectId) throws Exception;
+	
+	public List<ProjectClients> getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(Long orgLocationsId) throws Exception;
+
 }

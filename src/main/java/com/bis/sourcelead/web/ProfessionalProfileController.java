@@ -1,10 +1,13 @@
 package com.bis.sourcelead.web;
 
+import static org.mockito.Matchers.isNotNull;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +36,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class ProfessionalProfileController {
 
 	@Value("${sourceleadUrl}")
@@ -118,6 +122,7 @@ public class ProfessionalProfileController {
 		public Candidate getProfessionalInfo(@RequestParam(value="candidateId", required=false) Long  candidateId,@RequestParam(value="locationCode", required=false) String  locationCode,HttpServletRequest request) throws Exception {
 		        Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		        OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		        if(null != candidate.getConsultantUser()){
 		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
 		        	if(null != candidate.getConsultantUser().getLastName()){
@@ -135,13 +140,28 @@ public class ProfessionalProfileController {
 			        if(null != candidate.getConsultantUser().getLinkedIn()){
 			        	candidate.setLinkedIn(candidate.getConsultantUser().getLinkedIn());
 			        }
-			        if(null != candidate.getConsultantUser().getFileUrl()){
-			        	candidate.setFileUrl(candidate.getConsultantUser().getFileUrl());
-			        }
 			        	
+		        }
+		        
+		        if (candidate.getOrgRelationId() != null) {
+					if (candidate.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrgLocationName());
+					}
+					if (candidate.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					}
+
+				}
+		        
+		        
+		        if(candidate.getSpocId() != null){
+		        candidate.setVendorContactName(candidate.getSpocId().getVendorUser().getFullName());
 		        }
 		        int percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		        candidate.setProfilePercentage(percentage);
+		        if(candidate.getConsultantUser() != null) {
+		        	 candidate.getConsultantUser().setPassword(null);
+		        }
 				return candidate;
 	}
 	 

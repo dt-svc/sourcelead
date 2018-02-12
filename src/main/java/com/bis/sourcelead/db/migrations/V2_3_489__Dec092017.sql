@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','TEMPLATE_FILE_URL','VARCHAR(100) DEFAULT NULL AFTER `REJECTED_REASON`');

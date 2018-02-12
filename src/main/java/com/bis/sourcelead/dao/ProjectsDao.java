@@ -18,6 +18,8 @@ public interface ProjectsDao {
 	
 	List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 	
+	List<Projects> getAllProjectByOrgLocationsId(Long orgLocationId) throws Exception;
+	
 	List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
 	
 	List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
@@ -25,6 +27,8 @@ public interface ProjectsDao {
 	List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
 	
 	Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+	
+	Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception;
 	
 	public Boolean deleteProjectById(Long id) throws Exception;
 	
@@ -62,6 +66,9 @@ public interface ProjectsDao {
 	
 	//public HashSet<User> getAllUserTimeSheetSubmissionStatus() throws Exception;
 	
+	Integer getProjectCountByOrgLocationIdAndUserCode(Long orgLocationId,String userCode)throws Exception;
+
+	
 	public void saveAllProjects(List<Projects> projectsList) throws Exception;
 	
 	public List<SubmissionApproverHierarchy>  getApproveUserForTimeSheets(Long userId) throws Exception;
@@ -85,5 +92,7 @@ public interface ProjectsDao {
 	public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId)throws Exception;
 	
 	Projects getProjectByProjectUUID(String projectUUID) throws Exception;
+	
+	List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
 
 }

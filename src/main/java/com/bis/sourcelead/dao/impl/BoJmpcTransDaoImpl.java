@@ -53,7 +53,7 @@ public class BoJmpcTransDaoImpl implements BoJmpcTransDao {
 	public BoJmpcTrans getBoJmpcTransById(Long Id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BoJmpcTrans> boJmpcTrans = new ArrayList<BoJmpcTrans>();
-		boJmpcTrans = session.createQuery("from BoJmpcTrans where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		boJmpcTrans = session.createQuery("from BoJmpcTrans where id=:id" ).setLong( "id", Id ).list();
 		if (boJmpcTrans.size() > 0) {
 			return boJmpcTrans.get(0);
 		} else {
@@ -68,7 +68,7 @@ public class BoJmpcTransDaoImpl implements BoJmpcTransDao {
 		
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from BoJmpcTrans bjct where bjct.status = '1' "; 
-		List<BoJmpcTrans> boJmpcTransList = session.createQuery(query.toString()).setCacheable(true).list();
+		List<BoJmpcTrans> boJmpcTransList = session.createQuery(query.toString()).list();
 		return boJmpcTransList;
 	}
 
@@ -85,18 +85,18 @@ public class BoJmpcTransDaoImpl implements BoJmpcTransDao {
 		if(jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate")) 
 				&& jsonObj.has("toTransDate") && "".equals(jsonObj.getString("toTransDate"))){
 			    fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
-			return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setCacheable(true).list();
+			return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).list();
 		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) 
 					&& jsonObj.has("fromTransDate") && "".equals(jsonObj.getString("fromTransDate"))){
 			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
-			return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("toTransDate", toTransDate).setCacheable(true).list();
+			return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("toTransDate", toTransDate).list();
 		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) && 
 				jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate"))){
 			fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
 			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
-			return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).setCacheable(true).list();
+			return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).list();
 		}
-		return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setCacheable(true).list();
+		return session.createQuery(sb.append("from BoJmpcTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).list();
 	}
 
 

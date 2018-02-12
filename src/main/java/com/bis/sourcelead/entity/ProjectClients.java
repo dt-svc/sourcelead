@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,10 +25,10 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_CLIENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectClients")
 public class ProjectClients implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -37,17 +38,21 @@ public class ProjectClients implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROJECT_ID")
 	@JsonBackReference
     private Projects projectId;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
-    @ManyToOne
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
@@ -70,10 +75,12 @@ public class ProjectClients implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
@@ -83,6 +90,9 @@ public class ProjectClients implements Serializable{
 	@JsonBackReference
     private Set<ProjectApproverHierarchy> projectApproverHierarchyList;
 	
+	@Transient
+	@JsonProperty
+	private String clientName;
 	
 	/*@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
@@ -204,5 +214,14 @@ public class ProjectClients implements Serializable{
 		this.isEndClient = isEndClient;
 	}
 
-	
+	public String getClientName()
+	{
+		return clientName;
+	}
+
+	public void setClientName(String clientName)
+	{
+		this.clientName = clientName;
+	}
+
 }

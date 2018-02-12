@@ -70,7 +70,7 @@ public class ProjectTaskCommentsDaoImpl implements ProjectTaskCommentsDao{
 	public List<ProjectTaskComments> getProjectTaskCommentsByProjectTaskId(Long projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTaskComments comments  where comments.projectTaskId.id =:projectTaskId ORDER BY comments.createdDate DESC"; 
-		List<ProjectTaskComments> commentsList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setCacheable(true).list();
+		List<ProjectTaskComments> commentsList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
 		return commentsList;
 	}
 	 

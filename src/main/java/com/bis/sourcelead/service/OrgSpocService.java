@@ -130,5 +130,10 @@ public interface OrgSpocService {
 	OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId,Long assignUserId) throws Exception;
 	
 	List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
+	
+	OrgSpoc getOrgSpocByUUID(String UUID) throws Exception;
+	
+	Integer getNumberOfContactCount(Long orgRelationId,Long userId,Long orgLocationId,String responderType) throws Exception;
+
 
 }

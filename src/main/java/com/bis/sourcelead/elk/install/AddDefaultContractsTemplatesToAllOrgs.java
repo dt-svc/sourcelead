@@ -60,8 +60,8 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 		}
 			 for(Long locId : locIds){
 				 for(String templateName : templateNames){
-					 String query1 = " insert into sourcelead.CONTRACTS_TEMPLATE (TEMPLATE_NAME, ORGLOCATION_ID, TEMPLATE_TYPE, DESCRIPTION, TEMPLATE_CONTENT )"
-								+ " values (?, ?, ?, ?, ?)";
+					 String query1 = " insert into sourcelead.CONTRACTS_TEMPLATE (TEMPLATE_NAME, ORGLOCATION_ID, TEMPLATE_TYPE, DESCRIPTION, TEMPLATE_CONTENT, TEMPLATE_STATUS )"
+								+ " values (?, ?, ?, ?, ?, ?)";
 					 try {
 		    			 PreparedStatement pstmt1 = conn.prepareStatement(query1);
 			    		 pstmt1.setString(1, templateName);
@@ -69,6 +69,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 			    		 pstmt1.setString(3, templateName);
 			    		 pstmt1.setString(4, templateName);
 			    		 pstmt1.setString(5, getDefaultTemplates(templateName));
+			    		 pstmt1.setString(6, "0");
 			    		 pstmt1.executeUpdate();	
 		    		}catch (Exception e){   
 						e.printStackTrace();

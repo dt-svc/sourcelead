@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
@@ -69,7 +69,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	}
     
     
-    @RequestMapping(value = "/getJobAlertList")
+    @RequestMapping(value = "/app/getJobAlertList")
 	 public String getJobAlertList(HttpServletRequest request) throws Exception {
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -78,14 +78,14 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		return resultJson;
 	 }
 		 
-    @RequestMapping(value = "/storeJobAlert", method = RequestMethod.POST)
+    @RequestMapping(value = {"/app/ws/storeJobAlert" ,"/app/storeJobAlert"}, method = RequestMethod.POST)
    	public @ResponseBody  void storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
        	  String jobAlert =  jobAlertService.saveJobAlert(jobAlertDTO);
    	}
     
     
-	 @RequestMapping(value = "/getJobAlertDetails", method = RequestMethod.GET)
+	 @RequestMapping(value = "/app/getJobAlertDetails", method = RequestMethod.GET)
 	 public String getJobAlertDetails(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -96,7 +96,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/deleteJobAlert", method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/deleteJobAlert", method = RequestMethod.POST)
 	 public String deleteJobAlert(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -112,7 +112,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/getJobDetailsForJobAlert", method = RequestMethod.GET)
+	 @RequestMapping(value = {"/app/ws/getJobDetailsForJobAlert" ,"/app/getJobDetailsForJobAlert"}, method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -123,7 +123,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/validateAlertUserEmail", method = RequestMethod.GET)
+	 @RequestMapping(value = {"/app/ws/validateAlertUserEmail","/app/validateAlertUserEmail"}, method = RequestMethod.GET)
 	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
 		 
 		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);
@@ -135,7 +135,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 		
 	 
-	 @RequestMapping(value = "/getAllJobsAlertList")
+	 @RequestMapping(value = {"/getAllJobsAlertList" ,"/app/getAllJobsAlertList"})
 	 	public String getAllJobsAlertList(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			    String jobAlertsTable = null;
@@ -185,10 +185,10 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 									 
 									 for(String keywd : skillsOrKeyWordList){
 										 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-										ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-										if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-											for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-												anyBoolSubQueryBuilder.should(matchQueryBuilder);
+										ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+										if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+											for(QueryBuilder QueryBuilder :QueryBuilderList){
+												anyBoolSubQueryBuilder.should(QueryBuilder);
 											}
 											anySkillOrKeyWordBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 										}
@@ -222,34 +222,34 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 	}
 		
 		
-		private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
 			   
-			   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			   ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+			    QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+			    QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
 				
 				
 				Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 				if(matcher.find()){
 					Float expYears = Float.valueOf(matcher.group());
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-					matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+					QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+					QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+					QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 				}
 
 					
-				return matchQueryBuilderList; 
+				return QueryBuilderList; 
 		 }
 		
 		

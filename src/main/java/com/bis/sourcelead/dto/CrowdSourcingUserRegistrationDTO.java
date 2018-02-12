@@ -13,7 +13,11 @@ public class CrowdSourcingUserRegistrationDTO {
 	 private String mobilePhone;
 	 
 	 private String phoneNumber;
-
+	 
+	 private String confirmPassword;
+	 
+	 private String wouldLikeToBe;
+	 
 	public String getFirstName()
 	{
 		return firstName;
@@ -73,6 +77,24 @@ public class CrowdSourcingUserRegistrationDTO {
 	{
 		this.phoneNumber = phoneNumber;
 	}
-	 
-	 
+
+	public String getConfirmPassword()
+	{
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword)
+	{
+		this.confirmPassword = confirmPassword;
+	}
+
+	public String getWouldLikeToBe()
+	{
+		return wouldLikeToBe;
+	}
+
+	public void setWouldLikeToBe(String wouldLikeToBe)
+	{
+		this.wouldLikeToBe = wouldLikeToBe;
+	}
 }

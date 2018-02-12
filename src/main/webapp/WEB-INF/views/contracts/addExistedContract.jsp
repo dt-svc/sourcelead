@@ -18,7 +18,7 @@ $(document).ready(function(){
 </style>
 
 <!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
 <!-- Content Area -->
@@ -27,10 +27,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Add Existing Contract</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; Existing Contract</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; Existing Contract</div>
     </section>
     <div class="content-area content-new clearfix">
-     <div id="loading"></div>
+     <div id="existLoading"></div>
      <form:form id="newcontract_form" name="newcontract_form" method="post">
       <div class="clearfix form-horizontal">
        
@@ -69,9 +69,11 @@ $(document).ready(function(){
 	                          <input type="file" id="uploadBtn" style="display: none;"  class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
+		                         
 	                        </div>
 	                        <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
 	                        <span class="col-md-2 noPad clearfix" title="View File" id="tempEye" style="display:block;"> <i class="fa fa-eye btn btn-default formic1 pull-right minHeBtn" onclick="previewTemplatePDF()"></i> </span>
+	                        
               </div>
             </div>  			
 			</div>
@@ -137,7 +139,10 @@ $(document).ready(function(){
 					  </div>
 					  <div class="col-lg-6">
 						<div id="endDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
+						  <span class="input-group-addon" onClick="clearExistedContractEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>
 						</div>
 					  </div>
 					</div>
@@ -147,7 +152,7 @@ $(document).ready(function(){
          <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorVendor">
-               <div class="input-group col-md-10 pull-left">
+               <div class="input-group col-md-10 pull-left errorInptgroup">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
                     <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
@@ -157,7 +162,7 @@ $(document).ready(function(){
                    <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addExistedEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
                <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
           </sec:authorize>
           </div>     
            </div>                   
@@ -165,7 +170,7 @@ $(document).ready(function(){
             <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorvendorContact">
-                <div class="input-group col-md-10 pull-left">
+                <div class="input-group col-md-10 pull-left errorInptgroup">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};" field-name="Vendor Contact">
@@ -198,7 +203,7 @@ $(document).ready(function(){
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorClient">
- 					 <div class="input-group col-md-10 pull-left">
+ 					 <div class="input-group col-md-10 pull-left errorInptgroup">
 	                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
 	                    <option value=''>Select Client</option>
 	                   <c:forEach var="orgrelations" items="${clientList}">
@@ -208,7 +213,7 @@ $(document).ready(function(){
 	                        <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addExistedEmptyClientContact();"><i class="fa fa-refresh "></i></span>
                   </div>
                   <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-                      <span class="col-md-2 noPad clearfix"><a href="<c:url value="/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+                      <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
                  </sec:authorize>
               </div>
           </div>                      
@@ -216,7 +221,7 @@ $(document).ready(function(){
             <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorClientContact">
-              		<div class="input-group col-md-10 pull-left">
+              		<div class="input-group col-md-10 pull-left errorInptgroup">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};" field-name="Client Contact">
@@ -256,7 +261,7 @@ $(document).ready(function(){
             <div class="form-group " id="descriptionDiv">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"></textarea>
+					<textarea class="form-control" rows="3" id="mainDescription" name="description" data-validation-optional="true" data-validation="validate_length length1-250"></textarea>
               </div>
             </div>    
             <div class="form-group" id="workLocationDiv">
@@ -269,7 +274,10 @@ $(document).ready(function(){
             <div class="form-group" id="joinDateDiv">
               <label class="col-md-4">Join Date</label>
                 <div class="col-lg-6">
+                <div class="input-group errorInptgroup">
 					<input type="text" class="form-control calendar" value="${contract.startDateStr}" id="joinDate" name="joinDate" placeholder="Join date"  field-name="Join Date" readonly="readonly">
+					 <span class="input-group-addon" onClick="clearExistedContractJoinDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+				</div>	
 				</div>
             </div> 
             <div class="form-group">
@@ -304,7 +312,7 @@ $(document).ready(function(){
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Total Hours Estimated</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
@@ -904,6 +912,7 @@ function getContractTemplates(){
 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="none";
 		document.getElementById("offeredSubmissionDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
  	if(contractType == "Client MSA"){
  		document.getElementById("billingDiv").style.display="none";
@@ -916,6 +925,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offeredSubmissionDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="none";
@@ -928,6 +938,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offeredSubmissionDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -940,6 +951,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offeredSubmissionDiv").style.display="block";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -952,6 +964,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offeredSubmissionDiv").style.display="block";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -964,6 +977,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offeredSubmissionDiv").style.display="none";
+		document.getElementById("uploadFile").value = '';
 	}
 	if(contractType == "Full time offer"){
 		document.getElementById("clientDiv").style.display="none";
@@ -976,6 +990,7 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="block";
 		document.getElementById("workLocationDiv").style.display="block";
 		document.getElementById("offeredSubmissionDiv").style.display="block";
+		document.getElementById("uploadFile").value = '';
 	}	 
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -1071,6 +1086,34 @@ function contractTypeLabels(){
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
 			
+			$("#orgRelationId").val(''); 
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#clientOrgRelationId").val(''); 
+			$('#clientOrgRelationId').trigger("chosen:updated");
+
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			$("#startDate").val('');
+			$("#endDate").val('');
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			
+			$("#vendorContact").val(''); 
+			$('#vendorContact').trigger("chosen:updated");
+			
+			$("#clientContact").val(''); 
+			$('#clientContact').trigger("chosen:updated");
+			
+			$("#clientOrgRelationId").val(''); 
+			$('#clientOrgRelationId').trigger("chosen:updated");
+			
+			$("#orgRelationId").val(''); 
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
+			
 			hideCommonSOWFields();
 		}
 		if(contractType == "Vendor MSA"){
@@ -1125,6 +1168,29 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			
+			$("#orgRelationId").val(''); 
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#vendorContact").val(''); 
+			$('#vendorContact').trigger("chosen:updated");
+			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			$("#startDate").val('');
+			$("#endDate").val(''); 
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			
+			$("#orgRelationId").val(''); 
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#vendorContact").val(''); 
+			$('#vendorContact').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
+			
 			hideCommonSOWFields();
 		}
 		if(contractType == "Client SOW"){
@@ -1161,6 +1227,29 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			$("#startDate").val('');
+			$("#endDate").val('');
+			
+			$("#hoursPerWeek").val('');
+			$("#paymentFrequency").val(''); 
+			$("#taxPercentageRewardValue").val('');
+			$("#taxFlatRewardValue").val('');
+			
+			$("#clientContact").val('');
+			$('#clientContact').trigger("chosen:updated");
+			
+			$("#clientOrgRelationId").val('');
+			$('#clientOrgRelationId').trigger("chosen:updated");
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			$("#invoiceFrequency").val('');
+			$('#invoiceFrequency').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
 			
 			hideCommonSOWFields();
 			showCommonSOWFields();
@@ -1200,6 +1289,30 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			$("#startDate").val('');
+			$("#endDate").val('');
+			
+			$("#hoursPerWeek").val('');
+			$("#paymentFrequency").val(''); 
+			$("#taxPercentageRewardValue").val('');
+			$("#taxFlatRewardValue").val('');
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");   
+			
+			$("#vendorContact").val('');
+			$('#vendorContact').trigger("chosen:updated");
+			
+			$("#orgRelationId").val('');
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#invoiceFrequency").val('');
+			$('#invoiceFrequency').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
 			
 			hideCommonSOWFields();
 			showCommonSOWFields();
@@ -1280,6 +1393,30 @@ function contractTypeLabels(){
 			
 			$('#candiRatePer').removeAttr('data-validation');
 			$('#candiRatePer').attr('data-validation-optional',"true");
+			$("#vendorContact").val(''); 
+			$('#vendorContact').trigger("chosen:updated");
+			
+			$("#clientContact").val(''); 
+			$('#clientContact').trigger("chosen:updated");
+			
+			$("#orgRelationId").val(''); 
+			$('#orgRelationId').trigger("chosen:updated");
+			
+			$("#clientOrgRelationId").val(''); 
+			$('#clientOrgRelationId').trigger("chosen:updated");
+			
+			$("#jurisdiction").val(''); 
+			$("#mainDescription").val(''); 
+			$("#startDate").val('');
+			$("#endDate").val('');
+			
+			$("#approver").val('');
+			$('#approver').trigger("chosen:updated");
+			
+			$("#invoiceFrequency").val('');
+			$('#invoiceFrequency').trigger("chosen:updated");
+			
+			$("#addTaxTbl").find("tr:not(:first)").empty();
 		}
 		
 	if(contractType == "Full time offer"){
@@ -1343,6 +1480,26 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 // 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
@@ -1438,7 +1595,7 @@ function previewTemplatePDF(){
 					},
 					}); */ 
 			var formData = getFormData("newcontract_form");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+					$("#existLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           $.post( sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
 	                      if(data == true){
 	                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
@@ -1660,25 +1817,17 @@ function previewTemplatePDF(){
 	}
 	
 	function getVendor(){
-		alert("inside vendor");
-	
 		var sourceleadUrl ='${sourceleadUrl}';
-		alert("1");
 		var relationList = '${orgRelationsList}';
-		alert("2");
 		var associateId = $("#submissionOffersList").val();
-		alert("3"+associateId);
 		var map = new Object(); // or var map = {};
-		alert("4");
 		<c:forEach var="vendor" items="${orgRelationsList}">
 		        map['${vendor.id}'] = '${vendor.orgName}';
 		</c:forEach>
-		alert("5");
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getCandidateDetails?candidateId="+associateId,    
 	         success :function(data) {
-	        	 alert("su");
 	        	 var json = JSON.parse(data);
 	           	 var result = "";
 	           	 result = result + '<option value="">Select Vendor</option>';
@@ -1856,7 +2005,7 @@ function validateContractTitle(){
 		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		  $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
-						 // $("#save_template").attr("disabled", "disabled");
+						  $("#save_template").attr("disabled", "disabled");
 						 // $("#draft_template").attr("disabled", "disabled");
 		        	}
 		        	else{
@@ -1873,6 +2022,7 @@ function validateContractTitle(){
 }
 
 </script>
+
 
 <script>
 function refreshVendorList(){
@@ -1933,7 +2083,26 @@ function addExistedEmptyClientContact(){
 		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 	 </script>
+
+<script>
+/* function clearExistedContractStartDate(){
+	$("#startDate").val("");
+	}; */
+function clearExistedContractEndDate(){
+	$("#endDate").val("");
+	};
+function clearExistedContractJoinDate(){
+	$("#joinDate").val("");
+	};
+</script>
+<!-- <script>
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+		$(".clearUpload").hide();
+		$("#newcontract_form input[data-id*=uploadBtn]").remove();
+	});
+</script> -->
+
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-

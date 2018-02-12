@@ -41,6 +41,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class RecommendedCustomizeScoreRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RecommendedCustomizeScoreRestController.class);
@@ -197,15 +198,32 @@ public class RecommendedCustomizeScoreRestController {
 					}else{
 						rcs.setCustomizeKeywords(null);
 					}
-		if(jsonObj.has("customizeCountry")){
-			rcs.setCustomizeState(jsonObj.getString("customizeCountry"));
+		/*if(jsonObj.has("customizeCountry")){
+			rcs.setCustomizeState(jsonObj.getString("customizeCountry").split(",")[0]);
 		 }
 		if(jsonObj.has("customizeState")  && null != jsonObj.getString("customizeState") && "" != jsonObj.getString("customizeState")){
 			rcs.setCustomizeState(jsonObj.getString("customizeState"));
-		 }
-		if(jsonObj.has("customizedCity") && null != jsonObj.getString("customizedCity") && "" != jsonObj.getString("customizedCity")){
-			rcs.setCustomizeCity(jsonObj.getString("customizedCity"));
-		 }
+		 }*/
+		 
+		if(jsonObj.has("customizedCity")){
+			String cityId =null;
+			try{
+				JSONArray jsonArray = jsonObj.getJSONArray("customizedCity");
+				cityId = jsonArray.toString();
+			}
+			catch(JSONException e){
+				cityId =jsonObj.getString("customizedCity");
+			}
+			cityId = cityId.replaceAll("\\[", "").replaceAll("\\]","");
+			
+			
+			cityId = cityId.replaceAll("\"", "");
+			rcs.setCustomizeCity(cityId);
+		
+		}else{
+			rcs.setCustomizeCity(null);
+		}
+		
 		if(jsonObj.has("minExperience") && null != jsonObj.getString("minExperience") && "" != jsonObj.getString("minExperience")){
 			rcs.setCustomizeMinExperience(jsonObj.getString("minExperience"));
 		 }

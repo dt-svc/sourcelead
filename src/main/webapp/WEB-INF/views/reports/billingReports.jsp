@@ -6,20 +6,26 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-<script src="resources/js/pie.js"></script> 
-<script src="resources/js/amcharts.js"></script> 
-<script src="resources/js/serial.js"></script> 
+<script src="/resources/js/pie.js"></script> 
+<script src="/resources/js/amcharts.js"></script> 
+<script src="/resources/js/serial.js"></script> 
 
 <style>
 #billing_chartdiv {
   	width:100%; height:300px;
-}																		
+}	
+.borderYellow {
+border-color: #FFFF00;
+}				
+.borderOrange {
+border-color: rgb(255, 102, 0);
+}													
 </style>
 
 <script> 
@@ -34,9 +40,9 @@ $(document).ready(function(){
 
 <section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>Billing Reports </h2>
+				<h2>Finance Reports </h2>
 			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/userReports'/>">Reports Dashboard</a> &raquo; Billing Reports </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Finance Reports </div>
 </section>
 
 
@@ -44,7 +50,7 @@ $(document).ready(function(){
 
    <div class="timesheet_head">
 <div class="pull-left reportBtns reportBtns_custom mt5 mb10">
-<h4 class="pull-left mr">Billing Report</h4>
+<h4 class="pull-left mr">Finance Report</h4>
 	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
 		<select class="form-control" id="billingReportType" onChange="flushBillingCustom(); getBillingReports('Receivable');custBillingDates();">
 		  <option value="THIS_MONTH">This Month</option>
@@ -80,11 +86,11 @@ $(document).ready(function(){
                       <span class="text-info">Net Income</span>
                   </div>
                   
-                  <div class="clearfix billingCount borderGreen">
+                  <div class="clearfix billingCount borderOrange">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="receivedAmount"></span>
                       <span class="text-info">Income</span>
                   </div>
-                  <div class="clearfix billingCount borderBlue">
+                  <div class="clearfix billingCount borderYellow">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount"></span>
                       <span class="text-info">Expenses</span>
                   </div>
@@ -198,7 +204,9 @@ function getCustomBillingReports(invoiceType){
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
 	         success :function(data) {
-	        	 var json = JSON.parse(data);
+	        	  var json = JSON.parse(data);
+		        	 getBillingReportsChart(invoiceType,json);
+	        	/*  var json = JSON.parse(data);
 	        	 var result = "";
 	        	 result = result +'<div class="project_tabs_inn_head">';
 	        	 result = result +'</div>';
@@ -236,7 +244,7 @@ function getCustomBillingReports(invoiceType){
 	                $("#tab-1").empty();
 	        	   $("#tab-1").append(result);
 	        	   customBillingReportPagination();
-	        	   getCustomPayableBillingReports('payables');
+	        	   getCustomPayableBillingReports('payables'); */
 	        },
 	          
 	     });  
@@ -410,7 +418,6 @@ function getBillingReportsChart(invoiceType,json){
 	 //startatatat============
 	 var chartData = [];
 	 
-
   var firstDate = new Date();
   for (var i = 0; i < json.billingGraphBean.length; i++) { 
 		 var opt = json.billingGraphBean[i]; 
@@ -431,7 +438,7 @@ function getBillingReportsChart(invoiceType,json){
 	    }],
 	    "startDuration": 1,
 	    "graphs": [{
-	        "balloonText": "Income in [[category]] (2004): <b>[[value]]</b>",
+	        "balloonText": "Income in [[category]] : <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2004",
@@ -439,7 +446,7 @@ function getBillingReportsChart(invoiceType,json){
 	         "columnWidth":0.5,
 	        "valueField": "year2004"
 	    }, {
-	        "balloonText": "Expenses in [[category]] (2005): <b>[[value]]</b>",
+	        "balloonText": "Expenses in [[category]] : <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2005",
@@ -486,7 +493,6 @@ function getBillingReports(invoiceType){
 		    	type: "GET",
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 		         success: function(data) {
-		        	 /* alert(data); */
 		        	 var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 		         }

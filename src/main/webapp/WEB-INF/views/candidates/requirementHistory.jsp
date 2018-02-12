@@ -88,14 +88,35 @@ function requirementHistoryList(candidateId){
            		rate = "--";
            	 }
            	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
-           		clientName  = report.clientName;
-           	 }else{
-           		clientName = "--"
-           	 }
+            		clientName  = report.clientName;
+            	 }else{
+            		clientName = "--"
+            	 }
 	           	result = result  +'	          <tr>';
 	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+jobType+'">'+jobType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.country+'">'+report.country+'</span></div></td>';
+	    		
+	    		result = result +'<td>';
+	    		result = result +'<div class="positionRelative">';
+  		         for(var k=0; k<1; k++){
+  		        	result = result + '<p class="tbldata-dotdot-sm pull-left">'+report.locationsList[k]+'</p>';
+  		         }
+		    	
+  		        result = result +'<div class="show_Empdetails showjoblist">';
+		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+		        	result = result +'<div class="emailvalues">';
+		        	
+				for(var k=0; k<report.locationsList.length; k++){
+					result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+   		        	
+		    	 	}
+		        	result = result +'</div>';
+		        	result = result +'</div>';
+
+	        	result = result +'</div>';
+	        	result = result +'</td>';
+	    		
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+clientName+'">'+clientName+'</span></div></td>';
@@ -134,7 +155,7 @@ function requirementHistoryPagination(){
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -149,8 +170,8 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
         	
         	var result = "";
      		result = result  +'	<div class="reqPopInn reqHistTitle">';
-     		result = result  +'		<div class="reqClose">';
-     		result = result  +'			<span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
+     		result = result  +'		<div class="reqClose clearfix">';
+     		result = result  +'			<span class="pull-left"><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
      		result = result  +'		</div>';
      		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
      		result = result  +'		<ul>';
@@ -163,7 +184,9 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 	          				result = result  +'			<li>';
 		            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		            		result = result  +'<span>Issued offer by '+port.clientName+' <b>'+port.createDateStr+'</b></span>';
+		            		if(port.fileContentType != null && port.fileContentType != '' && port.fileContentType!= 'undefined'){
 		            		result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		            		}
 		            		result = result  +'<div class="clearfix"></div>';
 		            		result = result  +'			</li>';
 	          			}
@@ -205,17 +228,17 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 		        		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		        		if(report.toStage == "SUBMISSION"){
 			        		 result = result  +'<span>Added by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			 result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
-		        		}else if(report.toStage == "OFFERMADE"){
+		        			 result = result  +'<a href=\"'+report.resumeid+'\" download><i class="fa fa-paperclip"></i></a><a href="javascript:void(0)" class="fa fa-eye ml10" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.contentType+'\');"></a><div class="clearfix"></div>';
+ 		        		}else if(report.toStage == "OFFERMADE"){
 		        			result = result  +'<span>Issued offer by '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+report.offerResumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		        			result = result  +'<a  href=\"'+report.fileUrl+'\" download><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
 		        		}else if(report.toStage == "INTERVIEW"){
 		        			result = result  +'<span>'+report.loginUserName+' Scheduled interview <b>'+report.createdDateStr+'</b><h6>Interview Type : '+report.interviewType+'</h6><h6>Interview Date : '+report.interviewDateStr+'</h6><h6>Interview Time : '+report.interviewStartTime+' : '+interviewEndTime+'</h6> </span>';
 		        		}else if(report.toStage == "SHORTLIST"){
 		        			result = result  +'<span>Shortlisted by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
 		        		} else if(report.toStage == "REQUEST_SENT"){
 		        			result = result  +'<span>Added & Request Sent by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
+		        			result = result  +'<a href=\"'+report.resumeid+'\" download><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.contentType+'\');"></a><div class="clearfix"></div>';
 		        		} else if(report.toStage == "REJECTED"){
 		        			 result = result  +'<span>Request Rejected By '+report.userName+' <b>'+report.createdDateStr+'</b><h7>Reject Reson : '+report.requirementReson+'</h7></span>';
 		        		} else if(report.toStage == "SUBMISSION_ACCEPT"){
@@ -234,7 +257,8 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 		        			result = result  +'<span>Feedback by '+report.interviewerName+' <b>'+report.createdDateStr+'</b></span>';
 		        		}else if(report.toStage == "SUBMIT_TO_CLIENT"){
 		        			result = result  +'<span>Submit to Client '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
+		        			result = result  +'<a href=\"'+report.resumeid+'\" download><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.contentType+'\');"></a><div class="clearfix"></div>';
+
 		        		}else{
 		        			result = result  +'<div class="clearfix"></div>';
 		        		}
@@ -257,13 +281,13 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 
 </script>
 
-<script>
+<!-- <script>
 function getHistoryCandiResume(uuid,title){
 		if (uuid != null && uuid != "") {
 			window.open(sourceleadUrl + '/viewResume/' + title + '?resumeUUID='+ uuid, title, "height=600,width=600");
 		}
 	}
-</script>
+</script> -->
 
           
           <script>
@@ -278,7 +302,7 @@ function getRateListDiv(candidateId,submissionId){
 		  reqHistryRateListDate = 'MM-DD-YYYY'; 
 	  }if(locationList.match("yyyy-dd-MM")){
 		  reqHistryRateListDate = 'YYYY-DD-MM'; 
-	  }  
+	  }
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
@@ -292,7 +316,7 @@ function getRateListDiv(candidateId,submissionId){
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }else{
           			     var result = "";
-      			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+      			         result = result + '<i class="fa fa-times close-ratepop" title="Close" onClick="closeratediv();"></i>';
       			         result = result + '<p><strong>Rate Negotiation History</strong></p>';
          			     result = result + '<section class="tbl-scroll require_wrap_table">';
 	                     result = result + '  <table>';

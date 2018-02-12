@@ -27,6 +27,8 @@ public interface ProjectMembersHistoryService {
 	
 	void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception;
 	
+	public HashMap<String,Date> getAssignDateandEndDateByProjectMemberId(Long projectMemberId);
+	
 	ProjectMembersHistory getProjectMembersOpenHistoryByProjectClientsId(Long projectClientsId,Long projectMemberId) throws Exception;
 	
 	List<ProjectMembersHistory> getProjectMembersHistoryListByProjectMemberId(Long projectMemberId) throws Exception;

@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="ORG_RELATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
 public class OrgRelations implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,14 +38,14 @@ public class OrgRelations implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )   
 	@JsonBackReference
     private OrgLocations responderLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false )  
 	@JsonBackReference
     private OrgLocations locationId;
@@ -111,7 +110,7 @@ public class OrgRelations implements Serializable{
 	@Column(name="DUNS_NUMBER")
 	private String dunsNumber;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne
     @JoinColumn(name = "BANK_DETAILS_ID")
     private OrgBankDetails bankDetailsId;
@@ -217,39 +216,51 @@ public class OrgRelations implements Serializable{
 	private String paymentRemittanceEmail;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfContatcs;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfContatcsForCampaign;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfReleasedJobs;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfNonReleasedContacts;
 	
 	@Transient
+	@JsonProperty
 	private String locationOrgname;
 	
 	@Transient
+	@JsonProperty
 	private String locationWebsite;
 	
 	@Transient
+	@JsonProperty
 	private String locationCountry;
 	
 	@Transient
+	@JsonProperty
 	private String locationState;
 	
 	@Transient
+	@JsonProperty
 	private String locationCity;
 	
 	@Transient
+	@JsonProperty
 	private String responderId;
 	
 	@Transient
+	@JsonProperty
 	private String locationID;
 	
 	@Transient
+	@JsonProperty
 	private String level;
 	
 	@Transient
@@ -312,7 +323,7 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String clientContactIds;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
 	private Set<OrgSpoc> orgSpocList;

@@ -37,6 +37,18 @@ public class OrgSettings {
     private String generatedUserId;
 
     private String systemGeneratedId;
+    
+    private String dba;
+    
+    private String businessType;
+    
+    private String otherBusinessType;
+    
+    private Integer averageWorkingHours;
+    
+    private String poEmail;
+    
+    private String remittanceEmail;
 	
 
 	public Integer getId() {
@@ -171,6 +183,54 @@ public class OrgSettings {
 	public void setSystemGeneratedId(String systemGeneratedId)
 	{
 		this.systemGeneratedId = systemGeneratedId;
+	}
+
+	public String getDba() {
+		return dba;
+	}
+
+	public void setDba(String dba) {
+		this.dba = dba;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
+	}
+
+	public Integer getAverageWorkingHours() {
+		return averageWorkingHours;
+	}
+
+	public void setAverageWorkingHours(Integer averageWorkingHours) {
+		this.averageWorkingHours = averageWorkingHours;
+	}
+
+	public String getOtherBusinessType() {
+		return otherBusinessType;
+	}
+
+	public void setOtherBusinessType(String otherBusinessType) {
+		this.otherBusinessType = otherBusinessType;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getRemittanceEmail() {
+		return remittanceEmail;
+	}
+
+	public void setRemittanceEmail(String remittanceEmail) {
+		this.remittanceEmail = remittanceEmail;
 	}
 
 }

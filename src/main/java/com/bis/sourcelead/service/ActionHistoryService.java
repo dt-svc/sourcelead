@@ -11,7 +11,11 @@ public interface ActionHistoryService {
 
 	public  List<ActionHistory> getAllActionPerformedByUser(Long userSessionId, Long orgLocation) ;
 	
+	public  List<ActionHistory> getAllActionPerformedByUserActionUUID(String actionUUID, Long orgLocation) ;
+	
 	public  List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId) ;
+	
+	public  List<ActionHistory> getAllOrglocationsActionHistoryListActionUUID(String actionUUID) ;
 
 	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type) throws Exception;
 	

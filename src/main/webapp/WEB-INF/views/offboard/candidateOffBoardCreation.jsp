@@ -6,10 +6,10 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 
-<script src="resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/offboardCheckList-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<script src="/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/offboardCheckList-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 
 <script> 
@@ -47,7 +47,7 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -113,7 +113,9 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">Joined date</label>
                   <div class="col-md-6">
+                  
                     <input type="text" class="form-control input-sm calendar" id="dateOfJoin" name="dateOfJoin" readonly="readonly">
+                   
                   </div>
                 </div>
                 
@@ -157,9 +159,9 @@
                   <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
-                  </div>
                 </div>
-                  
+                 </div>
+                 
                   <div class="form-group">
                   <label class="col-md-3 control-label">Notice Period</label>
                   <div class="col-md-6 select-field">
@@ -195,29 +197,24 @@
                  <div class="form-group">
                        <label class="col-md-3 control-label">Offboard Template</label>
                   <div class="col-md-6 chooRadius">
-                  <div class="input-group col-md-10 pull-left">
-                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
+<div class="input-group col-md-10 pull-left">                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
                        </select>
-                        <span class="input-group-addon cursorPointer bg-blue" onclick="loadOffBoardingTemplates();"><i class="fa fa-refresh "></i></span>
-                  </div>
-                  <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')">
-                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
-               </sec:authorize>
-                </div>
-                </div>
+                        <span class="input-group-addon cursorPointer bg-blue" onclick="loadOffBoardingTemplates();"><i class="fa fa-refresh "></i></span>                  </div>
+ <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')">
+                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+               </sec:authorize></div>                </div>
+                
                 
                   <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOffBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_offboardUser" onclick="saveOffboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_offboardUser" onclick="saveOffboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
                 </div>
-                
-                </div>
                  </form:form>
               </div>
-            </div>s
+            </div>
             
             <!-- TAB 2 -->
             <div class="tab-pane" id="documents">
@@ -257,7 +254,7 @@
                
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -359,7 +356,7 @@
                                       Offboard User </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -656,7 +653,6 @@ function validate_fileupload(fileName)
 			    url: sourceleadUrl+"/getOffboardUserDetailsById?${_csrf.parameterName}=${_csrf.token}&offboardUserId="+offboardUserId,	    	   
 			    success: function(data) {
 			    	 var json = JSON.parse(data);
-			    	 
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
 			    	 $("#mobileNumber").val(json['mobilePhone']);
@@ -924,7 +920,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	        $("#save_offboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_offboardUser").attr("disabled", "disabled");
 	       
-	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
@@ -990,7 +986,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID+"&locationCode="+locationCode, 
@@ -1137,7 +1133,7 @@ function createTemplateDocs(saveType){
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
 		   var formData = getFormData1("templateDocuments_form");
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 		      data: formData,
@@ -1367,7 +1363,7 @@ function createOffboardCheckList(saveType){
 	        	$("#save_checkList_button").attr("disabled", "disabled");
 	        	$("#save_continue_checkList_button").attr("disabled", "disabled");
 	        	var checkListoffboardId = $("#checkListoffboardId").val();
-	        	 $("#offboardcheckListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        	 $("#offboardcheckListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	  $.ajax({
 	      	    	type: "POST",
 	      	        url: sourceleadUrl+"/saveCandidateOffboardCheckList?${_csrf.parameterName}=${_csrf.token}&checkListoffboardId="+checkListoffboardId+"&jsonStringData="+jsonStringData, 
@@ -1447,7 +1443,7 @@ function getOffboardingTasksList(){
 	
 	if(offboardId != null && offboardId != '' && offboardId!= 'undefined'){
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getCandidateOffboardTasksList?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId,	    	   
@@ -1547,7 +1543,7 @@ function saveAndFinishOffboardTemplate(offboardId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	$("#finish_task").attr("disabled", "disabled");
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishCandidateOffboard?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&tasks="+tasks, 	    	   
@@ -1689,7 +1685,7 @@ function saveOffboardTask(){
 	    	tasks = tasks.substring(0, tasks.length - 1);
 	    	var formData = getFormData1("addoffboardTask_form");
 	       
-	        $("#offboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#offboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
 		    	data: formData,
@@ -1732,7 +1728,7 @@ function getEndDate(){
 		 if(noticePeriod && noticePeriod != 'Relieve Immediately'){
 			 var sourceleadUrl ='${sourceleadUrl}';
 			 var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
-			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 
 			    $.ajax({
 					type : "GET",
@@ -1754,7 +1750,7 @@ function getEndDate(){
 </script>
 
 
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
   
 <script>
@@ -1779,3 +1775,4 @@ function scrollToBottom(){
         return false;
     });
 </script>
+

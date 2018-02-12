@@ -14,7 +14,8 @@ function getCandidateProfile(candidateId){
 	  $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-       success :function(json) {  
+       success :function(json) { 
+    	  
             if(json != null){  
             	//var json = JSON.parse(data);
           		 /* if( data.indexOf('Sign In') >= 0){
@@ -181,7 +182,7 @@ function candidateSkillsList(candidateId){
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
@@ -309,7 +310,7 @@ function candidateSkillsList(candidateId){
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
+								location.replace(sourceleadLoginUrl);
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
@@ -382,7 +383,7 @@ function reqEducationSubmissionProfile(candidateId){
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");

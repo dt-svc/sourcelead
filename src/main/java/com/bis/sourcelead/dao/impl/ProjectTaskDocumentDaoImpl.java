@@ -58,7 +58,7 @@ public class ProjectTaskDocumentDaoImpl implements ProjectTaskDocumentDao{
 	public List<ProjectTaskDocuments> getProjectTaskDocumentsListByProjectIdId(Long projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTaskDocuments  projectTaskDoc  where projectTaskDoc.projectTaskId.id =:projectTaskId";
-		List<ProjectTaskDocuments> projectTaskDocumentList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setCacheable(true).list();
+		List<ProjectTaskDocuments> projectTaskDocumentList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
 		return projectTaskDocumentList;
 	}
 
@@ -67,7 +67,7 @@ public class ProjectTaskDocumentDaoImpl implements ProjectTaskDocumentDao{
 	public ProjectTaskDocuments getProjectTaskDocumentsById(Long projectTaskDocumentId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTaskDocuments  projectTaskDoc  where projectTaskDoc.Id =:projectTaskDocumentId";
-		List<ProjectTaskDocuments> projectTaskDocList = session.createQuery(query).setLong("projectTaskDocumentId", projectTaskDocumentId).setCacheable(true).list();
+		List<ProjectTaskDocuments> projectTaskDocList = session.createQuery(query).setLong("projectTaskDocumentId", projectTaskDocumentId).list();
 		ProjectTaskDocuments projectTaskDoc = null;
 		if (projectTaskDocList != null && projectTaskDocList.size() > 0) {
 			projectTaskDoc = (ProjectTaskDocuments) projectTaskDocList.iterator().next();

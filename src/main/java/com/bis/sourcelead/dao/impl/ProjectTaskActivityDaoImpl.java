@@ -68,7 +68,7 @@ public class ProjectTaskActivityDaoImpl implements ProjectTaskActivityDao{
 	public List<ProjectTaskActivity> getProjectTaskActivityByProjectTaskId(Long projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTaskActivity activity  where projectTaskId.id =:projectTaskId ORDER BY activity.createdDate DESC"; 
-		List<ProjectTaskActivity> activityList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setCacheable(true).list();
+		List<ProjectTaskActivity> activityList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
 		return activityList;
 	}
 	

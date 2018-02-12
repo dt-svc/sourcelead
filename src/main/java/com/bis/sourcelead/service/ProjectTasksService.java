@@ -26,6 +26,8 @@ public interface ProjectTasksService {
     
     public ProjectTasks getProjectTasksByUUID(String taskUUD)throws Exception;
     
+    public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId,String taskName)throws Exception;
+    
     public Boolean deleteTask(String id)throws Exception;
     
     public List<ProjectTasks> getAllTasks()throws Exception;
@@ -59,6 +61,16 @@ public interface ProjectTasksService {
 	public void updateTaskPercentage(Integer percentage, String taskId, Long userId)throws Exception;
 	
 	public void updateBillingType(String billing, String taskId, Long userId)throws Exception;
+	
+	public void updateDueDate(String dueDate, String taskId, Long userId)throws Exception;
+	
+	public void updateEstimatedTime(String estimatedTime, String taskId, Long userId)throws Exception;
+	
+	public void updateOwner(Long ownerId, String taskId, Long userId)throws Exception;
+	
+	public void updateEpic(Long epicId, String taskId, Long userId)throws Exception;
+	
+	public void updateUserStory(Long userStoryId, String taskId, Long userId)throws Exception;
 	
 	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception;
 	

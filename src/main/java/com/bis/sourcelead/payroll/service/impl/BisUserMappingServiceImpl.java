@@ -74,7 +74,6 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
-			int isValid = 0;
 			int version;
 			version = getBisUserMappingVersionByLocationId(orgLocation.getId());
 			version += 1;
@@ -277,21 +276,25 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 							checks.setVendorPayments(Math.round(vendorPayments * 100D) / 100D);
 						}
 						if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-//							electronicWithDrawals = Double.parseDouble(getCellValueAsString(row.getCell(10), fileName));
-//							checks.setElectronicWithdrawals(Math.round(electronicWithDrawals * 100D) / 100D);
 							checks.setElectronicWithdrawals(getCellValueAsString(row.getCell(10), fileName));
 						}
 						if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
-							payrollChecks = Double.parseDouble(getCellValueAsString(row.getCell(11), fileName));
-							checks.setPayrollChecks(Math.round(payrollChecks * 100D) / 100D);
+							checks.setHealthInsurance(getCellValueAsString(row.getCell(11), fileName));
 						}
 						if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-							amount = Double.parseDouble(getCellValueAsString(row.getCell(12), fileName));
+							checks.setImmigration(getCellValueAsString(row.getCell(12), fileName));
+						}
+						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+							payrollChecks = Double.parseDouble(getCellValueAsString(row.getCell(13), fileName));
+							checks.setPayrollChecks(Math.round(payrollChecks * 100D) / 100D);
+						}
+						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+							amount = Double.parseDouble(getCellValueAsString(row.getCell(14), fileName));
 							checks.setAmount(Math.round(amount * 100D) / 100D);
 							;
 						}
-						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
-							String checkNumber = getCellValueAsString(row.getCell(13), fileName);
+						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
+							String checkNumber = getCellValueAsString(row.getCell(15), fileName);
 							checks.setCheckNo(checkNumber.split("\\.")[0]);
 						}
 						checks.setCreatedBy(user.getUserCode());

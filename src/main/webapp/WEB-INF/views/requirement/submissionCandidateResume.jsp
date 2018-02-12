@@ -94,7 +94,7 @@ function candidateResumeById(candidateId){
 					           		result = result+'	            <td><div><span title="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+createdBy+'">'+createdBy+'</span></div></td>';
-					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" title="Download" target="_blank" href=\"'+opt.fileURL+'\"></a>';
+					           		result = result+'	            <td><div class="tblicons"><a download class="glyphicon glyphicon-download-alt" title="Download" target="_blank" href=\"'+opt.fileURL+'\"></a>';
 					           		result = result+'	            </div></td>';
 					           		result = result+'	          </tr>';
 				             }

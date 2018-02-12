@@ -52,7 +52,7 @@
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
-	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,
@@ -85,6 +85,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }); 
 	    	   
 	    	   var designation = '';
+	    	   var designationType = '';
 	    	   var experience = '';
 	    	   var noticeperiod = '';
 	    	   
@@ -187,7 +188,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
                result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
                }else{
-               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
    
                }
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
@@ -195,7 +196,6 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
 					  }
 				  }
-               
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
@@ -408,10 +408,10 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 
 		       result = result + '<div class="require_wrap_details">';
 		       if(json.submissionStatus == 'REJECTED'){
-		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div class="clearfix" id="reactiveApplicantBtnDiv"><a class="pull-right btn btn-primary btn-sm color_white" id="reactiveApplicant" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       if(json.submissionStatus == 'BACKOUT'){
-		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div class="clearfix" id="reactiveApplicantBtnDiv"><a class="pull-right btn btn-primary btn-sm color_white" id="reactiveApplicant" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
@@ -866,7 +866,7 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/acceptOrRejectInterview?"+tokenParamName+"="+tokenValue+"&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/ws/acceptOrRejectInterview?"+tokenParamName+"="+tokenValue+"&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
 		    	 if(interviewStatus == "Attending"){
@@ -1115,11 +1115,10 @@ function getOfferDetails(submissionId){
 	
 	                         var accept = "OFFERACCEPTED";
 	                    	 var reject = "OFFERREJECTED";
-	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav">';
 	                    	 result = result + '<span id="'+report.offerId.id+'offerActionDiv">';
-	                    	 if(report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" ){
+	                    	 if(report.submissionStatusStr != "REJECTED" && report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" &&  report.offerId.offerStatus != "CLIENT_OFFERACCEPTED" ){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ACCEPT_OFFER\')">';
 	                    		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"   ><i class="fa fa-check text-success"></i></a>';
 	                    		 '</sec:authorize>';
@@ -1216,7 +1215,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1308,6 +1307,7 @@ function rejectOffer(offerStatus,submissionId,offerId){
 <script>
 function acceptingOffer(offerStatus,submissionId,offerId){
 	
+	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var reason;
@@ -1333,8 +1333,8 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           	 if(offerStatus == "OFFERREJECTED"){
           		$("#"+(offerId)+"showOfferStatus").html("<font color='red' >OFFERREJECTED</font>");
           	 }
- 
-        	 $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+             $("#offerLoading").removeAttr('style');
+             $("#remove_user_pop, .project_inn_mask").fadeOut(200);
         	 getOfferDetails(submissionId);
         	 
        },
@@ -1351,7 +1351,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({  
         type : "POST",
         url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
@@ -1364,7 +1364,7 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 		    	else{
 		    		 $("#"+(offerHistoryId)+"offerNotifiedDiv").html(existingVal+",Applicant");
 		    	}
-		    	$("#offerLoading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		    	$("#offerLoading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       },
         
    });  
@@ -2033,6 +2033,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 }
 function closefeedback(){
 	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
+	$("#noviewfeedbackdiv").fadeOut(200);
 }
 </script>
 <script>
@@ -2381,11 +2382,13 @@ $("#notMail").click(function(){
 <!-- this script using for interview feedback Ends -->
 <script type="text/javascript">
 function reActivateApplicant(submissionId,candidateId,requirementId,type){
+	$("#reactiveApplicantBtnDiv").remove();
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
+	//$("#reactiveApplicant").attr("disabled","disabled");
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
 // 	if (message == true) {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateRejectedApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&type="+type,        
@@ -2408,6 +2411,7 @@ function feedback_close() {
 	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
 	$("#mask_inner").fadeOut();
 	$('.demo').fadeOut();
+	$("#noviewfeedbackdiv").fadeOut(200);
 }
 </script>
 

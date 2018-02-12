@@ -76,7 +76,7 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	}
 
 	@Override
-	public void saveuserContacts(User user, OrgLocations orgLocations, ReferContactsDTO referContactsDTO) throws Exception {
+	public void saveuserContacts(User user,  ReferContactsDTO referContactsDTO) throws Exception {
 		
 		ReferContacts referContacts = new ReferContacts();
 		
@@ -103,7 +103,6 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		referContacts.setReferFromUser(user);
 		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
 		referContacts.setContactUserUUID(contactUUID);
-		referContacts.setOrgLocationId(orgLocations);
 		referContacts.setCreatedDate(new Date());
 		referContacts.setUpdatedDate(new Date());
 		referContacts.setCreatedBy(user.getUserCode());
@@ -184,6 +183,52 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	@Override
 	public void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception {
 		  referContactsDao.saveAllReferContacts(referContactsList);
+	}
+
+	@Override
+	public Boolean validateGoogleEamil(String email, Long loginUserId) throws Exception {
+		return referContactsDao.validateGoogleEamil(email, loginUserId);
+	}
+
+	@Override
+	public ReferContacts findByEmail(String recipientMail) throws Exception
+	{
+		return referContactsDao.findByEmail(recipientMail);
+	}
+
+	@Override
+	public void saveuserContactsFromConnections(User fromUser, User toUser)
+			throws Exception {
+		
+		ReferContacts referContacts = new ReferContacts();
+		if(StringUtils.isNoneBlank(toUser.getFirstName())){
+			referContacts.setFirstName(toUser.getFirstName());
+		}
+		if(StringUtils.isNoneBlank(toUser.getLastName())){
+			referContacts.setLastName(toUser.getLastName());
+		}
+
+		referContacts.setContactUser(toUser);
+		if(StringUtils.isNoneBlank(toUser.getMobilePhone())){
+			referContacts.setContactUserPhone(toUser.getMobilePhone());
+		}
+		referContacts.setReferFromUser(fromUser);
+		String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+		referContacts.setContactUserEmail(toUser.getEmail());
+		referContacts.setContactUserUUID(contactUUID);
+		referContacts.setCreatedDate(new Date());
+		referContacts.setUpdatedDate(new Date());
+		referContacts.setCreatedBy(fromUser.getUserCode());
+		referContacts.setUpdatedBy(fromUser.getUserCode());
+		referContacts.setContactSource(Contact_Source.SELF);
+		referContactsDao.addReferContacts(referContacts);
+		
+		
+	}
+
+	@Override
+	public ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception {
+		return referContactsDao.getReferContactsByFromUserIdAndToUserId(fromUserId, toUserId);
 	}
 
 }

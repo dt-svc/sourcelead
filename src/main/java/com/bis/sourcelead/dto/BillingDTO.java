@@ -3,9 +3,12 @@ package com.bis.sourcelead.dto;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BillingDTO {
 	
@@ -92,6 +95,9 @@ public class BillingDTO {
 	private String memberId;
 	private String expensesFrequency;
 	private String expId;
+	
+	private String orgRelationUUID;
+	
 	public Long getId()
 	{
 		return id;
@@ -756,8 +762,13 @@ public class BillingDTO {
 	{
 		this.expId = expId;
 	}
-	
-	
-	
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
 	
 }

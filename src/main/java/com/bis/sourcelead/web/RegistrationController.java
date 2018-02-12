@@ -103,7 +103,7 @@ public class RegistrationController {
 	 EmailDomainsService emailDomainsService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/enrolledOrgsList")
+	 @RequestMapping(value = "/app/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
 		 
 		    commonUtil.highLightMenu(Constants.OrgSettings, request);
@@ -123,7 +123,7 @@ public class RegistrationController {
 	 }
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/enrollOrg")
+	 @RequestMapping(value = "/app/enrollOrg")
 		public ModelAndView registration() {
 			ModelAndView model = new ModelAndView();
 			List<Modules> modulesList = null;
@@ -162,7 +162,7 @@ public class RegistrationController {
 	 * @throws Exception 
 	  */
 	 
-	 @RequestMapping(value = "/acceptClientOrVendorInvitation")
+	 @RequestMapping(value = "/app/ws/acceptClientOrVendorInvitation")
 		public void acceptClientOrVendorInvitation(@RequestParam(value = "respondingOrgType", required = false) String respondingOrgType,
 				@RequestParam(value = "actionLink", required = false) String actionLink,
 				@RequestParam(value = "UUID", required = false) String UUID,
@@ -225,10 +225,12 @@ public class RegistrationController {
 					if(!isNullOrEmpty(spocUUID)){
 						OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
 						if(null != orgSpoc){
-							orgLocations.setUser(orgSpoc.getVendorUser());
+							orgLocations.setUser(orgSpoc.getClientUser());
+							org.setUser(orgSpoc.getClientUser());
 						}
 					}
-					
+					orgService.addOrganization(org);
+					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
 		    	}
@@ -241,7 +243,7 @@ public class RegistrationController {
 		    
 			if(null == actionLink){
 				StringBuilder redirectUrl = new StringBuilder();
-				response.sendRedirect(redirectUrl.append("/sourcelead/Inlogin?spocUUID=").append(spocUUID).append("&UUID=").append(UUID).toString());
+				response.sendRedirect(redirectUrl.append("/Inlogin?spocUUID=").append(spocUUID).append("&UUID=").append(UUID).toString());
 			}else{
 				 StringBuilder redirectUrl = new StringBuilder();
 				 if("acceptNotification".equalsIgnoreCase(actionLink)){
@@ -274,7 +276,7 @@ public class RegistrationController {
 					 }
 				 }
 				 
-				 response.sendRedirect(redirectUrl.append("/sourcelead/dashboard/").append(respondingPartyOrgLocationId).toString());
+				 response.sendRedirect(redirectUrl.append("/app/dashboard/").append(respondingPartyOrgLocationId).toString());
 			}
 			
 		}
@@ -282,7 +284,7 @@ public class RegistrationController {
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/enrolledOrgSummary")
+	 @RequestMapping(value = "/app/enrolledOrgSummary")
 		public ModelAndView enrolledOrgSummary(HttpServletRequest request,
 				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
 			    ModelAndView model = new ModelAndView();
@@ -332,6 +334,7 @@ public class RegistrationController {
 				
 				if(null != orgLocations.getUser()){
 					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
+					if(userRole != null)
 					model.addObject("userState",userRole.getUserState());
 				}
 				
@@ -343,7 +346,7 @@ public class RegistrationController {
 	 
 	 
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-		@RequestMapping(value = "/getOrgRegisteredUsers")
+		@RequestMapping(value = "/app/getOrgRegisteredUsers")
 		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
 				HttpServletRequest request) throws Exception {
 
@@ -371,7 +374,7 @@ public class RegistrationController {
 		
 		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-		@RequestMapping(value = "/getRegisteredOrgRoles", method = RequestMethod.POST)
+		@RequestMapping(value = "/app/getRegisteredOrgRoles", method = RequestMethod.POST)
 		public @ResponseBody String getReportingManager(
 				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
 			String resultJson = null;
@@ -381,7 +384,7 @@ public class RegistrationController {
 		}
 		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-		@RequestMapping(value = "/validateRegisteredUserEmail" , method = RequestMethod.POST)
+		@RequestMapping(value = "/app/validateRegisteredUserEmail" , method = RequestMethod.POST)
 		 public @ResponseBody  String validateUserEmail(@RequestParam(value="emailId", required=false) String emailId,
 				 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -397,7 +400,7 @@ public class RegistrationController {
 		   }
 		
 		
-		 @RequestMapping(value = "/validateOrgPrimaryUserEmail",  method = RequestMethod.GET)
+		 @RequestMapping(value = "/app/validateOrgPrimaryUserEmail",  method = RequestMethod.GET)
 		    public @ResponseBody String validateOrgPrimaryUserEmail(@RequestParam(value="email", required=false) String email,
 		    		@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 		    		@RequestParam(value="json", required=false) String json) throws Exception {
@@ -458,7 +461,7 @@ public class RegistrationController {
 	 
 	 
 	 
-	  @RequestMapping(value = "/validateCrowdSourcingEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/app/ws/validateCrowdSourcingEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
@@ -472,24 +475,31 @@ public class RegistrationController {
 	   }
 	  
 	  
-	  @RequestMapping(value = "/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
+	  @RequestMapping(value = "/app/ws/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateCrowdSourcingRegistrationEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
 		  String[] registeredEmail = email.split("[@]"); 
 		  EmailDomains emailDomains = emailDomainsService.getEmailDomainsByDomainName(registeredEmail[1]);
 		  
+		  String status = "";
 		  if(null != emailDomains){
-			  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
-			  if(null == userRole){
-				  return "Success";
+			  User user = userService.findByEmail(email);
+			  if(user != null){
+				  status = "User found";
+				  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+				  if(null == userRole){
+					  status = "Success";
+				  }else{
+					  status = "Invalid";
+				  }
 			  }else{
-				  return "Invalid";
-			  } 
+				  status = "Not found";
+			  }
 		  }else{
-			  return "Invalid Domain";
+			  status = "Invalid Domain";
 		  }
-		  
+		  return status;
 	   }
 	  
 	  
@@ -525,6 +535,19 @@ public class RegistrationController {
 		  }else{
 			  return "Invalid";
 		  }
+	   }
+	  
+	  @RequestMapping(value = "/app/ws/verifyAccount",  method = RequestMethod.GET)
+	   public ModelAndView verifyAccount(@RequestParam(value="requirementUUID", required=false) String requirementUUID,@RequestParam(value="referUUID", required=false) String referUUID) throws Exception {
+		  
+		  ModelAndView model = new ModelAndView();
+		  if(referUUID != null)
+			  model.addObject("referUUID", referUUID);
+		  if(requirementUUID != null)
+			  model.addObject("requirementUUID", requirementUUID);
+		  model.addObject("sourceleadUrl", sourceleadUrl);
+		  model.setViewName("verifyAccount");
+		  return model;
 	   }
 	  
 	 

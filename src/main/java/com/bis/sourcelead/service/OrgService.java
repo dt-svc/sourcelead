@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.form.OrgSettings;
@@ -20,9 +21,11 @@ public interface OrgService {
 
 	public List<Org> getOrgs() throws Exception;
 	
+	public List<Org> getOpenJobsOrgs() throws Exception;
+	
 	public String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
-	public Org saveOrgSettings(OrgSettings orgSettings,MultipartFile multiFile,Org org) throws Exception;
+	public Org saveOrgSettings(CompanyRegistrationDTO companyRegistrationDTO, Org org) throws Exception;
 	
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
 	
@@ -36,7 +39,7 @@ public interface OrgService {
 	public boolean isClientNameValid(String clientName ,Long orgLocationId,String responderType) throws Exception;
 	
 	
-	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception;
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName,Integer offSet) throws Exception;
 	
 	
 	public boolean isOrgNameExisted(String orgName) throws Exception;
@@ -48,6 +51,6 @@ public interface OrgService {
 	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception;
 
 	public List<UserDTO> getUserListForOrgChart(Long orgLocationId) throws Exception;
-
-
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet);
+	
 }

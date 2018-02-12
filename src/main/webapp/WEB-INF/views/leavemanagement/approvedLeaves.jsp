@@ -18,7 +18,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Approved</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -64,7 +64,7 @@ function redirectlocation(location){
 function getApprovedLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=APPROVED&userId="+userId, function(json) {
 		var result = "";				        	
 				result = result + '<table id="approvedListTable" class="display" cellspacing="0" width="100%" >';
@@ -88,7 +88,7 @@ function getApprovedLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show divmax-width">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right"></i></div>';
+			        		 result = result + '     <div class="pull-left tbldata-dotdot" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+orgLocationId+');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right"></i></div>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -126,7 +126,7 @@ function getApprovedLeavesList(){
 			        		 result = result + '  <div title="'+opt.status+'" class="tblminwidth-75">';
 			        		 result = result +' <b class="proj_active mt5 mb5">'+opt.status+'</b> ';
 			        		 if(opt.isWithdrawEnable !=null && opt.isWithdrawEnable !='' && opt.isWithdrawEnable == 'Y' ){
-			        			 result = result +' <b class="proj_closed mb5 cursorPointer" title="WITHDRAW" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">WITHDRAW</b>';	 
+			        			 result = result +' <b class="proj_closed mb5 cursorPointer" title="WITHDRAW" onClick="withDrawLeave(\''+opt.leaveUUID+'\','+orgLocationId+');">WITHDRAW</b>';	 
 			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
@@ -156,8 +156,8 @@ function getApprovedLeavesList(){
 </script>
 
 <script>
-function getRequestedAproveSummary(leaveId,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+function getRequestedAproveSummary(leaveUUID,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
 		   if(data != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
@@ -271,7 +271,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +' <div class="col-md-8">';
 //              result = result +' <span><a href="javascript:void(o)">demo.pdf<i class="fa fa-download padddingLeft cursorPointer"></i></a></span>';
 	         if(data.fileUrl != null && data.fileUrl != 'undefined' && data.fileUrl != ''){
-	        	result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
+	        	result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+data.fileUrl+'\" title="Download"></a>&nbsp&nbsp';
 	            result = result + '<a href="#" title="Preview"><i class="fa fa-eye cursorPointer" onclick="viewFile(\''+data.fileUrl+'\', \''+data.fileName+'\', \''+data.fileContentType+'\')"></i></a>';
 	            
 	         }else{
@@ -326,13 +326,13 @@ function approvedListPagination(){
 <div id="popUp"></div>
 
 <script>
-function withDrawLeave(leaveId, userId){
+function withDrawLeave(leaveUUID, userId){
 	var result = "";
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Withdraw Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Withdraw Reason' rows='2'></textarea>";
 	result = result + ' <div id="withdrawReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveId+'\','+userId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveUUID+'\','+userId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -349,7 +349,7 @@ function cancelTermination(){
 }
 </script>
 <script>
-function withdraw(leaveId,userId){
+function withdraw(leaveUUID,userId){
 	 var reason = document.getElementById("withdrawReason").value;
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 // 	 var userId = '${SourceLeadWeb_userId}';
@@ -358,7 +358,7 @@ function withdraw(leaveId,userId){
 	  	 $("#withdrawReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
 	 }else{
 		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
-		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&reason="+reason+"&userId="+userId, function(data) {
+		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId, function(data) {
 				if(data == true){
 					$("#popUp").empty();
 		 			$("#remove_user_pop, .sideMask").fadeOut();

@@ -225,11 +225,15 @@ public class Html2PdfUtil {
 		            else if(matchPattern.group().equalsIgnoreCase("[Overtime]") || matchPattern.group().equalsIgnoreCase("[Overtime Hours]")){
 		            	if(null !=contracts.getOverTimeHours()){
 		            		matchPattern.appendReplacement(sb, contracts.getOverTimeHours());
+		            	}else {
+		            		matchPattern.appendReplacement(sb, "");
 		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Payment Term]") || matchPattern.group().equalsIgnoreCase("[Payment Frequency]")){
 		            	if(null !=contracts.getPaymentTerm()){
 		            		matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
+		            	}else {
+		            		matchPattern.appendReplacement(sb, "");
 		            	}
 	                }
 	              

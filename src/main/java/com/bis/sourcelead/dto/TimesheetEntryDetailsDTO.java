@@ -1,9 +1,14 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -16,15 +21,34 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 	
 	private Long masterCandidateId;
 	
+    private Map<String, List<WeekDaysDTO>> weekDaysMap;
+    
     private Map<String,String> timeFrequencies;
 	
 	private String currentTimeFrequency;
 	
 	private Map<String,String> timeSubFrequencies;
 	
+	private LinkedList<String> filledTimeSubFrequencies;
+	
 	private String currentTimeSubFrequency;
 	
 	private TimeSheetSubmissionDTO timesheetSubmission;
+	
+	private String timesheetFor;
+	
+	private String profileImageFileUrl;
+	
+	private String employeeName;
+	
+	private String employeeEmail;
+	
+	private String employeePhoneNo;
+	
+	private String locDateFomat;
+	
+	@JsonIgnore
+	private Map<String,String>  timesheetFrequencyMap;
 	
 
 	public List<ProjectMembersDTO> getProjectMembersList() {
@@ -97,7 +121,79 @@ public class TimesheetEntryDetailsDTO implements Serializable{
 		this.timesheetSubmission = timesheetSubmission;
 	}
 
-	
+	public String getTimesheetFor() {
+		return timesheetFor;
+	}
 
-    
+	public void setTimesheetFor(String timesheetFor) {
+		this.timesheetFor = timesheetFor;
+	}
+
+	public Map<String, String> getTimesheetFrequencyMap() {
+		return timesheetFrequencyMap;
+	}
+
+	public void setTimesheetFrequencyMap(Map<String, String> timesheetFrequencyMap) {
+		this.timesheetFrequencyMap = timesheetFrequencyMap;
+	}
+
+	public LinkedList<String> getFilledTimeSubFrequencies() {
+		return filledTimeSubFrequencies;
+	}
+
+	public void setFilledTimeSubFrequencies(LinkedList<String> filledTimeSubFrequencies) {
+		this.filledTimeSubFrequencies = filledTimeSubFrequencies;
+	}
+
+	public String getProfileImageFileUrl() {
+		return profileImageFileUrl;
+	}
+
+	public void setProfileImageFileUrl(String profileImageFileUrl) {
+		this.profileImageFileUrl = profileImageFileUrl;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public String getEmployeeEmail() {
+		return employeeEmail;
+	}
+
+	public void setEmployeeEmail(String employeeEmail) {
+		this.employeeEmail = employeeEmail;
+	}
+
+	public String getEmployeePhoneNo() {
+		return employeePhoneNo;
+	}
+
+	public void setEmployeePhoneNo(String employeePhoneNo) {
+		this.employeePhoneNo = employeePhoneNo;
+	}
+
+	public String getLocDateFomat() {
+		return locDateFomat;
+	}
+
+	public void setLocDateFomat(String locDateFomat) {
+		this.locDateFomat = locDateFomat;
+	}
+
+	public Map<String, List<WeekDaysDTO>> getWeekDaysMap() {
+		return weekDaysMap;
+	}
+
+	public void setWeekDaysMap(Map<String, List<WeekDaysDTO>> weekDaysMap) {
+		this.weekDaysMap = weekDaysMap;
+	}
+
+	
+	
+     
 }

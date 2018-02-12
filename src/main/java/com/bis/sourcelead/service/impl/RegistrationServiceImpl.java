@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,11 +33,11 @@ import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -91,9 +92,9 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.DefaultContractTemplateUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.ibm.icu.util.Calendar;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
@@ -139,6 +140,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
@@ -203,7 +207,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception {
+	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,CandidateDTO candidateDTO) throws Exception {
 		
 		String[] registredModules =  modules.split(",");
 		Org org = null;
@@ -236,6 +240,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		try {
 			userService.addUser(user);
+			if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+				sendActivationEmail(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -293,7 +299,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		 MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetails(registration,user);
 		 }
@@ -423,6 +429,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
+		
+		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+		user.setUrlSentTime(new Date());
+		user.setIsVerified(Constants.NO);
+		user.setLoginSecurity(Constants.NO);
+		user.setRegistrationType("Newly Registered");
 		return user;
 	}
 	
@@ -431,10 +443,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 			 	
 	    	Projects projects = new Projects();
 	    	StringBuilder defaultProjectName = new  StringBuilder();
-	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
+	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName().trim()).append(" ").append("Default Project").toString());
 	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
-	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
+
+	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName().trim()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
+	    	
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.MONTH, -2);
+	    	Date startDate = cal.getTime();
+	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
+	    	
+	    	projects.setStartDate(projStartDate);
+
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    	projects.setTimesheetFrequency(Constants.WEEKLY);
 	    	projects.setProjectStatus(Project_Status.INPROGRESS);
@@ -506,12 +527,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
+
+		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
-		orgLocations.setOrgLocationName(registration.getCompanyName());
+		orgLocations.setOrgLocationName(registration.getCompanyName().trim());
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
+		orgLocations.setIsCompanyOnboarded(Constants.NO);
+		
+	    if(StringUtils.isNotBlank(registration.getDba())){
+        	orgLocations.setDba(registration.getDba());
+        }
+        
+        if(registration.getGeneratedUserId() != null &&  !registration.getGeneratedUserId().isEmpty()){
+        	orgLocations.setGeneratedUserId(registration.getGeneratedUserId());
+        }
+        
+        if(registration.getAverageWorkingHours() != null) {
+        	orgLocations.setAverageWorkingHours(registration.getAverageWorkingHours());
+        }
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
 			orgLocations.setIsPrimary(Constants.YES);
@@ -670,6 +706,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setUpdatedBy(user.getUserCode());
 		 submissionTemplate.setTemplateType("Submission");
 		 submissionTemplate.setUpdatedDate(new Date());
@@ -733,7 +770,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 StringBuilder loginURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -773,7 +810,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(sourceleadUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+		 String mailUrl = sourceleadUrl.replace("/app", "");
+		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1002,6 +1040,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 if(userRole == null){
 		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		 }
+		 OrgLocations locations= orgLocationService.getOrgLocations(locationId);
 		 
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
@@ -1024,11 +1063,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		// globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		/* globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("administratorLastName",loginUser.getLastName());*/
+		 StringBuilder stringbuilder=new StringBuilder();
+		 if(loginUser.getFirstName() != null && loginUser.getLastName() !=""){
+			 globalVarsMap.put("loginUser",stringbuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("loginUser", user.getFirstName());	 
+		 }
 		 globalVarsMap.put("role",userRole.getUserType());
+		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -1093,15 +1139,21 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 			
 			user.setUserName(csuRegistrationDTO.getEmail());
+			user.setPassword(sourceleadPasswordEncoder.encode(csuRegistrationDTO.getConfirmPassword()));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			
 			user.setUserType(Constants.PROFESSIONAL);
 			user.setCreatedBy("sladmin");
 			user.setCreatedDate(new Date());
 			user.setUpdatedDate(new Date());
+			
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			
 			user.setRegistrationType("Newly Registered");
 			userService.addUser(user);
-			result = "success";
+			result = "success"+user.getId();
 			
 		}else{
 			user.setRegistrationType("Existed User");
@@ -1130,6 +1182,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}else{
 			userRole.setIsPrimary(0);
 		}
+		
+//		userRole.setVerificationUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+//		userRole.setUrlSentTime(new Date());
+//		userRole.setIsVerified(Constants.NO);
 		
 		userRole.setCreatedBy("sladmin");
 		userRole.setCreatedDate(new Date());
@@ -1207,12 +1263,61 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 		}
 		
+		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+			sendActivationEmail(user);
+		else
+			sendEmailToProfessional(user);
 		
-		sendEmailToProfessional(user);
 		return result;
 	}
 	
 	
+	public void sendActivationEmail(User user) throws Exception
+	{
+		StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 professionalName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 professionalName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("registerName", professionalName);
+		 StringBuilder verifylink = new StringBuilder();
+		 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+	}
+
 	public void sendEmailToProfessional(User user) throws Exception {
 		
 		 
@@ -1238,14 +1343,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("loginUserName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 
-		 if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
-		 }else{
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 }
+
+		 //if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
+			// globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
+		// }else{
+
+			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+//		 }
 
 		 StringBuilder linkBuilder = new StringBuilder();
-				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 				
 				 StringBuilder fbLinkBuilder = new StringBuilder();
 				 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
@@ -1310,15 +1417,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 			//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 					
 			user.setUserName(csuRegistrationDTO.getEmail());
+			user.setPassword(sourceleadPasswordEncoder.encode(csuRegistrationDTO.getConfirmPassword()));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			user.setCreatedBy("sladmin");
 			user.setCreatedDate(new Date());
 			user.setUpdatedDate(new Date());
 			
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			
 			user.setRegistrationType("Newly Registered");
 			userService.addUser(user);
-			result = "success";
+			result = "success"+user.getId();
 		}else{
 			user.setRegistrationType("Existed User");
 			user.setRecruiterRegisterCountry(csuRegistrationDTO.getLocation());
@@ -1398,7 +1510,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
-		sendEmailToIndividualRecruiter(user);
+		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+			sendActivationEmail(user);
+		else
+			sendEmailToIndividualRecruiter(user);
+		
 		return result;
 		
 	}
@@ -1454,14 +1570,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 StringBuilder loginBuilder = new StringBuilder();
 		 
 		 
-		 if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
-		 }else{
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 }
+
+		 //if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
+			// globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
+		 //}else{
+
+		 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+//		 }
 		 
 		  StringBuilder linkBuilder = new StringBuilder();
-			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 			
 			 StringBuilder fbLinkBuilder = new StringBuilder();
 			 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
@@ -1517,19 +1635,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 						String profileUrl = jsonObj.getString("profileUrl");
 						if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
 							user.setGooglePlus(profileUrl);
-							can.setGooglePlus(profileUrl);
+							//can.setGooglePlus(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
 							user.setFacebook(profileUrl);
-							can.setFacebookUrl(profileUrl);
+							//can.setFacebookUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
 							user.setTwitter(profileUrl);
-							can.setTwitterUrl(profileUrl);
+							//can.setTwitterUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
 							user.setLinkedIn(profileUrl);
-							can.setLinkedUrl(profileUrl);
+							//can.setLinkedUrl(profileUrl);
 						}
 						
 					}
@@ -1555,14 +1673,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 					user.setCountry(jsonObj.getString("location"));
 				}
 				
+				if(jsonObj.has("confirmPassword") && !isNullOrEmpty(jsonObj.getString("confirmPassword"))){
+					user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("confirmPassword")));
+				}
+				
 				user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 					user.setUserName(jsonObj.getString("userName"));
 				}
-				if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+				/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 					user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 					user.setFileContentType("image/png");
-				}
+				}*/
 				if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 				  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
 					String service = jsonObj.getString("service");
@@ -1727,10 +1849,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 				user.setUserName(jsonObj.getString("userName"));
 			}
-			if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+			/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 				user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 				user.setFileContentType("image/png");
-			}
+			}*/
 			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 			  && jsonObj.has("profileurl") && !isNullOrEmpty(jsonObj.getString("profileurl"))){
 				String service = jsonObj.getString("service");
@@ -1891,6 +2013,55 @@ public class RegistrationServiceImpl implements RegistrationService{
 		masterCandidate.setUpdatedBy(user.getUserCode());
 		masterCandidate.setUpdatedDate(commonUtil.currentDate());
 		return masterCandidate;
+	}
+
+	@Override
+	public String sendOtpToUser(User user, String type) throws Exception
+	{
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String userName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 userName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 userName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 String token = RandomStringUtils.randomAlphanumeric(6);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("userName", userName);
+		 globalVarsMap.put("token", token);
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LOGIN_OTP_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+		 return token;
+				
 	}
 
 }

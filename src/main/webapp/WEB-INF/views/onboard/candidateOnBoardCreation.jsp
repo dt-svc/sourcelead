@@ -5,10 +5,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 
 
@@ -51,7 +51,7 @@
       <div class="pull-left">
         <h2>Employee Onboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
  </section>
  
  
@@ -91,7 +91,7 @@
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -165,7 +165,7 @@
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -259,7 +259,7 @@
                                       Candidate </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -748,7 +748,6 @@ function validateUploadFile(id)
 	  var candidateId = candidate[0];
 	  
 	  
-	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
 		  $.ajax({
@@ -759,7 +758,14 @@ function validateUploadFile(id)
 		        	
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
-			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	 
+			    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+			        		$("#mobileNumber").val(json['mobilePhone']);
+			        		$("#mobileNumber").attr("readonly","readonly");
+			        	}else{
+			        		$("#mobileNumber").remveAttr("readonly");
+			        	}
+			    	 
 			    	 $("#personalEmail").val(json['email']);
 			    	 $("#offBoardLocation").val(json['location']);
 			    	 $("#country").val(json['country']);
@@ -803,7 +809,15 @@ function validateUploadFile(id)
 		        	
 			    	 $("#firstName").val(json['firstName']);
 			    	 $("#lastName").val(json['lastName']);
-			    	 $("#mobileNumber").val(json['mobilePhone']);
+			    	
+			    	 
+			    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+			        		$("#mobileNumber").val(json['mobilePhone']);
+			        		$("#mobileNumber").attr("readonly","readonly");
+			        	}else{
+			        		$("#mobileNumber").remveAttr("readonly");
+			        	}
+			    	 
 			    	 $("#personalEmail").val(json['email']);
 			    	 getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
@@ -864,7 +878,7 @@ function validateUploadFile(id)
 			    	 } 
 			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
 			    		 $("#startDate").val(json['dateOfJoiningStr']);
-			    		 var dt = $(this).datepicker("#startDate");
+			    		 var dt = getJSDate(json['dateOfJoiningStr'],'${SourceLeadWeb_orgLocations.dateFormat}');
 			 			 dt.setDate(dt.getDate() + 1);
 			 			 $("#endDate").datepicker("option", "minDate", dt);
 			    	 }
@@ -1147,7 +1161,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	        $("#save_onboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_onboardUser").attr("disabled", "disabled");
 	        var formData = getFormData1("onboardCandidate_form");
-	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	 data: formData,
@@ -1207,7 +1221,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
@@ -1235,7 +1249,14 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	        	}
 	        	
 	        	
-	        	$("#mobileNumber").val(json['mobileNumber']);
+	        	if(json['mobileNumber'] != null && json['mobileNumber'] != "" && json['mobileNumber'] !="undefined"){
+	        		$("#mobileNumber").val(json['mobileNumber']);
+	        		$("#mobileNumber").attr("readonly","readonly");
+	        	}else{
+	        		$("#mobileNumber").remveAttr("readonly");
+	        	}
+	        	
+	        	
 		    	$("#personalEmail").val(json['personalEmail']);
 		    	
 		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
@@ -1682,7 +1703,7 @@ function createTemplateDocs(saveType){
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
 		   var formData = getFormData1("templateDocuments_form");
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		   $.ajax({
 	        type : "POST",
 		      data: formData,
@@ -1852,7 +1873,7 @@ function saveOnboardTask(){
 	    	tasks = tasks.substring(0, tasks.length - 1);
 	        
 	       
-	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
 		    	 data: formData,
@@ -1894,7 +1915,7 @@ function getOnboardingTasksList(){
 	
 	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
@@ -2014,7 +2035,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	tasks = tasks.substring(0, tasks.length - 1);
 	
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
@@ -2139,7 +2160,7 @@ function cancel(){
 <script>
 function addCandidateDetailsForOnboarding(){
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 var result = "";
 	
@@ -2207,7 +2228,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >';
+	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2222,7 +2243,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="emailDiv">';
 	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">';
+	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail"  data-validation-optional="true"   data-validation="validate_Space validate_length length2-100 validate_email">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
@@ -2237,7 +2258,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" refreshRoleList(); "><i class="fa fa-refresh "></i></span>';
 	 result = result +' </div>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ENROLL_NEW_ROLE\')">';
-	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</sec:authorize>';
 	 result = result +' </div>';
 	 result = result +'</div>';
@@ -2248,10 +2269,14 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="endDateDiv">';
 	 result = result +'<label class="col-md-3 control-label">End Date</label>';
 	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">';
+	 result = result +'<span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
@@ -2286,7 +2311,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadTeams(); "><i class="fa fa-refresh "></i></span>';
 	 result = result +'</div>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TEAM\')">';
-	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/team" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/team" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
 	 result = result +'</div>';
@@ -2297,6 +2322,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" onchange="getEmploymentType();" name="employmentType">';
 	 result = result +'<option value=""  selected="selected">Select Employment Type</option>';
+	 result = result +'<option value="C2C">C2C</option>';
 	 result = result +'<option value="W-2">W-2</option>';
 	 result = result +'<option value="C2H">C2H</option>';
 	 result = result +'<option value="Part Time">Part Time</option>';
@@ -2343,7 +2369,10 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group" id="dueDateDiv">';
 	 result = result +'<label class="col-md-3 control-label">Due Date</label>';
 	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">';
+	 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2363,7 +2392,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/app/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</div>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
@@ -2433,7 +2462,6 @@ function addCandidateDetailsForOnboarding(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  	  
 	  	   onSelect : function(selected) {
 	  		var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
@@ -2519,3 +2547,14 @@ function refreshRoleList(){
 }
 </script>
   
+<script>
+/* function clearStartDate(){
+	$("#startDate").val("");
+	}; */
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+</script>

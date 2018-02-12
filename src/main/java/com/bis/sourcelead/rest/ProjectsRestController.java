@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ProjectsRestController {
 	
 	@Value("${static.path}")
@@ -173,13 +175,13 @@ public class ProjectsRestController {
        @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
 		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
-			   @RequestParam(value="saveType", required=true) String saveType) throws Exception {
+			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
 		    
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		    projectAdditionalDetailsDTO.setSaveType(saveType);
 		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-		   
+		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
 		    return "success";
 	    }
        
@@ -204,7 +206,7 @@ public class ProjectsRestController {
 		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId,HttpServletRequest request) throws Exception {
     	   
     	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations);
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"");
 		   return projectMembersList;
 	    }
        
@@ -365,8 +367,30 @@ public class ProjectsRestController {
 			return projectsService.validateProjectShortCode(projectShortCode, orgLocId);
 		}
 		
+		// to validate Project project Name
+		@RequestMapping(value = "/validateOrgLocationProjectName", method = RequestMethod.GET)
+		public @ResponseBody Boolean validateOrgLocationProjectName(@RequestParam(value = "projectUUID", required = false) String projectUUID,
+				@RequestParam(value = "projectName", required = false) String projectName,HttpServletRequest request) throws Exception {
+			
+			boolean flag = false;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			if(StringUtils.isNotBlank(projectName)) {
+				Projects projects = projectsService.getProjectByOrgLocationsIdAndProjectName(orgLocations.getId(), projectName.trim());
+				if(projects != null) {
+					if(!projects.getProjectUUID().equalsIgnoreCase(projectUUID)) {
+						if(projects.getProjectName().equalsIgnoreCase(projectName.trim())) {
+							flag = true;
+						}
+					}
+				}
+			}
+			
+			return flag;
+		}	
+		
+		
 	// Validate for Cilent Website
-	@RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
+	@RequestMapping(value = "/validateClientWebsite", method = RequestMethod.GET)
 	public @ResponseBody String validateOrgWebsite(@RequestParam(value = "website", required = false) String website,
 			@RequestParam(value = "sourceleadBLockedwebsites", required = false) String sourceleadBLockedwebsites) {
 		String status = "success";
@@ -424,9 +448,9 @@ public class ProjectsRestController {
 	    }
 
 	    @RequestMapping(value = { "/getProjectsListByOrgLocationForTransfer", "/rest/getProjectsListByOrgLocationForTransfer" }, method = RequestMethod.GET)
-		public  List<ProjectsDTO> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public  List<ProjectsDTO> getProjectsListByOrgLocationForTransfer(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="projectClientUUID", required=true) String projectClientUUID) throws Exception {
 		   
-		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
+		   List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatusForTransfer(orgLocationId,projectClientUUID);
 		   List<ProjectsDTO> projectsDTOList = new ArrayList<>();
 		   
 		   if(projectsList != null && projectsList.size() > 0) {

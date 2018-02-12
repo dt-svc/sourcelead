@@ -15,10 +15,10 @@
  
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -26,11 +26,11 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script> 
+<script src="/resources/js/jquery-1.11.1.min.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script> 
 </head>
 
- <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script>
 		$(document).ready(function() { 
@@ -71,7 +71,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
     </a>
     </span>
@@ -172,7 +172,7 @@ width: auto;
 			
 			$.ajax({
 						type : "GET",
-						url : sourceleadUrl+"/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation+"&rejectReason="+rejectReason,
+						url : sourceleadUrl+"/ws/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation+"&rejectReason="+rejectReason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

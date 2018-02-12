@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,6 +30,7 @@ import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -74,6 +76,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	
 	@Autowired
 	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -194,10 +200,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 	}
 
-	@Override
+	/*@Override
 	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId) {
 		return projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
-	}
+	}*/
 	
 	
 
@@ -232,7 +238,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String filterValue,Long orgLocationId) throws Exception {
 		List<ProjectMembers> allProjectsList = null;
 		if(filterValue.equals("All")){
-			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
+			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId,null);
 		}
 		if(filterValue.equals("Active")){
 			 allProjectsList = projectMembersDao.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
@@ -609,10 +615,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId);
+			Long approverUserId,String searchValue, int start, int length,String timesheetFor) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length,timesheetFor);
 	}
 	
 	@Override
@@ -653,7 +659,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 //globalVarsMap.put("employeeLastName",emailMessage.getLastName());
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
-		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -695,15 +701,29 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds)
 			throws Exception {
 		
 		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		List<ProjectMembers> projectMembersList = null;
+		List<ProjectMembers> projectMembList = new ArrayList<>();
 		if(projectClients != null){
-			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
+			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status,roleIds);
+			
+			if(projectMembersList != null && projectMembersList.size() > 0) {
+				for(ProjectMembers projectMembers : projectMembersList) {
+					if(projectMembers.getProjectAssignedDate() == null) {
+						ProjectMembersHistory history = projectMembersHistoryDao.getProjectMembersAllHistoryByProjectMemberId(projectMembers.getId());
+						if(history.getProjectAssignedDate() != null) {
+							SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+							projectMembers.setProjectAssignedDateStr(dateFormat.format(history.getProjectAssignedDate()));
+						}
+					}
+					projectMembList.add(projectMembers);
+				}
+			}
 		}
-		return projectMembersList;
+		return projectMembList;
 	}
 
 	@Override
@@ -711,7 +731,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			Long locationsId, Long approverUserId) {
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate,endDate,locationsId,approverUserId);
 	}
-
+	
+	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId) {
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(startDate,endDate,locationsId,approverUserId);
@@ -736,9 +757,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 
 	@Override
-	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
+	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId,String fromType) throws Exception
 	{
-		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId);
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId,fromType);
 		Float finalExpenseAmount = 0f;
 		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
@@ -887,13 +908,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					}else{
 						
 						ProjectClients clientProjectClients = null;
-						OrgRelations orgRelations = null;
+						
 						OrgLocations clientOrgLocation = null;
 						if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
 							clientOrgLocation = projectClients.getOrgRelationId().getLocationId();
 						}else{
 							clientOrgLocation = projectClients.getOrgRelationId().getResponderLocationId();
 						}
+						
+						OrgRelations orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), clientOrgLocation.getId());
 						
 						Candidate clientCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), clientOrgLocation.getId());
 						MasterCandidate clientMasterCandidate = null;
@@ -913,7 +936,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							clientCandidate.setIsAssociate(Constants.YES);
 							clientCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 							
-							orgRelations = orgRelationsService.getVendorOrgRelationByResponderLocationIdAndLocationId(orgLocations.getId(), clientOrgLocation.getId());
 							clientCandidate.setOrgRelationId(orgRelations);
 							clientCandidate.setCreatedBy(user.getUserCode());
 							clientCandidate.setCreatedDate(new Date());
@@ -1100,6 +1122,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembers.setPayRate(projectMembersDTO.getPayRate());
 			projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
 			projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
+		}else {
+			projectMembers.setPayRate(null);
+			projectMembers.setPayRateCurrency(null);
+			projectMembers.setPayRateType(null);
 		}
 		
 		if(projectMembersDTO.getBillRate() != null){
@@ -1151,7 +1177,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	private ProjectMembers saveTransferProjectMembers(ProjectMembers pm,User user,ProjectClients projectClients,Projects projects,Candidate candidate,OrgLocations orgLocations) throws Exception{
 		
-		ProjectMembers projectMembers = new ProjectMembers();
+		ProjectMembers projectMembers = null;
+		projectMembers = projectMembersDao.getProjectMembersByCandidateIdAndProjectId(candidate.getId(), projects.getId());
+		if(projectMembers == null) {
+			projectMembers = new ProjectMembers();
+		}
+		
 		projectMembers.setProjects(projects);
 		projectMembers.setProjectMemberCandidteId(candidate);
 		projectMembers.setMasterCandidateId(candidate.getMasterCandidateId());
@@ -1242,7 +1273,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
 			throws Exception {
-		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status);
+		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status,"");
 	}
 
 	@Override
@@ -1326,7 +1357,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,orgLocations);
+				    				registrationController.saveUserRoleActions(tsModuleId,orgLoc);
 				    			}
 							
 							 
@@ -1414,6 +1445,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(user.getUserCode());
 			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			orgRelations.setUpdatedBy(user.getUserCode());
 			orgRelations.setUpdatedDate(new Date());
 			
@@ -1541,6 +1573,22 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,
 			Long locationId) throws Exception {
 		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndActiveStatusRecords(Long projectClientsId) throws Exception {
+		return projectMembersDao.getAllProjectMembersByProjectClientIdAndActiveStatusRecords(projectClientsId);
+	}
+
+	@Override
+	public ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId, Long projectClientsId)
+			throws Exception {
+		return projectMembersDao.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClientsId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception {
+		return projectMembersDao.getAllProjectMembersByProjectClientId(projectClientsId);
 	}
 
 }

@@ -4,14 +4,16 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
 
 public interface RegistrationService {
 	
-	public void addRegistration(Registration registration,User user,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception;
+	public void addRegistration(Registration registration,User user,String modules,String subModules, Long orgLocationsId,CandidateDTO candidateDTO) throws Exception;
 	
 	public void sendEmail(Registration registration,Long locationsId) throws Exception;
 	
@@ -34,7 +36,13 @@ public interface RegistrationService {
     public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception;
 	
 	public void saveIndividualRecruiterFromSocialInviter(JSONObject jsonObj) throws Exception;
+	
+	public void sendEmailToProfessional(User user) throws Exception;
 
+	public void sendActivationEmail(User user) throws Exception;
+	
+	public void sendEmailToIndividualRecruiter(User user) throws Exception;
 
+	public String sendOtpToUser(User user, String type) throws Exception;
 
 }

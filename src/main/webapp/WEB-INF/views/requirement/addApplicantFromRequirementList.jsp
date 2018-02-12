@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="resources/css/style.css" />
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/chosen.min.css">
+<script src="/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -43,10 +43,8 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
 	
-	'<sec:authorize access="hasRole(\'ROLE_CREATE_CANDIDATE\')">';
-		result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
-		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
-	'</sec:authorize>';
+	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
+	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
@@ -97,7 +95,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="col-md-8">';
 	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 	result = result + '<c:forEach var="skill" items="${skillList}">';
-	result = result + '<option value="${skill.name}">${skill.name}</option>';
+	result = result + "<option value='${skill.name}'>${skill.name}</option>";
 	result = result + ' </c:forEach>';
 	result = result + '</select>';
 	result = result + '		 </div>';
@@ -181,7 +179,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="button" onclick="addApplicantForm();" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -562,11 +560,10 @@ function discordApplicant(){
 
 <!-- For add New Applicant -->
 <script type="text/javascript">
-$('body').on('submit', '#addApplicant_form', function(e){
-
+function addApplicantForm(){
 	  var requirementId = $("#requirementId").val();
-	  if ($(this).validate(false, validationSettings)){
-      e.preventDefault();
+	  if ($('#addApplicant_form').validate(false, validationSettings)){
+      //e.preventDefault();
       var frm = $('#addApplicant_form').serializeFormJSON();
       var frm = $('#addApplicant_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
@@ -630,8 +627,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
-	     		  if(null != inputValue){
-	     			  if(inputValue == "25+"){
+	     		 if(inputValue != null && inputValue != 'undefined' && inputValue != ''){
+	     			  if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;
@@ -677,7 +674,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
      
       
 		
-       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
   	     $.ajax({
 	    	type: "POST",
@@ -692,7 +689,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
-	    		location.replace(sourceleadUrl+"/requirementList");
+	    		location.replace(sourceleadUrl+"/jobs");
 	        },
 	    }); 
       return true; 
@@ -700,9 +697,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
     else{
     	return false;	
        }
-  });
-
-    
+  }    
    	$('body').on('blur', '#addApplicant_form', function() {
 		$("#addApplicant_form").showHelpOnFocus();
 		$("#addApplicant_form").validateOnBlur(false, validationSettings);
@@ -1207,7 +1202,7 @@ function getSubmissionCandidateCities(city){
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
@@ -1301,7 +1296,7 @@ function setRateTypesByLocation(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
  	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#addApplicant_form')[0];
   		var formData = new FormData(form); 
 		   $.ajax({

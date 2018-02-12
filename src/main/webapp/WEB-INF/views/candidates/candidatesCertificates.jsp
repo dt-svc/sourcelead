@@ -368,15 +368,15 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		
 		result  = result + '                 <div class="clearfix mb10" id="candidateScoreDiv">';
-		result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
-		result = result  +'	                     <select class=""  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+		result = result  +'	                     <div class="col-md-5 dropdown-select positionRelative padding_right">';
+		result = result  +'	                     <select class="newSelect"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
-		result  = result + '                   <div class="col-md-6 PaddingLeft" positionRelative >';
+		result  = result + '                   <div class="col-md-7 PaddingLeft" positionRelative >';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 		result  = result + '                 	 </div>';
@@ -389,16 +389,22 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearCandidateCertStartDate();"></div>';
 		result  = result + '                   </div>';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   </div>';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Valid To" ';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearCandidateCertEndDate();"></div>';
 		result  = result + '                   </div>';
+		result  = result + '                   <div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mr">';
 		if(candidateType == "Candidates"){
@@ -427,16 +433,8 @@ function addCertification(candidateId) {
 		 });
 		 
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatCerSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatCerSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatCerSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatCerSave = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
+		  
 		 
 	  $('#StartDate').datepicker({
 	      dateFormat: finalDateFormatCerSave,
@@ -508,8 +506,8 @@ function addCertification(candidateId) {
 								result  = result + '                 </div>';
 								
 								result  = result + '                 <div class="clearfix mb10">';
-								result = result  +'	                     <div class="col-md-4" positionRelative>';
-								result = result  +'	                     <select class="chosen-select"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();"  >';
+								result = result  +'	                     <div class="col-md-5 positionRelative padding_right">';
+								result = result  +'	                     <select class="newSelect"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();"  >';
 								result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 								if (json.scoreType == "Percentage") {
 									result = result + '<option selected value="Percentage">Percentage</option>';
@@ -528,7 +526,7 @@ function addCertification(candidateId) {
 								}
 								result = result  +'	                      </select>';
 								result = result  +'	                   </div>';
-								result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+								result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
 								if(json.score !=null && json.score!='undefined'&& json.score !=''){
 								result  = result + '                     <input type="text" class="form-control input-sm" value="'+json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
@@ -542,7 +540,7 @@ function addCertification(candidateId) {
 								if(json.description !=null && json.description!='undefined'&& json.description !=''){
 								result  = result + '                   <div class="col-md-12">';
 								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+json.description+ '"  placeholder="Description" id="candidateDescription"';
-								result  = result + '                     data-validation-optional="true" data-validation="required">';
+								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length2-250">';
 								result  = result + '                   </div>';
 								}else{
 									result  = result + '                   <div class="col-md-12">';
@@ -554,30 +552,44 @@ function addCertification(candidateId) {
 								result  = result + '                 <div class="clearfix mb10">';
 								result  = result + '                   <div class="col-md-6 positionRelative">';
 								if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
-									
+								
+									result = result  +'	                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
 									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesStartDate();"></div>';
+									result  = result + '                   </div>';
+
 								}else{
-									
+									result = result  +'	                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									
+									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesStartDate();"></div>';
+									result  = result + '                   </div>';
+
 								}
 								
 								result  = result + '                   </div>';
 								result  = result + '                   <div class="col-md-6 positionRelative">';
 								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
-									
+								
+									result = result  +'	                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesEndDate();"></div>';
+									result  = result + '                   </div>';
+
 								}else{
 									
+									result = result  +'	                   <div>';
 									result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+									result  = result + '					<div class="clearDate" onClick="editCandidateCertificatesEndDate();"></div>';
+									result  = result + '                   </div>';
+
 								}
 								
 								
@@ -608,50 +620,14 @@ function addCertification(candidateId) {
 								
 								
 								var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-								 var cerStartDateSplit = cerStartDate.split("-");
-								 var cerEndDateSplit = cerEndDate.split("-");
 								 
 								 var finalDateFormatCerEditOneSave = '';
-								  var cerStartDateEdit = '';
-								  var cerEndDateEdit = '';
+								 // written common method in slead-common.js for date formats start
+								  var cerStartDateEdit = getJSDate(cerStartDate,locationDate);
+								  var cerEndDateEdit = getJSDate(cerEndDate,locationDate);
 								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
-									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[2])+parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
-									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[0])+parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
-									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[0])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
-									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[2])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
-								  }
-								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
-									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[2])-parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
-									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[0])-parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
-									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[0])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
-									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[2])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
-								  }
-								  var finalDateFormatCerUpdate = '';
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerUpdate = 'yy-mm-dd';
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerUpdate = 'dd-mm-yy'; 
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerUpdate = 'mm-dd-yy'; 
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerUpdate = 'yy-dd-mm'; 
-								  }
+								  var finalDateFormatCerUpdate = getJSDateFormat(locationDate);
+								  //end
 							   
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: finalDateFormatCerUpdate,
@@ -794,7 +770,7 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 
 				if(data != null && data != 'undefined' && data != ""){
              		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	}
              		else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
@@ -806,6 +782,7 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
              			 $("#cerMsgDiv").html("Certification deleted");
              			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
+             			qwikCertificates(candidateId);
              			cerMsgFadein();
              			setTimeout(function(){
 				 			candidateList();					 			
@@ -970,4 +947,21 @@ function toDate(selector) {
     return new Date(from[2], from[1] - 1, from[0]);
 }
 </script>
-<!-- script for dateformat in datepicker End -->             
+<!-- script for dateformat in datepicker End --> 
+<script>
+function clearCandidateCertStartDate(){
+	$("#StartDate").val("");
+	};
+function clearCandidateCertEndDate(){
+	$("#EndDate").val("");
+	};
+</script>       
+
+<script>
+function editCandidateCertificatesStartDate(){
+	$("#StartDateEdit").val("");
+	};
+ function editCandidateCertificatesEndDate(){
+	$("#EndDateEdit").val("");
+	}; 
+</script>      

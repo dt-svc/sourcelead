@@ -3,11 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-	<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	
 	<script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('profileLocation','profileCountry','profileState','profileCity','profileZipCode','profileLatitude','profileLongitude','');
+			initLocationAuto('profileLocation','profileCountry','profileState','profileCity','profileZipCode','profileLatitude','profileLongitude','','address');
 			disableMonths();
 		 };
 	</script>
@@ -25,7 +25,7 @@
     <div class="pull-left">
       <h2>Add Profile</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> &raquo; Add Profile</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Add Profile</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -68,51 +68,53 @@
         </div>
         
         <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="profileLocation" name="location" placeholder="Enter your address"  type="text" field-name="Locatin" data-validation="required"></input>
-          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('profileLocation','profileCountry','profileState','profileCity','profileZipCode');"></i>
+          <input class="form-control positionRelative" id="profileLocation" name="location" placeholder="Enter your address"  type="text" field-name="Address" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('profileLocation','profileCountry','profileState','profileCity','profileZipCode','address');"></i>
           </div>
           </div>
         </div>
 		
-		
-		<div class="form-group">
-          <label class="col-md-3">Country</label>
+		 <div class="form-group">
+          <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-          <input class="form-control" id="profileCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter your Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+          </div>
+        </div>
+        
+		 
+        <div class="form-group">
+          <label class="col-md-3">City</label>
+          <div class="col-md-9">
+          <input class="form-control" id="profileCity" name="city" placeholder="Enter your City" type="text"></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">State</label>
           <div class="col-md-9">
-          <input class="form-control" id="profileState" name="state" placeholder="Enter your State" type="text" readonly></input>
+          <input class="form-control" id="profileState" name="state" placeholder="Enter your State" type="text"></input>
           </div>
         </div>
         
-        <div class="form-group">
-          <label class="col-md-3">City</label>
+		<div class="form-group">
+          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-          <input class="form-control" id="profileCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          <input class="form-control" id="profileCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" field-name="Country"  data-validation="required"  type="text"></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="profileZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+          <input class="form-control" id="profileZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
           </div>
         </div>
         
         
-        <div class="form-group">
-          <label class="col-md-3">Address</label>
-          <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
-          </div>
-        </div>
+       
         
         <div class="form-group">
          <label class="col-md-3">Designation</label>
@@ -125,7 +127,7 @@
          <label class="col-md-3">Employment type</label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);">
-                <option value="">--Select--</option>
+                <option value="">--Select Employment type--</option>
                  <option>C2C</option>
                  <option>W-2</option>
                  <option>C2H</option>
@@ -179,7 +181,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -217,7 +219,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -302,7 +304,7 @@
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;"  id="uploadBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="text"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc" >
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="text"  name="" placeholder="Upload Resume ..." field-name="Resume" data-validation="required validate_Space validatedoc" >
            </div>
          </div>
         </div>
@@ -313,7 +315,7 @@
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value="">Select</option>
+                <option value="">--Select Notice Period--</option>
                  <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
                  <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
                  <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
@@ -354,7 +356,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/professionalProfile'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/professionalProfile'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -410,7 +412,13 @@
 		    	        contentType:false,
 		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
-								location.replace(sourceleadUrl+"/professionalProfile");
+							if(result && result === "DataMissing") {
+	                      		$("#update_user").attr("disabled", "disabled");
+	     						showError("Invalid data");
+	     					}else{
+	     						location.replace(sourceleadUrl+"/professionalProfile");	
+	     					}
+								
 						},
 					});
 			return true;
@@ -464,29 +472,19 @@ function validate_fileupload(fileName)
     return false;
 }
 </script>
-  
 
+<script>
+  $(function() { 
+		tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','select Education');
 
+	});
+ </script>
+ 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       
-	        //Adding Customized Skills to the list
-	        var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	var allSkills = $(event.target).val();
-		   
-		    	
 		    	$.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
@@ -498,68 +496,8 @@ function validate_fileupload(fileName)
 			    });
 		    	
 		    });
-		    
-		    chosen.search_field.on('keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-				    			var newSkill = this.value.replace(","," ");
-				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                {
-				    				 var option = $("<option>").val(newSkill).text(newSkill);
-				                     select.append(option);
-				                     select.find(option).prop('selected', true);
-				                     $("#candidateSkills option").each(function(){
-				                         $(this).siblings("[value='"+ this.value+"']").remove();
-				                   });
-				                   $("#candidateSkills").trigger("chosen:updated");
-				                }
-						       
-			    	         }
-		    	});
-		    //Adding Customized Skills to the list
-		    
-		    
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateEducation option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateEducation").trigger("chosen:updated");
-	        		
-		        }
-		    }); 
-		    //Adding Customized Educations to the list
-	       
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
 			
-			$("#candidateSkills").val('').trigger("chosen:updated");
+		   $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
 				
 				

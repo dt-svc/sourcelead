@@ -1,13 +1,10 @@
 package com.bis.sourcelead.rest;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,14 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -40,7 +35,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +42,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
@@ -97,6 +89,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class CandidateListRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateListRestController.class);
 	
@@ -197,9 +190,9 @@ public class CandidateListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "generatedId","firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
+		String[] tableColumns = {"","isAssociate", "generatedId.keyword","firstName.keyword", "primarySkill.keyword", "designationType.keyword", "email.keyword", "mobilePhone.keyword", "country.keyword", "updatedDate"};
 		
-		int sortColumnIndex = 8; //by default sorting using updated date
+		int sortColumnIndex = 9; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
 		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
@@ -244,10 +237,10 @@ public class CandidateListRestController {
 			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : excludeKeyWordArray) {
 				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				List<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						excludeBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 				}
@@ -256,20 +249,21 @@ public class CandidateListRestController {
 		}
 
 		// Any Keyword
-		List<String> anyKeyWordArray = search.getAnyOfKeyword();
+		/*List<String> anyKeyWordArray = search.getAnyOfKeyword();
 		if(anyKeyWordArray == null)
 			anyKeyWordArray = new ArrayList<>();
 		if(StringUtils.isNotEmpty(search.getSearchValue())) {
 			anyKeyWordArray.add(search.getSearchValue());
-		}
+		}*/
+		List<String> anyKeyWordArray = search.getAnyOfKeyword();
 		if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				List<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					
 					DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
@@ -291,14 +285,20 @@ public class CandidateListRestController {
 		}
 		// All Keywords
 		List<String> allKeyWordArray = search.getAllKeywords();
+		if(allKeyWordArray == null)
+			allKeyWordArray = new ArrayList<>();
+		if(StringUtils.isNotEmpty(search.getSearchValue())) {
+			allKeyWordArray.add(search.getSearchValue());
+		}
+		
 		if (allKeyWordArray != null && !allKeyWordArray.isEmpty()) {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
 				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				List<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						allBoolSubQueryBuilder.should(matchQueryBuilder);
+				List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						allBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 				}
@@ -418,10 +418,8 @@ public class CandidateListRestController {
 	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
-			DateTime zoned = new DateTime(newDate,DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
-			Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
-			java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
-			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
+	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), newDate);
+			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate2));
 		}
 		
 		// Rate Type
@@ -586,53 +584,54 @@ public class CandidateListRestController {
 		return response;
 	}
 
-	private List<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
-		List<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("address", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("designation", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("noticePriod", keywd));
-		// matchQueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
+	private List<QueryBuilder> getQueryBuilderList(String keywd) {
+		List<QueryBuilder> QueryBuilderList = new ArrayList<>();
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("firstName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("lastName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("fullName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateEmail", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("address", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("designation", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("designationType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRateCurrency", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rateType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRateCurrencey", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("summary", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("education", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("skillsName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("visaType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("employer", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("certifications", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
+		// QueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("alternateMobilePhone", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
-			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths",
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
+			// QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths",
 			// keywd));
 			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
 		if (StringUtils.isNumeric(keywd)) {
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
@@ -664,9 +663,8 @@ public class CandidateListRestController {
 	   * 
 	   * @throws Exception
 	   */
-	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
+	 @RequestMapping(value = {"/getCandidateById","/rest/getCandidateById"} , method = RequestMethod.POST)
 	 public @ResponseBody  CandidateDTO getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
-			String resultJson ="" ;
 			
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
@@ -741,7 +739,7 @@ public class CandidateListRestController {
 		}
 
 		if (null != can.getOrgRelationId()) {
-			can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+			candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
 			if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
 				candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
 			}
@@ -752,7 +750,7 @@ public class CandidateListRestController {
 		}
 		if (null != can.getSpocId()) {
 			StringBuilder contactName = new StringBuilder();
-			can.setVendorSpocId(can.getSpocId().getId().toString());
+			candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
 			if (null != can.getSpocId().getClientUser().getLastName()) {
 				candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
 						.append(can.getSpocId().getClientUser().getLastName()).toString());
@@ -763,6 +761,7 @@ public class CandidateListRestController {
 		}
 		candidateDTO.setProfilePercentage(percentage);
 		candidateDTO.setCountry(can.getCountry());
+		candidateDTO.setCandidateType(can.getCandidateType());
 		candidateDTO.setCity(can.getCity());
 		candidateDTO.setState(can.getState());
 		candidateDTO.setFirstName(can.getFirstName());
@@ -771,14 +770,27 @@ public class CandidateListRestController {
 		candidateDTO.setSummary(can.getSummary());
 		candidateDTO.setFileUrl(can.getFileUrl());
 		candidateDTO.setMobilePhone(can.getMobilePhone());
+		candidateDTO.setAlternateMobilePhone(can.getAlternateMobilePhone());
 		candidateDTO.setSkillsName(can.getSkillsName());
 		candidateDTO.setRateType(can.getRateType());
 		candidateDTO.setDesignationType(can.getDesignationType());
 		candidateDTO.setExpectedRate(can.getExpectedRate());
 		candidateDTO.setCurrentRate(can.getCurrentRate());
 		candidateDTO.setEmail(can.getEmail());
+		candidateDTO.setNoticePeriod(can.getNoticePeriod());
+		candidateDTO.setDesignation(can.getDesignation());
+		candidateDTO.setPrimarySkill(can.getPrimarySkill());
+		candidateDTO.setAddress(can.getAddress());
+		candidateDTO.setExperienceMonths(can.getExperienceMonths());
+		candidateDTO.setExperienceYears(can.getExperienceYears());
+		candidateDTO.setZipcode(can.getZipCode());
+		candidateDTO.setCandidateType(can.getCandidateType());
+		candidateDTO.setStatus(can.getStatus().toString());
+		candidateDTO.setTerminateReason(can.getTerminateReason());
+		candidateDTO.setIsAssociate(can.getIsAssociate());
 		return candidateDTO;
 	}
+	 
 
 	/**
 	 * This Method is for deleting CandidateImage
@@ -805,7 +817,6 @@ public class CandidateListRestController {
 		StringBuffer activitySummary = new StringBuffer();
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
-		candidate.setDocFile(null);
 		candidate.setFileUrl(null);
 		candidate.setFileContentType(null);
 		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
@@ -1020,14 +1031,14 @@ public class CandidateListRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			candidate = candidateService.getCandidateByCandidateId(candidateId);
-			if (candidate != null && candidate.getDocFile() != null) {
+			/*if (candidate != null && candidate.getDocFile() != null) {
 				candidate.setFileContentType("image/jpeg");
 				InputStream in = new ByteArrayInputStream(candidate.getDocFile());
 				BufferedImage bi = ImageIO.read(in);
 				OutputStream out = response.getOutputStream();
 				ImageIO.write(bi, "jpg", out);
 				out.close();
-			}
+			}*/
 			} catch (IOException e) {
 					e.printStackTrace();
 				} 
@@ -1088,6 +1099,7 @@ public class CandidateListRestController {
 	@RequestMapping(value = {"/updateCandidate", "/rest/updateCandidate"},method=RequestMethod.POST)
 	public String updateCandidate(CandidateDTO candidateDto,HttpServletRequest request) throws Exception {
 		String isUpdated = "failed";
+		if(Validator.validate(candidateDto)) {
 		User user = userService.getUserById(Long.valueOf(candidateDto.getLoginUserId()));
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
 		Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
@@ -1095,6 +1107,9 @@ public class CandidateListRestController {
         	isUpdated =  "success";	
         }
 		return isUpdated;
+		}else{
+		return isUpdated;
+		}
 
 	}
 
@@ -1475,8 +1490,8 @@ public class CandidateListRestController {
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 				 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 				 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 Date endDateUTC =null ;
 				 String filterDate = null;
@@ -1484,65 +1499,48 @@ public class CandidateListRestController {
 				 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
-					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-					 endDateUTC = TZ_DF_TS.parse(endDateString);
+					 Date endDateString = TZ_DF_TS.parse(endDate);
+					 endDateUTC = endDateString;
 				 }
 					
 					if(null != reportType && !"".equals(reportType)){
 						if("today".equals(reportType)){
 							String startDate = outputFormatter.print(zoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-							filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							filterDate = startDate;
+							startDateUTC = TZ_DF_TS.parse(startDate);
 						}else if("yesterday".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(1);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							//String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 							
 						}else if("week".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(7);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else if("twoweeks".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(14);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else if("month".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(30);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else if("twomonths".equals(reportType)){
 							DateTime yesterDayZoned = zoned.minusDays(60);
 							String yesterDayDate = outputFormatter.print(yesterDayZoned);
-							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-							startDateUTC = TZ_DF_TS.parse(startDateString);
+							startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 						}else{
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-								//DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-								//DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								
-								
-								
-								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customStartDate);
-								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), customEndDate);
-								startDateUTC = startTime;
-								endDateUTC = endTime;
-							/*	String customStartTimeStr = null;
-								String customEndTimeStr = null;
-							if(null !=startTime){
-							 customStartTimeStr = TZ_DF_CSD.format(startTime);  
-							}
-								
-							if(null != endTime){
-							 customEndTimeStr = TZ_DF_CED.format(endTime);  
-							}
-								String startDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), startTime);
-								String endDateString = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), endTime);
-								*/
+								 	DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+									DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+									Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+									Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
+									String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+									String customEndTimeStr = TZ_DF_CED.format(endTime);  
+									startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+									endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+							
 							 }
 							
 						}
@@ -1592,15 +1590,15 @@ public class CandidateListRestController {
 				 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 				 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 				 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 Date endDateUTC =null ;
 				 String filterDate = null;
 				 Date startDateUTC = null;
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
-					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-					 endDateUTC = TZ_DF_TS.parse(endDateString);
+					 //String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+					 endDateUTC = TZ_DF_TS.parse(endDate);
 				 }
 					
 				List<Candidate> freshList = new ArrayList<Candidate>();

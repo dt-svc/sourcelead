@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Add Shift</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewShift'/>">Shift List</a> &raquo; Add Shift</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='${appPath}/viewShift'/>">Shift List</a> &raquo; Add Shift</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="loading"></div>
@@ -31,14 +31,14 @@
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3">Time in</label>
+       <label class="col-md-3">Time In<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
        <input type="text" class="timepicker form-control" id="datetimepicker2"
                name="timeIn" placeholder="HH:MM" value="${shift.timeIn}" field-name="Time in" onblur="checktime()" data-validation = "required">
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3">Time Out</label>
+       <label class="col-md-3">Time Out<span class="text-danger paddingLeft">*</span></label>
         <div class="col-md-9">
        <input type="text" class="timepicker form-control" id="datetimepicker3"
                name="timeOut" placeholder="HH:MM" value="${shift.timeOut}" field-name="Time Out" onblur="checktime()" data-validation = "required">
@@ -96,7 +96,7 @@ function validateShiftName(){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 if ($('#addshift_form').validate(false, validationSettings)) {
 			var formData = getFormData("addshift_form");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.post( sourceleadUrl+ "/saveShift?$ "+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
                        if(data == "success"){
                     	   $("#loading").removeAttr("style");
@@ -123,8 +123,8 @@ function cancelShift(){
 }
 
 </script>
-<script src="resources/js/jquery.timepicker.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
 <script type="text/javascript">
             $(function () {
                 $('#datetimepicker3,#datetimepicker2').datetimepicker({

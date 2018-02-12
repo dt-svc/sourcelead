@@ -12,7 +12,7 @@
 function applicantQuickViewProfile(submissionId,candidateId){
 	  var skillsList = '${skillsList}'; 
 	  
-	  $("#quickLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#quickLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
@@ -134,7 +134,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					  if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
 					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					  }else{
-					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
   
 					  } 
 					if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
@@ -249,11 +249,10 @@ function applicantQuickViewProfile(submissionId,candidateId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
+					success : function(json) {
+						if (json != null && json != 'undefined' && json != "" && json != '[]') {
 								$("#reqQvemployeeSubmission").empty();
 								var result = "";
-								var json = JSON.parse(data);
 								result = result +'            <div class="col-md-12">';
 								result = result +' 				<h4>Work Experience</h4>';
 

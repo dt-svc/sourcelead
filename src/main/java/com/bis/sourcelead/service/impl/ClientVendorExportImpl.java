@@ -115,7 +115,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		}
 		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			StringBuilder sb = new StringBuilder();
-			writeRow.createCell(1).setCellValue(sb.append("www.").append(orgRelations.getWebSite()).toString());
+			if(orgRelations.getWebSite() != null && orgRelations.getWebSite() != "" && orgRelations.getWebSite() != "undefined"){
+				writeRow.createCell(1).setCellValue(sb.append("www.").append(orgRelations.getWebSite()).toString());
+			}
 		}
 		StringBuilder sb = new StringBuilder();
 		if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
@@ -328,7 +330,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		Set<ProjectApproverHierarchy> projectApproverHierarchySet = projectClients.getProjectApproverHierarchyList();
 		 StringBuilder sb = new StringBuilder();
 		 for(ProjectApproverHierarchy ProjectApproverHierarchy:projectApproverHierarchySet ){
-			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()).append(",");
+			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFullName()).append(",");
 		 }
 		 String projectManager = sb.substring(0, sb.length()-1);
 		 

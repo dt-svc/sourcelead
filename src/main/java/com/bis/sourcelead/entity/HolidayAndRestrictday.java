@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,27 +21,23 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "HOLIDAY_RESTRICT_DAYS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "HolidayAndRestrictday")
+@Table(name = "HOLIDAY_RESTRICT_DAYS")
 public class HolidayAndRestrictday implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(generator = "uuid2", strategy = GenerationType.IDENTITY)
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HOLIDAY_ID", nullable = false)
 	private Holiday holiday;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "RESTRICTDAY_ID", nullable = false)
 	private RestrictDay restrictDay;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
@@ -59,12 +56,15 @@ public class HolidayAndRestrictday implements Serializable {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	public String getId()
+	@Column(name = "STATUS")
+	private String status;
+	
+	public Long getId()
 	{
 		return id;
 	}
 	
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -148,4 +148,16 @@ public class HolidayAndRestrictday implements Serializable {
 	{
 		this.orgLocations = orgLocations;
 	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+	
+	
 }

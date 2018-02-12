@@ -2,20 +2,17 @@ package com.bis.sourcelead.dao.impl;
 
 
 import java.text.ParseException;
-
 import java.util.ArrayList;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.bouncycastle.asn1.x509.RoleSyntax;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,11 +29,16 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
+import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RestrictDay;
+import com.bis.sourcelead.entity.RoleHierarchy;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.RoleHierarchyService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -54,7 +56,15 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	ProjectTasksService projectTasksService;
 
+	@Autowired
+	RoleHierarchyService roleHierarchyService;
+	
+	@Autowired
+	RolesService roleService;
 	
 	@Override
 	@Transactional
@@ -98,7 +108,7 @@ public class LeaveDaoImpl implements LeaveDao{
 				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
 					searchQuery.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 					.append("OR laph.leaveid.rejectedBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
-				}else {
+				} else if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
 					searchQuery.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 					.append("OR laph.leaveid.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}
@@ -124,12 +134,12 @@ public class LeaveDaoImpl implements LeaveDao{
 			if (leaveDTO != null && leaveDTO.getLength() > 0) {
 				queryObj.setFirstResult(leaveDTO.getStart());
 				queryObj.setMaxResults(leaveDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).setCacheable(true).list();
+				queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("userId", usrId).list();
 			}
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
 			
 			if(leaveApproveHierarchyList != null && !leaveApproveHierarchyList.isEmpty()) {
 				count = leaveApproveHierarchyList.stream().filter(c->c.getLeaveid().getStatus().equalsIgnoreCase(leaveDTO.getLeaveStatus())).collect(Collectors.toList()).size();
@@ -194,7 +204,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			leaveApproveHierarchyList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;
-			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery+leavesearchQuery).setLong("orgLocationId", orgLocations.getId()).list();
 			if(countlist != null && !countlist.isEmpty()) {
 				count = countlist.size();
 			}
@@ -214,11 +224,11 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public Leave getLeaveById(String leaveId) throws Exception {
+	public Leave getLeaveById(Long leaveId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave left join fetch leave.leaveType left join fetch leave.user where leave.id = :leaveId";
 		Leave leave = null;
-		List<Leave> leaveList = session.createQuery(query).setString("leaveId", leaveId).setCacheable(false).list();
+		List<Leave> leaveList = session.createQuery(query).setLong("leaveId", leaveId).setCacheable(false).list();
 		if(leaveList !=null && leaveList.size() >0){
 			leave =  leaveList.get(0);
 		}
@@ -281,29 +291,29 @@ public class LeaveDaoImpl implements LeaveDao{
 			if(currentWeekStarDate != null && currentWeekEndDate != null){
 				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = :leaveStatus "+subQuery1+" "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).list();
 				else 
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).list();
 			}else{
 				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId and leave.status = :leaveStatus "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("leaveDate", leaveDate).setParameterList("deptList", deptList).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("leaveDate", leaveDate).setParameterList("deptList", deptList).list();
 				else 
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("leaveDate", leaveDate).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("leaveDate", leaveDate).list();
 			}
 		}else{
 			if(currentWeekStarDate != null && currentWeekEndDate != null){
 				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and leave.status = :leaveStatus "+subQuery1+" "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).list();
 				else 
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).list();
 			}else{
 				String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and leave.status = :leaveStatus "+subQuery2+" "+subQuery3+"";
 				if(deptList.size() >0)
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("leaveDate", leaveDate).setParameterList("deptList", deptList).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("leaveDate", leaveDate).setParameterList("deptList", deptList).list();
 				else 
-					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("leaveDate", leaveDate).setCacheable(true).list();
+					return session.createQuery(query).setParameter("leaveStatus",status).setLong("orgLocationId", locationId).setParameter("leaveDate", leaveDate).list();
 			}
 		}
 		
@@ -312,36 +322,40 @@ public class LeaveDaoImpl implements LeaveDao{
 //		}else {
 //			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery1+" "+subQuery2+" "+subQuery3+"";
 //			if(deptList.size() >0)
-//				return session.createQuery(query).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).setCacheable(true).list();
+//				return session.createQuery(query).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setParameterList("deptList", deptList).list();
 //			else
-//				return session.createQuery(query).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).setCacheable(true).list();
+//				return session.createQuery(query).setLong("orgLocationId", locationId).setLong("userId", usrId).setParameter("weekStartDate", currentWeekStarDate).setParameter("weekEnddate", currentWeekEndDate).list();
 //		}
 	}
 
 	@Override
 	@Transactional
-	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
+	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId,Long orgLocationId, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> leaveList = null;
 		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.id = :leaveTypeId";
-		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("userId", userId).setParameter("leaveTypeId", leaveTypeId).list();
+		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
 		return leaveList;
 	}
 	
 	@Override
 	@Transactional
-	public int getNumberOfLeavesTakenByUser(Long userId,String leaveTypeId) throws Exception {
+	public Map<String, Integer> getNumberOfLeavesTakenByUser(Long userId,Long leaveTypeId) throws Exception {
+		Map<String, Integer> leavesMap = new HashMap<>();
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED'";
-		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setString("leaveTypeId", leaveTypeId).setCacheable(true).list();
-		int numberOfLeavsTaken = leavesList.stream().filter(l->l.getNumberOfDays() != null).mapToInt(l->Integer.parseInt(l.getNumberOfDays())).sum();
-		return numberOfLeavsTaken;
+		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
+		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
+		leavesMap.put("numberOfLeavsTaken", numberOfLeavsTaken);
+		int numberOfExtraLeaves = leavesList.stream().mapToInt(l->l.getExtraLeavesTaken()).sum();
+		leavesMap.put("numberOfExtraLeaves", numberOfExtraLeaves);
+		return leavesMap;
 	}
 
 
 	@Override
 	@Transactional
-	public int getThisMonthLeavesTakenByUser(Long userId,String leaveTypeId) {
+	public int getThisMonthLeavesTakenByUser(Long userId,Long leaveTypeId) {
 		Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
 		int month = c.get(Calendar.MONTH);
@@ -355,9 +369,9 @@ public class LeaveDaoImpl implements LeaveDao{
 		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave where leave.user.id = :userId and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED' and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
-		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setString("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate).setCacheable(true)
+		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate)
 				.list();
-		int numberOfLeavsTaken = leavesList.stream().filter(l->l.getNumberOfDays() != null).mapToInt(l->Integer.parseInt(l.getNumberOfDays())).sum();
+		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
 		return numberOfLeavsTaken;
 	}
 
@@ -402,13 +416,13 @@ public class LeaveDaoImpl implements LeaveDao{
 		if (leaveDTO != null && leaveDTO.getLength() > 0) {
 			queryObj.setFirstResult(leaveDTO.getStart());
 			queryObj.setMaxResults(leaveDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
 		leaveList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
 		@SuppressWarnings("unchecked")
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -433,7 +447,7 @@ public class LeaveDaoImpl implements LeaveDao{
 	public List<LeaveApproveHierarchy> getAllEmployeesLeavesCounts(Long orgLocationId,Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch lah.approverUserId where lah.approverUserId.id =:userId and leave.orgLocations.id = :orgLocationId";
-		List<LeaveApproveHierarchy> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+		List<LeaveApproveHierarchy> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 		return leavesList;
 	}
 
@@ -442,8 +456,8 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public List<Leave> getAllSelfLeavesCounts(Long orgLocationId, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId";
-		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+		String query = "from Leave leave1 where leave1.orgLocations.id = :orgLocationId and leave1.user.id = :userId";
+		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 		return leavesList;
 	}
 	
@@ -480,7 +494,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = 'APPROVED'"+subQuery;
 		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId())
-				.setCacheable(true).list();
+				.list();
 		return leavesList;
 	}
 
@@ -504,41 +518,41 @@ public class LeaveDaoImpl implements LeaveDao{
 				subQuery = "and leave.status = :leaveStatus";
 			}
 			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId "+subQuery+"";
-			return session.createQuery(query).setParameter("leaveStatus",leaveStatus).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).setCacheable(true).list();
+			return session.createQuery(query).setParameter("leaveStatus",leaveStatus).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).list();
 		}else {
 			String query = "from LeaveApproveHierarchy laph left join fetch laph.leaveid leave left join fetch leave.leaveType left join fetch leave.user ltype where leave.orgLocations.id = :orgLocationId and laph.approverUserId.id= :userId";
-			return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).setCacheable(true).list();
+			return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", usrId).list();
 		}
 	}
 
 
-	/*@Override
+	@Override
 	@Transactional
-	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id, String fromDate, String toDate)
+	public boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable,String id)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
-		if("Holiday".equalsIgnoreCase(fromTable))
+		/*if("Holiday".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.holidayName = :name ";
-		else if("Shift".equalsIgnoreCase(fromTable))
+		else*/ if("Shift".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.shiftName = :name ";
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
 			
 		String query = "from "+fromTable+" frm where frm.orgLocations.id = :orgLocationId and frm.status = '1' "+subQuery+" and frm.id <> :id";
-		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setString("id", id).setCacheable(true).list();
+		List<Long> found = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("name", name).setString("id", id).list();
 		if(found.size() > 0){
 			return true;
 		}else{
 			return false;
 		}
 		
-	}*/
+	}
 
 
 	@Override
 	@Transactional
-	public boolean deleteAllLeaveRolesByParticularTableId(String from ,String fromId)
+	public boolean deleteAllLeaveRolesByParticularTableId(String from ,Long fromId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
@@ -583,7 +597,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Date to =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDate);
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from HolidayAndRestrictday day left join fetch day.orgLocations loc where loc.id = :orgLocationId and (day.day >= :fromDate and day.day <= :toDate)";
+		String query = "from HolidayAndRestrictday day left join fetch day.orgLocations loc left join fetch day.restrictDay left join fetch day.holiday  where loc.id = :orgLocationId and (day.day >= :fromDate and day.day <= :toDate) and day.status = '1'";
 		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", from).setParameter("toDate", to).setLong("orgLocationId", orgLocations.getId()).list();
 		return list;
 	}
@@ -593,16 +607,136 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Transactional
 	public List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception
 	{
-		UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(loginUserId, locationId);
+		Roles role = roleService.getRolesById(roleId);
+		RoleHierarchy roleHierarchy = roleHierarchyService.getRoleHierarchyById(role.getRoleHierarchy().getId());
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
-		if("Admin".equalsIgnoreCase(role.getUserType()))
+		if(roleHierarchy.getHierarchyLevel() == 1)
 			subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId ";
 		else
 			subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel < (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState = 'ACTIVE' and userRole.user.id <> :userId ";
 		
 		String query = "from User user where user.id IN (select "+subQuery+" )  ";
-	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).setCacheable(true).list();
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong("userId", loginUserId).setLong( "orgLocationsId", locationId).list();
         return userRoleList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(Long id, String type)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<HolidayAndRestrictday> list = null;
+		if("RestrictDay".equalsIgnoreCase(type)){
+			String query = "from HolidayAndRestrictday day where day.restrictDay.id =:resId ";
+	    	list = session.createQuery(query).setLong("resId", id).list();
+		}else{
+			String query = "from HolidayAndRestrictday day where day.holiday.id =:holId ";
+	    	list = session.createQuery(query).setLong("holId", id).list();
+		}
+        return list;
+	}
+
+
+	@Override
+	@Transactional
+	public List<LeaveRole> getLeaveRolesByRestrictDayId(Long restrictDayId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LeaveRole> list = null;
+			String query = "from LeaveRole role where role.restrictDay.id =:resId ";
+	    	list = session.createQuery(query).setLong("resId", restrictDayId).list();
+        return list;
+	}
+
+
+	@Override
+	@Transactional
+	public void deleteAllHolidayOrRestrictDayById(Long id, String type)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Query qry = null;
+		if("RestrictDay".equalsIgnoreCase(type)){
+			String query = "delete from HolidayAndRestrictday day where day.restrictDay.id =:resId ";
+	    	qry = session.createQuery(query).setLong("resId", id);
+		}else{
+			String query = "delete from HolidayAndRestrictday day where day.holiday.id =:holId ";
+	    	qry = session.createQuery(query).setLong("holId", id);
+    	}
+		qry.executeUpdate();
+	}
+
+
+	@Override
+	@Transactional
+	public List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Leave> list = null;
+		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status =:status";
+		list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).list();
+		return list;
+	}
+
+
+	@Override
+	@Transactional
+	public List<Leave> getLeavesListByTypeIdAndDuration(Long leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		List<Leave> list = null;
+		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.id = :leaveTypeId and leave.status = 'APPROVED' and (leave.fromDate >= :startDate and leave.fromDate <= :endDate)";
+		list = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationId", orgLocationId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
+		return list;
+	}
+
+
+	@Override
+	@Transactional
+	public MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (monthlyLeaves != null) {
+				session.saveOrUpdate(monthlyLeaves);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return monthlyLeaves;
+	}
+
+
+	@Override
+	@Transactional
+	public MonthlyLeaves getMonthlyLeavesByLeaveId(Long leaveId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<MonthlyLeaves> list = null;
+		String query = "from MonthlyLeaves monthlyLeaves left join fetch monthlyLeaves.leaveId leave where monthlyLeaves.leaveId = :leaveId";
+		list = session.createQuery(query).setLong("leaveId", leaveId).list();
+		if(list != null && list.size() > 0){
+			return list.get(0);
+		}else{
+			return null;
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public Leave getLeaveByLeaveUUId(String leaveUUID)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Leave leave left join fetch leave.leaveType left join fetch leave.user where leave.leaveUUID = :leaveUUID";
+		Leave leave = null;
+		List<Leave> leaveList = session.createQuery(query).setString("leaveUUID", leaveUUID).setCacheable(false).list();
+		if(leaveList !=null && leaveList.size() >0){
+			leave =  leaveList.get(0);
+		}
+		return leave;
 	}
 }

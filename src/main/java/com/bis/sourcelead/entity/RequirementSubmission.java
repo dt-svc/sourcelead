@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmission")
 public class RequirementSubmission implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,38 +44,39 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
    	private Candidate vendorCandidateId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne 
+	
+	@ManyToOne(fetch = FetchType.LAZY) 
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
 	
@@ -179,7 +179,7 @@ public class RequirementSubmission implements Serializable{
 	@Type(type="text")
 	private String updatedUser;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
@@ -386,6 +386,15 @@ public class RequirementSubmission implements Serializable{
 	private int duplicateCount;
 	
 	@Transient
+    @JsonProperty
+   	private Long reqManagerId;
+	
+	
+	@Transient
+    @JsonProperty
+   	private String reqReleaseAllJobUserStatus;
+	
+	@Transient
 	@JsonProperty
 	private Long requirementId;
 	
@@ -525,31 +534,44 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+	private String submissionDisplayStatus;
+    
+    @Transient
+    @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
 	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementInterviewHistory> requirementInterviewHistory;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOffers> requirementOffersList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    @JsonBackReference
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;
     
-
+    @Transient
+    @JsonProperty
+	private Long orgRelationId;
+    
+    @Transient
+	@JsonProperty
+	private List<String> locationsList;
+    
+    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1622,5 +1644,48 @@ public class RequirementSubmission implements Serializable{
 		this.backOutCategoryOther = backOutCategoryOther;
 	}
 
-	
+	public String getSubmissionDisplayStatus() {
+		return submissionDisplayStatus;
+	}
+
+	public void setSubmissionDisplayStatus(String submissionDisplayStatus) {
+		this.submissionDisplayStatus = submissionDisplayStatus;
+	}
+
+	public Long getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public Long getReqManagerId()
+	{
+		return reqManagerId;
+	}
+
+	public void setReqManagerId(Long reqManagerId)
+	{
+		this.reqManagerId = reqManagerId;
+	}
+
+	public String getReqReleaseAllJobUserStatus()
+	{
+		return reqReleaseAllJobUserStatus;
+	}
+
+	public void setReqReleaseAllJobUserStatus(String reqReleaseAllJobUserStatus)
+	{
+		this.reqReleaseAllJobUserStatus = reqReleaseAllJobUserStatus;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
 }

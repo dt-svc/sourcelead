@@ -10,7 +10,7 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -19,15 +19,15 @@
       </div>
       
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
      </c:if>
      
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Account Settings</div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a> &raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; Account Settings</div>
       </c:if>
     </section>
     <div class="content-area clearfix">
@@ -120,11 +120,11 @@
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  
 							  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/professionalDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/professionalDashboard'" >
 							  </c:if>
 							  
 							   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/recruiterDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/recruiterDashboard'" >
 							   </c:if>
 							  
 							</div>
@@ -186,7 +186,7 @@ function getCurrency(){
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		var formData = getFormData1("bankAccount_form");
   
          		$.ajax({

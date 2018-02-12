@@ -3,12 +3,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <script type="text/javascript">
 		window.onload = function () {
 			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
-	       		pagination();
+	       		preparePagination(1);
+	       		/* pagination(); */
 	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
 	       		$(":checkbox[value=ALL]").prop("checked",false);
@@ -22,16 +24,19 @@
 	       			$(":checkbox[value=REJECTED]").prop("checked",true);
 	       		}
 	       		$("#temp").val("temp");
+	       		$("#appro-pop").hide();
 			}else{
+				//expensesApprovalList('${sourceleadUrl}');
 				getExpensesApprovalDataList();
+				$("#appro-pop").show();
 			}
 		 };
 		 
 </script>
+
+
+
 <style type="text/css">
-
-
-
 .glyphicon-none:before {
     content: "\2122";
     color: transparent !important;
@@ -77,7 +82,7 @@ margin-top: 3px;
 			<div class="pull-left">
 				<h2>Expenses Approval</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
 		<!-- Project -->
 		<div class="timesheet_out">
@@ -98,7 +103,7 @@ margin-top: 3px;
 					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
 					 <p id="reportEndDate" class="ReError"></p>
 					 </span>
-					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList('dateSearch');" /></span>
 					</div>
 
 					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
@@ -114,7 +119,7 @@ margin-top: 3px;
 	                </li>
                 </sec:authorize>
                 <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
-		   			<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
+		   			<li><a href="<c:url value='${appPath}/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
 		   		</sec:authorize>
 				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
 					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
@@ -129,17 +134,20 @@ margin-top: 3px;
 		   		<div class="clearfix"></div>
 		   		<input type="hidden" id="temp"/>
 		   		</ul>
-							
-					
-		
-					<!-- <div class="remove_search">
-						<input placeholder="search" type="text">
-					</div> -->
 					<div class="clearfix"></div>
 				</div>
-				<div class="timesheet_appr_table datatable_filter overflow_inherint">
-					<div id="approverDataExpensesDiv"></div>
+				
+				 <div class='remove_search'>
 
+		        		<input type='text' placeholder="Search" value="" id='SearchExpensesData'/>
+
+		         </div>
+				
+				<div class="overflow_inherint">
+				<!-- <div class="timesheet_appr_table datatable_filter overflow_inherint"> -->
+					<div id="approverDataExpensesDiv">
+						<jsp:include page="expensesApprovalListDataTable.jsp"></jsp:include>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -150,191 +158,100 @@ margin-top: 3px;
 <div class="side_mask"><div class="proj_close" onclick="activeTabExpenseApproval();"></div></div>
 
 <div class="time_appr_side_wrap noPad">
-<div id="expensesApprovalViewDiv"></div>
+	<div id="expensesApprovalViewDiv"></div>
 </div>
 
+
+
 <script type="text/javascript">
-function getExpensesApprovalDataList(){
-var startDate = $("#filterStartDate").val();
-var endDate = $("#filterEndDate").val();
+function getExpensesApprovalDataList(dateSearch){
+var startDate = '';
+var endDate = '';
+
+if(dateSearch != null && dateSearch != '' && dateSearch != 'undefined' && dateSearch == 'dateSearch' ){
+	var startDateFilter = $("#filterStartDate").val();
+	var endDateFilter = $("#filterEndDate").val();
+	if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined' ){
+		 startDate = startDateFilter;
+		 endDate = endDateFilter;
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove();
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove();
+	}else if(startDateFilter != null && startDateFilter != '' && startDateFilter !='undefined' &&  (endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined')){
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+		$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+	}else if((startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined') &&  endDateFilter != null && endDateFilter != '' && endDateFilter !='undefined'){
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+	}else if((endDateFilter == null || endDateFilter == '' || endDateFilter =='undefined') && (startDateFilter == null || startDateFilter == ''|| startDateFilter !='undefined')){
+		$('#reportStartDate').parent().find('p.jquery_form_error_message').remove(); 
+		$('#reportEndDate').parent().find('p.jquery_form_error_message').remove(); 
+		$("#reportEndDate").after("<p class='jquery_form_error_message'><span>End Date Is Required</span>");
+		$("#reportStartDate").after("<p class='jquery_form_error_message'><span>Start Date Is Required</span>");
+	}		
+}
+
+
+var searchData = $('#SearchExpensesData').val();
+/* var expenseStatus = $('#expenseStatusDivId').val();
+if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
+	expenseStatus = expenseStatus
+}else{
+	var expenseStatus = [];
+	$('input:checkbox[name=expenseStatus]:checked').each(function() 
+	{
+		expenseStatus.push($(this).val());
+	});	
+} */
 var expenseStatus = [];
 $('input:checkbox[name=expenseStatus]:checked').each(function() 
 {
 	expenseStatus.push($(this).val());
 });
-
-
 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-if(locationList.match("yyyy-MM-dd")){
-	expensesApprvListDate = 'YYYY-MM-DD';
-}if(locationList.match("dd-MM-yyyy")){
-	expensesApprvListDate = 'DD-MM-YYYY'; 
-}if(locationList.match("MM-dd-yyyy")){
-	expensesApprvListDate = 'MM-DD-YYYY'; 
-}if(locationList.match("yyyy-dd-MM")){
-	  expensesApprvListDate = 'YYYY-DD-MM'; 
-}
-
-
-
-
-
+ var expensesApprvListDate = getJSDateFormat(locationList);
+ 
+var searchvalue = '';
+if(searchData != null && searchData !='' && searchData!='undefined'){
+	searchValue = searchData;
+}else{
+	searchValue = '';
+ }
+$("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
-     success :function(json) {
-    var result = "";
-    
-	result = result+' <table id="example">';
-	result = result+' <thead>';
-	result = result+' <tr>';
-	result = result+' <th>Employee</th>';
-	result = result+' <th>EmploymentType</th>';
-	result = result+' <th>Project</th>';
-	result = result+' <th>Purpose</th>';
-	result = result+' <th>Start Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
-	result = result+' <th>End Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
-	result = result+' <th>No of Items</th>';
-	result = result+' <th>Amount</th>';
-	result = result+' <th>Status</th>';
-	result = result+' <th>Action</th>';
-	result = result+' </tr>';
-	result = result+' </thead>';
-	result = result+' <tbody>';
-	//var json = JSON.parse(data);
-	 for (var i = 0; i < json.length; i++) { 
-	 var data = json[i];
-	result = result+' <tr id = "row'+data.expenseId.id+'">';
-	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+data.userFileUrl+'" alt="Profile Image" class="img-circle img-responsive">';
-	result = result+' <span>';
-	result = result+' <b title="'+data.expenseEmpUserFirstNameLastName+'">'+data.expenseEmpUserFirstNameLastName+'</b>';
-	result = result+' <b title="'+data.expenseEmpUserEmail+'">'+data.expenseEmpUserEmail+'</b>';
-	result = result+' </span></div>';
-	result = result+' </td>';
-	if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
-		result = result+' <td><div><span title="'+data.expenseEmpUserType+'">'+data.expenseEmpUserType+'</span><br><span title="'+data.userTypeVendorName+'">'+data.userTypeVendorName+'</span></div></td>';	
-	}else{
-		result = result+' <td><div><span title="'+data.expenseEmpUserType+'">'+data.expenseEmpUserType+'</span></div></td>';	
-	}
-	
-	if(data.expenseId.clientName != null && data.expenseId.clientName != '' && data.expenseId.clientName !='undefined'){
-		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span><br><span title="'+data.expenseId.clientName+'">'+data.expenseId.clientName+'</span></div></td>';	
-	}else{
-		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span></div></td>';	
-	}
-	
-	if(data.expensesApproverHierarchyPurpose != null && data.expensesApproverHierarchyPurpose != '' && data.expensesApproverHierarchyPurpose !='undefined'){
-		result = result+' <td><div><span title="'+data.expensesApproverHierarchyPurpose+'">'+data.expensesApproverHierarchyPurpose+'</span></div></td>';	
-	}else{
-		result = result+' <td><div class="sm" title="--">--</div></td>';	
-	}
-	
-	result = result+' <td><div class="sm" title="'+data.expenseStartDateString+'">'+data.expenseStartDateString+'</div></td>';
-	
-	if(data.expenseEndDateString != null && data.expenseEndDateString != '' && data.expenseEndDateString !='undefined'){
-		result = result+' <td><div class="sm" title="'+data.expenseEndDateString+'">'+data.expenseEndDateString+'</div></td>';	
-	}else{
-		result = result+' <td><div class="sm" title="--">--</div></td>';
-	}
-	
-
-	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
-
-	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount.toFixed(2)+'">';
-	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
-	'</sec:authorize>';
-	 var  numb = data.expenseId.totalAmount.toFixed(2);
-	result = result+numb;
-	
-	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	result = result+'</a>';
-	'</sec:authorize>';
-	result = result+'</div></td>';
-	result = result+' <td><div id="status'+data.expenseId.id+'" title="'+data.expenseStatus+'">'+data.expenseStatus+'</div></td>';
-	
-	result = result+' <td>';
-	var tdSpanLength = 9;
-	 if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus == 'NEW'){
-		 result = result+'<div class="sm text-center">--</div>';
-     }
-     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus == 'SUBMITTEDFORAPPROVAL'){
-        result = result+"<div class='sm text-center'id='action"+data.expenseId.id+"'>"
-        '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_EMPLOYEE_EXPENSES\')">' 
-        result = result+ " <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
-        result = result+ "|<i class='fa fa-times' title='Reject'  alt='Rejected' onclick='rejectExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
-        '</sec:authorize>';
-        result = result+"</div>"; 
- 	                    
-    }
-    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REJECTED'){
-    	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
-    	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
-    	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
-	 	 result = result+" </i><br><p title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</p>";
-	 	 result = result+" </div>";
-    }
-    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
-    	
-    	if(data.reopenRejectedReason != null && data.reopenRejectedReason != '' && data.reopenRejectedReason !='undefined'){
-    		 result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
-    		 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
-    		 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.reopenRejectedReason+"</div>";
-    	}
-    	else{
-    		result = result+" <div class='sm text-center' title='"+data.actionPerformedBy+"'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
-    	}
-         
-        
-         
-    }
-    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){
-    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&expenseLocationCode='+data.expenseId.locationsCode+'&type=view" class="ExpAmount">';
-    	'</sec:authorize>'; 
-   }
-
-     result = result+' </td>'; 
-/* 	 result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';       */        
-	 result = result+' </tr>';
-	 }
-	 $("#temp").val("temp");
-	result = result+' </tbody>';
-	result = result+' </table>';
-	
-	$("#approverDataExpensesDiv").empty();
-	$("#approverDataExpensesDiv").append(result);
-	pagination();
-	
+     url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
+     success :function(data) {
+    	$("#approverDataExpensesDiv").empty();
+		$("#approverDataExpensesDiv").append(data);
+		$("#loadingId").removeAttr('style');
+		preparePagination(1);
   }
 });
 }
-</script>
+</script> 
 
 <script>
 function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 var msg = $("#reject"+expenseId+"message").val(); 
 		 var encodeMsg = msg;
-		 if(encodeMsg.match(/^[^\s-](.*)*$/) != null){
+		 if(encodeMsg !== ""){
 			 cancelRejectExpense(expenseId);
 			 var encodeMsg = encodeURIComponent(msg);
 			 $("#rejectReasonDiv").empty();
 		     var rowHtmlContent =  $("#row"+expenseId).html();
 		     
-		     var firstName =  '${SourceLeadWeb_user.firstName}';
-			 if(firstName == '' || firstName == 'undefined' || firstName == null ){
-				firstName = '';
+		     var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
+			 if(locationName == '' || locationName == 'undefined' || locationName == null ){
+				 locationName = '';
 			 }
-			 var lastName = '${SourceLeadWeb_user.lastName}';
-			 if(lastName == '' || lastName == 'undefined' || lastName == null ){
-				  lastName = '';
-		     }
 			 $("#row"+expenseId).empty();
 			 $("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
-		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
+		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 		    $.ajax({
 		    type: "POST",
-		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+encodeMsg,       
+		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
 		    success: function(data) {    
 		   	   // approvalList();
 		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
@@ -346,7 +263,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 	    	  $("#row"+expenseId).html(rowHtmlContent);
 		 	    	  $("#status"+expenseId).html("REJECTED");
 		 	    	  $("#action"+expenseId).empty();
-		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");
+		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
 		   	   }
 		      }
 		    }); 
@@ -386,9 +303,9 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    $("#reject"+expenseId+"message").val(''); 
 	    var result = "";
 	    result = result +'<div class="time_appr_rejct_pop" id="reject'+expenseId+'panel" style="top:25%">';
-		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" onkeydown="return (event.keyCode!=13);"></textarea>';
+		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" "></textarea>';
 		result = result + ' <div id="rejectReasonDiv"/>';
-		result = result +'<a href="#" onClick="acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="removeEmptyLines($(\'#reject'+expenseId+'message\'));acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
 		result = result +'</div>';
 		result = result +'</div>';
 		$("#rejectedPopup").append(result);
@@ -416,17 +333,13 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
   function approveExpenseByExpenseId(expenseId,tdSpanSize,from){
 		//$("#timesheetApprList").empty();
 		var rowHtmlContent =  $("#row"+expenseId).html();
-		 var firstName =  '${SourceLeadWeb_user.firstName}';
-		 if(firstName == '' || firstName == 'undefined' || firstName == null ){
-			firstName = '';
+	    var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
+		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 locationName = '';
 		 }
-		 var lastName = '${SourceLeadWeb_user.lastName}';
-		 if(lastName == '' || lastName == 'undefined' || lastName == null ){
-			  lastName = '';
-	     }
 		$("#row"+expenseId).empty();
 		$("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
-	    $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
+	    $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
 	    var rejectedReason = '' ;
 	     $.ajax({
 	    type: "POST",
@@ -440,7 +353,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	        		 $("#row"+expenseId).empty();
 			    	 $("#row"+expenseId).html(rowHtmlContent);
 			    	 $("#status"+expenseId).html("APPROVED");
-			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+firstName+" "+lastName+"</b>"); 
+			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
 		    	 
 		    }
@@ -573,8 +486,7 @@ $(document).ready(function() {
 });	
 </script>   
 
-    
- <script>
+    <script>
 function pagination(){ 
     $('#example').DataTable({ 
     	"scrollCollapse": false,
@@ -590,29 +502,26 @@ function pagination(){
     });
     $("#example").wrap("<div class='overflow_Auto'></div>");
 }
-</script>
+</script> 
 <script>
 function exportToPdf(type){
-	var temp = $("#temp").val();
-	if(temp != null && temp != ''){
-		var expenseStatus = [];
-		$('input:checkbox[name=expenseStatus]:checked').each(function() 
-		{
-			expenseStatus.push($(this).val());
-		});
+	var temp = $("#tempVar").val();
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	 if(temp != null && temp != ''){ 
+		 var expenseStatus = $('#expenseStatusDivId').val();
+		 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
+				expenseStatus = expenseStatus
+			}else{
+				var expenseStatus = [];
+				$('input:checkbox[name=expenseStatus]:checked').each(function() 
+				{
+					expenseStatus.push($(this).val());
+				});	
+			}
 		var startDate = $("#filterStartDate").val();
 		var endDate = $("#filterEndDate").val();
 		window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
-	}else{
-		
-		/* var sourceleadUrl = '${sourceleadUrl}';
-		var expenseStatus = [];
-		$('input:checkbox[name=expenseStatus]:checked').each(function() 
-		{
-			expenseStatus.push($(this).val());
-		});
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus; */
-		
+	 }else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
@@ -623,7 +532,7 @@ function exportToPdf(type){
 		$("#expensesListDiv").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 	
-	}
+	} 
 	
 }
 </script>
@@ -653,27 +562,25 @@ function expensesCancel(){
 
 <script>
 	$(function() {
-		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatexpApprvList = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatexpApprvList = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatexpApprvList = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatexpApprvList = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatexpApprvList = 'yy-dd-mm'; 
-		  }
+		var finalDateFormatexpApprvList = getJSDateFormat(locationDate);
 		$('#filterStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect: function (selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
+	           // dt.setDate(dt.getDate() + 1);
 	            $("#filterEndDate").datepicker("option", "minDate", dt);
+				var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 		
 		});
@@ -682,15 +589,23 @@ function expensesCancel(){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect: function (selected) {
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
 	            //var dt = new Date(selected);
 	            var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
+	           // dt.setDate(dt.getDate() - 1);
 	            $("#filterStartDate").datepicker("option", "maxDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 		});
 		
 	});
 </script>
-
+<%-- <jsp:include page="expensesApproverTable.jsp" /> --%>
 <jsp:include page="../masterFooter.jsp" />

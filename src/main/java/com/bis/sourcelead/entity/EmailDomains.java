@@ -13,8 +13,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "EMAIL_DOMAINS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailDomains")
+@Table(name = "EMAIL_DOMAINS")
 public class EmailDomains implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

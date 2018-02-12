@@ -46,8 +46,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @Entity
-@Table(name = "EXPENSES_APPROVER_HIERARCHY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesApproverHierarchy")
+@Table(name = "EXPENSES_APPROVER_HIERARCHY")
 public class ExpensesApproverHierarchy implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -97,6 +96,9 @@ private Date updatedDate;
 
 @Column(name = "UPDATED_BY")
 private String updatedBy;
+
+@Column(name = "ACTION_BY_ORGLOC_ID")
+private Long actionbyorglocid;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
@@ -152,6 +154,9 @@ private String userTypeVendorName;
 @JsonProperty
 private String expensesApproverHierarchyPurpose; 
 
+@Transient
+@JsonProperty
+private String expenseLocationCode;
 
 @Transient
 @JsonProperty
@@ -383,6 +388,24 @@ public String getUserFileUrl() {
 public void setUserFileUrl(String userFileUrl) {
 	this.userFileUrl = userFileUrl;
 }
+
+public String getExpenseLocationCode() {
+	return expenseLocationCode;
+}
+
+public void setExpenseLocationCode(String expenseLocationCode) {
+	this.expenseLocationCode = expenseLocationCode;
+}
+
+public Long getActionbyorglocid() {
+	return actionbyorglocid;
+}
+
+public void setActionbyorglocid(Long actionbyorglocid) {
+	this.actionbyorglocid = actionbyorglocid;
+}
+
+
 
 
 }	

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -38,12 +39,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -76,6 +79,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -99,12 +103,17 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
+@RequestMapping("/app")
 public class UserRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
+private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	 
 	@Autowired
 	UserService userService;
@@ -112,6 +121,8 @@ public class UserRestController {
 	@Autowired
 	private ProjectsService projectsService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -273,20 +284,25 @@ public class UserRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasRole('ROLE_CREATE_USER')")
+	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
 	public String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
 			throws Exception {
-
+		if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
+		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,orgLocations);
 		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
-		// userService.createUser(jsonObj,user,orgLocations.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New user created");
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
 		return "usersList";
 	}
+	 else{
+		 return "DataMissing";
+	 }
+}
 	 
 	 /**
 	  * To get the Project Manager Name by using projectId
@@ -590,6 +606,25 @@ public class UserRestController {
 				//commonUtil.storeTimesheetSubmissionRecords(user);
 				return "success";
 			}
+			
+			@RequestMapping(value = "/rest/refreshSessionAttributes", method = RequestMethod.GET)
+	         public int refreshSessionAttributes(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="locationCode", required=true) String locationCode,HttpServletRequest request) throws Exception {
+	             int output =  HttpServletResponse.SC_NOT_FOUND;
+				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	             if(loginUser == null && userId != null){
+	            	 loginUser = userService.getUserById(userId);
+	             }
+	             OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+	             if(loginUser != null && orgLoc != null){
+	            	 SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLoc);
+	            	 Candidate candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
+					 SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+					 output =  HttpServletResponse.SC_OK;
+	             }
+	             return output;
+	         }
+			
+			
 			/**
 			 * to save the reason when we terminate the user from project 
 			 * @param projectMemberId
@@ -745,7 +780,7 @@ public class UserRestController {
 					}
 				 
 				 StringBuilder linkBuild = new StringBuilder();
-			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			   
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				
@@ -861,7 +896,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 
 
 			 StringBuilder linkBuild = new StringBuilder();
-		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		   
 			
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1375,7 +1410,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		 * @return
 		 * @throws Exception
 		 */
-		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_USER','ROLE_CREATE_USER')")
+		@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_ASSOCIATE','ROLE_CREATE_ASSOCIATE')")
 		@RequestMapping(value = "/reActiveUser", method = RequestMethod.POST)
         public String reActiveUser(@RequestParam(value = "userId", required = false) String userID, HttpServletRequest request) throws Exception {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1490,9 +1525,9 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 */
 	@RequestMapping(value = { "/getAssignedProjectsListForUser",
 			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
-	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,@RequestParam(value = "fromType", required = false) String fromType) throws Exception
 	{
-		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId,fromType);
 		return projectMembersList;
 	}
 	
@@ -1502,8 +1537,82 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		  	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    	List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
-                  return 	rolesList;	   
+            return 	rolesList;	   
 		    
 		   
 		} 
+	 
+	 @RequestMapping(value = "/rest/loginUserImageUrl", method = RequestMethod.GET)
+     public String getLoginUserImageUrl(@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
+         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+         String imageUrl = "";
+         if(loginUser == null){
+                loginUser = userService.getUserById(userId);
+                imageUrl = loginUser.getFileUrl();
+         }else{
+             imageUrl = loginUser.getFileUrl();
+         }
+         if(StringUtils.isBlank(imageUrl))
+             imageUrl ="/resources/images/userprofile-img.png";
+         return imageUrl;
+     }
+	 
+	 
+	 @RequestMapping(value = "/getOrgLocationAssociatesList", method = RequestMethod.GET)
+	 public @ResponseBody ResponseList<CandidateDTO>  getOrgLocationAssociatesList(CandidateDTO candidateDTO,HttpServletRequest request) throws Exception{ 
+		 
+		
+		List<Long> roleIds = null; 
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");		
+		
+		String[] tableColumns = {"ischeck","name", "email","role", "rate", "manager", "resume"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default referContactsDTO order
+		if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+		}
+		candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateDTO.setSortOrder(sortColumnOrder);
+		
+		if(!isNullOrEmpty(candidateDTO.getRoles())){
+			roleIds = new ArrayList<Long>();
+			 String[] rolesList = candidateDTO.getRoles().split(",");
+			 for(int i=0; i < rolesList.length; i++){
+				 roleIds.add(Long.valueOf(rolesList[i]));
+			 }
+			 
+		}
+		
+		List<Long> associateIds = null; 
+		if(!isNullOrEmpty(candidateDTO.getSelectedAssociates())){
+			associateIds = new ArrayList<Long>();
+			 String[] associateIdsList = candidateDTO.getSelectedAssociates().split(",");
+			 for(int i=0; i < associateIdsList.length; i++){
+				 associateIds.add(Long.valueOf(associateIdsList[i]));
+			 }
+		}
+		
+		 
+		ResponseList<CandidateDTO> candidateDTOList = candidateService.getLocationCandidatesList(candidateDTO, candidateDTO.getOrgLocationId(), roleIds, associateIds, orgLocations.getId());
+		
+		return candidateDTOList;
+	  }
+	 
+	 
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
+	 @RequestMapping(value = "/saveLocationAssociate" , method = RequestMethod.POST)
+	 public String saveLocationAssociate(AddAssociateDTO addAssociateDTO, HttpServletRequest request)
+			throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, org); 
+         
+           return "success";
+	 
+	 }
+	 
+	 
+	 
 }

@@ -30,6 +30,8 @@ public interface WageTaxSummaryDao {
 
 	int getWageTaxSummaryVersionByLocationId(Long locationId);
 
-	ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation, PayrollBalance payrollBalance) throws Exception;;
+	ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation, PayrollBalance payrollBalance) throws Exception;
+
+	WageTaxSummary getEmployeeIdByUserId(User consultantUser)throws Exception;
 
 }

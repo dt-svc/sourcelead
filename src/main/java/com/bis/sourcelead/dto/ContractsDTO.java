@@ -3,6 +3,10 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ContractsDTO {
 	private String staticPath;
 	private String contrId;
@@ -51,6 +55,13 @@ public class ContractsDTO {
 	private List<FullTimeContractsDTO> fullTimeoffercontractsList;
 	
 	private List<FileInfo> reqDocs;
+	
+	private String orgRelationUUID;
+	
+	private String spocUUID;
+	
+	private List<CustomFormFieldDTO> customFormData;
+	private String joinedDateStr;
 	
 	public String getStaticPath()
 	{
@@ -505,5 +516,44 @@ public class ContractsDTO {
 	{
 		this.fullTimeoffercontractsList = fullTimeoffercontractsList;
 	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
+	
 
 }

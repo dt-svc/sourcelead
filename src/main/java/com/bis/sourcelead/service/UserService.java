@@ -153,6 +153,8 @@ public interface UserService  {
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
+	public User getTabAccessOwnersByOrgLocationIdEmailAndTabId(Long orgLocationsId, String email, Long tabId) throws Exception;
+	
 	/**
 	 * @author Prasad salina
 	 * @param currentApproverId
@@ -192,6 +194,10 @@ public interface UserService  {
 	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId,Long userId) throws Exception;
 	
 	List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId,Long orgLocationId) throws Exception;
+
+	User getUserByVerficationUUID(String token);
+	
+	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
 
 }	
 		

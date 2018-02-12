@@ -38,6 +38,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateOnBoardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardController.class);
@@ -85,16 +86,16 @@ public class CandidateOnBoardController {
  			return model;
  	}
 	
-	@RequestMapping(value = "/onboardingCandidateSetp2")
-	public ModelAndView onboardingCandidateSetp2(HttpServletRequest request) {
+	@RequestMapping(value = "/onboardingCandidateStep2")
+	public ModelAndView onboardingCandidateStep2(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/welcomeStep2");
 		return model;
 	}
 	
-	@RequestMapping(value = "/onboardingCandidateSetp3")
-	public ModelAndView onboardingCandidateSetp3(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/onboardingCandidateStep3")
+	public ModelAndView onboardingCandidateStep3(HttpServletRequest request) throws Exception {
 		
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -125,8 +126,8 @@ public class CandidateOnBoardController {
 	
 	
 	
-	@RequestMapping(value = "/onboardingCandidateSetp4")
-	public ModelAndView onboardingCandidateSetp4(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/onboardingCandidateStep4")
+	public ModelAndView onboardingCandidateStep4(HttpServletRequest request) throws Exception {
 		
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");

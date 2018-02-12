@@ -392,7 +392,7 @@
 	 			$("#vendorEditMsg").html("Contact Details Updated");
 		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,ownerId); 
 		    	//getVendorContactLists();
-		    	getVendorContactListsELK();
+		    	getVendorContactList();
 		    	vendorEditMsgFadein();
 			});
 	     	return true;

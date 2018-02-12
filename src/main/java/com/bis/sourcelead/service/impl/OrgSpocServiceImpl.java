@@ -202,7 +202,6 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		List<OrgSpoc> orgSpocsList  = orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds,orgLocationId,type);
 		if(orgSpocsList != null && !orgSpocsList.isEmpty()){
 			for (OrgSpoc orgSpoc : orgSpocsList) {
-				
 				 //StringBuilder spocNameSB = new StringBuilder();
 				 StringBuilder ownerNameSB = new StringBuilder();
 				
@@ -579,6 +578,18 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	public List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId, Long vendorUserId)
 			throws Exception {
 		return orgSpocDao.getSpocListByVendorUserIdAndOrgRelationId(orgRelationId, vendorUserId);
+	}
+
+	@Override
+	public OrgSpoc getOrgSpocByUUID(String UUID) throws Exception
+	{
+		return orgSpocDao.getOrgSpocByUUID(UUID);
+	}
+
+	@Override
+	public Integer getNumberOfContactCount(Long orgRelationId, Long userId, Long orgLocationId,String responderType) throws Exception {
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(userId);
+		return orgSpocDao.getNumberOfContactCount(orgRelationId, userId, userIds, orgLocationId,responderType);
 	}
 	
 }

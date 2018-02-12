@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.bis.sourcelead.entity.User;
-
 public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -62,6 +60,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private Double flatPercentage;
 	
 	private String staticPath;
+	
+	private boolean approverUserId;
 
     private List<Map<String, String>> fileInfo;
 
@@ -96,6 +96,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
 	List<ProjectMembersDTO> projectMembersList;
+	
+	List<ClientOrgRelationsDTO> clientsList;
 	
 	private String reStartDate;
 	
@@ -155,11 +157,23 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private Long orgLocationId;
 	
+	private String clientlocationId;
+	
 	private String manager1Name;
 	
 	private String manager2Name;
 	
 	private String flatPercent; 
+	
+	private String orgRelationUUID;
+	
+	private String orgRelationId;
+	
+	private Map<String,String> projectCustomFieldlabelNameAndValue;
+	
+	private List<CustomFormFieldDTO> customFormData;
+	
+	private String projectApprover;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -762,6 +776,84 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	public void setFlatPercent(String flatPercent) {
 		this.flatPercent = flatPercent;
 	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public Map<String, String> getProjectCustomFieldlabelNameAndValue() {
+		return projectCustomFieldlabelNameAndValue;
+	}
+
+	public void setProjectCustomFieldlabelNameAndValue(Map<String, String> projectCustomFieldlabelNameAndValue) {
+		this.projectCustomFieldlabelNameAndValue = projectCustomFieldlabelNameAndValue;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+
+	public List<ClientOrgRelationsDTO> getClientsList() {
+		return clientsList;
+	}
+
+	public void setClientsList(List<ClientOrgRelationsDTO> clientsList) {
+		this.clientsList = clientsList;
+	}
+
+	public String getClientlocationId() {
+		return clientlocationId;
+	}
+
+	public void setClientlocationId(String clientlocationId) {
+		this.clientlocationId = clientlocationId;
+	}
+
+	public boolean isApproverUserId()
+	{
+		return approverUserId;
+	}
+
+	public void setApproverUserId(boolean approverUserId)
+	{
+		this.approverUserId = approverUserId;
+	}
+
+	public String getProjectApprover()
+	{
+		return projectApprover;
+	}
+
+	public void setProjectApprover(String projectApprover)
+	{
+		this.projectApprover = projectApprover;
+	}
+
+
+
+	
+
+
 	
 	
 }

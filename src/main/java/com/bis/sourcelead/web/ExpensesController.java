@@ -36,6 +36,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class ExpensesController {
 	
 	@Value("${sourceleadUrl}")
@@ -221,7 +222,7 @@ public class ExpensesController {
 			   isSahReopened = true;
 		     }
 		     model.addObject("isSahReopened", isSahReopened);	
-		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser);
+		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser,orgLoc);
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			

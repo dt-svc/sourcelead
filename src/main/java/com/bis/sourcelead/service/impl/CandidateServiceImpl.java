@@ -24,7 +24,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
@@ -37,13 +37,20 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dto.AddAssociateDTO;
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AssociateDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCustomFieldData;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -52,22 +59,30 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -79,6 +94,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -163,6 +179,24 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     CandidateActivityCommonUtil candidateActivityCommonUtil;
+    
+    @Autowired
+    RegistrationController registrationController;
+    
+    @Autowired
+    ClientService clientService;
+    
+    @Autowired
+    RolesDao rolesDao;
+    
+    @Autowired
+    EmployeesDao employeeDao;
+    
+    @Autowired
+    private OrglocationFormFieldsService orglocationFormFieldsService;
+    
+    @Autowired
+    private CandidateCustomFieldDataService candidateCustomFieldDataService;
     
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -272,11 +306,12 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
+        Date date = new Date();
 		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateDto.getCandidateId()));
 		}else{	
 			candidate = new Candidate();
-			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			candidate.setCreatedBy(user.getUserCode());
 			
 			if(StringUtils.isNotBlank(candidateDto.getConsultantUser())){
@@ -297,6 +332,7 @@ public class CandidateServiceImpl implements CandidateService {
 				masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDto, user);
 			}
 			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
 		if(orgLocations != null){
@@ -533,16 +569,34 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsAssociate(Constants.NO);
 		}
 		candidate.setUpdatedBy(user.getUserCode());
-		candidate.setUpdatedDate(commonUtil.currentDate());
+		candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		
 		/*
 		 * System Generated Id For Candidate
 		 */
-		candidate.setGeneratedId(getCandidateId(orgLocations));
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
+		
+		if(candidateDto.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					CandidateCustomFieldData candidateCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						candidateCustomFields = candidateCustomFieldDataService.getCandidateCustomFieldDataById(customFields.getEntityId());
+					}else {
+						candidateCustomFields = new CandidateCustomFieldData();
+					}
+				candidateCustomFields.setCandidate(savedCandidate);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				candidateCustomFields.setOrglocationsFormFields(orgFormField);
+				candidateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				candidateCustomFieldDataService.savejobCustomFieldData(candidateCustomFields);
+				}
+				
+			}	
+		}
 		
 		
 		/*
@@ -615,8 +669,9 @@ public class CandidateServiceImpl implements CandidateService {
          }
         
          globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
-         StringBuilder loginBuilder = new StringBuilder();
-         globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
+         StringBuilder loginBuilder = new StringBuilder();  
+ 		 String sourceleadRegisterUrl =StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
+         globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadRegisterUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
          //setting the Recipient information
          //setting the Recipient information
@@ -989,10 +1044,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getQueryBuilderListForCandidate(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -1203,6 +1258,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setVisaType(null);
 			}
 			
+			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDTO, orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEducation(candidateEducationList);
+			
+			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDTO,orgLocations,candidate,user.getUserCode());
+			candidate.setCandidateEmployers(candidateEmployersList);
 			
 			/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);
@@ -1453,22 +1513,33 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User candidateUser,OrgLocations orgLocations,MasterCandidate masterCandidate,User loginUser) throws Exception
 	{
-		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(candidateUser.getId(), orgLocations.getId());
 		if(null == candidate){
 			candidate = new Candidate();
-			candidate.setConsultantUser(user);
+			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 			candidate.setOrgLocationId(orgLocations);
 			candidate.setCandidateType(Constants.CANDIDATE);
-			candidate.setFirstName(user.getFirstName());
-			candidate.setLastName(user.getLastName());
+			candidate.setFirstName(candidateUser.getFirstName());
+			candidate.setLastName(candidateUser.getLastName());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setIsAssociate(Constants.YES);
-			candidate.setEmail(user.getEmail());
+			candidate.setEmail(candidateUser.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
-			candidate.setCreatedBy(user.getUserCode());
+			candidate.setCreatedBy(loginUser.getUserCode());
+			
+			if(StringUtils.isNotBlank(addUserDTO.getRate())){
+				candidate.setCurrentRate(addUserDTO.getRate());
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getRatePer())){
+				candidate.setCurrentRateType(addUserDTO.getRatePer());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getCurrentCurrency())){
+				candidate.setCurrentRateCurrency(addUserDTO.getCurrentCurrency());
+			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getPhoneNumber())){
 				candidate.setMobilePhone(candidateDTO.getPhoneNumber());
@@ -1484,17 +1555,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignationType(null);
 			}
 			
-			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
+			/*if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
 				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else
 			{
 				candidate.setDesignationOtherType(null);
+			}*/
+			
+			if(StringUtils.isNotBlank(candidateDTO.getDesignation())){
+				candidate.setDesignation(candidateDTO.getDesignation());
+			}else
+			{
+				candidate.setDesignation(null);
 			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
-				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, user);
+				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
 				candidate.setParentCandidateId(vendorCandidate);
 				}else{
 				candidate.setOrgRelationId(null);
@@ -1508,11 +1586,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				}
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			candidate.setGeneratedId(getCandidateId(orgLocations));
-			candidate.setCreatedDate(commonUtil.currentDate());
-			candidate.setUpdatedDate(commonUtil.currentDate());
+			if(orgLocations.getGeneratedUserId() != null && !orgLocations.getGeneratedUserId().isEmpty()) {
+				candidate.setGeneratedId(getCandidateId(orgLocations));
+			}
+			Date date= new Date();
+			candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+			candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 		}else{
-			candidate.setConsultantUser(user);
+			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
 		}
 		candidateDao.storeCandidate(candidate);
@@ -1598,9 +1679,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 
 	@Override
-	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,
 			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
-		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds,projectId);
+		return candidateDao.getRequestedCandidatesList(candidateDTO,orgLocationsId, roleIds, resourceType,associatesIds,projectId);
 	}
 
 	@Override
@@ -1670,6 +1751,238 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		canList.setData(candtoList);
 		return canList;
+	}
+	
+	@Override
+	public Candidate getCandidateByShortURL(String shortURL) throws Exception
+	{
+		return candidateDao.getCandidateByShortURL(shortURL);
+	}
+
+	@Override
+	public Integer getCandidatesCountByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getCandidatesCountByLocation(orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType)
+			throws Exception {
+		return candidateDao.getAllAssociatesByOrglocationIdAndEmploymentType(orgLocationId, employeementType);
+	}
+
+	@Override
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO, Long orgLocationsId,
+			List<Long> roleIds, List<Long> associatesIds,Long loginOrgLocationId) throws Exception {
+		return candidateDao.getLocationCandidatesList(candidateDTO, orgLocationsId, roleIds, associatesIds,loginOrgLocationId);
+	}
+
+	@Override
+	public void saveOrglocationAsssociate(AddAssociateDTO addAssociateDTO, User user, OrgLocations orgLocations,Org org)
+			throws Exception {
+		
+		if(addAssociateDTO.getLocationAssociates() != null && !addAssociateDTO.getLocationAssociates().isEmpty()){
+			
+			for(AssociateDTO associateDTO : addAssociateDTO.getLocationAssociates()){
+				if(associateDTO.getCandidateId() != null) {
+					Candidate candidate = candidateDao.getCandidateByCandidateId(associateDTO.getCandidateId());
+					OrgSpoc orgSpoc = null;
+					if(candidate != null) {
+						
+						OrgRelations orgRelations = null;
+						OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
+						orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),orgLocations.getId());
+						if(orgRelations == null) {
+
+    						orgRelations = saveOrgRelations(orgLocations,vendorOrgLocation,user);
+			 				orgRelations = orgRelationsService.addOrgRelations(orgRelations);
+			 			
+							String modules = vendorOrgLocation.getModulesId();
+							List<Integer> moduleIds = new ArrayList<Integer>();
+							 for (String s : vendorOrgLocation.getModulesId().split(",")){
+								 moduleIds.add(Integer.parseInt(s));
+							 }
+							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
+							 if(flag == false){
+								 Long moduleId = (long) Constants.MODULE_VMS;
+							     modules = modules+","+Constants.MODULE_VMS;
+							     registrationController.saveUserRoleActions(moduleId,vendorOrgLocation);
+							 }
+							 
+							 Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
+							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
+							 if(tsflag == false) {
+				    				modules = modules+","+Constants.MODULE_TIMESHEET;
+				    				registrationController.saveUserRoleActions(tsModuleId,vendorOrgLocation);
+				    			}
+							
+							 
+							 vendorOrgLocation.setModulesId(modules);
+							 orgLocationService.updateOrgLocations(vendorOrgLocation);
+                              							 
+							 
+							   String clientModules = orgLocations.getModulesId();
+								List<Integer> clientModuleIds = new ArrayList<Integer>();
+								 for (String s : orgLocations.getModulesId().split(",")){
+									 clientModuleIds.add(Integer.parseInt(s));
+								 }
+								 boolean flag1 = moduleIds.contains(Constants.MODULE_ATS);
+								 if(flag1 == false){
+									 Long moduleId = (long) Constants.MODULE_ATS;
+									 clientModules = clientModules+","+Constants.MODULE_ATS;
+								     registrationController.saveUserRoleActions(moduleId,orgLocations);
+								 }
+								 
+								 orgLocations.setModulesId(clientModules);
+								 orgLocationService.updateOrgLocations(orgLocations);
+							 
+							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+							 for(OrgSpoc spoc : orgSpocList){
+								 orgSpoc =  spoc;
+							 }
+							 
+							 clientService.saveOrUpdateClientVendorElkDocument(null, vendorOrgLocation, "Vendor", orgSpoc, orgRelations,null, user, orgLocations);
+    					
+						}
+						
+						Candidate vendorCandidate = null;
+						vendorCandidate = candidateDao.findByCandidateEmail(candidate.getEmail(), orgLocations.getId());
+						if(vendorCandidate == null) {
+							vendorCandidate = new Candidate();
+							MasterCandidate masterCandidate = new MasterCandidate();
+							masterCandidate.setId(candidate.getMasterCandidateId().getId());
+							vendorCandidate.setMasterCandidateId(masterCandidate);
+							vendorCandidate.setParentCandidateId(candidate);
+							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
+							vendorCandidate.setOrgRelationId(orgRelations);
+							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+							 for(OrgSpoc spoc : orgSpocList){
+								 orgSpoc =  spoc;
+							 }
+							vendorCandidate.setSpocId(orgSpoc);
+							vendorCandidate.setCandidateType("Candidate");
+							vendorCandidate.setFirstName(candidate.getFirstName());
+							vendorCandidate.setLastName(candidate.getLastName());
+							vendorCandidate.setEmail(candidate.getEmail());
+							vendorCandidate.setCountry(candidate.getCountry());
+							vendorCandidate.setOrgLocationId(orgLocations);
+							vendorCandidate.setIsAssociate(Constants.YES);
+							vendorCandidate.setDesignationType("Offshore C2C");
+							
+							if(associateDTO.getBillRate() != null){
+								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
+							}
+							if(StringUtils.isNotBlank(associateDTO.getBillRateRateType())){
+								vendorCandidate.setCurrentRateType(associateDTO.getBillRateRateType());
+							}
+							
+							if(StringUtils.isNotBlank(associateDTO.getBillRateCurrency())){
+								vendorCandidate.setCurrentRateCurrency(associateDTO.getBillRateCurrency());
+							}
+							
+							vendorCandidate.setStatus(1);
+							vendorCandidate.setIsAssociate(Constants.YES);
+							vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+							vendorCandidate.setCreatedBy(user.getUserCode());
+							vendorCandidate.setCreatedDate(new Date());
+							vendorCandidate.setUpdatedDate(new Date());
+							
+							Candidate savedCandidate = candidateDao.storeCandidate(vendorCandidate);
+	    					saveOrUpdateCandidateElkDocument(savedCandidate);
+	    					
+	    					UserRole userRole = new UserRole();
+	    					userRole.setUser(candidate.getConsultantUser());
+	    					userRole.setIsMailSent(Status.Y);
+	    					userRole.setOrgLocations(orgLocations);
+	    					userRole.setUserState(Status.NOT_LOGGEDIN);
+	    					Roles roles = rolesDao.getRolesById(associateDTO.getAssociateRole());
+	    					userRole.setRoles(roles);
+	    					userRole.setUserType(roles.getDisplayName());
+	    					User managerUser = userService.getUserById(associateDTO.getAssociateManager());
+	    					userRole.setReportingManager(managerUser);
+	    					userRole.setIsPrimary(0);
+	    					userRole.setOrgId(org);
+	    					userRole.setOrgLocations(orgLocations);
+	    					userRole.setIsMailSent(Status.Y);
+	    					
+	    					userRole.setCreatedDate(new Date());
+	    					userRole.setCreatedBy(user.getUserCode());
+	    					userRoleService.addUserRole(userRole);
+	    					
+	    					Employees employee = new Employees();
+	    					employee.setUser(candidate.getConsultantUser());
+	    					employee.setOrgLocations(orgLocations);
+	    					employee.setCreatedBy(user.getUserCode());
+	    					employee.setHireDate(new Date());
+	    					employee.setUserEmploymentType("Offshore C2C");
+	    					employee.setOrgRelationId(orgRelations);
+	    					employee.setSpocId(orgSpoc);
+	    					
+	    					if(associateDTO.getBillRate() != null){
+	    						employee.setRate(associateDTO.getBillRate().toString());
+							}
+							if(StringUtils.isNotBlank(associateDTO.getBillRateRateType())){
+								employee.setRatePer(associateDTO.getBillRateRateType());
+							}
+							
+							if(StringUtils.isNotBlank(associateDTO.getBillRateCurrency())){
+								employee.setCurrentCurrency(associateDTO.getBillRateCurrency());
+							}
+							
+	    					employee.setCreatedDate(new Date());
+	    					employee.setUpdatedDate(new Date());
+	    					employeeDao.addEmployee(employee);
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	public OrgRelations saveOrgRelations(OrgLocations orglocations,OrgLocations vendorOrgLocation,User user){
+		
+		OrgRelations orgRelations = new OrgRelations();
+			orgRelations.setLocationId(orglocations);
+			orgRelations.setResponderLocationId(vendorOrgLocation);
+			orgRelations.setInitiatorType("Client");
+			orgRelations.setResponderType("Vendor");
+			orgRelations.setInitiatorLevel("Tier-5");
+			orgRelations.setResponderLevel("Tier-5");
+			orgRelations.setVendorRelationStatus("Sent");
+			orgRelations.setStatus("ACTIVE");
+			orgRelations.setCreatedBy(user.getUserCode());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUpdatedBy(user.getUserCode());
+			orgRelations.setUpdatedDate(new Date());
+			
+			Set<OrgSpoc> orgSpocSet = new HashSet<>();
+			OrgSpoc orgSpoc = new OrgSpoc();
+			orgSpoc.setOrgRelations(orgRelations);
+			orgSpoc.setClientUser(user);
+			orgSpoc.setVendorUser(vendorOrgLocation.getUser());
+			orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
+			orgSpoc.setClientLocationId(orglocations);
+			orgSpoc.setVendorLocationId(vendorOrgLocation);
+			orgSpoc.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			orgSpoc.setSpocStatus("Active");
+			orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
+			orgSpoc.setOwnerUser(user);
+			orgSpoc.setCreatedDate(new Date());
+			orgSpoc.setCreatedBy(user.getUserCode());
+			orgSpoc.setUpdatedDate(new Date());
+			orgSpoc.setUpdatedBy(user.getUserCode());
+			orgSpocSet.add(orgSpoc);
+			orgRelations.setOrgSpocList(orgSpocSet);
+			return orgRelations;
+	}
+	
+	@Override
+	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
 	}
 
 }

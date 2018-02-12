@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script type="text/javascript">
 window.onload = function () {
-	initLocationAuto('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode','clientLatitude','clientLongitude','invite');
+	initLocationAuto('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode','clientLatitude','clientLongitude','invite','addressId');
  };
 </script>
 <!-- <script>
@@ -31,7 +31,12 @@ window.onload = function () {
 		document.getElementById("client_form").reset();
 		
 		var orgRelationId = '${orgRelationId}';
-	
+		
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		</c:forEach>
+		
 		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
 			
 			var orgRelationUUID = '${orgRelationUUID}';
@@ -100,7 +105,7 @@ function getVendorDetails(){
 	var vendorOrgLocationId = document.getElementById("vendorOrgLocationId").value;
 	var orgRelationId = document.getElementById("orgRelationId").value;
 	if(orgRelationId){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			
 	        $.ajax({
 		    	type: "GET",
@@ -115,9 +120,10 @@ function getVendorDetails(){
 	        			   $("input[name=webSite]").val(json.webSite);
 	        		   }
 	        		   
-	        		   
 	        		   $("input[name=location]").val(json.vendorOrgLocation);
-	        		   $("input[name=country]").val(json.country);
+	        		   $("#vendorCountry").val(json.country);
+	        		   $("#vendorCountry").trigger("chosen:updated"); 
+	        		   
 	        		   $("input[name=state]").val(json.state);
 	        		   $("input[name=city]").val(json.city);
 	        		   
@@ -207,7 +213,7 @@ function getVendorDetails(){
 	        			
         			   $("select[name=spocStatus]").val(json.spocStatus);
 	        		   
-	      			   $("#loading").removeAttr("style");
+	      			   $("#vendorDetailsLoading").removeAttr("style");
 			        
 		        },
 		    }); 
@@ -234,18 +240,19 @@ function getVendorDetails(){
 
 <!-- Content Area -->
 <section class="content-wraper">
+<input type="hidden" id="actionId" value="${actionId}">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>Create Vendor</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Create
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a> &raquo; Create
 			Vendor
 		</div>
 	</section>
 	
-	<div id="loading"></div>
+	<div id="vendorDetailsLoading"></div>
 	<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
@@ -293,86 +300,72 @@ function getVendorDetails(){
 						</div>
 
 						<div class="form-group" id="locationDiv" style="display: block;">
-							<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="locationField">
 								<div class="positionRelative">
 									<input class="form-control positionRelative"
 										id="vendorLocation" name="location"
-										placeholder="Enter your Location" type="text"
-										field-name="Location" data-validation="required"></input> <i
+										placeholder="Enter your Address" type="text"
+										field-name="Address" data-validation="required"></input> <i
 										class="fa fa-refresh btn btn-primary refresh-icon"
 										title="Refresh"
-										onClick="refreshGoogleApiLocation('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode');"></i>
+										onClick="refreshGoogleApiLocation('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode','addressId');"></i>
 								</div>
 							</div>
 						</div>
 						<div class="form-group" id="orgLocationDiv" style="display: none;">
-							<label class="col-md-3">Location</label>
+							<label class="col-md-3">Address</label>
 							<div class="col-md-9">
 								<div class="positionRelative">
 									<input class="form-control positionRelative" id="orgLocation"
-										name="orgLocation" placeholder="Enter your Location"
-										type="text" field-name="Location" readonly></input>
+										name="orgLocation" placeholder="Enter your Address"
+										type="text" field-name="Address" readonly></input>
 								</div>
 							</div>
 						</div>
 
-						<div class="form-group" id="countryDiv" style="display: block;">
-							<label class="col-md-3">Country</label>
+                        <div class="form-group ">
+							<label class="col-md-3">Street Address</label>
 							<div class="col-md-9">
-								<input class="form-control" id="vendorCountry" name="country"
-									placeholder="Enter your Country" value="${loginCountryName}"
-									type="text" readonly></input>
+								<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Addres" data-validation="validate_length length2-250" data-validation-optional="true"/>
 							</div>
 						</div>
-
-						<div class="form-group" id="orgCountryDiv" style="display: none;">
-							<label class="col-md-3">Country</label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="orgCountry"
-									name="orgCountry" value="" readonly="readonly">
-							</div>
-						</div>
-
-						<div class="form-group" id="stateDiv" style="display: block;">
-							<label class="col-md-3">State</label>
-							<div class="col-md-9">
-								<input class="form-control" id="vendorState" name="state"
-									placeholder="Enter your State" type="text" readonly></input>
-							</div>
-						</div>
-
-						<div class="form-group" id="orgStateDiv" style="display: none;">
-							<label class="col-md-3">State</label>
-							<div class="col-md-9">
-								<input type="text" class="form-control" id="orgState"
-									placeholder="Enter your State" name="orgState" value=""
-									readonly="readonly">
-							</div>
-						</div>
-
+						
 						<div class="form-group" id="cityDiv" style="display: block;">
 							<label class="col-md-3">City</label>
 							<div class="col-md-9">
-								<input class="form-control" id="vendorCity" name="city"
-									placeholder="Enter your City" type="text" readonly></input>
+								<input class="form-control" id="vendorCity" name="city" placeholder="Enter your City" type="text"  ></input>
 							</div>
 						</div>
 
 						<div class="form-group" id="orgCityDiv" style="display: none;">
 							<label class="col-md-3">City</label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" id="orgCity"
-									placeholder="Enter your City" name="orgCity" value=""
-									readonly="readonly">
+								<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
 							</div>
 						</div>
+						
+						<div class="form-group" id="stateDiv" style="display: block;">
+							<label class="col-md-3">State</label>
+							<div class="col-md-9">
+								<input class="form-control" id="vendorState" name="state" placeholder="Enter your State" type="text" ></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgStateDiv" style="display: none;">
+							<label class="col-md-3">State</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
+							</div>
+						</div>
+
+						
 
 						<div class="form-group" id="zipCodeDiv" style="display: block;">
 							<label class="col-md-3">ZipCode</label>
 							<div class="col-md-9">
 								<input class="form-control" id="vendorZipCode" name="zipcode"
-									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
+									placeholder="Enter your Zip code" type="text"   onclick="zipcodeMask('${loginCountryName}','vendorZipCode');"></input>
 							</div>
 						</div>
 
@@ -381,6 +374,27 @@ function getVendorDetails(){
 							<div class="col-md-9">
 								<input class="form-control" id="orgZipCode" name="orgZipcode"
 									placeholder="Enter your Zip code" type="text" readonly ></input>
+							</div>
+						</div>
+						
+						<div class="form-group" id="countryDiv" style="display: block;">
+							<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<select class="form-control chosen-select" name="country" id="vendorCountry" field-name="Country" data-validation="required" >
+				                   <option  ${loginCountryName  == 'Australia' ? 'selected' : ''}>Australia</option>
+				                   <option  ${loginCountryName  == 'France' ? 'selected' : ''}>France</option>
+				                   <option  ${loginCountryName  == 'India' ? 'selected' : ''}>India</option>
+				                   <option  ${loginCountryName  == 'Singapore' ? 'selected' : ''}>Singapore</option>
+				                   <option  ${loginCountryName  == 'United Kingdom' ? 'selected' : ''}>United Kingdom</option>
+				                   <option  ${loginCountryName  == 'United States' ? 'selected' : ''}>United States</option>
+			                 </select>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgCountryDiv" style="display: none;">
+							<label class="col-md-3">Country</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
 							</div>
 						</div>
 
@@ -400,12 +414,10 @@ function getVendorDetails(){
 							</div>
 						</div>
 
-
-
-
 						<div class="form-group">
+						<div class="clearfix mb">
 							<label class="col-md-3">Tier</label>
-							<div class="col-md-9">
+							<div class="col-md-9 dropdown-select">
 								<select class="form-control" id="level" name="level">
 									<option value="Tier-1">Tier-1</option>
 									<option value="Tier-2">Tier-2</option>
@@ -414,17 +426,25 @@ function getVendorDetails(){
 									<option selected="selected" value="Tier-5">Tier-5</option>
 								</select>
 							</div>
-						</div>
-
-						<div class="form-group ">
-							<label class="col-md-3">Address</label>
-							<div class="col-md-9">
-								<textarea id="addressId" name="address" rows="4"
-									field-name="Address" class="form-control"
-									data-validation="validate_length length2-250"
-									data-validation-optional="true"></textarea>
+							</div>
+							
+							<div class="clearfix width100Pecnt">
+							<label class="col-md-3">Payment Term</label>
+							<div class="col-md-9 dropdown-select">
+								<select class="form-control" id="PaymentTermId"
+									name="paymentTerms">
+									<option value="">Select Payment Term</option>
+									<option value="10 days">10 days</option>
+									<option value="15 days">15 days</option>
+									<option value="30 days">30 days</option>
+									<option value="45 days">45 days</option>
+									<option value="60 days">60 days</option>
+									<option value="90 days">90 days</option>
+								</select>
 							</div>
 						</div>
+						</div>
+
 
 						<div class="form-group ">
 							<label class="col-md-3">Billing Address</label>
@@ -437,22 +457,7 @@ function getVendorDetails(){
 						</div>
 
 						<div class="clearfix mb"></div>
-						<div class="form-group">
-							<label class="col-md-3">Payment Term</label>
-							<div class="col-md-9">
-								<select class="form-control" id="PaymentTermId"
-									name="paymentTerms">
-									<option selected="selected" disabled value="">Select
-										Payment Term</option>
-									<option value="10 days">10 days</option>
-									<option value="15 days">15 days</option>
-									<option value="30 days">30 days</option>
-									<option value="45 days">45 days</option>
-									<option value="60 days">60 days</option>
-									<option value="90 days">90 days</option>
-								</select>
-							</div>
-						</div>
+						
 						
 						<div class="form-group">
 							<label class="col-md-3">Onboard Templates</label>
@@ -466,7 +471,14 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
-
+					
+					<div class="clearfix mb"></div>	
+					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 0}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
+						
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<h3>Contact Details</h3>
@@ -476,7 +488,7 @@ function getVendorDetails(){
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="email" name="email"
-									value="${emailId}" field-name="Email Id"
+									value="${emailId}" field-name="Email"
 									data-validation="required validate_Space validate_length length1-100 validate_email"
 									onblur="validateEmail();getSpocUserDetails();"> <span
 									class="hidden">Valid Email</span>
@@ -544,7 +556,7 @@ function getVendorDetails(){
 							<div class="col-md-9 candAdvsrch">
 								<select data-placeholder="select owner" multiple
 									class="chosen-select form-control" name="owner" id="owner"
-									field-name="Owner" data-validation="required">
+									field-name="Owner Name" data-validation="required">
 									<c:forEach var="user" items="${userList}">
 										<option value="${user.id}"
 											${user.id  == SourceLeadWeb_userId ? 'selected' : ''}>${user.fullName}</option>
@@ -552,6 +564,14 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
+						
+						<div class="clearfix"></div>	
+					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 1}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
+						
 					</div>
 					<div class="clearfix mb"></div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -590,7 +610,7 @@ function getVendorDetails(){
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
 						
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -614,42 +634,23 @@ function getVendorDetails(){
 <!-- Footer Area -->
 
 
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
+
 
 <script type="text/javascript">
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
-	$( "#orgLocationId" ).val( '' );
-	
-	$("#webSite").attr("disabled", false);
-	$("#webSite" ).val(''); 
-	
-	$("#orgCountry").val('');
-	$("#orgState").val('');
-	$("#orgCity").val('');
-	$("#orgCity").val('');
-	$("#orgLocation").val('');
-	$("#orgZipCode").val('');
-	
-	document.getElementById("countryDiv").style.display="";
-	document.getElementById("orgCountryDiv").style.display="none";
-	
-	document.getElementById("stateDiv").style.display="";
-	document.getElementById("orgStateDiv").style.display="none";
-	
-	document.getElementById("cityDiv").style.display="";
-	document.getElementById("orgCityDiv").style.display="none";
-	
-	document.getElementById("locationDiv").style.display="";
-	document.getElementById("orgLocationDiv").style.display="none";
-	
-	document.getElementById("zipCodeDiv").style.display="";
-	document.getElementById("orgZipCodeDiv").style.display="none";
-	
-	/* $("#role" ).val('');
-	$("#role").attr("data-validation", "required");
-	document.getElementById("roleDiv").style.display=""; */
-	document.getElementById("userRoleDiv").style.display="none";
-	
 	$.ajax({                           
     	type: "POST",
     	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
@@ -689,6 +690,36 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
+	
+$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val(''); 
+	
+	$("#orgCountry").val('');
+	$("#orgState").val('');
+	$("#orgCity").val('');
+	$("#orgCity").val('');
+	$("#orgLocation").val('');
+	$("#orgZipCode").val('');
+	
+	document.getElementById("countryDiv").style.display="";
+	document.getElementById("orgCountryDiv").style.display="none";
+	
+	document.getElementById("stateDiv").style.display="";
+	document.getElementById("orgStateDiv").style.display="none";
+	
+	document.getElementById("cityDiv").style.display="";
+	document.getElementById("orgCityDiv").style.display="none";
+	
+	document.getElementById("locationDiv").style.display="";
+	document.getElementById("orgLocationDiv").style.display="none";
+	
+	document.getElementById("zipCodeDiv").style.display="";
+	document.getElementById("orgZipCodeDiv").style.display="none";
+	
+	document.getElementById("userRoleDiv").style.display="none";
+	
 	var orgName = document.getElementById("orgName").value;
 	orgName = encodeURIComponent(orgName);
 	var orgLocationId = document.getElementById("orgLocationId").value;
@@ -733,7 +764,6 @@ function getOrgDetails()
 			      	if(zipCode != null && zipCode != ""){
 			      		document.getElementById("zipCodeDiv").style.display="none";
 	   	        		document.getElementById("orgZipCodeDiv").style.display="";
-	   	        	    $("#orgZipCode").val(json['zipCode']);
 			      	}
 			      	
    	        	}
@@ -758,7 +788,7 @@ function validateEmail(){
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -787,7 +817,7 @@ function getRolesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(orgName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=ATS", 
@@ -803,7 +833,7 @@ function getRolesList(){
 	        	$("#role").empty();
 		        $("#role").append(output);
 		        $('#role').trigger("chosen:updated");
-		        $("#loading").removeAttr("style"); 
+		        $("#vendorDetailsLoading").removeAttr("style"); 
 	        },
 	    });
 	}else{
@@ -842,12 +872,12 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						$("#vendorOrgLocationId").val(data.id); 
 						$("#orgRelationId").val(data.vendorOrgRelationId);
 						$("#vendorOnboardId").val(data.vendorOnboardId);
-						$("#loading").removeAttr("style");
+						$("#vendorDetailsLoading").removeAttr("style");
 						 var vendorDocuments = document.getElementById("vendorDocuments");
 						 document.getElementById("vendorDocuments").removeAttribute("class");
 						 vendorDocuments.href="#tab-b";
@@ -875,9 +905,9 @@ function updateVendor(){
 	if ($('#client_form').validate(false, validationSettings)) {
 		var orgRelationId = document.getElementById("orgRelationId").value;
 	  	var formData = $($('#client_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.post(sourceleadUrl+"/updateVendor?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, formData, function(data) {
-					 $("#loading").removeAttr("style");
+					 $("#vendorDetailsLoading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");
 					 $("#vendorDocuments").removeClass("disabledLink");
 					 vendorDocuments.href="#tab-b"; 
@@ -988,11 +1018,11 @@ function validateClientName(){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (vendor != null && vendor != '') {
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
+			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == 'true') {
@@ -1026,7 +1056,7 @@ function validateClientName(){
 					});
 				}
 				
-				$("#loading").removeAttr("style");
+				$("#vendorDetailsLoading").removeAttr("style");
 			},
 
 		});
@@ -1050,7 +1080,7 @@ function validateOrgName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/ws/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
+			url : sourceleadUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
 			success : function(data) {
 				var result = data;
 				if (result == 'invalid') {
@@ -1093,7 +1123,7 @@ function validateOrgName(){
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -1239,31 +1269,4 @@ function getCities(){
 	}
 }
 </script>
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       $("#owner").chosen();
-	       
-	       $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-		  
-});
-</script>
+ 

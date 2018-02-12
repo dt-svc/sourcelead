@@ -19,6 +19,9 @@ function candidateEducation(candidateId){
 	}else{
 		result = result  +'    	<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>                                                            ';
 	}
+	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '</div>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -118,15 +121,15 @@ function candidateEducationList(candidateId){
 	                    		 result  = result + '<td><div><span>----</span></div></td>';
 	                    	 }
 	                    	 if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
-	                    	 }
-	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
-			                 }else{
-			                 result  = result + '<td><div><span>----</span></div></td>'; 
-			                 }
+		                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
+		                    	 }else{
+		                    		 result  = result + '<td><div><span>----</span></div></td>'; 
+		                    	 }
+		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+				                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+				                 }else{
+				                 result  = result + '<td><div><span>----</span></div></td>'; 
+				                 }
 	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
 	                    	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
 	                    	 }else{
@@ -243,7 +246,7 @@ function addEducation(candidateId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
-	result = result  +'	                     <select class=""  name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
+	result = result  +'	                     <select class="newSelect valid"  name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">%</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -476,8 +479,8 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
-	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="scoreType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
+	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
 													result = result + '<option selected>Percentage</option>';
@@ -496,8 +499,8 @@ function EditEducation(candidateId,candidateEducationId) {
 												}
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                  <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="score" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
+	result  = result + '                  <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();scoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -669,7 +672,12 @@ function candidateEducationStore(candidateId){
 				            			$("#quickDisVal").empty();
 				            			$("#quickDisVal").append(data+'%');
 				               			 $("#popUpDiv").removeClass("edit-details-active");
+				               			$("#selector4").removeAttr("style");
+				            			$("#selector4").css({ display: "block" });
+				        				$("#eduMsgDiv").html("Success!! New Education added");
 				               			 candidateEducationList(candidateId);
+				               			recQveducationSubmission(candidateId);
+				               			eduMsgFadeinFunction();
 							    	}
 				                 }   
 				      }, 
@@ -686,7 +694,12 @@ $('body').on('blur', '#education_form', function() {
 
 
 </script>            
-          
+ <script>
+	function eduMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script>          
 
 <script type="text/javascript">
 	(function($) {
@@ -716,10 +729,25 @@ $('body').on('blur', '#education_form', function() {
      @author : david.
      this script is for remove candidateEducation.
 --%>
+<script type="text/javascript">
+function removeEducation(candidateEducationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Education</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEduPopUp").empty();
+	$("#deleteEduPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 
+}
+</script>
       
 <script>
-function removeEducation(candidateEducationId,candidateId){
+function deleteSelectedEducation(candidateEducationId,candidateId){
  var loginUserId = '${SourceLeadWeb_userId}';
  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
@@ -755,8 +783,15 @@ function removeEducation(candidateEducationId,candidateId){
    	          				 $("#quickPerVal").removeClass('progress-bar-danger');
    	          				 $("#quickPerVal").addClass("progress-bar-success");
    	          			 }
+   	          	   	$("#selector4").removeAttr("style");
+       			 $("#selector4").css({ display: "block" });
+       			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			candidateEducationList(candidateId);
+             			recQveducationSubmission(candidateId);
+             			eduMsgFadeinFunction();
+             			
 			    	}
                } 
         },
@@ -765,7 +800,12 @@ function removeEducation(candidateEducationId,candidateId){
 	 
 }
 </script> 
-
+ <script type="text/javascript">
+function deleteEduPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+<div id="deleteEduPopUp"></div> 
  <!-- this script is for removing the Education  Ends -->       
  
  <%-- 
@@ -782,11 +822,7 @@ function recSelectType(){
 	}
 	
 	 var selectedText = document.getElementById("scoreType").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
+	
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
@@ -876,14 +912,16 @@ function clearSearchKey() {
 
 <script type="text/javascript">
 	function updateCandidateEducation(candidateId, candidateEducationId) {
-		/* var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		}; */
 		
-		
+		var scoreType = document.getElementById("scoreType").value; 
+		 if(scoreType != null && scoreType != ""){
+			 $('#candidateScore').removeAttr('data-validation-optional');
+			 $('#candidateScore').attr("data-validation","required"); 
+		 }else{
+			 $('#candidateScore').removeAttr('data-validation');
+			 $('#candidateScore').attr("data-validation-optional","true"); 
+		 }
+		 
 		if ($('#education_form').validate(false,validationSettings)) {
 
 			var formData = getFormData('education_form');
@@ -894,7 +932,8 @@ function clearSearchKey() {
 						url : sourceleadUrl+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 						success : function(result) {
 							closePopup();
-							candidateEducationList(candidateId)
+							candidateEducationList(candidateId);
+							recQveducationSubmission(candidateId);
 						},
 					});
 			return true;

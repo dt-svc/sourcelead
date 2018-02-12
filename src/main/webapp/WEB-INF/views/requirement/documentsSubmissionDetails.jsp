@@ -89,7 +89,7 @@
 			                    	 }else{
 			                    		 result  = result + ' <td><div><span>----</span></div></td>';
 			                    	 }
-			                   result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
+			                   result = result+'<td><div class="tblicons"> <a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a>';
 				           		result = result+'</div></td>';
 		                    	 result  = result + '</tr>';
 		                      } 

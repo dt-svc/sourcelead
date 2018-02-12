@@ -110,7 +110,7 @@
 													&& opt.resumeId != ''
 													&& opt.resumeId != 'undefined') {
 												result = result
-												+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
+												+ '         <td><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
 											} else {
 												result = result
 														+ '         <td><div>--</div></td>';
@@ -419,7 +419,7 @@
 											var result = "";
 											result = result
 													+ '<td><div class="tblwidth-150"><span>'
-													+ opt.submissionStatus
+													+ opt.submissionDisplayStatus
 													+ '</span>';
 											if (opt.rejectedReason != null
 													&& opt.rejectedReason != ''
@@ -466,7 +466,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#requirementsPagination").wrap(

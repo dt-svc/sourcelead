@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
@@ -47,11 +49,15 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController 
+@RequestMapping("/app")
 public class TimesheetSubmissionsRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Autowired
 	public TimesheetSubmissionsService timesheetSubmissionsService;
@@ -76,6 +82,9 @@ public class TimesheetSubmissionsRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	ProjectClientService projectClientService;
 	
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -179,7 +188,7 @@ public class TimesheetSubmissionsRestController {
 	 	//DateFormat  sdf = LoginSessionController.DATEFORMAT;
         Date sDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate);
         Date eDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate);
-        submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
+        submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason,loginOrgLocation);
         
        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
         
@@ -205,7 +214,7 @@ public class TimesheetSubmissionsRestController {
 			 //Employees emp = employeesService.getEmployee(empId.toString());
 	 	 
 			// SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
-			 ProjectMembers projectMember = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(pmId);
+			 ProjectMembers projectMember = projectMembersService.getProjectMemberById(pmId);
 			// DateFormat format = Constants.DF_DMY;
 			 Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
 			 Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
@@ -219,7 +228,7 @@ public class TimesheetSubmissionsRestController {
 		 	    )
 		 	   {
 		 		//For Employee
-		 		sendEmailNotificationToEmployeeAndApproversOfEndClient(projectMember.getProjectMemberCandidteId().getConsultantUser().getFirstName(),projectMember.getProjectMemberCandidteId().getConsultantUser().getLastName(),  projectMember.getProjectMemberCandidteId().getConsultantUser().getEmail(), loginUser, loginOrgLocation, projectMember, startDate, endDate, submissionStatusStr, rejectedReason);
+		 		sendEmailNotificationToEmployeeAndApproversOfEndClient(projectMember.getProjectMemberCandidteId().getFirstName(),projectMember.getProjectMemberCandidteId().getLastName(),  projectMember.getProjectMemberCandidteId().getEmail(), loginUser, loginOrgLocation, projectMember, startDate, endDate, submissionStatusStr, rejectedReason);
 		 		 
 		 		//For Approvers of EndClient
 		 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMember.getProjects().getId(), loginOrgLocation.getId());
@@ -232,12 +241,10 @@ public class TimesheetSubmissionsRestController {
 		 		 }
 		 		 
 				//
-				
-				//Send Emails & Notifications to vendors
-				sendEmailToVendorAtTimesheetApprovalStatus(projectMember,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate,status, submissionStatusStr);
 		 	   
 		 	 }
-		
+		 		//Send Emails & Notifications to vendors
+		 	 sendEmailToVendorAtTimesheetApprovalStatus(projectMember,loginUser,loginOrgLocation,loginOrgCode,startDate, endDate,status, submissionStatusStr);
 	     	
 	}
 	
@@ -250,12 +257,13 @@ public class TimesheetSubmissionsRestController {
 		 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 	 
 		 	 StringBuilder userNameSB = new StringBuilder();
-		 	 if(loginUser.getLastName()!=null && loginUser.getLastName()!="undefined" && loginUser.getLastName()!= ""){
+		 	 if(loginUser.getLastName()!=null && loginUser.getLastName()!="undefined" && loginUser.getLastName()!= "" && !loginUser.getLastName().isEmpty()){
 		 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 	 }
 		 	 else
 		 	 {
-		 		emailMessage.setFromName(loginUser.getFirstName());
+		 		emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").toString());
+		 		
 		 	 }
 		 	 
 		 	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -263,8 +271,8 @@ public class TimesheetSubmissionsRestController {
 			 Map<String, String> globalVarsMap = new HashMap<>();
 			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
 			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-			 globalVarsMap.put("employeeFirstName", projectMember.getProjectMemberCandidteId().getConsultantUser().getFirstName());
-			 globalVarsMap.put("employeeLastName", projectMember.getProjectMemberCandidteId().getConsultantUser().getLastName());
+			 globalVarsMap.put("employeeFirstName", projectMember.getProjectMemberCandidteId().getFirstName());
+			 globalVarsMap.put("employeeLastName", projectMember.getProjectMemberCandidteId().getLastName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 globalVarsMap.put("projectName", projectMember.getProjects().getProjectName());
 			 globalVarsMap.put("frequencyType",projectMember.getProjects().getInvoiceFrequency());
@@ -278,7 +286,7 @@ public class TimesheetSubmissionsRestController {
 			 }
 			 
 			 StringBuilder loginURLSB = new StringBuilder();
-			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -318,13 +326,15 @@ public class TimesheetSubmissionsRestController {
 	}
 
 	private void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember,User loginUser, OrgLocations loginOrgLocation, String loginOrgCode, String startDate, String endDate, String status, String rejectedReason) throws Exception {
-		
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId());
+		//login Org ProjectClient(Current-Level-Org)
+		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectMember.getProjects().getId(), loginOrgLocation.getId());
+		
 		for(ProjectApproverHierarchy approver : approverHierarchyList){
-				
+			//Sending Mail to Low-Level Org Approvers(Vendor Approvers)	
 		    if(approver.getProjectClientsId()!= null && 
-		    		approver.getProjectClientsId().getOrgLocationsId() != null && 
-		    		!loginOrgLocation.getLocationCode().equalsIgnoreCase(approver.getProjectClientsId().getOrgLocationsId().getLocationCode())){
+		    		approver.getProjectClientsId().getOrgLocationsId() != null && projectClients != null &&
+		    		!projectClients.getOrgLocationsId().getLocationCode().equalsIgnoreCase(approver.getProjectClientsId().getOrgLocationsId().getLocationCode()) && projectClients.getLevel() < approver.getProjectClientsId().getLevel()){
 				
 		     EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(approver.getApproverUserId().getFirstName());
@@ -340,10 +350,10 @@ public class TimesheetSubmissionsRestController {
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 StringBuilder loginName = new StringBuilder();
-			 if(null !=  projectMember.getProjectMemberCandidteId().getConsultantUser().getLastName() && !"".equalsIgnoreCase( projectMember.getProjectMemberCandidteId().getConsultantUser().getLastName())){
-				 globalVarsMap.put("employeename",loginName.append( projectMember.getProjectMemberCandidteId().getConsultantUser().getFirstName()).append(" ").append( projectMember.getProjectMemberCandidteId().getConsultantUser().getLastName()).toString());
+			 if(null !=  projectMember.getProjectMemberCandidteId().getLastName() && !"".equalsIgnoreCase( projectMember.getProjectMemberCandidteId().getLastName())){
+				 globalVarsMap.put("employeename",loginName.append( projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append( projectMember.getProjectMemberCandidteId().getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("employeename", projectMember.getProjectMemberCandidteId().getConsultantUser().getFirstName());
+				 globalVarsMap.put("employeename", projectMember.getProjectMemberCandidteId().getFirstName());
 			 }
 			 StringBuilder managerName = new StringBuilder();
 			 if(null != approver.getApproverUserId().getLastName() && !"".equalsIgnoreCase(approver.getApproverUserId().getLastName())){
@@ -351,9 +361,9 @@ public class TimesheetSubmissionsRestController {
 			 }else{
 				 globalVarsMap.put("vendorcontactname",approver.getApproverUserId().getFirstName());
 			 }
-			 globalVarsMap.put("projectname",loginOrgLocation.getOrgLocationName());
+			 globalVarsMap.put("projectname", projectMember.getProjects().getProjectName());
 			 globalVarsMap.put("frequency",startDateStr+" to "+endDateStr);
-			 globalVarsMap.put("clientName",loginUser.getFirstName()+(loginOrgLocation.getOrgLocationName()));
+			 globalVarsMap.put("clientName",loginUser.getFullName()+","+(loginOrgLocation.getOrgLocationName()));
 			 globalVarsMap.put("reason",rejectedReason);
 			 
 			 //setting the Recipient information
@@ -383,13 +393,20 @@ public class TimesheetSubmissionsRestController {
 			 
 			 
 			//calling the sendNotification method of emailScenerioUtil
-			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+			 EmailScenario notificationScenario = null;
+			 if(status.equals("REJECTED")){
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_REJECTED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }else {
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }
+			 
+			
 			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(), approver.getProjectClientsId().getOrgLocationsId(), notificationScenario);
 			
 		}
 	}

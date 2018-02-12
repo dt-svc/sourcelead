@@ -3,6 +3,8 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -48,6 +50,8 @@ public interface CandidateDao {
 	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId, Integer datRange, Long reportingManagerUserId) throws Exception;
 	
 	Candidate getProfessionalInfoByLoginUserIdAndCandidateType(Long userId, String candidateType) throws Exception;
+	
+	public Integer getCandidatesCountByLocation(Long orgLocationId)throws Exception;
 	
 	Candidate getCandidateByEmailAndRecruiterUserId(String email, Long recruiterUserId) throws Exception;
 	
@@ -99,7 +103,7 @@ public interface CandidateDao {
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception;
 	
-	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds, String resourceType, List<Long> associatesIds, Long projectId) throws Exception;
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds, String resourceType, List<Long> associatesIds, Long projectId) throws Exception;
 	
 	public Candidate checkCandidateIdNumberInDatebase(Long orgLocationId);
 	
@@ -110,4 +114,12 @@ public interface CandidateDao {
 	public void storeCandidateImportLog(CandidateImportLog candidateImportLog);
 	
 	public List<CandidateImportLog> getCandidateImportLog(String uploadId, boolean all);
+	
+	public Candidate getCandidateByShortURL(String shortURL);
+	
+	List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType) throws Exception;
+	
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,List<Long> associatesIds,Long loginOrgLocationId)throws Exception ;
+	
+	Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception;
 }

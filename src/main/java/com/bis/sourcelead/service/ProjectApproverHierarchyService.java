@@ -56,6 +56,8 @@ public interface ProjectApproverHierarchyService {
 	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency,int managerLevel)throws Exception;
 	
 	public ProjectApproverHierarchy getApproverUsersByProjectIdLevel1(Long projectId, Long userId);
+	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId, Long projectClientId) throws Exception;
 
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectIdlevel2Manager(Long projectId, Long userId)throws Exception;
 	

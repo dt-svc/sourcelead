@@ -16,54 +16,54 @@ $(function(){
     	
         var themeColor = localStorage.getItem("themeColor");
     if(themeColor == 'dark-blue'){
-		 $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-one.css" type="text/css" />');
-		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
-	     $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+		 $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-one.css" type="text/css" />');
+		 $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+		 $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+		 $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
+	     $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
 		 $('.footer').append('<script src="js/theme-one-script.js">');
     }
     else if(themeColor == 'flat-green'){
-		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-two.css" type="text/css" />');
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+		$('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-two.css" type="text/css" />');
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
         $('<script src="js/theme-one-script.js">').remove();
     }
    else if(themeColor == 'hdr-blue'){
 	   
-       $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-main.css" type="text/css" />');
-		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-		 $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
-         $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+       $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-main.css" type="text/css" />');
+		 $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+		 $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+		 $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+         $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
+         $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
          $('<script src="js/theme-one-script.js">').remove();
 	}
     else if(themeColor == 'hdr-grey'){
-		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-three.css" type="text/css" />');
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+		$('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-three.css" type="text/css" />');
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
 		$('<script src="js/theme-one-script.js">').remove();
 	}
     else if(themeColor == 'hdr-greydrk'){
-		$('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-four.css" type="text/css" />');
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+		$('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-four.css" type="text/css" />');
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
 		$('<script src="js/theme-one-script.js">').remove();
 	}
     
     else if(themeColor == 'default-redTheme'){
-		$('head').append('<link rel="stylesheet" href="resources/css//sourcelead-theme-default.css" type="text/css" />');
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-		$('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-		$('link[rel=stylesheet][href~="resources/css/ sourcelead-theme-four.css"]').remove();
+		$('head').append('<link rel="stylesheet" href="/resources/css//sourcelead-theme-default.css" type="text/css" />');
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+		$('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+		$('link[rel=stylesheet][href~="/resources/css/ sourcelead-theme-four.css"]').remove();
 		$('<script src="js/theme-one-script.js">').remove();
 	}
     } else {
@@ -79,11 +79,11 @@ $(document).ready(function (e) {
             window.alert('Please use a modern browser to properly view this template!');
         }
 
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-one.css" type="text/css" />');
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+        $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-one.css" type="text/css" />');
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
         $('.footer').append('<script src="js/theme-one-script.js">');
     });
     $("#btn2").click(function () {
@@ -92,11 +92,11 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-two.css" type="text/css" />');
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
+        $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-two.css" type="text/css" />');
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
         $('<script src="js/theme-one-script.js">').remove();
     });
     $("#btn3").click(function () {
@@ -105,12 +105,12 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-main.css" type="text/css" />');
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+        $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-main.css" type="text/css" />');
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
         $('<script src="js/theme-one-script.js">').remove();
     });
     $("#btn4").click(function () {
@@ -122,11 +122,11 @@ $(document).ready(function (e) {
             window.alert('Please use a modern browser to properly view this template!');
         }
 
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-three.css" type="text/css" />');
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+        $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-three.css" type="text/css" />');
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
         $('<script src="js/theme-one-script.js">').remove();
     });
     $("#btn5").click(function () {
@@ -135,11 +135,11 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-four.css" type="text/css" />');
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-default.css"]').remove();
+        $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-four.css" type="text/css" />');
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-default.css"]').remove();
         $('<script src="js/theme-one-script.js">').remove();
     });
     $("#btn6").click(function () {
@@ -148,11 +148,11 @@ $(document).ready(function (e) {
         } else {
             window.alert('Please use a modern browser to properly view this template!');
         }
-        $('head').append('<link rel="stylesheet" href="resources/css/sourcelead-theme-default.css" type="text/css" />');
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-two.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-one.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-three.css"]').remove();
-        $('link[rel=stylesheet][href~="resources/css/sourcelead-theme-four.css"]').remove();
+        $('head').append('<link rel="stylesheet" href="/resources/css/sourcelead-theme-default.css" type="text/css" />');
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-two.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-one.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-three.css"]').remove();
+        $('link[rel=stylesheet][href~="/resources/css/sourcelead-theme-four.css"]').remove();
         $('<script src="js/theme-one-script.js">').remove();
     });
     

@@ -25,12 +25,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +42,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Campaign;
+import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidatesHotListDummy;
@@ -53,8 +58,10 @@ import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -70,14 +77,17 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -135,6 +145,9 @@ public class EMailJobScheduler {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;	
 	
@@ -161,6 +174,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	HolidayService holidayService;
 	
 	@Autowired
 	OrgService orgService;
@@ -241,6 +257,18 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private CandidateOffBoardingService candidateOffBoardingService;
+	
+	@Autowired
+	private CampaignService campaignService;
+	
+	@Autowired
+	private CampaignUtil campaignUtil;
+	
+	@Autowired
+	private LeaveService leaveService;
+	
+	@Autowired
+	LeaveDao leaveDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -775,19 +803,21 @@ public class EMailJobScheduler {
 	public void runRemainderEmailScheduler() throws Exception {
 				logger.info("##########  E-Mail Job Scheduler started..! ##########");
 				logger.info("########## Mail Sent to: Applicant,Interviewer,Others  ##########");
-				
-				DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				
+				DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				int addMinuteTime = 30;
 				Date targetTime = new Date(); //now
 				Date date = new Date();
 				targetTime = DateUtils.addMinutes(targetTime, addMinuteTime); 
 				
-				String triggerTimeStr = dateFormat.format(targetTime); 
-				String currentTimeStr = dateFormat.format(date); 
+				String triggerTimeStr = Constants.TZ_DF.format(targetTime); 
+				String currentTimeStr = Constants.TZ_DF.format(date); 
 				
+				String endDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, triggerTimeStr);
+				String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, currentTimeStr);
+				Date endDateUTC = ts.parse(endDateString);
+				Date startDateUTC = ts.parse(startDateString);
 				
-				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(currentTimeStr,triggerTimeStr);
+				List<RequirementInterviewHistory> interviewList = requirementInterviewHistoryService.getAllInterviewListByCurrentDate(startDateString,endDateString);
 				for (RequirementInterviewHistory interviewHistory : interviewList) {
 					
 					RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
@@ -796,7 +826,7 @@ public class EMailJobScheduler {
 					Date newTargetTime = DateUtils.addMinutes(requirementInterview.getStartTime(), remainderTime); 
 
 					
-					if(newTargetTime.after(date) && newTargetTime.before(targetTime)){
+					if(startDateUTC.after(newTargetTime) && newTargetTime.before(endDateUTC)){
 					Org org = orgService.findOrgByID(requirementInterview.getSubmissionId().getOrgLocations().getOrg().getId());
 					User user = userService.getUserByUserCode(requirementInterview.getUpdatedBy());
 					 
@@ -811,7 +841,7 @@ public class EMailJobScheduler {
 					if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
 								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
 					}
-					if(interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
+					if(interviewHistory.getNotificationToSpoc() != null && interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
 
 						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
 
@@ -1064,8 +1094,10 @@ public class EMailJobScheduler {
 	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
-	@Scheduled(cron = "0 0/30 * 1/1 * ?")
-	@Async
+
+	//TODO commented by Rakshith
+	//	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	//	@Async
 	public void runContractDocumentStatus() throws Exception {
 				logger.info("##########  E-Mail Job Scheduler started..! ##########");
 				List<Contracts> conList =  contractsTemplateService.getListOfContractsEnvId();
@@ -1260,8 +1292,54 @@ public class EMailJobScheduler {
 		        }
 	}
 	
+	/**
+	 * cron to move expired contract to EXPIRED stage
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Async
+	public void runExpiredContract() throws Exception{
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLoc : orgLocationsList) {
+			List<Contracts> contractList = contractsTemplateService.getContractByLocationId(orgLoc.getId());
+			if(contractList != null && contractList.size() > 0) {
+				for(Contracts contracts : contractList) {
+				   	if(contracts.getEndDate()!=null){
+			    		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			    		Date date = new Date();
+			    		String currentTimeStr = TZ_DF_TS.format(date);
+						Date curDate = TZ_DF_TS.parse(currentTimeStr);
+			    		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+			    			contracts.setId(contracts.getId());
+							contracts.setTemplateSubmissionStatus(Constants.EXPIRED);
+							String fromStage = contracts.getTemplateSubmissionStatus();
+			    			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			    			if(null != childContarct && null != childContarct.getParentContractId()){
+			    				fromStage = childContarct.getTemplateSubmissionStatus();
+			    				childContarct.setId(childContarct.getId());
+			    				childContarct.setTemplateSubmissionStatus(Constants.EXPIRED);
+			    				contractsTemplateService.saveNewContract(childContarct);
+			    				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+			        				if(!(Constants.EXPIRED).equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+				        				ContractsHistory childContractsHistory = new ContractsHistory();
+				            			childContractsHistory.setFromStage(fromStage);
+				        				childContractsHistory.setContractsId(childContarct);
+				        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
+				        				childContractsHistory.setCreatedDate(new Date());
+				        				childContractsHistory.setUpdatedDate(new Date());
+				        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+			        				}
+			    				}
+			    		}
+			    	 }
+			    	}
+				}
+			}
+		}
+	}
 	
-	private void contractSignedByReceiver(Contracts contracts) throws Exception
+	
+	public void contractSignedByReceiver(Contracts contracts) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
 			User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());
@@ -1414,7 +1492,7 @@ public class EMailJobScheduler {
 		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
 		invoiceList.forEach(invoice -> {
 			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
-				if (invoice.getDueDate().after(new Date())) {
+				if (new Date().after(invoice.getDueDate())) {
 					invoice.setPaymentStatus(Constants.OVER_DUE);
 					try {
 						invoiceService.saveInvocePojo(invoice);
@@ -1504,7 +1582,7 @@ public class EMailJobScheduler {
 			}
 			
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			
 			 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
@@ -1674,10 +1752,10 @@ public class EMailJobScheduler {
 							 
 							 for(String keywd : skillsOrKeyWordList){
 								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-								ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-										anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+								if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+									for(QueryBuilder QueryBuilder :QueryBuilderList){
+										anyBoolSubQueryBuilder.should(QueryBuilder);
 									}
 									anySkillOrKeyWordBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 								}
@@ -1709,34 +1787,34 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+	 private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
 		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+		   ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		    QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
 			
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 			}
 
 				
-			return matchQueryBuilderList; 
+			return QueryBuilderList; 
 	 }
 	 
 	 
@@ -1960,7 +2038,7 @@ public class EMailJobScheduler {
 	         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
 	        
 	         StringBuilder linkBuild = new StringBuilder();
-	         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	        
 	                
 	        
@@ -2002,4 +2080,206 @@ public class EMailJobScheduler {
 		    cal.add(Calendar.DATE, -1);
 		    return cal.getTime();
 		}
+	 
+	 /**
+	  * cron runs every day at 9 AM to send notifications email  about holiday to all users
+	  * @throws Exception
+	  */
+	@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Async
+	public void holidayNotificationToUsers() throws Exception
+	{
+		DateTime zoned = new DateTime();
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		// to fire remainder one week before
+		DateTime week = zoned.plusDays(1);
+		String startDate = outputFormatter1.print(week);
+		String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
+		Date holidayStartDate = ts.parse(startDateString);
+		String endDate = outputFormatter.print(week);
+		String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
+		Date holidayEndDate = ts.parse(endDateString);
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		/*
+		 * OrgLocations orgLocations = orgLocationsList.get(1);..for single org
+		 */
+		for (OrgLocations orgLocations : orgLocationsList) {
+			List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate, holidayEndDate, orgLocations.getId());
+			String holidayNames = "";
+			int i = 0;
+			if (holidayList != null && !holidayList.isEmpty()) {
+				for (Holiday holiday : holidayList) {
+					if (i == holidayList.size() - 1)
+						holidayNames += holiday.getHolidayName();
+					else
+						holidayNames += holiday.getHolidayName() + ",";
+					i++;
+				}
+				List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+				for (User user : userList) {
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(user.getFirstName());
+					if (StringUtils.isNotBlank(user.getLastName()))
+						emailMessage.setLastName(user.getLastName());
+					emailMessage.setToEmail(user.getEmail());
+					emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					globalVarsMap.put("loginUser", emailMessage.getFromName());
+					StringBuilder name = new StringBuilder();
+					if (user.getLastName() != null && user.getLastName() != ""
+							&& user.getLastName() != "undefined") {
+						globalVarsMap.put("UserName", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					}
+					else {
+						globalVarsMap.put("UserName", user.getFirstName());
+					}
+					globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+					globalVarsMap.put("date", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
+					globalVarsMap.put("holidayname", holidayNames);
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+					// getting the current EmailScenario by EmailScenario unique
+					// name and entity type
+					EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+					// covert subject,body and signature
+					String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+					String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+					String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+					String url = sourceleadUrl;
+					// construct HTML template using required data
+					String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
+					emailMessage.setSubject(subject);
+					emailMessage.setMessageBody(emailTemplate);
+					// calling the sendEmail method of emailScenerioUtil
+					emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+					String actionLink = "";
+				}
+			}
+		}
+	}
+	
+	/**
+	 * cron runs every day at 6:30 AM to get every day stats
+	 * @throws Exception  
+	 */
+	@Scheduled(cron = "0 30 18 1/1 * ?")
+	@Async
+	public void getDailyCampaignStats() throws Exception
+	{
+
+		List<Campaign> campaignList = campaignService.getAllCampaigns();
+		
+		for(Campaign campaign : campaignList) {
+			OrgLocations orgLocation = orgLocationService.getOrgLocations(campaign.getOrgLocation().getId());
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
+			logger.info("Camapaign stats start date is : "+currentDate);
+			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
+			if(StringUtils.isNotBlank(response)) {
+				CampaignStats campaignStats  = null;
+				JSONArray jsonArr = new JSONArray(response);
+//				String campaignName = "";
+				Date date = campaign.getCreatedDate();
+				campaignStats = campaignService.getCampaignStatsByCampaignId(campaign.getCampaignCategory());
+				if(campaignStats !=null) {
+					for (int i = 0; i < jsonArr.length(); i++) {
+						JSONObject jsonObj = jsonArr.getJSONObject(i);
+						JSONArray statJsonArr = jsonObj.getJSONArray("stats");
+						for (int j = 0; j < statJsonArr.length(); j++) {
+							JSONObject statsObj = statJsonArr.getJSONObject(j);
+							JSONObject metricsObj = statsObj.getJSONObject("metrics");
+//							if(campaignStats !=null) {
+								campaignStats.setBlocks(String.valueOf(Integer.parseInt(campaignStats.getBlocks()) + Integer.parseInt(metricsObj.getString("blocks"))));
+								campaignStats.setBounceDrops(String.valueOf( Integer.parseInt(campaignStats.getBounceDrops()) + Integer.parseInt(metricsObj.getString("bounce_drops"))));
+								campaignStats.setBounces(String.valueOf(Integer.parseInt(campaignStats.getBounces()) + Integer.parseInt(metricsObj.getString("bounces"))));
+								campaignStats.setClicks(String.valueOf(Integer.parseInt(campaignStats.getClicks()) + Integer.parseInt(metricsObj.getString("clicks"))));
+								campaignStats.setDeferred(String.valueOf(Integer.parseInt(campaignStats.getDeferred()) + Integer.parseInt(metricsObj.getString("deferred"))));
+								campaignStats.setDelivered(String.valueOf(Integer.parseInt(campaignStats.getDelivered()) + Integer.parseInt(metricsObj.getString("delivered"))));
+								campaignStats.setInvalidEmails(String.valueOf( Integer.parseInt(campaignStats.getInvalidEmails()) + Integer.parseInt(metricsObj.getString("invalid_emails"))));
+								campaignStats.setOpens(String.valueOf(Integer.parseInt(campaignStats.getOpens()) + Integer.parseInt(metricsObj.getString("opens"))));
+								campaignStats.setProcessed(String.valueOf(Integer.parseInt(campaignStats.getProcessed()) + Integer.parseInt(metricsObj.getString("processed"))));
+								campaignStats.setRequest(String.valueOf(Integer.parseInt(campaignStats.getRequest()) + Integer.parseInt(metricsObj.getString("requests"))));
+								campaignStats.setSpamReportDrops(String.valueOf(Integer.parseInt(campaignStats.getSpamReportDrops()) + Integer.parseInt(metricsObj.getString("spam_report_drops"))));
+								campaignStats.setSpamReports(String.valueOf(Integer.parseInt(campaignStats.getSpamReports()) + Integer.parseInt(metricsObj.getString("spam_reports"))));
+								campaignStats.setUniqueClicks(String.valueOf(Integer.parseInt(campaignStats.getUniqueClicks()) + Integer.parseInt(metricsObj.getString("unique_clicks"))));
+								campaignStats.setUniqueOpens(String.valueOf(Integer.parseInt(campaignStats.getUniqueOpens()) + Integer.parseInt(metricsObj.getString("unique_opens"))));
+								campaignStats.setUnsubscribeDrops(String.valueOf(Integer.parseInt(campaignStats.getUnsubscribeDrops()) + Integer.parseInt(metricsObj.getString("unsubscribe_drops"))));
+								campaignStats.setUnsubscribes(String.valueOf(Integer.parseInt(campaignStats.getUnsubscribes()) + Integer.parseInt(metricsObj.getString("unsubscribes"))));
+						}
+						
+				}
+				}else {
+					  campaignStats = new CampaignStats();
+					  for (int i = 0; i < jsonArr.length(); i++) {
+							JSONObject jsonObj = jsonArr.getJSONObject(i);
+							JSONArray statJsonArr = jsonObj.getJSONArray("stats");
+							for (int j = 0; j < statJsonArr.length(); j++) {
+								JSONObject statsObj = statJsonArr.getJSONObject(j);
+								JSONObject metricsObj = statsObj.getJSONObject("metrics");
+									    campaignStats = new CampaignStats();
+									    campaignStats.setCampaignDate(date);
+										campaignStats.setCategoryName(statsObj.getString("name"));
+										campaignStats.setCampaignId(campaign.getCampaignId());
+										campaignStats.setBlocks(metricsObj.getString("blocks"));
+										campaignStats.setBounceDrops(metricsObj.getString("bounce_drops"));
+										campaignStats.setBounces(metricsObj.getString("bounces"));
+										campaignStats.setClicks(metricsObj.getString("clicks"));
+										campaignStats.setDeferred(metricsObj.getString("deferred"));
+										campaignStats.setDelivered(metricsObj.getString("delivered"));
+										campaignStats.setInvalidEmails(metricsObj.getString("invalid_emails"));
+										campaignStats.setOpens(metricsObj.getString("opens"));
+										campaignStats.setProcessed(metricsObj.getString("processed"));
+										campaignStats.setRequest(metricsObj.getString("requests"));
+										campaignStats.setSpamReportDrops(metricsObj.getString("spam_report_drops"));
+										campaignStats.setSpamReports(metricsObj.getString("spam_reports"));
+										campaignStats.setUniqueClicks(metricsObj.getString("unique_clicks"));
+										campaignStats.setUniqueOpens(metricsObj.getString("unique_opens"));
+										campaignStats.setUnsubscribeDrops(metricsObj.getString("unsubscribe_drops"));
+										campaignStats.setUnsubscribes(metricsObj.getString("unsubscribes"));
+										campaignStats.setStatus(1);
+										campaignStats.setCreatedDate(currentDate);
+										campaignStats.setUpdatedDate(currentDate);
+										campaignStats.setOrgLocation(orgLocation);
+							}
+							
+					}
+				}
+			
+				CampaignStats saveCampaignStats = campaignService.saveCampaignStats(campaignStats);
+				if(saveCampaignStats !=null) {
+					logger.info("campaig stats successfully read");
+				}	
+		}
+		}
+		
+	}
+	
+	/**
+	 * This method is used to update the leave Status from pending to approved for expired leaves 
+	 * this cron will run at 04:00 AM (UTC)
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "0 0 4 1/1 * ?")
+	@Async
+	public void updateLeaveStatus() throws Exception
+	{
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		for (OrgLocations orgLocation : orgLocationsList) {
+			List<Leave> leaveList = leaveService.getAllLeavesByLocationIdAndStatus(orgLocation.getId(), Constants.PENDING);
+			for (Leave leave : leaveList) {
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
+				Date date = new Date();
+				String currentTimeStr = TZ_DF_TS.format(date);
+				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+				if (leave.getToDate().before(curDate)) {
+					leave.setStatus(Constants.APPROVED);
+					leaveDao.saveLeave(leave);
+				}
+			}
+		}
+	}
+	
 }

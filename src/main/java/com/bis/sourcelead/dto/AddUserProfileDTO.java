@@ -39,6 +39,8 @@ public class AddUserProfileDTO{
 	private String designation;
 	private Long userId;
 	private String orgLocationId;
+	
+	private String loginSecurity;
 
 	public String getId() {
 		return id;
@@ -186,7 +188,14 @@ public class AddUserProfileDTO{
 		this.orgLocationId = orgLocationId;
 	}
 
-	
-	
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
 	
 }

@@ -120,7 +120,7 @@
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Address :</strong>';
+						result = result + '<strong>Street Address :</strong>';
 						if(json.address != null && json.address !='' && json.address !='undefined'){
 							result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
 						}else{
@@ -154,6 +154,17 @@
 							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
+						
+						for (var key in json.clientCustomFieldlabelNameAndValue) {
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>'+key+' :</strong>';
+							if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue !='' && json.clientCustomFieldlabelNameAndValue !='undefined'){
+								result = result + '<span>'+json.clientCustomFieldlabelNameAndValue[key]+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+						}
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
@@ -301,29 +312,36 @@
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';
-								result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
-								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
+								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
+								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readonly="readonly" value="'+location+'" readonly="readonly" field-name="Location" placeholde="Location" data-validation="required">';
+// 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Country</label>';
-								result = result + '<input type="text" name="country" id="existingCountry" value="'+country+'" readonly="readonly">';
+								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" disabled field-name="Country" data-placeholder="Select Country" disabled data-validation="required" >';
+								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
+								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
+								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
+								result = result + '<option  '+ (country == "Singapore" ? "selected" : '') +'>Singapore</option>';
+								result = result + '<option  '+ (country == "United Kingdom" ? "selected" : '') +'>United Kingdom</option>';
+								result = result + '<option  '+ (country == "United States" ? "selected" : '') +'>United States</option>';
+				                result = result + ' </select>';
 								result = result + '</div>  ';
 								
 								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 								result = result + '<label>State</label>';
-								result = result + '<input type="text" name="state" id="existingState" value="'+state+'" readonly="readonly" >';
+								result = result + '<input type="text" name="state" readonly="readonly" id="existingState" value="'+state+'" >';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>City</label>';
-								result = result + '<input type="text" name="city" id="existingCity" value="'+city+'" readonly="readonly">';
+								result = result + '<input type="text" name="city" readonly="readonly" id="existingCity" value="'+city+'" >';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Zip Code</label>';
-								result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+								result = result + '<input type="text"  class="chosen-select form-control" readonly="readonly" name="zipcode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 								result = result + '</div> ';
 																							
 						}else{
@@ -335,35 +353,42 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 								result = result + '<label>Website</label>';
-								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website" data-validation="validate_Space validate_domain validate_length length2-100 " data-validation-optional="true"  value="'+website+'" placeholder="client website" ></div>';
+								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website" data-validation="validate_Space validate_domain validate_length length2-100 " onblur="validateWebsite()" data-validation-optional="true"  value="'+website+'" placeholder="client website" ></div>';
 								result = result + '</div>';
 								
 								
 								result = result + '<div class="user_summary_edit_cta">';
-								result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
-								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
+								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
+								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" readonly="readonly" value="'+location+'" field-name="Address" placeholde="Address" data-validation="required">';
+// 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
 								
-								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<div class="user_summary_edit_cta" id="errCountryMsg">';
 								result = result + '<label>Country</label>';
-								result = result + ' <input type="text" class="form-control" name="country" value="'+country+'"  id="clientCountry" field-name="Country" readonly >';
+								result = result + ' <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" disabled data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
+								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
+								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
+								result = result + '<option  '+ (country == "Singapore" ? "selected" : '') +'>Singapore</option>';
+								result = result + '<option  '+ (country == "United Kingdom" ? "selected" : '') +'>United Kingdom</option>';
+								result = result + '<option  '+ (country == "United States" ? "selected" : '') +'>United States</option>';
+				                result = result + ' </select>';
 								result = result + '</div>  ';
 								
 								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 								result = result + '<label>State</label>';
-								result = result + '<input type="text"  class="form-control" name="state" value="'+state+'" id="clientState" field-name="State"  readonly> ';
+								result = result + '<input type="text"  class="form-control" name="state" readonly="readonly" value="'+state+'" id="clientState" field-name="State"  > ';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>City</label>';
-								result = result + '<input type="text"  class="form-control" name="city" id="clientCity" value="'+city+'" field-name="City" readonly > ';
+								result = result + '<input type="text"  class="form-control" name="city" readonly="readonly" id="clientCity" value="'+city+'" field-name="City"  > ';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Zip Code</label>';
-								result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+								result = result + '<input type="text"  class="chosen-select form-control" readonly="readonly" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 								result = result + '</div> ';
 								
 						}
@@ -382,9 +407,9 @@
                         result = result + ' </div>';   
                         
                         result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Address</label>';
+						result = result + '<label>Street Address</label>';
 						if(json.address != null && json.address !='' && json.address != 'undefined'){
-						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
+						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" readonly="readonly" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
 						}else{
 							result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
 						}
@@ -422,8 +447,8 @@
 						$(".user_summary_edit").slideToggle(100);
 						$("#editClientDetailsDiv").empty();
 				        $("#editClientDetailsDiv").append(result);
-				        initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
-				        zipcodeMask(country,'clientZipCode');
+// 				        initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite','addressId');
+// 				        zipcodeMask(country,'clientZipCode');
 				        $(function(){
 				            var config = {
 				        		  '.chosen-select'           : {},
@@ -432,17 +457,9 @@
 				        		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 				        		  '.chosen-select-width'     : {width:"95%"}
 				        		}
-/* 				            $("#country").chosen();
-				            $("#state").chosen();
-				            $("#city").chosen();
 				            
-				            $("#country").on('change', function (e) {
-				         	   getAllStates();
-				            });
-				           
-				            $("#state").on('change', function (e) {
-				         	   getAllCities();
-				            }); */
+				            $("#clientCountry").chosen();
+ 
 				           
 				            $('.chosen-select').each(function() {
 				        			var $this = $(this);
@@ -455,6 +472,10 @@
 		      
 		      
 	}
+	
+	function changeCountry(){
+		 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
+	}
 </script>
 
 <script type="text/javascript">
@@ -463,7 +484,9 @@
              var formData = getFormData("editClient_form");
              var sourceleadUrl ='${sourceleadUrl}';
 		 $.post(sourceleadUrl+"/clientDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
-				location.replace(sourceleadUrl+ "/clientDashboard");
+			 clientDetails(clientLocationId,orgRelationId);
+			 
+			 //location.replace(sourceleadUrl+ "/clientDashboard");
 			});
 	     	return true;
          }else{
@@ -489,13 +512,14 @@ function clientEditMsgFadein(){
 		if(website.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		$("#save_client").attr("disabled", "disabled");
 		
 		if (website != null && website != '') {
 			//$("#save_client").attr("disabled", "disabled");
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -504,7 +528,6 @@ function clientEditMsgFadein(){
 						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
 						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
 						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
-						$("#save_client").attr("disabled", "disabled");
 						
 					} else {
 						//New WebSite class="form-control"
@@ -712,4 +735,8 @@ function getAllCities(){
   $("#selector1").fadeIn(200);
   $('#selector1').delay(2000).fadeOut('slow');
 </script> 
+
+
+
+
 <!-- End -->

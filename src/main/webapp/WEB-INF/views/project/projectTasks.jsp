@@ -51,7 +51,7 @@ function taskNameValidation(){
 <script>
 function projectTask(projectId, status) {
 	var result = "";
-	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom">';
+	result = result + '<div class="timesheet_head clearfix timesheet_headul-custom timeHd_minHeight">';
 	result = result + '<input type="hidden" value='+projectId+' id="projectId">';
 	result = result + '<input type="hidden" value='+status+' id="projectStatus">';
 	 result = result	+ '<ul>';
@@ -66,17 +66,17 @@ function projectTask(projectId, status) {
 	}
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox scroll-dropdown">';
 		result = result	+ '	    	<ul>';
 		<c:forEach var="assignedMembers" items="${projectAssignMemberList}">     
-			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox"><label for="assignedtaskId${assignedMembers.id}">${assignedMembers.candidateName}</label></li>';
+			  result = result	+ '	 <li><input   name="assignedtaskId" value ="${assignedMembers.id}"   onclick="projectTaskList();"  type="checkbox" class="pull-left"><label for="assignedtaskId${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>';
 		</c:forEach>  
 	    result = result	+ '	        </ul>';
 		result = result	+ '	    </div>';                	
 		result = result	+ '	</li>';
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';
 		
 		<c:forEach var="status" items="${taskStatusList}">     
@@ -92,13 +92,12 @@ function projectTask(projectId, status) {
 		result = result	+ '	</li>';
 		
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Task Type</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
-		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox">';
 		result = result	+ '	    	<ul>';   
 		<c:forEach var="type" items="${taskTypeList}">        
 		 
 		<c:if test="${taskTypeList[1] == type || taskTypeList[2] == type}">
-		result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();" checked type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
-	    
+		result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
 		</c:if>	
 	    <c:if test="${taskTypeList[1] != type && taskTypeList[2] != type}">
 	    result = result	+ '	 <li><input  name="taskTypeId" value ="${type.id}"  onclick="projectTaskList();"  type="checkbox"><label for="taskTypeId${type.id}">${type.name}</label></li>';
@@ -115,6 +114,7 @@ function projectTask(projectId, status) {
 		 result = result + '</div>';
 // 	result = result +'<div id="taskListdivId" class="datatable_filter"> </div>';
 	result = result +'<div id="taskTitledivId" class="datatable_filter"> </div>';
+	result = result + '<div id="taskDeletePopUp"></div>';
 	$("#tab-1").empty();
 	$("#tab-3").empty();
 	$("#tab-2").empty();
@@ -185,9 +185,10 @@ function prepareTasksList(url){
 	result = result + '<tr">';
 	result = result + '<th>Task Name</th>';
 	result = result + '<th>Task Type</th>';
-	result = result + '<th>Priotiry</th>';
+	result = result + '<th>Priority</th>';
 	result = result + '<th>Assigned To</th>';
 	result = result + '<th>Status</th>';
+	result = result + '<th>Action</th>';
 	result = result + '</tr>';
 	result = result + '</thead>';
 	result = result + '</table>';
@@ -210,10 +211,11 @@ function projectTaskPaginations(url){
         }),
         "columns": [
             { "data": "taskName" },
-            { "data": "taskstype"},
+            { "data": "taskType"},
             { "data": "priority"},
             { "data": "assignedTo" },
-            { "data": "projectTaskStatus" }
+            { "data": "projectTaskStatus" },
+            { "data": "projectTaskActin" }
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -225,15 +227,16 @@ function projectTaskPaginations(url){
 					}else{
 						generatedId = "";
 					}
-	    	  		result = result+ '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" >'+generatedId+' '+ opt.taskName+ '</a></div></td>';
+	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '</a><i class="fa fa-binoculars pull-right"></i></div></td>';
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "taskstype",
+              "data": "taskType",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot_80" title="'+opt.taskTypes+'">'+opt.taskTypes+ '</div></td>';
 	              return result;
               		
               }
@@ -253,6 +256,7 @@ function projectTaskPaginations(url){
           }, {
               "targets": colIndex++,
               "data": "assignedTo",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
 						taskAssignedUsers = opt.taskAssignedUsers;
@@ -260,12 +264,13 @@ function projectTaskPaginations(url){
 						taskAssignedUsers = "--"
 					}
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot-100"><span >'+taskAssignedUsers+'</span ></div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot"><span >'+taskAssignedUsers+'</span ></div></td>';
             	  return result;
               }
             }, {
                 "targets": colIndex++,
                 "data": "projectTaskStatus",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 	if(opt.taskStaus != null && opt.taskStaus != "" && opt.taskStaus !="undefined"){
 						taskStaus = opt.taskStaus;
@@ -276,17 +281,29 @@ function projectTaskPaginations(url){
                 	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
     	              return result;
                 }
-          }],
+          },{
+              "targets": colIndex++,
+              "data": "projectTaskActin",
+              "sortable": false,
+              "render": function ( data, type, opt, meta ) {
+               
+              	var result = "";
+              	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">';
+              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+              	result = result	+ '</div></td>';
+  	              return result;
+              }
+        }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+// 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#projectTaskPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -297,6 +314,39 @@ function projectTaskPaginations(url){
     	   }
     	});
 	
+}
+
+
+function deleteProjectTaskPopUp(projectTaskId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete a task ?</p>";
+	result = result + ' <div id="reasonForProjectDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteProjectTask('+projectTaskId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#taskDeletePopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function deleteProjectTask(projectTaskId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl	+ "/ProjectTasks/deleteProjectSubTasks?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		success : function(json) {
+			    var projectId = $("#projectId").val();
+			    var projectStatus = $("#projectStatus").val();
+			    $("#taskDeletePopUp").empty();
+			 	$(".project_inn_mask").fadeOut(200);
+			 	projectTask(projectId,projectStatus);
+		}
+	});
+}
+function cancelTermination(){
+	$("#taskDeletePopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
  
@@ -400,8 +450,8 @@ function editCancel(){
     <div id="addTaskPopupDivId"></div>
   </div>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 
  <script>
  function showtasktype(){
@@ -410,27 +460,27 @@ function editCancel(){
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 	 } 
 	   if(taskType ==  "UserStory"){
 		 document.getElementById("epic").style.display="block";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 		 getSubEpicsByUserStory();
 	 }
 	    if(taskType ==  "Bug"){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="block";
 		 document.getElementById("task").style.display="none";
-		 $('#taskId').removeAttr("data-validation","required"); 
+		 $('#subTasksId').removeAttr("data-validation","required"); 
 		 getUserStoryByBug();
 	 }
 	 if(taskType ==  "SubTask"){
 		 document.getElementById("epic").style.display="none";
 		 document.getElementById("userStory").style.display="none";
 		 document.getElementById("task").style.display="block";
-		 $('#taskId').attr("data-validation","required"); 
+		 $('#subTasksId').attr("data-validation","required"); 
 		 getSubTasks(taskType);
 	 } 
 	 
@@ -503,7 +553,6 @@ function editCancel(){
 	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
-	     			output = output + "<option value=''>--Select Task--</option>";
 	     		for (var i=0; i<json.length; i++)
 	     		{
 		     		var opt = json[i];
@@ -594,7 +643,11 @@ function editCancel(){
 			result = result	+ '         <div class="form-group">';
 			result = result	+ '           <label class="col-md-4">Due Date</label>';
 			result = result	+ '           <div class="col-md-8">';
+			result = result +'<div class="input-group">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
+			 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+			 result = result +'</div>';
+			 
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
@@ -674,7 +727,7 @@ function editCancel(){
 			result = result	+ '         <div class="clearfix mb">';
 			result = result	+ '           <label class="col-md-12">Description</label>';
 			result = result	+ '           <div class="col-md-12 txtEditor_p">';
-			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>';
+			result = result	+ '            <textarea id="txtEditor" name="taskDescription"  class="form-control newContrtextarea"></textarea>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="clearfix"></div>';
@@ -903,3 +956,9 @@ $('body').on('blur', '#projectTask_form', function() {
 	})(jQuery);
 </script>
  
+ <script>
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+
+</script>

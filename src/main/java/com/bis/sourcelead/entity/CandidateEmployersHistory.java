@@ -19,16 +19,15 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "CANDIDATE_EMPLOYERS_HISTORY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployersHistory")
+@Table(name = "CANDIDATE_EMPLOYERS_HISTORY")
 public class CandidateEmployersHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_EMPLOYERS", nullable = false)
 	private CandidateEmployers candidateEmployers;
 	@Column(name = "NAME")
@@ -57,7 +56,7 @@ public class CandidateEmployersHistory implements Serializable {
 	private Date createdDate;
 	@Column(name = "CREATED_BY")
 	private String createdBy;
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;

@@ -6,8 +6,8 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<script src="resources/js/jquery.mask.min.js"></script>
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.mask.min.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 
 <style type="text/css">
@@ -52,9 +52,9 @@ function errRemoveVendorContact(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Custom Bill</h2>
+			<h2>Vendor Bill</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Custom Based Bill</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo; Vendor Bill</div>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -76,7 +76,7 @@ function errRemoveVendorContact(){
 								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 							</div>
 							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			                         <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			                         <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			              </sec:authorize>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
 							<input type="hidden" name="vendorCurrency" id="vendorCurrency">
@@ -139,21 +139,21 @@ function errRemoveVendorContact(){
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date" id="dueDate"
-									readonly data-validation="required" field-name="Due Date">
+									readonly data-validation="required" field-name="Due Date">							
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Billing Address</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Billing Address" data-validation="validate_length length1-100" field-name="Billing Address"></textarea>
+									name="billingAddress" placeholder="Billing Address"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									 name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
+									 name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
 						</div>
 						
@@ -173,7 +173,7 @@ function errRemoveVendorContact(){
 						<button type="button" class="btn btn-sm btn-success ml pull-left" id="sendInvoiceId" style="display:block;"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml pull-left"
-							onClick="javascript:window.location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/payablesList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -199,9 +199,9 @@ function errRemoveVendorContact(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-	<div class="tbldata-dotdot select-field">
+	<div class="tbldata-dotdot select-field validationTxt">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="lineItems[REPLACEROWID].Description"
-			data-validation="validate_length length1-100" field-name="Description"></textarea>
+			data-validation="required validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
@@ -214,11 +214,11 @@ function errRemoveVendorContact(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	<div class="tbldata-dotdot_80">
+	<div class="tbldata-dotdot_80 validationTxt whiteSpace">
 		<input type="text"
-			class="form-control input-sm"
+			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required validate_float" field-name="Rate">
 	</div>
 </div>
 
@@ -256,7 +256,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="0" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
-		 result = result +'  <tr id="divTsRow0">';
+		 result = result +'  <tr>';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>Description</th>';
@@ -340,13 +340,13 @@ function errRemoveVendorContact(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();"">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
          result = result +'  </div>';
          result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
-         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();" onkeyup="validateDiscount();">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();" onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -482,12 +482,10 @@ function remove(){
 	function getSavedAttachments(invoiceDocumentsList){
 		var result = '';
 		if(invoiceDocumentsList.length > 0){
-			
 			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
 				 var opt = invoiceDocumentsList[i]; 
-	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
-	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
 					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
@@ -497,6 +495,19 @@ function remove(){
 			 
 			 $("#savedAttachments").empty();
 			 $("#savedAttachments").append(result);
+		}else{
+			 <c:forEach var="doc" items="${documents}">
+				 result = result +"<strong id='invoiceDocument${doc.id}'>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'${doc.fileUrl}\' title='download' download></a></i>";
+				 result = result +"<input type='button' value='${doc.fileName}'>";
+				 result = result +"</a>";
+				 result = result +"</strong>";
+         	</c:forEach>
+			
+			 
+			 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
+			
 		}
     	
 	}
@@ -508,7 +519,7 @@ function remove(){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to delete Attachment</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDelDoc();'></b>";
 		result = result +"	</div>";
 		$("#lineItemPopUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -609,14 +620,11 @@ function remove(){
 			  
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addInvoiceTbl').rows[rowId];
-		var count = 2 * (r.cells.length);
+		var r = document.getElementById('addInvoiceTbl').rows[rowId+1];
+		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
-		
-		
-		
 		
 	}
 </script>
@@ -745,7 +753,7 @@ function remove(){
 
 
 <script type="text/javascript">
-function cancel(){
+function cancelDelDoc(){
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
@@ -1013,7 +1021,7 @@ function cancel(){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();$(this).blur();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="this.disabled=true;addInvoice();$(this).blur();">Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#associatesListDiv").empty(); 
 	                     $("#associatesListDiv").append(result); 
@@ -1528,7 +1536,7 @@ function calculateDiscount(){
 <div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
 		<input type="text"
-			class="form-control input-sm" value=""
+			class="form-control input-sm allownumericwithdecimal" value=""
 			placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue'
 			id='REPLACEROWIDtaxdiscountvalue'
 			onblur="calculateTaxDiscount(REPLACEROWID);" onkeyup="validateRowDiscount(REPLACEROWID);">
@@ -1912,7 +1920,7 @@ function saveInvoice(saveType){
 		        }else{
 		        	
 		    	        
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable", formData, function(data) {
 			  				if(data == "success"){
 			  					$("#invoiceLoading").removeAttr("style");
@@ -2014,7 +2022,7 @@ function getDueDateByFrequency(){
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	
 	 if(paymentFrequency){
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
@@ -2054,7 +2062,7 @@ function getEstimatedHours(rowId){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTotalHosursForPayable?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
@@ -2073,7 +2081,7 @@ function editHoursValidations(startDate,endDate,rowId){
 	if(startDate && endDate){
 		 var locationId = '${SourceLeadWeb_orgLocationId}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTotalHosursForPayable?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
@@ -2130,19 +2138,19 @@ function validateDiscount() {
 	 if(selectedTextInvoice =='percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(enteredValue.match(floatNum)){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-				$("#sendButtonId").removeAttr("disabled", "disabled");
+			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+				$("#sendInvoiceId").removeAttr("disabled", "disabled");
 			   return true;
 		  }		  
 		 else{
 				$("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
-				$("#saveButtonId").attr("disabled", "disabled");
-				$("#sendButtonId").attr("disabled", "disabled");
+				$("#saveInvoiceId").attr("disabled", "disabled");
+				$("#sendInvoiceId").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
+			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
 		  }		  
 }
 </script>
@@ -2156,14 +2164,14 @@ var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
 if(selectedTextInvoice =='percentage'){
 	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 	  if(enteredValue.match(floatNum)){
-		  $("#saveButtonId").removeAttr("disabled", "disabled");
-			$("#sendButtonId").removeAttr("disabled", "disabled");
+		  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+			$("#sendInvoiceId").removeAttr("disabled", "disabled");
 		   return true;
 	  }		  
 	 else{
 			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
-			$("#saveButtonId").attr("disabled", "disabled");
-			$("#sendButtonId").attr("disabled", "disabled");
+			$("#saveInvoiceId").attr("disabled", "disabled");
+			$("#sendInvoiceId").attr("disabled", "disabled");
 			return false; 
 	 	 }
 }if(selectedTextInvoice =='flat'){
@@ -2174,14 +2182,15 @@ if(selectedTextInvoice =='percentage'){
 			   return false;
 		  }
 		else{ */
-			$("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
+			$("#saveInvoiceId").removeAttr("disabled", "disabled");
+			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
 // 		}
 	  }		
 	  
  
 }
 </script>
+
 <script>
 function createpayablesEmptyVendorContact(){
 	$("#vendorContact").empty();
@@ -2194,5 +2203,13 @@ function createpayablesEmptyVendorContact(){
 		 var vid =  $("#vendorOrgRelationId").val();
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
-	 </script>
+</script>
+
+<!-- <script>
+function clearDate(){
+	$("#dueDate").val("");
+	};
+</script> -->
+
+
 <jsp:include page="../masterFooter.jsp" />

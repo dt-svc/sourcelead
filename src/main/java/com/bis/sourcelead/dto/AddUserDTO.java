@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 	import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.annotations.Email;
@@ -63,6 +64,8 @@ import com.bis.sourcelead.entity.UserRole;
 		private String professionalRegisterCountry;
 		
 		private String recruiterRegisterCountry;
+		
+		private String ssn;
 		
 		private Set<UserRole> userRole = new HashSet<UserRole>(0);
 		
@@ -150,7 +153,11 @@ import com.bis.sourcelead.entity.UserRole;
 		private String registeredOrgLocationId;
 		
 		private String registredOrgId;
+		
+		private String userId;
 
+		private List<CustomFormFieldDTO> customFormData;
+		
 		public String getFirstName() {
 			return firstName;
 		}
@@ -681,7 +688,30 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setRegistredOrgId(String registredOrgId) {
 			this.registredOrgId = registredOrgId;
 		}
-		
-		
+
+		public String getSsn() {
+			return ssn;
+		}
+
+		public void setSsn(String ssn) {
+			this.ssn = ssn;
+		}
+		public String getUserId(){
+			return userId;
+		}
+
+		public void setUserId(String userId){
+			this.userId = userId;
+
+		}
+
+		public List<CustomFormFieldDTO> getCustomFormData() {
+			return customFormData;
+		}
+
+		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+			this.customFormData = customFormData;
+		}
+			
 		
 }

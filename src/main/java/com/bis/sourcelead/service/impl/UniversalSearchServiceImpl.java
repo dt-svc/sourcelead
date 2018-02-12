@@ -10,7 +10,7 @@ import java.util.TimeZone;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,10 +111,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : anyKeyWordArray){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =universalSearchHelper.getQueryBuilderListForRequirementSearch(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -185,11 +185,11 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : anyKeyWordArray) {
 						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getUsersQueryBuilderList(keywd);
 
-						if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+							for (QueryBuilder QueryBuilder : QueryBuilderList) {
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -250,10 +250,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getQueryBuilderListForClientVendor(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -314,26 +314,30 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		if(searchType !=null && !"".equalsIgnoreCase(searchType) && Constants.PROJECT.equalsIgnoreCase(searchType))
 		{
                 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-			    Integer maxResults = projectsService.getProjectCountByOrgLocationId(orgLocation.getId());
+//                boolQueryBuilder.must(QueryBuilders.matchQuery("userId", user.getId()));
+			    Integer maxResults = projectsService.getProjectCountByOrgLocationIdAndUserCode(orgLocation.getId(),user.getUserCode());
 				//Any Keywords
 			    ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getProjectsQueryBuilderList(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
 //						for(String keywd : invoiceFrequencyArray){
 						if(keywd.equalsIgnoreCase("Weekly")){
 							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Weekly"));
-							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
 						}else if(keywd.equalsIgnoreCase("Monthly")){
 							anyBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Monthly"));
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
+						}else if(keywd.equalsIgnoreCase("Bi-Weekly")) {
+							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Bi-Weekly"));
+						}else if(keywd.equalsIgnoreCase("Semi-Monthly")) {
 							anyBoolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("invoiceFrequency", "Semi-Monthly"));
 						}
 //						else{
@@ -373,10 +377,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getQueryBuilderListForCandidate(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -536,10 +540,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 							 for(String keywd : anyKeyWordArray){
 								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-								ArrayList<MatchQueryBuilder> matchQueryBuilderList =universalSearchHelper.getMatchQueryBuilderListForRequirementSearch(keywd);
-								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-										anyBoolSubQueryBuilder.should(matchQueryBuilder);
+								ArrayList<QueryBuilder> QueryBuilderList =universalSearchHelper.getQueryBuilderListForRequirementSearch(keywd);
+								if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+									for(QueryBuilder QueryBuilder :QueryBuilderList){
+										anyBoolSubQueryBuilder.should(QueryBuilder);
 									}
 									anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 								}
@@ -600,7 +604,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							}
 						}	
 			}
-			if("Users".equals(tabs.getTabName())){
+			if("Associates".equals(tabs.getTabName())){
 				// ELK list for the user
 				BoolQueryBuilder userBoolQueryBuilder = new BoolQueryBuilder();
 				userBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
@@ -613,11 +617,11 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						for (String keywd : anyKeyWordArray) {
 							BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
+							ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getUsersQueryBuilderList(keywd);
 
-							if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-								for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+								for (QueryBuilder QueryBuilder : QueryBuilderList) {
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -660,10 +664,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : allKeyWordArrayForCandidate){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getQueryBuilderListForCandidate(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -720,10 +724,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArrayForProjects){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getProjectsQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -799,10 +803,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			 for(String keywd : anyKeyWordArray){
 				 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForClientVendor(keywd);
-				if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-					for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getQueryBuilderListForClientVendor(keywd);
+				if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+					for(QueryBuilder QueryBuilder :QueryBuilderList){
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}

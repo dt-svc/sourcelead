@@ -31,6 +31,8 @@ public interface ProjectMembersHistoryDao {
 	
 	List<ProjectMembersHistory> getProjectMembersHistoryListByProjectMemberId(Long projectMemberId) throws Exception;
 	
+	public HashMap<String,Date> getAssignDateandEndDateByProjectMemberId(Long projectMemberId);
+	
 	ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,Long orgLocationId) throws Exception;
 	
 }

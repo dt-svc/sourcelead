@@ -44,7 +44,7 @@ public interface InvoiceService {
 //	Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType)throws Exception;
 
 
-	void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType)throws Exception;
+	void updateSubmissionApproverHiearachy(Invoice invoice,String invoiceType)throws Exception;
 
 	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception;
 
@@ -68,7 +68,7 @@ public interface InvoiceService {
 
 	void saveInvocePojo(Invoice invoice)throws Exception;
 
-	BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate, String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId)throws Exception;
+	BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate, String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId, String loginOrgCurrencyCode)throws Exception;
 
 	void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception;
 

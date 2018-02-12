@@ -40,6 +40,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @Controller
+@RequestMapping("/app")
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
@@ -111,6 +112,8 @@ public class ProjectsDashboardController {
 					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
 				}
 			}
+			
+			
         }
         model.addObject("add_client", orgClientList);
         model.addObject("clientListSize", orgClientList.size());
@@ -130,6 +133,7 @@ public class ProjectsDashboardController {
 			model.addObject("endDate",endDate);
 			model.addObject("status",status);
 		}
+        
 
         
        /* List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());

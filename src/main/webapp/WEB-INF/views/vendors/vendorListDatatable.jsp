@@ -216,11 +216,7 @@ function getVendorList(){
 		    	  	"data": "noContacts",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		if(null != report.noContacts && report.noContacts  != '' && report.noContacts  != 'undefined'){
 							result = result +'<td><div class="tbldata-dotdot_80">'+report.noContacts+'</div></td>';
-						}else{
-							result = result +'<td><div >---</div></td>';
-						}
 		    	  		 return result;
 		    	  	}
 		    	  }],

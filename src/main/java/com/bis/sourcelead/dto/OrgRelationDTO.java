@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
-public class OrgRelationDTO implements Serializable{
+public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -61,6 +63,31 @@ public class OrgRelationDTO implements Serializable{
 	private Long orgRelationId;
 	
 	
+    private String sortColumn;
+	
+	private String sortOrder;
+	 
+	private List<Map<String, String>> order;
+	 
+	private String searchValue;
+	
+	private String jobCampaignType;
+	
+	private int start;
+	 
+	private int length;
+	
+	private String requirementId;
+	
+	private String vendorStatus;
+	
+	private String initiatorLevel;
+	
+	private String  noOfContatcs;
+
+	private String  stringDate;
+	
+	private String noOfNonReleasedContacts;
 
 	public Long getId() {
 		return id;
@@ -277,4 +304,124 @@ public class OrgRelationDTO implements Serializable{
 	public void setOrgRelationId(Long orgRelationId) {
 		this.orgRelationId = orgRelationId;
 	}
+
+
+	public String getSortColumn()
+	{
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn)
+	{
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder()
+	{
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder)
+	{
+		this.sortOrder = sortOrder;
+	}
+
+	public List<Map<String, String>> getOrder()
+	{
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order)
+	{
+		this.order = order;
+	}
+
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
+	}
+
+	public String getJobCampaignType()
+	{
+		return jobCampaignType;
+	}
+
+	public void setJobCampaignType(String jobCampaignType)
+	{
+		this.jobCampaignType = jobCampaignType;
+	}
+
+	public int getStart()
+	{
+		return start;
+	}
+
+	public void setStart(int start)
+	{
+		this.start = start;
+	}
+
+	public int getLength()
+	{
+		return length;
+	}
+
+	public void setLength(int length)
+	{
+		this.length = length;
+	}
+	
+	public String getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getVendorStatus() {
+		return vendorStatus;
+	}
+
+	public void setVendorStatus(String vendorStatus) {
+		this.vendorStatus = vendorStatus;
+	}
+
+	public String getInitiatorLevel() {
+		return initiatorLevel;
+	}
+
+	public void setInitiatorLevel(String initiatorLevel) {
+		this.initiatorLevel = initiatorLevel;
+	}
+
+	public String getNoOfContatcs() {
+		return noOfContatcs;
+	}
+
+	public void setNoOfContatcs(String noOfContatcs) {
+		this.noOfContatcs = noOfContatcs;
+	}
+
+	public String getStringDate() {
+		return stringDate;
+	}
+
+	public void setStringDate(String stringDate) {
+		this.stringDate = stringDate;
+	}
+
+	public String getNoOfNonReleasedContacts() {
+		return noOfNonReleasedContacts;
+	}
+
+	public void setNoOfNonReleasedContacts(String noOfNonReleasedContacts) {
+		this.noOfNonReleasedContacts = noOfNonReleasedContacts;
+	}
+
 }
