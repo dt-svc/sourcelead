@@ -3,19 +3,19 @@ function Immigration(){
 	this.savePageOneContinue = function (status){
 		$("#newPetitionTemplateDiv").empty();
 		if(status == 'one'){
-			$("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=one");
+			$("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=one");
 		}else if(status == 'two'){
-			$("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=two");
+			$("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=two");
 		}else if(status == 'three'){
-			$("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=three");
+			$("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=three");
 		}else if(status == 'four'){
-			$("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=four");
+			$("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=four");
 		}else if(status == 'five'){
-			$("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=five");
+			$("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=five");
 		}else if(status == 'six'){
-			$("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=six");
+			$("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=six");
 		}else if(status == 'seven'){
-			$("#newPetitionTemplateDiv").load("/app/loadNewPetitionPage?status=seven");
+			$("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=seven");
 		}
 	}
 	

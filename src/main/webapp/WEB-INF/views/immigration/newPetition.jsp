@@ -503,7 +503,8 @@
   <!-- Content Area -->
   <script type="text/javascript">
   $( document ).ready(function() {
-	  $("#newPetitionTemplateDiv").load("/app/petitionTemplateDetails?status=one");
+	  $("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=one");
+	  console.info("inside new petition template jsp------>")
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	});
   </script>
