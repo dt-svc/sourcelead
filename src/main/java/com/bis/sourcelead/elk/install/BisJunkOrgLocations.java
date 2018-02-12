@@ -1,4 +1,4 @@
-package com.bis.sourcelead.beans;
+package com.bis.sourcelead.elk.install;
 
 public class BisJunkOrgLocations {
 
