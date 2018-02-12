@@ -1006,7 +1006,7 @@ function addApplicantSubmission(){
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
-	     		  if(null != inputValue){
+	     		  if(inputValue != null && inputValue != 'undefined' && inputValue != ''){
 	     			  if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
