@@ -60,11 +60,22 @@
 			<version>[0.4, 0.5)</version>
 		</dependency>
 
-                <!-- Modelmapper for map values dto to entity -->
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.paypal.sdk</groupId>
+			<artifactId>adaptivepaymentssdk</artifactId>
+			<version>2.9.117</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.paypal.sdk</groupId>
+			<artifactId>rest-api-sdk</artifactId>
+			<version>1.14.0</version>
 		</dependency>
 
 		<dependency>
@@ -636,6 +647,11 @@
 		</dependency>
 		<!-- <dependency> <groupId>org.apache.pdfbox</groupId> <artifactId>pdfbox</artifactId> 
 			<version>1.8.13</version> </dependency> -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>1.8.13</version>
+		</dependency>
 
 		<!-- Docusign dependency end -->
 

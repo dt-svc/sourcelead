@@ -24,6 +24,8 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import java.util.Base64;
+import org.jgroups.util.UUID;
 
 /**
  * 
@@ -400,6 +402,48 @@ public class OrgDaoImpl implements OrgDao {
 		
 		return userList;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Org getOrgByCareerPageKey(String careerPageKey) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Org> orgList;
+		logger.debug("getOrgByCareerPageKey start");
+		orgList = session.createQuery("from Org where careerPageKey=:careerPageKey" ).setString( "careerPageKey", careerPageKey ).setCacheable(true).list();
+		logger.debug("getOrgByCareerPageKey end");
+		 
+		if (orgList != null && orgList.size() > 0) {
+			return orgList.get(0);
+		} else {
+			return null;
+		}
+   	}
+
+        @Override
+	@Transactional(rollbackFor = { Exception.class })
+        public String generateCareerPageKey(Long id, String orgName) throws Exception{
+            String name = orgName + UUID.randomUUID().toString();
+            String key = Base64.getEncoder().encodeToString(name.getBytes());
+            Session session = this.sessionFactory.getCurrentSession();
+            Org org = session.get(Org.class, id);
+            key = key.replaceAll("=", "");
+            org.setCareerPageKey(key);
+            org.setCareerPageKeyActive(true);
+            session.saveOrUpdate(org);
+            return key;
+        }
+
+        @Override
+	@Transactional(rollbackFor = { Exception.class })
+        public int changeCareerPageKeyStatus(Long id) throws Exception {
+            Session session = this.sessionFactory.getCurrentSession();
+            Org org = session.get(Org.class, id);
+            org.setCareerPageKeyActive(!org.isCareerPageKeyActive());
+            session.saveOrUpdate(org);
+            return org.isCareerPageKeyActive() ? 1 : 0;
+        }
 
 	@Override
 	@Transactional
