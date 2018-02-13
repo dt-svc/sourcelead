@@ -25,6 +25,7 @@ import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class RestrictDayServiceImpl implements RestrictDayService {
@@ -53,7 +54,7 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 		User user = userService.getUserById(Long.valueOf(restrictDayDTO.getUserId()));
 		RestrictDay restrictDay = null;
 		
-		if(StringUtils.isNotBlank(restrictDayDTO.getRestrictDayId())) {
+		if(restrictDayDTO.getRestrictDayId() > 0) {
 			restrictDay = restrictDayDao.getRestrictDayById(restrictDayDTO.getRestrictDayId());
 			restrictDay.setUpdatedBy(user.getUserCode());
 			restrictDay.setUpdatedDate(new Date());
@@ -61,6 +62,7 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 			restrictDay = new RestrictDay();
 			restrictDay.setCreatedBy(user.getUserCode());
 			restrictDay.setCreatedDate(new Date());
+			restrictDay.setRestrictUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
 		restrictDay.setRestrictName(restrictDayDTO.getRestrictName());
@@ -93,7 +95,7 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 	}
 
 	@Override
-	public RestrictDay getRestrictDayById(String restrictDayId) {
+	public RestrictDay getRestrictDayById(Long restrictDayId) {
 		return restrictDayDao.getRestrictDayById(restrictDayId);
 	}
 	
@@ -165,6 +167,12 @@ public class RestrictDayServiceImpl implements RestrictDayService {
 		}else{
 			return false;
 		}
+	}
+
+	@Override
+	public RestrictDay getRestrictDayByUUID(String restrictUUID)
+	{
+		return restrictDayDao.getRestrictDayByUUID(restrictUUID);
 	}
 
 }
