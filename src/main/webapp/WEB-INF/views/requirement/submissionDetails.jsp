@@ -1307,9 +1307,10 @@ function rejectOffer(offerStatus,submissionId,offerId){
 <script>
 function acceptingOffer(offerStatus,submissionId,offerId){
 	
-	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 jQuery("#"+(offerId)+"offerActionDiv").css("display","none");
+	 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+ 	var sourceleadUrl ='${sourceleadUrl}';
 	 var reason;
 	 if ($('#rejectReason').length)
 	 {
@@ -1326,7 +1327,6 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 
         	 $("#rejectOfferAlert").empty();
            	 
-           	 jQuery("#"+(offerId)+"offerActionDiv").css("display","none");
 	    	 if(offerStatus == "OFFERACCEPTED"){
       		    $("#"+(offerId)+"showOfferStatus").html("<font color='green' >OFFERACCEPTED</font>");
           	 }
@@ -1339,7 +1339,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
         	 
        },
          
-    }); 
+    });  
 	 
 	 
 }
