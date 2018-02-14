@@ -1710,7 +1710,17 @@ public class ClientRestController {
 					locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCity", clientVendorDTO.getCity()));
 			    }
 				
+				
+				if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+					locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorType", Constants.VENDOR));
+					locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderType", Constants.VENDOR));
+				}else if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+					locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorType", Constants.CLIENT));
+					locationByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderType", Constants.CLIENT));
+				}
+				
 				boolQueryBuilder.must(locationByBoolQueryBuilder);
+				
 			}else if(StringUtils.isNotBlank(clientVendorDTO.getSearchCountry())){
 				
 				  BoolQueryBuilder responderlocationByBoolQueryBuilder = QueryBuilders.boolQuery();
