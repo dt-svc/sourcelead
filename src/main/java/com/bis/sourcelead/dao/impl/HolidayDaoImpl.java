@@ -109,15 +109,31 @@ public class HolidayDaoImpl  implements HolidayDAO{
 
 	@Override
 	@Transactional
-	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,Date endDate, Long orgLocationId) throws Exception {
-	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.orgLocations.id = :orgLocationId";
-	List<Holiday> holiday=session.createQuery(query).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
-	if (holiday.size() > 0) {
-	return holiday;
-	} else {
-	return null;
+	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate, Date endDate, Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.orgLocations.id = :orgLocationId";
+		List<Holiday> holiday = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
+		if (holiday.size() > 0) {
+			return holiday;
+		}
+		else {
+			return null;
+		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Holiday getHolidaysByUUID(String holidayUUID)
+	{
+		Holiday holiday = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Holiday holiday where holiday.holidayUUID= :holidayUUID";
+		List<Holiday> holidayList = session.createQuery(query).setString("holidayUUID", holidayUUID).list();
+		if (holidayList != null && holidayList.size() > 0) {
+			holiday = holidayList.get(0);
+		}
+		return holiday;
 	}
 
 

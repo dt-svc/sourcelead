@@ -260,6 +260,12 @@ public class User implements Serializable{
 	private String employmentType;
 	
 	@Transient
+	private String vendorName;
+	
+	@Transient
+	private String vendorContactName;
+	
+	@Transient
 	private String registrationType;
 	
 	@Transient
@@ -816,8 +822,21 @@ public class User implements Serializable{
 		this.loginSecurity = loginSecurity;
 	}
 
-	
+	public String getVendorName() {
+		return vendorName;
+	}
 
-	
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public String getVendorContactName() {
+		return vendorContactName;
+	}
+
+	public void setVendorContactName(String vendorContactName) {
+		this.vendorContactName = vendorContactName;
+	}
+
 	
 }
