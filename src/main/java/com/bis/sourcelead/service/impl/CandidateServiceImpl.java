@@ -38,6 +38,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
@@ -198,6 +199,7 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     private CandidateCustomFieldDataService candidateCustomFieldDataService;
     
+       
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -1841,6 +1843,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							 }
 							 
 							 clientService.saveOrUpdateClientVendorElkDocument(null, vendorOrgLocation, "Vendor", orgSpoc, orgRelations,null, user, orgLocations);
+							 orgSpocService.addClientVendorContactsELK(orgSpoc);
     					
 						}
 						
