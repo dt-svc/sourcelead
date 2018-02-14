@@ -1711,6 +1711,7 @@ public class ClientRestController {
 			    }
 				
 				boolQueryBuilder.must(locationByBoolQueryBuilder);
+				
 			}else if(StringUtils.isNotBlank(clientVendorDTO.getSearchCountry())){
 				
 				  BoolQueryBuilder responderlocationByBoolQueryBuilder = QueryBuilders.boolQuery();
