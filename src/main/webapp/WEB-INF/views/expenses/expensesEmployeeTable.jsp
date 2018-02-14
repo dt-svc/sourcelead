@@ -185,7 +185,7 @@ function ApprovalpaginationEmp(url,sourceleadUrl){
 	    	  		 '</sec:authorize>';
 	    	  		 
 	    	  		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-	    	  		  result = result +'<td><div title="+clientName+">'+clientName+'</div></td>';
+	    	  		  result = result +'<td><div title="'+clientName+'">'+clientName+'</div></td>';
 	    	  		 '</sec:authorize>';
 	    	  		 
 	    	  		return  result;
