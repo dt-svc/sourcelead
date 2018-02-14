@@ -38,7 +38,6 @@ import com.bis.sourcelead.enums.Status;
  */
 @Entity
 @Table(name="ORG")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="org")
 public class Org implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -64,8 +63,8 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
@@ -88,6 +87,13 @@ public class Org implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@Column(name = "ORG_DESCRIPTION")
 	@Type(type="text")
 	private String orgDescription;
@@ -109,7 +115,7 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status timeSheet;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="org",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgLocations> orgLocationsList;
@@ -147,6 +153,9 @@ public class Org implements Serializable{
 	
 	@Transient
 	private Long primaryOrgLocationId;
+	
+	@Transient
+	private int noOfDays;
 	
 	public Long getId() {
 		return id;
@@ -244,7 +253,8 @@ public class Org implements Serializable{
 	public void setDocFile(byte[] docFile) {
 		this.docFile = docFile;
 	}
-
+	
+	
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -392,6 +402,30 @@ public class Org implements Serializable{
 		this.primaryOrgLocationId = primaryOrgLocationId;
 	}
 
-	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public int getNoOfDays()
+	{
+		return noOfDays;
+	}
+
+	public void setNoOfDays(int noOfDays)
+	{
+		this.noOfDays = noOfDays;
+	}
 
 }

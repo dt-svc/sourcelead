@@ -25,7 +25,7 @@ public interface OrgLocationService {
 
 	public List<OrgLocations> getAllOrgLocations() throws Exception;
 
-	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception;
 
 	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception;
 
@@ -38,6 +38,8 @@ public interface OrgLocationService {
 	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception;
 	
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception;
 	
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
 	
@@ -52,6 +54,14 @@ public interface OrgLocationService {
 	public boolean validateOrgShortCode(String orgShortId);
 	
 	public List<OrgLocations> userList(Long orgId) throws Exception;
+	
+	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
+
+	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long id);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception;
+	
+	Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception;
 
 
 }

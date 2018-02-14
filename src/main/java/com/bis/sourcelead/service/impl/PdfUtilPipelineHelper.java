@@ -67,13 +67,13 @@ public class PdfUtilPipelineHelper  {
 			
 			
 			StringBuilder sbClientPipe = new StringBuilder();
-			sbClientPipe.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date()));
+			sbClientPipe.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date()));
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfSubmitToClient(),Constants.SUBMIT_TO_CLIENT_COUNT,file);
 
 		    try {
@@ -95,7 +95,7 @@ public class PdfUtilPipelineHelper  {
 	                table.completeRow();
 	            }
 		        
-		        document.addTitle("Candiate List Table");
+		        document.addTitle("Applicants Table");
 		        table.setSpacingBefore(15f);
 		        document.add(table);
 		        logger.info("Pdf table created !!");
@@ -110,10 +110,10 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
 			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfRequestSent(),Constants.REQUEST_SENT_COUNT,file);
 
 		    try {
@@ -135,7 +135,7 @@ public class PdfUtilPipelineHelper  {
 	                table.completeRow();
 	            }
 		        
-		        document.addTitle("Candiate List Table");
+		        document.addTitle("Applicants Table");
 		        table.setSpacingBefore(15f);
 		        document.add(table);
 		        logger.info("Pdf table created !!");
@@ -149,10 +149,10 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
 			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfShortList(),Constants.SHORTLIST_COUNT,file);
 
 		    try {
@@ -174,7 +174,7 @@ public class PdfUtilPipelineHelper  {
 	                table.completeRow();
 	            }
 		        
-		        document.addTitle("Candiate List Table");
+		        document.addTitle("Applicants Table");
 		        table.setSpacingBefore(15f);
 		        document.add(table);
 		        logger.info("Pdf table created !!");
@@ -188,10 +188,10 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
 		   // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfInterview(),Constants.INTERVIEW_COUNT,file);
 	   
 		    try {
@@ -213,7 +213,7 @@ public class PdfUtilPipelineHelper  {
 	                table.completeRow();
 	            }
 		        
-		        document.addTitle("Candiate List Table");
+		        document.addTitle("Applicants Table");
 		        table.setSpacingBefore(15f);
 		        document.add(table);
 		        logger.info("Pdf table created !!");
@@ -227,10 +227,10 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
 		   // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 	        StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfOffers(),Constants.OFFER_COUNT,file);
 
 		    try {
@@ -252,7 +252,7 @@ public class PdfUtilPipelineHelper  {
 	                table.completeRow();
 	            }
 		        
-		        document.addTitle("Candiate List Table");
+		        document.addTitle("Applicants Table");
 		        table.setSpacingBefore(15f);
 		        document.add(table);
 		        logger.info("Pdf table created !!");
@@ -266,10 +266,10 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS;
 		  //  DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfRejected(),Constants.REJECTED_COUNT,file);
 
 		    try {
@@ -291,7 +291,7 @@ public class PdfUtilPipelineHelper  {
 	                table.completeRow();
 	            }
 		        
-		        document.addTitle("Candiate List Table");
+		        document.addTitle("Applicants Table");
 		        table.setSpacingBefore(15f);
 		        document.add(table);
 		        logger.info("Pdf table created !!");
@@ -305,10 +305,10 @@ public class PdfUtilPipelineHelper  {
 			String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
 		   // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
 	        Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5};
@@ -329,7 +329,7 @@ public class PdfUtilPipelineHelper  {
 	                table.completeRow();
 	            }
 		        
-		        document.addTitle("Candiate List Table");
+		        document.addTitle("Applicants Table");
 		        table.setSpacingBefore(15f);
 		        document.add(table);
 		        logger.info("Pdf table created !!");
@@ -598,8 +598,8 @@ public class PdfUtilPipelineHelper  {
 		        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
-		        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
-	            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrgLocationName()).append(" Requirements.").toString(),boldFont);
+		        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
+	            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrgLocationName()).append(" Jobs.").toString(),boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            document.add(para);
 		        // Create an instance of PdfPTable. After that we transform the header and
@@ -607,7 +607,7 @@ public class PdfUtilPipelineHelper  {
 	            StringBuilder reqNameBuilder=new StringBuilder();
 	            StringBuilder locBuilder=new StringBuilder();
 	            StringBuilder expBuilder=new StringBuilder();
-		        orderedList.add(new ListItem(reqNameBuilder.append("Requirement Name :").append(requirement.getJobTitle()).toString()));
+		        orderedList.add(new ListItem(reqNameBuilder.append("Job Name :").append(requirement.getJobTitle()).toString()));
 		        orderedList.add(new ListItem(locBuilder.append("Location :").append(requirement.getCountry()).toString()));
 		        if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			        orderedList.add(new ListItem(expBuilder.append("Experience :").append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()));

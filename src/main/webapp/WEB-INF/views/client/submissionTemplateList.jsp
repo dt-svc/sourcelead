@@ -11,9 +11,9 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 
 <style type="text/css">
@@ -129,7 +129,7 @@ function clientSubmissionTemplate(clientLocationId){
     		}else{
       			 result = result + '<div class="table_nodata">';
        			 result = result + '<div class="table_nodata_inn">';
-       			 result = result + '<img src="resources/images/no-data.png" />';
+       			 result = result + '<img src="/resources/images/no-data.png" />';
        			 result = result + '<span>Nothing is here to show </b>';
        			 result = result + '</span>';
        			 result = result + '<div class="clearfix"></div>';
@@ -151,10 +151,14 @@ function clientSubmissionTemplate(clientLocationId){
 function templatepagination(){  
     $('#templatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 2
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

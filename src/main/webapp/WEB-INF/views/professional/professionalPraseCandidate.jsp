@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 	<script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('profileLocation','profileCountry','profileState','profileCity','profileZipCode','profileLatitude','profileLongitude','');
+			initLocationAuto('profileLocation','profileCountry','profileState','profileCity','profileZipCode','profileLatitude','profileLongitude','','address');
 			disableMonths();
 		 };
 	</script>
@@ -59,7 +59,7 @@
     <div class="pull-left">
       <h2>Profile Update</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> &raquo; Profile Update</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Profile Update</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -76,7 +76,7 @@
               </span> 
            </label>
 
-             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
+             <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Resume" data-validation="required validate_Space validatedoc " >
          </div>
           </div>
         </div>
@@ -103,7 +103,7 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_loginUserEmail}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email"   value="">
+            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_loginUserEmail}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -124,41 +124,49 @@
         
         
         <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="profileLocation" name="location" placeholder="Enter your address"  type="text" field-name="Locatin" data-validation="required"></input>
-          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('profileLocation','profileCountry','profileState','profileCity','profileZipCode');"></i>
+          <input class="form-control positionRelative" id="profileLocation" name="location" placeholder="Enter your address"  type="text" field-name="Address" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('profileLocation','profileCountry','profileState','profileCity','profileZipCode','address');"></i>
           </div>
           </div>
         </div>
 		
+		 <div class="form-group">
+          <label class="col-md-3">Street Address</label>
+          <div class="col-md-9">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter your Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+          </div>
+        </div>
 		
 		<div class="form-group">
-          <label class="col-md-3">Country</label>
-          <div class="col-md-9">
-          <input class="form-control" id="profileCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">State</label>
-          <div class="col-md-9">
-          <input class="form-control" id="profileState" name="state" placeholder="Enter your State" type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-          <input class="form-control" id="profileCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          <input class="form-control" id="profileCity" name="city" placeholder="Enter your City" type="text"></input>
           </div>
         </div>
+        
+         <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="profileState" name="state" placeholder="Enter your State" type="text"></input>
+          </div>
+        </div>
+        
+        
+		<div class="form-group">
+          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-9">
+          <input class="form-control" id="profileCountry" name="country" placeholder="Enter your Country" field-name="Country"  data-validation="required"  value ="${loginCountryName}" type="text"></input>
+          </div>
+        </div>
+        
         
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="profileZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+          <input class="form-control" id="profileZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
           </div>
         </div>
         
@@ -186,12 +194,7 @@
 			</div>
 		</div> -->
         
-        <div class="form-group">
-          <label class="col-md-3">Address</label>
-          <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
-          </div>
-        </div>
+       
         
         <div class="form-group">
          <label class="col-md-3">Designation</label>
@@ -260,7 +263,7 @@
                  <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
                  <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
                  <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-                 <option ${currencyCode  == 'GPB' ? 'selected' : ''}>GPB</option>
+                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
                  <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
                  <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
                  
@@ -424,7 +427,7 @@
       
         <div class="pull-right mr">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/professionalProfile'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/professionalProfile'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -460,13 +463,6 @@
 		
 		 if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var frm = $('#candidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-			
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
-			
 			var form = $('#candidate_form')[0];
       		var formData = new FormData(form); 
 			
@@ -476,14 +472,16 @@
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
+		        	    processData: false,
 		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(result) {
-								location.replace(sourceleadUrl+"/professionalProfile");
+							if(result && result === "DataMissing") {
+	                      		$("#update_user").attr("disabled", "disabled");
+	     						showError("Invalid data");
+	     					}else{
+	     						location.replace(sourceleadUrl+"/professionalProfile");	
+	     					}
 						},
 					});
 			return true;
@@ -538,24 +536,16 @@ function validate_fileupload(fileName)
 }
 </script>
 
+<script>
+  $(function() { 
+		tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','select Education');
+
+	});
+ </script>
+ 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-	       
-	        //Adding Customized Skills to the list
-	        var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
-		    
 		    $("#candidateSkills").chosen().change(function(event) {
 		    	var allSkills = $(event.target).val();
 		   
@@ -571,75 +561,8 @@ function validate_fileupload(fileName)
 			    });
 		    	
 		    });
-		   
-		    
-		    chosen.search_field.on('keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-				    			var newSkill = this.value.replace(","," ");
-				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                {
-				    				 var option = $("<option>").val(newSkill).text(newSkill);
-				                     select.append(option);
-				                     select.find(option).prop('selected', true);
-				                     $("#candidateSkills option").each(function(){
-				                         $(this).siblings("[value='"+ this.value+"']").remove();
-				                   });
-				                   $("#candidateSkills").trigger("chosen:updated");
-				                }
-						       
-			    	         }
-		    	});
-		    //Adding Customized Skills to the list
-		    
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateEducation option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateEducation").trigger("chosen:updated");
-	        		
-		        }
-		    }); 
-		    //Adding Customized Educations to the list
-	       
-	       
-	       
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
-			$("#candidateSkills").val('').trigger("chosen:updated");
+		   $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
-				
 				
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
@@ -692,94 +615,7 @@ function validate_fileupload(fileName)
          }
      });
  }
-	      var selectedFile = document.getElementById("uploadBtn");
-	      selectedFile.addEventListener("change", function() {
-	      	 $("#uploadFile").focus();
-	      	 if(validate_fileupload(this.value)){
-	      		 
-	      		 var docSize = this.files[0].size;
-	     	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	     	      
-	     	      if(docSize > 2097152){
-	     	    	  document.getElementById("uploadFile").value = '';
-	     	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
-	     	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	     			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
-	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	     	      }else{
-	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	     		var form = $('#candidate_form')[0];
-	       		var formData = new FormData(form); 
-	     		   $.ajax({
-	     					type : "POST",
-	     	        	    data: formData,
-	     	        	    contentType : 'application/json; charset=utf-8',
-	     	        	    enctype: 'multipart/form-data',
-	     	    	        processData: false,
-	     	    	        contentType:false,
-	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}", 
-	     					success : function(data) {
-	     						var json = JSON.parse(data);
-	     						var name = json.name;
-	     						var firstName = '';
-	     						var lastName = '';
-	     						if(name != null && name != 'undefined' && name != ''){
-	     							 firstName = name.split(".")[0]; 
-	     							 lastName = name.split(".")[1]; 
-	     							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-	     									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-	     								 firstName = name;
-	     							 }
-	     						}
-	     						
-	     						$("#mobilePhone").val(json.phoneNumbers);
-	     						$("#candidateSkills").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="skill" items="${skillsList}">
-	     						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-	     	                     </c:forEach>
-	     						var skills = json.skills;
-	     						if(skills != null && skills != 'undefined' && skills != ''){
-	     							var str_array = skills.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateSkills").append(internalOutput);
-	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		$("#canVisa").append(internalOutput);
-	     		        		$("#canVisa").trigger("chosen:updated");
-	     		        		$("#candidateEducation").trigger("chosen:updated");
-	     		        		
-	     		        		$("#candidateEducation").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="edu" items="${educationsList}">
-	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-	     	                     </c:forEach>
-	     						var edu = json.edu;
-	     						if(edu != null && edu != 'undefined' && edu != ''){
-	     							var str_array = edu.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateEducation").append(internalOutput);
-	     		        		
-	     		        		
-	     		        		
-	     						$("#loading").removeAttr("style");
-	     						
-	     					},
-	     				});
-	      	 }
-	      	 }
-	      });
+	      
 
 	     /* upload file script */
 	     document.getElementById("uploadBtn").onchange = function () {
@@ -808,6 +644,22 @@ function getDesignationType(designationType){
 		  }
 	}
 }
+	
+	 var educationList = [];
+	   var skillList = [];
+	   $(function() {
+		 var i= 0;
+		 <c:forEach var="skill" items="${skillsList}">
+		 	skillList[i++] = "${skill.name}";
+		 </c:forEach>
+		 var i= 0;
+		 <c:forEach var="edu" items="${educationsList}">
+		 	educationList[i++] = "${edu.name}";
+		 </c:forEach>
+		 
+		 uploadResumeOnSelect("candidate_form");
+		 
+	 });
 </script>
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
@@ -863,4 +715,10 @@ var currentRate = document.getElementById("currentRate").value;
 	 }
 	 
 }
+</script>
+
+<script>
+$("#uploadBtn").change(function() {
+    fileUpload("uploadBtn", "resumes", "candidate_form");
+});
 </script>

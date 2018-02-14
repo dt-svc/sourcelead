@@ -44,6 +44,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class BillingPayableRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BillingPayableRestController.class);
@@ -193,10 +194,10 @@ public class BillingPayableRestController {
 		    	}
 		    	if(invoice.getProjectMemberId() !=null) {
 		    		StringBuilder sb = new StringBuilder();
-		    		if(invoice.getProjectMemberId().getEmployee().getUser().getLastName() != null) {
-		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName()).append(invoice.getProjectMemberId().getEmployee().getUser().getLastName());
+		    		if(invoice.getProjectMemberId().getMasterCandidateId().getLastName() != null) {
+		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName()).append(invoice.getProjectMemberId().getMasterCandidateId().getLastName());
 		    		}else {
-		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName());	
+		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName());	
 		    		}
 		    		invoice.setProjectMemberName(sb.toString());
 		    		invoice.setMemberId(String.valueOf(invoice.getProjectMemberId().getId()));
@@ -236,7 +237,7 @@ public class BillingPayableRestController {
 			return resultJson;
 	 }
 	 
-	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
+	/* @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
 			
 			
@@ -263,7 +264,7 @@ public class BillingPayableRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		}  
+		} */ 
 	 
 	 
 	 @RequestMapping(value = "/deleteInvoiceDocumentBydocumentId")

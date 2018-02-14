@@ -10,11 +10,11 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
-<script src="resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
+<script src="/resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 
 <!-- newly added end -->
 
@@ -89,10 +89,10 @@ function submitToClient(requirementId){
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
+			            if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
+			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a download class="glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\" title="Download"></a></span></div></td>';
+			           } 
 			           
-			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
- 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a></span></div></td>';
-				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
 			    	     }
@@ -287,7 +287,7 @@ function clientSubmissions(requirementId){
 	 
 	 if(selectedShortlists.length > 0){
 		 if(selectedShortlists.length <= 50){
-			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type: "POST",
 			    	url: sourceleadUrl+"/submitShortlistedToClient?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
@@ -338,6 +338,7 @@ function cancelSumitToClient(){
 
 <script>
 function addEmailtemplate(requirementId){
+	
 	var result ="";
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];
@@ -352,9 +353,9 @@ function addEmailtemplate(requirementId){
 			 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
 			 selectedShortlistsRatePer[i] = selectedRatePer;
 			 
-			 if(selectedRate != '' && selectedRatePer == ''){
+			 if(selectedRate != '' && selectedRate != null && selectedRate != 'undefined' && (selectedRatePer == '' || selectedRatePer == null || selectedRatePer == 'undefined')){
 				 isCountinue = false;
-			 }else if(selectedRate == '' && selectedRatePer != ''){
+			 }else if((selectedRate == '' || selectedRate == null || selectedRate == 'undefined') && selectedRatePer != '' && selectedRatePer != null && selectedRatePer != 'undefined'){
 				 isCountinue = false;
 			 }
 		});
@@ -493,8 +494,8 @@ function addEmailtemplate(requirementId){
 		 }); 
 }else{
 	var result = "";
-	result = result +"	<div class='sideMask'></div>";
-	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='comMask zInMask'></div>";
+	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -502,6 +503,7 @@ function addEmailtemplate(requirementId){
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
 	//$(".sideMask").fadeIn(200);
+	$(".comMask").fadeIn(200);
  }
 		 
  }else{
@@ -519,8 +521,8 @@ function addEmailtemplate(requirementId){
 	  
 		 if(selectedRate != '' && selectedRatePer == ''){
 		 var result = "";
-		result = result +"	<div class='comMask'></div>";
-		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"	<div class='comMask zInMask'></div>";
+		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -531,8 +533,8 @@ function addEmailtemplate(requirementId){
 		
 		}else if(selectedRate == '' && selectedRatePer != ''){
 		 var result = "";
-			result = result +"	<div class='comMask'></div>";
-			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"	<div class='comMask zInMask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 			result = result +"		<p>Submission Rate is Required</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -647,7 +649,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 			var form = $('#submitToClientMailTemplate')[0];
     		var formData = new FormData(form); 
 			$("#sendMail").addClass('button').val('Processing..');
-     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,

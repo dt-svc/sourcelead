@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,14 +25,14 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author bis113
  *
  */
 @Entity
-@Table(name = "USER_ROLE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userRole")
+@Table(name = "USER_ROLE")
 public class UserRole implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -41,28 +42,28 @@ public class UserRole implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roles;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org orgId;
 
@@ -107,6 +108,19 @@ public class UserRole implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "IS_MAIL_SENT")
+	@Enumerated(EnumType.STRING)
+	private Status isMailSent;
+	
+	@Column(name = "PHONE_NUMBER")
+	private String phoneNumber;
+	
+    @Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
 
 	@Transient
 	private String userRoleName;
@@ -193,8 +207,13 @@ public class UserRole implements Serializable {
 	List<User> projectApproversList;
 
 	@Transient
+	@JsonProperty
 	private String userEmail;
 
+	@Transient
+	@JsonProperty
+	private String mobilePhone;
+	
 	@Transient
 	List<Roles> rolesList;
 
@@ -235,10 +254,13 @@ public class UserRole implements Serializable {
 
 
 	@Transient
+	@JsonProperty
 	private Long userId;
-
+	
+	
 	@Transient
-	private String isMailSent;
+	@JsonProperty
+	private String userCode;
 
 	@Transient
 	private String vendorOrgRelationId;
@@ -258,6 +280,10 @@ public class UserRole implements Serializable {
 	@Transient
 	private String employeMentType; 
 
+	@Transient
+	@JsonProperty
+	private Map<String,String> userCustomFieldlabelNameAndValue;
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -642,14 +668,6 @@ public class UserRole implements Serializable {
 		this.userId = userId;
 	}
 
-	public String getIsMailSent() {
-		return isMailSent;
-	}
-
-	public void setIsMailSent(String isMailSent) {
-		this.isMailSent = isMailSent;
-	}
-
 	public Org getOrgId() {
 		return orgId;
 	}
@@ -806,4 +824,71 @@ public class UserRole implements Serializable {
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
+
+	public String getMobilePhone()
+	{
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone)
+	{
+		this.mobilePhone = mobilePhone;
+	}
+
+	public Status getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(Status isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	public String getPhoneNumber()
+	{
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber)
+	{
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+
+	public Map<String, String> getUserCustomFieldlabelNameAndValue() {
+		return userCustomFieldlabelNameAndValue;
+	}
+
+	public void setUserCustomFieldlabelNameAndValue(Map<String, String> userCustomFieldlabelNameAndValue) {
+		this.userCustomFieldlabelNameAndValue = userCustomFieldlabelNameAndValue;
+	}
+
+	
+	
 }

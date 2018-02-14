@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -27,6 +28,8 @@ public interface RequirementService {
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId,String url) throws Exception;
+	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
 	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
@@ -46,6 +49,8 @@ public interface RequirementService {
 	public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 	
 	void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
+
+	void rejectedInitiatorUserEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 	
 	void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation, String releasetype) throws Exception;
 	
@@ -98,6 +103,8 @@ public interface RequirementService {
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 	
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
+	
+	public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception;
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception;
 	
@@ -156,8 +163,24 @@ public interface RequirementService {
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception;
 	
 	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception;
+	
+	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId)throws Exception;
+	
+	public List<Requirement> getAllAssinedRequirementsOrgLocationIdAndUserId(Long orglocationId,Long userId)throws Exception;
+	
+	public ResponseList<RequirementDTO> getAllRequirementsForJobCampaing(RequirementDTO requirementDTO,Long orglocationId,Long userId,String dateFormat)throws Exception;
+	
+	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds)throws Exception;
+	
 	/*
 	 * public boolean addGeneratedIdRecordsToJobsForOldRecords(Long
 	 * orglocationId) throws Exception;
 	 */
+	public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement, Candidate candidate)throws Exception;
+	
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays,Long managerId) throws Exception;
+
+	
 }

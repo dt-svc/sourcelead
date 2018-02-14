@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +30,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.WhiteListIpAddressDao;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -44,7 +46,10 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.WhiteListIPAddress;
 import com.bis.sourcelead.form.OrgSettings;
+import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -53,11 +58,9 @@ import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -70,51 +73,99 @@ public class OrgSettingsRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	@Autowired
-	OrgService orgService;
+	private OrgService orgService;
 	@Autowired
-	OrgRelationsService orgRelationsService;
+	private OrgRelationsService orgRelationsService;
 	@Autowired
-	OrgLocationService orgLocationService;
+	private OrgLocationService orgLocationService;
 	@Autowired
-	RolesService rolesService;
+	private RolesService rolesService;
 	@Autowired
-	RoleHierarchyService roleHierarchyService;
+	private RoleHierarchyService roleHierarchyService;
 	@Autowired
-	CommonUtil commonUtil;
+	private CommonUtil commonUtil;
 	@Autowired
-	SourceleadSignatureService sourceleadSignatureService;
+	private SourceleadSignatureService sourceleadSignatureService;
 	@Autowired
-	UserRoleService userRoleService;
+	private UserRoleService userRoleService;
 	@Autowired
-	ModulesService modulesService;
+	private ModulesService modulesService;
+	@Autowired
+	private WhiteListIpAddressService whiteListIpAddressService;
+	@Autowired
+	private WhiteListIpAddressDao whiteListIpAddressDao;
+	@Autowired
+	private ExpensesService expensesService;
+	@Autowired
+	private AddExpensesService addExpensesService;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	@RequestMapping(value = "/saveOrgSettings", method = RequestMethod.POST)
-	public String saveOrgSettings(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception
+	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
+	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO,HttpServletRequest request) throws Exception{
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		companyRegistrationDTO.setStaticPath(staticPath);
+		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
+		return "success";
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveOrgSettings", method = RequestMethod.POST)
+	public String saveOrgSettings(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
 	{
-		Iterator<String> itrator = request.getFileNames();
-		MultipartFile multiFile = request.getFile(itrator.next());
+		/*Iterator<String> itrator = request.getFileNames();
+		MultipartFile multiFile = request.getFile(itrator.next());*/
+		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String json1 = "{" + json + "}";
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		OrgSettings orgSettings = gson.fromJson(json1, OrgSettings.class);
+		ModelMapper mapper1 = new ModelMapper();
+		OrgSettings orgSettings = mapper1.map(companyRegistrationDTO, OrgSettings.class);
 		try {
-			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
+			//org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+			
+			if(orgLocations.getGeneratedUserId() != null) {
+				changeShortCodeForExpenses(orgLocations.getGeneratedUserId(),orgLocations.getId());
+			}
 			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 			SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
 			SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
+			SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+			SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return "home";
+		
 	}
 	
-	@RequestMapping(value = "/displayOrgImage/{orgCode}", method = RequestMethod.GET)
+	private void changeShortCodeForExpenses(String generatedUserId, Long orgLocationId) throws Exception {
+		 List<Expenses> expenses = expensesService.getAllExpensesByOrgLocationId(orgLocationId);
+		 if(!expenses.isEmpty()) {
+		 for(Expenses exp:expenses) {
+			 String expId = exp.getExpenseId();
+		 	 int twoGenId = expId.lastIndexOf("EP", expId.length());
+			 String genId = expId.substring(0,twoGenId);
+			 if(exp.getExpenseId() != null && StringUtils.isNotBlank(exp.getExpenseId()) && !genId.equalsIgnoreCase(generatedUserId)) {
+				 	 int two = expId.lastIndexOf("EP", expId.length());
+					 String finalExpId = expId.substring(two,expId.length());
+					 StringBuilder expensesId = new StringBuilder();
+					 expensesId.append(generatedUserId).append(finalExpId);
+					 exp.setExpenseId(expensesId.toString());
+					 addExpensesService.storeAddExpensesData(exp);
+			 }
+		 	}
+		 }
+	}
+
+	@RequestMapping(value = {"/app/displayOrgImage/{orgCode}","/app/ws/displayOrgImage/{orgCode}"}, method = RequestMethod.GET)
 	public void displayOrgImage(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -139,7 +190,7 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/displayClientImage/{orgRelationId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/displayClientImage/{orgRelationId}", method = RequestMethod.GET)
 	public void displayClientImage(@PathVariable String orgRelationId, HttpServletResponse response)
 	{
 		Org org = null;
@@ -163,7 +214,7 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/displayOrgImageInMail/{orgCode}", method = RequestMethod.GET)
+	@RequestMapping(value = {"/ws/displayOrgImageInMail/{orgCode}" ,"/app/ws/displayOrgImageInMail/{orgCode}"} , method = RequestMethod.GET)
 	public void displayOrgImageInMail(@PathVariable String orgCode, HttpServletResponse response)
 	{
 		Org org = null;
@@ -184,18 +235,20 @@ public class OrgSettingsRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/deleteOrgImage", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/deleteOrgImage", method = RequestMethod.GET)
 	public String deleteOrgImage(HttpServletRequest request) throws Exception
 	{
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		org.setDocFile(null);
+		org.setFileName(null);
+		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		return "success";
 	}
 	
-	@RequestMapping(value = "/changeHierarchyLevels", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/changeHierarchyLevels", method = RequestMethod.POST)
 	public String changeHierarchyLevels(@RequestParam(value = "hierarchyOrder", required = false) String hierarchyOrder, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -211,7 +264,7 @@ public class OrgSettingsRestController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
-	@RequestMapping(value = "/addNewRoleHierarcy", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/addNewRoleHierarcy", method = RequestMethod.POST)
 	public String addNewRoleHierarcy(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
 	{
 		json = "{" + json + "}";
@@ -222,6 +275,7 @@ public class OrgSettingsRestController {
 		if (jsonObj.has("hierarchyId") && !isNullOrEmpty(jsonObj.getString("hierarchyId"))) {
 			hierarchy = roleHierarchyService.getRoleHierarchyById(Long.parseLong(jsonObj.getString("hierarchyId")));
 			hierarchy.setHierarchyName(jsonObj.getString("level"));
+			hierarchy.setOrgLocations(orgLocations);
 			hierarchy.setUpdatedBy(user.getUserCode());
 			hierarchy.setUpdatedDate(new Date());
 		}
@@ -241,7 +295,7 @@ public class OrgSettingsRestController {
 		return "home";
 	}
 	
-	@RequestMapping(value = "/getOrgEnrolledList")
+	@RequestMapping(value = "/app/getOrgEnrolledList")
 	@ResponseBody
 	public String getOrgEnrolledList(HttpServletRequest request) throws Exception
 	{
@@ -267,15 +321,15 @@ public class OrgSettingsRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/roleActions/{roleId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/roleActions/{roleId}", method = RequestMethod.GET)
 	public @ResponseBody void roleActions(@PathVariable Long roleId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/sourcelead/enrollRoleActions?roleId=").append(roleId).toString());
+		response.sendRedirect(redirectUrl.append("/app/enrollRoleActions?roleId=").append(roleId).toString());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
-	@RequestMapping(value = "/saveRoleActions", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/saveRoleActions", method = RequestMethod.POST)
 	public String saveRoleActions(@RequestParam(value = "roleId", required = false) Long roleId, @RequestParam(value = "actionIds", required = false) String actionIds, HttpServletRequest request) throws Exception
 	{
 		Roles roles = rolesService.getRolesById(roleId);
@@ -288,7 +342,7 @@ public class OrgSettingsRestController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
-	@RequestMapping(value = "/validateRoleName", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/validateRoleName", method = RequestMethod.GET)
 	public String validateRoleName(@RequestParam(value = "roleName", required = false) String roleName, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -302,7 +356,7 @@ public class OrgSettingsRestController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
-	@RequestMapping(value = "/validateRoleHierarchyLevelName", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/validateRoleHierarchyLevelName", method = RequestMethod.GET)
 	public String validateRoleHierarchyLevelName(@RequestParam(value = "levelName", required = false) String levelName, @RequestParam(value = "hierarchyId", required = false) String hierarchyId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -336,7 +390,7 @@ public class OrgSettingsRestController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
-	@RequestMapping(value = "/addNewRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/addNewRole", method = RequestMethod.POST)
 	public String addNewRole(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
 	{
 		json = "{" + json + "}";
@@ -364,7 +418,7 @@ public class OrgSettingsRestController {
 		return commonUtil.toJSON(rolesList);
 	}
 	
-	@RequestMapping(value = "/getOrgSignature")
+	@RequestMapping(value = "/app/getOrgSignature")
 	public String getOrgSignature(HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -400,7 +454,7 @@ public class OrgSettingsRestController {
 	 * @date 15th Mar 2017
 	 *
 	 */
-	@RequestMapping(value = "/getCoolingOffPeriod")
+	@RequestMapping(value = "/app/getCoolingOffPeriod")
 	public String getCoolingOffPeriod(HttpServletRequest request) throws Exception
 	{
 		String resultJson = null;
@@ -410,7 +464,7 @@ public class OrgSettingsRestController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	@RequestMapping(value = "/saveCoolingOffPeriod", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/saveCoolingOffPeriod", method = RequestMethod.POST)
 	public String saveCoolingOffPeriod(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
 	{
 		String jsonc = "{" + json + "}";
@@ -423,7 +477,7 @@ public class OrgSettingsRestController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "/getOrgLocationDetails")
+	@RequestMapping(value = "/app/getOrgLocationDetails")
 	public String getOrgLocationDetails(HttpServletRequest request, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{
 		String resultJson = null;
@@ -486,7 +540,7 @@ public class OrgSettingsRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getPrimaryUserContactDetailsByOrgLocationId", method = RequestMethod.GET)
+	@RequestMapping(value = "/app/getPrimaryUserContactDetailsByOrgLocationId", method = RequestMethod.GET)
 	public String getPrimaryUserContactDetailsByOrgLocationId(HttpServletRequest request, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{
 		String resultJson = null;
@@ -496,7 +550,13 @@ public class OrgSettingsRestController {
 			orgLocations.setOrgLocationUserFirstName(orgLocations.getUser().getFirstName());
 			orgLocations.setOrgLocationUserLastName(orgLocations.getUser().getLastName());
 			orgLocations.setOrglocationUserEmail(orgLocations.getUser().getEmail());
+			if(orgLocations.getUser().getMobilePhone()!=null){
 			orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
+			}
+			else
+			{
+				orgLocations.setOrglocationUserPhone("");
+			}
 			orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
 		}
 		resultJson = toJSON(orgLocations);
@@ -504,7 +564,7 @@ public class OrgSettingsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/saveOrgShortCodeform",method = RequestMethod.POST)
+	@RequestMapping(value = "/app/saveOrgShortCodeform",method = RequestMethod.POST)
 	public String saveOrgShortCodeform(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "locationCode", required = false) String locationCode,HttpServletRequest request) throws Exception
 	{
 		JSONObject jsonObj = new JSONObject(json);
@@ -514,7 +574,7 @@ public class OrgSettingsRestController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "/validateOrgShortCode",method = RequestMethod.POST)
+	@RequestMapping(value = "/app/validateOrgShortCode",method = RequestMethod.POST)
 	public boolean validateOrgShortCode(@RequestParam(value = "orgShortId") String orgShortId) throws Exception
 	{
 		boolean validateCode = orgLocationService.validateOrgShortCode(orgShortId);
@@ -522,12 +582,45 @@ public class OrgSettingsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getDateFormatByOrgLocation",method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getDateFormatByOrgLocation",method = RequestMethod.POST)
 	public String getDateFormatByOrgLocation(@RequestParam(value = "locationCode") String locationCode) throws Exception
 	{
 		OrgLocations orgLocations1 = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		String orgLocatDateFormat = orgLocationService.getDateFormatByOrgLocation(orgLocations1);
 		return orgLocatDateFormat;
+	}
+	
+	@RequestMapping(value = "/app/updateLoginSecurity",method = RequestMethod.GET)
+	public String updateLoginSecurity(@RequestParam(value = "security") String security,@RequestParam(value = "locationId") Long locationId,HttpServletRequest request) throws Exception
+	{
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(Constants.YES.equalsIgnoreCase(security)){
+			orgLocations.setLoginSecurity(Constants.YES);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}else{
+			orgLocations.setLoginSecurity(Constants.NO);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		return "Success";
+	}
+	
+	@RequestMapping(value = "/app/saveWhiteListIps",method = RequestMethod.GET)
+	public String saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		whiteListIpAddressService.addWhiteListIps(whiteListIPAddressDTO,orgLocations,user);
+		return "Success";
+	}
+	
+	@RequestMapping(value = "/app/getWhiteListIps", method = RequestMethod.GET)
+	public List<WhiteListIPAddressDTO> getWhiteListIps(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(orgLocations.getId(),null);
+		return ipList;
 	}
 	
 	private String toJSON(Object obj)
@@ -544,5 +637,38 @@ public class OrgSettingsRestController {
 	protected boolean isNullOrEmpty(String str)
 	{
 		return str == null || "".equals(str.trim());
+	}
+	
+	@RequestMapping(value = "/app/deleteIP", method = RequestMethod.POST)
+	public Boolean deleteWhiteListIpById(HttpServletRequest request,@RequestParam(value = "id", required = false) Long whiteListIpId) throws Exception
+	{
+		boolean isDeleted = false;
+		WhiteListIPAddress deleteWhiteListIPAddress = whiteListIpAddressService.getWhiteListIpsById(whiteListIpId);
+		 if(deleteWhiteListIPAddress !=null) {
+			 deleteWhiteListIPAddress.setStatus(Constants.INACTIVE);
+			 whiteListIpAddressDao.addWhiteListIps(deleteWhiteListIPAddress);
+			 isDeleted = true;
+		 }
+		return isDeleted;
+	}
+	
+	@RequestMapping(value = "/app/editWhiteListIp", method = RequestMethod.GET)
+	public WhiteListIPAddress editWhiteListIp(@RequestParam(value = "whiteListId", required = false) long whiteListId,HttpServletRequest request) throws Exception
+	{
+		WhiteListIPAddress whiteListIp = whiteListIpAddressService.getWhiteListIpsById(whiteListId);
+		return whiteListIp;
+	}
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveFinanacialYear", method = RequestMethod.GET)
+	public String saveFinanacialYear(@RequestParam(value = "locationId", required = false) Long locationId, @RequestParam(value = "startMonth", required = false) String startMonth, @RequestParam(value = "endMonth", required = false) String endMonth, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if (startMonth != null && endMonth != null) {
+			orgLocations.setStartMonth(startMonth);
+			orgLocations.setEndMonth(endMonth);
+			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		return "Success";
 	}
 }

@@ -1,7 +1,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -110,7 +110,11 @@ function vendorNotes(orgRelationId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -158,7 +162,7 @@ output  = output + '        </div>';
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -380,12 +384,11 @@ function selectClientCategory(){
 			$.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationId+"&status="+status,  
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		        success: function(json) {
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
 		             }
 		        	 result = result +"</select>";
@@ -402,12 +405,12 @@ function selectClientCategory(){
 			$.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		        success: function(json) {
+		        	// var json = JSON.parse(data);
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.spocName+"</option>";
 		             }
 		        	 result = result +"</select>";

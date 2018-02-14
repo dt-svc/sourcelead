@@ -8,7 +8,7 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Interview List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Interview List</div>
     </section>
     
     <!-- Project -->
@@ -27,7 +27,7 @@
                 <th>Applied On</th>
                 <th>No Of Interviews</th>
                 <th>Source</th>
-                <th>Current Status</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -35,7 +35,7 @@
               <tr>
 			 <td><div><span>${reqSub.submissionId.candidate.firstName}</span></div></td>
              <sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')"> 
-			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
+			 	<td><div class="proj_show"><span><a href='<c:url value='${appPath}/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
             </sec:authorize>
             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
             	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
@@ -51,9 +51,8 @@
               
               <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
-	               <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
-	               <a class="fa fa-eye ml10" onclick="viewInterviewListResumes('${reqSub.submissionId.candidateResumes.resumeUUID}','${reqSub.submissionId.candidateResumes.fileName}')"></a>
-	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
+	               <a target="_blank" href="${reqSub.submissionId.candidateResumes.fileURL}"/><i class='fa fa-download'></i></a>
+	               <a href="javascript:void(0)" onclick="viewFile('${reqSub.submissionId.candidateResumes.fileURL}','${reqSub.submissionId.candidateResumes.fileName}','${reqSub.submissionId.candidateResumes.fileContentType}');" class="fa fa-eye ml10 paddingRight"></a>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	             	 --
@@ -83,10 +82,10 @@
               
                           
                <td><div><span>
-	               <c:if test="${not empty reqSub.submissionId.submissionStatus}">
-	            	  ${reqSub.submissionId.submissionStatus}
+	               <c:if test="${not empty reqSub.toStage}">
+	            	  ${reqSub.toStage}
 	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.submissionStatus}">
+	              <c:if test="${empty reqSub.toStage}">
 	             	 --
 	              </c:if>
               </span></div></td>
@@ -135,3 +134,4 @@ window.onload = function () {
 	pagination1();
  };
 </script>
+<jsp:include page="../masterFooter.jsp" />

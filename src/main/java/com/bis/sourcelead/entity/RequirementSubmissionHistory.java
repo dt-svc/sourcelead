@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -20,9 +21,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
-@Table(name = "REQUIREMENT_SUBMISSION_HISTORY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmissionHistory")
+@Table(name = "REQUIREMENT_SUBMISSION_HISTORY")
 public class RequirementSubmissionHistory implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -31,13 +33,13 @@ public class RequirementSubmissionHistory implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEWER_ID", nullable=false )        
     private RequirementInterviewer interviewerId;
 
@@ -64,6 +66,12 @@ public class RequirementSubmissionHistory implements Serializable{
 	
     @Transient
     private String fileName;
+    @JsonProperty
+    @Transient
+    private String fileUrl;
+    
+    @Transient
+    private String contentType;
 	 
     @Transient
     private String resumeid;
@@ -76,6 +84,12 @@ public class RequirementSubmissionHistory implements Serializable{
     
     @Transient
     private Long offerResumeid;
+    
+    @Transient
+    @Lob
+    private  byte[] docFile;
+    @Transient
+    private String fileContentType;
     
     @Transient
     private String loginUserName;
@@ -362,4 +376,48 @@ public class RequirementSubmissionHistory implements Serializable{
 	public void setCoolingOffPeriodEndDateStr(String coolingOffPeriodEndDateStr) {
 		this.coolingOffPeriodEndDateStr = coolingOffPeriodEndDateStr;
 	}
+
+
+	public String getFileUrl()
+	{
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl)
+	{
+		this.fileUrl = fileUrl;
+	}
+
+	public String getContentType()
+	{
+		return contentType;
+	}
+
+	public void setContentType(String contentType)
+	{
+		this.contentType = contentType;
+	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+	
+
+	
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ClientVendorUploadDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -44,6 +47,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class ClientImportRestController {
 
 
@@ -59,9 +63,8 @@ public class ClientImportRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_CLIENT_BULK_IMPORTS')")
 	@RequestMapping(value = "/clientExcelFileUpload", method = RequestMethod.POST)
 	@ResponseBody
-	public String fileUploaded(MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
+	public ResponseList<BulkClientDetails> fileUploaded(ClientVendorUploadDTO clientVendorUploadDTO,MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
 
-		String isSuccess =  "failure";
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -72,23 +75,28 @@ public class ClientImportRestController {
 			multipartFile = request.getFile(itrator.next());
 		}
 		
-		String isFileCreated = "";
+		List<BulkClientDetails> fileList = null;
 		if(multipartFile != null){
-		isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
+			fileList = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
 		}
-		if("empty".equalsIgnoreCase(isFileCreated)){
-			isSuccess = "empty";
-		}else if("invalid".equalsIgnoreCase(isFileCreated)){
-			isSuccess = "invalid";
-		}else{
-			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
-			List<BulkClientDetails> filteredBulkClientDetailsList = bulkClientDetailsList.stream()
+		
+		if(fileList != null && fileList.size() > 0) {
+			ResponseList<BulkClientDetails> response = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,"Y",responderType);
+			
+			List<BulkClientDetails> filteredBulkClientDetailsList = response.getData().stream()
 					.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
 							&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
 					.collect(Collectors.toList());
-			return commonUtil.toJSON(filteredBulkClientDetailsList);
+			response.setData(filteredBulkClientDetailsList);
+			if(response.getData() == null || response.getData().size() <= 0) {
+				response.setStatusCode("success");
+			}
+			if(filteredBulkClientDetailsList == null || filteredBulkClientDetailsList.size() == 0) {
+				response.setStatusCode("invalid");
+			}
+			return response;
 		}
-		return isSuccess;
+		return null;
 	}
 	
 //	/deleteRecordFromBulk

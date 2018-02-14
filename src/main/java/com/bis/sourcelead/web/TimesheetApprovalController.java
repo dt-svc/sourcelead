@@ -21,6 +21,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
 @Controller 
+@RequestMapping("/app")
 public class TimesheetApprovalController {
 
 
@@ -38,9 +39,6 @@ public class TimesheetApprovalController {
 	public ModelAndView newTimesheetApproval(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
 			
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
@@ -49,21 +47,10 @@ public class TimesheetApprovalController {
 			sessionData.setNav(Constants.TimeSheetApproval);
 			
 			request.getSession().setAttribute("sessionData",sessionData);
-			
-			Collection<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getApprovalTimesheetSubmissions(user.getId(),orgLoc.getId());
-			model.addObject("sourcelead_timesheetSubmissionsList",timesheetSubmissionsList);
-			
-			
-			List<TimesheetSubmissions> thslist = timesheetSubmissionsService.getSubmissionApproverHierarchyForEmployeeList(user.getId());
-			for(TimesheetSubmissions ths : thslist ){
-				StringBuilder fullNameSB = new StringBuilder();
-				ths.setFullName(fullNameSB.append(ths.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(ths.getProjectMembers().getEmployee().getUser().getLastName()).toString());
-				ths.setEmployeeId(ths.getProjectMembers().getEmployee().getId().toString());
-			}
-			model.addObject("thslist",thslist);
 
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/TimesheetApproval"); 
+			//model.setViewName("timesheet/TimesheetApprovalRedefined");
+			 model.setViewName("timesheet/TimesheetApprovalRedefined");
 	        return model;
 	}
 	

@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,23 +29,28 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RequirementRefer;
@@ -64,6 +70,8 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpensesCategoryService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -84,9 +92,9 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.DefaultContractTemplateUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.ibm.icu.util.Calendar;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
@@ -132,6 +140,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
@@ -181,13 +192,22 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	MasterCandidateService masterCandidateService;
 	
+	@Autowired
+	private ExpensesCategoryService expensesCategoryService;
+	
+	@Autowired
+	private ExpensesCategoryDao expensesCategoryDao;
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
 	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception {
+	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,CandidateDTO candidateDTO) throws Exception {
 		
 		String[] registredModules =  modules.split(",");
 		Org org = null;
@@ -220,6 +240,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		try {
 			userService.addUser(user);
+			if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+				sendActivationEmail(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -243,8 +265,21 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		saveOrgRoleHierarchy(orgLocations,user);
+		List<LookUpData> lookUpExpCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+	    for(LookUpData lookUpData:lookUpExpCatList){
+		    ExpensesCategory expensesCategory = new ExpensesCategory();
+		    expensesCategory.setExpensesName(lookUpData.getName());
+		    expensesCategory.setAmountType("Flat");
+		    expensesCategory.setOrgLocationId(orgLocations);
+		    expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
+			expensesCategory.setCreatedBy(user.getUserCode());
+			expensesCategory.setCreatedDate(commonUtil.currentDate());
+			expensesCategory.setUpdatedBy(user.getUserCode());
+			expensesCategory.setUpdatedDate(commonUtil.currentDate());
+			expensesCategoryDao.storeExpenseCategory(expensesCategory); 
+	    }
 		
+		saveOrgRoleHierarchy(orgLocations,user);
 		saveOrgBasedRoles(org,orgLocations,user);
 		
 		//For saving the User Role (At registration user will have Admin Role)
@@ -264,7 +299,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		 MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetails(registration,user);
 		 }
@@ -286,36 +321,21 @@ public class RegistrationServiceImpl implements RegistrationService{
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
 		
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template",Constants.CLIENT_MSA);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template",Constants.VENDOR_MSA);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
-		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template",Constants.CLIENT_MSA);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template",Constants.VENDOR_MSA);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
+		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
-		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+		saveOrgLocationDefaultProject(registration, orgLocations, user);
+		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 		
+		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
 	
 	}
 	
-	private void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
-		 ContractsTemplate contractsTemplate = new ContractsTemplate();
-		 contractsTemplate.setTemplateName(templateType);
-		 contractsTemplate.setDescription(templateType);
-		 contractsTemplate.setTemplateContent(DefaultContractTemplateUtil.getDefaultTemplates(templateType));
-		 contractsTemplate.setOrgLocationId(orgLocations);
-		 contractsTemplate.setTemplateType(templateType);
-		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
-		 contractsTemplate.setUpdatedBy(user.getUserCode());
-		 contractsTemplate.setUpdatedDate(new Date());
-		 contractsTemplate.setCreatedBy(user.getUserCode());
-		 contractsTemplate.setCreatedDate(new Date());
-		 contractsTemplateService.saveContractTemplate(contractsTemplate);
-		
-	}
-
 	private Candidate getCandidateDetails(User user, OrgLocations orgLocations,MasterCandidate masterCandidate){
 		
 		Candidate candidate = null;
@@ -409,51 +429,89 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
-		user.setIsMailSent(Status.Y);
+		
+		user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+		user.setUrlSentTime(new Date());
+		user.setIsVerified(Constants.NO);
+		user.setLoginSecurity(Constants.NO);
+		user.setRegistrationType("Newly Registered");
 		return user;
 	}
 	
 	
-	 public Projects  saveProject(Registration registration,OrgLocations orgLocations,User approverUser,Employees employee) throws Exception {
+	 public Projects  saveOrgLocationDefaultProject(Registration registration,OrgLocations orgLocations,User approverUser) throws Exception {
 		 			 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectSequeneNumber("Project001");
-	    	projects.setProjectName(registration.getCompanyName());
-	    	projects.setDescription(registration.getCompanyName());
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName().trim()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+
+	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName().trim()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
+	    	
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.MONTH, -2);
+	    	Date startDate = cal.getTime();
+	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
+	    	
+	    	projects.setStartDate(projStartDate);
+
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
-	    	projects.setProjectStatus(Project_Status.STARTED);
+	    	projects.setTimesheetFrequency(Constants.WEEKLY);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
+	    	projects.setIsDefaultProject(Constants.YES);
 	    	projects.setOrgLocationsId(orgLocations);
-	    	Projects updatedProjects = null;
-	    	
-	    	updatedProjects = projectsService.saveProject(projects);
-	    	
-	    	
-			if(updatedProjects != null){
-				ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
-		    	pah1.setProjectId(updatedProjects);
-		    	pah1.setApproverUserId(approverUser);
-		    	pah1.setLevel(2);
-		    	try {
-					 projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    /*	ProjectMembers pm = new ProjectMembers();
-				pm.setEmployee(employee);
-				pm.setProjects(projects);
-				pm.setProjectAssignedDate(projects.getStartDate());
-				pm.setCreatedDate(new Date());
-				pm.setUpdatedDate(new Date());
-				projectMembersService.saveProjectMember(pm);*/
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setProjectShortCode("DFP");
+			projects.setProjectMode("Finished");
+			projects.setCreatedDate(new Date());
+			projects.setUpdatedDate(new Date());
+			
+			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countires != null) {
+				projects.setCurrency(countires.getCurrency());
 			}
+			
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
 			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
 			return updatedProjects;
 	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setLevel(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 	 
 	 
 	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user,String subModules,String modules ) throws Exception{
@@ -469,12 +527,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
+
+		orgLocations.setLoginSecurity(Constants.NO);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
-		orgLocations.setOrgLocationName(registration.getCompanyName());
+		orgLocations.setOrgLocationName(registration.getCompanyName().trim());
 		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
+		orgLocations.setIsCompanyOnboarded(Constants.NO);
+		
+	    if(StringUtils.isNotBlank(registration.getDba())){
+        	orgLocations.setDba(registration.getDba());
+        }
+        
+        if(registration.getGeneratedUserId() != null &&  !registration.getGeneratedUserId().isEmpty()){
+        	orgLocations.setGeneratedUserId(registration.getGeneratedUserId());
+        }
+        
+        if(registration.getAverageWorkingHours() != null) {
+        	orgLocations.setAverageWorkingHours(registration.getAverageWorkingHours());
+        }
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
 			orgLocations.setIsPrimary(Constants.YES);
@@ -500,6 +573,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		
 		orgModules = orgModules.substring(0, orgModules.length()-1);
+		
+		if(!isNullOrEmpty(subModules)){
+			String[] registeredModules =  modules.split(",");
+			if(registeredModules.length == 1) {
+				orgModules = orgModules+","+Constants.MODULE_TIMESHEET;
+			}
+		}
+		
 		orgLocations.setModulesId(orgModules);
 		
 		
@@ -511,6 +592,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		UserRole primaryUserRole = null;
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
+		userRole.setIsMailSent(Status.Y);
 		userRole.setOrgLocations(orgLocations);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType("Admin");
@@ -624,6 +706,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setUpdatedBy(user.getUserCode());
 		 submissionTemplate.setTemplateType("Submission");
 		 submissionTemplate.setUpdatedDate(new Date());
@@ -687,7 +770,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 StringBuilder loginURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginURLStringBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -727,7 +810,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(sourceleadUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+		 String mailUrl = sourceleadUrl.replace("/app", "");
+		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -765,7 +849,15 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
-			
+		 globalVarsMap.put("userName",user.getEmail());
+		 globalVarsMap.put("updatedDate",user.getUpdatedDate().toString());
+		 StringBuilder sbLink = new StringBuilder();
+		 globalVarsMap.put("forgotPasswordLink",sbLink.append("<a href=").append(sourceleadUrl).append("/forgotPassword").append(" target='_blank' style='outline:none; border:none;'>Forgot Password</a>").toString());
+		 StringBuilder linkBuilder = new StringBuilder();
+		 globalVarsMap.put("supportLink",linkBuilder.append("<a href='support@sourcelead.com' target='_blank' style='outline:none; border:none;'>support@sourcelead.com</a>").toString());
+		 StringBuilder sourceLink = new StringBuilder();
+		 globalVarsMap.put("sourceleadLink",sourceLink.append("<a href='http://www.sourcelead.com/' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/</a>").toString());
+		 
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -850,17 +942,17 @@ public class RegistrationServiceImpl implements RegistrationService{
 			orgUser.setUserName(addUserDTO.getEmail());
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			orgUser.setPassword(sourceleadPasswordEncoder.encode(password));
-			orgUser.setIsMailSent(Status.Y);
+			
 			orgUser.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			orgUser.setUpdatedDate(new Date());
 			userService.addUser(orgUser);
 			userRole.setIsPrimary(1);
+			
 		}else{
 			userRole.setIsPrimary(0);
 		}
 		
-		
-		
+		userRole.setIsMailSent(Status.Y);
 		userRole.setUser(orgUser);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(addUserDTO.getRegisteredOrgLocationId()));
 		userRole.setOrgLocations(orgLocations);
@@ -948,6 +1040,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 if(userRole == null){
 		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		 }
+		 OrgLocations locations= orgLocationService.getOrgLocations(locationId);
 		 
 		 boolean isUserActive = false;
 		 isUserActive = userRoleService.isUserActive(user.getId());
@@ -970,11 +1063,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
 		// globalVarsMap.put("lastName",emailMessage.getLastName());
-		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
-		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
+		/* globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("administratorLastName",loginUser.getLastName());*/
+		 StringBuilder stringbuilder=new StringBuilder();
+		 if(loginUser.getFirstName() != null && loginUser.getLastName() !=""){
+			 globalVarsMap.put("loginUser",stringbuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("loginUser", user.getFirstName());	 
+		 }
 		 globalVarsMap.put("role",userRole.getUserType());
+		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 globalVarsMap.put("userEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -1012,46 +1112,52 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public String saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception {
+	public String saveProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTO,String contactUUID) throws Exception {
 		
 		
 		User user = null;
-		user = userService.findByEmail(jsonObj.getString("email"));
+		user = userService.findByEmail(csuRegistrationDTO.getEmail());
 		String result = "";
 		
 		if(null == user){
 			user = new User();
-			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-				user.setFirstName(jsonObj.getString("firstName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+				user.setFirstName(csuRegistrationDTO.getFirstName());
 			}
 			
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				user.setLastName(jsonObj.getString("lastName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+				user.setLastName(csuRegistrationDTO.getLastName());
 			}
 			
-			if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-				user.setEmail(jsonObj.getString("email"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+				user.setEmail(csuRegistrationDTO.getEmail());
 			}
 			
-			if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-				user.setCountry(jsonObj.getString("location"));
-				user.setProfessionalRegisterCountry(jsonObj.getString("location"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLocation())){
+				user.setCountry(csuRegistrationDTO.getLocation());
+				user.setProfessionalRegisterCountry(csuRegistrationDTO.getLocation());
 			}
 			
-			user.setUserName(jsonObj.getString("email"));
+			user.setUserName(csuRegistrationDTO.getEmail());
+			user.setPassword(sourceleadPasswordEncoder.encode(csuRegistrationDTO.getConfirmPassword()));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			
 			user.setUserType(Constants.PROFESSIONAL);
 			user.setCreatedBy("sladmin");
 			user.setCreatedDate(new Date());
 			user.setUpdatedDate(new Date());
+			
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			
 			user.setRegistrationType("Newly Registered");
 			userService.addUser(user);
-			result = "success";
+			result = "success"+user.getId();
 			
 		}else{
 			user.setRegistrationType("Existed User");
-			user.setProfessionalRegisterCountry(jsonObj.getString("location"));
+			user.setProfessionalRegisterCountry(csuRegistrationDTO.getLocation());
 			userService.addUser(user);
 			result = "login";
 		}
@@ -1077,11 +1183,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 			userRole.setIsPrimary(0);
 		}
 		
+//		userRole.setVerificationUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
+//		userRole.setUrlSentTime(new Date());
+//		userRole.setIsVerified(Constants.NO);
+		
 		userRole.setCreatedBy("sladmin");
 		userRole.setCreatedDate(new Date());
 		userRole.setUpdatedDate(new Date());
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(Constants.PROFESSIONAL);
+		userRole.setIsMailSent(Status.Y);
 		userRoleService.addUserRole(userRole);
 		
 		Candidate candidate = new Candidate();
@@ -1089,18 +1200,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
 		candidate.setCandidateType(Constants.PROFESSIONAL);
-		candidate.setCountry(jsonObj.getString("location"));
+		candidate.setCountry(csuRegistrationDTO.getLocation());
 		
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			candidate.setFirstName(jsonObj.getString("firstName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+			candidate.setFirstName(csuRegistrationDTO.getFirstName());
 		}
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidate.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+			candidate.setLastName(csuRegistrationDTO.getLastName());
 		}
 		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			candidate.setEmail(jsonObj.getString("email"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+			candidate.setEmail(csuRegistrationDTO.getEmail());
 		}
 		
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1110,7 +1221,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 CandidateDTO candidateDTO = new CandidateDTO();
+		 candidateDTO.setEmail(csuRegistrationDTO.getEmail());
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
 		 }
@@ -1150,12 +1263,61 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 		}
 		
+		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+			sendActivationEmail(user);
+		else
+			sendEmailToProfessional(user);
 		
-		sendEmailToProfessional(user);
 		return result;
 	}
 	
 	
+	public void sendActivationEmail(User user) throws Exception
+	{
+		StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 professionalName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 professionalName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("registerName", professionalName);
+		 StringBuilder verifylink = new StringBuilder();
+		 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+	}
+
 	public void sendEmailToProfessional(User user) throws Exception {
 		
 		 
@@ -1181,16 +1343,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("loginUserName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 
-		 if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
-		 }else{
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 }
-		
-		 
+
+		 //if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
+			// globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
+		// }else{
+
+			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+//		 }
 
 		 StringBuilder linkBuilder = new StringBuilder();
-				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+				 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 				
 				 StringBuilder fbLinkBuilder = new StringBuilder();
 				 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
@@ -1227,46 +1389,51 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	public String saveIndividualRecruiter(JSONObject jsonObj) throws Exception {
+	public String saveIndividualRecruiter(CrowdSourcingUserRegistrationDTO csuRegistrationDTO) throws Exception {
 		
 		User user = null;
-		user = userService.findByEmail(jsonObj.getString("email"));
+		user = userService.findByEmail(csuRegistrationDTO.getEmail());
 		String result = "";
 		
 		if(null == user){
 			user = new User();
-			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-				user.setFirstName(jsonObj.getString("firstName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+				user.setFirstName(csuRegistrationDTO.getFirstName());
 			}
 			
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				user.setLastName(jsonObj.getString("lastName"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+				user.setLastName(csuRegistrationDTO.getLastName());
 			}
 			
-			if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-				user.setEmail(jsonObj.getString("email"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+				user.setEmail(csuRegistrationDTO.getEmail());
 			}
 			
-			if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
-				user.setCountry(jsonObj.getString("location"));
-				user.setRecruiterRegisterCountry(jsonObj.getString("location"));
+			if(StringUtils.isNotBlank(csuRegistrationDTO.getLocation())){
+				user.setCountry(csuRegistrationDTO.getLocation());
+				user.setRecruiterRegisterCountry(csuRegistrationDTO.getLocation());
 			}
 			
 			//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 					
-			user.setUserName(jsonObj.getString("email"));
+			user.setUserName(csuRegistrationDTO.getEmail());
+			user.setPassword(sourceleadPasswordEncoder.encode(csuRegistrationDTO.getConfirmPassword()));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			user.setCreatedBy("sladmin");
 			user.setCreatedDate(new Date());
 			user.setUpdatedDate(new Date());
 			
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+			user.setUrlSentTime(new Date());
+			user.setIsVerified(Constants.NO);
+			
 			user.setRegistrationType("Newly Registered");
 			userService.addUser(user);
-			result = "success";
+			result = "success"+user.getId();
 		}else{
 			user.setRegistrationType("Existed User");
-			user.setRecruiterRegisterCountry(jsonObj.getString("location"));
+			user.setRecruiterRegisterCountry(csuRegistrationDTO.getLocation());
 			userService.addUser(user);
 			result = "login";
 		}
@@ -1283,6 +1450,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setRoles(roles);
 		userRole.setOrgId(org);
 		userRole.setOrgLocations(orgLocations);
+		userRole.setIsMailSent(Status.Y);
 		
 		UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		if(null == primaryUserRole){
@@ -1302,19 +1470,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setConsultantUser(user);
 		candidate.setOrgId(org);
 		candidate.setOrgLocationId(orgLocations);
-		candidate.setCountry(jsonObj.getString("location"));
+		candidate.setCountry(csuRegistrationDTO.getLocation());
 		candidate.setCandidateType(Constants.INDIVIDUAL_RECRUITER);
 		
-		if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
-			candidate.setFirstName(jsonObj.getString("firstName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getFirstName())){
+			candidate.setFirstName(csuRegistrationDTO.getFirstName());
 		}
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidate.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getLastName())){
+			candidate.setLastName(csuRegistrationDTO.getLastName());
 		}
 		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			candidate.setEmail(jsonObj.getString("email"));
+		if(StringUtils.isNotBlank(csuRegistrationDTO.getEmail())){
+			candidate.setEmail(csuRegistrationDTO.getEmail());
 		}
 		
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1324,7 +1492,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		
 		MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 CandidateDTO candidateDTO = new CandidateDTO();
+		 candidateDTO.setEmail(csuRegistrationDTO.getEmail());
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetailsForProfessionalAndRecruiterLogins(candidate,user);
 		 }
@@ -1340,7 +1510,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidateService.addCandidate(candidate);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
-		sendEmailToIndividualRecruiter(user);
+		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
+			sendActivationEmail(user);
+		else
+			sendEmailToIndividualRecruiter(user);
+		
 		return result;
 		
 	}
@@ -1396,14 +1570,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 StringBuilder loginBuilder = new StringBuilder();
 		 
 		 
-		 if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
-		 }else{
-			 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 }
+
+		 //if(user.getRegistrationType().equalsIgnoreCase("Newly Registered")){
+			// globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("resetloginCredentials").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
+		 //}else{
+
+		 globalVarsMap.put("resetLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+//		 }
 		 
 		  StringBuilder linkBuilder = new StringBuilder();
-			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+			 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/contact.html</a>").toString());
 			
 			 StringBuilder fbLinkBuilder = new StringBuilder();
 			 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
@@ -1459,19 +1635,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 						String profileUrl = jsonObj.getString("profileUrl");
 						if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
 							user.setGooglePlus(profileUrl);
-							can.setGooglePlus(profileUrl);
+							//can.setGooglePlus(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
 							user.setFacebook(profileUrl);
-							can.setFacebookUrl(profileUrl);
+							//can.setFacebookUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
 							user.setTwitter(profileUrl);
-							can.setTwitterUrl(profileUrl);
+							//can.setTwitterUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
 							user.setLinkedIn(profileUrl);
-							can.setLinkedUrl(profileUrl);
+							//can.setLinkedUrl(profileUrl);
 						}
 						
 					}
@@ -1497,14 +1673,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 					user.setCountry(jsonObj.getString("location"));
 				}
 				
+				if(jsonObj.has("confirmPassword") && !isNullOrEmpty(jsonObj.getString("confirmPassword"))){
+					user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("confirmPassword")));
+				}
+				
 				user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 					user.setUserName(jsonObj.getString("userName"));
 				}
-				if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+				/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 					user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 					user.setFileContentType("image/png");
-				}
+				}*/
 				if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 				  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
 					String service = jsonObj.getString("service");
@@ -1551,6 +1731,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				userRole.setUpdatedDate(new Date());
 				userRole.setUserState(Status.ACTIVE);
 				userRole.setUserType(Constants.PROFESSIONAL);
+				userRole.setIsMailSent(Status.Y);
 				userRole = userRoleService.addUserRole(userRole);
 				
 				Candidate candidate = new Candidate();
@@ -1668,10 +1849,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 				user.setUserName(jsonObj.getString("userName"));
 			}
-			if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
+			/*if(jsonObj.has("imageUrl") && !isNullOrEmpty(jsonObj.getString("imageUrl"))){
 				user.setDocFile(fetchRemoteFile(jsonObj.getString("imageUrl")));
 				user.setFileContentType("image/png");
-			}
+			}*/
 			if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
 			  && jsonObj.has("profileurl") && !isNullOrEmpty(jsonObj.getString("profileurl"))){
 				String service = jsonObj.getString("service");
@@ -1717,6 +1898,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			userRole.setCreatedDate(new Date());
 			userRole.setUpdatedDate(new Date());
 			userRole.setUserState(Status.ACTIVE);
+			userRole.setIsMailSent(Status.Y);
 			userRole.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			userRoleService.addUserRole(userRole);
 			
@@ -1831,6 +2013,55 @@ public class RegistrationServiceImpl implements RegistrationService{
 		masterCandidate.setUpdatedBy(user.getUserCode());
 		masterCandidate.setUpdatedDate(commonUtil.currentDate());
 		return masterCandidate;
+	}
+
+	@Override
+	public String sendOtpToUser(User user, String type) throws Exception
+	{
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String userName = null;
+		 
+		 if(!isNullOrEmpty(user.getLastName())){
+			 userName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 userName = sb.append(user.getFirstName()).toString();
+		 }
+		 
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 String token = RandomStringUtils.randomAlphanumeric(6);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("userName", userName);
+		 globalVarsMap.put("token", token);
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LOGIN_OTP_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+		 return token;
+				
 	}
 
 }

@@ -16,6 +16,8 @@ public class CandidateReferencesDTO {
 	private String designation;
 	
 	private String comment;
+	
+	private long id;
 
 
 	public String getName()
@@ -86,6 +88,16 @@ public class CandidateReferencesDTO {
 	public void setRefId(String refId)
 	{
 		this.refId = refId;
+	}
+
+	public long getId()
+	{
+		return id;
+	}
+
+	public void setId(long id)
+	{
+		this.id = id;
 	}
 	
 }

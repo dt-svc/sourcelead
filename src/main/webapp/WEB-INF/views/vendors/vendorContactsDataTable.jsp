@@ -38,7 +38,6 @@ function getVendorContactList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Vendor";
-	
 	var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -249,7 +248,7 @@ function getVendorContactList(){
 		    	  }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[0,'desc']],
+		    	"aaSorting": [[6,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,

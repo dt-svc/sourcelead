@@ -8,11 +8,19 @@ public class OrgLocationDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
+	private Long id;
+	
 	private String orgName;
 	
 	private String locationCode;
 	
 	private String orgCode;
+	
+	private Long orgId;
+	
+	private Long orgLocationId;
+	
+	private Long candidateId;
 	
 	private String orgImageUrl;
 	
@@ -35,6 +43,12 @@ public class OrgLocationDTO implements Serializable{
 	//List<String> roleActionsList;
 	
 	List<String> menuIconsList;
+	
+	private Long vendorOrgLocationId;
+	
+	private Long vendorOrgRelationId;
+	
+	private Long vendorOnboardId;
 	
 	
 
@@ -175,6 +189,62 @@ public class OrgLocationDTO implements Serializable{
 
 	public void setMenuIconsList(List<String> menuIconsList) {
 		this.menuIconsList = menuIconsList;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public Long getVendorOrgLocationId() {
+		return vendorOrgLocationId;
+	}
+
+	public void setVendorOrgLocationId(Long vendorOrgLocationId) {
+		this.vendorOrgLocationId = vendorOrgLocationId;
+	}
+
+	public Long getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	public Long getVendorOnboardId() {
+		return vendorOnboardId;
+	}
+
+	public void setVendorOnboardId(Long vendorOnboardId) {
+		this.vendorOnboardId = vendorOnboardId;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	

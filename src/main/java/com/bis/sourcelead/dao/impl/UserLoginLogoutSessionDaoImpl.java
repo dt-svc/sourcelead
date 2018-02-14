@@ -55,7 +55,7 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
 		List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
 		logger.debug("getLastLoginRecord start");
 		String query = "from UserLoginLogoutSession uls left join fetch uls.userId where uls.id IN (select max(tempuls.id) from UserLoginLogoutSession tempuls where tempuls.userId.id =:userId) and uls.userId.id =:userId ";
-		userLoginLogoutSessionList = session.createQuery(query).setCacheable(true).setLong( "userId", userId ).setCacheable(true).list();
+		userLoginLogoutSessionList = session.createQuery(query).setLong( "userId", userId ).list();
 		logger.debug("getLastLoginRecord end");
 		if (userLoginLogoutSessionList.size() > 0) {
 			return userLoginLogoutSessionList.get(0);
@@ -71,7 +71,23 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
 		List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
 		logger.debug("getLastLoginRecord start");
 		String query = "from UserLoginLogoutSession uls where uls.id =:userSessionId";
-		userLoginLogoutSessionList = session.createQuery(query).setCacheable(true).setLong( "userSessionId", userSessionId ).setCacheable(true).list();
+		userLoginLogoutSessionList = session.createQuery(query).setLong( "userSessionId", userSessionId ).list();
+		logger.debug("getLastLoginRecord end");
+		if (userLoginLogoutSessionList.size() > 0) {
+			return userLoginLogoutSessionList.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
+		logger.debug("getLastLoginRecord start");
+		String query = "from UserLoginLogoutSession uls where uls.actionUUID =:actionUUID";
+		userLoginLogoutSessionList = session.createQuery(query).setString( "actionUUID", actionUUID ).list();
 		logger.debug("getLastLoginRecord end");
 		if (userLoginLogoutSessionList.size() > 0) {
 			return userLoginLogoutSessionList.get(0);

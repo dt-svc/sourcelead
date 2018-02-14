@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,11 +80,11 @@ public class PdfUtil {
 
 	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+	    sbUser.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
-
+	    File file = File.createTempFile(fileSB.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    System.out.println("***************************************"+file.getAbsolutePath());
 	    file.setReadable(true);
 	    
 	    try {
@@ -95,7 +96,7 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Users");
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Associates");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -107,28 +108,19 @@ public class PdfUtil {
             int activeCount = 0; 
             int notLoggedInCount = 0; 
 	        List orderedList = new List(List.ORDERED);
-	        
-	        if("ACTIVE".equalsIgnoreCase(userState)){
-	        	activeCount = userRolesList.size();
-			 }else{
-				 if(activeList !=null){
-					 activeCount = activeList.size();
-				 }
-			 }
-	        if("INACTIVE".equalsIgnoreCase(userState)){
-	        	inActiveCount = userRolesList.size();
-			 }else{
-				 if(inactiveList !=null){
-					 inActiveCount = inactiveList.size();
-				 }
-			 }
-	        if("NOT_LOGGEDIN".equalsIgnoreCase(userState)){
-	        	notLoggedInCount = userRolesList.size(); 
-			 }else{
-				 if(notLoggedInList != null){
-					 notLoggedInCount = notLoggedInList.size();
-				 }
-			 }
+	        //userRole list developed by laxman  
+	        for(UserRole ur:userRolesList) {
+	        	if("ACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		activeCount++;
+	        	} 
+	        	if("INACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		inActiveCount++;
+	        	} 
+	        	if("NOT_LOGGEDIN".equalsIgnoreCase(ur.getUserState().toString())){
+	        		notLoggedInCount++;
+	        	} 
+	        }
+	      
 	        orderedList.add(new ListItem("Active:"+activeCount));
 	        orderedList.add(new ListItem("Inactive:"+inActiveCount));
 	        orderedList.add(new ListItem("Not Loggedin:"+notLoggedInCount));
@@ -165,7 +157,7 @@ public class PdfUtil {
                 }
                 table.completeRow();
             }
-	        document.addTitle("Users Table");
+	        document.addTitle("Associates Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -236,16 +228,22 @@ public class PdfUtil {
 			   userArray[8] = userRoles.getRoles().getDisplayName();
 		   }else{
 			   userArray[8] = "--";
-		   }
+		   }StringBuilder fullName=new StringBuilder();
 		   if(userRoles.getReportingManager() !=null){
-			   userArray[9] = userRoles.getReportingManager().getFirstName();
+			   if(userRoles.getReportingManager().getLastName()!=null)
+			   {
+			   userArray[9] = fullName.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getReportingManager().getLastName()).toString();
+			   }else
+			   {
+				   userArray[9] = userRoles.getReportingManager().getFirstName();
+			   }
 		   }else{
 			   userArray[9] = "--";
 		   }
 		   
-		   if(userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
 			   userArray[10] =  "Invite";
-	   		   }else if((userRoles.getUser().getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getUser().getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
+	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
 	   		   userArray[10] =  "Resend";
 	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
 	   			 userArray[10] =  "Active";
@@ -720,18 +718,35 @@ public class PdfUtil {
 	private String[] prepareClientsArray(OrgRelations orgRelations, String[] headers) {
 		
 		String clientArray[] = new String[headers.length];
-		if (orgRelations.getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getOrgName())) {
+		if (StringUtils.isNotEmpty(orgRelations.getOrgName())) {
 			clientArray[0] = orgRelations.getOrgName();
 		}else{
 			clientArray[0] = "--";
 		}
-		if (orgRelations.getWebSite() != null && !"".equalsIgnoreCase(orgRelations.getWebSite())) {
+		if (StringUtils.isNotEmpty(orgRelations.getWebSite())) {
 			StringBuilder sb = new StringBuilder();
 			clientArray[1] = sb.append("www.").append(orgRelations.getWebSite()).toString();
 		}else{
 			clientArray[1] = "--";
 		}
-		if (orgRelations.getCountry() != null && !"".equalsIgnoreCase(orgRelations.getCountry())) {
+		StringBuilder sb = new StringBuilder();
+		if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getState()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getState());
+			clientArray[2] = sb.toString();
+		}else if((StringUtils.isNotEmpty(orgRelations.getState())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getState()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if ((StringUtils.isNotEmpty(orgRelations.getCity())) && (StringUtils.isNotEmpty(orgRelations.getCountry()))){
+			sb.append(orgRelations.getCity()).append(",").append(orgRelations.getCountry());
+			clientArray[2] = sb.toString();
+		}else if(StringUtils.isNotEmpty(orgRelations.getCity())){
+			clientArray[2] = orgRelations.getCity();
+		}else if(StringUtils.isNotEmpty(orgRelations.getState())){
+			clientArray[2] = orgRelations.getState();
+		}else if(StringUtils.isNotEmpty(orgRelations.getCountry())){
 			clientArray[2] = orgRelations.getCountry();
 		}else{
 			clientArray[2] = "--";
@@ -962,45 +977,61 @@ public class PdfUtil {
 
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
 		
+			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
+				 UserRole userRole;
+				try {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getProjectMemberCandidteId().getConsultantUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+					 if(userRole != null){
+						 projectMember.setUserRoleType(userRole.getUserType());
+					 } 
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			 }else{
+				 projectMember.setUserRoleType("Candidate");
+			 }
+		
 		   String empArray[] = new String[headers.length];
 			if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
 				empArray[0] = projectMember.getEmpName();
 			}else{
 				empArray[0] = "--";
 			}
-			if (projectMember.getEmployee().getUser().getEmail() != null && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getEmail())) {
-				empArray[1] = projectMember.getEmployee().getUser().getEmail();
+			if (projectMember.getStartDateStr() != null && !"".equalsIgnoreCase(projectMember.getStartDateStr())) {
+				empArray[1] = projectMember.getStartDateStr();
 			}else{
 				empArray[1] = "--";
 			}
-			if (projectMember.getProjectAssignedDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectAssignedDateStr())) {
-				empArray[2] = projectMember.getProjectAssignedDateStr();
+			if (projectMember.getEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getEndDateStr())) {
+				empArray[2] = projectMember.getEndDateStr();
 			}else{
 				empArray[2] = "--";
 			}
-			if (projectMember.getProjectEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getProjectEndDateStr())) {
-				empArray[3] = projectMember.getProjectEndDateStr();
-			}else{
+			
+			if (projectMember.getCurrentBillRate() != null && projectMember.getCurrentBillRate() > 0 ) {
+				empArray[3] = projectMember.getBillRateCurrency() +"  "+ projectMember.getCurrentBillRate() +"  "+projectMember.getRateType();
+			}else {
 				empArray[3] = "--";
+						
 			}
-			if (projectMember.getApprovedHrs() != null && !"".equalsIgnoreCase(projectMember.getApprovedHrs())) {
-				empArray[4] = projectMember.getApprovedHrs();
-			}else{
+			if (projectMember.getPayRate() != null && projectMember.getPayRate() > 0 ) {
+				empArray[4] = projectMember.getPayRateCurrency() +"  "+ projectMember.getPayRate() +"  "+ projectMember.getPayRateType();
+			}else {
 				empArray[4] = "--";
 			}
-			if (projectMember.getRejectedHrs() != null && !"".equalsIgnoreCase(projectMember.getRejectedHrs())) {
-				empArray[5] = projectMember.getRejectedHrs();
-			}else{
+			if (projectMember.getEstimatedHours() != null && projectMember.getEstimatedHours() > 0 ) {
+				empArray[5] = projectMember.getEstimatedHours().toString();
+			}else {
 				empArray[5] = "--";
 			}
-			if (projectMember.getSubmittedHrs() != null && !"".equalsIgnoreCase(projectMember.getSubmittedHrs())) {
-				empArray[6] = projectMember.getSubmittedHrs();
-			}else{
+			if (projectMember.getEstimatedBudget() != null && projectMember.getEstimatedBudget() > 0 ) {
+				empArray[6] = projectMember.getEstimatedBudget().toString();
+			}else {
 				empArray[6] = "--";
 			}
 			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
 				empArray[7] = projectMember.getDraftHrs();
-			}else{
+			}else {
 				empArray[7] = "--";
 			}
 		return empArray;

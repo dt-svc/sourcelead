@@ -8,10 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 /**
  * 
@@ -54,6 +57,11 @@ public class OrgServiceImpl implements OrgService {
 	public List<Org> getOrgs() throws Exception {
 		return orgDao.getOrgs();
 	}
+	
+	@Override
+	public List<Org> getOpenJobsOrgs() throws Exception {
+		return orgDao.getOrgs();
+	}
 
 	@Override
 	public String websiteValidation(String website,String sourceleadBLockedwebsites) {
@@ -61,14 +69,16 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public Org saveOrgSettings(OrgSettings orgSettings, MultipartFile multiFile, Org org) throws Exception {
+	public Org saveOrgSettings(CompanyRegistrationDTO companyRegistrationDTO, Org org) throws Exception {
 		
-		System.out.println(multiFile.getContentType());
 		
-        if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
+        if(companyRegistrationDTO.getFileInfo() != null){
+        	FileInfo fileInfo = companyRegistrationDTO.getFileInfo().get(0);
     	  try {
-    	   		org.setFileContentType(multiFile.getContentType());
-    	   		org.setDocFile(multiFile.getBytes());
+    	   		org.setFileContentType(fileInfo.getContentType());
+    	   		org.setFileName(fileInfo.getFileName());
+    	   		org.setFileUrl(fileInfo.getFileURL());
+    	   		FileUploadUtil.moveFile(companyRegistrationDTO.getStaticPath(), fileInfo, "profile");
     	   
 	       }catch (Exception e) {
     	      	 e.printStackTrace();
@@ -90,8 +100,8 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
-		return orgDao.getEnrolledOrgs(orgId, userState, searchByName);
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName,Integer offSet) throws Exception {
+		return orgDao.getEnrolledOrgs(orgId, userState, searchByName,offSet);
 	}
 
 	@Override
@@ -122,5 +132,10 @@ public class OrgServiceImpl implements OrgService {
 	{
 		return orgDao.getuserListForOrgChart(orgLocationId);
 	}
-	
+
+	@Override
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet)
+	{
+		return orgDao.getAllOpenJobsOrgsStartsWithAlphabet(alphabet);
+	}
 }

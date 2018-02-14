@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +82,7 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 		Checks checks = userPayrollDao.getUniqueChecksListByEmployeeId(empId, orgLocationId);
 		Checks checksnew = new Checks();
 		checksnew.setEmpId(empId);
+		if(checks != null)
 		checksnew.setEmpName(checks.getEmpName());
 		checksnew.setCheckNo(checksDTO.getCheckNo());
 		checksnew.setDate(conversionUtil.getDateFromString(checksDTO.getDate()));

@@ -27,6 +27,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @RestController
+@RequestMapping("/app")
 public class DepartmentRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DepartmentRestController.class);

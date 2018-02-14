@@ -14,16 +14,17 @@ function getCandidateProfile(candidateId){
 	  $.ajax({
       type : "POST",
        url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-       success :function(data) {  
-            if(data != null && data != 'undefined' && data != ""){  
-            	var json = JSON.parse(data);
-          		 if( data.indexOf('Sign In') >= 0){
+       success :function(json) { 
+    	  
+            if(json != null){  
+            	//var json = JSON.parse(data);
+          		 /* if( data.indexOf('Sign In') >= 0){
 			    		location.replace(sourceleadUrl);
 			    	 }
           		 else if (data.indexOf('exception') >= 0) {
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }
-          		 else{ 
+          		 else{  */
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
@@ -165,7 +166,7 @@ function getCandidateProfile(candidateId){
 							     });
 							     event.preventDefault();
 								   
-          		 }
+          		 /* } */
             }
              },
                
@@ -181,7 +182,7 @@ function candidateSkillsList(candidateId){
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
@@ -309,7 +310,7 @@ function candidateSkillsList(candidateId){
 					success : function(data) {
 						if (data != null && data != 'undefined' && data != "" && data != '[]') {
 							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
+								location.replace(sourceleadLoginUrl);
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
@@ -382,7 +383,7 @@ function reqEducationSubmissionProfile(candidateId){
           success :function(data) {
         	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	 }
              		 else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
@@ -468,15 +469,15 @@ function reqCertificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+          success :function(json) {
+        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
+//              		 if( data.indexOf('Sign In') >= 0){
+// 			    		location.replace(sourceleadUrl);
+// 			    	 }
+//              		 else if (data.indexOf('exception') >= 0) {
+//              			 location.replace(sourceleadUrl+"/errorPage");
+//              		 }
+//              		 else{
 	                	 $("#certificationSubmissionProfile").empty();
 	                	 var result = "";
 	                	 
@@ -485,9 +486,9 @@ function reqCertificationSubmissionProfile(candidateId){
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-							 var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-		                    	var opt = json[i];  
+// 							 var json = JSON.parse(data);
+							for (var i = 0; i < json.data.length; i++) { 
+		                    	var opt = json.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{
@@ -522,7 +523,7 @@ function reqCertificationSubmissionProfile(candidateId){
 							result = result +'        </div>';
 							
 							$("#certificationSubmissionProfile").append(result); 
-			    	} 
+// 			    	} 
         	  }
         },
           

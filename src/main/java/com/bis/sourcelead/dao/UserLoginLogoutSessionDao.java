@@ -10,4 +10,6 @@ public interface UserLoginLogoutSessionDao {
 	
 	UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId);
 	
+	UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID);
+	
 }

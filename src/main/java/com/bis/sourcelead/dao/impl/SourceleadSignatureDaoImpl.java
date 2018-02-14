@@ -43,7 +43,7 @@ public class SourceleadSignatureDaoImpl implements SourceleadSignatureDao{
 		
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String query = "from SourceleadSignature signature where signature.orgLocationId.id = :orgLocationId";
-		 List<SourceleadSignature> signatureList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		 List<SourceleadSignature> signatureList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		 return signatureList;
 		 
 	}
@@ -72,7 +72,7 @@ public class SourceleadSignatureDaoImpl implements SourceleadSignatureDao{
 		
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String query = "from SourceleadSignature signature where signature.orgLocationId IS NULL";
-		 List<SourceleadSignature> signatureList = session.createQuery(query.toString()).setCacheable(true).list();
+		 List<SourceleadSignature> signatureList = session.createQuery(query.toString()).list();
 		 return signatureList;
 	}
 
@@ -83,7 +83,7 @@ public class SourceleadSignatureDaoImpl implements SourceleadSignatureDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SourceleadSignature> sourceleadSignature = new ArrayList<SourceleadSignature>();
 		logger.debug("getSourceleadSignatureByLabelNameAndOrgLocationId user code start");
-		sourceleadSignature = session.createQuery("from SourceleadSignature signature where signature.labelName = :labelName and signature.orgLocationId.id = :orgLocationId" ).setString("labelName", labelName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		sourceleadSignature = session.createQuery("from SourceleadSignature signature where signature.labelName = :labelName and signature.orgLocationId.id = :orgLocationId" ).setString("labelName", labelName).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("getSourceleadSignatureByLabelNameAndOrgLocationId user code end");
 		if (sourceleadSignature.size() > 0) {
 			return sourceleadSignature.get(0);

@@ -15,14 +15,14 @@
 
 <title>Welcome to Source Lead :: Account List</title>
 	<!-- Bootstrap -->
-	<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-	<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-	<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+	<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+	<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 </head>
 
 <script>
@@ -62,7 +62,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"></i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"></i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -78,13 +78,13 @@ width: auto;
 							    <c:when test="${permission=='YES'}">
 								    <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 						          		<i class="fa fa-check-circle fa-3x"></i>
-							        	<p class="reason-msg">You Have accepted the Job for <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        	<p class="reason-msg">You have accepted the job for <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							 			<p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
 							    </c:when>    
 							    <c:otherwise>
 							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          		<i class="fa fa-clock-o fa-3x"></i>
-							        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        	<p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							    </c:otherwise>
 							  </c:choose>
 						  </div>
@@ -114,7 +114,7 @@ width: auto;
 					     <c:otherwise>
 							    <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          	<i class="fa fa-clock-o fa-3x"></i>
-							        <p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							        <p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 							     </div>
 							    </c:otherwise>    
 					  </c:choose>
@@ -144,7 +144,7 @@ width: auto;
 					    <c:otherwise>
 					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
-					        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+					        	<p class="reason-msg">Your decision is already submitted for the job<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
 					        </div>
 					    </c:otherwise>
 					  </c:choose>
@@ -210,6 +210,7 @@ width: auto;
   </footer>
   <!-- Footer Area --> 
 </div>
+<script type="text/javascript" src='/resources/js/slead-common.js'></script>
 </body>
 </html>
 
@@ -227,7 +228,7 @@ width: auto;
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
+						url : sourceleadUrl+"/ws/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
 						success : function(data) {
 							if(data == "success"){
 								$('#rejectIdDiv').empty();
@@ -253,7 +254,7 @@ width: auto;
 			con = con.replace(/[{}]/g, "");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						url : sourceleadUrl+"/ws/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
 						success : function(data) {
 							if(data == "success"){
 								$('#rejectApplicantIdDiv').empty();
@@ -279,19 +280,18 @@ width: auto;
 
 <script type="text/javascript">
 	function storeNegotiation() {
-			var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
 			var type = '${type}';
-			if ($('#negotiation_form').validate(false, validationSettings)){ 
+			if ($('#negotiation_form').validate(false, validationSettings)){
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
-			var frm = $('#negotiation_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
+		    var formData = getFormData1("negotiation_form");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+'/storeNegotiation?"+tokenParamName+"="+tokenValue+"&json='+jsonData+'&submissionId='+submissionId+'&type='+type,
+						data: formData,
+						processData: false,
+					    contentType:false, 
+						url : sourceleadUrl+'/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');
@@ -309,6 +309,17 @@ width: auto;
 	} 
 	    
 	
+</script>
+<script type="text/javascript">
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
+
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
 </script>
 
 <script type="text/javascript">

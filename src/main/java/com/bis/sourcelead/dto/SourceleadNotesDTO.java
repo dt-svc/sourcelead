@@ -6,6 +6,8 @@ public class SourceleadNotesDTO {
 	
 	private String orgRelationId;
 	
+	private String assetId;
+	
 	private String clientLocationId;
 	
 	private String categoryType;
@@ -100,6 +102,14 @@ public class SourceleadNotesDTO {
 
 	public void setVendorcontact(String vendorcontact) {
 		this.vendorcontact = vendorcontact;
+	}
+
+	public String getAssetId() {
+		return assetId;
+	}
+
+	public void setAssetId(String assetId) {
+		this.assetId = assetId;
 	}
 	
 	

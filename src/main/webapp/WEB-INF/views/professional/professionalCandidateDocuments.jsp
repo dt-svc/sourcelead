@@ -85,9 +85,9 @@ function candDocumentsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
            
-             			 var json = JSON.parse(data); 
+//              			 var json = JSON.parse(data); 
              			 
 	                	 $("#candidateDocumentsList").empty();
 	                	 var result = "";
@@ -102,10 +102,11 @@ function candDocumentsList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 
-	                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.id}' == opt.userIdStr)){
+	                    	
+                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)){
 	                    	 result  = result + ' <tr>';
 	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
@@ -120,7 +121,8 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me widAu" title="'+opt.fileName+'"><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a><a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="'+opt.fileName+'">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div> <span title="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');" title="View"></a><a download class="glyphicon glyphicon-download-alt" target="_blank" download href=\"'+opt.fileURL+'\" title="Download"></a></div></td>';
+
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -251,8 +253,8 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
-	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<div class="input-group" id="uploadFileGroup">';
+	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();removeValidationProfCanDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
@@ -305,15 +307,7 @@ function addDocument(candidateId, documentUUID) {
 	   }; 
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	 <%-- Document Type Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
@@ -361,11 +355,15 @@ function getDocumentType(documentType){
 	if(documentType.value == 'Other'){
 		 document.getElementById("documentTypeDiv").style.display="block";
 		  $("#documentOtherType").attr("data-validation-optional", "false");
+		  $("#nameDocIdDiv").find('p.jquery_form_error_message').remove();
 		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length1-250");
 	}else{
 		document.getElementById("documentTypeDiv").style.display="none";
 		  $("#documentOtherType").attr("data-validation-optional", "true");
 		  $("#documentOtherType").find('p.jquery_form_error_message').remove();
+		  $("#nameDocIdDiv").find('p.jquery_form_error_message').remove();
+		  //$("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		  
 		  if(existingDocumentType ==null || existingDocumentType == "" || existingDocumentType == "undefined" || existingDocumentType != 'Other'){
 			  $("#documentOtherType").val('');
 		  }
@@ -417,7 +415,10 @@ function getDocumentType(documentType){
 							$("#popUpDiv").removeClass("edit-details-active");
 	            			$("#selector6").removeAttr("style");
 	            			$("#selector6").css({ display: "block" });
-            				$("#docMsgDiv").html("Success!! New Candidate Document added");
+	            			if(documentUUID != null && documentUUID !="" && documentUUID !="undefined")
+            				$("#docMsgDiv").html("Document updated");
+	            			else
+	            			$("#docMsgDiv").html("Success!! New Document added");
 	             			candDocumentsList(candidateId);
 					 		docMsgFadein();
 	            		 
@@ -610,3 +611,14 @@ function refreshDocList(candidateId){
 		    });
  }
  </script>
+ <script type="text/javascript">
+ function removeValidationProfCanDoc(){
+	 $("#uploadDocDiv").find('p.jquery_form_error_message').remove(); 
+ }
+ 
+</script>
+ <!-- <script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script> -->

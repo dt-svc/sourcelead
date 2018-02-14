@@ -1,7 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +8,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,19 +18,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ProjectBudgetRequestDTO;
+import com.bis.sourcelead.dto.ProjectPlanningNewResourceRequestDTO;
+import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
 import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectPlanningNewResourceRequestService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
@@ -43,6 +47,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class ProjectPlanningRestController {
 
 	@Autowired
@@ -73,25 +78,35 @@ public class ProjectPlanningRestController {
 	ProjectPlanningNewResourceRequestService projectPlanningNewResourceRequestService; 
 	
 	@Autowired
+	ProjectBudgetService projectBudgetService;
+	
+	@Autowired
 	UserService userService;
 	
 	@Autowired
 	OrgLocationService orgLocationService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
-	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
-			 @RequestParam(value="roles", required=false) String roles,@RequestParam(value="resourceType", required=false) String resourceType,
-			 @RequestParam(value="selectedAssociates", required=false) String selectedAssociates,
-			 @RequestParam(value="projectUUID", required=false) String projectUUID) throws Exception{ 
+	 public @ResponseBody ResponseList<CandidateDTO>  getRequestedAssociatesList(CandidateDTO candidateDTO) throws Exception{ 
 		 
-		String resultJson;
 		
 		List<Long> roleIds = null; 
 		Projects projects = null;
 		
-		if(!isNullOrEmpty(roles)){
+		
+		String[] tableColumns = {"ischeck","name", "primarySkill", "rate", "employmentType", "manager", "resume", "assignedProjectsCount"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default referContactsDTO order
+		if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+		}
+		candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateDTO.setSortOrder(sortColumnOrder);
+		
+		if(!isNullOrEmpty(candidateDTO.getRoles())){
 			roleIds = new ArrayList<Long>();
-			 String[] rolesList = roles.split(",");
+			 String[] rolesList = candidateDTO.getRoles().split(",");
 			 for(int i=0; i < rolesList.length; i++){
 				 roleIds.add(Long.valueOf(rolesList[i]));
 			 }
@@ -99,16 +114,16 @@ public class ProjectPlanningRestController {
 		}
 		
 		List<Long> associateIds = null; 
-		if(!isNullOrEmpty(selectedAssociates)){
+		if(!isNullOrEmpty(candidateDTO.getSelectedAssociates())){
 			associateIds = new ArrayList<Long>();
-			 String[] associateIdsList = selectedAssociates.split(",");
+			 String[] associateIdsList = candidateDTO.getSelectedAssociates().split(",");
 			 for(int i=0; i < associateIdsList.length; i++){
 				 associateIds.add(Long.valueOf(associateIdsList[i]));
 			 }
 		}
 		
-		if(!isNullOrEmpty(projectUUID)){
-			projects = projectsService.getProjectByProjectUUID(projectUUID);
+		if(!isNullOrEmpty(candidateDTO.getProjectUUID())){
+			projects = projectsService.getProjectByProjectUUID(candidateDTO.getProjectUUID());
 			List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
 		    if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0){
 		    	if(null == associateIds){
@@ -123,51 +138,18 @@ public class ProjectPlanningRestController {
 		    }
 		}
 		
-		
-		List<Candidate> assoicatesList = new ArrayList<Candidate>(); 
-		List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationId, roleIds, resourceType,associateIds,projects.getId());
-		 for(Candidate candidate : candidatesList){
-			 Integer projectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
-			 candidate.setAssignedProjectsCount(projectsCount);
-			 
-			 UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(candidate.getConsultantUser().getId(), orgLocationId);
-			 candidate.setUserRole(userRole.getRoles().getDisplayName());
-			 if(userRole.getReportingManager() != null){
-				 StringBuilder reportingManager = new StringBuilder();
-				 if(!isNullOrEmpty(userRole.getReportingManager().getLastName())){
-					 reportingManager = reportingManager.append(userRole.getReportingManager().getFirstName()).append(" ").append(userRole.getReportingManager().getLastName());
-				 }else{
-					 reportingManager = reportingManager.append(userRole.getReportingManager().getFirstName());
-				 }
-				 candidate.setReportingManager(reportingManager.toString());
-			 }else{
-				 candidate.setReportingManager("----");
-			 }
-			 
-			 CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByCandidateId(candidate.getId());
-			 if(candidateResumes != null){
-				 candidate.setResumeUUID(candidateResumes.getResumeUUID());
-			 }
-				
-			 assoicatesList.add(candidate);
-		 }
+		ResponseList<CandidateDTO> candidateDTOList = candidateService.getRequestedCandidatesList(candidateDTO,candidateDTO.getOrgLocationId(), roleIds, candidateDTO.getResourceType(),associateIds,projects.getId());
 		 
-		 resultJson = commonUtil.toJSON(assoicatesList);
-		 return resultJson;
+		 return candidateDTOList;
 	  }
 	 
 	 
 	 
 	 @RequestMapping(value = "/getOrgLocationRoles", method = RequestMethod.GET)
-	 public @ResponseBody String  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
+	 public @ResponseBody List<Roles>  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
 		 
-		 String resultJson;
-		 String[] orgLocationId = orgLocations.split(",");
-		
-		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocationId[0]));
-		 
-		 resultJson = commonUtil.toJSON(rolesList);
-		 return resultJson;
+		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocations));
+		 return rolesList;
 	  }
 	 
 	 
@@ -250,29 +232,55 @@ public class ProjectPlanningRestController {
 	  
 	  @RequestMapping(value = "/getResourceRequestDetailsByRequestUUID")
 		 public ProjectPlanningRequest getResourceRequestDetailsByRequestUUID(@RequestParam(value="requestUUID", required=false) String requestUUID) throws Exception {
-				
-				return  projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+		  ProjectPlanningRequest projectPlanningRequest =   projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+		 
+		  Set<ProjectPlanningResourceRequest> planningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+		  if(planningResourceRequestList != null && planningResourceRequestList.size() > 0) {
+			  List<ProjectPlanningResourceRequest> resourceRequestList = new ArrayList<>();
+			  for(ProjectPlanningResourceRequest resourceRequest : planningResourceRequestList) {
+				  resourceRequestList.add(resourceRequest);
+			  }
+			  projectPlanningRequest.setResourceRequestList(resourceRequestList);
+		  }
+		  
+		  Set<ProjectPlanningNewResourceRequest> newRequestRessourceList = projectPlanningRequest.getProjectPlanningNewResourceRequestList();
+		  if(newRequestRessourceList != null && newRequestRessourceList.size() > 0) {
+			  List<ProjectPlanningNewResourceRequest> newResourceRequestList = new ArrayList<>();
+			  for(ProjectPlanningNewResourceRequest requestList : newRequestRessourceList) {
+				  newResourceRequestList.add(requestList);
+			  }
+			  projectPlanningRequest.setNewResourceRequestList(newResourceRequestList);
+		  }
+		 
+		  return  projectPlanningRequest;
 		 }
 	  
 	  
 	  
 	  @RequestMapping(value = "/getResourceRequestApproversList", method = RequestMethod.GET)
-		public @ResponseBody String getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public @ResponseBody List<User>  getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
-		  String resultJson;
-		  
-	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_PROJECTS));
-		  
-		  resultJson = commonUtil.toJSON(approversList);
-		  return resultJson;
+	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+		  return approversList;
 	    }
+	  
+	     
+	  @RequestMapping(value = "/getSourceLeadActionApproversList", method = RequestMethod.GET)
+	  public @ResponseBody List<UserDTO>  getSourceLeadActionApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="actionType", required=true) String actionType) throws Exception {
+	    
+	      List<UserDTO> approversList = commonUtil.getRoleActionUsers(actionType, orgLocationId);
+		  return approversList;
+      }
+	  
+	  
 	  
 	  
 	  @RequestMapping(value = "/getResourceRequestsCounts", method = RequestMethod.GET)
 		public @ResponseBody ProjectPlanningRequest getResourceRequestsCounts(@RequestParam(value="approverUserId", required=true) Long approverUserId,
-				@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-		    
-		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+		   
+		  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId,userRoleName);
 		 
 		  ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
 		  
@@ -281,15 +289,17 @@ public class ProjectPlanningRestController {
 		  Integer rejectedCount = 0;
 		  Integer onholdCount = 0;
 		  
-		  for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
-			  if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
-				  approvedCount = approvedCount + 1;
-			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
-				  waitingCount = waitingCount + 1;
-			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
-				  rejectedCount = rejectedCount + 1;
-			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
-				  onholdCount = onholdCount + 1;
+		  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+			  for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
+				  if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+					  approvedCount = approvedCount + 1;
+				  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+					  waitingCount = waitingCount + 1;
+				  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+					  rejectedCount = rejectedCount + 1;
+				  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+					  onholdCount = onholdCount + 1;
+				  }
 			  }
 		  }
 		  
@@ -305,10 +315,10 @@ public class ProjectPlanningRestController {
 	  
 	    @RequestMapping(value = "/getPlanningRequestListByApproverIdAndOrgLocationId", method = RequestMethod.GET)
 		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByApproverIdAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,
-				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType, HttpServletRequest request) throws Exception {
 		    
-		  
-		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId, requestType);
+	      String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId, requestType,userRoleName);
 		  
 		  return projectPlanningRequestList;
 		  
@@ -328,11 +338,11 @@ public class ProjectPlanningRestController {
 	    		 resourceRequest.setRejectedReason(rejectReason.toString());
 	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_REJECTED);
 	    		 
-	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(resourceRequest.getProjectPlanningRequestId().getId());
-	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);
+	    		 /*ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(resourceRequest.getProjectPlanningRequestId().getId());
+	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);*/
 	    		 
 	    		 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
-	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    		/* projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);*/
 	    		 
 	    		 //Sending emil to Approver
 	    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectSingleResourceRequestApprover(resourceRequest, user, orgLocations);
@@ -341,6 +351,59 @@ public class ProjectPlanningRestController {
 		     return "sucess";
 		  
 	    }
+	    
+	    
+	    
+	    @RequestMapping(value = "/onholdRequestedAssociate", method = RequestMethod.POST)
+		public @ResponseBody String onholdRequestedAssociate(@RequestParam("json") String jsonPayload,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+        	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+	    	User user = userService.getUserById(userId); 
+		  
+	    	 JSONObject jsonObj = new JSONObject(jsonPayload);
+	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
+	    		 ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
+	    		 StringBuilder rejectReason = new StringBuilder();
+	    		 rejectReason = rejectReason.append(jsonObj.getString("rejectedReason"));
+	    		 resourceRequest.setRejectedReason(rejectReason.toString());
+	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_ON_HOLD);
+	    		 
+	    		/* ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(resourceRequest.getProjectPlanningRequestId().getId());
+	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);*/
+	    		 
+	    		 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
+	    		 /*projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);*/
+	    		 
+	    		 //Sending emil to Approver
+	    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectSingleResourceRequestApprover(resourceRequest, user, orgLocations);
+	    	 }
+		  
+		     return "sucess";
+		  
+	    }
+	    
+	    
+	    
+	    
+	    @RequestMapping(value = "/onholdRequestedNewAssociate", method = RequestMethod.POST)
+			public @ResponseBody String onholdRequestedNewAssociate(@RequestParam("json") String jsonPayload,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+	        	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+		    	User user = userService.getUserById(userId); 
+			  
+		    	 JSONObject jsonObj = new JSONObject(jsonPayload);
+		    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
+		    		 ProjectPlanningNewResourceRequest resourceRequest = projectPlanningNewResourceRequestService.getProjectPlanningNewResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
+		    		 StringBuilder rejectReason = new StringBuilder();
+		    		 rejectReason = rejectReason.append(jsonObj.getString("onholdReason"));
+		    		 resourceRequest.setRejectedReason(rejectReason.toString());
+		    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_ON_HOLD);
+		    		 projectPlanningNewResourceRequestService.saveProjectPlanningNewResourceRequest(resourceRequest);
+		    		 //Sending emil to Approver
+		    		 projectPlanningNewResourceRequestService.sendMailToAcceptAndRejectSingleNewResourceRequestApprover(resourceRequest, user, orgLocations);
+		    	 }
+			  
+			     return "sucess";
+			  
+		    }
 	    
 	    
 	    
@@ -497,11 +560,11 @@ public class ProjectPlanningRestController {
 		    		 projectPlanningNewResourceRequest.setRejectedReason(rejectReason.toString());
 		    		 projectPlanningNewResourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_REJECTED);
 		    		 
-		    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(projectPlanningNewResourceRequest.getProjectPlanningRequestId().getId());
-		    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);
+		    		 /*ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(projectPlanningNewResourceRequest.getProjectPlanningRequestId().getId());
+		    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);*/
 		    		 
 		    		 projectPlanningNewResourceRequestService.saveProjectPlanningNewResourceRequest(projectPlanningNewResourceRequest);
-		    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+		    		 /*projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);*/
 		    		 
 		    		 projectPlanningNewResourceRequestService.sendMailToAcceptAndRejectSingleNewResourceRequestApprover(projectPlanningNewResourceRequest, user, orgLocations);
 		    	 }
@@ -510,7 +573,313 @@ public class ProjectPlanningRestController {
 			  
 		    }
 
-	 
+	        /**
+	         * @author Laxman
+	         * @param projectUUID
+	         * @return projectBudgetList
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequestListByProjectUUID")
+			public @ResponseBody List<ProjectBudget> getBudgetRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	        	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        	Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+			  List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),loginOrgLocation.getId());
+			  return projectBudgetList;
+		    }
+	        
+		 /**
+		  * @author Laxman
+		  * @param projectBudgetRequestDTO
+		  * @return success
+		  * @throws Exception
+		  */
+	        @RequestMapping(value = "/saveBudgetRequest",method = RequestMethod.POST)
+			public @ResponseBody String saveBudgetRequest(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
+			       User user = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getLoginUserid()));
+			       projectBudgetService.saveProjectBudgetRequset(projectBudgetRequestDTO, user);
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param projectBudgetRequestDTO
+	         * @return success
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/saveBudgetRequestReason",method = RequestMethod.POST)
+			public @ResponseBody String saveBudgetRequestReason(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
+			       if(StringUtils.isNotBlank(projectBudgetRequestDTO.getBudgetRequestedId())) {
+			    	   User user = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getLoginUserid()));
+			    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(Long.valueOf(projectBudgetRequestDTO.getBudgetRequestedId()));
+				       if(projectBudget != null) {
+				    	   projectBudget.setRejectedReason(projectBudgetRequestDTO.getReasonForProjectBudget());
+				    	   projectBudget.setUpdateUserId(user);
+				    	   projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_REJECTED);
+				    	   projectBudget.setUpdatedDate(new Date());
+				    	   projectBudgetService.saveProjectBudget(projectBudget);
+				    	   if(projectBudget.getApproverUserId() != null && user.getId() != projectBudget.getApproverUserId().getId()) {
+				    		   projectBudgetService.sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(user,projectBudget);
+				    	   }
+				       }
+			       }
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param budgetRequestedId
+	         * @param userId
+	         * @return success
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/acceptBudgetRequest",method = RequestMethod.POST)
+			public @ResponseBody String acceptBudgetRequest(@RequestParam("budgetRequestedId") Long budgetRequestedId,@RequestParam("userId") Long userId) throws Exception {
+			    	   User user = userService.getUserById(userId);
+			    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(budgetRequestedId);
+				       if(projectBudget != null) {
+				    	   projectBudget.setUpdateUserId(user);
+				    	   projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_APPROVED);
+				    	   projectBudget.setUpdatedDate(new Date());
+				    	   projectBudgetService.saveProjectBudget(projectBudget);
+				    	   if(user.getId() != projectBudget.getApproverUserId().getId()) {
+				    		   projectBudgetService.sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(user,projectBudget);
+				    	   }
+				       }
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param budgetRequestedId
+	         * @param userId
+	         * @return success
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/onHoldBudgetRequest",method = RequestMethod.POST)
+			public @ResponseBody String onHoldBudgetRequest(ProjectBudgetRequestDTO projectBudgetRequestDTO) throws Exception {
+				       if(StringUtils.isNotBlank(projectBudgetRequestDTO.getBudgetRequestedId())) {
+				    	   User user = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getLoginUserid()));
+				    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(Long.valueOf(projectBudgetRequestDTO.getBudgetRequestedId()));
+					       if(projectBudget != null) {
+					    	   projectBudget.setRejectedReason(projectBudgetRequestDTO.getReasonForProjectBudget());
+					    	   projectBudget.setUpdateUserId(user);
+					    	   projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_ON_HOLD);
+					    	   projectBudget.setUpdatedDate(new Date());
+					    	   projectBudgetService.saveProjectBudget(projectBudget);
+					    	   if(user.getId() != projectBudget.getApproverUserId().getId()) {
+					    		   projectBudgetService.sendEmailForBugetRequestApproversByAcceptAndRejectAndOnHold(user,projectBudget);
+					    	   }
+					       }
+				       }
+				       
+			    return "success";
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param budgetRequestedId
+	         * @return projectBudget
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequestDetailsById",method = RequestMethod.POST)
+			public @ResponseBody ProjectBudget getBudgetRequestDetailsById(@RequestParam("budgetRequestedId") Long budgetRequestedId) throws Exception {
+			    	   ProjectBudget projectBudget =  projectBudgetService.getProjectBudgetsById(budgetRequestedId);
+			    return projectBudget;
+		    }
+	        
+	        
+	        /**
+	         * @author Laxman
+	         * @param orgLocationId
+	         * @param requestType
+	         * @return projectBudgetList
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequsetListByBudgetStatusAndOrgLocationId", method = RequestMethod.GET)
+			public @ResponseBody List<ProjectBudget> getBudgetRequsetListByBudgetStatusAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+					@RequestParam(value="requestType", required=true) String requestType,HttpServletRequest request) throws Exception {
+	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationIdAndBudgetStatus(approverUserId,orgLocationId, requestType,userRoleName);
+			  return projectBudgetList;
+			  
+		    }
+	        
+	        
+	        /**'
+	         * @author Laxman
+	         * @param orgLocationId
+	         * @return projectBudget
+	         * @throws Exception
+	         */
+	        @RequestMapping(value = "/getBudgetRequestListCount", method = RequestMethod.GET)
+			public @ResponseBody ProjectBudget getBudgetRequestListCount(@RequestParam(value="approverUserId", required=true) Long approverUserId,
+					@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+	        	String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	        	List<ProjectBudget> projectBudgetList= projectBudgetService.getProjectBudgetListByOrgLocationId(approverUserId,orgLocationId, userRoleName);
+	        	  ProjectBudget projectBudget = new ProjectBudget();
+				  Integer waitingCount = 0;
+				  Integer approvedCount = 0;
+				  Integer rejectedCount = 0;
+				  Integer onholdCount = 0;
+				  
+				  if(projectBudgetList != null && projectBudgetList.size() > 0) {
+					  for(ProjectBudget budget : projectBudgetList){
+						  if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)){
+							  approvedCount = approvedCount + 1;
+						  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_WAITING_FOR_APPROVAL)){
+							  waitingCount = waitingCount + 1;
+						  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)){
+							  rejectedCount = rejectedCount + 1;
+						  }else if(budget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)){
+							  onholdCount = onholdCount + 1;
+						  }
+					  }
+				  }
+				  
+				  projectBudget.setWaitingCount(waitingCount);
+				  projectBudget.setApprovedCount(approvedCount);
+				  projectBudget.setRejectedCount(rejectedCount);
+				  projectBudget.setOnholdCount(onholdCount);
+				  
+				  return projectBudget;
+			  
+		    }
+	        
+	        
+	        
+	        @RequestMapping(value = "/getProjectPlanningResourceRequestList", method = RequestMethod.GET)
+	      	public ResponseList<ProjectPlanningResourceRequestDTO> getProjectPlanningResourceRequestList(ProjectPlanningResourceRequestDTO resourceRequestDTO,HttpServletRequest request) throws Exception {
+
+	      		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	      		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	      		 
+	      		String[] tableColumns = {"projectPlanningRequestId","projectName", "candidateName", "requestedUser", "approverName", "consultingType"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default referContactsDTO order
+				if(resourceRequestDTO.getOrder() != null && !resourceRequestDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(resourceRequestDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = resourceRequestDTO.getOrder().get(0).get("dir");
+				}
+				resourceRequestDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				resourceRequestDTO.setSortOrder(sortColumnOrder);
+	      		
+				ResponseList<ProjectPlanningResourceRequestDTO> requestDTOList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO,user.getId(), orgLocation.getId(),userRoleName);
+	      		
+	      		return requestDTOList;
+	    	}
+	        
+	        
+	        
+	        @RequestMapping(value = "/getProjectResourceRequestsCounts", method = RequestMethod.GET)
+			public @ResponseBody ProjectPlanningResourceRequestDTO getProjectResourceRequestsCounts(HttpServletRequest request) throws Exception {
+			   
+        	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+      		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
+			 
+			  ProjectPlanningResourceRequestDTO projectPlanningResourceRequestDTO = new ProjectPlanningResourceRequestDTO();
+			  
+			  Integer waitingCount = 0;
+			  Integer approvedCount = 0;
+			  Integer rejectedCount = 0;
+			  Integer onholdCount = 0;
+			  
+			  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+				  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
+					  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+						  approvedCount = approvedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+						  waitingCount = waitingCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+						  rejectedCount = rejectedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+						  onholdCount = onholdCount + 1;
+					  }
+				  }
+			  }
+			  
+			  projectPlanningResourceRequestDTO.setWaitingCount(waitingCount);
+			  projectPlanningResourceRequestDTO.setApprovedCount(approvedCount);
+			  projectPlanningResourceRequestDTO.setRejectedCount(rejectedCount);
+			  projectPlanningResourceRequestDTO.setOnholdCount(onholdCount);
+			  
+			  return projectPlanningResourceRequestDTO;
+			  
+		    }
+	        
+	        
+	        
+	        
+	        
+	        
+	        @RequestMapping(value = "/getProjectPlanningNewResourceRequestList", method = RequestMethod.GET)
+	      	public ResponseList<ProjectPlanningNewResourceRequestDTO> getProjectPlanningNewResourceRequestList(ProjectPlanningNewResourceRequestDTO resourceRequestDTO,HttpServletRequest request) throws Exception {
+
+	      		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	      		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	      		 
+	      		String[] tableColumns = {"projectPlanningRequestId","projectName", "roleName", "requestedUser", "approverName","consultingType", "noOfResource"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "desc"; //by default referContactsDTO order
+				if(resourceRequestDTO.getOrder() != null && !resourceRequestDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(resourceRequestDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = resourceRequestDTO.getOrder().get(0).get("dir");
+				}
+				resourceRequestDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				resourceRequestDTO.setSortOrder(sortColumnOrder);
+	      		
+				ResponseList<ProjectPlanningNewResourceRequestDTO> requestDTOList = projectPlanningNewResourceRequestService.getNewResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO,user.getId(), orgLocation.getId(),userRoleName);
+	      		
+	      		return requestDTOList;
+	    	}
+	        
+	        
+	        
+	        @RequestMapping(value = "/getProjectNewResourceRequestsCounts", method = RequestMethod.GET)
+			public @ResponseBody ProjectPlanningNewResourceRequestDTO getProjectNewResourceRequestsCounts(HttpServletRequest request) throws Exception {
+			   
+        	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+      		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			  List<ProjectPlanningNewResourceRequest> projectPlanningRequestList = projectPlanningNewResourceRequestService.getNewResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
+			 
+			  ProjectPlanningNewResourceRequestDTO projectPlanningNewResourceRequestDTO = new ProjectPlanningNewResourceRequestDTO();
+			  
+			  Integer waitingCount = 0;
+			  Integer approvedCount = 0;
+			  Integer rejectedCount = 0;
+			  Integer onholdCount = 0;
+			  
+			  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+				  for(ProjectPlanningNewResourceRequest planningRequest : projectPlanningRequestList){
+					  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+						  approvedCount = approvedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+						  waitingCount = waitingCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+						  rejectedCount = rejectedCount + 1;
+					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+						  onholdCount = onholdCount + 1;
+					  }
+				  }
+			  }
+			  projectPlanningNewResourceRequestDTO.setWaitingCount(waitingCount);
+			  projectPlanningNewResourceRequestDTO.setApprovedCount(approvedCount);
+			  projectPlanningNewResourceRequestDTO.setRejectedCount(rejectedCount);
+			  projectPlanningNewResourceRequestDTO.setOnholdCount(onholdCount);
+			  
+			  return projectPlanningNewResourceRequestDTO;
+			  
+		    }
+	        
+	        
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}

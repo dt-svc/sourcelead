@@ -2,17 +2,18 @@ package com.bis.sourcelead.service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.dto.ConnectionsDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 
 public interface UserRoleService {
@@ -44,6 +45,8 @@ public interface UserRoleService {
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
+	
+	public UserRole getUserRoleById(Long userRoleId) throws Exception;
 
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
@@ -53,6 +56,10 @@ public interface UserRoleService {
 	 * @throws Exception
 	 */
 	public UserRole getUserRoleByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
+	public UserRole getUserRoleWithoutAdminsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
+	
+	
 	
 	/**
 	 * @author Prasad salina
@@ -89,7 +96,7 @@ public interface UserRoleService {
 	public List<UserRole> getUserSpocsListByUserId(Long userId) throws Exception;
 
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, List<UserRole> activeList,
-			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList, String userState) throws Exception;
+			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList, String userState,OrgLocations orgLocations) throws Exception;
 
 	public File getPdfFile(List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -104,7 +111,9 @@ public interface UserRoleService {
 	 */
 	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
 	 
-	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId) throws Exception;
+	 public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception;
+	 
+	 public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception;
 	 
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	 
@@ -125,5 +134,12 @@ public interface UserRoleService {
 	 public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId,Long locationId,String userType) throws Exception;
 	 
 	 UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email,String userType) throws Exception;
+
+	public UserRole getUserRoleByVerficationUUID(String uuid);
+	
+	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO, Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
+	
+	List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
+
 
 }

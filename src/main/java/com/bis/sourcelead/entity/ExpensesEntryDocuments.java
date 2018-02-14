@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,8 +32,7 @@ import org.hibernate.annotations.NotFoundAction;
 */
 
 @Entity
-@Table(name = "EXPENSES_ENTRIES_DOCUMENTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntriesDocuments")
+@Table(name = "EXPENSES_ENTRIES_DOCUMENTS")
 public class ExpensesEntryDocuments implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -41,15 +41,11 @@ private static final long serialVersionUID = 1L;
 @Column(name = "ID", nullable = false)
 private Long id;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name="EXPENSES_ENTRIES_ID", nullable=false )        
 private ExpensesEntries expensesEntriesId;
 
-@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-@Lob
-private  byte[] docFile;
-	
 @Column(name = "FILE_CONTENT_TYPE")
 private String fileContentType;
 
@@ -88,14 +84,6 @@ public ExpensesEntries getExpensesEntriesId() {
 
 public void setExpensesEntriesId(ExpensesEntries expensesEntriesId) {
 	this.expensesEntriesId = expensesEntriesId;
-}
-
-public byte[] getDocFile() {
-	return docFile;
-}
-
-public void setDocFile(byte[] docFile) {
-	this.docFile = docFile;
 }
 
 public String getFileContentType() {

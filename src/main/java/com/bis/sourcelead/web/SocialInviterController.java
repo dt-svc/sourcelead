@@ -12,6 +12,7 @@ import com.bis.sourcelead.util.CommonUtil;
  
 
 @Controller 
+@RequestMapping("/app")
 public class SocialInviterController {
 	
 	@Value("${sourceleadUrl}")
