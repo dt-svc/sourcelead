@@ -86,7 +86,7 @@ function getPendingLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+',\''+opt.status+'\');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right" ></i></div>'; 
+			        		 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+orgLocationId+',\''+opt.status+'\');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right" ></i></div>'; 
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -117,7 +117,7 @@ function getPendingLeavesList(){
 			        		 result = result + '  <div title="" class="tblminwidth-75">';
 			        		 result = result +' <b class="proj_process mt5 mb5" title="'+opt.status+'">'+opt.status+'</b> ';
 			        		 if(opt.isWithdrawEnable !=null && opt.isWithdrawEnable !='' && opt.isWithdrawEnable == 'Y' ){
-			        			 result = result +' <b class="proj_closed mb5 cursorPointer" TITLE="WITHDRAW" onClick="withDrawLeave(\''+opt.id+'\','+orgLocationId+');">WITHDRAW</b>';	 
+			        			 result = result +' <b class="proj_closed mb5 cursorPointer" TITLE="WITHDRAW" onClick="withDrawLeave(\''+opt.leaveUUID+'\','+orgLocationId+');">WITHDRAW</b>';	 
 			        		 }
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
@@ -148,8 +148,8 @@ function getPendingLeavesList(){
 </script>
 
 <script>
-function getRequestedAproveSummary(leaveId,orgLocationId,status){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
 		   if(data != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
@@ -293,14 +293,14 @@ function pendingListPagination(){
 </div>
 
 <script>
-function withDrawLeave(leaveId,orgLocationId){
+function withDrawLeave(leaveUUID,orgLocationId){
 	
 	var result = "";
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='WithDraw Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='WithDraw Reason' rows='2'></textarea>";
 	result = result + ' <div id="withdrawReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveId+'\','+orgLocationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveUUID+'\','+orgLocationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -317,7 +317,7 @@ function cancelTermination(){
 }
 </script>
 <script>
-function withdraw(leaveId,orgLocationId){
+function withdraw(leaveUUID,orgLocationId){
 	 var reason = document.getElementById("withdrawReason").value;
 	 var userId = '${SourceLeadWeb_userId}';
 	 if(reason == null || reason == '' || reason == 'undefined'){
@@ -325,13 +325,13 @@ function withdraw(leaveId,orgLocationId){
 	  	 $("#withdrawReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
 	 }else{
 		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
-		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&reason="+reason+"&userId="+userId, function(data) {
+		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId, function(data) {
 				if(data == true){
 					$("#popUp").empty();
 		 			$("#remove_user_pop, .sideMask").fadeOut();
 		 			$("#selector1").removeAttr("style");
 		    		 $("#selector1").css({ display: "block" });
-		    	     $("#msgDiv").html("Withdraw Leave Successfully..");
+		    	     $("#msgDiv").html("Leave Withdrawn Successfully..");
 		    	     msgFadein();
 		    	     getPendingLeavesList();
 				}
