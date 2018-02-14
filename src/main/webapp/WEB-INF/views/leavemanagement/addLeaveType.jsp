@@ -19,6 +19,12 @@
 	
 <script>
 	$(document).ready(function(){
+		var leaveTypeId = '${leaveType.id}';
+		if(leaveTypeId != null && leaveTypeId != '' && leaveTypeId != 'undefined'){
+			$("#leaveTypeId").val(leaveTypeId);
+		}else{
+			$("#leaveTypeId").val(0);
+		}
 		var policy = '${leaveType.leavePolicy}';
 		if (policy == 'Y') {
 			leavePolicy();
@@ -114,7 +120,7 @@
 						<div class="form-group">
 							<label class="col-md-4">Name<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-6" id="leaveTypeDiv">
-								<input type="hidden" id="leaveTypeId" name="leaveTypeId" value="${leaveType.id}" />
+								<input type="hidden" id="leaveTypeId" name="leaveTypeId" value="" />
 								 <input type="text" class="form-control" id="leaveTypeName" name="name" value="${leaveType.name}" onblur="validateName();" field-name="Name"
 									data-validation="required validate_Space validate_length length1-250">
 							</div>
@@ -669,9 +675,7 @@
 					.attr(
 							'style',
 							'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl + "/saveNewLeaveType?" + tokenParamName + "="
-					+ tokenValue + "&orgLocationId=" + locationId
-					+ "&loginUserId=" + loginUserId, formData, function(data) {
+			$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(data) {
 				if (data == "success") {
 					location.replace(sourceleadUrl + "/viewLeaveTypes");
 				}

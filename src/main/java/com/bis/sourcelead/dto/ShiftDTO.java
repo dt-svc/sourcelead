@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 public class ShiftDTO {
 	
-	private String id;
+	private long id;
 	private String userId;
 	private String orgLocationId;
 	private String shiftName;
@@ -12,12 +12,13 @@ public class ShiftDTO {
 	private String shiftId;
 	private String status;
 	private String updatedBy;
+	private String shiftUUID;
 	
 	
-	public String getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	public String getUserId()
@@ -90,8 +91,12 @@ public class ShiftDTO {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
-	
-	
-	
+	public String getShiftUUID()
+	{
+		return shiftUUID;
+	}
+	public void setShiftUUID(String shiftUUID)
+	{
+		this.shiftUUID = shiftUUID;
+	}
 }

@@ -1913,6 +1913,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					employee.setOrgLocations(orgLocations);
 	    					employee.setCreatedBy(user.getUserCode());
 	    					employee.setHireDate(new Date());
+	    					employee.setUserEmploymentType("Offshore C2C");
+	    					employee.setOrgRelationId(orgRelations);
+	    					employee.setSpocId(orgSpoc);
 	    					
 	    					if(associateDTO.getBillRate() != null){
 	    						employee.setRate(associateDTO.getBillRate().toString());
