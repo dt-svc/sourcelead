@@ -888,7 +888,7 @@ function dynamicUserListPagination(url){
 		  }],
 		    "scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-// 	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
