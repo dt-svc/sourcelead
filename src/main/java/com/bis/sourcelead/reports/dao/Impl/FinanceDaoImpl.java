@@ -66,14 +66,14 @@ public class FinanceDaoImpl implements FinanceDao{
 				for (String relationId : ids) {
 					idsList.add(Long.parseLong(relationId));
 				}
-				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.orgRelationID.id IN (:orgIds)";
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.orgRelationID.id IN (:orgIds)";
 			} else {
-				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' ";
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' ";
 			}
 
 			Session session = this.sessionFactory.getCurrentSession();
 
-			String countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
+			String countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked'";
 			StringBuilder searchQuery = new StringBuilder("");
 			if (apAgingDTO.getSearchValue() != null && !"".equalsIgnoreCase(apAgingDTO.getSearchValue())) {
 				searchQuery
@@ -260,11 +260,11 @@ public class FinanceDaoImpl implements FinanceDao{
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
 			}else {
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and invoice.paymentStatus = 'Unpaid'";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked'";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked'";
 					
 			}
 			

@@ -619,8 +619,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
-	     		  if(null != inputValue){
-	     			  if(inputValue == "25+"){
+	     		 if(inputValue != null && inputValue != 'undefined' && inputValue != ''){
+	     			 if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;

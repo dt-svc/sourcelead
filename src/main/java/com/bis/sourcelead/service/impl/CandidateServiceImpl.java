@@ -24,7 +24,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
@@ -38,18 +38,20 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCustomFieldData;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -64,11 +66,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -80,6 +83,7 @@ import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -189,6 +193,13 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     EmployeesDao employeeDao;
     
+    @Autowired
+    private OrglocationFormFieldsService orglocationFormFieldsService;
+    
+    @Autowired
+    private CandidateCustomFieldDataService candidateCustomFieldDataService;
+    
+       
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -569,6 +580,25 @@ public class CandidateServiceImpl implements CandidateService {
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
+		
+		if(candidateDto.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					CandidateCustomFieldData candidateCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						candidateCustomFields = candidateCustomFieldDataService.getCandidateCustomFieldDataById(customFields.getEntityId());
+					}else {
+						candidateCustomFields = new CandidateCustomFieldData();
+					}
+				candidateCustomFields.setCandidate(savedCandidate);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				candidateCustomFields.setOrglocationsFormFields(orgFormField);
+				candidateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				candidateCustomFieldDataService.savejobCustomFieldData(candidateCustomFields);
+				}
+				
+			}	
+		}
 		
 		
 		/*
@@ -1016,10 +1046,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getMatchQueryBuilderListForCandidate(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getQueryBuilderListForCandidate(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -1813,6 +1843,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							 }
 							 
 							 clientService.saveOrUpdateClientVendorElkDocument(null, vendorOrgLocation, "Vendor", orgSpoc, orgRelations,null, user, orgLocations);
+							 orgSpocService.addClientVendorContactsELK(orgSpoc);
     					
 						}
 						
@@ -1838,7 +1869,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setCountry(candidate.getCountry());
 							vendorCandidate.setOrgLocationId(orgLocations);
 							vendorCandidate.setIsAssociate(Constants.YES);
-							vendorCandidate.setDesignationType("Full Time");
+							vendorCandidate.setDesignationType("Offshore C2C");
 							
 							if(associateDTO.getBillRate() != null){
 								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
@@ -1884,6 +1915,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					employee.setUser(candidate.getConsultantUser());
 	    					employee.setOrgLocations(orgLocations);
 	    					employee.setCreatedBy(user.getUserCode());
+	    					employee.setHireDate(new Date());
+	    					employee.setUserEmploymentType("Offshore C2C");
+	    					employee.setOrgRelationId(orgRelations);
+	    					employee.setSpocId(orgSpoc);
 	    					
 	    					if(associateDTO.getBillRate() != null){
 	    						employee.setRate(associateDTO.getBillRate().toString());
@@ -1946,6 +1981,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgSpocSet.add(orgSpoc);
 			orgRelations.setOrgSpocList(orgSpocSet);
 			return orgRelations;
+	}
+	
+	@Override
+	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
 	}
 
 }

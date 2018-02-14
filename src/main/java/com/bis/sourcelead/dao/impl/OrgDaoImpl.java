@@ -183,6 +183,18 @@ public class OrgDaoImpl implements OrgDao {
 		List<Org> orgList = crit.list();
 		return orgList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Org> getOpenJobsOrgs() throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Org> orgList;
+		Criteria crit = session.createCriteria(Org.class);
+		orgList = crit.setMaxResults(5).list();
+		return orgList;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -388,6 +400,23 @@ public class OrgDaoImpl implements OrgDao {
 		
 		return userList;
 	}
+
+	@Override
+	@Transactional
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		if ("Others".equalsIgnoreCase(alphabet)) {
+			query = ("from Org org where org.orgName <= '@' or org.orgName >= '{'");
+		}
+		else {
+			query = ("from Org org where org.orgName like '" + alphabet + "%'");
+		}
+		List<Org> locationList = session.createQuery(query.toString()).list();
+		return locationList;
+	}
+	
 
 }
 

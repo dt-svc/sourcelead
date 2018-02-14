@@ -1,4 +1,12 @@
   <!--   HTML   -->	  
+  <%
+    if (request.getRequestURL().toString().indexOf("www.") == -1 
+            && request.getRequestURL().toString().indexOf("localhost") == -1
+            && request.getRequestURL().toString().indexOf("qa.") == -1
+            && request.getRequestURL().toString().indexOf("staging.") == -1
+            && request.getRequestURL().toString().indexOf("demo.") == -1) {
+        response.sendRedirect("https://www.sourcelead.com/login");
+    } %>
 <jsp:include page="../staticHeader.jsp" /> 
 <div class="homeBanner">
 <div class="home-caption">
@@ -304,4 +312,9 @@
   </div>
 </section>
 <!-- Benefits of sourcelead  -->
-<jsp:include page="../staticFooter.jsp" /> 
+<jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#indexpageID").addClass("slactive");
+}
+</script>

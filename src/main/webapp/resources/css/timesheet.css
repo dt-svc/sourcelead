@@ -6,7 +6,7 @@ body {
     outline:none;
     }    
 a { cursor:pointer;}
-  
+ 
 .timesheet_out {
     width:auto; padding:0px 0px 0px 0px; position:relative;
     }
@@ -4824,9 +4824,9 @@ width: 100% !important; margin: 0px !important;
 	position: absolute; right: 0px; top: 10px; color: #95ccff;
 }
 
-input[type="text"] {
+/*input[type="text"] {
     margin: 0px; margin-bottom: 0px !important;
-}
+}*/
 
 
 .ifraMask {
@@ -5337,6 +5337,7 @@ border: 1px solid #333;
 }
 .empUlAli li .fa-caret-down {
     display: inline-block; font-size: 14px; font-weight: 500; color: #333; padding: 0px 0px 0px 20px;
+
 }
 .empUlAli li .statusFiler-1 {
     right:8px; min-width: 180px;
@@ -6060,7 +6061,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 .popUpOut.popUpOutBig {
-	width: 900px;
+	width: 900px; top: 5%;
 }
 .popUpOut.popUpOutFixed {
 	position: fixed;
@@ -6085,7 +6086,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	padding: 5px 0px 20px 0px; border-bottom: 1px solid #ededed; min-height: 150px; overflow-y: auto;
 }
 .popupMidHeight {
-	min-height: inherit;
+	min-height: inherit; overflow: inherit !important;
 }
 .popupMidOver {
 	overflow: inherit;
@@ -6693,6 +6694,9 @@ position: absolute;
 .cusFielAction .fa-sort {
 	color: #666;
 }
+.cusFielAction .fa-check {
+	color: #30c453;
+}
 .cusFielAction .hideIcon {
 	opacity: 0; visibility: hidden;
 }
@@ -7096,6 +7100,7 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 	background-color: #fff; border-radius: 3px;
 }
 .comProTabs ul {
+
     margin:0px 0px; padding:0px 0px 0px 10px;
     }
 .comProTabs ul li {
@@ -7243,6 +7248,7 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 }
 .srchresulwidget .btn {
 	padding:5px 25px; border-radius: 2px;
+
 }
 .width120 {
 	width: 120px; display:inline-block;
@@ -7440,7 +7446,7 @@ font-weight: 500;
 	background-color: #fff; width: auto; margin: 15px 15px; padding: 10px 0px;
 }
 .payRoTabs {
-	padding: 0px 0px 0px 5px;
+	padding: 0px 0px 0px 3px; position: relative; z-index: 10;
 }
 .payRoTabs a {
 	padding: 8px 30px; font-size: 15px; display: inline-block; background-color: #eef1fc; font-weight: 400; color: #666;
@@ -7495,4 +7501,56 @@ font-weight: 500;
 }
 .campsubMenuView {
     display: none; background-color: #2970B1;
+}
+.bgWhite {
+	background-color: #fff;
+}
+.chooRadius .chosen-container-single .chosen-single span {
+	max-width: 150px;
+}
+
+/* pay */
+
+.payslipPOp {
+	
+}
+.payslipPOp h3 {
+	padding: 8px 0px 10px 0px; margin: 0px 0px; font-size: 16px; font-weight: 500; color: #454545;
+}
+.payDetails {
+	padding: 5px 0px;
+}
+.payDetails span {
+	font-size: 14px; font-weight: 400; color: #545454;
+}
+.paytab {
+	padding: 6px 2px 0px;
+}
+.paytab table {
+	width: 100%;
+}
+.paytab table tr th {
+	text-align: left; background-color: #f1f1f1; padding: 8px 15px; font-size: 14px; font-weight: 500; color: #333;
+}
+.paytab table tr td {
+	text-align: left; padding: 8px 15px; font-size: 14px; font-weight: 400; color: #454545; border-bottom: 1px solid #f5f5f5;
+}
+
+.cliHead {
+	padding: 12px 15px; margin: 0px 0px; position: relative; font-size: 15px; font-weight: 500; color: #333;
+	background-color: #fafafa;
+}
+.cliHead i {
+	position: absolute; right: 15px; top: 12px; cursor: pointer;
+}
+
+.totalWrap.timesheethours-li li {
+    min-height: 42px; height: auto;
+    }
+.emailverification-contnet {
+    margin-top: 75px;
+}
+.listUlLi {}
+.listUlLi li {
+	float: left;width: 50%; padding: 5px 10px; box-sizing: border-box;
 }

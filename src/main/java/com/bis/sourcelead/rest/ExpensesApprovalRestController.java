@@ -255,7 +255,7 @@ public class ExpensesApprovalRestController {
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 //			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
 //			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-		     globalVarsMap.put("employeename",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
+		     globalVarsMap.put("employeename",projectMembers.getProjectMemberCandidteId().getFullName());
 			
 //			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
 //			 globalVarsMap.put("managerLastName",projectManager.getLastName());
@@ -340,7 +340,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("managerUser",loginUser.getFirstName());
 		 }
 		 
-		 globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
+		 globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getFullName());
 		 globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName());
 		 globalVarsMap.put("expenseId",expenses.getExpenseId());
 		 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());

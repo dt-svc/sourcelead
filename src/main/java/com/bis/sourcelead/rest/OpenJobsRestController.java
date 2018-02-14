@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -35,10 +35,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
@@ -70,6 +72,9 @@ public class OpenJobsRestController {
 
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
@@ -122,10 +127,10 @@ public class OpenJobsRestController {
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : anyKeyWordArray) {
 						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+							for (QueryBuilder QueryBuilder : QueryBuilderList) {
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -142,10 +147,10 @@ public class OpenJobsRestController {
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : anyKeyWordArray) {
 						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+							for (QueryBuilder QueryBuilder : QueryBuilderList) {
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -163,12 +168,12 @@ public class OpenJobsRestController {
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : anyKeyWordArray) {
 						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-						matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
-						matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
-						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+						QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+						QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
+						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+							for (QueryBuilder QueryBuilder : QueryBuilderList) {
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -180,9 +185,11 @@ public class OpenJobsRestController {
 
 			BoolQueryBuilder openJobsLocationQueryBuilder = QueryBuilders.boolQuery();
 			BoolQueryBuilder openJobscombinedQueryBuilder = QueryBuilders.boolQuery();
+			if(null != openJobsLocation && !"".equalsIgnoreCase(openJobsLocation)){
 			openJobscombinedQueryBuilder.should(QueryBuilders.matchQuery("country", openJobsLocation));
 			openJobscombinedQueryBuilder.should(QueryBuilders.matchQuery("city", openJobsLocation));
 			openJobscombinedQueryBuilder.should(QueryBuilders.matchQuery("state", openJobsLocation));
+			}
 			openJobsLocationQueryBuilder.must(openJobscombinedQueryBuilder);
 
 			BoolQueryBuilder combinedOpenToPublicAndCrowdSourcingQueryBuilder = QueryBuilders.boolQuery();
@@ -416,10 +423,10 @@ public class OpenJobsRestController {
 					BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : excludeKeyWordArray) {
 						BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+							for (QueryBuilder QueryBuilder : QueryBuilderList) {
+								excludeBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 						}
@@ -435,10 +442,10 @@ public class OpenJobsRestController {
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : anyKeyWordArray) {
 						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+							for (QueryBuilder QueryBuilder : QueryBuilderList) {
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 						}
@@ -454,10 +461,10 @@ public class OpenJobsRestController {
 					BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : allKeyWordArray) {
 						BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-							for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-								allBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+							for (QueryBuilder QueryBuilder : QueryBuilderList) {
+								allBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 						}
@@ -603,35 +610,35 @@ public class OpenJobsRestController {
 		return keyWordList;
 	}
 
-	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
+	private ArrayList<QueryBuilder> getQueryBuilderList(String keywd) {
 
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
 
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
 //			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	public void calculateDaysAndSkills(List<RequirementIndex> requirementList) throws ParseException {
@@ -685,28 +692,47 @@ public class OpenJobsRestController {
 	@RequestMapping(value = { "/app/ws/getOrgsListforOpenJobs", "/app/getOrgsListforOpenJobs" })
 	public @ResponseBody String getOrgsListforOpenJobs(
 			@RequestParam(value = "alphabet", required = false) String alphabet,
-			@RequestParam(value = "country", required = false) String country) throws Exception {
-		List<OrgLocations> locationsList = null;
+			@RequestParam(value = "country", required = false) String country,@RequestParam(value = "type", required = false) String type) throws Exception {
+		List<Org> orgList = null;
 		String json;
 		if ("none".equalsIgnoreCase(alphabet)) {
-			locationsList = orgLocationService.getAllOrgLocations();
+			orgList = orgService.getOpenJobsOrgs();
 		} else {
-			locationsList = orgLocationService.getAllOrgsStartsWithAlphabet(alphabet);
+			orgList = orgService.getAllOpenJobsOrgsStartsWithAlphabet(alphabet);
 		}
-		List<OrgLocations> countryfiltered = new ArrayList<>();
-		for (OrgLocations loc : locationsList) {
-			if (null != country && country.equalsIgnoreCase(loc.getCountry())) {
-				loc.setOrgName(loc.getOrgLocationName());
-				countryfiltered.add(loc);
-			} else {
-				loc.setOrgName(loc.getOrgLocationName());
+		List<Org> tobereturnedOrgList = new ArrayList<>();
+		if("main".equalsIgnoreCase(type)){
+			int i = 1;
+			for (Org org : orgList) {
+				if(i<=5){
+					org.setNoOfDays(orgList.size());
+					tobereturnedOrgList.add(org);
+				}else
+					break;
+				i++;
+				
+				
+				/*if (null != country && country.equalsIgnoreCase(loc.getCountry())) {
+					loc.setOrgName(loc.getOrgLocationName());
+					countryfiltered.add(loc);
+				} else {
+					loc.setOrgName(loc.getOrgLocationName());
+				}*/
 			}
 		}
+		
+		
 
+		
 		if (null != country && !"".equalsIgnoreCase(country)) {
-			json = commonUtil.toJSON(countryfiltered);
-		} else {
-			json = commonUtil.toJSON(locationsList);
+			json = commonUtil.toJSON(orgList);
+		}
+		else if("sub".equalsIgnoreCase(type)){
+					
+			json = commonUtil.toJSON(orgList);
+				}
+		else {
+			json = commonUtil.toJSON(tobereturnedOrgList);
 		}
 		return json;
 	}

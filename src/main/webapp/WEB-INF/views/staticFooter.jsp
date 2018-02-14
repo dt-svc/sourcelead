@@ -28,27 +28,26 @@
   		<h4>Reach Us &#64;</h4>
   		<div class="reachus">
   			<h5>INDIA</h5>
-			<p>Hyderabad, Telangana.<br>Tel.: + 91. 40-6700-7676</p>
+			<p>Hyderabad, Telangana.<br><i class="fa fa-phone"></i>  91. 40-6700-7676</p>
   		</div>
   		<div class="reachus mt clearfix">
   			<h5>USA</h5>
-  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br>Tel.: + (214) 295-5535</p>
+  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br><i class="fa fa-phone"></i>  (214) 295-5535</p>
   		</div>
   	</div>
   	<div class="col-md-5 col-sm-6">
   	<div class="clearfix needinfo">
   		<h4>Need more information?</h4>
-  		<p>Contact our experts for more information. We will assist you
-with your questions.  For a live demonstration of our recruitment software, <br>
+  		<p>Contact our experts for more information. <br> For a live demonstration of our recruitment software, <br>
 mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</strong></a></p>
 		</div>
 			  <div class="social-links social-icons mt">
 	  	<ul class="list-unstyled list-inline">
-			<li><a href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook"></i></a></li>
-			<li><a href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter"></i></a></li>
-			<li><a href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
-			<li><a href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus"></i></a></li>
-			<li><a href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube"></i></a></li>
+			<li><a title="FaceBook" href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook text-primary"></i></a></li>
+			<li><a title="Youtube" href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube text-danger"></i></a></li>
+			<li><a title="Twitter" href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter text-info"></i></a></li>
+			<li><a title="GooglePlus" href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus text-danger"></i></a></li>
+			<li><a title="LinedIn" href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><i class="fa fa-linkedin text-primary"></i></a></li>
 		</ul>
 	  </div>
   	</div>

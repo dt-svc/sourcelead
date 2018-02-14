@@ -23,6 +23,8 @@ public interface HolidayDAO {
 
 	List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,  Date endDate,Long orgLocationId)throws Exception;
 
+	Holiday getHolidaysByUUID(String holidayUUID);
+
 	
 	
 }
