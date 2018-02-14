@@ -75,13 +75,12 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 				 
 				 Map<String,Integer> monthlyLeaves =  getMonthlyAppliedLeaves(leave);
 				 System.out.println(monthlyLeaves);
-					 String query1 = " insert into sourcelead.MONTHLY_LEAVES (LEAVE_ID, JANUARY_LEAVES, FEBRUARY_LEAVES, MARCH_LEAVES, APRIL_LEAVES, MAY_LEAVES, JUNE_LEAVES, JULY_LEAVES, AUGUST_LEAVES, SEPTEMBER_LEAVES, OCTOBER_LEAVES, NOVEMBER_LEAVES, DECEMBER_LEAVES, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY, ID )"
-								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					 String query1 = " insert into sourcelead.MONTHLY_LEAVES (LEAVE_ID, JANUARY_LEAVES, FEBRUARY_LEAVES, MARCH_LEAVES, APRIL_LEAVES, MAY_LEAVES, JUNE_LEAVES, JULY_LEAVES, AUGUST_LEAVES, SEPTEMBER_LEAVES, OCTOBER_LEAVES, NOVEMBER_LEAVES, DECEMBER_LEAVES, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY)"
+								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 					 try {
 		    			 PreparedStatement pstmt1 = conn.prepareStatement(query1);
 		    			 
 		    			 
-		    			 pstmt1.setString(18, RandomStringUtils.randomAlphanumeric(16));
 			    		 pstmt1.setLong(1, leave.getId());
 			    		 
 			    		 int jan = 0;
