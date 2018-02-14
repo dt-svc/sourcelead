@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.ConnectionsService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -70,6 +72,10 @@ public class ImmigrationRestController {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
 	
 	@Autowired
 	ImmigrationTemplateService immigrationTemplateService;
@@ -134,18 +140,33 @@ public class ImmigrationRestController {
 	}*/
 	
 	@RequestMapping(value={"/addPetitionTemplate"})
-	public ModelAndView addPetitionTemplatePage(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
+	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
+			@RequestParam(value = "status", required = false) String status) {
 		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		if(status.equalsIgnoreCase("tempDetails")) {
-			model.setViewName("/immigration/petitionTemplateDetails");
-		}else if(status.equalsIgnoreCase("docDetails")) {
-			model.setViewName("/immigration/petitionTemplateDocDetails");
-		}/*else if(status.equalsIgnoreCase("three")) {
-			model.setViewName("/immigration/petitionTemplateFormDetails");
-		}else if(status.equalsIgnoreCase("four")) {
-			model.setViewName("/immigration/immigrationTemplateTaskList");
-		}*/
+		try {
+
+			
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			if (status.equalsIgnoreCase("tempDetails")) {
+				model.setViewName("/immigration/petitionTemplateDetails");
+			} else if (status.equalsIgnoreCase("docDetails")) {
+				List<LookUpData> educationsList = null;
+				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); // for populating drop down values in UI.
+				model.addObject("educationsList", educationsList);
+
+				model.setViewName("/immigration/petitionTemplateDocDetails");
+			} /*
+				 * else if(status.equalsIgnoreCase("three")) {
+				 * model.setViewName("/immigration/petitionTemplateFormDetails"); }else
+				 * if(status.equalsIgnoreCase("four")) {
+				 * model.setViewName("/immigration/immigrationTemplateTaskList"); }
+				 */
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("Exception occured in method addPetitionTemplatePage");
+			e.printStackTrace();
+		}
+
 		return model;
 	}
 	

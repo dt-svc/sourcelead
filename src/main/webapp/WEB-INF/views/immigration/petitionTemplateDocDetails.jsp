@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -16,11 +17,12 @@
 			<div class="immiTemp clearfix">
 				<div class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-3">
-					<select class="form-control chosen-select">
-						<option>--Select Document--</option>
-						<option>Document-1</option>
-						<option>Document-2</option>
-						<option>Document-3</option>
+					<select class="form-control chosen-select" 
+									name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+						<option value="" selected>--Select Document--</option>
+						<c:forEach var="edu" items="${educationsList}">
+										<option value="${edu.id}">${edu.name}</option>
+									</c:forEach>
 					</select>
 				  </div>
 				  <div class="col-md-7 noPad">
@@ -47,13 +49,13 @@
 				
 				<div class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-3">
-					<select class="form-control chosen-select">
-						<option>--Select Document--</option>
-						<option>Document-1</option>
-						<option>Document-2</option>
-						<option>Document-3</option>
-					</select>
-				  </div>
+						<select class="form-control chosen-select">
+							<option value="" selected>--Select Document--</option>
+							<c:forEach var="edu" items="${educationsList}">
+								<option value="${edu.id}">${edu.name}</option>
+							</c:forEach>
+						</select>
+					</div>
 				  <div class="col-md-7 noPad">
 						<input type="text" class="form-control" placeholder="Description" />
 				  </div>
