@@ -14,9 +14,9 @@
       <div class="pull-left positionRelative"><h2>Custom Fields</h2>
 		  <select class="form-control selectpicker"id="actionId"  onChange="getFormFieldSections();">
 			  <c:forEach var="entity" items="${Sourcelead_Entities}">
-			  	<%-- <c:if test="${entity.actionName eq 'Add Job' or entity.actionName eq 'Add Candidate' or entity.actionName eq 'Add User'}"> --%>
+			  	 <c:if test="${entity.actionName eq 'Add Job' or entity.actionName eq 'Add Candidate' or entity.actionName eq 'Add User'}">
 			  		<option value="${entity.id}">${entity.actionName}</option>
-			  	<%-- </c:if> --%>
+			  	 </c:if>
 			  </c:forEach>
 		  </select>
       </div>

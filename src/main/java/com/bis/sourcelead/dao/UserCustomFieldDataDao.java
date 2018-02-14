@@ -12,4 +12,6 @@ public interface UserCustomFieldDataDao {
 
 	Map<Long, String[]> getUserCustomFieldDataByUserId(Long orgId, List<CustomFormFieldDTO> formFieldId, Long userId);
 
+	UserCustomFieldData getUserCustomFieldDataById(Long entityId);
+
 }

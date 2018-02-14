@@ -12,4 +12,6 @@ public interface UserCustomFieldDataService {
 
 	Map<Long, String[]> getUserCustomFieldDataByUserId(Long orgId, List<CustomFormFieldDTO> formFieldList, Long userId);
 
+	UserCustomFieldData getUserCustomFieldDataById(Long entityId);
+
 }

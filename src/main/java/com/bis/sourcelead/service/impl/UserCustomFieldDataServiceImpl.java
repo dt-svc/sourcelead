@@ -25,4 +25,9 @@ public class UserCustomFieldDataServiceImpl implements UserCustomFieldDataServic
 	@Override
 	public Map<Long, String[]> getUserCustomFieldDataByUserId(Long orgId, List<CustomFormFieldDTO> formFieldList,	Long userId) {
 		return userCustomFieldDataDao.getUserCustomFieldDataByUserId(orgId,formFieldList,userId);
+	}
+
+	@Override
+	public UserCustomFieldData getUserCustomFieldDataById(Long entityId) {
+		return userCustomFieldDataDao.getUserCustomFieldDataById(entityId);
 	}}

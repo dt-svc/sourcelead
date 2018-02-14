@@ -62,39 +62,43 @@
 	  </div>
 	 </c:if> 
 	 
-	<%--  <c:if test="${customForm.fieldType == 'checkBox'}">
+	  <c:if test="${customForm.fieldType == 'checkBox'}">
 	   <div class="form-group">
 	   	  <c:if test="${not empty dataMapList}">
 	   	  		<c:forEach var="dataMap" items="${dataMapList}">
 	   	  			<c:if test="${customForm.id eq dataMap.key}">
-	   	  			<label class="col-md-3"></label>
+	   	  			<label class="col-md-3">${customForm.labelName}</label>
 		              <div class="col-md-9">
 		                <div class="checkbox checkBox">
 		                  <label>
+		                  <input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		                  <input type="hidden" value="${dataMap.id}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
-		                  <input type="checkbox" value="${dataMap.customFormFieldData}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"  ${customForm.isRequired == 1 ? 'checked':''} >
-		                    ${customForm.labelName}</label>
+		                    <c:forEach var="optionValue" items="${customForm.optionData}">
+		     	 				<input type="checkbox" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" value="${optionValue.option}" ${dataMap.value[1] eq optionValue.option ? 'checked="checked"':''}>${optionValue.option}<br>
+		     	 			</c:forEach>
+		                    </label>
 		                </div>
 		             </div>
 		            </c:if>
 		        </c:forEach>
 	   	  </c:if>
 	   	  <c:if test="${empty dataMapList}">
-	   	  	<label class="col-md-3"></label>
-		              <div class="col-md-9">
+	   	  	<label class="col-md-3">${customForm.labelName}</label><br>
+		              <div class="col-md-9 mb10">
 		                <div class="checkbox checkBox">
-		                  <label>
+		                <label>
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
-		                  <input type="checkbox" value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"  ${customForm.isRequired == 1 ? 'checked':''} >
-		                    ${customForm.labelName}</label>
+		                    <c:forEach var="optionValue" items="${customForm.optionData}">
+			     	 			<input type="checkbox" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"  ${customForm.isRequired == 1 ? 'checked':''}>${optionValue.option}<br>
+			     	 		</c:forEach>
+			     	 		 </label>
 		                </div>
 		             </div>
 	   	  </c:if>
        </div>
 	 </c:if>
 	   
-	   <c:if test="${customForm.fieldType == 'datefield'}">
+	   <%--<c:if test="${customForm.fieldType == 'datefield'}">
 	  <div class="form-group">
                       <label class="col-md-3">${customForm.labelName}</label>
                          <div class="col-md-9">

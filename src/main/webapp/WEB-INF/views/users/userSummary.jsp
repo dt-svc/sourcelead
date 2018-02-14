@@ -1296,7 +1296,7 @@ $("#editRoleDetailsList").empty();
 				
 				<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 				  var sectionId = '${section.id}';
-				  getCustomDependentField(sectionId);
+				  preapareCustomFieldDetails(userId,sectionId);
 				</c:forEach>
 				
 				if(json.ratePer == 'Hourly'){
@@ -1556,7 +1556,9 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
-					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+					result = result + ' <div id="customFieldDataId"></div>';
+					
+					 /* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		           		if("${sectionOrder.index == 0}"){
 		           		 	 var sectionID = '${section.id}';
 		           		 	 result = result + ' <div class="clearfix"></div>';
@@ -1564,7 +1566,7 @@ $("#editRoleDetailsList").empty();
 		           			 result = result + ' <div class="clearfix"></div>';
 		           			}
 		        	</c:forEach>
-					
+					 */
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta pull-right">';
 					result = result + ' <input class="us-btn" value="Update" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
@@ -1614,10 +1616,10 @@ $("#editRoleDetailsList").empty();
 
 
 <script>
-function preapareCustomFieldDetails(userId){
+function preapareCustomFieldDetails(userId,sectionId){
 	$.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user",        
+         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
          success :function(data) {
         	 $('#customFieldDataId').empty();
         	 $('#customFieldDataId').append(data);
@@ -1626,7 +1628,7 @@ function preapareCustomFieldDetails(userId){
 }
 </script>
 
-<script>
+<!-- <script>
 function getCustomDependentField(sectionId){
 	$.ajax({
 			type : "POST" , 
@@ -1637,7 +1639,7 @@ function getCustomDependentField(sectionId){
 				 }
 		  });
 }
-</script>
+</script> -->
 
 <script>
 function updateUserDesignationOtherType(){

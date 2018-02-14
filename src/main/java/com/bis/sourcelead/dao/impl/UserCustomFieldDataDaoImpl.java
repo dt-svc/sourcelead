@@ -53,14 +53,27 @@ public class UserCustomFieldDataDaoImpl implements UserCustomFieldDataDao{
 		Map<Long,String[]> userCustomFieldDataMap = new HashMap<Long,String[]>();
 		if(userFieldData != null && !userFieldData.isEmpty()) {
 			for(UserCustomFieldData userData:userFieldData) {
-				String jobDataArray[] =  new String[4];
-				jobDataArray[0] = userData.getOrglocationsFormFields().getLabelName();
-				jobDataArray[1] = userData.getCustomFormFieldData();
-				jobDataArray[2] = userData.getId().toString();
-				userCustomFieldDataMap.put(userData.getOrglocationsFormFields().getId(), jobDataArray);
+				String userDataArray[] =  new String[4];
+				userDataArray[0] = userData.getOrglocationsFormFields().getLabelName();
+				userDataArray[1] = userData.getCustomFormFieldData();
+				userDataArray[2] = userData.getId().toString();
+				userCustomFieldDataMap.put(userData.getOrglocationsFormFields().getId(), userDataArray);
 			}
 		}
 		return userCustomFieldDataMap;
+	}
+
+	@Override
+	@Transactional
+	public UserCustomFieldData getUserCustomFieldDataById(Long entityId) {
+		Session session = sessionFactory.getCurrentSession();
+		UserCustomFieldData userCustomFields = null;
+		try {
+			userCustomFields = (UserCustomFieldData) session.get(UserCustomFieldData.class, entityId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userCustomFields;
 	}
 
 }
