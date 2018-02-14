@@ -1612,6 +1612,20 @@ $("#editRoleDetailsList").empty();
 }
 </script>
 
+
+<script>
+function preapareCustomFieldDetails(userId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user",        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
+
 <script>
 function getCustomDependentField(sectionId){
 	$.ajax({
