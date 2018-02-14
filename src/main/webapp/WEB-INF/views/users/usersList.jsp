@@ -792,7 +792,7 @@ function dynamicUserListPagination(url){
 		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
 		        			   result = result +"<td><div class='tbldata-dotdot-200'>"    
-		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft'>";
+		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 		        			    }else{
@@ -811,7 +811,7 @@ function dynamicUserListPagination(url){
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
 		        	  if(userRole.userEmail !=null && userRole.userEmail !='' && userRole.userEmail !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot">'+userRole.userEmail+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+userRole.userEmail+'">'+userRole.userEmail+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -828,7 +828,7 @@ function dynamicUserListPagination(url){
 					    	mobilePhone = "--"
 					    }
 		        	  var result = "";
-							result = result + ' <td><div class="tbldata-dotdot-100">'+mobilePhone+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+mobilePhone+'">'+mobilePhone+'</div></td>';
 		        	 return result;
 		        }
 		      }, {
@@ -836,7 +836,7 @@ function dynamicUserListPagination(url){
 		          "data": "displayName",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
-		        	  result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.userRoleName+'</div></td>';
+		        	  result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.userRoleName+'">'+userRole.userRoleName+'</div></td>';
 		        	  return result;
 		          }
 		        }, {
@@ -846,7 +846,7 @@ function dynamicUserListPagination(url){
 		            "render": function ( data, type, userRole, meta ) {
 		            	var result = "";
 		            	if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-sm">'+userRole.reportingManagerName+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-sm" title = "'+userRole.reportingManagerName+'">'+userRole.reportingManagerName+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-sm">--</div></td>';
 						}
@@ -860,7 +860,7 @@ function dynamicUserListPagination(url){
 		          "render": function ( data, type, userRole, meta ) {
 		          	var result = "";
 		          	 if(userRole.employeMentType !=null && userRole.employeMentType !='' && userRole.employeMentType !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.employeMentType+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.employeMentType+'">'+userRole.employeMentType+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
 						}
