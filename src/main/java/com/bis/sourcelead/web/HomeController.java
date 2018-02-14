@@ -410,7 +410,6 @@ public class HomeController {
         String IST1 = df1.format(startDateWithTime);
         df3.setTimeZone(TimeZone.getTimeZone(timezone.getID()));
         String IST3 = df3.format(startDateWithTime);
-        System.out.println(IST1+" "+startTime+" "+endTime+" "+IST3);
         String convertedDateString = IST1+" from "+startTime+" to "+endTime+" "+IST3;
     	return convertedDateString;
     }

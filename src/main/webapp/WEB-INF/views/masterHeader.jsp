@@ -1858,6 +1858,8 @@ $("#searchType").selectpicker('refresh');
 		  dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
+	  }).on('changeTime', function() {
+          $("#startTime").timepicker('option', 'minTime', $(this).val().getTime())
 	  });
 	  $("#startTime").timepicker({
 		  	timeFormat: 'g:ia',

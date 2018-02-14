@@ -30,9 +30,9 @@ window.onload = function() {
 </script>
 <script>
 $(document).ready(function(){
-	var temp = window.location.href.split("/login");
+	var location = window.location.origin;
 	 $.ajax({
-        url: temp[0]+"/getScheduleStatus",
+        url: location+"/getScheduleStatus",
         success: function(data) {
         	if(data !== ""){
         		$("#maintenanceStatus").append(data.mainMessage);
@@ -44,7 +44,11 @@ $(document).ready(function(){
  
  
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
- <div id="maintenanceStatus"></div>
+ <div class="marQ">
+        <marquee behavior="scroll" direction="left" id="">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
  <div class="signWrap">
 <!--  <div id="loading"></div> -->
  <c:if test="${!empty login_2_Step_Process_Enabled}">

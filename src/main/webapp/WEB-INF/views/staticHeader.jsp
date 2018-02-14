@@ -28,9 +28,9 @@
 </head>
 <script>
 $(document).ready(function(){
-	var location = window.location.href;
+	var location = window.location.origin;
 	 $.ajax({
-        url: location+"getScheduleStatus",
+        url: location+"/getScheduleStatus",
         success: function(data) {
         	if(data !== ""){
         		$("#maintenanceStatus").append(data.mainMessage);
@@ -40,6 +40,11 @@ $(document).ready(function(){
 });
 </script> 
 <body>
+<div class="marQ">
+        <marquee behavior="scroll" direction="left" id="">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
 <nav class="navbar navbar-default customNavBar" id="navHeader-scroll">
 	  <div class="container-fluid">
 		
@@ -89,6 +94,3 @@ $(document).ready(function(){
 		
 	  </div>
 	</nav>
-	<div id="maintenanceStatus"></div>
-	
-	
