@@ -43,11 +43,11 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 		</div>
 			  <div class="social-links social-icons mt">
 	  	<ul class="list-unstyled list-inline">
-			<li><a href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook"></i></a></li>
-			<li><a href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter"></i></a></li>
-			<li><a href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
-			<li><a href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus"></i></a></li>
-			<li><a href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube"></i></a></li>
+			<li><a title="FaceBook" href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook text-primary"></i></a></li>
+			<li><a title="Youtube" href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube text-danger"></i></a></li>
+			<li><a title="Twitter" href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter text-info"></i></a></li>
+			<li><a title="GooglePlus" href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus text-danger"></i></a></li>
+			<li><a title="LinedIn" href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><i class="fa fa-linkedin text-primary"></i></a></li>
 		</ul>
 	  </div>
   	</div>

@@ -340,7 +340,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
+	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId, Date startDateUTC, Date endDateUTC) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status='1' and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC" ;
 			List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC) .list(); 
@@ -350,7 +350,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
+	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, Date startDateUTC, Date endDateUTC) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTasks pt  where pt.projectId.id = :projectId and pt.status='1' and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC and pt.taskType.name != 'General'" ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).list(); 

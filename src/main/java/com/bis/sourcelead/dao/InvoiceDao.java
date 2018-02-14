@@ -47,4 +47,6 @@ public interface InvoiceDao{
 
 	Invoice getParentInvoiceByInvoiceId(Long invoiceId)throws Exception;
 
+	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId, Long orgLocationId, String invoiceStatus, Date startDate, Date endDate);
+
 }
