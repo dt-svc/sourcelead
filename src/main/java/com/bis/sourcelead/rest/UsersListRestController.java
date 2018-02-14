@@ -666,7 +666,7 @@ public class UsersListRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
-	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
+	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
 		String resultJson = null;
 
@@ -765,8 +765,8 @@ public class UsersListRestController {
 			 	}
 			 }
 		 }
-		resultJson = toJSON(userRole);
-		return resultJson;
+		//resultJson = toJSON(userRole);
+		return userRole;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
@@ -1953,18 +1953,23 @@ public class UsersListRestController {
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			User updatedUser = userService.addUser(user);
 			
-			if(addUserDTO.getCustomFormData() != null){
+			if(addUserDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
 					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-					UserCustomFieldData userCustomFields = new UserCustomFieldData();
+						UserCustomFieldData userCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							userCustomFields = userCustomFieldDataService.getUserCustomFieldDataById(customFields.getEntityId());
+						}else {
+							userCustomFields = new UserCustomFieldData();
+						}
 					userCustomFields.setUser(updatedUser);
-					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-					 userCustomFields.setOrglocationsFormFields(orgFormField);
-					 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-					 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					userCustomFields.setOrglocationsFormFields(orgFormField);
+					userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
 					}
 					
-				}
+				}	
 			}
 			
 			userRoleService.addUserRole(userRole);

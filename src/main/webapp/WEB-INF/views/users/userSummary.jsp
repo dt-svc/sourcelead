@@ -144,8 +144,8 @@ $(document).ready(function(){
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
-	        success: function(data) {
-			    var json = JSON.parse(data);
+	        success: function(json) {
+			    //var json = JSON.parse(data);
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
@@ -305,7 +305,7 @@ $(document).ready(function(){
 				
 				 if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Employment Type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>employment type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				} 
 				 
@@ -392,7 +392,7 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				} 
 				 
-				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
+				 /* if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
 						for (var key in json.userCustomFieldlabelNameAndValue) {
 							  if (json.userCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
 								result = result + '	<div class="project_details_cta">';
@@ -402,7 +402,17 @@ $(document).ready(function(){
 							    result = result + '	</div>';
 							  }
 							}
-					}
+					} */
+				 
+				 
+				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
+		              $.each(json.userCustomFieldlabelNameAndValue, function(key, value) {
+		            	  result = result + '	<div class="project_details_cta">';
+		            	  result = result + '	<strong>'+key+':</strong><span class="fix">'+value+'</span><div class="clearfix"></div>';
+		            	  result = result + '	</div>';
+		              });
+	              }
+				 
 				 
 				result = result + '	   </div>';				
 				result = result + '	  <div class="clearfix"></div>';
@@ -1281,9 +1291,9 @@ $("#editRoleDetailsList").empty();
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-			    var json = JSON.parse(data);
+			    /* var json = JSON.parse(data); */
 			    var result = "";
 			    var selected1 = '';
 				var selected2 = '';
@@ -1627,19 +1637,6 @@ function preapareCustomFieldDetails(userId,sectionId){
      }); 
 }
 </script>
-
-<!-- <script>
-function getCustomDependentField(sectionId){
-	$.ajax({
-			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
-				 success: function(data) {
-		        	$('#customDiv'+sectionId).empty();
-		        	$('#customDiv'+sectionId).append(data);
-				 }
-		  });
-}
-</script> -->
 
 <script>
 function updateUserDesignationOtherType(){
