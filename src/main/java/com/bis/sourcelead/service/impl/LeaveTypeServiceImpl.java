@@ -78,12 +78,13 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		User user = userService.getUserById(Long.parseLong(leaveTypeDTO.getLoginUserId()));
 		LeaveType leaveType = null;
 		boolean flag = false;
-		if(leaveTypeDTO.getLeaveTypeId() != null && !"".equalsIgnoreCase(leaveTypeDTO.getLeaveTypeId())){
+		if(leaveTypeDTO.getLeaveTypeId() > 0){
 			leaveType = leaveTypeDao.getLeaveTypeById(leaveTypeDTO.getLeaveTypeId());
 			leaveType.setUpdatedBy(user.getUserCode());
 			leaveType.setUpdatedDate(new Date());
 		}else{
 			leaveType = new LeaveType();
+			leaveType.setLeaveTypeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			leaveType.setCreatedBy(user.getUserCode());
 			leaveType.setCreatedDate(new Date());
 			flag = true;
@@ -212,6 +213,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			}
          
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
+		
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
 		
 		if(flag == true) {
@@ -287,7 +289,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	}
 
 	@Override
-	public LeaveType getLeaveTypeById(String leaveTypeId) throws Exception
+	public LeaveType getLeaveTypeById(Long leaveTypeId) throws Exception
 	{
 		LeaveType type = leaveTypeDao.getLeaveTypeById(leaveTypeId);
 		if(type.getCreatedBy() != null){
@@ -308,5 +310,11 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 				type.setUpdatedUser(updatedUser.getFirstName());
 		}
 		return type;
+	}
+
+	@Override
+	public LeaveType getLeaveTypeByUUID(String leaveTypeUUID)
+	{
+		return leaveTypeDao.getLeaveTypeByUUID(leaveTypeUUID);
 	}
 }

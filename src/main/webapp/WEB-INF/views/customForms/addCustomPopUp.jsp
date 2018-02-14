@@ -55,7 +55,8 @@
 				  <%-- <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option> --%>
 				  <%-- <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option> --%>
 				</select>				
-			</div>			
+			</div>	
+				<input type="hidden" id="disableFieldsId" value="${disableFields == 'disabled' ? '1':'0'}">		
 		</div>
 		
 		<div class="popupMid clearfix">
@@ -138,7 +139,7 @@
 			  <div class="col-md-6"><input type="text" name="labelinfo" id="labelinfo" value="${customFormPopDetails.labelinfo}" class="field-label form-control input-sm" > </div>
 			</div>
 			
-			<div class="col-sm-12 noPad mt clearfix">
+			<!-- <div class="col-sm-12 noPad mt clearfix">
 			  <div class="col-md-3 noPad labHeight">Dependent Fields</div>
 			  <div class="col-md-6 dropdown-select"><select name="slDependedntField" class="field-label form-control input-sm" id="dependentFieldDiv"> 
 			  </select>
@@ -148,7 +149,7 @@
 			<div class="col-sm-12 noPad mt clearfix" id="customDependentFieldDiv">
 			  <div class="col-md-3 noPad labHeight">Custom Dependent Fields</div>
 			  <div class="col-md-6"><select name="customDependentField" class="field-label form-control input-sm" id="customDependentField"> </select></div>
-			</div>
+			</div> -->
 			
 			</div>
 		
