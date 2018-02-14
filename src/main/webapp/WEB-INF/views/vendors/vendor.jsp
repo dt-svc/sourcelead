@@ -52,9 +52,9 @@ window.onload = function () {
 			 var vendorDocuments = document.getElementById("vendorDocuments");
 			 $("#vendorDocuments").removeClass("disabledLink");
 			 vendorDocuments.href="#tab-b";
-			 vendorDocuments.addEventListener("click", function() {
+			/*  vendorDocuments.addEventListener("click", function() {
 				 getOnboardDocuments();
-			  });
+			  }); */
 			
 			var isDocumentsFilled = '${isDocumentsFilled}';
 			if(isDocumentsFilled == 'N'){
@@ -67,9 +67,9 @@ window.onload = function () {
 				 var vendorTasks = document.getElementById("vendorTasks");
 				 $("#vendorTasks").removeClass("disabledLink");
 				 vendorTasks.href="#tab-c";
-				 vendorTasks.addEventListener("click", function() {
+				/*  vendorTasks.addEventListener("click", function() {
 					 getVendorOnboardTasksList();
-				  });
+				  }); */
 			}
 			
 		}else{
@@ -257,8 +257,8 @@ function getVendorDetails(){
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
 				<li class="current" onclick="getVendorDetails();"><a href="#tab-a" data-toggle="tab">Vendor Details</a></li>
-				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
-				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks">Tasks</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments" onclick="getOnboardDocuments();">Documents</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks" onclick="getVendorOnboardTasksList();">Tasks</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -881,10 +881,12 @@ function getRolesList(){
 						 var vendorDocuments = document.getElementById("vendorDocuments");
 						 document.getElementById("vendorDocuments").removeAttribute("class");
 						 vendorDocuments.href="#tab-b";
-						 vendorDocuments.addEventListener("click", function() {
+						/*  vendorDocuments.addEventListener("click", function() {
 							 getOnboardDocuments();
-						  });
-						 vendorDocuments.click();
+						  }); */
+						 
+						 $("#vendorDocuments").click();
+// 						 vendorDocuments.click();
 					});
 			return true;
 		} else {
@@ -912,11 +914,11 @@ function updateVendor(){
 					 $("#vendorDocuments").removeClass("disabledLink");
 					 vendorDocuments.href="#tab-b"; 
 					 
-					 vendorDocuments.addEventListener("click", function() {
+					/*  vendorDocuments.addEventListener("click", function() {
 						 getOnboardDocuments();
-					});
+					}); */
 					 
-					 vendorDocuments.click();
+					 $("#vendorDocuments").click();
 					 
 				}); 
 		return true;

@@ -25,7 +25,7 @@
       <div class="pull-left">
         <h2>Assign Project Members <span id="projectName"></span></h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Project Members</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'/>">Project Members</a> &raquo; Request Associates</div>
     </section>
     
     <div class="content-area content-new clearfix">
