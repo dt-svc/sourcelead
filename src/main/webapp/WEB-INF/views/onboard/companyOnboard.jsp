@@ -29,6 +29,8 @@ window.onload = function () {
 	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode','address');
 	getBusinessTypeValue();
  };
+ var tokenParamName = "${_csrf.parameterName}";
+ var tokenValue = "${_csrf.token}";
 </script>
 
 
@@ -138,12 +140,14 @@ right: 15px;
 			  <div class="clearfix"></div>
 		  </div>
 	
-	 <form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 	  
+	 	  
 	<div class="comLogContent">
         <h2>Organization Details</h2>
          <div class="row clearfix"> 
           <div id="loading"></div>
-         	<div class="col-xs-12 col-sm-3 col-md-3">
+          
+          <div class="col-xs-12 col-sm-3 col-md-3">
+          <form:form class="login-form clearfix"  id="orgImage1_form"  name="orgImage1_form" method="post" >
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
@@ -152,25 +156,23 @@ right: 15px;
 				   <c:if test="${empty SourceLeadWeb_org.fileContentType}">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/resources/images/office-image.jpg'/>" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
-				  <div class="btn-group uploadfile">
-					  <button type="button" class="btn btn-sm btn-primary">
+				  <div class="btn-group uploadfile-onboard">
+					  <button type="button" class="btn btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgSettings_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage1_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
-	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
-		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
-						  <i class="fa fa-trash"></i></button>
-					  </c:if>
 				  </div>
 				  </div>
 				  </div>
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
-			  </div>
+			  </form:form>
+			   </div>
  <div id="popUp" ></div>
 <div class="col-md-9 noPad">
+<form:form class="login-form clearfix"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
 	<div class="col-md-6 clearfix mb">
 		<label class="col-md-3 noPad">Company<span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9 padding_right" id="companyNameDiv">
@@ -220,7 +222,7 @@ right: 15px;
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">ZipCode</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space validate_length length1-6 validate_int"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 			</div>
 		</div>
 
@@ -364,18 +366,21 @@ right: 15px;
 			<div class="col-md-12 noPad">
 			   <textarea rows="5" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
 			</div>
-		</div>				
 		</div>
-		</div>
-		
+			<div class="clearfix"></div>
+			<div class="col-md-12">	
 		<div class="welBtns welBtnsA">
 	<input type="submit" value="Save & Continue"  id="save_button" class="Brig">
 	<div class="clearfix"></div>
+	</div>
 </div>
+			</form:form>			
+		</div>
+		</div>
 	</div>			  
 		  
 
-</form:form>
+
  </section>
 </section> 
 </div>
@@ -735,15 +740,9 @@ var validationSettings = {
          $('body').on('submit', '#orgSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-	          		var frm = $('#orgSettings_form').serializeFormJSON();
-	            	var con = JSON.stringify(frm);
-				    con = con.replace(/[{}]/g, "");
-				  //It will escape all the special characters
-    		        var jsonData = encodeURIComponent(con);
-				    
 	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		var form = $('#orgSettings_form')[0];
-	           		var formData = new FormData(form);
+	          		
+	           		var formData = getFormData("orgSettings_form");
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
@@ -751,16 +750,10 @@ var validationSettings = {
              		}else{
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
-	                  $.ajax({
+             		$.ajax({
 	              	      type: "POST",
 	              	      data: formData,
-	              	      contentType : 'application/json; charset=utf-8',
-	              	      enctype: 'multipart/form-data',
-	          	          processData: false,
-	          	          contentType:false,
-	              	      dataType : 'json',
-	              	      
-	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
 	                      		location.replace(sourceleadUrl+"/companyOnboardLocations");	
 	  			        },  
@@ -936,8 +929,10 @@ $(function(){
   });
 </script>
 <script src="/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/cropper.min.css" type="text/css" />
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
+<div id='imagecrop' class='post_popup'></div>

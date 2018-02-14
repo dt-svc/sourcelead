@@ -1,5 +1,6 @@
 package com.bis.sourcelead.elk.index;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,8 +10,10 @@ import javax.persistence.Column;
  * @author Rajashekar and Prasanna
  * @date 11th jan 2017
  */
-public class RequirementIndex {
+public class RequirementIndex implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Long requirementId;
 	
 	private Long orgLocationId;

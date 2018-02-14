@@ -294,13 +294,18 @@ public class DashboardRestController {
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     UserRole userRole = null;
+		    
+		     if(!isNullOrEmpty(switchUserType) && switchUserType.equalsIgnoreCase("Professional") && orgLocationId == 1L) {
+		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
+		     }else {
+		    	 userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     }
+		     
+		     
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
   			    userRole.setUserState(Status.ACTIVE);
   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
-  			   
-  			   
   			   
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
@@ -320,8 +325,17 @@ public class DashboardRestController {
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     UserRole userRole = null;
+		     
+		     if(!isNullOrEmpty(switchUserType) && switchUserType.equalsIgnoreCase("Recruiter") && orgLocationId == 1L) {
+		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
+		     }else {
+		    	 userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     }
+		     
+		    
+		     
+		     
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
  			    userRole.setUserState(Status.ACTIVE);
  			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
@@ -348,8 +362,14 @@ public class DashboardRestController {
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     UserRole userRole = null;
+		     if(!isNullOrEmpty(switchUserType) && (switchUserType.equalsIgnoreCase("Professional") || switchUserType.equalsIgnoreCase("Recruiter")) && orgLocationId == 1L){
+		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
+		     }else {
+		    	 userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     }
+		     
+		     
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
   			    userRole.setUserState(Status.ACTIVE);
   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
@@ -1188,6 +1208,62 @@ public class DashboardRestController {
 		}
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getAllRequirementByOrgLocationIdAndUserIdAndPostedDateWithCustomDates")
+	public List<Requirement> getAllRequirementByOrgLocationIdAndUserIdAndPostedDateWithCustomDates(@RequestParam(value="postedDateRange", required=false) String postedDateRange, @RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,@RequestParam(value="managerId", required=false) Long managerId,HttpServletRequest request) throws Exception {
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String numberOfDays;
+		int Days;
+		 switch (postedDateRange) {
+		 	 case "today" :
+		 		 numberOfDays = "1";
+		 		 break;
+		 	 case "yesterday" :
+		 		 numberOfDays = "2";
+		 		 break;
+		 	 case "week" :
+				 numberOfDays = "7";
+			      break;
+			 case "twoweeks" :
+				 Days  = (2 * 7);
+				 numberOfDays = Integer.toString(Days);
+			     break;
+			 case "month" :
+				 numberOfDays = "30";
+			     break;
+			 case "twomonths" :
+				 Days  = (2 * 30);
+				 numberOfDays = Integer.toString(Days);
+			     break;
+			 case "custome" :
+				 numberOfDays = "0";
+				 if(startDate != null && startDate != "" && endDate != null && endDate !="") {
+					 Date startDates = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
+					 Date endDates = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
+					 Long customeDays =  CalendarUtil.getNumberOfDaysCount(startDates,endDates);
+					 numberOfDays = String.valueOf(customeDays);
+				 } 
+			     break;
+			 default:
+				 numberOfDays = "1";
+		 }
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String userCode = user.getUserCode();
+		String userType = null;
+		List<Requirement>   requirementList = null;
+		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+			userType = Constants.ADMIN;
+			requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(loginOrgLocation.getId(), userType, user.getId(), userCode, numberOfDays,managerId);
+		}else{
+			requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(loginOrgLocation.getId(), userType, user.getId(), userCode, numberOfDays,managerId);
+		}
+		return requirementList;
 	}
 	
 }

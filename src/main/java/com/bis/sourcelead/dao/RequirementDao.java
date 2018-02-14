@@ -77,6 +77,8 @@ public interface RequirementDao {
 	
     public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
     
+    public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception;
+    
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
@@ -164,5 +166,8 @@ public interface RequirementDao {
 	public ResponseList<RequirementDTO> getAllRequirementsForJobCampaing(RequirementDTO requirementDTO,Long orglocationId,Long userId,String dateFormat)throws Exception;
 	
 	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds)throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays,Long managerId) throws Exception;
+
 	
 }

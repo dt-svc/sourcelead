@@ -45,6 +45,7 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -85,6 +86,8 @@ public class CandidateController {
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
 	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private CandidateDocumentsService candidateDocumentsService;
@@ -222,6 +225,11 @@ public class CandidateController {
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
 		}
+		
+		//approver list
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		model.addObject("requirementApproverList", requirementApproverList);
+				
 		
 	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
 		model.addObject("candidatesList", candidatesList);*/

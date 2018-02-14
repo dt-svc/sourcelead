@@ -1836,5 +1836,116 @@ Session session = this.sessionFactory.getCurrentSession();
 		}
 		return requirement;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(
+			Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays, Long managerId)
+			throws Exception {
+
+		Date currentDate =  commonUtil.currentDate();
+		java.sql.Date sqlCurrentDate = null;
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    Calendar c = Calendar.getInstance();
+	    c.setTime(new Date()); // Now use today date.
+	    c.add(Calendar.DATE, -Integer.parseInt(numberOfDays)); // Adding  The DateRange days
+	    String updatedDate     = dateFormat.format(c.getTime());
+	    Date parsed = dateFormat.parse(updatedDate);
+	    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+	
+	    Session session = this.sessionFactory.getCurrentSession();
+	    User user = userDao.getUserById(userId);
+			
+	    Map<String, Object> params = new HashMap<String,Object>();
+	
+		/*String subQueryRole = "";*/
+		String from = "from Requirement requirement left join fetch requirement.parentRequirement "; 
+		String subQuery = "";
+		//String dateBetween = "(requirement.createdDate BETWEEN :sqlCurrentDate AND :endDate) and ";
+		String dateBetween = "requirement.createdDate >=:endDate and requirement.createdDate <= :sqlCurrentDate and ";
+		
+		String managerQury = "and requirement.managerUserId.id = :managerId";
+		params.put("managerId",managerId);
+		
+		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+		
+		String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+		params.put("userId",userId);
+
+		String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+		params.put("managerUserId",userId);
+		
+		String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+		params.put("userId",userId);
+		
+		if(subQuery1 != "" || subQuery2 != "" || subQuery3 !=""){
+			if(managerId != null) {
+				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId "+managerQury+" and ( ("+subQuery1+") or ("+subQuery2+")  or ("+subQuery3+") ) ";
+				params.put("orgLocationId",orgLocationId);
+				params.put("sqlCurrentDate",sqlCurrentDate);
+				params.put("endDate",endDate);
+				params.put("managerId",managerId);
+			}else {
+				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  or ("+subQuery3+") ) ";
+				params.put("orgLocationId",orgLocationId);
+				params.put("sqlCurrentDate",sqlCurrentDate);
+				params.put("endDate",endDate);
+			}
+		}
+		}else{
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+			
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			if(subQuery1 != "" || subQuery2 !=""){
+				if(managerId != null) {
+					subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId "+managerQury+" and ( ("+subQuery1+") or ("+subQuery2+")) ";
+					params.put("orgLocationId",orgLocationId);
+					params.put("sqlCurrentDate",sqlCurrentDate);
+					params.put("endDate",endDate);
+					params.put("managerId",managerId);
+				}else {
+					subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
+					params.put("orgLocationId",orgLocationId);
+					params.put("sqlCurrentDate",sqlCurrentDate);
+					params.put("endDate",endDate);
+				}
+				
+			}
+		}
+	
+		String whereCondition = subQuery;
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		for (String str : query.getNamedParameters())
+	    {
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")){
+				query.setLong(str, (long) params.get( str ));
+			}
+			else{
+				query.setParameter( str, params.get( str ) );
+			}
+	    	
+	    }
+	return query.list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select req from Requirement req where req.requirementUUID =:requirementUUID and (req.managerUserId.id = :userId OR req.createdBy.id = :userId or req.id IN(select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.requirementUUID =:requirementUUID) or req.id IN (select rah.requirementId.id from RequirementApproverHierarchy rah where rah.approverUserId.id = :userId and rah.requirementId.requirementUUID =:requirementUUID))";
+		List requirementList = session.createQuery(query).setLong("userId", userId).setString("requirementUUID", requirementUUID).list();
+		Requirement requirement = null;
+		if(requirementList != null && !requirementList.isEmpty())
+		{
+			requirement = (Requirement) requirementList.iterator().next();
+		}
+		return requirement;
+	}
 	
 }

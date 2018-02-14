@@ -279,6 +279,8 @@ function cpagination(url){
 			            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
 			            			 location = opt.city+", "+location;
 				            	}
+		            		}else{
+		            			location = "------";
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
@@ -298,7 +300,7 @@ function cpagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
+	    	"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

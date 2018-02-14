@@ -25,9 +25,9 @@ import org.hibernate.annotations.NotFoundAction;
 public class HolidayAndRestrictday implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(generator = "uuid2", strategy = GenerationType.IDENTITY)
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HOLIDAY_ID", nullable = false)
@@ -59,12 +59,12 @@ public class HolidayAndRestrictday implements Serializable {
 	@Column(name = "STATUS")
 	private String status;
 	
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 	
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
