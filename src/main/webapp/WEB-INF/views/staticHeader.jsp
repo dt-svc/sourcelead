@@ -34,6 +34,8 @@ $(document).ready(function(){
         success: function(data) {
         	if(data !== ""){
         		$("#maintenanceStatus").append(data.mainMessage);
+        	}else{
+        		$(".marQ").hide();
         	}
         }
 	}); 
