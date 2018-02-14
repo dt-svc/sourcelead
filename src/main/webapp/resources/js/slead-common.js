@@ -127,7 +127,7 @@ function getFormData(formId) {
 	$.map(unindexed_array, function (n, i) {
 		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
 			indexed_array[n['name']] = n['value'].trim().replace(/  +/g,' ');
-		else
+		else if(n['name'])
 			indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
@@ -140,7 +140,7 @@ function getFormData1(formId) {
 	$.map(unindexed_array, function (n, i) {
 		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
 			formData.append(n['name'], n['value'].trim().replace(/  +/g,' '));
-		else
+		else if(n['name'])
 			formData.append(n['name'], n['value']);
 	});
 	return formData;

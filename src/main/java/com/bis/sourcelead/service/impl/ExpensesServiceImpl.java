@@ -1267,5 +1267,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception {
 		return expensesDao.getAllExpensesByOrgLocationId(orgLocationId);
 	}
+
+	@Override
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long OrglocationId,Date startDate, Date endDate) throws Exception {
+		return expensesDao.getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(projectId, OrglocationId,startDate,endDate);
+	}
 	
 }

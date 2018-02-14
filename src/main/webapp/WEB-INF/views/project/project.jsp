@@ -128,7 +128,7 @@ function validateShortCode(){
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
-		<div id="loading"></div>
+		<div id="projectDetailsloading"></div>
 		
 		<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
@@ -403,7 +403,7 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
-								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control" data-validation-optional="true"
+								<input type="text" value="" id="estimatedHours"  class="form-control" data-validation-optional="true"
 									data-validation="validate_Space validate_float validate_length length1-15" class="form-control" onblur="">
 							</div>
 						</div>
@@ -440,7 +440,7 @@ function validateShortCode(){
 					                  
 					                </select>
 					                </div>
-									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
+									<input type="text" value="" id="estimatedBudget"  class="form-control"
 										data-validation="validate_Space validate_float validate_length length1-15" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
@@ -675,21 +675,17 @@ function getStatus(){
 		    var estimatedHours = document.getElementById("estimatedHours").value;
 		    
 		    
-		    if(formData.get("estimatedBudget") === "") {
-		    	formData.set("estimatedBudget","0");
-		    }
-		    if(formData.get("estimatedHours") === "") {
-		    	formData.set("estimatedHours","0");
-		    }
+// 		    if(formData.get("estimatedBudget") === "") {
+// 		    	formData.set("estimatedBudget","0");
+// 		    }
+// 		    if(formData.get("estimatedHours") === "") {
+// 		    	formData.set("estimatedHours","0");
+// 		    }
 		    
-		   /*  if(estimatedBudget === "") {
-		    	formData["estimatedBudget"] = "0";
-		    }
-		    if(estimatedHours === "") {
-		    	formData["estimatedHours"] = "0";
-		    } */
+		    	formData.append("estimatedBudget", estimatedBudget === "" ? "0" : estimatedBudget);
+		    	formData.append("estimatedHours", estimatedHours === "" ? "0" : estimatedHours);
 		    
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#projectDetailsloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -702,7 +698,7 @@ function getStatus(){
 								 $("#startDateStr").val(projects.startDateStr);
 								 $("#endDateStr").val(projects.endDateStr);
 								 
-								 $("#loading").removeAttr("style");
+								 $("#projectDetailsloading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 document.getElementById("assignedMembers").removeAttribute("class");
 								 assignedMembers.href="#tab-b"; 
@@ -733,7 +729,7 @@ function getProjectDetails(){
 	if(projectId){
 		$("#FileUploadContainer").empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#projectDetailsloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
@@ -868,7 +864,7 @@ function getProjectDetails(){
       			   }
       			 
       			   
-      			   $("#loading").removeAttr("style");
+      			   $("#projectDetailsloading").removeAttr("style");
 		        
 	        },
 	    });  
@@ -1314,5 +1310,5 @@ function clearProjectEndDate(){
 		 $('#status').append('<option >Completed</option>');
 		 $('#status').append('<option >On-Hold</option>');
 		 $('#status').append('<option >Dropped</option>');
-	};
+	}
 </script> 

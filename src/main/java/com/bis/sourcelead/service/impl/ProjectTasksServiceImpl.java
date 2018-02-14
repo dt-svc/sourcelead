@@ -524,13 +524,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
-	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
-		return tasksDao.getOverdueTaskListByProjectId(projectId,filterDate,startDateUTC,endDateUTC);
+	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId, Date startDateUTC, Date endDateUTC) throws Exception {
+		return tasksDao.getOverdueTaskListByProjectId(projectId,startDateUTC,endDateUTC);
 	}
 
 	@Override
-	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
-		return tasksDao.getAllTasksByProjectIdAndFilter(projectId, filterDate, startDateUTC, endDateUTC);
+	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,  Date startDateUTC, Date endDateUTC) throws Exception {
+		return tasksDao.getAllTasksByProjectIdAndFilter(projectId, startDateUTC, endDateUTC);
 	}
 
 	@Override
