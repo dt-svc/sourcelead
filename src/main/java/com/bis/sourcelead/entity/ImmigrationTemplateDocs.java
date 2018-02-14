@@ -44,6 +44,9 @@ public class ImmigrationTemplateDocs implements Serializable {
 
 	@Column(name = "IS_REQUIRED ")
 	private String isRequired;
+	
+	@Column(name = "IS_MULTIPLE_REQUIRED ")
+	private String isMultipleRequired;
 
 	@Column(name = "STATUS")
 	private Integer status;
@@ -118,6 +121,14 @@ public class ImmigrationTemplateDocs implements Serializable {
 
 	public void setIsRequired(String isRequired) {
 		this.isRequired = isRequired;
+	}
+
+	public String getIsMultipleRequired() {
+		return isMultipleRequired;
+	}
+
+	public void setIsMultipleRequired(String isMultipleRequired) {
+		this.isMultipleRequired = isMultipleRequired;
 	}
 
 	public Integer getStatus() {
