@@ -224,8 +224,8 @@ function getSelectedFieldDetails(){
  
  <script>
  function saveAddFormField(customRowId){
-	 var disabled = '${disableFields}';
-	 if(disabled != null && disabled != '' && disabled !='undefined'){
+	 var disabled = $('#disableFieldsId').val();
+	 if(disabled != null && disabled != '' && disabled !='undefined' && disabled == 1){
 		 $("#addFieldSectionHidden").val($("#addFieldSection").val());
 		 $("#fieldsDropDownHidden").val($("#fieldsDropDown").val());
 	 }

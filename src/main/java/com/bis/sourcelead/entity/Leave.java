@@ -31,11 +31,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "USER_LEAVE")
 public class Leave {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -81,10 +81,10 @@ public class Leave {
 	private String reason;
 	
 	@Column(name = "NUMBER_OF_DAYS")
-	private String numberOfDays;
+	private int numberOfDays;
 	
 	@Column(name = "EXTRA_LEAVES_TAKEN")
-	private String extraLeavesTaken;
+	private int extraLeavesTaken;
 	
 	@Column(name = "REJECTED_REASON",columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -125,6 +125,9 @@ public class Leave {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "LEAVE_UUID")
+	private String leaveUUID;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveid")
@@ -162,11 +165,11 @@ public class Leave {
 	@JsonProperty
 	private int totalLeavesTaken;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -404,20 +407,20 @@ public class Leave {
 		this.balanceLeavesCount = balanceLeavesCount;
 	}
 
-	public String getNumberOfDays() {
+	public int getNumberOfDays() {
 		return numberOfDays;
 	}
 
-	public void setNumberOfDays(String numberOfDays) {
+	public void setNumberOfDays(int numberOfDays) {
 		this.numberOfDays = numberOfDays;
 	}
 	
-	public String getExtraLeavesTaken()
+	public int getExtraLeavesTaken()
 	{
 		return extraLeavesTaken;
 	}
 
-	public void setExtraLeavesTaken(String extraLeavesTaken)
+	public void setExtraLeavesTaken(int extraLeavesTaken)
 	{
 		this.extraLeavesTaken = extraLeavesTaken;
 	}
@@ -446,6 +449,16 @@ public class Leave {
 
 	public void setTotalLeavesTaken(int totalLeavesTaken) {
 		this.totalLeavesTaken = totalLeavesTaken;
+	}
+
+	public String getLeaveUUID()
+	{
+		return leaveUUID;
+	}
+
+	public void setLeaveUUID(String leaveUUID)
+	{
+		this.leaveUUID = leaveUUID;
 	}
 
 }
