@@ -134,6 +134,8 @@ public interface OrgSpocService {
 	OrgSpoc getOrgSpocByUUID(String UUID) throws Exception;
 	
 	Integer getNumberOfContactCount(Long orgRelationId,Long userId,Long orgLocationId,String responderType) throws Exception;
+	
+	public void addClientVendorContactsELK(OrgSpoc orgSpoc) throws Exception;
 
 
 }
