@@ -14,7 +14,10 @@
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<%
+     <script src="/resources/js/jquery-2.1.4.min.js"></script> 
+
+ 
+   <%
     if (request.getRequestURL().toString().indexOf("www.") == -1 
             && request.getRequestURL().toString().indexOf("localhost") == -1
             && request.getRequestURL().toString().indexOf("qa.") == -1
@@ -22,6 +25,7 @@
             && request.getRequestURL().toString().indexOf("demo.") == -1) {
         response.sendRedirect("https://www.sourcelead.com/login");
     } %>
+ 
  
 <script>
 window.onload = function() {
@@ -34,10 +38,27 @@ window.onload = function() {
 	}
 }
 </script>
+<script>
+$(document).ready(function(){
+	var location = window.location.origin;
+	 $.ajax({
+        url: location+"/getScheduleStatus",
+        success: function(data) {
+        	if(data !== ""){
+        		$("#maintenanceStatus").append(data.mainMessage);
+        	}
+        }
+	}); 
+});
+</script>
  
  
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
- 
+ <div class="marQ">
+        <marquee behavior="scroll" direction="left" id="">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
  <div class="signWrap">
 <!--  <div id="loading"></div> -->
  <c:if test="${!empty login_2_Step_Process_Enabled}">
