@@ -1717,11 +1717,14 @@ public class LeaveManagementRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		
+		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
+		
 		// User loginUser = (User)
 		// SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (userId != null) {
 			List<User> appUser = new ArrayList<>();
-			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId, roleId, orgLocations.getId());
+			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId, selectedUserRole.getRoles().getId(), orgLocations.getId());
 			if (approversList != null) {
 				for (User user : approversList) {
 					boolean flag = false;
