@@ -304,7 +304,7 @@ public class LeaveManagementRestController {
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						totalLeaves = totalLeaves - leave.getNumberOfDays();
+						totalLeaves = totalLeaves - (leave.getNumberOfDays() - leave.getExtraLeavesTaken());
 //						else
 //							totalLeaves = totalLeaves - leave.getNumberOfDays();
 						
