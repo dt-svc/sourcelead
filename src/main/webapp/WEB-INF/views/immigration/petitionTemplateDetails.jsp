@@ -11,26 +11,27 @@
 				<div class="clearfix"></div>
 			</ul>
 		</div>
-		
+		<form id="savePetitionTemplateDetails" name="savePetitionTemplateDetails">
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix">
 				<div class="col-md-7 clearfix noPad mt">
 					<div class="col-md-12 noPad mb">
 					  <label class="col-md-3">Template Name<span class="text-danger paddingLeft">*</span></label>
-					  <div class="col-md-9"><input type="text" class="form-control"></div>
+					  <div class="col-md-9"><input type="text" id="templateName" name="templateName" class="form-control"></div>
 					</div> 
 					<div class="col-md-12 noPad mb">
 					  <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
-					  <div class="col-md-9"><textarea class="form-control" rows="3"></textarea></div>
+					  <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3"></textarea></div>
 					</div> 
 				</div>
 			</div>
  		</div>
+ 		</form>
    
 		<div class="addImmiFoot">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('two')" class="ml10">Next</a>
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('two')" class="nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionTemplateAndContinue()" class="nextBtn">Save &amp; Continue</a>
 			<a href="javascript:void(0)">Reset</a>
 			<div class="clearfix"></div>
 		</div>   

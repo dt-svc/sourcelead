@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ConnectionsDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
@@ -37,6 +39,7 @@ import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
+import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.ConnectionsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -68,27 +71,29 @@ public class ImmigrationRestController {
 	@Autowired
 	UserRoleService userRoleService;
 	
+	@Autowired
+	ImmigrationTemplateService immigrationTemplateService;
 
-	@RequestMapping(value={"/viewImmigrationList"})
+	/*@RequestMapping(value={"/viewImmigrationList"})
 	public ModelAndView loadImmigrationList(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationList");
 		return model;
-	}
+	}*/
 
-	@RequestMapping(value={"/loadNewPetition"})
+	/*@RequestMapping(value={"/loadNewPetition"})
 	public ModelAndView loadNewPetition(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/newPetition");
 		return model;
-	}
+	}*/
 	
 	
-	@RequestMapping(value={"/loadNewPetitionPage"})
+	/*@RequestMapping(value={"/loadNewPetitionPage"})
 	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -108,7 +113,7 @@ public class ImmigrationRestController {
 			model.setViewName("/immigration/newPetitionPage7");
 		}
 		return model;
-	}
+	}*/
 
 	@RequestMapping(value={"/addNewPetitionTemplate"})
 	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) {
@@ -119,37 +124,49 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value={"/viewImmigrationTemplateList"})
+	/*@RequestMapping(value={"/viewImmigrationTemplateList"})
 	public ModelAndView loadViewPetitionTemplate(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationTemplateList");
 		return model;
-	}
+	}*/
 	
 	@RequestMapping(value={"/addPetitionTemplate"})
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		if(status.equalsIgnoreCase("one")) {
+		if(status.equalsIgnoreCase("tempDetails")) {
 			model.setViewName("/immigration/petitionTemplateDetails");
-		}else if(status.equalsIgnoreCase("two")) {
+		}else if(status.equalsIgnoreCase("docDetails")) {
 			model.setViewName("/immigration/petitionTemplateDocDetails");
-		}else if(status.equalsIgnoreCase("three")) {
+		}/*else if(status.equalsIgnoreCase("three")) {
 			model.setViewName("/immigration/petitionTemplateFormDetails");
 		}else if(status.equalsIgnoreCase("four")) {
 			model.setViewName("/immigration/immigrationTemplateTaskList");
-		}
+		}*/
 		return model;
 	}
 	
-	@RequestMapping(value={"/viewImmigration"})
+	
+	@RequestMapping(value={"/savePetitionTemplateDetails"},method = RequestMethod.POST)
+	public String savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
+		System.out.println(templateDTO.getTemplateName()+templateDTO.getTemplateDescription());
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user);
+		/*model.setViewName("/immigration/petitionTemplateDetails");*/
+		return "success";
+	}
+	
+	/*@RequestMapping(value={"/viewImmigration"})
 	public ModelAndView viewImmigration(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationView");
 		return model;
-	}
+	}*/
 }
