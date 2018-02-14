@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class OptionsDTO implements Serializable {
-	private String id;
+	private long id;
 	private String orgLocationId;
 	private String userId;
 	private String department;
@@ -16,6 +16,7 @@ public class OptionsDTO implements Serializable {
 	private String leaveTransfer;
 	private String workingHours;
     private String optionId;
+    private String optionUUID;
 	public String getOrgLocationId() {
 		return orgLocationId;
 	}
@@ -88,11 +89,11 @@ public class OptionsDTO implements Serializable {
 		this.workingHours = workingHours;
 	}
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -104,6 +105,14 @@ public class OptionsDTO implements Serializable {
 		this.optionId = optionId;
 	}
 
-	
+	public String getOptionUUID()
+	{
+		return optionUUID;
+	}
+
+	public void setOptionUUID(String optionUUID)
+	{
+		this.optionUUID = optionUUID;
+	}
 
 }

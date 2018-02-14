@@ -96,8 +96,8 @@ $(document).ready(function(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="tblminwidth-50">';
-			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editOption?optionId='+opt.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
-			        		 result = result + '     <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteoption(\''+opt.id+'\')"></i></span>';
+			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editOption?optionUUID='+opt.optionUUID+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
+			        		 result = result + '     <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteoption(\''+opt.optionUUID+'\')"></i></span>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + '  </tr>';
@@ -158,7 +158,7 @@ function deleteOption(optionId){
 		$("#deleteLeaveOptinDiv").empty(); 
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/deleteLeaveOption?"+tokenParamName+"="+tokenValue+"&optionId="+optionId+"&reason="+reason,	    	   
+		   	url: sourceleadUrl+"/deleteLeaveOption?"+tokenParamName+"="+tokenValue+"&optionUUID="+optionId+"&reason="+reason,	    	   
 		    success: function(data) {
 	   			 $("#selector1").removeAttr("style");
 	  			 $("#selector1").css({ display: "block" });
