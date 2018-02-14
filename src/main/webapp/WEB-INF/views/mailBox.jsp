@@ -616,6 +616,9 @@ function getEmailDetails(uuid,type){
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
 	   			
+	   		 if(opt.salutation != null && opt.salutation != 'undefined' && opt.salutation != ""){
+	   			result = result +'<p>'+opt.salutation+',</p>';
+	   		 }
 	   			
 	   			 if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';

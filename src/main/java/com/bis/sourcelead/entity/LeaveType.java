@@ -31,10 +31,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LeaveType {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-//	@Column(columnDefinition = "BINARY(16)")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
@@ -92,6 +91,8 @@ public class LeaveType {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "LEAVE_TYPE_UUID")
+	private String leaveTypeUUID;
 	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
@@ -184,12 +185,12 @@ public class LeaveType {
 	@JsonProperty
 	private int takenLeaveCounts;
 
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -654,6 +655,14 @@ public class LeaveType {
 		this.takenLeaveCounts = takenLeaveCounts;
 	}
 
-	
- 
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
+	}
+
 }

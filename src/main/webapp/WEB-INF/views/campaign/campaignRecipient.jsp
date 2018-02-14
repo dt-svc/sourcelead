@@ -23,7 +23,7 @@ z-index: 1040 !important;
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-     
+     <div id="loadingRecipient"></div>
 	<form:form id="capn_add_Recipient_List" name="capn_add_Recipient_List" method="post">
 	
 		<div class="popupHead">
@@ -36,14 +36,13 @@ z-index: 1040 !important;
 		</c:if>
 		</div>
 		
-		<div id="loading"></div>
 		<div class="popupMid popupMidPad clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-3 padding_left">Choose Campaign<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-9 padding_right clearfix">
               		<div class="col-md-6 padding_left">
-              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList(this);" checked name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
+              			<input type="radio" id="hotlistRadio" value="hotlistCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label for="hotlistRadio">&nbsp;Hot List Campaign</label>
               		</div>
               		<div class="col-md-6">
               			<input type="radio" id="jobRadio" value="jobCampaign" onclick="clearRecipantsList(this);"  name="campaignType"><label for="jobRadio">&nbsp;Job Campaign</label>

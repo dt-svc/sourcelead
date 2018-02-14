@@ -321,7 +321,7 @@ function saveUserProfileImage(formId,data){
                 success: function(result) {
                     if(result)
                         $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                      location.replace(sourceleadUrl+"/orgSettings");  
+                    location.reload();
                   },  
               });
         }
@@ -464,9 +464,9 @@ var reqListDate = '';
 function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 	if($(ele).is(":visible")) {
 		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));
-		if($(ele).val().endsWith("\n")) {
+		if($(ele).val().match("\n")) {
 			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\n")));
-		} else if($(ele).val().endsWith("\r")) {
+		} else if($(ele).val().match("\r")) {
 			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
 		}
 	}

@@ -5,8 +5,12 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
@@ -28,9 +32,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -54,7 +62,9 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectClientService;
@@ -96,8 +106,8 @@ public class RequirementController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	/*@Autowired
-	RequirementDao requirementDao;*/
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired
 	RequirementService requirementService;
@@ -174,6 +184,9 @@ public class RequirementController {
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	private JobCustomFieldDataService jobCustomFieldDataService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -571,8 +584,6 @@ public class RequirementController {
 				}
 		   }
 		model.addObject("usersListForAssignTeam", usersListForAssignTeam);*/
-		
-
 		return model;
 
 	}
@@ -595,176 +606,199 @@ public class RequirementController {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Requirement);
-		
-		
-		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
-		
-		//Projects project = projectsService.getProjectById(requirement.getProjectID().getId());
-		if(requirement.getProjectClientID() !=null && requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
-		requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
-		}
-		/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
-		for (RequirementAssignTo assing : requirementAssignToList) {
-			RequirementAssignTo ra = new RequirementAssignTo();
-			StringBuilder assignUserSB = new StringBuilder();
-			if (assing.getAssignUserId().getLastName() != null) {
-				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
-			}
-			else {
-				ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
-			}
-			requirementAssignToList.add(ra);
-		}*/
-		if(requirement.getCreatedDate()!=null){
-			requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
-		}
-		if (null != requirement.getClosedDate()) {
-			requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getClosedDate()));
-		}
-		if (requirement.getSpocId() != null) {
-			if (requirement.getClientId() != null) {
-				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
-					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
-				}
-				if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-				}
-			}
-			if (requirement.getSpocId().getClientUser().getFirstName() != null
-					&& requirement.getSpocId().getClientUser().getFirstName() != ""
-					&& requirement.getSpocId().getClientUser().getLastName() != null
-					&& requirement.getSpocId().getClientUser().getLastName() != "") {
-				StringBuilder spocSB = new StringBuilder();
-				requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
-			}
-			else {
-				requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
-			}
-			requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
-			requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
-			requirement.setSpocUUID(requirement.getSpocId().getUUID());
-		}
-		 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
-		 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
-			if(null != maxLevel && maxLevel >1){
-				if(null != approverList && !approverList.isEmpty()){
-					for(RequirementApproverHierarchy reApprover :approverList){
-						if((loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 1){
-							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
-						}
-						else if((isAdmin || loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 2){
-							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
-						}
-					}
-				}
-			}else if(null != maxLevel && maxLevel ==1){
-				int i = 0;
-				if(null != approverList && !approverList.isEmpty()){
-					for(RequirementApproverHierarchy reApprover :approverList){
-						if(null != reApprover.getRequirementApproverStatus().toString() && "" != reApprover.getRequirementApproverStatus().toString()){
-							 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
-						}
-						i++;
-					}
-				}
-			}
-		Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
-		Boolean isLoginUserAsApprover = false;
-		RequirementApproverHierarchy requirementApproverHierarchy = null;
-		if(isAdmin || isManager){
-			requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
-		}else{
-			requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
-		}
-		if (requirementApproverHierarchy != null) {
-			isLoginUserAsApprover = true;
-			requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
-		}
-		requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
-		
-		if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
-			requirement.setIsLoginUserAsInitiator("true");
+		Requirement requirement = null;
+		if(isAdmin){
+			requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		}else {
-			requirement.setIsLoginUserAsInitiator("false");
-		}
-
-		
-		if(requirement.getClientId() != null){
-		requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+			requirement = requirementService.getRequirementByAccessibleUserIdAndRequirementUUID(loginUser.getId(), requirementUUID);
 		}
 		
-
-		Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
-		model.addObject("requirementAssignToListCount",requirementAssignToListCount);
-		
-		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
-			Long requirementId = requirement.getId();
-			
-			model.setViewName("requirement/requirementSummary");
-			model.addObject("requirementId",requirementId);
-			
-			model.addObject("requirement",requirement);
-			
-			List<Countries> allCountryList = countriesService.getAllCountries();
-			model.addObject("allCountryList", allCountryList);
-			
-			List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-			model.addObject("locationsList",locationsList);
-			
-			model.addObject("timezone",timezone.getTimeZoneId());
-			
-			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
-			model.addObject("isTeamMember",isTeamMember);
-			
-			model.addObject("isManager",isManager);
-			
-			model.addObject("isAdmin",isAdmin);
-	
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			
-			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			model.addObject("skillsList", skillsList);
-			
-			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-			model.addObject("educationsList", educationsList);
-			
-			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-			model.addObject("documentsList", documentsList);
-	
-			// This code is commented as not in use 
-	
-			//to get time zone list
-			/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-			if(countries != null){
-				String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
-				model.addObject("timezonesList", timezonesList);
-			}*/
-			
-			if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
-				model.addObject("clientSubmissions","Y");
-			}else{
-				model.addObject("clientSubmissions","N");
+		if(null != requirement) {
+			//Projects project = projectsService.getProjectById(requirement.getProjectID().getId());
+			if(requirement.getProjectClientID() !=null && requirement.getProjectClientID().getProjectId() !=null && requirement.getProjectClientID().getProjectId().getProjectName() != null){
+			requirement.setProjectName(requirement.getProjectClientID().getProjectId().getProjectName());
 			}
-			
-			Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
-	        if(null != parentRequirement){
-	            model.addObject("parentRequirement","Y");
-	        }else{
-	            model.addObject("parentRequirement","N");
-	        }
-	        
-	        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
-				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
-				if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
-					model.addObject("isSpocActive", Constants.NO);
-				}else{
-					model.addObject("isSpocActive", Constants.YES);
+			/*Set<RequirementAssignTo> requirementAssignToList = requirement.getRequirementAssignTo();
+			for (RequirementAssignTo assing : requirementAssignToList) {
+				RequirementAssignTo ra = new RequirementAssignTo();
+				StringBuilder assignUserSB = new StringBuilder();
+				if (assing.getAssignUserId().getLastName() != null) {
+					ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
 				}
+				else {
+					ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
+				}
+				requirementAssignToList.add(ra);
+			}*/
+			if(requirement.getCreatedDate()!=null){
+				requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
+			}
+			if (null != requirement.getClosedDate()) {
+				requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getClosedDate()));
+			}
+			if (requirement.getSpocId() != null) {
+				if (requirement.getClientId() != null) {
+					if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+						requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+					}
+					if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")) {
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+					}
+				}
+				if (requirement.getSpocId().getClientUser().getFirstName() != null
+						&& requirement.getSpocId().getClientUser().getFirstName() != ""
+						&& requirement.getSpocId().getClientUser().getLastName() != null
+						&& requirement.getSpocId().getClientUser().getLastName() != "") {
+					StringBuilder spocSB = new StringBuilder();
+					requirement.setSpocName(spocSB.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).toString());
+				}
+				else {
+					requirement.setSpocName(requirement.getSpocId().getClientUser().getFirstName());
+				}
+				requirement.setSpocEmail(requirement.getSpocId().getClientUser().getEmail());
+				requirement.setSpocMobilePhone(requirement.getSpocId().getClientUser().getMobilePhone());
+				requirement.setSpocUUID(requirement.getSpocId().getUUID());
+			}
+			 Set<RequirementApproverHierarchy> approverList = requirement.getRequirementApprover();
+			 Integer maxLevel =  requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirement.getId());
+				if(null != maxLevel && maxLevel >1){
+					if(null != approverList && !approverList.isEmpty()){
+						for(RequirementApproverHierarchy reApprover :approverList){
+							if((loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 1){
+								 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+							}
+							else if((isAdmin || loginUser.getId().equals(reApprover.getApproverUserId().getId())) && reApprover.getLevel() == 2){
+								 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+							}
+						}
+					}
+				}else if(null != maxLevel && maxLevel ==1){
+					int i = 0;
+					if(null != approverList && !approverList.isEmpty()){
+						for(RequirementApproverHierarchy reApprover :approverList){
+							if(null != reApprover.getRequirementApproverStatus().toString() && "" != reApprover.getRequirementApproverStatus().toString()){
+								 requirement.setRequirementApproverHierarchyStatus(reApprover.getRequirementApproverStatus().toString());
+							}
+							i++;
+						}
+					}
+				}
+			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
+			Boolean isLoginUserAsApprover = false;
+			RequirementApproverHierarchy requirementApproverHierarchy = null;
+			if(isAdmin || isManager){
+				requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
+			}else{
+				requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+			}
+			if (requirementApproverHierarchy != null) {
+				isLoginUserAsApprover = true;
+				requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
+			}
+			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+			
+			if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
+				requirement.setIsLoginUserAsInitiator("true");
+			}else {
+				requirement.setIsLoginUserAsInitiator("false");
+			}
+	
+			
+			if(requirement.getClientId() != null){
+			requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
 			}
 			
+	
+			Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
+			
+			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+				Long requirementId = requirement.getId();
+				
+				model.setViewName("requirement/requirementSummary");
+				model.addObject("requirementId",requirementId);
+				
+				model.addObject("requirement",requirement);
+				
+				List<Countries> allCountryList = countriesService.getAllCountries();
+				model.addObject("allCountryList", allCountryList);
+				
+				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				model.addObject("locationsList",locationsList);
+				
+				model.addObject("timezone",timezone.getTimeZoneId());
+				
+				Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				model.addObject("isTeamMember",isTeamMember);
+				
+				model.addObject("isManager",isManager);
+				
+				model.addObject("isAdmin",isAdmin);
+		
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				model.addObject("skillsList", skillsList);
+				
+				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+				model.addObject("educationsList", educationsList);
+				
+				List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+				model.addObject("documentsList", documentsList);
+		
+				// This code is commented as not in use 
+		
+				//to get time zone list
+				/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(countries != null){
+					String[] timezonesList = com.ibm.icu.util.TimeZone.getAvailableIDs(countries.getCode2());
+					model.addObject("timezonesList", timezonesList);
+				}*/
+				
+				if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+					model.addObject("clientSubmissions","Y");
+				}else{
+					model.addObject("clientSubmissions","N");
+				}
+				
+				Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+		        if(null != parentRequirement){
+		            model.addObject("parentRequirement","Y");
+		        }else{
+		            model.addObject("parentRequirement","N");
+		        }
+		        
+		        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
+					OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+					if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+						model.addObject("isSpocActive", Constants.NO);
+					}else{
+						model.addObject("isSpocActive", Constants.YES);
+					}
+				}
+				
+				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+				if(!isNullOrEmpty(msg)){
+					model.addObject("msg", msg);
+					SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+				}
+				model.addObject("requirementUUID",requirementUUID);
+				if(!isNullOrEmpty(type)){
+					model.addObject("type",type);
+				}
+				
+				if(!isNullOrEmpty(candidateUUID)){
+					Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
+					model.addObject("candidateId", canidate.getId());
+				}
+				
+				if(!isNullOrEmpty(submissionId)){
+					model.addObject("submissionId", submissionId);
+				}
+				
+			}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
 			if(!isNullOrEmpty(msg)){
 				model.addObject("msg", msg);
@@ -783,7 +817,35 @@ public class RequirementController {
 			if(!isNullOrEmpty(submissionId)){
 				model.addObject("submissionId", submissionId);
 			}
-			
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
+		     model.addObject("actionId",action.getId());
+		   
+			if(action != null && action.getId()!= null){
+				 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+				 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+				 if(sections != null && !sections.isEmpty()) {
+					 for(SourceleadSectionDTO sec:sections) {
+						 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+							 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+							 custom.setCustomFormFieldId(customFields.getId());
+							 formFieldId.add(custom);
+						 }
+					 }
+					 if(formFieldId != null && !formFieldId.isEmpty() && orgLocations != null) {
+						OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
+					 Map<Long, String[]> jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,requirement.getId());
+					 Map<String,String> dataMap = new HashMap<>();
+					 if(jobData!= null && !jobData.isEmpty()) {
+						 for(Entry<Long, String[]> jobCustomData:jobData.entrySet()) {
+							 String labelName = jobCustomData.getValue()[0];
+							 String labelData = jobCustomData.getValue()[1];
+							 dataMap.put(labelName, labelData);
+							 model.addObject("dataMapListJobs", dataMap);
+						 	}
+					 	}
+					 }
+				 }
+				}
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
