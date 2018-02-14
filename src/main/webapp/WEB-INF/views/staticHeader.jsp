@@ -35,7 +35,6 @@ $(document).ready(function(){
         	if(data !== ""){
         		$("#maintenanceStatus").append(data.mainMessage);
         	}else{
-        		alert("hi")
         		$(".marQ").hide();
         		$(".customNavBar").addClass("customNavBarTop");
         	}
