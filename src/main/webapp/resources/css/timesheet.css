@@ -7544,3 +7544,13 @@ font-weight: 500;
 	position: absolute; right: 15px; top: 12px; cursor: pointer;
 }
 
+.totalWrap.timesheethours-li li {
+    min-height: 42px; height: auto;
+    }
+.emailverification-contnet {
+    margin-top: 75px;
+}
+.listUlLi {}
+.listUlLi li {
+	float: left;width: 50%; padding: 5px 10px; box-sizing: border-box;
+}

@@ -97,7 +97,7 @@ function redirectlocation(location){
 			result = result + '<th>Leave Type</th>';
 			result = result + '<th>Duration</th>';
 			result = result + '<th>No Of Days</th>';
-			result = result + '<th>No Of Extra Days</th>';
+// 			result = result + '<th>No Of Extra Days</th>';
 			result = result + '<th>Leaves Taken</th>';
 			result = result + '<th>Rejected By</th>';
 			result = result + '<th>Reason</th>';
@@ -138,7 +138,7 @@ function redirectlocation(location){
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		  var result = "";
 		    	  		   result = result + '     <div class="proj_show divmax-width">';
-		    	  		   result = result + '  <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');"></i>';  
+		    	  		   result = result + '  <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');"></i>';  
 		    	  		   result = result + '     </div>';
 		    	  		   return result; 
 		    	  	}
@@ -167,7 +167,7 @@ function redirectlocation(location){
 	            	   result = result + '     <div title="2" class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
 	            	    return result; 
 	              }
-	            },{
+	            },/* {
 	                "targets": colIndex++,
 	                "data": "noOfDays",
 	                "render": function ( data, type, opt, meta ) {
@@ -175,7 +175,7 @@ function redirectlocation(location){
 	              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+' day(s)</div>';	 
 	              	    return result; 
 	                }
-	              }, {
+	              }, */ {
 	                "targets": colIndex++,
 	                "data": "leavesTaken",
 	                "render": function ( data, type, opt, meta ) {
@@ -238,8 +238,8 @@ function redirectlocation(location){
  
   
   <script>
-function getRequestedAproveSummary(leaveId,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+function getRequestedAproveSummary(leaveUUID,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
 		   if(data != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
