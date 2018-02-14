@@ -992,17 +992,14 @@ function clearSearchKeyEducation() {
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#education_form')[0];
 
-			var formData = new FormData(frm);
+			var formData = getFormData('education_form');
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 			 
 			 $.ajax({
 						type : "POST",
 						data :formData,
-						processData: false,
-		    	        contentType:false,
 						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId ,
 						success : function(result) {
 							closePopup();

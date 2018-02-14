@@ -21,7 +21,7 @@ public class LeaveTypeDTO {
 	private String orgLocationId;
 	private String noOfLeavesPerMonth;
 	private String loginUserId;
-	private String leaveTypeId;
+	private long leaveTypeId;
 	private String deleteReason;
 	private String colorCode;
 	private int approvedCount;
@@ -46,7 +46,17 @@ public class LeaveTypeDTO {
 	private String minDays;
 	private String maxDays;
 	private String noOfDays;
+	private String leaveTypeUUID;
 	
+	
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
+	}
 	
 	public String getName()
 	{
@@ -192,11 +202,11 @@ public class LeaveTypeDTO {
 	{
 		this.loginUserId = loginUserId;
 	}
-	public String getLeaveTypeId()
+	public long getLeaveTypeId()
 	{
 		return leaveTypeId;
 	}
-	public void setLeaveTypeId(String leaveTypeId)
+	public void setLeaveTypeId(long leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
 	}

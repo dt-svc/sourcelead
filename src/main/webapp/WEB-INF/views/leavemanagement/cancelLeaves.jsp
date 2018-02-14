@@ -106,7 +106,7 @@
 											+ '     <div class="pull-left tbldata-dotdot-me" title="'
 											+ opt.leaveType
 											+ '" onclick="getRequestedAproveSummary(\''
-											+ opt.id
+											+ opt.leaveUUID
 											+ '\','
 											+ orgLocationId
 											+ ');">'
@@ -218,11 +218,11 @@
 </script>
 
 <script>
-	function getRequestedAproveSummary(leaveId, orgLocationId) {
+	function getRequestedAproveSummary(leaveUUID, orgLocationId) {
 		$.get(
 						sourceleadUrl + "/getRequestedAproveSummary?"
 								+ tokenParamName + "=" + tokenValue
-								+ "&leaveId=" + leaveId + "&orgLocationId="
+								+ "&leaveUUID=" + leaveUUID + "&orgLocationId="
 								+ orgLocationId,
 						function(data) {
 							if (data != null) {
