@@ -54,7 +54,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		orgLocFormFields.setOrgLocations(orgLocation);
 		orgLocFormFields.setOrg(org);
 		if(orgLocFormFieldsDTO.getLabelName() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getLabelName())) {
-			orgLocFormFields.setLabelName(orgLocFormFieldsDTO.getLabelName());
+			orgLocFormFields.setLabelName(StringUtils.capitalize(orgLocFormFieldsDTO.getLabelName()));
 		}
 		orgLocFormFields.setLabelInfo(orgLocFormFieldsDTO.getLabelinfo());
 		if(orgLocFormFieldsDTO.getLabelName() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getLabelName()) && StringUtils.isNotBlank(orgLocFormFieldsDTO.getLabelName())) {
@@ -62,7 +62,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		}
 		orgLocFormFields.setFieldType(orgLocFormFieldsDTO.getFieldType());
 		orgLocFormFields.setFieldDesc(orgLocFormFieldsDTO.getFieldDescription());
-		orgLocFormFields.setPlaceHolder(orgLocFormFieldsDTO.getPlaceHolder());
+		orgLocFormFields.setPlaceHolder(StringUtils.capitalize(orgLocFormFieldsDTO.getPlaceHolder()));
 		orgLocFormFields.setIsFieldRequired(orgLocFormFieldsDTO.getIsRequired());
 		orgLocFormFields.setStatus(orgLocFormFieldsDTO.getStatus());
 		if(orgLocFormFieldsDTO.getSlDependedntField() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getSlDependedntField().toString())) {
@@ -92,6 +92,7 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 			for(OrglocationFormSubFieldsDTO optionData:orgLocFormFieldsDTO.getOptionData()) {
 				if(optionData != null && StringUtils.isNotBlank(optionData.getOption())) {
 				OrglocationFormSubFields subFields = new OrglocationFormSubFields();
+				subFields.setId(optionData.getId());
 				subFields.setFormField(orgLocFormFields);
 				subFields.setLabelName(optionData.getOption());
 				subFields.setStatus(1);

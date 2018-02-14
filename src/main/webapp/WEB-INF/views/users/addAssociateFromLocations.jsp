@@ -20,7 +20,7 @@
        </section>
       
   <div class="content-area clearfix">
-        <div id="loading"></div> 
+        <div id="addLocAssociatesLoading"></div> 
       <div id="choicepopUp"></div>
 	<form:form id="addAssociate_form" name="addAssociate_form" method="post">
 		<div class="project_tabs_inn_head">
@@ -163,7 +163,7 @@
  function getReportingManager(rowId) {
 	 var role = $("#"+rowId+"associateRole").val();
 	 if(role != null && role != "" && role != 'undefined'){
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#addLocAssociatesLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
@@ -187,7 +187,7 @@
 		        },
 		    });
 		 
-		 $("#loading").removeAttr("style"); 
+		 $("#addLocAssociatesLoading").removeAttr("style"); 
 	 }else{
 		 var output = "";
      	 output = output + "<option value=''>-- Select Manager --</option>"; 
@@ -783,7 +783,7 @@ function createAssociate(){
  		    var formData = getFormData("addAssociate_form");
       		var sourceleadUrl ='${sourceleadUrl}';
       		
-       		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       		$("#addLocAssociatesLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		$.ajax({
 					type : "POST",
 	  	    	    data : formData,
