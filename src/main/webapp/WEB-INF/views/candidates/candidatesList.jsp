@@ -14,12 +14,6 @@
    <div class="success_pop" id="selector4" style="display: none;"> 
      <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
    </div>  
-   <script type="text/javascript">
-window.onload = function () {
-	var tabType = '${tabType}';
-	candidateSideBar(candidateId);
- };
-</script>
 <script>
   function noAccess(id){ 	
 	 
@@ -104,10 +98,9 @@ window.onload = function () {
 <script>
 var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
-	  var loginUserId = '${SourceLeadWeb_userId}';
+	var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
-	  var tabType = '${tabType}';
 	  $.ajax({
 		  type: "GET",
 		    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
@@ -520,12 +513,24 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId,candidateType);
+						 
+						 if("${candidateKeyword}" == "requestedDocumentNotification"){
+						    	$("#quickview").removeClass("active in");
+						    	$("#timelineview").removeClass("active in");
+						    	$("#detailview").addClass("active in");
+						    	$("#candQuickView").removeClass("active");
+						    	$("#candTimelineView").removeClass("active");
+						    	$("#candDetailView").addClass("active");
+					 	    	candidateDocuments(candidateId);
+						    }else{
+						    	candidateProfile(candidateId,candidateType);
+						    }
 						 
 						 var output = "";
 						 output = output + '<a data-toggle="tab" href="#timelineview" onclick="getActivityDiv('+candidateId+')">Timeline</a>';
 						 $("#candTimelineView").empty();  
 			 		     $("#candTimelineView").append(output);
+			 		   
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -541,13 +546,6 @@ function candidateSideBar(candidateId){
 					 result = result+"  </div> "; 
 					$("#candidateSideDiv").empty();
 				    $("#candidateSideDiv").append(result); 
-                }
-                if(tabType != null && tabType != '' && tabType != 'undefined'){
-   				 if(tabType == "documents"){
-   					 alert("documents")
-   					 document.getElementById('candidateDocumentsTab').className = 'current';
-   					candidateDocuments(candidateId);
-   				 }
                 }
          },
            
@@ -2144,7 +2142,7 @@ function getCities(){
 					  
 					  <div class="col-md-4 mt">
                           <div class="small-widget bgGreen">
-                              <a href="<c:url value='${appPath}/bulk-resume-import.html'/>" title="Bulk Imports">
+                              <a href="<c:url value='${appPath}/bulk-resume-import.html'/>" title="Bulk Imports" target="_blank">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-upload fa-4x"></i>
                                       <span class="fa fa-plus"></span>

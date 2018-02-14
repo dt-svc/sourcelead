@@ -27,6 +27,11 @@ height: auto !important;
 
 <script>
 function candidateDocuments(candidateId){
+	
+	$("#candidateProfileTab").removeClass("current");
+	$("#candidateDocumentsTab").addClass("current");
+	$(".project_tabs_inn").css("display", "block");
+	
 	var candidateType = '${candidateType}';
 	var result = "";
 	
