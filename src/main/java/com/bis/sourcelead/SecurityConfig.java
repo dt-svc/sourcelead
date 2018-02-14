@@ -92,6 +92,7 @@ public class SecurityConfig  {
 
     		.authorizeRequests()
        		     .antMatchers("/").permitAll() 
+       		     .antMatchers("/getScheduleStatus").permitAll() 
     		    .antMatchers("/login").permitAll() 
     		    .antMatchers("/*.html").permitAll() 
     		    .antMatchers("/resetPassword").permitAll() 
