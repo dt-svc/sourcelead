@@ -35,7 +35,9 @@ $(document).ready(function(){
         	if(data !== ""){
         		$("#maintenanceStatus").append(data.mainMessage);
         	}else{
+        		alert("hi")
         		$(".marQ").hide();
+        		$(".customNavBar").addClass("customNavBarTop");
         	}
         }
 	}); 
@@ -67,30 +69,30 @@ $(document).ready(function(){
 	<div class="customNavBar-inner deskMenu">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<ul class="">
-	<li><a href="/" id="indexpageID">Home</a></li>
+	<li><a href="/" class="slactive">Home</a></li>
 	 <li class="dropdown dropdown-featureshome">
-	 <a data-target="#featureshome" href="javascript:void(0)" id="featuresID">Features
+	 <a data-target="#featureshome" href="javascript:void(0)">Features
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
 <!--
 				<li><a href="features.html">Features</a></li>
 -->
-				<li><a href="/ats.html" id="atsID">ATS</a></li>
-				<li><a href="/vms.html" id="vmsID">VMS</a></li>
-				<li><a href="/crms.html" id="crmID">CRM</a></li>
-				<li><a href="/pms.html" id="pmsID">PMS</a></li>
-				<li><a href="/hrms.html" id="hrmsID">HRMS/Contracts</a></li>
-				<li><a href="/ims.html" id="imsID">IMS</a></li>
+				<li><a href="/ats.html">ATS</a></li>
+				<li><a href="/vms.html">VMS</a></li>
+				<li><a href="/crms.html">CRM</a></li>
+				<li><a href="/pms.html">PMS</a></li>
+				<li><a href="/hrms.html">HRMS/Contracts</a></li>
+				<li><a href="/ims.html">IMS</a></li>
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html" id="searchjobID">Search Job</a></li>
-	<li><a href="/marketplace.html" id="marketplaceID">Marketplace</a></li>
-	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
+	<li><a href="/sourceleadJobPage.html">Search Job</a></li>
+	<li><a href="/marketplace.html">Marketplace</a></li>
+	<li><a href="/about-us.html">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
-	<li><a href="/blog.html" id="blogID">Blog</a></li>
-	<li><a href="/contact.html" id="contactID">Contact</a></li>
+	<li><a href="/blog.html">Blog</a></li>
+	<li><a href="/contact.html">Contact</a></li>
 	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
-	<!-- <li><a href="/register" title="Login">Sign Up</a></li> -->
+	<li><a href="/register" title="Login">Sign Up</a></li>
 	</ul>
 		</div>
 		
