@@ -2058,6 +2058,12 @@ public class UsersListRestController {
 				candidate.setSpocId(null);
 			}
 			
+			candidate.setFirstName(addUserDTO.getFirstName());
+			if(StringUtils.isNotBlank(addUserDTO.getLastName())){
+				candidate.setLastName(addUserDTO.getLastName());
+			}
+			
+			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
