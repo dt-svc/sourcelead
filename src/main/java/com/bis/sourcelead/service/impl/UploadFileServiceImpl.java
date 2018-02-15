@@ -401,7 +401,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 							userImport.setManager(row.getCell(11).toString());
 							
 							if(row.getCell(12) != null) {
-							userImport.setEmploymentType(row.getCell(12).toString());
+						    String employmentType = getCellValueAsString(row.getCell(12),fileName);
+							userImport.setEmploymentType(employmentType);
 							}else {
 								userImport.setEmploymentType("");
 							}
@@ -547,12 +548,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		if("C2C".equalsIgnoreCase(userImport.getEmploymentType()) || "C2C-1099".equalsIgnoreCase(userImport.getEmploymentType())) {
 			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
+			if(vendors != null) {
+				orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
+				employee.setOrgRelationId(orgRelation);
+				
+				orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
+				employee.setSpocId(orgspoc);
+			}
 			
-			orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
-			employee.setOrgRelationId(orgRelation);
-			
-			orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
-			employee.setSpocId(orgspoc);
 		}
 		
 		employee.setHireDate(userImport.getDateOfJoin());
@@ -906,6 +909,23 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			writeRow.createCell(12).setCellValue("");
 		}
 		
+		
+		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,9,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,9,createExcelsheet));
+			}
+	        writeRow.createCell(9).setCellValue(row.getCell(9).toString());
+		} else {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,9,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,9,createExcelsheet));
+			}
+			writeRow.createCell(9).setCellValue("");
+		}
+		
 		if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
 			String vendor = getCellValueAsString(row.getCell(13), fileName);
 			 writeRow.createCell(13).setCellValue(vendor);
@@ -1033,6 +1053,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
+			if (row.getCell(12) == null || "".equalsIgnoreCase(row.getCell(12).toString())) {
+				userImport.setReason("Employment Type is Required");
+				return false;
+			}
+			
 		// Employment Type,Vendor,Vendor Contact Name
 			
 			if("C2C".equalsIgnoreCase(row.getCell(12).getStringCellValue()) || "C2C-1099".equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
@@ -1078,6 +1103,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}else {
 					if(row.getCell(14) !=null && !"".equalsIgnoreCase(row.getCell(14).toString())){
 						userImport.setReason("vendor is mandatory if you have entered contact");
+						return false;
+					}else {
+						userImport.setReason("vendor details are mandatory.");
 						return false;
 					}
 				}
@@ -1728,6 +1756,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 
 				}
 
+			}else {
+				return null;
 			}
 		}
 
