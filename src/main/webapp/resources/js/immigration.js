@@ -33,6 +33,7 @@ function Immigration(){
 		}
 	}*/
 	this.savePetitionTemplateAndContinue = function(){
+		if ($('#petitionTemplateDetails').validate(false, validationSettings)) {
 		var formData = getFormData("petitionTemplateDetails");
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDetails",
@@ -40,18 +41,26 @@ function Immigration(){
 		       data: formData,
 		       success: function(data) {
 		    	   console.log("inside success");
-		    	   alert("hi");
-		    	   alert(data);
 		    	   if(data == 'success'){
 			    	   $("#addNewPetitionTemplateDiv").empty();
 			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=docDetails");
 		    	   }
 		       }
 		});
+		return true;
+		} else {
+			return false;
+		}
+	}
+	
+	this.resetFormData = function(formId){
+		  $("#"+formId)[0].reset();
 	}
 	
 	this.savePetitionDocDetailsAndContinue = function(){
+		if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
 		var formData = getFormData("PetitionTemplateDocDetails");
+		console.log(formData);
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDocDetails",
 		       type : "POST",
@@ -64,6 +73,10 @@ function Immigration(){
 		    	   }
 		       }
 		});
+		return true;
+		} else {
+			return false;
+		}
 	}
 	this.savePetitionFormDetailsAndContinue = function(){
 		var formData = getFormData("PetitionTemplateFormDetails");

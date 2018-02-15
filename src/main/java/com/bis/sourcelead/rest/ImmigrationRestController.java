@@ -172,7 +172,6 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value={"/savePetitionTemplateDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
-		System.out.println(templateDTO.getTemplateName()+templateDTO.getTemplateDescription());
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -181,7 +180,6 @@ public class ImmigrationRestController {
 	}
 	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
-		System.out.println(templateDTO.getTemplateName()+templateDTO.getTemplateDescription());
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -190,7 +188,6 @@ public class ImmigrationRestController {
 	}
 	@RequestMapping(value={"/savePetitionTemplateFormDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
-		System.out.println(templateDTO.getTemplateName()+templateDTO.getTemplateDescription());
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
