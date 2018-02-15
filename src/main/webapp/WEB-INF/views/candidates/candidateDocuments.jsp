@@ -216,13 +216,13 @@ function candidateDocumentView(documentUUID,title){
 
 <script>
 	function toggleAllDocuments(source) {
-	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+		 var checkboxes = document.querySelectorAll('input[class="myCheckbox"]');
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source)
 	            checkboxes[i].checked = source.checked;
 	        
 	    }
-	$('input:checkbox:not(#checkAllDocuments)').click(function() {
+		 $('input[class="myCheckbox"]').each(function(i) {
 	    if(!this.checked) {
 	        $('#checkAllDocuments').removeAttr('checked');
 	    }

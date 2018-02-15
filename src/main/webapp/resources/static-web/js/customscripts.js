@@ -123,4 +123,3 @@ $(document).ready(function(){
 	$(".gallery:gt(0) a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
 });
 
- 
