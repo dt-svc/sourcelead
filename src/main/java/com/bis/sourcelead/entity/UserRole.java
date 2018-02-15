@@ -123,87 +123,114 @@ public class UserRole implements Serializable {
 	private String loginSecurity;
 
 	@Transient
+	@JsonProperty
 	private String userRoleName;
 
 	@Transient
+	@JsonProperty
 	private String currencyConversionWithCountry;
 
 	@Transient
+	@JsonProperty
 	private String employeeId;
 
 	@Transient
+	@JsonProperty
 	private String userEmploymentType;
 
 	@Transient
+	@JsonProperty
 	private Integer projectsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer openTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer approvedTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer rejectedTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer waitingTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private String rate;
 
 	@Transient
+	@JsonProperty
 	private String ratePer;
 
 	@Transient
+	@JsonProperty
 	private String InvoiceFrequency;
 
 	@Transient
+	@JsonProperty
 	private String hireDateStr;
 
 	@Transient
+	@JsonProperty
 	private String dailyHours;
 
 	@Transient
+	@JsonProperty
 	private String currentCurrency;
 
 	@Transient
+	@JsonProperty
 	List<User> allReportingManagers;
 
 	@Transient
+	@JsonProperty
 	private String vendorName;
 
 	@Transient
+	@JsonProperty
 	private String vendorContactName;
 
 	@Transient
+	@JsonProperty
 	private String departmentName;
 
 	@Transient
+	@JsonProperty
 	private String userName;
 	
 	@Transient
+	@JsonProperty
 	private String fileUrl;
 
 	@Transient
+	@JsonProperty
 	List<User> reportingManagers;
 
 	@Transient
+	@JsonProperty
 	List<User> clientUsersList;
 
 	@Transient
+	@JsonProperty
 	List<User> vendorUsersList;
 
 	@Transient
+	@JsonProperty
 	List<User> requirementManagersList;
 
 	@Transient
 	List<User> requirementApproversList;
 
 	@Transient
+	@JsonProperty
 	List<User> teamOwnersList;
 
 	@Transient
+	@JsonProperty
 	List<User> projectApproversList;
 
 	@Transient
@@ -215,6 +242,7 @@ public class UserRole implements Serializable {
 	private String mobilePhone;
 	
 	@Transient
+	@JsonProperty
 	List<Roles> rolesList;
 
 	@Transient
