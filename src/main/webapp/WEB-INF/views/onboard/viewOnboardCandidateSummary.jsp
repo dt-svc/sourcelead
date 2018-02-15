@@ -138,14 +138,15 @@ padding-left: 25px;
 				 
 				 $("#candidateName").html(candidateName+" <span class='small'>onboard details</span>");
 				
+				 if(json.address1 != null && json.address1 != '' && json.address1 != 'undefined'){ 
+					 result = result +'     <div class="form-group">                                                                                      ';
+					 result = result +'       <label class="col-md-3 control-label">Street Address 1 </label>';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.address1+'</label>                                      ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
 				 
-				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">Street Address 1 </label>';
-				 result = result +'       <div class="col-md-6">                                                                                      ';
-				 result = result +'           <label>'+json.address1+'</label>                                      ';
-				 result = result +'       </div>                                                                                                      ';
-				 result = result +'     </div>                                                                                                        ';
-				
 				 if(json.address2 != null && json.address2 != '' && json.address2 != 'undefined'){
 					 result = result +'     <div class="form-group">                                                                                      ';
 					 result = result +'       <label class="col-md-3 control-label">Street Address 2</label>';

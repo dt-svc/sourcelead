@@ -307,12 +307,19 @@ function projectsPagination(url,sourceleadUrl){
 	            	  var result = "";
 	            	  var projectManagers = '';
 	            	  
-	            	    if(opt.managerLevel2 != null && opt.managerLevel2 != '' && opt.managerLevel2 != 'undefined'){
-	            		  projectManagers = opt.managerLevel1+","+opt.managerLevel2;
-   		    		     }else{
-   		    			  projectManagers = opt.managerLevel1;
-	   		    		}
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+projectManagers+'">'+projectManagers+'</span></div></td>';
+	            	  if(opt.managerLevel1 != null && opt.managerLevel1 != '' && opt.managerLevel1 != 'undefined'){
+	            		  projectManagers = opt.managerLevel1;
+   		    		     }
+	            	  
+	            	  if(opt.managerLevel2 != null && opt.managerLevel2 != '' && opt.managerLevel2 != 'undefined'){
+   		    		    	 projectManagers = opt.managerLevel2;
+	   		    		 }
+	            	  
+	            	  if(opt.managerLevel1 != null && opt.managerLevel1 != '' && opt.managerLevel1 != 'undefined' && opt.managerLevel2 != null && opt.managerLevel2 != '' && opt.managerLevel2 != 'undefined' ){
+   		    		    	 projectManagers = opt.managerLevel1+","+opt.managerLevel2;
+	   		    		 }
+	            		
+	            	  result = result + '<td><div class="tblminwidth-75"><span title="'+projectManagers+'">'+projectManagers+'</span></div></td>';
 	            		return result;
 	              }
 		     },{
