@@ -1166,7 +1166,8 @@ function assignMembers(){
 						 var additionalDetails = document.getElementById("additionalDetails");
 						 document.getElementById("additionalDetails").removeAttribute("class")
 						 additionalDetails.href="#tab-c"; 
-						 additionalDetails.click();
+						 $("#additionalDetails").click();
+// 						 additionalDetails.click();
 					},
 				}); 
       		 return true;

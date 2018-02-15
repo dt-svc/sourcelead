@@ -1445,7 +1445,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					projects.setAllowBidding(null);
 				}
 				
-				if(projectDTO.getFlatPercentage() != 0){
+				if(projectDTO.getFlatPercentage() != null && projectDTO.getFlatPercentage() != 0){
 					projects.setFlatPercent((double)projectDTO.getFlatPercentage());
 				}else{
 					projects.setFlatPercent(null);
@@ -2089,7 +2089,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Override
 	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds) throws Exception {
-		
 		
 		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds);
 		Projects pr = projectsDao.getProjectById(projectId);
