@@ -257,7 +257,7 @@ public class ProjectsDashboardRestController {
 				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				projectsDTO.setSortOrder(sortColumnOrder);
 				ResponseList<ProjectsDTO> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole,candidateId);
-			    
+			   
 				return projectsList;
 			}
 	
