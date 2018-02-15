@@ -107,6 +107,8 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		customDTO.setPlaceHolder(customList.getPlaceHolder());
 		customDTO.setOrglocationId(customList.getOrgLocations().getId());
 		customDTO.setOrgId(customList.getOrg().getId());
+		customDTO.setMinDate(customList.getMinDate());
+		customDTO.setMaxDate(customList.getMaxDate());
 		customDTO.setStatus(customList.getStatus());
 		if(customFieldsubList != null && !customFieldsubList.isEmpty()) {
 			List<OrglocationFormSubFieldsDTO> orglocationFormSubfieldDTO = getorgLocationCustomSubFields(customFieldsubList);
