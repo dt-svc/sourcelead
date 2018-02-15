@@ -173,11 +173,12 @@ function saveDocuments(){
 		    	     var vendorTasks = document.getElementById("vendorTasks");
 					 document.getElementById("vendorTasks").removeAttribute("class");
 					 vendorTasks.href="#tab-c";
-					 vendorTasks.addEventListener("click", function() {
+					/*  vendorTasks.addEventListener("click", function() {
 						 getVendorOnboardTasksList();
-					  });
-					 vendorTasks.click();
-		    	  
+					  }); */
+					 $("#vendorTasks").click();
+// 					 vendorTasks.click();
+					 
 	      	      $("#save_continue_doc_button").removeAttr("disabled");
 		    	  $("#vendorDocumentsLoading").removeAttr("style");
 		    	  
