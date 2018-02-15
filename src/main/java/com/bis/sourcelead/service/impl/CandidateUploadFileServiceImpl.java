@@ -572,6 +572,9 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					candidateImport.setReason("vendor is mandatory if you have entered contact");
 					return false;
+				}else {
+					candidateImport.setReason("vendor details are mandatory.");
+					return false;
 				}
 			}
 		}else {
