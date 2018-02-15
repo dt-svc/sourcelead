@@ -1445,7 +1445,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					projects.setAllowBidding(null);
 				}
 				
-				if(projectDTO.getFlatPercentage() != 0){
+				if(projectDTO.getFlatPercentage() != null && projectDTO.getFlatPercentage() != 0){
 					projects.setFlatPercent((double)projectDTO.getFlatPercentage());
 				}else{
 					projects.setFlatPercent(null);

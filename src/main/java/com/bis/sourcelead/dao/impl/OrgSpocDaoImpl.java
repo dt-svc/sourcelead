@@ -730,5 +730,22 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			}
 			return orgSpoc;
 		}
+
+		@Override
+		@Transactional
+		public OrgSpoc getSpocByOrgRelationIdForNewVendor(Long orgRelationId) throws Exception {
+			
+
+			Session session = this.sessionFactory.getCurrentSession();
+		   	 String query = ("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch spoc.clientUser left join fetch spoc.vendorUser left join fetch spoc.orgRelations orgRelations where orgRelations.id = :orgRelationId ");
+		      List<OrgSpoc> orgSpocs = session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).list();
+		      OrgSpoc orgSpoc = null;
+				if(orgSpocs != null && !orgSpocs.isEmpty())
+				{
+					orgSpoc = orgSpocs.iterator().next();
+				}
+				return orgSpoc;
+		
+		}
 	 
 }
