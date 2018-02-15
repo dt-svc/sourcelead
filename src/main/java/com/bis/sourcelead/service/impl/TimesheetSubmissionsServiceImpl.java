@@ -59,7 +59,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	 * @throws NullPointer
 	 */
 
-	 @Override
+	/* @Override
 	 public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception {
 		
 			 TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
@@ -85,7 +85,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				    timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(rejectedTimesheetsSubmissionsCount);
 		
 		        return timeSheetSubmissionCount;
-	 }
+	 }*/
 
 	 
 	/**
