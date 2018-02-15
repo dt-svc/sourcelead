@@ -921,6 +921,7 @@ function projectStatus(){
 		$("#editProject_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
 		var ProjectSequeneNumber = document
