@@ -474,7 +474,12 @@ public class LeaveServiceImpl implements LeaveService{
 					
 					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
-					leave.setExtraLeavesTaken(numberOfDays - carryForwardLeaves);
+					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod())){
+						leave.setExtraLeavesTaken(numberOfDays - carryForwardLeaves);
+					}else{
+						leave.setExtraLeavesTaken(0);
+					}
+					
 					
 					int numberOfLeavesPerYear = totalLeaves - numberOfDays + leave.getExtraLeavesTaken();
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
@@ -552,62 +557,62 @@ public class LeaveServiceImpl implements LeaveService{
 				switch (i) {
 					case 0:
 						if(janLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - janLeaves);
 						}
 						break;
 					case 1:
 						if(febLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - febLeaves);
 						}
 						break;
 					case 2:
 						if(marLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - marLeaves);
 						}
 						break;
 					case 3:
 						if(aprLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - aprLeaves);
 						}
 						break;
 					case 4:
 						if(mayLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - mayLeaves);
 						}
 						break;
 					case 5:
 						if(junLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - junLeaves);
 						}
 						break;
 					case 6:
 						if(julLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - julLeaves);
 						}
 						break;
 					case 7:
 						if(augLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - augLeaves);
 						}
 						break;
 					case 8:
 						if(sepLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - sepLeaves);
 						}
 						break;
 					case 9:
 						if(octLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - octLeaves);
 						}
 						break;
 					case 10:
 						if(novLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - novLeaves);
 						}
 						break;
 					case 11:
 						if(decLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - decLeaves);
 						}
 						break;
 				}
@@ -1021,7 +1026,7 @@ public class LeaveServiceImpl implements LeaveService{
 								pendingLeaveCounts = pendingLeaveCounts + leave.getNumberOfDays();
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								totalLeaves = totalLeaves - leave.getNumberOfDays();
+								totalLeaves = totalLeaves - (leave.getNumberOfDays() - leave.getExtraLeavesTaken());
 							}
 						}
 						   balanceLeaveCounts += totalLeaves;

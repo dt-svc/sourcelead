@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
+ 
 public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -53,16 +53,14 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectId;
 	
-	private double estimatedHours;
+	private Integer estimatedHours;
 	
-	private double estimatedBudget;
+	private Integer estimatedBudget;
 	
-	private Double flatPercentage;
+	private Integer flatPercentage;
 	
 	private String staticPath;
 	
-	private boolean approverUserId;
-
     private List<Map<String, String>> fileInfo;
 
 	private List<FileInfo> uploadedFileInfo;
@@ -119,7 +117,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectbudgetCurrency;
 	
-	private Double projectbudgetAmount;
+	private double projectbudgetAmount;
 	
 	private String createdDateStr;
 	
@@ -127,9 +125,9 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String createdByName;
 	
-	private Long manager1;
+	private int manager1;
 	
-	private Long manager2;
+	private int manager2;
 	
 	private String managerLevel1UserType;
 	
@@ -155,7 +153,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String overtimeRateType;
 	
-	private Long orgLocationId;
+	private int orgLocationId;
 	
 	private String clientlocationId;
 	
@@ -174,6 +172,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private List<CustomFormFieldDTO> customFormData;
 	
 	private String projectApprover;
+	
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -343,30 +342,6 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
-	}
-
-	public double getEstimatedHours() {
-		return estimatedHours;
-	}
-
-	public double getEstimatedBudget() {
-		return estimatedBudget;
-	}
-
-	public void setEstimatedHours(double estimatedHours) {
-		this.estimatedHours = estimatedHours;
-	}
-
-	public void setEstimatedBudget(double estimatedBudget) {
-		this.estimatedBudget = estimatedBudget;
-	}
-
-	public Double getFlatPercentage() {
-		return flatPercentage;
-	}
-
-	public void setFlatPercentage(Double flatPercentage) {
-		this.flatPercentage = flatPercentage;
 	}
 
 	public String getStaticPath() {
@@ -601,13 +576,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.projectbudgetCurrency = projectbudgetCurrency;
 	}
 
-	public Double getProjectbudgetAmount() {
-		return projectbudgetAmount;
-	}
-
-	public void setProjectbudgetAmount(Double projectbudgetAmount) {
-		this.projectbudgetAmount = projectbudgetAmount;
-	}
+	 
 
 	public String getCreatedDateStr() {
 		return createdDateStr;
@@ -633,21 +602,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.createdByName = createdByName;
 	}
 
-	public Long getManager1() {
-		return manager1;
-	}
-
-	public void setManager1(Long manager1) {
-		this.manager1 = manager1;
-	}
-
-	public Long getManager2() {
-		return manager2;
-	}
-
-	public void setManager2(Long manager2) {
-		this.manager2 = manager2;
-	}
+	
 
 	public String getManagerLevel1UserType() {
 		return managerLevel1UserType;
@@ -745,14 +700,6 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.overtimeRateType = overtimeRateType;
 	}
 
-	public Long getOrgLocationId() {
-		return orgLocationId;
-	}
-
-	public void setOrgLocationId(Long orgLocationId) {
-		this.orgLocationId = orgLocationId;
-	}
-
 	public String getManager1Name() {
 		return manager1Name;
 	}
@@ -829,15 +776,6 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.clientlocationId = clientlocationId;
 	}
 
-	public boolean isApproverUserId()
-	{
-		return approverUserId;
-	}
-
-	public void setApproverUserId(boolean approverUserId)
-	{
-		this.approverUserId = approverUserId;
-	}
 
 	public String getProjectApprover()
 	{
@@ -849,11 +787,61 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.projectApprover = projectApprover;
 	}
 
-
-
 	
+	public double getProjectbudgetAmount() {
+		return projectbudgetAmount;
+	}
+ 
 
+	public void setProjectbudgetAmount(double projectbudgetAmount) {
+		this.projectbudgetAmount = projectbudgetAmount;
+	}
 
-	
-	
+	public int getManager1() {
+		return manager1;
+	}
+
+	public int getManager2() {
+		return manager2;
+	}
+
+	public int getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setManager1(int manager1) {
+		this.manager1 = manager1;
+	}
+
+	public void setManager2(int manager2) {
+		this.manager2 = manager2;
+	}
+
+	public void setOrgLocationId(int orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Integer getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(Integer estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public Integer getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public void setEstimatedBudget(Integer estimatedBudget) {
+		this.estimatedBudget = estimatedBudget;
+	}
+
+	public Integer getFlatPercentage() {
+		return flatPercentage;
+	}
+
+	public void setFlatPercentage(Integer flatPercentage) {
+		this.flatPercentage = flatPercentage;
+	}
 }
