@@ -1365,11 +1365,14 @@ function getRecipantsContacts(){
 	
 	
 	var internalOutput = "";
-	
-	var internalOutput = "";
 	 for(var e in recepiantscontactsList) {
 		 var checkbox_value = recepiantscontactsList[e].split(",");
+		 var elist=$("#emailsList").chosen().find("option:selected" ).text();
+		 var searchString=elist.search(checkbox_value[1]);
+		 if(searchString==-1)
+			{
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			}
 	  }
 	
 	
