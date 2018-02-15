@@ -1932,7 +1932,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, intiatorUser, orgLocations, notificationScenario);
 	}
 	
@@ -2109,6 +2110,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@Override
 	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception
 	{
+		
 		if (requirement.getManagerUserId() != null) {
 			managerUser = userService.getUserById(requirement.getManagerUserId().getId());
 		}
@@ -2261,7 +2263,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario);
 	}
 	
@@ -2417,7 +2420,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, orgLocations, notificationScenario);
 	}
 	
@@ -2531,7 +2535,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
 	}
 	
@@ -2645,7 +2650,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
 	}
 	
@@ -2779,7 +2785,8 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 	}
 	

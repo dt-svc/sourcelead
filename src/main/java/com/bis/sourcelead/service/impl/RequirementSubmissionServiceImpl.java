@@ -1760,8 +1760,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
-		 String actionLink="";
-		//calling the sendEmail method of emailScenerioUtil
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+	       String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTRATE&requirementUUID="+requirement.getRequirementUUID()+"&candidateUUID="+requirement.getcgetCandidate().getCandidateUUID()+"&submissionId="+requirement.getSubmissionId()).toString();//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario);
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
@@ -1852,7 +1852,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
-		 String actionLink="";
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario);
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
@@ -2514,7 +2515,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			emailMessage.setSubmissionId(submissionId);
 			
 			emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList);
-			String actionLink="";
+			StringBuilder actionLinkBuilder = new StringBuilder();                          
+			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+reqSub.getRequirement().getRequirementUUID()).toString();	 
 			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
 		}
 

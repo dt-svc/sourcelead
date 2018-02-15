@@ -515,7 +515,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION_REDIFINED,Constants.ENTITY_TYPE_NOTIFICATION); 
-		 String actionLink = "";
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		 
 		 if(interviewerUser.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
@@ -1082,8 +1083,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION); 
-		 String actionLink = "";
-		 
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=INTERVIEW&requirementUUID="+requirementSubmission.getRequirement().getRequirementUUID()).toString();	 
 		 if(interviewerUser.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
@@ -1512,8 +1513,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW,Constants.ENTITY_TYPE_NOTIFICATION); 
-		 String actionLink = "";
-		 
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=INTERVIEW&requirementUUID="+requirementSubmission.getRequirement().getRequirementUUID()).toString();	 
+
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
@@ -1632,8 +1634,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.INTERVIEWER_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION); 
-		 String actionLink = "";
-		 
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=INTERVIEW&requirementUUID="+requirementSubmission.getRequirement().getRequirementUUID()).toString();	 
 		 if(interviewerUser.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
@@ -1839,6 +1841,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		}
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink = "";
 		 
 		//getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
@@ -1846,23 +1851,29 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Attending") && null != reqSubmission.getVendorLocationId()){
 			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_ACCEPT_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_EMAIL);
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_ACCEPT_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+			 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Attending")){
 			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_EMAIL);
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+			 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }
 		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending") && null != reqSubmission.getVendorLocationId()){
 		    emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_EMAIL);
 		    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_REJECTMAIL_TO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+		    actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending")){
 		    emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_EMAIL);
 		    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+		    actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		 }
 		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Maybe") && null != reqSubmission.getVendorLocationId()){
 		   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_EMAIL);
 		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+		   actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Maybe")){
 		   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_EMAIL);
 		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR,Constants.ENTITY_TYPE_NOTIFICATION);
+		   actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		 }
 		 
 		 
@@ -1879,7 +1890,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, reqSubmission.getOrgLocations().getOrg(),reqSubmission.getOrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
-		 String actionLink= "";
+//		 String actionLink= "";
 
 		 if(null != reqSubmission.getVendorLocationId()){
 		 emailScenerioUtil.sendNotification(actionLink,spoc.getVendorUser(), interviewCreactorUser, spoc.getClientLocationId(), notificationScenario);	 

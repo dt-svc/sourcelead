@@ -1076,8 +1076,8 @@ public class EMailJobScheduler {
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
-		 String actionLink = "";
-		 
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/candidatesList").toString();		 
 		 if(user.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
