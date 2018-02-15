@@ -774,7 +774,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
  */
 	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws Exception {
 		String[] rolesList = getRolesList(org,orgLocations.getId(),roleHierarchyId);
-		String[] usersList = getUsersList(orgLocations.getId());
+	
+		//	String[] usersList = getUsersList(orgLocations.getId());
 		
 		String[] employmentTyesList = getEmploymentTypeList();
 		
@@ -884,15 +885,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			 writeRow.createCell(11).setCellValue("");
 		}
 		
-		
-		/*if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-			String employmentType = getCellValueAsString(row.getCell(12), fileName);
-			 writeRow.createCell(12).setCellValue(employmentType);
-		} else {
-		  writeRow.createCell(12).setCellValue("");
-		}*/
-		
-		
 		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
 			if(!fileName.endsWith("xlsx")){
 				createExcelsheet.addValidationData(getDropDownListForCell(employmentTyesList,12,fileName));
@@ -907,23 +899,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				createExcelsheet.addValidationData(getXssfDropDownlist(employmentTyesList,12,createExcelsheet));
 			}
 			writeRow.createCell(12).setCellValue("");
-		}
-		
-		
-		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,9,fileName));
-			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,9,createExcelsheet));
-			}
-	        writeRow.createCell(9).setCellValue(row.getCell(9).toString());
-		} else {
-			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,9,fileName));
-			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,9,createExcelsheet));
-			}
-			writeRow.createCell(9).setCellValue("");
 		}
 		
 		if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
