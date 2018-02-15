@@ -2707,5 +2707,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 		addExpensesDao.storeAddExpensesData(expenses);
 	}
+	@Override
+	public List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,Long orgLocationId, String invoiceStatus, Date startDate, Date endDate) throws Exception {
+		return invoiceDao.getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(projectId,orgLocationId, invoiceStatus, startDate, endDate);
+	}
 	
 }
