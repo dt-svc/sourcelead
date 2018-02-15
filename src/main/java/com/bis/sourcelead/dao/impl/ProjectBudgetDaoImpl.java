@@ -154,18 +154,10 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId, Date startDateUTC, Date endDateUTC) throws Exception {
+	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		java.sql.Date sqlStartDate = null;
-		if(startDateUTC != null){
-			sqlStartDate = new java.sql.Date(startDateUTC.getTime());
-		}
-		java.sql.Date sqlEndDate = null;
-		if(endDateUTC != null){
-			sqlEndDate = new java.sql.Date(endDateUTC.getTime());
-		}
-		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.budgetStatus = 'Approved' and date(projectbudget.createdDate) BETWEEN :startDateUTC and :endDateUTC";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setParameter("startDateUTC", sqlStartDate).setParameter("endDateUTC", sqlEndDate).list();
+		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.budgetStatus = 'Approved' and projectbudget.projectId.orgLocationsId =:orgLocationId";
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).list();
 		return ProjectBudgetList;
 	}
 }
