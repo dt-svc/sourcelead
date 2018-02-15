@@ -125,7 +125,7 @@
 			<div class="col-md-6">
 			<div class="aboutinner-content animated bounceIn">
 				<h2>SourceLead is</h2>
-				<p>a <span>SaaS</span> based integrated software, which uses the most powerful and<br>cutting edge <span>Artificial Intelligence</span> for efficient sourcing.<br>Our next level technology enables you to easily manage, search, and track all applicants from Requisition to On Boarding. All it takes is a click to nail the best talent effectively.</p>
+				<p>a <span>SaaS</span> based end to end talent management solution, <br> which uses the most powerful and cutting edge <span>Artificial Intelligence</span><br>for efficient sourcing. Our next level technology enables you to easily manage, <br>search, and track all applicants from Requisition to On Boarding.<br>All it takes is a click to nail the best talent effectively.</p>
 				 <a href="/about-us.html" class="btn btn-primary mt">Read More</a>
 			</div>
 			</div>
