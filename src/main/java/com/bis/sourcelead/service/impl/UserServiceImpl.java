@@ -310,20 +310,26 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+
 		if(addUserDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
 				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				UserCustomFieldData userCustomFields = new UserCustomFieldData();
+					UserCustomFieldData userCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						userCustomFields = userCustomFieldDataService.getUserCustomFieldDataById(customFields.getEntityId());
+					}else {
+						userCustomFields = new UserCustomFieldData();
+					}
 				userCustomFields.setUser(user1);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				 userCustomFields.setOrglocationsFormFields(orgFormField);
-				 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				userCustomFields.setOrglocationsFormFields(orgFormField);
+				userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
 				}
 				
 			}	
 		}
+		
 		
 		
 		//for updating cosultantUserId in candidate
