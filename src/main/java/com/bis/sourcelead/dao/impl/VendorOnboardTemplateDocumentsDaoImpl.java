@@ -141,7 +141,8 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 	public Integer getTemplateDocumentsCountByTemplateId(Long templateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query ="select count(*) from VendorOnboardingTemplateDocuments documents where documents.vendorOnboardingTemplateId.id = :templateId ";
+		String query ="select count(*) from VendorOnboardingTemplateDocuments documents where documents.vendorOnboardingTemplateId.id = :templateId "
+				+ " and documents.status = '1' ";
 		List<Long> docsCount = session.createQuery(query.toString()).setLong("templateId", templateId).list();
 			Integer count = 0;
 			if(docsCount != null && !docsCount.isEmpty()){

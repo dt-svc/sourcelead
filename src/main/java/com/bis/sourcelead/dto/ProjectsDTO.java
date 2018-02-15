@@ -53,16 +53,14 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String projectId;
 	
-	private int estimatedHours;
+	private Integer estimatedHours;
 	
-	private int estimatedBudget;
+	private Integer estimatedBudget;
 	
-	private int flatPercentage;
+	private Integer flatPercentage;
 	
 	private String staticPath;
 	
-	private boolean approverUserId;
-
     private List<Map<String, String>> fileInfo;
 
 	private List<FileInfo> uploadedFileInfo;
@@ -778,15 +776,6 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.clientlocationId = clientlocationId;
 	}
 
-	public boolean isApproverUserId()
-	{
-		return approverUserId;
-	}
-
-	public void setApproverUserId(boolean approverUserId)
-	{
-		this.approverUserId = approverUserId;
-	}
 
 	public String getProjectApprover()
 	{
@@ -798,34 +787,11 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.projectApprover = projectApprover;
 	}
 
-	public int getEstimatedHours() {
-		return estimatedHours;
-	}
-
-	public int getEstimatedBudget() {
-		return estimatedBudget;
-	}
-
-	public int getFlatPercentage() {
-		return flatPercentage;
-	}
-
+	
 	public double getProjectbudgetAmount() {
 		return projectbudgetAmount;
 	}
  
-
-	public void setEstimatedHours(int estimatedHours) {
-		this.estimatedHours = estimatedHours;
-	}
-
-	public void setEstimatedBudget(int estimatedBudget) {
-		this.estimatedBudget = estimatedBudget;
-	}
-
-	public void setFlatPercentage(int flatPercentage) {
-		this.flatPercentage = flatPercentage;
-	}
 
 	public void setProjectbudgetAmount(double projectbudgetAmount) {
 		this.projectbudgetAmount = projectbudgetAmount;
@@ -853,5 +819,29 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setOrgLocationId(int orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+
+	public Integer getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(Integer estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public Integer getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public void setEstimatedBudget(Integer estimatedBudget) {
+		this.estimatedBudget = estimatedBudget;
+	}
+
+	public Integer getFlatPercentage() {
+		return flatPercentage;
+	}
+
+	public void setFlatPercentage(Integer flatPercentage) {
+		this.flatPercentage = flatPercentage;
 	}
 }

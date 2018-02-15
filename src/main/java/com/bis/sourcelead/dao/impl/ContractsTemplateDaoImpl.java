@@ -121,9 +121,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 			if(contractTemplateDTO.getSearchValue() !=null && !"".equalsIgnoreCase(contractTemplateDTO.getSearchValue())) {
-			query1.append(" and ct.templateName like '%" + contractTemplateDTO.getSearchValue() + "%' ")
+			query1.append(" and (ct.templateName like '%" + contractTemplateDTO.getSearchValue() + "%' ")
 					.append("OR ct.templateType like '%" + contractTemplateDTO.getSearchValue() + "%' ")
-					.append("OR ct.description like '%" + contractTemplateDTO.getSearchValue() + "%' ");
+					.append("OR ct.description like '%" + contractTemplateDTO.getSearchValue() + "%' )");
 			}
 		Query queryObj = session.createQuery(query + query1.toString());
 		if (contractTemplateDTO != null && contractTemplateDTO.getLength() > 0) {
