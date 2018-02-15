@@ -725,7 +725,7 @@ public class OpenJobsRestController {
 
 		
 		if (null != country && !"".equalsIgnoreCase(country)) {
-			json = commonUtil.toJSON(tobereturnedOrgList);
+			json = commonUtil.toJSON(orgList);
 		}
 		else if("sub".equalsIgnoreCase(type)){
 					

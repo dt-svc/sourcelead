@@ -966,9 +966,14 @@ public class RequirementServiceImpl implements RequirementService {
 		if(requirementDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:requirementDTO.getCustomFormData()) {
 				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				JobCustomFieldData jobCustomFields = new JobCustomFieldData();
+					JobCustomFieldData jobCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						jobCustomFields = jobCustomFieldDataService.getJobCustomFieldDataById(customFields.getEntityId());
+					}else {
+						jobCustomFields = new JobCustomFieldData();
+					}
 				jobCustomFields.setRequirement(savedRequirement);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
 				jobCustomFields.setOrglocationsFormFields(orgFormField);
 				jobCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
 				jobCustomFieldDataService.savejobCustomFieldData(jobCustomFields);

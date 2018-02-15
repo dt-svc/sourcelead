@@ -80,6 +80,7 @@ public interface InvoiceService {
 
 	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 
-	
+	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,Long orgLocationId,String invoiceStatus,Date startDate,Date endDate)throws Exception;
+
 
 }

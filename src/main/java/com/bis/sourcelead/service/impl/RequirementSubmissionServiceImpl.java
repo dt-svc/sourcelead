@@ -291,7 +291,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
 					}
 				
-		 }if(candidate == null){
+		 }
+		 
+		 if(candidate == null){
 			       candidate = new Candidate();
 			       
 					if(orgLocations == null){
@@ -536,6 +538,21 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 		 }else{
 			 requirementSubmission.setCandidate(candidate);
+			 
+			 
+			if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+				 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+			}
+			
+			if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+				 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+			}
+			
+		    candidate = candidateDao.storeCandidate(candidate);
+			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+				
+			
 		 }
 		 
 		 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){

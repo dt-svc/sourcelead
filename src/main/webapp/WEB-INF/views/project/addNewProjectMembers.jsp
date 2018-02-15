@@ -25,7 +25,7 @@
       <div class="pull-left">
         <h2>Assign Project Members <span id="projectName"></span></h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Project Members</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'/>">Project Members</a> &raquo; Request Associates</div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -332,7 +332,7 @@ function emptyRecordsList(){
 		      				var startDateText = "";
 		    				var cell3 = row.insertCell(3);
 		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberStartDate" value="'+startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate"  >';
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberStartDate" value="'+startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 		    				startDateText = startDateText+'</div>';
 		    				cell3.innerHTML = startDateText;
 		    				
@@ -340,7 +340,7 @@ function emptyRecordsList(){
 		    				var endDateText = "";
 		    				var cell4 = row.insertCell(4);
 		    				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" >';
+		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" readonly >';
 		    				endDateText = endDateText+'</div>';
 		    				cell4.innerHTML = endDateText;
 		    				

@@ -222,7 +222,7 @@ right: 15px;
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">ZipCode</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space validate_length length1-6 validate_int"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 			</div>
 		</div>
 

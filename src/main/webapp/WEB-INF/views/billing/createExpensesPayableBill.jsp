@@ -156,7 +156,7 @@ function checkBox(){
               <label class="col-md-3">&nbsp;</label>
               <div class="col-md-9 checkBox">
                   <input type="checkbox"  name="invoiceforexpenses" value="N" class="paddingRight" id="invoiceforexpenses" onclick="checkBox()">
-                  Invoice for Expenses
+                  Bill for Expenses
               </div>
             </div>
             

@@ -1553,6 +1553,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		}
     		
     		candidate.setParentCandidateId(vendorCandidate);
+    		candidate.setPrimarySkill(vendorCandidate.getPrimarySkill());
     		candidateService.saveOrUpdateCandidate(candidate);
 	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 	    	

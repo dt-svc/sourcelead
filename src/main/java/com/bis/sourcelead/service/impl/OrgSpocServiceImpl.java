@@ -88,6 +88,15 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		
 		return  orgSpocElk;
 	}
+	
+	
+	@Override
+	public void addClientVendorContactsELK(OrgSpoc orgSpoc) throws Exception {
+		
+		  ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
+		
+	}
 
 	/**
 	 * Add Vendor contact
@@ -202,7 +211,6 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		List<OrgSpoc> orgSpocsList  = orgSpocDao.getAllSpocsByOrgRelationId(orgRelationId, userId, userIds,orgLocationId,type);
 		if(orgSpocsList != null && !orgSpocsList.isEmpty()){
 			for (OrgSpoc orgSpoc : orgSpocsList) {
-				
 				 //StringBuilder spocNameSB = new StringBuilder();
 				 StringBuilder ownerNameSB = new StringBuilder();
 				
@@ -592,5 +600,6 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(userId);
 		return orgSpocDao.getNumberOfContactCount(orgRelationId, userId, userIds, orgLocationId,responderType);
 	}
+
 	
 }

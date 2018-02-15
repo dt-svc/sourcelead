@@ -4,7 +4,7 @@ import java.util.List;
 
 public class RestrictDayDTO extends SearchDTO {
 
-	private String restrictDayId;
+	private long restrictDayId;
 	private String restrictName;
 	private String startDate;
 	private String endDate;
@@ -13,13 +13,14 @@ public class RestrictDayDTO extends SearchDTO {
 	private String orgLocationId;
 	private String userId;
 	private String isApllicable;
+	private String restrictUUID;
 	private List<String> rolesList;
 	
 	
-	public String getRestrictDayId() {
+	public long getRestrictDayId() {
 		return restrictDayId;
 	}
-	public void setRestrictDayId(String restrictDayId) {
+	public void setRestrictDayId(long restrictDayId) {
 		this.restrictDayId = restrictDayId;
 	}
 	public String getRestrictName() {
@@ -75,6 +76,14 @@ public class RestrictDayDTO extends SearchDTO {
 	}
 	public void setRolesList(List<String> rolesList) {
 		this.rolesList = rolesList;
+	}
+	public String getRestrictUUID()
+	{
+		return restrictUUID;
+	}
+	public void setRestrictUUID(String restrictUUID)
+	{
+		this.restrictUUID = restrictUUID;
 	}
 	
 }
