@@ -50,9 +50,9 @@
 				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();" ${disableFields}>
 				  <option value="">--Select Field Type--</option>
 				  <option value ="textfield" ${customFormPopDetails.fieldType =='textfield' ? 'selected':''} selected>Text field</option>
-				  <%-- <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option> --%>
+				  <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
 				  <option value ="selectfield" ${customFormPopDetails.fieldType =='selectfield' ? 'selected':''} >Select field</option>
-				  <%-- <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option> --%>
+				  <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
 				  <%-- <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option> --%>
 				</select>				
 			</div>	

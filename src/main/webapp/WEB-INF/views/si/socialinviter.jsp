@@ -288,8 +288,8 @@ var shareObj = {
              },
              apikeys:{
             	 "facebook":{
-                     "consumerKey":"200281393793197",
-                     "consumerSecret":"3a62bba550c343eb4f42bbeabd2e0f5e"
+                     "consumerKey":"2066960683592341",
+                     "consumerSecret":"a5e28872fb1b6456392f1c58b1649ca0"
                  }
              },
              callbacks: {
