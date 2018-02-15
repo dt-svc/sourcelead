@@ -94,7 +94,9 @@ public class ClientImportRestController {
 									&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
 							.collect(Collectors.toList());
 					response.setData(filteredBulkClientDetailsList);
-					if(filteredBulkClientDetailsList !=null ) {
+					if(response.getData() !=null ) {
+						response.setStatusCode("success");
+					}else if(filteredBulkClientDetailsList !=null ) {
 						response.setStatusCode("invalid");
 					}else {
 						response.setStatusCode("invalid");
