@@ -144,8 +144,8 @@ $(document).ready(function(){
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
-	        success: function(data) {
-			    var json = JSON.parse(data);
+	        success: function(json) {
+			    //var json = JSON.parse(data);
 			    var result = "";
 			    var submissionCountsResult = "";
 			    
@@ -305,7 +305,7 @@ $(document).ready(function(){
 				
 				 if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Employment Type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>employment type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				} 
 				 
@@ -392,7 +392,7 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				} 
 				 
-				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
+				 /* if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
 						for (var key in json.userCustomFieldlabelNameAndValue) {
 							  if (json.userCustomFieldlabelNameAndValue.hasOwnProperty(key)) {
 								result = result + '	<div class="project_details_cta">';
@@ -402,7 +402,17 @@ $(document).ready(function(){
 							    result = result + '	</div>';
 							  }
 							}
-					}
+					} */
+				 
+				 
+				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
+		              $.each(json.userCustomFieldlabelNameAndValue, function(key, value) {
+		            	  result = result + '	<div class="project_details_cta">';
+		            	  result = result + '	<strong>'+key+':</strong><span class="fix">'+value+'</span><div class="clearfix"></div>';
+		            	  result = result + '	</div>';
+		              });
+	              }
+				 
 				 
 				result = result + '	   </div>';				
 				result = result + '	  <div class="clearfix"></div>';
@@ -1281,9 +1291,9 @@ $("#editRoleDetailsList").empty();
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-			    var json = JSON.parse(data);
+			    /* var json = JSON.parse(data); */
 			    var result = "";
 			    var selected1 = '';
 				var selected2 = '';
@@ -1296,7 +1306,7 @@ $("#editRoleDetailsList").empty();
 				
 				<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 				  var sectionId = '${section.id}';
-				  getCustomDependentField(sectionId);
+				  preapareCustomFieldDetails(userId,sectionId);
 				</c:forEach>
 				
 				if(json.ratePer == 'Hourly'){
@@ -1375,6 +1385,8 @@ $("#editRoleDetailsList").empty();
 					emailId = json.user.email;
 				}
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
+					result = result + ' <div class="editfield-container">';
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>';
@@ -1556,7 +1568,9 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
-					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+					result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
+					
+					 /* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		           		if("${sectionOrder.index == 0}"){
 		           		 	 var sectionID = '${section.id}';
 		           		 	 result = result + ' <div class="clearfix"></div>';
@@ -1564,10 +1578,15 @@ $("#editRoleDetailsList").empty();
 		           			 result = result + ' <div class="clearfix"></div>';
 		           			}
 		        	</c:forEach>
-					
+					 */
+					 
+					result = result + ' </div>';
 					result = result + ' <div class="clearfix"></div>';
+					
+					result = result + ' <div class="clearfix">';
 					result = result + ' <div class="user_summary_edit_cta pull-right">';
 					result = result + ' <input class="us-btn" value="Update" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' </div>';
 					result = result + ' </div>';
 					 
 					result = result + ' <div class="clearfix"></div>';
@@ -1612,16 +1631,17 @@ $("#editRoleDetailsList").empty();
 }
 </script>
 
+
 <script>
-function getCustomDependentField(sectionId){
+function preapareCustomFieldDetails(userId,sectionId){
 	$.ajax({
-			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
-				 success: function(data) {
-		        	$('#customDiv'+sectionId).empty();
-		        	$('#customDiv'+sectionId).append(data);
-				 }
-		  });
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
 }
 </script>
 
