@@ -12,7 +12,7 @@
 				<div class="clearfix"></div>
 			</ul>
 		</div>
-		
+		<form id="PetitionTemplateDocDetails" name="PetitionTemplateDocDetails">
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix">
 				<div class="col-md-12 clearfix noPad mt">
@@ -80,11 +80,11 @@
 								  					  	
 			</div>
  		</div>
-   
+   </form>
 		<div class="addImmiFoot">
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('one')" class="pull-left">Prev</a>
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('three')" class="ml10">Next</a>
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('three')" class="nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionDocDetailsAndContinue()" class="nextBtn">Save &amp; Continue</a>
 			<a href="javascript:void(0)">Reset</a>
 			<div class="clearfix"></div>
 		</div>   

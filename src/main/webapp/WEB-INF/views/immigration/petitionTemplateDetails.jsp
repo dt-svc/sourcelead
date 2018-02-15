@@ -11,7 +11,7 @@
 				<div class="clearfix"></div>
 			</ul>
 		</div>
-		<form id="savePetitionTemplateDetails" name="savePetitionTemplateDetails">
+		<form id="petitionTemplateDetails" name="petitionTemplateDetails">
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix">
 				<div class="col-md-7 clearfix noPad mt">

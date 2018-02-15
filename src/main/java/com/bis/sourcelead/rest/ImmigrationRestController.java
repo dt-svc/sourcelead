@@ -141,26 +141,25 @@ public class ImmigrationRestController {
 	
 	@RequestMapping(value={"/addPetitionTemplate"})
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
-			@RequestParam(value = "status", required = false) String status) {
+			@RequestParam(value = "forwardTo", required = false) String forwardTo) {
 		ModelAndView model = new ModelAndView();
 		try {
 
-			
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			if (status.equalsIgnoreCase("tempDetails")) {
+			if (forwardTo.equalsIgnoreCase("tempDetails")) {
 				model.setViewName("/immigration/petitionTemplateDetails");
-			} else if (status.equalsIgnoreCase("docDetails")) {
+			} else if (forwardTo.equalsIgnoreCase("docDetails")) {
 				List<LookUpData> educationsList = null;
-				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); // for populating drop down values in UI.
+				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); // for populating drop
 				model.addObject("educationsList", educationsList);
-
 				model.setViewName("/immigration/petitionTemplateDocDetails");
-			} /*
-				 * else if(status.equalsIgnoreCase("three")) {
-				 * model.setViewName("/immigration/petitionTemplateFormDetails"); }else
-				 * if(status.equalsIgnoreCase("four")) {
-				 * model.setViewName("/immigration/immigrationTemplateTaskList"); }
-				 */
+			} else if (forwardTo.equalsIgnoreCase("formDetails")) {
+				System.out.println(" inside formDetails controller --->");
+				model.setViewName("/immigration/petitionTemplateFormDetails");
+			} else if (forwardTo.equalsIgnoreCase("taskList")) {
+				model.setViewName("/immigration/immigrationTemplateTaskList");
+			}
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("Exception occured in method addPetitionTemplatePage");
@@ -178,10 +177,26 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user);
-		/*model.setViewName("/immigration/petitionTemplateDetails");*/
 		return "success";
 	}
-	
+	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
+	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
+		System.out.println(templateDTO.getTemplateName()+templateDTO.getTemplateDescription());
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		//To do service
+		return "success";
+	}
+	@RequestMapping(value={"/savePetitionTemplateFormDetails"},method = RequestMethod.POST)
+	public String savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
+		System.out.println(templateDTO.getTemplateName()+templateDTO.getTemplateDescription());
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		//To do service
+		return "success";
+	}
 	/*@RequestMapping(value={"/viewImmigration"})
 	public ModelAndView viewImmigration(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
