@@ -523,6 +523,11 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				}
 			}
 			
+			if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+				candidateImport.setReason("Employment Type is Required");
+				return false;
+			}
+			
 			if("C2C".equalsIgnoreCase(row.getCell(9).getStringCellValue()) || "C2C-1099".equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
 				
 			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
