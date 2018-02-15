@@ -1452,7 +1452,7 @@ input[type="text"].mybtn:after {
 }
 /* choosen customized styled */
 .chosen-container-multi .chosen-choices {
-	border-radius: 3px; padding:0px  5px !important;
+	border-radius: 3px; padding:0px  5px !important; margin-bottom: 15px;
 }
 .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
 	height: 28px; line-height: 28px;
@@ -7959,7 +7959,9 @@ transform: translateY(-90px); opacity: 1; left: 0%;
 .maintenance-contnet .companylogo-maintenance img {
 	max-height: 100%;
 }
-
+.lineHeight {
+	line-height: 22px;	
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

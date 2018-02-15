@@ -53,10 +53,10 @@ function saveDocuments(){
 		    	  var vendorTasks = document.getElementById("vendorTasks");
 					 $("#vendorTasks").removeClass("disabledLink");
 					 vendorTasks.href="#tab-c";
-					 vendorTasks.addEventListener("click", function() {
+					/*  vendorTasks.addEventListener("click", function() {
 						 getVendorOnboardTasksList();
-					  });
-					 vendorTasks.click();
+					  }); */
+					  $("#vendorTasks").click();
 		    	  
 	      	      $("#save_continue_doc_button").removeAttr("disabled");
 		    	  $("#loading").removeAttr("style");

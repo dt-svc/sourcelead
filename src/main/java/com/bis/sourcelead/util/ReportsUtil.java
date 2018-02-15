@@ -49,6 +49,9 @@ public class ReportsUtil {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	
      public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
 		
@@ -156,7 +159,6 @@ public class ReportsUtil {
 		Date[] dates = new Date[2];
 		dates[0] = sevenDateUTC;
 		dates[1] = startDateUTC;
-		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
 		return dates;
 	}
 	
@@ -187,7 +189,6 @@ public class ReportsUtil {
 		Date[] dates = new Date[2];
 		dates[0] = fifteenDateUTC;
 		dates[1] = startDateUTC;
-		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
 		
 		return dates;
 	}
@@ -219,7 +220,6 @@ public class ReportsUtil {
 		dates[0] = oneMonthDateUTC;
 		dates[1] = startDateUTC;
 		
-		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);
 		return dates;
 	}
 	
@@ -253,7 +253,6 @@ public class ReportsUtil {
 		dates[0] = threeMonthDateUTC;
 		dates[1] = startDateUTC;
 		
-		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);
 		return dates;
 	}
 
@@ -275,7 +274,6 @@ public class ReportsUtil {
 		calendarEnd.set(Calendar.MONTH, 11);
 		calendarEnd.set(Calendar.DAY_OF_MONTH, 31);
 		dates[1] = calendarEnd.getTime();
-		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);
 		return dates;
 
 	}
@@ -294,7 +292,6 @@ public class ReportsUtil {
 		cal.set(Calendar.MONTH, 0);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		dates[0] = cal.getTime();
-		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);
 		return dates;
 
 	}
@@ -335,7 +332,6 @@ public class ReportsUtil {
 		dates[0] = sdf.parse(sdf.format(cal.getTime()));
 		cal.add(Calendar.DATE, +days);
 		dates[1] = sdf.parse(sdf.format(cal.getTime()));
-		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
 		return dates;
 	}
 
@@ -349,7 +345,6 @@ public class ReportsUtil {
 		Calendar currentCal = Calendar.getInstance();
 		currentCal.add(Calendar.DATE, +days);
 		dates[1] = sdf.parse(sdf.format(currentCal.getTime()));
-		logger.info("From Date : " + dates[0]+" / To Date : " + dates[1]);
 		return dates;
 	}
 	
@@ -372,5 +367,74 @@ public class ReportsUtil {
 	}
 
 	
+	
+	public Date[] getProjectFilterDate(String dateSelection,OrgLocations orgLocations) throws Exception {
+		Date[] dates = new Date[2];
+		Date[] searchDates = null;
+		Date startDate = null;
+		Date endDate = null;
+		if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
+			searchDates = last7Days(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_15_DAYS)) {
+			searchDates = last15DaysDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_MONTH)) {
+			searchDates = last1MonthDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_3_MONTHS)) {
+			searchDates = last3MonthDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YTD)) {
+			searchDates = yearToDate();
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_YEAR)) {
+			searchDates = lastYearDates();
+		} 
+		
+		startDate = new java.sql.Date(searchDates[0].getTime());
+		endDate = new java.sql.Date(searchDates[1].getTime());
+		dates[0] = startDate;
+		dates[1] = endDate;
+		return dates;
+	}
+	
+	public Date[] customeDates(OrgLocations orgLocations,String customStartDate,String customEndDate) throws Exception {
+		    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), customStartDate);
+ 	        Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), customEndDate);
+			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+			String customEndTimeStr = TZ_DF_CED.format(toDate);
+			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+			fromDate = TZ_DF_TS.parse(startDateString);
+			toDate = TZ_DF_TS.parse(endDateString);
+			
+			Date[] dates = new Date[2];
+			dates[0] = fromDate;
+			dates[1] = toDate;
+		
+		return dates;
+	}
+	
+	public Date[] projectUpToDates(OrgLocations orgLocations,Date customStartDate,Date customEndDate) throws Exception {
+	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+		DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+		Date fromDate =  commonUtil.orgLocationCommonDate(customStartDate,orgLocations);
+	    Date toDate =  commonUtil.orgLocationCommonDate(customEndDate,orgLocations);
+		String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+		String customEndTimeStr = TZ_DF_CED.format(toDate);
+		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+		String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+		fromDate = TZ_DF_TS.parse(startDateString);
+		toDate = TZ_DF_TS.parse(endDateString);
+		
+		Date[] dates = new Date[2];
+		dates[0] = fromDate;
+		dates[1] = toDate;
+	
+	return dates;
+}
+
 	
 }
