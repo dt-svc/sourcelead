@@ -117,6 +117,8 @@ public interface OrgSpocDao {
 	
 	List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
 	
+	OrgSpoc getSpocByOrgRelationIdForNewVendor(Long orgRelationId) throws Exception;
+	
 	OrgSpoc getOrgSpocByUUID(String UUID) throws Exception;
 	
 	Integer getNumberOfContactCount(Long orgRelationId,Long userId,List<Long> userIds,Long orgLocationId,String responderType) throws Exception;
