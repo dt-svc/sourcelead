@@ -1087,10 +1087,9 @@ public class ProjectTasksRestController {
 		}else {
 			searchDates = reportsUtil.getProjectFilterDate(reportType,loginOrgLocation);
 		}
-		
 		BudgetReportDTO report = new BudgetReportDTO();
 		//project budget
-		List<ProjectBudget> budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projectId, loginOrgLocation.getId());
+		List<ProjectBudget> budgetList = projectBudgetService.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, loginOrgLocation.getId());
 		double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
 		double estimatehoursSum = budgetList.stream().filter(p->p.getEstimatedHours() !=null).mapToDouble(p->p.getEstimatedHours()).sum();
 		if(budgetList.size() >=1) {
