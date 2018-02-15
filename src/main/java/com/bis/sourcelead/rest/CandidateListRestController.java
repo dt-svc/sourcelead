@@ -807,7 +807,8 @@ public class CandidateListRestController {
 		candidateDTO.setStatus(can.getStatus().toString());
 		candidateDTO.setTerminateReason(can.getTerminateReason());
 		candidateDTO.setIsAssociate(can.getIsAssociate());
-		
+		candidateDTO.setId(can.getId());
+		candidateDTO.setCandidateId(String.valueOf(can.getId()));
 		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
 		if(action != null && action.getId()!= null){
 			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
