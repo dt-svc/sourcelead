@@ -1385,6 +1385,8 @@ $("#editRoleDetailsList").empty();
 					emailId = json.user.email;
 				}
 				result = result + ' <form id="editUser_form"  name="editUser_form" method="post">';
+					result = result + ' <div class="editfield-container">';
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>';
@@ -1566,7 +1568,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
-					result = result + ' <div id="customFieldDataId"></div>';
+					result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
 					
 					 /* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		           		if("${sectionOrder.index == 0}"){
@@ -1577,9 +1579,14 @@ $("#editRoleDetailsList").empty();
 		           			}
 		        	</c:forEach>
 					 */
+					 
+					result = result + ' </div>';
 					result = result + ' <div class="clearfix"></div>';
+					
+					result = result + ' <div class="clearfix">';
 					result = result + ' <div class="user_summary_edit_cta pull-right">';
 					result = result + ' <input class="us-btn" value="Update" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' </div>';
 					result = result + ' </div>';
 					 
 					result = result + ' <div class="clearfix"></div>';
