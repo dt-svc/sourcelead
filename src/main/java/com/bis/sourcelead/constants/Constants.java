@@ -527,7 +527,7 @@ public class Constants {
 			"United Kingdom", "United States" };
 	public static final String[] LEVEL_DROPDOWN = { "Tier-1", "Tier-2", "Tier-3", "Tier-4", "Tier-5" };
 	public static final String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name",
-			"Email-id", "Phone Number", "Date Of Join", "Rate", "Location", "Role", "Manager",
+			"Email-id", "Phone Number", "Date Of Join", "Rate", "Role", "Manager",
 			"status" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",

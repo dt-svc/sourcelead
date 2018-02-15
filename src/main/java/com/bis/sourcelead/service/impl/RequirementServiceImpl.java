@@ -3719,7 +3719,7 @@ public class RequirementServiceImpl implements RequirementService {
 			else {
 				globalVarsMap.put("jobName", requirement.getJobTitle());
 			}
-		}
+		} 
 		 
 		StringBuilder sb = new StringBuilder();
 		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))
