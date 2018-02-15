@@ -2171,14 +2171,14 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if(startDate != null){
 			sqlStartDate = new java.sql.Date(startDate.getTime());
 		}
-		
+		 
 		java.sql.Date sqlEndDate = null;
 		if(endDate != null){
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
-		String query = "from  SubmissionApproverHierarchy sah  where "
+		String query = "from  SubmissionApproverHierarchy sah  where " 
 				+ " sah.hierarchyId.projectClientsId.orgLocationsId.id = :loginOrgLocationId and sah.submissionId.projectMembers.projects.id = :projectId"
-				+ "  and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR sah.frequencyStartDate BETWEEN :startDate and :endDate OR sah.frequencyEndDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'";
+				+ "  and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR sah.frequencyStartDate BETWEEN :startDate and :endDate OR sah.frequencyEndDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1' GROUP BY sah.submissionId.id";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList =session.createQuery(query.toString()).setLong("loginOrgLocationId", loginOrgLocationId).setLong("projectId", projectId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list(); 
 	    SubmissionApproverHierarchy submissionApproverHierarchy = null;
@@ -2190,10 +2190,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		submissionApproverHierarchy = resulMap.get(sah.getSubmissionApprovalStatus().toString());
 	    		if(submissionApproverHierarchy == null){
 	    			submissionApproverHierarchy = sah;
+	    			 actualTotalHours            = 0f;
+	    			 acutalBillableTotalHours    = 0f;
+	    			 actualNonBillableTotalHours = 0f;
 	    		}else {
-	    			actualTotalHours            = sah.getTotalHours();
-	    			acutalBillableTotalHours    = sah.getBillableHours();
-	    			actualNonBillableTotalHours = sah.getNonBillableHours();
+	    			actualTotalHours            = submissionApproverHierarchy.getTotalHours();
+	    			acutalBillableTotalHours    = submissionApproverHierarchy.getBillableHours();
+	    			actualNonBillableTotalHours = submissionApproverHierarchy.getNonBillableHours();
 	    		}
 	    		Date actualStartDate = null;
 	    		Date actualEndDate = null;
@@ -2235,11 +2238,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		actualTotalHours = commonUtil.getCombinedHours(actualTotalHours,weekTotalHours);
 	    		acutalBillableTotalHours= commonUtil.getCombinedHours(acutalBillableTotalHours,weekBillableTotalHours);
 	    		actualNonBillableTotalHours = commonUtil.getCombinedHours(actualNonBillableTotalHours,weekNonBillableTotalHours);
+	    		submissionApproverHierarchy.setTotalHours(actualTotalHours);
+		    	submissionApproverHierarchy.setBillableHours(acutalBillableTotalHours);
+		    	submissionApproverHierarchy.setNonBillableHours(actualNonBillableTotalHours);
+		    	resulMap.put(submissionApproverHierarchy.getSubmissionApprovalStatus().toString(),submissionApproverHierarchy);
 	        }
-	    	submissionApproverHierarchy.setTotalHours(actualTotalHours);
-	    	submissionApproverHierarchy.setBillableHours(acutalBillableTotalHours);
-	    	submissionApproverHierarchy.setNonBillableHours(actualNonBillableTotalHours);
-	    	resulMap.put(submissionApproverHierarchy.getSubmissionApprovalStatus().toString(),submissionApproverHierarchy);
+	    	
+	    	
 	    }
 	    return resulMap;
 	}
