@@ -546,7 +546,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		employee.setUserEmploymentType(userImport.getEmploymentType());
 		
-		if("C2C".equalsIgnoreCase(userImport.getEmploymentType()) || "C2C-1099".equalsIgnoreCase(userImport.getEmploymentType())) {
+		if("C2C".equalsIgnoreCase(userImport.getEmploymentType())) {
 			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
 			if(vendors != null) {
 				orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
@@ -1035,7 +1035,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			
 		// Employment Type,Vendor,Vendor Contact Name
 			
-			if("C2C".equalsIgnoreCase(row.getCell(12).getStringCellValue()) || "C2C-1099".equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
+			if("C2C".equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
 				
 				if(row.getCell(13) !=null && !"".equalsIgnoreCase(row.getCell(13).toString())){
 					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
@@ -1087,19 +1087,19 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}else {
 				if(row.getCell(13) !=null && !"".equalsIgnoreCase(row.getCell(13).toString())){
 					if(row.getCell(14) !=null && !"".equalsIgnoreCase(row.getCell(14).toString())){
-						userImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
+						userImport.setReason("Employment type should be C2C if you have entered vendor details");
 						return false;
 					}else {
-						userImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
+						userImport.setReason("Employment type should be C2C if you have entered vendor details");
 						return false;
 					}
 				}
 			}
 			
-		/*	if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
+			if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
-			}*/
+			}
 				/*if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 					String dayHours = getCellValueAsString(row.getCell(9), fileName);
 					if (dayHours != null && !"".endsWith(dayHours)) {
@@ -1706,7 +1706,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 
 		// Employment Type,Vendor,Vendor Contact Name
 
-		if ("C2C".equalsIgnoreCase(empType) || "C2C-1099".equalsIgnoreCase(empType)) {
+		if ("C2C".equalsIgnoreCase(empType)) {
 
 			if (vendor != null && !"".equalsIgnoreCase(vendor)) {
 				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
