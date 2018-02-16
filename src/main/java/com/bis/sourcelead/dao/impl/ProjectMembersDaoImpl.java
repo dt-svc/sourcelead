@@ -413,6 +413,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
                 + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
                 + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
                 + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  pmh.projectTerminationDate between :startDate and :endDate) OR "
                 + "    ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
                 + "  )  ";
 			   dateCountQuery = dateQuery;
@@ -477,7 +478,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     
 	     
 		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient "
-				+ " where  candidate.orgLocationId.id = :locationsId "
+				+ " where  candidate.orgLocationId.id = :locationsId"
 				    +frequencyQuery
 				    +fillingOptionQuery
 				    + statusQuery
