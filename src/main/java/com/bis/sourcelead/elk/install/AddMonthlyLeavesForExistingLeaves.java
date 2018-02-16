@@ -8,9 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -20,26 +18,20 @@ import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.entity.Leave;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.mysql.fabric.xmlrpc.base.Array;
 
 public class AddMonthlyLeavesForExistingLeaves {
 	private ComboPooledDataSource comboPooledDataSource;
 	
 /**
- * @author Venkat I
- * this method is adding default projects for org locations
+ * @author Pavan Jampana
+ * this method is adding monthly leaves for existing leaves
  * @throws IOException
  * @throws SQLException
  */
@@ -60,20 +52,23 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 			 
 			 System.out.println("----Adding Monthly Leaves starts-----");
 			 while(rs1.next()){
-				 Leave leave = new Leave();
-				 leave.setId(rs1.getLong("ID"));
-				 leave.setFromDate(rs1.getDate("FROM_DATE"));
-				 leave.setToDate(rs1.getDate("TO_DATE"));
-				 leave.setCreatedBy(rs1.getString("CREATED_BY"));
-				 leave.setUpdatedBy(rs1.getString("UPDATED_BY"));
-				 leave.setCreatedDate(rs1.getDate("CREATED_DATE"));
-				 leave.setUpdatedDate(rs1.getDate("UPDATED_DATE"));
-				 leavesList.add(leave);
-			 }
-			 for(Leave leave : leavesList){
 				 
 				 
-				 Map<String,Integer> monthlyLeaves =  getMonthlyAppliedLeaves(leave);
+				 
+				 
+				Long Id = rs1.getLong("ID");
+				Date fromdate = rs1.getDate("FROM_DATE");
+				Date todate = rs1.getDate("TO_DATE");
+				String createdBy = rs1.getString("CREATED_BY");
+				String updatedBy = rs1.getString("UPDATED_BY");
+				Date createdDate = rs1.getDate("CREATED_DATE");
+				Date updatedDate = rs1.getDate("UPDATED_DATE");
+//				 leavesList.add(leave);
+//			 }
+//			 for(Leave leave : leavesList){
+				 
+				 
+				 Map<String,Integer> monthlyLeaves =  getMonthlyAppliedLeaves(fromdate,todate);
 				 System.out.println(monthlyLeaves);
 					 String query1 = " insert into sourcelead.MONTHLY_LEAVES (LEAVE_ID, JANUARY_LEAVES, FEBRUARY_LEAVES, MARCH_LEAVES, APRIL_LEAVES, MAY_LEAVES, JUNE_LEAVES, JULY_LEAVES, AUGUST_LEAVES, SEPTEMBER_LEAVES, OCTOBER_LEAVES, NOVEMBER_LEAVES, DECEMBER_LEAVES, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY)"
 								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -81,7 +76,7 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 		    			 PreparedStatement pstmt1 = conn.prepareStatement(query1);
 		    			 
 		    			 
-			    		 pstmt1.setLong(1, leave.getId());
+			    		 pstmt1.setLong(1, Id);
 			    		 
 			    		 int jan = 0;
 		    			 int feb = 0;
@@ -146,12 +141,12 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 	    				 pstmt1.setInt(11, oct);
 	    				 pstmt1.setInt(12, nov);
 	    				 pstmt1.setInt(13, dec);
-			    		 java.sql.Date createdDate = new java.sql.Date(leave.getCreatedDate().getTime());
-			    		 java.sql.Date updatedDate = new java.sql.Date(leave.getUpdatedDate().getTime());
-			    		 pstmt1.setDate(14, createdDate);
-			    		 pstmt1.setString(15, leave.getCreatedBy());
-			    		 pstmt1.setDate(16, updatedDate);
-			    		 pstmt1.setString(17, leave.getUpdatedBy());
+			    		 java.sql.Date creaDate = new java.sql.Date(createdDate.getTime());
+			    		 java.sql.Date updateDate = new java.sql.Date(updatedDate.getTime());
+			    		 pstmt1.setDate(14, creaDate);
+			    		 pstmt1.setString(15, createdBy);
+			    		 pstmt1.setDate(16, updateDate);
+			    		 pstmt1.setString(17, updatedBy);
 			    		 pstmt1.executeUpdate();	
 		    		}catch (Exception e){   
 						e.printStackTrace();
@@ -201,32 +196,38 @@ public static void main(String[] args) throws IOException, SQLException {
 }
 
 
-public Map<String,Integer> getMonthlyAppliedLeaves(Leave leave) throws Exception{
+public Map<String,Integer> getMonthlyAppliedLeaves(Date fromdate, Date todate) throws Exception{
 	Map<String,Integer> monthlyLeaves = new HashMap<>();
 	String months[] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 	
+//	DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
+//	Date fromDate = (Date) df.parse(fromdate);
+//	Date toDate = (Date) df.parse(todate);
+	
 	Calendar fromCal = Calendar.getInstance();
 	Calendar toCal = Calendar.getInstance();
-	fromCal.setTime(leave.getFromDate());
+	fromCal.setTime(fromdate);
 	int fromMonth = fromCal.get(Calendar.MONTH);
-	toCal.setTime(leave.getToDate());
+	toCal.setTime(todate);
 	int toMonth = toCal.get(Calendar.MONTH);
 	int noOfDays = 0;
 	if(fromMonth == toMonth){
-		noOfDays = getNumberOfDaysBetweenTwoDates(leave.getFromDate(),leave.getToDate());
+		noOfDays = getNumberOfDaysBetweenTwoDates(fromdate,todate);
 		monthlyLeaves.put(months[fromMonth], noOfDays);
 	}else{
-		for(int i=1; i <= toMonth;i++){
+		/*for(int i=1; i <= toMonth;i++){
 			if(fromMonth+i == toMonth){
 				Date[] dates = new Date[2];
 				fromCal.set(Calendar.DATE, fromCal.getActualMaximum(Calendar.DAY_OF_MONTH));
-				dates[0] = (Date) fromCal.getTime();
-				noOfDays = getNumberOfDaysBetweenTwoDates(leave.getFromDate(),dates[0]);
+				 java.sql.Date javaSqlDate = new java.sql.Date(fromCal.getTime().getTime());
+				dates[0] = javaSqlDate;
+				noOfDays = getNumberOfDaysBetweenTwoDates(fromdate,dates[0]);
 				monthlyLeaves.put(months[fromMonth], noOfDays);
 				
 				toCal.set(Calendar.DATE, toCal.getActualMinimum(Calendar.DAY_OF_MONTH));
-				dates[1] = (Date) toCal.getTime();
-				noOfDays = getNumberOfDaysBetweenTwoDates(dates[1],leave.getToDate());
+				java.sql.Date tocalDate = new java.sql.Date(toCal.getTime().getTime());
+				dates[1] = tocalDate;
+				noOfDays = getNumberOfDaysBetweenTwoDates(dates[1],todate);
 				monthlyLeaves.put(months[toMonth], noOfDays);
 			}else{
 				Calendar cal = Calendar.getInstance();
@@ -234,7 +235,30 @@ public Map<String,Integer> getMonthlyAppliedLeaves(Leave leave) throws Exception
 				noOfDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 				monthlyLeaves.put(months[toMonth], noOfDays);
 			}
-		}
+		}*/
+		
+		
+			for (int i = 1; i < toMonth; i++) {
+				if (fromMonth + i == toMonth) {
+					Date[] dates = new Date[2];
+					fromCal.set(Calendar.DATE, fromCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+					java.sql.Date javaSqlDate = new java.sql.Date(fromCal.getTime().getTime());
+					dates[0] = javaSqlDate;
+					noOfDays = getNumberOfDaysBetweenTwoDates(fromdate, dates[0]);
+					monthlyLeaves.put(months[fromMonth], noOfDays);
+					toCal.set(Calendar.DATE, toCal.getActualMinimum(Calendar.DAY_OF_MONTH));
+					java.sql.Date tocalDate = new java.sql.Date(toCal.getTime().getTime());
+					dates[1] = tocalDate;
+					noOfDays = getNumberOfDaysBetweenTwoDates(dates[1], todate);
+					monthlyLeaves.put(months[toMonth], noOfDays);
+				}
+				else if (fromMonth + i < toMonth) {
+					Calendar cal = Calendar.getInstance();
+					cal.set(Calendar.MONTH, fromMonth + i);
+					noOfDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+					monthlyLeaves.put(months[toMonth - i], noOfDays);
+				}
+			}
 		
 	}
 	return monthlyLeaves;
