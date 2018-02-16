@@ -1445,7 +1445,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					projects.setAllowBidding(null);
 				}
 				
-				if(projectDTO.getFlatPercentage() != 0){
+				if(projectDTO.getFlatPercentage() != null && projectDTO.getFlatPercentage() != 0){
 					projects.setFlatPercent((double)projectDTO.getFlatPercentage());
 				}else{
 					projects.setFlatPercent(null);
@@ -2090,7 +2090,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds) throws Exception {
 		
-		
 		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
@@ -2238,26 +2237,36 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public void tereminateAsProjectApprover(Long approverUser,User user,Long userId,OrgLocations orgLocations) throws Exception {
 				
 				   boolean flag = false;
-				
 		    		List<ProjectApproverHierarchy> projectApproverList = projectApproverHierarchyService.getProjectApproversListByUserIdAndOrgLocationId(userId,orgLocations.getId());
 		    		Integer projectApproverCount = getProjectApproversCountByUserIdAndOrgLocationId(userId,orgLocations.getId());
 		    		for(ProjectApproverHierarchy hierarchy : projectApproverList){
-		    			
+		    			User usr = userService.getUserById(Long.valueOf(approverUser));
+		    			User terminatedUser = hierarchy.getApproverUserId();
+							ProjectApproverHierarchy pah = projectApproverHierarchyService.getProjectApproverByUserIdAndProjectIdOrgLocationId(Long.valueOf(approverUser), hierarchy.getProjectId().getId(), orgLocations.getId());
+							if(pah != null) {
+								if(pah.getLevel() == 2) {
+									pah.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+									projectApproverHierarchyService.saveProjectApproverHierarchy(pah);
+									hierarchy.setApproverUserId(usr);
+									hierarchy.setUpdatedBy(user.getUserCode());
+									hierarchy.setUpdatedDate(new Date());
+								}else {
+									hierarchy.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+								}
+								
+							}else {
+								hierarchy.setApproverUserId(usr);
+								hierarchy.setUpdatedBy(user.getUserCode());
+								hierarchy.setUpdatedDate(new Date());
+							}
 							
-						   
-							User usr = userService.getUserById(Long.valueOf(approverUser));
-							User terminatedUser = hierarchy.getApproverUserId();
-							hierarchy.setApproverUserId(usr);
-							hierarchy.setUpdatedBy(user.getUserCode());
-							hierarchy.setUpdatedDate(new Date());
-						
 							
-							List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(hierarchy.getProjectId().getId(), orgLocations.getId());	
+							/*List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(hierarchy.getProjectId().getId(), orgLocations.getId());	
 							for(ProjectApproverHierarchy approverHierarchy : hierarchyList){
 								if(approverHierarchy.getApproverUserId().getId().equals(usr.getId())){
 									flag = true;
 								}
-							}
+							}*/
 							
 							/*if(flag == false){
 								

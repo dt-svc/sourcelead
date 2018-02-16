@@ -91,8 +91,8 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	}
 	
 	@Override
-	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId, Date startDateUTC, Date endDateUTC) throws Exception {
-		return projectBudgetDao.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, startDateUTC, endDateUTC);
+	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId, Long orgLocationId) throws Exception {
+		return projectBudgetDao.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, orgLocationId);
 	}
 	
 	@Override
