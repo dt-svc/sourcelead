@@ -18,7 +18,7 @@ $(document).ready(function() {
 			sideBar(requirementId,type);
 	 }
 	 
-	 if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
+ if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
 		requirementPipeline(requirementId,type);
 	 }
 });	
