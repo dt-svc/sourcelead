@@ -2641,6 +2641,7 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'orgList')){
+			        		$("#regLoading").removeAttr('style');
 			        		loadRegisteredOrgs();
 			        	}
 			        	else if((result == 'Invalid Sub Modules')){

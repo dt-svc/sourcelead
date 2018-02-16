@@ -7,7 +7,7 @@
   <div class="container text-center">
   <div class="row">
   		<div class="col-md-12">
-  	<h2 class="text-center">Application Tracking System</h2>
+  	<h2 class="text-center">Applicant Tracking System</h2>
   	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
 <p>In the realm of passion for innovation in recruitment process, Sourcelead provides an automated process for the talent search.<br>Be it a niche profile or a generic role, you have access to marketplace using ATS.
  		</p>
@@ -115,7 +115,7 @@
 			<li>Data recommendation gives the best suitable profiles in marketplace</li>
 			<li>Skill/Trait based resume scoring mechanism</li>
 			<li>Compare and pick the best using resume comparison</li>
-			<li>Adapting AI for resume screening and scoring</li>
+			<li>Adapting All for resume screening and scoring</li>
 			<li>Automated Notifications on Interview Schedule and Progress</li>
 			<li>Smart Email alerts and Avoids duplicate applications, Online Salary Negotiation, Online Offer acceptance, Interview Notes</li>
 		</ul>
