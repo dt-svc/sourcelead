@@ -129,8 +129,8 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 			 userName = loginUserName.append(user.getFirstName()).toString();
 		 }
 		 
-		 if(StringUtils.isNoneBlank(referContactsDTO.getFirstName())){
-			 professionalName = sb.append(referContactsDTO.getFirstName()).append(" ").append(referContactsDTO.getFirstName()).toString();
+		 if(StringUtils.isNoneBlank(referContactsDTO.getLastName())){
+			 professionalName = sb.append(referContactsDTO.getFirstName()).append(" ").append(referContactsDTO.getLastName()).toString();
 		 }else{
 			 professionalName = sb.append(referContactsDTO.getFirstName()).toString();
 		 }

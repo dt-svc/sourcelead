@@ -8,7 +8,7 @@
 	margin: 0px;
     margin-bottom: 15px !important;
 	}
-</style>
+</style> 
  
    <!-- <!--   Popup Code  -->
   <!-- <div class="popMaskCustom popMask-zindex"></div> -->
@@ -18,7 +18,7 @@
 	    <input type="hidden" value="${customFormPopDetails.customDependentField}" id="customDependndentFieldId">
 	    <input type="hidden" value="${customFormPopDetails.slDependedntField}" id="slDependedntFieldId">
 		<div class="popupHead">
-			<h2>Add New Field</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>${customFormPopDetails.customEditType eq 'Edit' ? 'Edit New Field':'Add New Field'} </h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
 		<div class="cuspopHead clearfix">
 			<div class="col-md-6 padding_left">
