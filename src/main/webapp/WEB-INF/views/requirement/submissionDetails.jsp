@@ -405,7 +405,15 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   result = result + '</div>';
 		       
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
-
+		       if("${candidateKeyword}" == "rescheduleInterviewNotification"){
+			    	$("#quickview").removeClass("active in");
+			    	$("#timelineview").removeClass("active in");
+			    	$("#detailview").addClass("active in");
+			    	$("#pipelineQuickviewTabsqv").removeClass("active");
+			    	$("#candTimelineView").removeClass("active");
+			    	$("#pipelineQuickviewTabsdetails").addClass("active");
+// 		 	    	candidateDocuments(candidateId);
+			    }
 		       result = result + '<div class="require_wrap_details">';
 		       if(json.submissionStatus == 'REJECTED'){
 		    	   result = result + '<div class="clearfix" id="reactiveApplicantBtnDiv"><a class="pull-right btn btn-primary btn-sm color_white" id="reactiveApplicant" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';

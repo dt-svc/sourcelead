@@ -1512,7 +1512,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW,Constants.ENTITY_TYPE_NOTIFICATION); 
-		 String actionLink = "";
+		 StringBuilder notificationLink = new StringBuilder();
+		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementSubmission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getSourceSubmission().getId()+"&candidateUUID="+requirementSubmission.getCandidate().getCandidateUUID()).toString();
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);

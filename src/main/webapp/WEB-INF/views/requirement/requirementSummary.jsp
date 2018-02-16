@@ -10,10 +10,16 @@
  
 <script>
 $(document).ready(function() {
-	 var requirementId = '${requirementId}'; 
+	 var requirementId = '${requirementId}';
+	 var submissionId = '${submissionId}';
+	 var candidateId = '${candidateId}';
 	 var type = '${type}';
 	 if(type != null && type != '' && type != 'undefined'){
 			sideBar(requirementId,type);
+	 }
+	 
+	 if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
+		requirementPipeline(requirementId,type);
 	 }
 });	
 </script>

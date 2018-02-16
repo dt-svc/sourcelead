@@ -506,5 +506,12 @@
 				requirementPipeline(requirementId, submissionType);
 			}
 		});
+		 var submissionId = '${submissionId}';
+		 var candidateId = '${candidateId}';
+		 var requirementId = '${requirementId}';
+		if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
+			applicantQuickViewProfile(submissionId,candidateId);
+			 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+		 }
 	}
 </script>
