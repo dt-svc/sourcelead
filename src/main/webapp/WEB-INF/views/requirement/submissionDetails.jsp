@@ -1130,10 +1130,10 @@ function getOfferDetails(submissionId){
 	                    	 
 	                    	 result = result + '<span id="'+report.offerId.id+'showOfferStatus"></span>';
 	                    	 if(report.offerId.offerStatus == "OFFERACCEPTED"){
-	                    		 result = result +' <font color="green" class="brder-int">OFFER ACCEPTED</font>';
+	                    		 result = result +' <font color="green" class="brder-int">Offer Accepted</font>';
 	                    	 }
 	                    	 if(report.offerId.offerStatus == "OFFERREJECTED"){
-	                    		 result = result +' <font color="red" class="brder-int">OFFER REJECTED</font>';
+	                    		 result = result +' <font color="red" class="brder-int">Offer Rejected</font>';
 	                    	 }
 	                    	 if(report.offerId.offerStatus == "Maybe"){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
