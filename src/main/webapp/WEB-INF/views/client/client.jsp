@@ -585,7 +585,6 @@ function getRolesList(){
 
 <script type="text/javascript">
 function validateEmail(){
-// 	alert("he")
 	var email = document.getElementById("email").value;
 	if(email != null){
 		$.ajax({
