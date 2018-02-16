@@ -15,7 +15,8 @@
   position: absolute !important; right: 0 !important;
 }
 .countShow {
-display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px; 
+display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px;
+margin-top: 0; 
 }
 .remove_user_pop.remove_user_pop_a {
 top:20% !important;

@@ -601,5 +601,11 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 		return orgSpocDao.getNumberOfContactCount(orgRelationId, userId, userIds, orgLocationId,responderType);
 	}
 
+
+	@Override
+	public OrgSpoc getSpocByOrgRelationIdForNewVendor(Long orgRelationId) throws Exception {
+		return orgSpocDao.getSpocByOrgRelationIdForNewVendor(orgRelationId);
+	}
+
 	
 }

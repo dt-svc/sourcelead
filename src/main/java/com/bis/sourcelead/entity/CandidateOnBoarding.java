@@ -34,7 +34,7 @@ private static final long serialVersionUID = 1L;
     private Long id;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidateId;
 	
@@ -139,7 +139,7 @@ private static final long serialVersionUID = 1L;
 	private String onboardTemplateId;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 	

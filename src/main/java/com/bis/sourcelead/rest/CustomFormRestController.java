@@ -35,6 +35,7 @@ import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
@@ -67,6 +68,8 @@ public class CustomFormRestController {
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
 	
+	@Autowired
+	private UserCustomFieldDataService userCustomFieldDataService;
 	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
     public  ModelAndView getFormSectionsByActionId(@RequestParam(value="actionId", required=true) Long actionId,HttpServletRequest request) throws Exception {
@@ -165,6 +168,10 @@ public class CustomFormRestController {
 							 jobData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getCandidateId());
 						 }
 			 			break;
+		 		 	case "user" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null && customFieldsRequestTypeDTO.getUserId() != null){
+		 		 			jobData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getUserId());
+		 		 		}
 		 		 	}
 		 		 }
 		 		 

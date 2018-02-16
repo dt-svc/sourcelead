@@ -4,7 +4,7 @@ function campaignSender(ele,senderId, fromType) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
 		$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
-			$(".popUpOut").fadeIn(100);
+			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
 			// save sender details
 			 $("#saveCampaignSender").click(function () {
@@ -18,7 +18,7 @@ function campaignSender(ele,senderId, fromType) {
 								senderClose();
 								if(fromType == "hotList" || fromType == "jobList"){
 					            	$(".popMask").fadeOut(200);
-				            		$(".popUpOut").fadeOut(100);
+				            		$("#campaignSender").fadeOut(100);
 					             }else{
 					            	 getSendersList("success");
 //								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
@@ -57,7 +57,7 @@ $('body').on('blur', '#capn_add_sender', function() {
 
 function senderClose() {
 	$(".popMask").fadeOut(200);
-	$(".popUpOut").fadeOut(100);
+	$("#campaignSender").fadeOut(100);
 };
 
 

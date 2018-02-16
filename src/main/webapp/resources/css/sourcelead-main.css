@@ -1452,7 +1452,7 @@ input[type="text"].mybtn:after {
 }
 /* choosen customized styled */
 .chosen-container-multi .chosen-choices {
-	border-radius: 3px; padding:0px  5px !important;
+	border-radius: 3px; padding:0px  5px !important; margin-bottom: 15px;
 }
 .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
 	height: 28px; line-height: 28px;
@@ -7959,7 +7959,21 @@ transform: translateY(-90px); opacity: 1; left: 0%;
 .maintenance-contnet .companylogo-maintenance img {
 	max-height: 100%;
 }
-
+.lineHeight {
+	line-height: 22px;	
+}
+.checkboxLable {
+margin-left: 20px;
+}
+.showEditfields .form-group {
+width: 30.5%; float: left; margin-left: 5px; margin-right: 20px;
+}
+.showEditfields label.col-md-3, .showEditfields div.col-md-9 {
+width: 100%; padding-right: 0;
+}
+.editfield-container {
+min-height: 150px; max-height: 400px; overflow-y:auto; 
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

@@ -702,7 +702,8 @@ function getStatus(){
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 document.getElementById("assignedMembers").removeAttribute("class");
 								 assignedMembers.href="#tab-b"; 
-								 assignedMembers.click();
+								 $("#assignedMembers").click();
+// 								 assignedMembers.click();
 
 						},
 					});
