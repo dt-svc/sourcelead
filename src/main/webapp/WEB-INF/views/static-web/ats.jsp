@@ -115,7 +115,7 @@
 			<li>Data recommendation gives the best suitable profiles in marketplace</li>
 			<li>Skill/Trait based resume scoring mechanism</li>
 			<li>Compare and pick the best using resume comparison</li>
-			<li>Adapting AI for resume screening and scoring</li>
+			<li>Adapting All for resume screening and scoring</li>
 			<li>Automated Notifications on Interview Schedule and Progress</li>
 			<li>Smart Email alerts and Avoids duplicate applications, Online Salary Negotiation, Online Offer acceptance, Interview Notes</li>
 		</ul>

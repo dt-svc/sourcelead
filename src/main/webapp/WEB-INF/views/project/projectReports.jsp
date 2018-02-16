@@ -25,11 +25,6 @@ function getDayWiseReports(projectId){
 		$("#custom").fadeOut();
 		$("#startDate").val('');
 		$("#endDate").val('');
-		if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
-			alert("internal project")
-		}else{
-			
-		}
 		taskReports(projectId,reportType,"","");
 		overdueTask(projectId,reportType,"","");
 		tasksprogressChart(projectId,reportType,"","");
