@@ -13,7 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dao.impl.UserDaoImpl;
+import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
+import com.bis.sourcelead.entity.ImmigrationTemplateForms;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 
@@ -46,7 +50,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate) {
-		logger.debug("Adding User");
+		logger.debug("Adding Template Details-->");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (immigrationTemplate != null) {
@@ -63,5 +67,27 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		}
 		return immigrationTemplate.getId();
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs) {
+		logger.debug("Adding Temlate document Details-->");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (immigrationTemplateDocs != null) {
+				session.saveOrUpdate(immigrationTemplateDocs);
+			}
+			logger.debug("Docs Added Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "USER"));
+			try {
+				throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+			} catch (SourceLeadConstraintViolationException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	
 
 }

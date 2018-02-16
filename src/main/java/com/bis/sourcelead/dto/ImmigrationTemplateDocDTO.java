@@ -1,15 +1,15 @@
 package com.bis.sourcelead.dto;
 
-public class ImmiTemplateDoc {
+public class ImmigrationTemplateDocDTO {
 	
-	private String documentType;
+	private Long documentType;
 	private String description;
 	private String isRequired;
 	private String multiple;
-	public String getDocumentType() {
+	public Long getDocumentType() {
 		return documentType;
 	}
-	public void setDocumentType(String documentType) {
+	public void setDocumentType(Long documentType) {
 		this.documentType = documentType;
 	}
 	public String getDescription() {

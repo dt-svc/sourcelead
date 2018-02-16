@@ -11,7 +11,7 @@ public class ImmigrationTemplateDTO {
 	private Long id;
 	private String templateName;
 	private String templateDescription;
-	private List<ImmiTemplateDoc> immigrationDocList;
+	private List<ImmigrationTemplateDocDTO> immigrationDocList;
 	
 	public Long getId() {
 		return id;
@@ -31,10 +31,10 @@ public class ImmigrationTemplateDTO {
 	public void setTemplateDescription(String templateDescription) {
 		this.templateDescription = templateDescription;
 	}
-	public List<ImmiTemplateDoc> getImmigrationDocList() {
+	public List<ImmigrationTemplateDocDTO> getImmigrationDocList() {
 		return immigrationDocList;
 	}
-	public void setImmigrationDocList(List<ImmiTemplateDoc> immigrationDocList) {
+	public void setImmigrationDocList(List<ImmigrationTemplateDocDTO> immigrationDocList) {
 		this.immigrationDocList = immigrationDocList;
 	}
 	

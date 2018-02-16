@@ -150,7 +150,7 @@ public class ImmigrationRestController {
 				model.setViewName("/immigration/petitionTemplateDetails");
 			} else if (forwardTo.equalsIgnoreCase("docDetails")) {
 				List<LookUpData> educationsList = null;
-				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); // for populating drop
+				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating dropdown values in UI.
 				model.addObject("educationsList", educationsList);
 				model.setViewName("/immigration/petitionTemplateDocDetails");
 			} else if (forwardTo.equalsIgnoreCase("formDetails")) {
@@ -174,16 +174,31 @@ public class ImmigrationRestController {
 	public String savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		Long immigrationId = null;
+		try {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		Long immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user);
+		immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user);
+		
+		}
+		catch (Exception e) {
+			logger.error("Exception occured in method addPetitionTemplatePage"+e.getMessage());
+			e.printStackTrace();
+		}
 		return "{status:'success', id:"+immigrationId+ "}";
 	}
 	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		try {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		//To do service
+		immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
+		System.out.println("Template Details saved succesfully -----> ");
+		}
+		catch (Exception e) {
+			logger.error("Exception occured in method savePetitionTemplateDocDetails"+e.getMessage());
+			e.printStackTrace();
+		}
 		return "success";
 	}
 	@RequestMapping(value={"/savePetitionTemplateFormDetails"},method = RequestMethod.POST)

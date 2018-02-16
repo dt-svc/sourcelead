@@ -1,6 +1,10 @@
 package com.bis.sourcelead.immigration.dao;
 
+import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
+import com.bis.sourcelead.entity.ImmigrationTemplateForms;
+import com.bis.sourcelead.entity.User;
 
 /**
  * @author Srinivas.Sabbu
@@ -9,5 +13,5 @@ import com.bis.sourcelead.entity.ImmigrationTemplate;
 public interface ImmigrationTemplateDao {
 
 	Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate);
-
+	void savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
 }
