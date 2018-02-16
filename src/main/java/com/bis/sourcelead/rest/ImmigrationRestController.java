@@ -130,14 +130,14 @@ public class ImmigrationRestController {
 		return model;
 	}
 	
-	/*@RequestMapping(value={"/viewImmigrationTemplateList"})
+	@RequestMapping(value={"/viewImmigrationTemplateList"})
 	public ModelAndView loadViewPetitionTemplate(HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationTemplateList");
 		return model;
-	}*/
+	}
 	
 	@RequestMapping(value={"/addPetitionTemplate"})
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
