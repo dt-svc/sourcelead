@@ -7974,6 +7974,9 @@ width: 100%; padding-right: 0;
 .editfield-container {
 min-height: 150px; max-height: 400px; overflow-y:auto; 
 }
+.project_details_cta.project_description span {
+	display: initial;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
