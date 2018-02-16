@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -1469,8 +1472,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		    		float weekTotalHours            = 0f;
 					    float weekBillableTotalHours    = 0f;
 					    float weekNonBillableTotalHours = 0f;
-		    		  SimpleDateFormat sf = new SimpleDateFormat("E"); 
-					   if(!sf.format(actualStartDate).equalsIgnoreCase("Mon") && !monthStartDate.equals(actualStartDate)) {
+		    		SimpleDateFormat sf = new SimpleDateFormat("E"); 
+					if(!sf.format(actualStartDate).equalsIgnoreCase("Mon") && !monthStartDate.equals(actualStartDate)) {
 						Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 						cal.setLenient(false);
 						cal.setTime(actualStartDate);
