@@ -394,7 +394,10 @@ public class ProjectsController {
 					request.getSession().setAttribute("sessionData",sessionData);
 				
 				 ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
-				 OrgLocations locations=orgLocationService.getOrgLocations(projectTask.getProjectId().getOrgLocationsId().getId());
+				 
+				 ProjectClients projectClient = projectClientService.getProjectClientsByUUID(projectClientUUID);
+				 OrgLocations locations=orgLocationService.getOrgLocations(projectClient.getOrgLocationsId().getId());
+					 
 				 if(projectTask.getProjectId() != null) {
 					 model.addObject("projectUUID", projectTask.getProjectId().getProjectUUID());
 					 model.addObject("projectId", projectTask.getProjectId().getId());
