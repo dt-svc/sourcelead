@@ -405,6 +405,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   result = result + '</div>';
 		       
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
+		      
 		       if("${candidateKeyword}" == "rescheduleInterviewNotification"){
 			    	$("#quickview").removeClass("active in");
 			    	$("#timelineview").removeClass("active in");
