@@ -639,13 +639,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}else {
 			if(projects.getId() != null) {
 				 projectBudget = projectBudgetService.getProjectBudgetsByProjectId(projects.getId());
-				 if(projectBudget != null)
-				 projectBudget.setEstimatedHours(null);
-				 projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
-				 projectBudget.setEstimatedBudgetValue(null);
-				 projectBudget.setStatus(Constants.RECORD_INACTIVE);
-				 projectBudget.setApproverUserId(null);
-				 projectBudgetList.add(projectBudget);
+				 if(projectBudget != null) {
+					 projectBudget.setEstimatedHours(null);
+					 projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
+					 projectBudget.setEstimatedBudgetValue(null);
+					 projectBudget.setStatus(Constants.RECORD_INACTIVE);
+					 projectBudget.setApproverUserId(null);
+					 projectBudgetList.add(projectBudget);
+				 }
+				 
 			}
 		}
 		return projectBudgetList;
