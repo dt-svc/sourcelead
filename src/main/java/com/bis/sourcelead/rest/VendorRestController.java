@@ -47,7 +47,6 @@ import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
-import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
@@ -55,12 +54,12 @@ import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -75,6 +74,7 @@ import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -151,6 +151,8 @@ public class VendorRestController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
@@ -1727,6 +1729,14 @@ public class VendorRestController {
 					requirementDTO.setCountry(mainRequirement.getCountry());
 					requirementDTO.setManager(mainRequirement.getManager());
 					requirementDTO.setId(mainRequirement.getId());
+					List<String> requirementLocationsList = new ArrayList<>();
+					List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(mainRequirement.getId());
+					if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+					requirementLocationsList.add(location.getLocation());
+					}
+					}
+					requirementDTO.setLocationsList(requirementLocationsList);
 					requirementDTO.setRequirementSubmissionStatus((mainRequirement.getRequirementSubmissionStatus()).toString());
 					if (mainRequirement.getManagerUserId() != null) {
 						String managerFirstName = "";

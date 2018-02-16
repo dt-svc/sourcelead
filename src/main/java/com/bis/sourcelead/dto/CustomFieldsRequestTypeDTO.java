@@ -5,6 +5,7 @@ public class CustomFieldsRequestTypeDTO {
 	Long requirementId;
 	String requestFrom;
 	Long candidateId;
+	Long userId;
 	
 	public Long getSectionId() {
 		return sectionId;
@@ -29,6 +30,12 @@ public class CustomFieldsRequestTypeDTO {
 	}
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	
 }

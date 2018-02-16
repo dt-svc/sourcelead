@@ -642,6 +642,9 @@ function validate_fileupload(fileName)
  
 <script>
 function guestCancel(){
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
 	 window.location = sourceleadUrl+"/jobs"
 }
 </script>

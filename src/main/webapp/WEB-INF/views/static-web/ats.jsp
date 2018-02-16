@@ -7,7 +7,7 @@
   <div class="container text-center">
   <div class="row">
   		<div class="col-md-12">
-  	<h2 class="text-center">Application Tracking System</h2>
+  	<h2 class="text-center">Applicant Tracking System</h2>
   	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
 <p>In the realm of passion for innovation in recruitment process, Sourcelead provides an automated process for the talent search.<br>Be it a niche profile or a generic role, you have access to marketplace using ATS.
  		</p>
