@@ -83,16 +83,26 @@ public class ClientImportRestController {
 		if(fileList != null && fileList.size() > 0) {
 			ResponseList<BulkClientDetails> response = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,"Y",responderType);
 			
-			List<BulkClientDetails> filteredBulkClientDetailsList = response.getData().stream()
-					.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
-							&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
-					.collect(Collectors.toList());
-			response.setData(filteredBulkClientDetailsList);
-			if(response.getData() == null || response.getData().size() <= 0) {
-				response.setStatusCode("success");
-			}
-			if(filteredBulkClientDetailsList == null || filteredBulkClientDetailsList.size() == 0) {
-				response.setStatusCode("invalid");
+			
+			if(response !=null) {
+				if(response.getData().isEmpty() && response.getData().size() == 0) {
+					response.setStatusCode("success");
+				}else if(!response.getData().isEmpty() && response.getData().size() >0) {
+					List<BulkClientDetails> filteredBulkClientDetailsList = response.getData().stream()
+							
+							.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
+									&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
+							.collect(Collectors.toList());
+					response.setData(filteredBulkClientDetailsList);
+					if(response.getData() !=null ) {
+						response.setStatusCode("success");
+					}else if(filteredBulkClientDetailsList !=null ) {
+						response.setStatusCode("invalid");
+					}else {
+						response.setStatusCode("invalid");
+					}
+					
+				}
 			}
 			return response;
 		}

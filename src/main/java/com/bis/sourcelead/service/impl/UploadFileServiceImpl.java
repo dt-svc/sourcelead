@@ -401,7 +401,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 							userImport.setManager(row.getCell(11).toString());
 							
 							if(row.getCell(12) != null) {
-							userImport.setEmploymentType(row.getCell(12).toString());
+						    String employmentType = getCellValueAsString(row.getCell(12),fileName);
+							userImport.setEmploymentType(employmentType);
 							}else {
 								userImport.setEmploymentType("");
 							}
@@ -545,14 +546,16 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		employee.setUserEmploymentType(userImport.getEmploymentType());
 		
-		if("C2C".equalsIgnoreCase(userImport.getEmploymentType()) || "C2C-1099".equalsIgnoreCase(userImport.getEmploymentType())) {
+		if("C2C".equalsIgnoreCase(userImport.getEmploymentType())) {
 			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
+			if(vendors != null) {
+				orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
+				employee.setOrgRelationId(orgRelation);
+				
+				orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
+				employee.setSpocId(orgspoc);
+			}
 			
-			orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
-			employee.setOrgRelationId(orgRelation);
-			
-			orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
-			employee.setSpocId(orgspoc);
 		}
 		
 		employee.setHireDate(userImport.getDateOfJoin());
@@ -771,7 +774,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
  */
 	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws Exception {
 		String[] rolesList = getRolesList(org,orgLocations.getId(),roleHierarchyId);
-		String[] usersList = getUsersList(orgLocations.getId());
+	
+		//	String[] usersList = getUsersList(orgLocations.getId());
 		
 		String[] employmentTyesList = getEmploymentTypeList();
 		
@@ -880,15 +884,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		} else {
 			 writeRow.createCell(11).setCellValue("");
 		}
-		
-		
-		/*if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-			String employmentType = getCellValueAsString(row.getCell(12), fileName);
-			 writeRow.createCell(12).setCellValue(employmentType);
-		} else {
-		  writeRow.createCell(12).setCellValue("");
-		}*/
-		
 		
 		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
 			if(!fileName.endsWith("xlsx")){
@@ -1033,9 +1028,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
+			if (row.getCell(12) == null || "".equalsIgnoreCase(row.getCell(12).toString())) {
+				userImport.setReason("Employment Type is Required");
+				return false;
+			}
+			
 		// Employment Type,Vendor,Vendor Contact Name
 			
-			if("C2C".equalsIgnoreCase(row.getCell(12).getStringCellValue()) || "C2C-1099".equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
+			if("C2C".equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
 				
 				if(row.getCell(13) !=null && !"".equalsIgnoreCase(row.getCell(13).toString())){
 					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
@@ -1079,24 +1079,27 @@ private String getCellValueAsString(Cell cell, String fileName) {
 					if(row.getCell(14) !=null && !"".equalsIgnoreCase(row.getCell(14).toString())){
 						userImport.setReason("vendor is mandatory if you have entered contact");
 						return false;
+					}else {
+						userImport.setReason("vendor details are mandatory.");
+						return false;
 					}
 				}
 			}else {
 				if(row.getCell(13) !=null && !"".equalsIgnoreCase(row.getCell(13).toString())){
 					if(row.getCell(14) !=null && !"".equalsIgnoreCase(row.getCell(14).toString())){
-						userImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
+						userImport.setReason("Employment type should be C2C if you have entered vendor details");
 						return false;
 					}else {
-						userImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
+						userImport.setReason("Employment type should be C2C if you have entered vendor details");
 						return false;
 					}
 				}
 			}
 			
-		/*	if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
+			if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
-			}*/
+			}
 				/*if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 					String dayHours = getCellValueAsString(row.getCell(9), fileName);
 					if (dayHours != null && !"".endsWith(dayHours)) {
@@ -1646,7 +1649,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
 		 CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, 10, 10);
 		 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-		 wb.setSheetHidden(2, true);
+		 
+		 wb.setSheetHidden(3, true);
 		 sheet.addValidationData(validation);
 		 
 		File file = new File("createAssociates.xls");
@@ -1703,7 +1707,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 
 		// Employment Type,Vendor,Vendor Contact Name
 
-		if ("C2C".equalsIgnoreCase(empType) || "C2C-1099".equalsIgnoreCase(empType)) {
+		if ("C2C".equalsIgnoreCase(empType)) {
 
 			if (vendor != null && !"".equalsIgnoreCase(vendor)) {
 				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
@@ -1728,6 +1732,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 
 				}
 
+			}else {
+				return null;
 			}
 		}
 

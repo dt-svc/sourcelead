@@ -26,6 +26,7 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	private Long slDependedntField;
 	private Long customDependentField;
 	private int status;
+	private String customEditType;
 	
 	public Long getId() {
 		return id;
@@ -134,6 +135,12 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	}
 	public void setSectionData(SourceleadSectionDTO sectionData) {
 		this.sectionData = sectionData;
+	}
+	public String getCustomEditType() {
+		return customEditType;
+	}
+	public void setCustomEditType(String customEditType) {
+		this.customEditType = customEditType;
 	}
 	
 	

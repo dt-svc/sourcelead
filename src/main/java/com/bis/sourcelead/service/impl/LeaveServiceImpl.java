@@ -475,7 +475,7 @@ public class LeaveServiceImpl implements LeaveService{
 					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
 					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod())){
-						leave.setExtraLeavesTaken(numberOfDays - carryForwardLeaves);
+						leave.setExtraLeavesTaken(Math.abs(numberOfDays - carryForwardLeaves));
 					}else{
 						leave.setExtraLeavesTaken(0);
 					}
