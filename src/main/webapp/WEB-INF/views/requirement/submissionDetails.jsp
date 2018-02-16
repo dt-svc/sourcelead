@@ -1138,10 +1138,10 @@ function getOfferDetails(submissionId){
 	                    	 
 	                    	 result = result + '<span id="'+report.offerId.id+'showOfferStatus"></span>';
 	                    	 if(report.offerId.offerStatus == "OFFERACCEPTED"){
-	                    		 result = result +' <font color="green" class="brder-int">OFFER ACCEPTED</font>';
+	                    		 result = result +' <font color="green" class="brder-int">Offer Accepted</font>';
 	                    	 }
 	                    	 if(report.offerId.offerStatus == "OFFERREJECTED"){
-	                    		 result = result +' <font color="red" class="brder-int">OFFER REJECTED</font>';
+	                    		 result = result +' <font color="red" class="brder-int">Offer Rejected</font>';
 	                    	 }
 	                    	 if(report.offerId.offerStatus == "Maybe"){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
@@ -2061,8 +2061,8 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	//result = result + '						<i class="fa fa-calendar"></i>';
 	result = result + '						</span>	';									  	
 	result = result + '						<span class="timeDiv" id="rescheduleTimeDiv">';
-	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="Start Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
-	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="End Time" name="endTime" id="endTime" onBlur="validateEndTime();">';
+	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="Start Time" id="feedBackStartTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
+	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="End Time" name="endTime" id="feedBackEndTime" onBlur="validateEndTime();">';
 	result = result + '						</span>';
 	result = result + '				<div class="clearfix"></div> ';
 	result = result + '			<div class="form-group Pmess clearfix">';
@@ -2111,19 +2111,19 @@ function rescheduleInterView(interviewId,timezone,submissionId){
     $("#rescheduleInterViewdiv").append(result);
 
     
-	$("#startTime").timepicker({
+	$("#feedBackStartTime").timepicker({
 		'showDuration': true,
 		'disableTextInput': true
 	}).on('changeTime', function() {
-	    $("#endTime").timepicker('option', 'minTime', $(this).val());
+	    $("#feedBackEndTime").timepicker('option', 'minTime', $(this).val());
 	});
 	
-	$("#endTime").timepicker({
+	$("#feedBackEndTime").timepicker({
 		'showDuration': true,
 		 'maxTime': '23:30:00',
 		'disableTextInput': true
 	}).on('changeTime', function() {
-	    $("#startTime").timepicker('option', 'maxTime', $(this).val());
+	    $("#feedBackStartTime").timepicker('option', 'maxTime', $(this).val());
 	}); 
 
 	
@@ -2348,8 +2348,8 @@ function TimezonesRescheduleList(timezone){
 		 var allStartTimes = [];
 		 var allEndTimes = [];
 		 $("#rescheduleTimeDiv").find('p.jquery_form_error_message').remove();
-			var startTime = $("#startTime").val();
-			 var endTime = $("#endTime").val();
+			var startTime = $("#feedBackStartTime").val();
+			 var endTime = $("#feedBackEndTime").val();
 			if(endTime != null && endTime != '' && endTime != 'undefined'){
 				if(startTime == endTime){
 					$("#rescheduleTimeDiv").find('.text-danger').remove();
@@ -2361,8 +2361,8 @@ function TimezonesRescheduleList(timezone){
 			         $("#add_interview").removeAttr("disabled");
 			   	}
 			}
-			var startTime1 = $("#startTime").val();
-			 var endTime1 = $("#endTime").val();
+			var startTime1 = $("#feedBackStartTime").val();
+			 var endTime1 = $("#feedBackEndTime").val();
 			if(endTime1 != null && endTime1 != '' && endTime1 != 'undefined'){
 				if(startTime1 == endTime1){
 					 $("#add_interview").attr("disabled", "disabled");
