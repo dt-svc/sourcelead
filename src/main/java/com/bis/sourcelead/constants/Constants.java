@@ -38,7 +38,7 @@ public class Constants {
 	public static final String DATEOFJOIN = "Date of Join";
 	public static final String ROLE = "Role*";
 	public static final String MANAGER = "Manager*";
-	public static final String EMPLOYMENT_TYPE ="Employment Type";
+	public static final String EMPLOYMENT_TYPE ="Employment Type*";
 	public static final String ASSOCIATE_VENDOR="Vendor";
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
@@ -527,7 +527,7 @@ public class Constants {
 			"United Kingdom", "United States" };
 	public static final String[] LEVEL_DROPDOWN = { "Tier-1", "Tier-2", "Tier-3", "Tier-4", "Tier-5" };
 	public static final String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name",
-			"Email-id", "Phone Number", "Date Of Join", "Rate", "Location", "Role", "Manager",
+			"Email-id", "Phone Number", "Date Of Join", "Rate", "Role", "Manager",
 			"status" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
