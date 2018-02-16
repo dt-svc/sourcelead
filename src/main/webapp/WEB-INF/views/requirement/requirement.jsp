@@ -204,7 +204,7 @@ $(document).ready(function () {
   	
   </section>
   <div class="content-area content-new clearfix">
-  <div id="loading"></div>
+  <div id="requirementLoading"></div>
    
    <div class="newPrDetails newPrDetailsPMO"> 
  		<div class="newPrTabs">
@@ -1702,7 +1702,7 @@ function validate_fileupload(fileName)
 		     if ($('#requirement_form').validate(false, validationSettings)){ 
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1710,7 +1710,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
 					  	success : function(result) {
-					  	//$("#loading").removeAttr("style");	
+					  	//$("#requirementLoading").removeAttr("style");	
 					  	if(saveType != 'saveAndContinue'){
 					  		location.replace(sourceleadUrl+"/jobs");
 					  	}
@@ -2897,7 +2897,7 @@ function getJobLocations(){
 	var requirementUUID = '${requirementUUID}';
 	
 	if(requirementUUID){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
@@ -2948,7 +2948,7 @@ function getJobLocations(){
 		        	
 		        	 $("#jobLocationsList").empty();
 		        	 $("#jobLocationsList").append(result);
-		        	 $("#loading").removeAttr("style");	
+		        	 $("#requirementLoading").removeAttr("style");	
 		        }
 		 });
 	}else{

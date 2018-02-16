@@ -33,9 +33,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class MonthlyLeaves {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -92,12 +92,12 @@ public class MonthlyLeaves {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

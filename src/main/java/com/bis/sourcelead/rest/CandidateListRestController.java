@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,8 +55,11 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -61,9 +67,11 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -74,6 +82,8 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
@@ -147,6 +157,15 @@ public class CandidateListRestController {
 	  
 	  @Autowired
 	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	  
+	  @Autowired
+	  private SourceleadActionsService sourceleadActionsService;  
+
+	  @Autowired
+	  private SourceleadFormSectionsService sourceleadFormSectionsService;
+		
+	  @Autowired
+	  private CandidateCustomFieldDataService candidateCustomFieldDataService;
 	  
 	  protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -788,6 +807,39 @@ public class CandidateListRestController {
 		candidateDTO.setStatus(can.getStatus().toString());
 		candidateDTO.setTerminateReason(can.getTerminateReason());
 		candidateDTO.setIsAssociate(can.getIsAssociate());
+		candidateDTO.setId(can.getId());
+		candidateDTO.setCandidateId(String.valueOf(can.getId()));
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
+		if(action != null && action.getId()!= null){
+			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocation.getId());
+			 if(sections != null && !sections.isEmpty()) {
+				 for(SourceleadSectionDTO sec:sections) {
+					 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+						 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+						 custom.setCustomFormFieldId(customFields.getId());
+						 formFieldId.add(custom);
+					 }
+				 }
+				 if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
+				 OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+				 Map<Long, String[]> candidateData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,can.getId());
+				 Map<String,String> dataMap = new HashMap<>();
+				 if(candidateData!= null && !candidateData.isEmpty()) {
+					 for(Entry<Long, String[]> candidateCustomData:candidateData.entrySet()) {
+						 String labelName = candidateCustomData.getValue()[0];
+						 String labelData = candidateCustomData.getValue()[1];
+						 dataMap.put(labelName, labelData);
+						 candidateDTO.setCandidateCustomFieldData(dataMap);
+					 	}
+				 	}
+				 }
+			 }
+			}
+		
+		
+		
+		
 		return candidateDTO;
 	}
 	 

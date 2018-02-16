@@ -27,15 +27,15 @@ public interface LeaveDao {
 
 	List<Leave> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId);
 
-	Leave getLeaveById(String leaveId) throws Exception;
+	Leave getLeaveById(Long leaveId) throws Exception;
 
 	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndDuration(Long locationId, String userId, String status, Date currentWeekStarDate, Date currentWeekEndDate, String department, Date leaveDate) throws Exception;
 
-	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId, Long orgLocationId, Long userId);
 	
-	Map<String, Integer> getNumberOfLeavesTakenByUser(Long userId, String leaveTypeId) throws Exception;
+	Map<String, Integer> getNumberOfLeavesTakenByUser(Long userId, Long leaveTypeId) throws Exception;
 
-	int getThisMonthLeavesTakenByUser(Long userId, String leaveTypeId);
+	int getThisMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
@@ -49,7 +49,7 @@ public interface LeaveDao {
 
 	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
 
-	boolean deleteAllLeaveRolesByParticularTableId(String from, String fromId);
+	boolean deleteAllLeaveRolesByParticularTableId(String from, Long fromId);
 
 	void storeHolidayAndRestrictDays(HolidayAndRestrictday day);
 
@@ -57,18 +57,20 @@ public interface LeaveDao {
 
 	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
 
-	List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(String id, String type);
+	List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(Long id, String type);
 
-	List<LeaveRole> getLeaveRolesByRestrictDayId(String restrictDayId);
+	List<LeaveRole> getLeaveRolesByRestrictDayId(Long restrictDayId);
 
-	void deleteAllHolidayOrRestrictDayById(String id, String type);
+	void deleteAllHolidayOrRestrictDayById(Long id, String type);
 
 	List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status);
 
-	List<Leave> getLeavesListByTypeIdAndDuration(String leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate);
+	List<Leave> getLeavesListByTypeIdAndDuration(Long leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate);
 
 	MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves);
 
-	MonthlyLeaves getMonthlyLeavesByLeaveId(String leaveId);
+	MonthlyLeaves getMonthlyLeavesByLeaveId(Long leaveId);
+
+	Leave getLeaveByLeaveUUId(String leaveUUID);
 
 }

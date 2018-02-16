@@ -65,7 +65,7 @@ public interface TimesheetSubmissionsService {
 	
 	public Collection<TimesheetSubmissions> getTimeSheetSubmissionsListByStatus(Long userId,String approvalStatus)throws Exception;
 	
-    public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
+//    public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserId(Long userId) throws Exception;
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsHoursCountByUserId(Long userId);
 	

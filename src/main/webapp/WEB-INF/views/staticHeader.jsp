@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <title>.::Welcome to SourceLead Website::.</title>
+  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
@@ -22,8 +24,14 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <!-- <script src="/resources/js/jquery-2.1.4.min.js"></script> --> 
 </head>
 <body>
+<div class="marQ">
+        <marquee behavior="scroll" direction="left">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
 <nav class="navbar navbar-default customNavBar" id="navHeader-scroll">
 	  <div class="container-fluid">
 		

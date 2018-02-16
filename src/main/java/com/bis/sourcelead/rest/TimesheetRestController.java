@@ -1600,7 +1600,16 @@ public class TimesheetRestController {
     @PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
   	@RequestMapping(value = "/rest/saveTimesheetEntries", method = RequestMethod.POST)
   	public @ResponseBody TimesheetEntryDetailsDTO saveTimesheetEntriesMobile(@RequestBody TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request) throws Exception {
-    	return saveTimesheetEntries(tedDTO, request);
+    	tedDTO = saveTimesheetEntries(tedDTO, request);
+		TimeSheetSubmissionDTO tsDTO = tedDTO.getTimesheetSubmission();
+		if(tsDTO != null) {
+			Map<String, List<TimesheetEntriesDTO>> entriesMap =	getEntriesMapForDisplayMobile(tsDTO, request);
+			tsDTO.setEntriesMap(entriesMap);
+			Map<String, List<WeekDaysDTO>> weekDaysMap =   getWeekDaysMapForDisplayMobile(tedDTO, request);
+			tedDTO.setWeekDaysMap(weekDaysMap);
+			tedDTO.setTimesheetSubmission(tsDTO);
+		}
+		return tedDTO;   
     }
     
 	private TimesheetEntryDetailsDTO saveTimesheetEntries(TimesheetEntryDetailsDTO tedDTO,HttpServletRequest request) throws Exception {
