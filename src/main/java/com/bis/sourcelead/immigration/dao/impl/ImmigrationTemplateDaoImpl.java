@@ -45,7 +45,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate) {
+	public Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate) {
 		logger.debug("Adding User");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
@@ -61,6 +61,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 				e.printStackTrace();
 			}
 		}
+		return immigrationTemplate.getId();
 	}
 
 }

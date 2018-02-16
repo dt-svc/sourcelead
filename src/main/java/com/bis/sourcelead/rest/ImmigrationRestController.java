@@ -170,13 +170,13 @@ public class ImmigrationRestController {
 	}
 	
 	
-	@RequestMapping(value={"/savePetitionTemplateDetails"},method = RequestMethod.POST)
+	@RequestMapping(value={"/savePetitionTemplateDetails"},method = RequestMethod.POST, produces = "application/json")
 	public String savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user);
-		return "success";
+		Long immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user);
+		return "{status:'success', id:"+immigrationId+ "}";
 	}
 	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {

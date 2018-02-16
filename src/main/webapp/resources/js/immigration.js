@@ -1,5 +1,6 @@
 var immigration  = new Immigration();
 var immiModulePath = "/immigration";
+var immTemplId= '';
 function Immigration(){
 	/*this.savePageOneContinue = function (status){
 		$("#newPetitionTemplateDiv").empty();
@@ -41,8 +42,10 @@ function Immigration(){
 		       data: formData,
 		       success: function(data) {
 		    	   console.log("inside success");
-		    	   if(data == 'success'){
+		    	   eval("jsonObj="+data);
+		    	   if(jsonObj.status =='success'){
 			    	   $("#addNewPetitionTemplateDiv").empty();
+			    	   immTemplId=jsonObj.id;
 			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=docDetails");
 		    	   }
 		       }
@@ -56,10 +59,11 @@ function Immigration(){
 	this.resetFormData = function(formId){
 		  $("#"+formId)[0].reset();
 	}
-	
+	immPetId= 
 	this.savePetitionDocDetailsAndContinue = function(){
 		if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
 		var formData = getFormData("PetitionTemplateDocDetails");
+		formData.id = immTemplId;
 		console.log(formData);
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDocDetails",

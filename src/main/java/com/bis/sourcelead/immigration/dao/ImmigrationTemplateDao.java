@@ -8,6 +8,6 @@ import com.bis.sourcelead.entity.ImmigrationTemplate;
  */
 public interface ImmigrationTemplateDao {
 
-	void savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate);
+	Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate);
 
 }

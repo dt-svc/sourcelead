@@ -18,7 +18,7 @@
 				<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-3">
 					<select class="form-control chosen-select" 
-									name="candidateEducation" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation">
+									name="immigrationDocList[0].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
 						<option value="" selected>--Select Document--</option>
 						<c:forEach var="edu" items="${educationsList}">
 										<option value="${edu.id}">${edu.name}</option>
@@ -26,23 +26,23 @@
 					</select>
 				  </div>
 				  <div class="col-md-7 noPad">
-						<input type="text" name="description" title='Description' class="form-control" placeholder="Description" />
+						<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" />
 				  </div>
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-4 noPad">
 						<label class="switch mt5 text-center">
-						<input checked="" id="requiredCheck" name="requiredCheck" title="Is Required" type="checkbox">
+						<input checked="" id="requiredCheck0" name="immigrationDocList[0].isRequired" title="Is Required" type="checkbox">
 						<div class="slider round"></div>
 						</label>
 					  </div>
 					   <div class="col-md-4">
 					   		<div class="mt5 ml5 clearfix">
-						   <input id="checkbox-1" title="Allow multiple Docs" class="checkbox-custom fmcheckbox" name="checkbox-1" type="checkbox">
+						   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[0].multiple" class="checkbox-custom fmcheckbox" type="checkbox">
 						   <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label>
 						   </div>
 					   </div>						  
 					  <div id="divButton" class="col-md-4">
-					  		<button type="button" id="btnClone" onclick="appendTempDocDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
+					  		<button type="button" id="btnDynamicRow0" onclick="appendTempDocDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
 					  </div>				  					  					  						  	
 				  </div>
 				</div>
@@ -95,21 +95,21 @@
 	   var templateDocDetails = "";
 		templateDocDetails = templateDocDetails+ "<div id='dynamicRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
-		templateDocDetails = templateDocDetails+ "<select class='form-control chosen-select' title='Document Type' field-name='Select Document' data-validation='required' name='candidateEducation' id='candidateEducation"+rowId+"' data-validation='validate_Space'>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control chosen-select' title='Document Type' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document--</option>";
 		<c:forEach var='edu' items='${educationsList}'>
 		templateDocDetails = templateDocDetails+ "<option value='${edu.id}'>${edu.name}</option>";
 		</c:forEach>
 		templateDocDetails = templateDocDetails+ "</select></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad'>";
-		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' id='description"+rowId+"' class='form-control' placeholder='Description' /></div>";
+		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' /></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad'>";
 		templateDocDetails = templateDocDetails+ "<label class='switch mt5 text-center'>";
-		templateDocDetails = templateDocDetails+ "<input checked='' title='Is Required' id='requiredCheck"+rowId+"' name='' type='checkbox'>";
+		templateDocDetails = templateDocDetails+ "<input checked='' title='Is Required' id='requiredCheck"+rowId+"' name='immigrationDocList["+rowId+"].isRequired' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<div class='slider round'></div></label>";
 		templateDocDetails = templateDocDetails+ "</div><div class='col-md-4'><div class='mt5 ml5 clearfix'>";
-		templateDocDetails = templateDocDetails+ "<input id='checkbox-1' title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='checkbox-custom fmcheckbox' name='checkbox-1' type='checkbox'>";
+		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='checkbox-custom fmcheckbox' name='immigrationDocList["+rowId+"].multiple' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<label for='checkbox-1' class='checkbox-custom-label fmcheckbox-lable'></label></div></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempDocDiv("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div></div>";
 		return templateDocDetails 
@@ -120,7 +120,7 @@
    }); */
    var rowId=0;
    function appendTempDocDiv(){
-	   $("#templateDocDivStatic").append(appendTemplateDocDetails(rowId++));
+	   $("#templateDocDivStatic").append(appendTemplateDocDetails(++rowId));
    }
    
    function removeTempDocDiv(id){

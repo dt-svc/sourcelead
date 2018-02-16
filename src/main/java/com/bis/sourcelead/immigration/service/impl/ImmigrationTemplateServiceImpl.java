@@ -26,7 +26,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	ImmigrationTemplateDao immigrationTemplateDao;
 
 	@Override
-	public void savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user) {
+	public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user) {
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate();
 		immigrationTemplate.setName(templateDTO.getTemplateName());
 		immigrationTemplate.setDescription(templateDTO.getTemplateDescription());
@@ -36,7 +36,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		immigrationTemplate.setUpdatedDate(new Date());
 		immigrationTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		immigrationTemplate.setStatus(0);
-		immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate);
+		return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate);
 		
 		
 	}
