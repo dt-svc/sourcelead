@@ -62,7 +62,7 @@
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-automation.png" alt="Image" class="animated bounceIn">
 	</div>
-		<h4>Integrate and Automat</h4>
+		<h4>Integrate and Automate</h4>
 		<ul class="list-styles">
 		<li>Customized data integration options</li>
 		<li>Automated tracking and status updates for the VMS requests</li>

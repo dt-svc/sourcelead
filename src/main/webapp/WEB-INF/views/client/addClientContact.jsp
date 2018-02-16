@@ -350,15 +350,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
-					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"Email should not your org user email");
-					
-				}else if(result == 'Invalid Spoc') {
-// 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-// 					$("input#email").after( "<p class='jquery_form_error_message'>Spoc is already exists as client contact</span>");
-// 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-// 					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Spoc is already exists as client contact");
+					$("input#emailId").after( "<p class='jquery_form_error_message'>Email  should not your org users email</span>");
+					document.getElementById("emailId").setAttribute( 'record-exist', 'yes');
+					document.getElementById("emailId").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");

@@ -300,7 +300,7 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="project_details_cta project_details_cta_100">';
+						result = result + '<div class="project_details_cta project_description project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
 						result = result + '</div>';
