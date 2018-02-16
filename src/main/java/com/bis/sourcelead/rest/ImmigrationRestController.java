@@ -63,22 +63,20 @@ public class ImmigrationRestController {
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
-	UserService userService;
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
-	OrgLocationService orgLocationService;
+	private UserRoleService userRoleService;
 	
 	@Autowired
-	UserRoleService userRoleService;
+	private LookUpDataService lookUpDataService;
 	
 	@Autowired
-	LookUpDataService lookUpDataService;
-	
-	
-	@Autowired
-	ImmigrationTemplateService immigrationTemplateService;
+	private ImmigrationTemplateService immigrationTemplateService;
 
 	/*@RequestMapping(value={"/viewImmigrationList"})
 	public ModelAndView loadImmigrationList(HttpServletRequest request ) {
@@ -161,8 +159,7 @@ public class ImmigrationRestController {
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error("Exception occured in method addPetitionTemplatePage");
+			logger.error("Exception occured in controller while navigating-->");
 			e.printStackTrace();
 		}
 
@@ -181,7 +178,7 @@ public class ImmigrationRestController {
 		
 		}
 		catch (Exception e) {
-			logger.error("Exception occured in method addPetitionTemplatePage"+e.getMessage());
+			logger.error("Exception occured while saving Petition Template Deatils"+e.getMessage());
 			e.printStackTrace();
 		}
 		return "{status:'success', id:"+immigrationId+ "}";
@@ -193,10 +190,9 @@ public class ImmigrationRestController {
 		try {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
-		System.out.println("Template Details saved succesfully -----> ");
 		}
 		catch (Exception e) {
-			logger.error("Exception occured in method savePetitionTemplateDocDetails"+e.getMessage());
+			logger.error("Exception occured while saving Petition Template Doc Details"+e.getMessage());
 			e.printStackTrace();
 		}
 		return "success";
@@ -207,6 +203,20 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		//To do service
+		return "success";
+	}
+	@RequestMapping(value={"/savePetitionTemplateTaskDetails"},method = RequestMethod.POST)
+	public String savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
+			System.out.println("Template Task Details saved succesfully --> ");
+		} catch (Exception e) {
+			logger.error("Exception occured while saving Template Task Details" + e.getMessage());
+			e.printStackTrace();
+		}
 		return "success";
 	}
 	/*@RequestMapping(value={"/viewImmigration"})

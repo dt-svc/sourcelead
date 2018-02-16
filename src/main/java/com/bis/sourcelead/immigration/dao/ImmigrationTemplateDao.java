@@ -4,6 +4,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
+import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -14,4 +15,5 @@ public interface ImmigrationTemplateDao {
 
 	Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate);
 	void savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
+	void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask);
 }

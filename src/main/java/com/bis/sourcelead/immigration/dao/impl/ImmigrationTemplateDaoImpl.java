@@ -17,6 +17,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
+import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
@@ -50,15 +51,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate) {
-		logger.debug("Adding Template Details-->");
+		logger.debug("Saving Template Details-->");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (immigrationTemplate != null) {
 				session.saveOrUpdate(immigrationTemplate);
 			}
-			logger.debug("User Added Successfully");
+			logger.debug("tempalte Details Added Successfully-->");
 		} catch (Exception exception) {
-			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "USER"));
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "immigrationTemplate"));
 			try {
 				throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 			} catch (SourceLeadConstraintViolationException e) {
@@ -71,15 +72,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs) {
-		logger.debug("Adding Temlate document Details-->");
+		logger.debug("Saving Temlate document Details-->");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (immigrationTemplateDocs != null) {
 				session.saveOrUpdate(immigrationTemplateDocs);
 			}
-			logger.debug("Docs Added Successfully");
+			logger.debug("Template documents added Successfully-->");
 		} catch (Exception exception) {
-			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "USER"));
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "immigrationTemplateDocs"));
 			try {
 				throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 			} catch (SourceLeadConstraintViolationException e) {
@@ -88,6 +89,24 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask) {
+		logger.debug("Saving Temlate Task Details-->");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (immigrationTemplateTask != null) {
+				session.saveOrUpdate(immigrationTemplateTask);
+			}
+			logger.debug("Template task details added Successfully-->");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "immigrationTemplateTask"));
+			try {
+				throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+			} catch (SourceLeadConstraintViolationException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
-
 }

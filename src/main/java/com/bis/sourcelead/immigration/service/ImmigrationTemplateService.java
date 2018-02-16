@@ -14,5 +14,6 @@ public interface ImmigrationTemplateService {
 
 	Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user);
 	void savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
+	void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
 
 }
