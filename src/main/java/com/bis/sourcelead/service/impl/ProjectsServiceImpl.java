@@ -453,8 +453,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowOvertime(null);
 		}
 		
-		if(projectsDTO.getFlatPercentage() != 0){
-			projects.setFlatPercent((double)projectsDTO.getFlatPercentage());
+		if(!projectsDTO.getFlatPercentage().isEmpty()){
+			projects.setFlatPercent(Double.parseDouble(projectsDTO.getFlatPercentage()));
 		}
 		
 		if(!isNullOrEmpty(projectsDTO.getFlatPercentageId())){
@@ -1447,8 +1447,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 					projects.setAllowBidding(null);
 				}
 				
-				if(projectDTO.getFlatPercentage() != null && projectDTO.getFlatPercentage() != 0){
-					projects.setFlatPercent((double)projectDTO.getFlatPercentage());
+				if(projectDTO.getFlatPercentage() != null && !projectDTO.getFlatPercentage().isEmpty()){
+					projects.setFlatPercent(Double.parseDouble(projectDTO.getFlatPercentage()));
 				}else{
 					projects.setFlatPercent(null);
 				}
