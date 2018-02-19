@@ -181,8 +181,20 @@
 							<option>Yearly</option>
 						  </select>
 					</div>
-					<div class="col-md-12 mb10">
-					  <div class="mt">
+					
+					<div class="col-md-12">
+					  <div class="clearfix">
+						<label class="paddingRight checkBox"><input id="reminder" name="Reminder" type="checkbox">Reminder</label>
+					  </div>
+					   <div class="mt5" id="reminderdropdown" style="display:none;">
+						<select class="chosen-select" multiple>
+						<option>1 days</option><option>1 Week</option><option>15 days</option><option>1 Month</option><option>90 days</option><option>180 days</option>
+						</select>
+					  </div>
+					</div>
+					<div class="col-md-12 mt">
+					 <label>Alert</label>
+					  <div class="mt2">
 						<label class="paddingRight"><input id="taskEmail" name="taskEmail" type="checkbox"> Email </label>
 						<label class="paddingLeft"><input id="taskNotification" name="taskNotification"  type="checkbox"> Notification </label>
 					  </div>
@@ -191,11 +203,20 @@
 				
 				<div class="col-md-6 noPad">
 					<div class="col-md-12 mb10">
+					      
+					      <div class="clearfix">
 						  <label>Assign To<span class="text-danger">*</span></label>
-						  <div class="">
-							<label class="paddingRight"> <input type="radio" id="assignToCandidate" name="assignToCandidate" checked="checked"> Candidate </label>
-							<label class="paddingLeft"> <input type="radio" id="assignToUsers" name="assignToUsers" > User </label>
+						  <div class="clearfix">
+							<label class="paddingRight"> <input type="radio" id="assignToCandidate" name="assignTo" checked="checked"> Candidate </label>
+							<label class="paddingLeft"> <input type="radio" id="assignToUsers" name="assignTo" > User </label>
 						  </div>
+						  </div>
+						  
+						  <div class="clearfix" id="selectUsertextBox" style="display:none;">
+							<input type="text" class="form-control" placeholder="Select User">
+						  </div>
+						  
+						  
 						</div>
 					<div class="col-md-12 mb10">
 					  <div class="row">
@@ -320,4 +341,37 @@
         });
 
         });
-    </script> 
+    </script>
+    <script>
+    //Reminder Funciton
+    $(function () {
+        $("#reminder").click(function () {
+            if ($(this).is(":checked")) {
+            	$("#reminderdropdown").show();
+            } else {
+            	$("#reminderdropdown").hide();
+            }
+        });
+    });
+    
+    $(function() {
+        $("#assignToUsers").click(function () {
+            if ($(this).is(":checked")) {
+            	$("#selectUsertextBox").show();
+            } else {
+            	$("#selectUsertextBox").hide();
+            }
+        });
+    });
+    
+    $(function () {
+        $("#assignToCandidate").click(function () {
+            if ($(this).is(":checked")) {
+            	$("#selectUsertextBox").hide();
+            } else {
+            	$("#selectUsertextBox").hide();
+            }
+        });
+    });
+    
+    </script>
