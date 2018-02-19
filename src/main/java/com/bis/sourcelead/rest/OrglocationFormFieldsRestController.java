@@ -61,18 +61,18 @@ public class OrglocationFormFieldsRestController {
 		if(type.equalsIgnoreCase("addNewCustomField")) {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
-		if(orglocationFormFields != null) {
-			orglocationFormSubFields = orglocationFormSubFieldsService.getOrgCustomSufieldsBySectionId(orgLocFormFieldsDTO.getId());	
-			orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields,orglocationFormSubFields);
-		}
+			if(orglocationFormFields != null) {
+				orglocationFormSubFields = orglocationFormSubFieldsService.getOrgCustomSufieldsBySectionId(orgLocFormFieldsDTO.getId());	
+				orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields,orglocationFormSubFields);
+			}
 		sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
-		
 		}else if(type.equalsIgnoreCase("editCustomRowField")) {
 		orglocationFormFields = orglocationFormFieldsService.getOrglocationFormFieldsById(orgLocFormFieldsDTO.getId());
 		orglocationFormSubFields = orglocationFormSubFieldsService.getOrgCustomSufieldsBySectionId(orgLocFormFieldsDTO.getId());
 		orglocationFormFieldsDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(orglocationFormFields, orglocationFormSubFields);
 		sections  = new ArrayList<>();
 		sections.add(orglocationFormFieldsDTO.getSectionData());
+		orglocationFormFieldsDTO.setCustomEditType("Edit");
 		disableFields = "disabled";
 		}
 		model.addObject("customFormPopDetails",orglocationFormFieldsDTO);

@@ -150,7 +150,7 @@ function vendorRequirementListInclude(orgRelationID){
 			        	  var opt = json.data[i];
 			        	  result = result + "<tr>";
 			            	// result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>"; 
-			           	result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+			           	result = result +"<td><div class='tbldata-dotdot'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 
 			            	  if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
 			             	 {
@@ -186,23 +186,23 @@ function vendorRequirementListInclude(orgRelationID){
 		   		        	result = result +'</td>';
 			               	
 			                if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
-			                 	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
+			                 	 result = result +"<td><div class='tblminwidth-100'>"+opt.postedDateStr+"</div></td>";
 			                  }else{
-			                 	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
+			                 	 result = result +"<td><div class='tblminwidth-100'>----</div></td>";
 			                  }
 			                
 			                
 			                if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-			                  	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
+			                  	 result = result +"<td><div class='tbldata-dotdot' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
 			                   }else{
-			                  	 result = result +"<td><div>----</div></td>";
+			                  	 result = result +"<td><div class='tbldata-dotdot'>----</div></td>";
 			                   }
 			                
 			            	//result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
- 							result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
-			            	result = result +"<td><div>"+opt.vendorInterviewsCount+"</div></td>";
-			            	result = result +"<td><div>"+opt.vendorOfferedCount+"</div></td>";
-			            	result = result +"<td><div>"+opt.vendorBackoutCount+"</div></td>";
+ 							result = result +"<td><div class='tblminwidth-75'>"+opt.noOfSubmittedApplicants+"</div></td>";
+			            	result = result +"<td><div class='tblminwidth-75'>"+opt.vendorInterviewsCount+"</div></td>";
+			            	result = result +"<td><div class='tblminwidth-75'>"+opt.vendorOfferedCount+"</div></td>";
+			            	result = result +"<td><div class='tblminwidth-75'>"+opt.vendorBackoutCount+"</div></td>";
 			            	
 			            	result = result +"<td><div>"+opt.requirementSubmissionStatus+"</div></td>";
 			            	
@@ -266,8 +266,8 @@ function contactRequirmentlistPagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-		
-    } );
+    });
+    $('#vendorRequirmentPagination').wrap("<div class='overflow_Auto width100Percnt'></div>");
 }
 </script>
 

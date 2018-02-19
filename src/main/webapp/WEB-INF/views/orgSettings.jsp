@@ -165,6 +165,10 @@ function cancelOrgImg(){
       <div id="regLoading"></div>
       <div id="popUp"></div>  
       <div id="signatureLoading"></div>
+      
+        <div class="success_pop" id="resendOrg" style="display: none;">
+			<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+		</div>
         <!-- Tab Pills navbar -->
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
@@ -1853,8 +1857,8 @@ function resendInvitation(userId){
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
-			        	$("#mailMsg").fadeIn(200);
-		   		        $('#mailMsg').delay(2000).fadeOut('slow');
+			        	$("#resendOrg").fadeIn(200);
+		   		        $('#resendOrg').delay(2000).fadeOut('slow');
 			        },
 			    });
 		 }

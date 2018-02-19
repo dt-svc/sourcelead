@@ -1096,10 +1096,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
-			if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
+			/*if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
-			}
+			}*/
 				/*if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 					String dayHours = getCellValueAsString(row.getCell(9), fileName);
 					if (dayHours != null && !"".endsWith(dayHours)) {
@@ -1649,7 +1649,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
 		 CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, 10, 10);
 		 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-		 wb.setSheetHidden(2, true);
+		 
+		 wb.setSheetHidden(3, true);
 		 sheet.addValidationData(validation);
 		 
 		File file = new File("createAssociates.xls");
