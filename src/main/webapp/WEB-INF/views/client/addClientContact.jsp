@@ -341,11 +341,10 @@ function getOrgDetails()
 function validateEmail(){
 	var email = document.getElementById("emailId").value;
 	var vendorName = document.getElementById("vendorName").value;
-	var orgRelationId = vendorName.split(",")[0];
-	if(email != null  && email != '' && orgRelationId != null){
+	if(email != null  && email != ''){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=client",
+			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -355,9 +354,9 @@ function validateEmail(){
 					document.getElementById("emailId").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
 				}else if(result == 'Valid Email') {
-					$('input#email').removeAttr("class record-exist record-exist-errormsg");
-					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$('input#emailId').removeAttr("class record-exist record-exist-errormsg");
+					$('input#emailId').attr('class','valid form-control');
 					
 				}
 			},
@@ -366,6 +365,8 @@ function validateEmail(){
 	}
 }
 </script>
+
+
 
 
 <script type="text/javascript">
