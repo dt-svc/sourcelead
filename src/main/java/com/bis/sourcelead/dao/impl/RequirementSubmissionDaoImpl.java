@@ -457,14 +457,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
     		params.put("managerUserId",user.getId());
     		
+    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' ";
     		
     		
     		String subQuery = "";
     		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
     			if(dateRange != null && "today".equals(dateRange)){
-    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
     			}else if(dateRange != null && "previous".equals(dateRange)){
-    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and rsh.submissionId.requirement IS NOT NULL and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and rsh.submissionId.requirement IS NOT NULL and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
     			}
     			params.put("orgLocationsId",orgLocationsId);
     			params.put("startDate",startUTCDate);
@@ -2554,12 +2555,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
 		    		params.put("managerUserId",user.getId());
 		    		
+		    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' ";
+		    		
 		    		String subQuery = "";
 		    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
 		    			if(dateRange != null && "today".equals(dateRange)){
-		    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+		    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
 		    			}else if(dateRange != null && "previous".equals(dateRange)){
-		    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+		    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
 		    			}
 		    			params.put("orgLocationsId",orgLocationsId);
 		    			params.put("startDate",startUTCDate);
