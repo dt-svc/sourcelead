@@ -1096,10 +1096,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
-			if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
+			/*if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
-			}
+			}*/
 				/*if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 					String dayHours = getCellValueAsString(row.getCell(9), fileName);
 					if (dayHours != null && !"".endsWith(dayHours)) {
