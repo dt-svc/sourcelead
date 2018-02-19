@@ -1891,7 +1891,7 @@ function setTemplateValues(){
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
-		getRequirementAndLookUpSkills(requirementId);
+// 		getRequirementAndLookUpSkills(requirementId);
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -1902,7 +1902,7 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
-			    	$("#experienceLevel").val(json.experienceLevel);
+			    	$("#experienceLevel").val(json.experienceLevel.name);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');
@@ -1912,6 +1912,15 @@ function setTemplateValues(){
 			    	$("#projectId").val(json.projectId);
 			    	$("#projectId").trigger("chosen:updated");
 			    	
+			    	$('#skills').val('').trigger('chosen:updated');
+					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+						var skills = [];
+			            skills = json.skills.split(",");
+			            $("#skills").val(skills);
+			            $('#skills').trigger("chosen:updated");
+					}
+
+					
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
@@ -2004,19 +2013,24 @@ function setTemplateValues(){
 			    		 $("#backgroundCheckTemplate").css("display","none"); 
 			    	}
 			    	
-			    	
 			    	if(json.gender !=  null && json.gender != '' && json.gender != 'undefined'){
 			    		 $("#genderTemplate").css("display","block"); 
 			    		 $("#addGender").css("display","none"); 
 			    		var result = "";
 			    		result = result + '<label class="col-md-3">Gender</label>';
 			    		result = result + '<div class="col-md-9">';
-			    		if(json.gender == "Y"){
-			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="gender"><span class="mr5"></span>Yes</span>';
-				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="gender"><span class="mr5"></span>No</span>';
-			    		}else {
-			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="gender"><span class="mr5"></span>Yes</span>';
-				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		if(json.gender == "Male"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>';
+			    		}else if(json.gender == "Female"){
+			    			result = result + '<span class="paddingRight"><input type="radio" value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>';
+			    		}else if(json.gender == "All"){
+			    			result = result + '<span class="paddingRight"><input type="radio" value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>';
 			    		}
 			    		result = result + '<div>';
 			    		$("#genderDivId").empty();
@@ -2067,14 +2081,6 @@ function setTemplateValues(){
 					$('#description').val('');
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');
-					$('#skills').val('').trigger('chosen:updated');
-					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
-						var skills = [];
-			            skills = json.skills.split(",");
-			            $("#skills").val(skills);
-			            $('#skills').trigger("chosen:updated");
-					}
-
 					
 					if(json.education != null && json.education != '' && json.education != 'undefined'){
 			            var educations = [];
