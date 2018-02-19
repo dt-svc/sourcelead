@@ -2209,7 +2209,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		Date date = new Date();
 		String currentTimeStr = TZ_DF_TS.format(date);
 		Date curDate = TZ_DF_TS.parse(currentTimeStr);
-		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+		if(contracts.getEndDate() != null && (contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate))){
 			vendorContracts.setTemplateSubmissionStatus(Constants.EXPIRED);
 			contracts.setTemplateSubmissionStatus(Constants.EXPIRED);
 		}else{
