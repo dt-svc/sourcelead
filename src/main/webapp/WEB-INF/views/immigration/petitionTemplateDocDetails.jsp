@@ -37,8 +37,8 @@
 					  </div>
 					   <div class="col-md-4">
 					   		<div class="mt5 ml5 clearfix">
-						   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[0].multiple" class="checkbox-custom fmcheckbox" type="checkbox">
-						   <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label>
+						   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[0].multiple" class="" type="checkbox">
+						   <!-- <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label> -->
 						   </div>
 					   </div>						  
 					  <div id="divButton" class="col-md-4">
@@ -46,46 +46,14 @@
 					  </div>				  					  					  						  	
 				  </div>
 				</div>
-				
-				<%-- <div class="col-md-12 clearfix noPad mt">
-				  <div class="col-md-3">
-						<select class="form-control chosen-select">
-							<option value="" selected>--Select Document--</option>
-							<c:forEach var="edu" items="${educationsList}">
-								<option value="${edu.id}">${edu.name}</option>
-							</c:forEach>
-						</select>
-					</div>
-				  <div class="col-md-7 noPad">
-						<input type="text" class="form-control" placeholder="Description" />
-				  </div>
-				  <div class="col-md-2 clearfix">
-					  <div class="col-md-4 noPad">
-						<label class="switch mt5 text-center">
-						<input checked="" id="" name="" type="checkbox">
-						<div class="slider round"></div>
-						</label>
-					  </div>
-					   <div class="col-md-4">
-					   		<div class="mt5 ml5 clearfix">
-						   <input id="checkbox-2" class="checkbox-custom fmcheckbox" name="checkbox-1" type="checkbox">
-						   <label for="checkbox-2" class="checkbox-custom-label fmcheckbox-lable"></label>
-						   </div>
-					   </div>						  
-					  <div class="col-md-4">
-					  		<button type="button" class="btn btm-sm"><i class="fa fa-remove text-danger"></i></button>
-					  </div>				  					  					  						  	
-				  </div>
-				</div> --%>
-								  					  	
 			</div>
  		</div>
    </form>
 		<div class="addImmiFoot">
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('one')" class="pull-left">Prev</a>
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('three')" class="ml10">Next</a>
-			<a href="javascript:void(0)" onclick="immigration.savePetitionDocDetailsAndContinue()" class="nextBtn">Save &amp; Continue</a>
-			<a href="javascript:void(0)">Reset</a>
+			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('templateDetails')" class="pull-left">Prev</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionDoc('saveContinue')" class="ml10 nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionDoc('save')" class="nextBtn">Save</a>
+			<a href="javascript:void(0)" onclick="immigration.resetFormData('PetitionTemplateDocDetails')">Reset</a>
 			<div class="clearfix"></div>
 		</div>   
    </div>
@@ -109,15 +77,12 @@
 		templateDocDetails = templateDocDetails+ "<input checked='' title='Is Required' id='requiredCheck"+rowId+"' name='immigrationDocList["+rowId+"].isRequired' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<div class='slider round'></div></label>";
 		templateDocDetails = templateDocDetails+ "</div><div class='col-md-4'><div class='mt5 ml5 clearfix'>";
-		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='checkbox-custom fmcheckbox' name='immigrationDocList["+rowId+"].multiple' type='checkbox'>";
+		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='' name='immigrationDocList["+rowId+"].multiple' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<label for='checkbox-1' class='checkbox-custom-label fmcheckbox-lable'></label></div></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempDocDiv("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div></div>";
 		return templateDocDetails 
    }
 	
-   /* $(document).ready(function(){
-	   $("#templateDocDivStatic").append(appendTemplateDocDetails());
-   }); */
    var rowId=0;
    function appendTempDocDiv(){
 	   $("#templateDocDivStatic").append(appendTemplateDocDetails(++rowId));

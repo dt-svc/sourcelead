@@ -1,7 +1,9 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 
@@ -50,12 +53,12 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate) {
+	public Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate, String templateId) {
 		logger.debug("Saving Template Details-->");
-		Session session = this.sessionFactory.getCurrentSession();
 		try {
+			Session session = this.sessionFactory.getCurrentSession();
 			if (immigrationTemplate != null) {
-				session.saveOrUpdate(immigrationTemplate);
+					session.saveOrUpdate(immigrationTemplate);
 			}
 			logger.debug("tempalte Details Added Successfully-->");
 		} catch (Exception exception) {
@@ -78,6 +81,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			if (immigrationTemplateDocs != null) {
 				session.saveOrUpdate(immigrationTemplateDocs);
 			}
+			
 			logger.debug("Template documents added Successfully-->");
 		} catch (Exception exception) {
 			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "immigrationTemplateDocs"));
@@ -108,5 +112,31 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			}
 		}
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deletePetitionTemplateDocDetails(Long templateId) {
+		logger.debug("Delete Template Docs-->");
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("delete from ImmigrationTemplateDocs docs where docs.immigrationTempId = :templateId").setLong("templateId", templateId);
+		int count = query.executeUpdate();
+		logger.debug("Number of records deleted-->"+count);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationTemplateView> getAllTemplateDetails() {
+		logger.debug("fetching template details-->");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateView>  templateList= null;
+		try {
+			  Query query= session.createQuery("from ImmigrationTemplateView");
+			  templateList = query.list();
+			 
+		} catch (Exception exception) {
+			logger.error("Error Occured  while fetching template details-->");
+			   exception.printStackTrace();
+			}
+		return templateList;
+	}
 }

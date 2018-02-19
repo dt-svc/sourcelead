@@ -30,8 +30,8 @@
    
 		<div class="addImmiFoot">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('two')" class="ml10">Next</a>
-			<a href="javascript:void(0)" onclick="immigration.savePetitionTemplateAndContinue()" class="nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionTemplateAndContinue('saveContinue')" class="ml10 nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionTemplateAndContinue('save')" class="nextBtn">Save</a>
 			<a href="javascript:void(0)" onclick="immigration.resetFormData('petitionTemplateDetails')">Reset</a>
 			<div class="clearfix"></div>
 		</div>   

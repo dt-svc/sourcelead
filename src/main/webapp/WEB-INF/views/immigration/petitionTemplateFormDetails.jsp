@@ -70,7 +70,7 @@
  		</div>
      </form>
 		<div class="addImmiFoot">
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('two')" class="pull-left">Prev</a>
+			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('templateDocs')" class="pull-left">Prev</a>
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('four')" class="ml10">Next</a>
 			<a href="javascript:void(0)" onclick="immigration.savePetitionFormDetailsAndContinue()" class="nextBtn">Save &amp; Continue</a>
 			<a href="javascript:void(0)">Reset</a>
