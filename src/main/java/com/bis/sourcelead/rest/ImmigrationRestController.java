@@ -1,56 +1,29 @@
 package com.bis.sourcelead.rest;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
-import com.bis.sourcelead.dto.ReferContactsDTO;
-import com.bis.sourcelead.dto.UserRoleDTO;
-import com.bis.sourcelead.entity.Connections;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
-import com.bis.sourcelead.service.ConnectionsService;
-import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -66,6 +39,9 @@ public class ImmigrationRestController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
@@ -198,10 +174,12 @@ public class ImmigrationRestController {
 	public String savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		templateDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		//To do service
+		immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
 		return "success";
 	}
+	
 	@RequestMapping(value={"/savePetitionTemplateTaskDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();

@@ -14,13 +14,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dao.impl.UserDaoImpl;
-import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
@@ -113,6 +110,27 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		}
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms) {
+		logger.debug("Saving Temlate Task Details-->");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (immigrationTemplateForms != null) {
+				session.saveOrUpdate(immigrationTemplateForms);
+			}
+			logger.debug("Template form details added Successfully-->");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "immigrationTemplateForms"));
+			try {
+				throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+			} catch (SourceLeadConstraintViolationException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void deletePetitionTemplateDocDetails(Long templateId) {

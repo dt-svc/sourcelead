@@ -6,8 +6,8 @@ package com.bis.sourcelead.immigration.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+import com.bis.sourcelead.entity.User;
 
 /**
  * @author Srinivas.Sabbu
@@ -15,7 +15,12 @@ import com.bis.sourcelead.entity.ImmigrationTemplateView;
  */
 public interface ImmigrationTemplateService {
 	Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, String templateId);
+	
 	void savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
+	
 	void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
+	
 	List<ImmigrationTemplateView> getAllTemplateDetails();
+	
+	void savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
 }
