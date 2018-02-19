@@ -258,7 +258,7 @@
 						</div>
 						<div class="form-group">
 
-							<label class="col-md-4">Leaves Carryforward <i class='fa fa-info-circle text-muted' title='Describes whethers leaves are carryforward to next year'></i></label>
+							<label class="col-md-4">Leaves Carryforward <i class='fa fa-info-circle text-muted' title='provides details regarding the leaves carryforward to next year'></i></label>
 							<div class="col-md-6">	
 
 								<div class="clearfix mb">
@@ -387,7 +387,7 @@
 						<div class="form-group">
 
 							<label class="col-md-4">Color Picker<span
-								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle text-muted' title='Picked color will be repersent for this leave type throughout application'></i></label>
+								class="text-danger">&nbsp;* </span><i class='fa fa-info-circle text-muted' title='Color coding for the leave type throughout the application'></i></label>
 							<div class="col-md-6">
 
 							
@@ -569,7 +569,7 @@
 								<c:if test="${empty leaveType.leavePolicy}">
 									<input type="checkbox" name="leavePolicy" id="leavePolicy"
 
-										value="Y">Leave Policy <i class='fa fa-info-circle text-muted' title='Leave policy for particluar leave type'></i>
+										value="Y">Leave Policy <i class='fa fa-info-circle text-muted' title='provides the leave policy for a particluar leave type.'></i>
 
 									
 

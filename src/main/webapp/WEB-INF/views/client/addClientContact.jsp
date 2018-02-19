@@ -164,7 +164,7 @@ function getOrgDetails()
           <div class="clearfix form-horizontal inner-content">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='Select the exisitng client name from the list. The new contact will be added to this client name'></i></label>
             <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">

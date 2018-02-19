@@ -61,7 +61,7 @@
 
 							<div class="form-group">
 								<label class="col-md-3">Approver <span
-									class="text-danger paddingLeft">*</span></label>
+									class="text-danger paddingLeft">*</span><i class='fa fa-info-circle' title='The person who will approve there source request'></i></label>
 								<div class="col-md-9">
 									<select class="chosen-select form-control"
 										data-validation="required" id="approver" name="approver"

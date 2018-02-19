@@ -16,6 +16,13 @@ right: 15px;
 }
 </style>
 
+<!--success msg -->
+
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
+
+
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
@@ -311,7 +318,7 @@ function cancelOrgImg(){
 							</div>
 							
 							<div class="form-group mt" id="generatedUserIdDiv">
-							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
@@ -2235,6 +2242,7 @@ function validateRegisterCompanyName(){
 				    type: "GET",
        	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
 			        success: function(data) {
+			        	alert("data"+data)
 			        	 var result = data;
 			        		if(result == "Company Duplicated") {
 		        			//Existed company

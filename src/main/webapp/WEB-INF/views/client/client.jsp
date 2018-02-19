@@ -178,7 +178,7 @@ margin-top: -50px;
             <div class="form-group">
             
             <div class="clearfix mb">
-              <label class="col-md-3">Tier</label>
+              <label class="col-md-3">Tier <i class='fa fa-info-circle' title='Classify the clients basing on their performance'></i></label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
                     <option value="Tier-1">Tier-1</option>
@@ -289,7 +289,7 @@ margin-top: -50px;
             </div>
             
             <div class="form-group">
-              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The internal point of contact to the client. A single contact can have multiple owners'></i></label>
               <div class="col-md-9 candAdvsrch">
                 <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
