@@ -153,17 +153,17 @@
 		<div class="popupHead">
 			<h2>Add Task</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
-		
+		<form id="petitionTemplateTaskDetails" name="petitionTemplateTaskDetails">
 		<div class="popupMid popupMidOver clearfix mt">
 			<div class="row clearfix">
 				<div class="col-md-6 noPad">
 					<div class="col-md-12 mb10">
 					  <label>Subject<span class="text-danger">*</span></label>
-					  <input type="text" class="form-control input-sm error" placeholder="Subject" >
+					  <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" >
 					</div>
 					<div class="col-md-12 mb10">
 					  <label>Priority</label>
-						<select class="form-control">
+						<select id ="priority" name="priority" class="form-control">
 							<option selected="" disabled="">-- Select Priority --</option>
 							<option>High</option>
 							<option>Low</option>
@@ -183,8 +183,8 @@
 					</div>
 					<div class="col-md-12 mb10">
 					  <div class="mt">
-						<label class="paddingRight"><input type="checkbox"> Email </label>
-						<label class="paddingLeft"><input type="checkbox"> Notification </label>
+						<label class="paddingRight"><input id="taskEmail" name="taskEmail" type="checkbox"> Email </label>
+						<label class="paddingLeft"><input id="taskNotification" name="taskNotification"  type="checkbox"> Notification </label>
 					  </div>
 					</div>															
 				</div>
@@ -193,8 +193,8 @@
 					<div class="col-md-12 mb10">
 						  <label>Assign To<span class="text-danger">*</span></label>
 						  <div class="">
-							<label class="paddingRight"> <input type="radio" checked="checked"> Candidate </label>
-							<label class="paddingLeft"> <input type="radio"> User </label>
+							<label class="paddingRight"> <input type="radio" id="assignToCandidate" name="assignToCandidate" checked="checked"> Candidate </label>
+							<label class="paddingLeft"> <input type="radio" id="assignToUsers" name="assignToUsers" > User </label>
 						  </div>
 						</div>
 					<div class="col-md-12 mb10">
@@ -206,7 +206,7 @@
 							   <div class="col-md-6 paddingRight">
 								<label>Months</label> <br>
 									<div class="select-field">
-										<select class="form-control input-sm">
+										<select id="dueAfterMonths" name="dueAfterMonths" class="form-control input-sm">
 											<option selected="" value="">--Select Month--</option>
 												<option>1</option>
 												<option>2</option>
@@ -227,7 +227,7 @@
 							<div class="col-md-6 paddingLeft">
 							<label>Days</label>
 								<div class="select-field">
-									<select class="form-control input-sm">
+									<select id="dueAfterDays" name="dueAfterDays" class="form-control input-sm">
 										<option selected="" value="">--Select Days--</option>
 										<option>1</option>
 										<option>2</option>
@@ -270,16 +270,16 @@
 					  
 					<div class="col-md-12 clearfix mb10">
 					  <label>Description</label>
-					  <textarea rows="2" placeholder="Description" class="form-control valid"></textarea>
+					  <textarea id="taskDescription" name="taskDescription" rows="2" placeholder="Description" class="form-control valid"></textarea>
 					</div>	
 																			
 				</div>				
 				
 			</div>				
 		</div>
-		
+		</form>
 		<div class="immiPopFoot">
-            <input value="Add" class="" type="button">
+            <input value="Add" onclick ="immigration.savePetitionTemplateTaskDetails()" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div>	
@@ -295,6 +295,7 @@
 			$(".popMask").fadeOut(200);
 			$("#taskViewPopup").fadeOut(100);
 		});
+		
 	});	
 </script>
 

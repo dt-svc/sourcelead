@@ -14,6 +14,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
+import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
@@ -63,9 +64,39 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			immigrationTemplateDocs.setDescription(tempObj.getDescription());
 			immigrationTemplateDocs.setIsRequired(tempObj.getIsRequired());
 			immigrationTemplateDocs.setIsMultipleRequired(tempObj.getMultiple());
+			immigrationTemplateDocs.setStatus(1);// active
 			immigrationTemplateDao.savePetitionTemplateDocDetails(immigrationTemplateDocs);
 		}
 
+	}
+
+	@Override
+	public void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user) {
+		
+		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
+		immiTemplate.setId(templateDTO.getId());
+		
+		ImmigrationTemplateTasks immigrationTemplateTask = new ImmigrationTemplateTasks();
+		immigrationTemplateTask.setImmigrationTempId(immiTemplate);
+		
+		immigrationTemplateTask.setTaskName(templateDTO.getTaskName());
+		immigrationTemplateTask.setAssignToUsers(templateDTO.getAssignToUsers());
+		immigrationTemplateTask.setAssignToCandidate(templateDTO.getAssignToCandidate());
+		immigrationTemplateTask.setPriority(templateDTO.getPriority());
+		immigrationTemplateTask.setDueAfterMonths(templateDTO.getDueAfterMonths());
+		immigrationTemplateTask.setDueAfterDays(templateDTO.getDueAfterDays());
+		immigrationTemplateTask.setTaskRepeat(templateDTO.getTaskRepeat());
+		immigrationTemplateTask.setTaskEmail(templateDTO.getTaskEmail());
+		immigrationTemplateTask.setTaskNotification(templateDTO.getTaskNotification());
+		immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
+		immigrationTemplateTask.setStatus(1);// 1 for active
+		
+		immigrationTemplateTask.setCreatedDate(new Date());
+		immigrationTemplateTask.setCreatedBy(user);
+		immigrationTemplateTask.setUpdatedDate(new Date());
+		immigrationTemplateTask.setUpdatedBy(user);
+
+		immigrationTemplateDao.savePetitionTemplateTaskDetails(immigrationTemplateTask);
 	}
 
 }
