@@ -1649,7 +1649,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
 		 CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, 10, 10);
 		 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
-		 wb.setSheetHidden(2, true);
+		 
+		 wb.setSheetHidden(3, true);
 		 sheet.addValidationData(validation);
 		 
 		File file = new File("createAssociates.xls");

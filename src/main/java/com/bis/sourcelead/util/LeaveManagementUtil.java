@@ -268,7 +268,7 @@ public class LeaveManagementUtil {
 			noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate,toDate);
 			monthlyLeaves.put(months[fromMonth], noOfDays);
 		}else{
-			for(int i=1; i <= toMonth;i++){
+			for(int i=1; i < toMonth;i++){
 				if(fromMonth+i == toMonth){
 					Date[] dates = new Date[2];
 					fromCal.set(Calendar.DATE, fromCal.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -280,11 +280,11 @@ public class LeaveManagementUtil {
 					dates[1] = toCal.getTime();
 					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(dates[1],toDate);
 					monthlyLeaves.put(months[toMonth], noOfDays);
-				}else{
+				}else if(fromMonth+i < toMonth){
 					Calendar cal = Calendar.getInstance();
 					cal.set(Calendar.MONTH,fromMonth+i);
 					noOfDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-					monthlyLeaves.put(months[toMonth], noOfDays);
+					monthlyLeaves.put(months[toMonth-i], noOfDays);
 				}
 			}
 			
