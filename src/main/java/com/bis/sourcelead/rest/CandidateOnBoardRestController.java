@@ -496,8 +496,11 @@ public class CandidateOnBoardRestController {
 			
 			for(RequirementOffers offers : candidateOffersList){
 				
-				StringBuilder candidateName = new StringBuilder();
+				CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndLocationId(offers.getSubmissionId().getCandidate().getId(), loginOrgLocation.getId());
 				
+				if(onboarding == null) {
+					StringBuilder candidateName = new StringBuilder();
+					
 					if(null != offers.getSubmissionId().getCandidate().getLastName()){
 						offers.setCandidateName(candidateName.append(offers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(offers.getSubmissionId().getCandidate().getLastName()).toString());
 					}else{
@@ -508,6 +511,7 @@ public class CandidateOnBoardRestController {
 					offers.setJobTitle(offers.getSubmissionId().getRequirement().getJobTitle());
 					
 					offersList.add(offers);
+				}
 			}
 			
 			}

@@ -162,14 +162,14 @@ function getVendorList(){
 	              "render": function ( data, type, report, meta ) {
 	            	  var result = "";
 	              		var location = "";
-	    		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
+	              		if(report.city != null && report.city != '' && report.city != 'undefined' && report.state != null && report.state != '' && report.state != 'undefined'){
 	    		   			location = report.city+", "+report.state+", "+report.country;
 	    		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
 	    		   			location = report.state+", "+report.country;
 	    		   		}else{
 	    		   			location = report.country;
 	    		   		}
-	    		   		
+	           
 	    		   		if(location != null && location  != '' && location  != 'undefined'){
 	    		   			result = result +'<td>';
 	    		   			result = result +'<div>';
