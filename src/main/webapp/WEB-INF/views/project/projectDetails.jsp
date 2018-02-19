@@ -190,10 +190,12 @@
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 						
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Manager 1:</strong><span>';
-						result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
-						result = result + '	</div>';
+						if(json.manager1Name != null && json.manager1Name != "" && json.manager1Name !="undefined"){
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Manager 1:</strong><span>';
+							result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Invoice Frequency:</strong><span>';
@@ -298,7 +300,7 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="project_details_cta project_details_cta_100">';
+						result = result + '<div class="project_details_cta project_description project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
 						result = result + '</div>';
@@ -921,6 +923,7 @@ function projectStatus(){
 		$("#editProject_form").validateOnBlur(false, validationSettings);
 	});
 </script>
+
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
 		var ProjectSequeneNumber = document

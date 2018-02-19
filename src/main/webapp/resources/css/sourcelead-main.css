@@ -7962,6 +7962,21 @@ transform: translateY(-90px); opacity: 1; left: 0%;
 .lineHeight {
 	line-height: 22px;	
 }
+.checkboxLable {
+margin-left: 20px;
+}
+.showEditfields .form-group {
+width: 30.5%; float: left; margin-left: 5px; margin-right: 20px;
+}
+.showEditfields label.col-md-3, .showEditfields div.col-md-9 {
+width: 100%; padding-right: 0;
+}
+.editfield-container {
+min-height: 150px; max-height: 400px; overflow-y:auto; 
+}
+.project_details_cta.project_description span {
+	display: initial;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

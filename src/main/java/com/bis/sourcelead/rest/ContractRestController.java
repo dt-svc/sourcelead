@@ -517,11 +517,11 @@ public class ContractRestController {
 		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), sowType);
 		if(requirementList.size() > 0){
 			for(Requirement requirement : requirementList){
-				if(null != requirement.getSpocId() && (requirement.getSpocId().getClientUser().getFirstName() != null && requirement.getSpocId().getClientUser().getFirstName() != "" && requirement.getSpocId().getClientUser().getLastName() != null && requirement.getSpocId().getClientUser().getLastName() != "" )){
+				if(null != requirement.getSpocId() && (requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getFirstName() != "" && requirement.getManagerUserId().getLastName() != null && requirement.getManagerUserId().getLastName() != "" )){
 					StringBuilder spocSB = new StringBuilder();
-					requirement.setSpocName(spocSB.append(" (").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).append(")").toString());
+					requirement.setSpocName(spocSB.append(" (").append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).append(")").toString());
 				}else if(null != requirement.getSpocId()){
-					requirement.setSpocName(" ("+requirement.getSpocId().getClientUser().getFirstName()+")");
+					requirement.setSpocName(" ("+requirement.getManagerUserId().getFirstName()+")");
 				}else{
 					requirement.setSpocName("");
 				}

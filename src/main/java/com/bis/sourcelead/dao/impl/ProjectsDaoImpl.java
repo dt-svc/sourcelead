@@ -651,7 +651,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			}else{
 				 queryObj = session.createQuery(query + query1.toString()+" ORDER BY ps.createdDate DESC");
 			}
-			
+			 
 			queryObj.setFirstResult(projectsDTO.getStart());
 			queryObj.setMaxResults(projectsDTO.getLength());
 			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
@@ -749,7 +749,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 						    	 
 					    	    Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
 							    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
-							    	if(approverHierarchy.getLevel()==1){
+							    	if(approverHierarchy.getLevel() == 1 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
 							    		StringBuilder manager1 = new StringBuilder();
 							    		if(approverHierarchy.getApproverUserId().getLastName() != null){
 							    			projectsDTO.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
@@ -757,7 +757,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							    			projectsDTO.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
 							    		}
 							    		
-							    	}else if(approverHierarchy.getLevel()==2){
+							    	}else if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
 							    		StringBuilder manager2 = new StringBuilder();
 							    		if(approverHierarchy.getApproverUserId().getLastName() != null){
 							    			projectsDTO.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	

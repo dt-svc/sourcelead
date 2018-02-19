@@ -172,6 +172,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getAddress1())){
 			candidateOnBoarding.setAddress1(candidateOnBoardingDTO.getAddress1());
+		}else {
+			candidateOnBoarding.setAddress1(null);
 		}
 		
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getAddress2())){
