@@ -11,9 +11,7 @@ import com.bis.sourcelead.entity.User;
  *
  */
 public interface ImmigrationTemplateService {
-
-	Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user);
+	Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, String templateId);
 	void savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
 	void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
-
 }

@@ -13,7 +13,8 @@ import com.bis.sourcelead.entity.User;
  */
 public interface ImmigrationTemplateDao {
 
-	Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate);
+	Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate, String templateId);
 	void savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
 	void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask);
+	void deletePetitionTemplateDocDetails(Long id);
 }

@@ -97,27 +97,15 @@ public class ImmigrationRestController {
 	}*/
 	
 	
-	/*@RequestMapping(value={"/loadNewPetitionPage"})
+	@RequestMapping(value={"/gotoTemplatePreviousPage"})
 	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		if(status.equalsIgnoreCase("one")) {
-			model.setViewName("/immigration/newPetitionPage1");
-		}else if(status.equalsIgnoreCase("two")) {
-			model.setViewName("/immigration/newPetitionPage2");
-		}else if(status.equalsIgnoreCase("three")) {
-			model.setViewName("/immigration/newPetitionPage3");
-		}else if(status.equalsIgnoreCase("four")) {
-			model.setViewName("/immigration/newPetitionPage4");
-		}else if(status.equalsIgnoreCase("five")) {
-			model.setViewName("/immigration/newPetitionPage5");
-		}else if(status.equalsIgnoreCase("six")) {
-			model.setViewName("/immigration/newPetitionPage6");
-		}else if(status.equalsIgnoreCase("seven")) {
-			model.setViewName("/immigration/newPetitionPage7");
+		if(status.equalsIgnoreCase("templateDetails")) {
+			model.setViewName("/immigration/petitionTemplateDetails");
 		}
 		return model;
-	}*/
+	}
 
 	@RequestMapping(value={"/addNewPetitionTemplate"})
 	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) {
@@ -168,14 +156,13 @@ public class ImmigrationRestController {
 	
 	
 	@RequestMapping(value={"/savePetitionTemplateDetails"},method = RequestMethod.POST, produces = "application/json")
-	public String savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
+	public String savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,@RequestParam(value = "templateId", required = false) String templateId ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Long immigrationId = null;
 		try {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user);
-		
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+			immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user, templateId);
 		}
 		catch (Exception e) {
 			logger.error("Exception occured while saving Petition Template Deatils"+e.getMessage());
@@ -184,7 +171,7 @@ public class ImmigrationRestController {
 		return "{status:'success', id:"+immigrationId+ "}";
 	}
 	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
-	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
+	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,@RequestParam(value = "templateId", required = false) String templateId) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		try {

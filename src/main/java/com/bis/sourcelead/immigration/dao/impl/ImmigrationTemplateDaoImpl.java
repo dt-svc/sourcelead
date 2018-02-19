@@ -2,6 +2,7 @@ package com.bis.sourcelead.immigration.dao.impl;
 
 import java.text.MessageFormat;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -50,12 +51,12 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate) {
+	public Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate, String templateId) {
 		logger.debug("Saving Template Details-->");
-		Session session = this.sessionFactory.getCurrentSession();
 		try {
+			Session session = this.sessionFactory.getCurrentSession();
 			if (immigrationTemplate != null) {
-				session.saveOrUpdate(immigrationTemplate);
+					session.saveOrUpdate(immigrationTemplate);
 			}
 			logger.debug("tempalte Details Added Successfully-->");
 		} catch (Exception exception) {
@@ -78,6 +79,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			if (immigrationTemplateDocs != null) {
 				session.saveOrUpdate(immigrationTemplateDocs);
 			}
+			
 			logger.debug("Template documents added Successfully-->");
 		} catch (Exception exception) {
 			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "immigrationTemplateDocs"));
@@ -107,6 +109,16 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deletePetitionTemplateDocDetails(Long templateId) {
+		logger.debug("Delete Template Docs-->");
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("delete from ImmigrationTemplateDocs docs where docs.immigrationTempId = :templateId").setLong("templateId", templateId);
+		int count = query.executeUpdate();
+		logger.debug("Number of records deleted-->"+count);
 	}
 	
 }

@@ -31,8 +31,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	ImmigrationTemplateDao immigrationTemplateDao;
 
 	@Override
-	public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user) {
+	public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, String templateId) {
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate();
+		if(!templateId.equalsIgnoreCase("null") && !templateId.isEmpty()) {
+			immigrationTemplate.setId(Long.parseLong(templateId));
+		}
 		immigrationTemplate.setName(templateDTO.getTemplateName());
 		immigrationTemplate.setDescription(templateDTO.getTemplateDescription());
 		immigrationTemplate.setCreatedBy(user);
@@ -41,7 +44,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		immigrationTemplate.setUpdatedDate(new Date());
 		immigrationTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		immigrationTemplate.setStatus(0);
-		return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate);
+		return immigrationTemplateDao.savePetitionTemplateDetails(immigrationTemplate, templateId);
 		
 		
 	}
@@ -52,6 +55,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		List<ImmigrationTemplateDocDTO> docsList = templateDTO.getImmigrationDocList();
 		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
 		immiTemplate.setId(templateDTO.getId());
+		// delete the records if exist in database and reinsert. 
+		immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getId());
 		
 		for (ImmigrationTemplateDocDTO tempObj : docsList) {
 			ImmigrationTemplateDocs immigrationTemplateDocs = new ImmigrationTemplateDocs();
