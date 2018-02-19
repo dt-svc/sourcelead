@@ -9,10 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +21,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.entity.Leave;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddMonthlyLeavesForExistingLeaves {
@@ -48,7 +45,6 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 
-			 List<Leave> leavesList = new ArrayList<>();
 			 
 			 System.out.println("----Adding Monthly Leaves starts-----");
 			 while(rs1.next()){
