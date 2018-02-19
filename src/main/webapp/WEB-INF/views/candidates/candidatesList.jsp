@@ -1045,9 +1045,9 @@ function cancel(candidateId){
 							  <div class="clearfix">
 								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
 								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
+								        <%-- <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
+						                </c:forEach> --%>
                                  </select>
 							  </div>
 						  </div>
