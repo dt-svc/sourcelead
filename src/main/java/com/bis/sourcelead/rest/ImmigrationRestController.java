@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
@@ -122,6 +123,15 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationTemplateList");
+		try {
+		List<ImmigrationTemplateView> templateList= immigrationTemplateService.getAllTemplateDetails();
+		System.out.println("template list size is "+templateList.size());
+		model.addObject("templateList", templateList);
+		}
+		catch (Exception e) {
+			logger.error("Exception occured while getting template list-->"+e.getMessage());
+			e.printStackTrace();
+		}
 		return model;
 	}
 	

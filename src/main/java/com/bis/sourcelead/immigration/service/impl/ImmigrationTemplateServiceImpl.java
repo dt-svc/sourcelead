@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
+import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
@@ -103,5 +104,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 		immigrationTemplateDao.savePetitionTemplateTaskDetails(immigrationTemplateTask);
 	}
-
+	@Override
+	public List<ImmigrationTemplateView> getAllTemplateDetails() {
+		List<ImmigrationTemplateView> templateList= immigrationTemplateDao.getAllTemplateDetails();
+		return templateList;
+	}
 }
