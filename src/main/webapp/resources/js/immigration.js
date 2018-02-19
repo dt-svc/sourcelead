@@ -68,11 +68,15 @@ function Immigration(){
 	}
 	
 	this.savePetitionFormDetailsAndContinue = function(){
+		if ($('#petitionTemplateFormDetails').validate(false, validationSettings)) {
 		var formData = getFormData("petitionTemplateFormDetails");
+		formData.id = immTemplId;
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateFormDetails",
 		       type : "POST",
 		       data: formData,
+		       /*processData: false,
+			   contentType:false, */
 		       success: function(data) {
 		    	   console.log("inside savePetitionTemplateFormDetails success");
 		    	   if(data == 'success'){
@@ -81,6 +85,11 @@ function Immigration(){
 		    	   }
 		       }
 		});
+		
+		return true;
+	} else {
+		return false;
+	}
 	}
 	
 	this.savePetitionTemplateTaskDetails= function(){

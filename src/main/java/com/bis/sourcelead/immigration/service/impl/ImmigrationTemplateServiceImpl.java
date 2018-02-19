@@ -9,8 +9,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -19,7 +22,9 @@ import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.itextpdf.io.IOException;
 
 /**
  * @author Srinivas.Sabbu
@@ -109,4 +114,45 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		List<ImmigrationTemplateView> templateList= immigrationTemplateDao.getAllTemplateDetails();
 		return templateList;
 	}
+	
+	@Override
+	public void savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user) {
+		List<ImmigrationTemplateFormDTO> formsList = templateDTO.getImmigrationFormList();
+		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
+		immiTemplate.setId(templateDTO.getId());
+		
+		for (ImmigrationTemplateFormDTO tempObj : formsList) {
+			ImmigrationTemplateForms immigrationTemplateForms = new ImmigrationTemplateForms();
+			immigrationTemplateForms.setImmigrationTempId(immiTemplate);
+			immigrationTemplateForms.setFormName(tempObj.getFormName());
+			immigrationTemplateForms.setDescription(tempObj.getFormDescription());
+			immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
+			immigrationTemplateForms.setCreatedDate(new Date());
+			immigrationTemplateForms.setCreatedBy(user);
+			immigrationTemplateForms.setUpdatedDate(new Date());
+			immigrationTemplateForms.setUpdatedBy(user);
+			immigrationTemplateForms.setStatus(Constants.RECORD_ACTIVE);
+			immigrationTemplateForms.setFormUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			if (tempObj.getImmigrationFormFileInfo() != null && tempObj.getImmigrationFormFileInfo().size()>0 && !tempObj.getImmigrationFormFileInfo().isEmpty()) {
+				FileInfo info = tempObj.getImmigrationFormFileInfo().get(0);
+				if(info != null){
+				immigrationTemplateForms.setFileName(info.getFileName());
+				immigrationTemplateForms.setFileUrl(info.getFileURL());
+				immigrationTemplateForms.setFileContentType(info.getContentType());
+				
+					try {
+						FileUploadUtil.moveFile(templateDTO.getStaticPath(), info, "ImmigrationFormDocs");
+					} catch (java.io.IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+			}
+			}
+			immigrationTemplateDao.savePetitionTemplateFormDetails(immigrationTemplateForms);
+
+		}
+
+}
+	
 }
