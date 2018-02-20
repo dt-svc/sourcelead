@@ -1616,4 +1616,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
 	}
 
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId, Long projectId) throws Exception {
+		return projectMembersDao.getAllProjectMembersByMasterCandidateId(masterCandidateId, projectId);
+	}
+
 }
