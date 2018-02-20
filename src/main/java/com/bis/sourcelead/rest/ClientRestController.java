@@ -1916,10 +1916,11 @@ public class ClientRestController {
 			}else if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 				String[] tableColumns = {"clientLocationId", "clientUserFirstName.keyword", "clientUserEmail.keyword", "", "ownerUserId", "spocStatus","invitationStatus.keyword",""};
 				tableColumns1 = tableColumns;
-			}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			}else{
 				String[] tableColumns = {"vendorLocationId", "vendorUserFirstName.keyword", "vendorUserEmail.keyword", "", "ownerUserId", "spocStatus","invitationStatus.keyword",""};
 				tableColumns1 = tableColumns;
 			}
+				
 			
 			if(clientVendorDTO.getResponderType().equalsIgnoreCase(Constants.JOB_CAMPAIGN_VENDOR)){
 				clientVendorDTO.setResponderType(Constants.VENDOR);
