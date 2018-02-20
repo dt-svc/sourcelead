@@ -48,7 +48,7 @@
 	        
 <!-- TimeEntry Modal Pop -->
 					<form id="time_entry_form" name="time_entry_form">
-					<div class="modal-Time clearfix">
+					<div class="modal-Time clearfix" id="contentDivTimeSheetId">
 					    <!-- Modal content-->
 					      <div class="clearfix">
 					      <input type="hidden" name="taskUUID" value="${taskUUID}">
@@ -136,7 +136,7 @@
 function saveTaskDetails(){
    if ($('#time_entry_form').validate(false, validationSettings)){  
   		   var form = $('#time_entry_form')[0];
-   	       var formData = new FormData(form); 
+   	       var formData = new FormData(form);
 	         $.ajax({
 				 type : "POST",
 				 data: formData,
@@ -145,7 +145,7 @@ function saveTaskDetails(){
 				 url : sourceleadUrl+"/addTimeSheetDayEntries",
 				  		success : function(data) {
 				  			getSavedTaskDetails();
-				  			flushTimeEntryTasks();
+				  			closeTimeEntryTasks();
 				},
 			});
 			return true; 
@@ -168,10 +168,11 @@ function saveTaskDetails(){
 			  			if(data == "false"){   
 			  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Day hours should not be more than 24</p>");
 			  				$('#savetask').attr('disabled','disabled');
-			  			 }else if("noDate"){
+			  			 }else if(data =="noDate"){
 			  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Please Select Date.</p>");
+			  				$('#timesheetHours').val('');
 			  				$('#savetask').attr('disabled','disabled');
-			  			}else if("true"){
+			  			}else if(data =="true"){
 			  				$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
 			  			    $('#savetask').removeAttr('disabled','disabled');
 			  			}

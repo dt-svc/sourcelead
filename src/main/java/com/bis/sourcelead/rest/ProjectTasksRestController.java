@@ -1365,7 +1365,7 @@ public class ProjectTasksRestController {
 			    if(proMember != null && proMember.getProjects() != null && proMember.getMasterCandidateId().getId()!= null) {
 			    	Float totalHours = timeSheetDayEntriesService.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate));
 			    	 totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")), totalHours);
-					if(totalHours!= null &&  totalHours > 24) {
+					if(totalHours!= null &&  totalHours >= 24) {
 			    		falg =  "false";
 			    	}else {
 			    		falg =  "true";
