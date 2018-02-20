@@ -119,12 +119,12 @@ function uploadFormDocs(id){
    
    function removeTempFormRow(id){
 	   $("#dynamicFormRow"+id).remove();
+	   rowId--;
    }
    	</script>
    	
    	   	<script>
 $(document).ready(function(){
 	$("#templateId").val(jsonObj.id);
-	console.log(" getting the temp id value"+$('#templateId').val());
 });
 </script> 
