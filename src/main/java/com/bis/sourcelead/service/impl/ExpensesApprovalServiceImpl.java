@@ -293,9 +293,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 						expensesApproverHierarchyDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
 					}
 				}
-	    }else{
-	    	expensesApproverHierarchyDto.setClientName("--");
-		}
+	    }
 		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
 		expensesApproverHierarchyDto.setTdSpanLength("9");
 		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {

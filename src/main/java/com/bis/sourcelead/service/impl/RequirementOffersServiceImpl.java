@@ -1000,7 +1000,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			      
 			     
 			      if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
-			      sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			    	  if(requirementOffers.getSubmissionId().getSourceSubmission() != null) {
+			    		  sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			    	  }
+			    	 
 			      }
 			      
 		      	  if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
@@ -1035,7 +1038,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    	
 	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
-	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+	    			 if(requirementOffers.getSubmissionId().getSourceSubmission() != null) {
+	    				 sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+	    			 }
 			      }
 	    	
 	    	  //Changing the status of offerTable 
