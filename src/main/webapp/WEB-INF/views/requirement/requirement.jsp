@@ -2063,7 +2063,7 @@ function setTemplateValues(){
 						}
 						
 					 		
-					
+						var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 					$('#description').val('');
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');
