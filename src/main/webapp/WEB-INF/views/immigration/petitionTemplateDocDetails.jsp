@@ -27,7 +27,7 @@
 					</select>
 				  </div>
 				  <div class="col-md-7 noPad">
-						<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" />
+						<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 				  </div>
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-4 noPad">
@@ -71,7 +71,7 @@
 		</c:forEach>
 		templateDocDetails = templateDocDetails+ "</select></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad'>";
-		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' /></div>";
+		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad'>";
 		templateDocDetails = templateDocDetails+ "<label class='switch mt5 text-center'>";
