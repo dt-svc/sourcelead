@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -634,76 +635,79 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 			@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
 			@ResponseBody String saveReason(
-					@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,
-					@RequestParam(value = "projectId", required = false) Long projectId,
-					@RequestParam(value = "reason", required = false) String reason,HttpServletRequest request) {
+					@RequestParam(value = "projectMemberId", required = true) Long projectMemberId,
+					@RequestParam(value = "projectId", required = true) Long projectId,
+					@RequestParam(value = "reason", required = true) String reason,HttpServletRequest request) {
 				   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
 				   Integer updatedCount =  0;
 				   try {
-				  	  ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-				  	  if(projectMembers != null){
-				  		  String status = Constants.MEMBER_IN_ACTIVE;
-					  	  projectMembers.setTerminateReason(reason);
-						  projectMembers.setUpdatedDate(new Date());
-						  projectMembers.setUpdatedBy(user.getUserCode());
-						  projectMembers.setStatus(status);
-						  projectMembersService.saveProjectMember(projectMembers);
-					  	  
-						  
-						  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
-						  int sendEmailCount = 1;
-						  if(pmhList != null && pmhList.size() > 0){
-							  for(ProjectMembersHistory pmh : pmhList){
+					   ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+					   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), projectId);
+				  	 // ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+				  	 if(pmList != null && !pmList.isEmpty()) {
+					   for(ProjectMembers projectMembers: pmList) {
+					  		  String status = Constants.MEMBER_IN_ACTIVE;
+						  	  projectMembers.setTerminateReason(reason);
+							  projectMembers.setUpdatedDate(new Date());
+							  projectMembers.setUpdatedBy(user.getUserCode());
+							  projectMembers.setStatus(status);
+							  projectMembersService.saveProjectMember(projectMembers);
+						  	  
+							  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
+							  int sendEmailCount = 1;
+							  if(pmhList != null && pmhList.size() > 0){
+								  for(ProjectMembersHistory pmh : pmhList){
+									  pmh.setProjectTerminationDate(new Date());
+									  pmh.setUpdatedDate(new Date());
+									  pmh.setUpdatedBy(user.getUserCode());
+									  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+									  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+									  if(sendEmailCount == 1){
+										  terminatedMailToEmployee(user,pmh,orgLocations);
+									  }
+									  
+									  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
+										   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+										      for(ProjectApproverHierarchy pah : mangerList){
+										    	  if(user.getId() != pah.getApproverUserId().getId()){
+										    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+										    	  }
+										      }*/
+										  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
+									  }else{
+										  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+									  }
+									  
+									  sendEmailCount = sendEmailCount+1;
+								  }
+							  }
+							  
+							  
+							 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+							  if(pmh != null){
 								  pmh.setProjectTerminationDate(new Date());
 								  pmh.setUpdatedDate(new Date());
 								  pmh.setUpdatedBy(user.getUserCode());
 								  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
 								  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
-								  if(sendEmailCount == 1){
-									  terminatedMailToEmployee(user,pmh,orgLocations);
-								  }
-								  
-								  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(orgLocations.getId())){
-									   /*List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
-									      for(ProjectApproverHierarchy pah : mangerList){
-									    	  if(user.getId() != pah.getApproverUserId().getId()){
-									    		  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
-									    	  }
-									      }*/
-									  employeeTerminationMailToProjectManager(user,pmh,orgLocations);
-								  }else{
-									  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
-								  }
-								  
-								  sendEmailCount = sendEmailCount+1;
 							  }
-						  }
-						  
-						  
-						 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
-						  if(pmh != null){
-							  pmh.setProjectTerminationDate(new Date());
-							  pmh.setUpdatedDate(new Date());
-							  pmh.setUpdatedBy(user.getUserCode());
-							  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
-							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
-						  }
-						  
-						  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
-					      updatedCount = 1;*/
-					      
-				  	   }
-					   if(null != projectId){
-							Projects projects = projectsService.getProjectById(projectId);
-							if(null != projects){
-								Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
-								ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
-								//Elastic Search Document Saving
-								sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
-							}
-					   }
+							  
+							  commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+						      updatedCount = 1;*/
+						      
+						   if(null != projectId){
+								Projects projects = projectsService.getProjectById(projectId);
+								if(null != projects){
+									Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+									ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+									//Elastic Search Document Saving
+									sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+								}
+						   }
+				  	  }
+				  	 }
 				    } catch (Exception e) {
 				   }
 				return "success";
