@@ -128,7 +128,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                 <div class="col-md-4">
                   <label>Country </label>
                   <div class="clearfix">
-                    <select class="chosen-select" name="country" id="country" field-name="Country">
+                    <select class="chosen-select" name="searchCountry" id="country" field-name="Country">
                           <option value="" selected>---select country---</option>
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}">${cntry.name}</option>
@@ -140,7 +140,7 @@ border:none; background-color: none !important; padding:0 5px !important;
              <div class="col-md-4"> 
 							  <label>State</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								  <select  class="chosen-select" name="searchState" id="state" field-name="State"  >
 								         <option value="">---select state---</option>
 								       <%-- <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
@@ -151,7 +151,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 						  <div class="col-md-4">
 							  <label>City</label>
 							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
+								  <select  class="chosen-select" name="searchCity" id="city" field-name="City"  >
 								      <option value="">---select city---</option>
                                   </select>
 							  </div>
