@@ -6,6 +6,7 @@ package com.bis.sourcelead.immigration.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,8 +92,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		immigrationTemplateTask.setImmigrationTempId(immiTemplate);
 		
 		immigrationTemplateTask.setTaskName(templateDTO.getTaskName());
-		immigrationTemplateTask.setAssignToUsers(templateDTO.getAssignToUsers());
-		immigrationTemplateTask.setAssignToCandidate(templateDTO.getAssignToCandidate());
+		 if(StringUtils.isNotBlank(templateDTO.getPetitionAssignedTo())){
+			 immigrationTemplateTask.setAssignToUsers(templateDTO.getPetitionAssignedTo());
+		 }else{
+			 immigrationTemplateTask.setAssignToCandidate(Constants.YES);
+		 }
+		immigrationTemplateTask.setTaskReminder(templateDTO.getTaskReminder());
 		immigrationTemplateTask.setPriority(templateDTO.getPriority());
 		immigrationTemplateTask.setDueAfterMonths(templateDTO.getDueAfterMonths());
 		immigrationTemplateTask.setDueAfterDays(templateDTO.getDueAfterDays());

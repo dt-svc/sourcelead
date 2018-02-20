@@ -44,8 +44,6 @@ function Immigration(){
 	this.savePetitionDoc = function(status){
 		if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
 		var formData = getFormData("PetitionTemplateDocDetails");
-		formData.id = immTemplId;
-		console.log(formData);
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDocDetails",
 		       type : "POST",
@@ -53,7 +51,6 @@ function Immigration(){
 		       success: function(data) {
 		    	   console.log("inside savePetitionTemplateDocDetails success");
 		    	   if(data == 'success'){
-		    		   immTemplId=jsonObj.id;
 		    		   if(status == 'saveContinue'){
 				    	   $("#addNewPetitionTemplateDiv").empty();
 				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=formDetails");
@@ -70,8 +67,6 @@ function Immigration(){
 	this.savePetitionFormDetails = function(status){
 		if ($('#petitionTemplateFormDetails').validate(false, validationSettings)) {
 		var formData = getFormData("petitionTemplateFormDetails");
-		formData.id = immTemplId;
-		alert("ffff"+status)
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateFormDetails",
 		       type : "POST",
@@ -94,12 +89,13 @@ function Immigration(){
 	}
 	
 	this.savePetitionTemplateTaskDetails= function(){
-		var formData = getFormData("petitionTemplateTaskDetails");
-		formData.id = immTemplId;
+		var formData = getFormData1("petitionTemplateTaskDetails");
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateTaskDetails",
 		       type : "POST",
 		       data: formData,
+		       processData: false,
+			   contentType:false,
 		       success: function(data) {
 		    	   console.log("inside savePetitionTemplateTaskDetails success");
 		    	   $(".popMask").fadeOut(200);

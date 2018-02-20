@@ -14,7 +14,7 @@
 		
 		<div class="addImmiContent clearfix">
 			<div class="immigraTabsHead">
-				<a href="javascript:void(0)" onclick="getAssignToUsersList();" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
+				<a href="javascript:void(0)"  onclick="getAssignToUsersList();" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
 				<span><input class="immigraTabSerach" type="text"></span>
 			</div>	
 			<div class="immigraTable">
@@ -154,6 +154,7 @@
 			<h2>Add Task</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
 		<form id="petitionTemplateTaskDetails" name="petitionTemplateTaskDetails">
+		<input type="hidden" name="id" id="templateId"/>
 		<div class="popupMid popupMidOver clearfix mt">
 			<div class="row clearfix">
 				<div class="col-md-6 noPad">
@@ -187,7 +188,7 @@
 						<label class="paddingRight checkBox"><input id="reminder" name="Reminder" type="checkbox">Reminder</label>
 					  </div>
 					   <div class="mt5" id="reminderdropdown" style="display:none;">
-						<select class="chosen-select" multiple>
+						<select class="chosen-select" name="taskReminder"  multiple>
 						<option>1 days</option><option>1 Week</option><option>15 days</option><option>1 Month</option><option>90 days</option><option>180 days</option>
 						</select>
 					  </div>
@@ -207,13 +208,13 @@
 					      <div class="clearfix">
 						  <label>Assign To<span class="text-danger">*</span></label>
 						  <div class="clearfix">
-							<label class="paddingRight"> <input type="radio" id="assignToCandidate" name="assignTo" checked="checked"> Candidate </label>
-							<label class="paddingLeft"> <input type="radio" id="assignToUsers" name="assignTo" > User </label>
+							<label class="paddingRight"> <input type="radio"  name="assignToType" checked="checked" onclick="validateAssignToType('assingToCandidate');"> Candidate </label>
+							<label class="paddingLeft"> <input type="radio"  name="assignToType"  onclick="validateAssignToType('assingToUser');"> User </label>
 						  </div>
 						  </div>
 						  
-						  <div class="clearfix" id="selectUsertextBox" style="display:none;">
-							<select class="chosen-select" multiple data-placeholder="Select User" id="petitionAssignedTo" name="petitionAssignedTo"  field-name="AssignTo"  data-validation-optional="true">
+						  <div class="clearfix" id="assignToUserDiv" style="display:none;">
+							<select class="chosen-select" multiple data-placeholder="Select User"  id="petitionAssignedTo" name="petitionAssignedTo"  field-name="AssignTo"  data-validation-optional="true">
 							  </select>
 						  </div>
 						  
@@ -355,7 +356,7 @@
         });
     });
     
-    $(function() {
+  /*   $(function() {
         $("#assignToUsers").click(function () {
             if ($(this).is(":checked")) {
             	$("#selectUsertextBox").show();
@@ -374,7 +375,7 @@
             }
         });
     });
-    
+     */
     </script>
     <script>
 function getAssignToUsersList(){
@@ -424,6 +425,21 @@ function validateDueAfter(){
 	  
   }
   </script>
+  <script>
+  function validateAssignToType(assignToType){
+	  if(assignToType == 'assingToUser'){
+		  document.getElementById("assignToUserDiv").style.display="";
+		  $("#petitionAssignedTo").removeAttr('data-validation-optional');
+		  $("#petitionAssignedTo").attr("data-validation", "required");
+		 
+	  }else{
+		  document.getElementById("assignToUserDiv").style.display="none";
+		  $("#petitionAssignedTo").removeAttr('data-validation');
+		  $("#petitionAssignedTo").attr("data-validation-optional", "true");
+		  getAssignToUsersList();
+	  }
+  }
+  </script>
   
   <script>
   function validateTaskNotification(){
@@ -436,3 +452,8 @@ function validateDueAfter(){
 	  
   }
   </script>
+  <script>
+$(document).ready(function(){
+	$("#templateId").val(jsonObj.id);
+});
+</script> 
