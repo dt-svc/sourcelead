@@ -457,14 +457,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
     		params.put("managerUserId",user.getId());
     		
-    		
+    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode";
+    		params.put("usercode",user.getUserCode());
     		
     		String subQuery = "";
     		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
     			if(dateRange != null && "today".equals(dateRange)){
-    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
     			}else if(dateRange != null && "previous".equals(dateRange)){
-    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and rsh.submissionId.requirement IS NOT NULL and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and rsh.submissionId.requirement IS NOT NULL and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
     			}
     			params.put("orgLocationsId",orgLocationsId);
     			params.put("startDate",startUTCDate);
@@ -2554,12 +2555,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
 		    		params.put("managerUserId",user.getId());
 		    		
+		    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode";
+		    		params.put("usercode",user.getUserCode());
+		    		
 		    		String subQuery = "";
 		    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
 		    			if(dateRange != null && "today".equals(dateRange)){
-		    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+		    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
 		    			}else if(dateRange != null && "previous".equals(dateRange)){
-		    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+		    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") or ("+subQuery4+") ) ";
 		    			}
 		    			params.put("orgLocationsId",orgLocationsId);
 		    			params.put("startDate",startUTCDate);
@@ -2979,5 +2983,23 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.sourceSubmission.id IN (:submissionIds)";
 			List<RequirementSubmission>  subList = session.createQuery(query).setParameterList("submissionIds", submissionIds).list();
 		    return subList;
+		}
+
+		@Override
+		@Transactional
+		public RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(
+				Long requirementId, Long candidateId) throws Exception {
+			
+
+			 Session session = this.sessionFactory.getCurrentSession();
+		     String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.vendorCandidateId "
+		     		+ "where rs.requirement.id = :requirementId and rs.vendorCandidateId.id =:candidateId ";
+		     List<RequirementSubmission> submissionList = session.createQuery(query).setLong( "requirementId", requirementId).setLong( "candidateId", candidateId).list();
+		   
+		     if(submissionList != null && submissionList.size() >0){
+					return submissionList.get(0);
+				}
+		  return null;
+	
 		}
 }
