@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,8 +26,10 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimeSheetDayEntriesHistory;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
@@ -293,7 +296,21 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		return response;
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId,Date timesheetDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlDate = new java.sql.Date(timesheetDate.getTime());
+		String query = "from TimeSheetDayEntries timeDayEntry  left join fetch timeDayEntry.timesheetSubmissions timeSubmissions where timeDayEntry.timesheetDate = :timeDate and timeSubmissions.projects.id = :projectId and timeSubmissions.masterCandidateId.id = :masterCandidateId  ";
+		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setParameter("timeDate", sqlDate).list();
+		Float totalHours = 0.0F;
+	    if(tdeList != null && !tdeList.isEmpty()){
+		   for(TimeSheetDayEntries tde :tdeList) {
+			   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+		   }
+	   }
+		return totalHours;
+	}
 
 	
 

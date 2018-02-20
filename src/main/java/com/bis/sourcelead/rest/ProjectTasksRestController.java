@@ -13,9 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +54,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesService;
@@ -72,6 +72,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -150,6 +151,9 @@ public class ProjectTasksRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	/**
 	 * @author David sammeta
@@ -1348,6 +1352,29 @@ public class ProjectTasksRestController {
 		
 		return timesheetreport;
 		
+	}
+	
+	@RequestMapping(value = "/calculateTotalTaskHoursForADay", method = RequestMethod.POST)
+	public String calculateTotalTaskHoursForADay(@RequestParam(value = "timeDate", required = false) String timeDate,
+			@RequestParam(value = "projectMember", required = false) Long projectMember,
+			@RequestParam(value = "timesheetHour", required = false) String timesheetHour,HttpServletRequest request) throws Exception {
+			String falg = "false";
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    ProjectMembers proMember =projectMembersService.getProjectMemberById(projectMember);
+		    if(timeDate != null && StringUtils.isNotBlank(timeDate)) {
+			    if(proMember != null && proMember.getProjects() != null && proMember.getMasterCandidateId().getId()!= null) {
+			    	Float totalHours = timeSheetDayEntriesService.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate));
+			    	 totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")), totalHours);
+					if(totalHours!= null &&  totalHours > 24) {
+			    		falg =  "false";
+			    	}else {
+			    		falg =  "true";
+			    	}	
+			    }
+		    }else {
+		    	falg =  "noDate";
+		    }
+			return falg;
 	}
 	
 	

@@ -785,6 +785,10 @@ $(document).ready(function() {
         function closeTimeEntryTasks(){
             $(".modal-Time").fadeOut();
             $('#time_entry_form').find('p.jquery_form_error_message').remove();
+            $('#timesheetDate').val('');
+        	$('#timesheetComments').val('');
+        	$('#timesheetHours').val('00:00');
+        	$('#savetask').removeAttr('disabled','disabled');
         }
         </script>
         

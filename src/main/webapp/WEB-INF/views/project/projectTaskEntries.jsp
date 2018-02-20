@@ -70,13 +70,13 @@
 					          <div class="col-md-2">
 					            <div class="row">
 					              <div class="col-md-12" id="projectTaskErrorMsgDiv">
-					                <input type="text" data-validation="required" class="form-control input-sm timeicon editMe" field-name="Hours" name="hours" onblur="editMe(this);" id= "timesheetHours"  placeholder="HH:MM">
+					                <input type="text" data-validation="required" class="form-control input-sm timeicon editMe" field-name="Hours" name="hours" onblur="editMe(this);getTaskEntriesBydate();" id= "timesheetHours"  placeholder="HH:MM">
 					              </div>
 					            </div>
 					          </div>
 					          <div class="clearfix mb"></div>
 					          <div class="col-md-12 mb10">
-					                <textarea class="form-control" rows="2" id="entryComment" name="comments" field-name="Comments" data-validation-optional="true" placeholder="Comments"></textarea>
+					                <textarea class="form-control" id="timesheetComments" rows="2" id="entryComment" name="comments" field-name="Comments" data-validation-optional="true" placeholder="Comments"></textarea>
 					          </div>
 					        </div>
 					      <div class="modalFooter mt5">
@@ -153,6 +153,33 @@ function saveTaskDetails(){
 			return false;
 	 }   
 }
+</script>
+
+<script>
+	function getTaskEntriesBydate(){
+		var projectMember = '${projectmember.id}';
+		var timesheetHour =  $('#timesheetHours').val();
+		var timeDate =  $('#timesheetDate').val();
+		$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
+		$.ajax({
+			 type : "POST",
+			 	 url : sourceleadUrl+"/ProjectTasks/calculateTotalTaskHoursForADay?&timeDate="+timeDate+"&projectMember="+projectMember+"&timesheetHour="+timesheetHour,
+			  		success : function(data) {
+			  			if(data == "false"){   
+			  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Day hours should not be more than 24</p>");
+			  				$('#savetask').attr('disabled','disabled');
+			  			 }else if("noDate"){
+			  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Please Select Date.</p>");
+			  				$('#savetask').attr('disabled','disabled');
+			  			}else if("true"){
+			  				$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
+			  			    $('#savetask').removeAttr('disabled','disabled');
+			  			}
+			  			
+			},
+		});	
+	}
+
 </script>
 
 <script>
@@ -420,27 +447,6 @@ function checkHours(){
 	    		result = result+"Day";
 	 	}
   }
-	    if(result != "" && result != null && result != 'undefined'){   
-			var outPut = "<p>"+result+" hours should not be more than 24<b onclick='flushTimeValue();'>X</b></p>";
-			$("#projectTaskErrorMsg").removeAttr('style');
-			$("#projectTaskErrorMsg").attr('style','display:block;');
-			$("#projectTaskErrorMsg").empty();
-			$("#projectTaskErrorMsg").append(outPut);
-			$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Day hours should not be more than 24</p>");
-			$('#savetask').attr('disabled','disabled');
-		 }else{
-		    $("#projectTaskErrorMsg").removeAttr('style');
-		    $("#projectTaskErrorMsg").attr('style','display:none;');
-			$("#projectTaskErrorMsg").empty();
-			$("#hideError").empty();
-		} 
-		
-		$(".time_pop b").click(function(){
-			$("#projectTaskErrorMsg").removeAttr('style');
-			$("#projectTaskErrorMsg").attr('style','display:none;');
-		    $("#projectTaskErrorMsg").empty();
-		}); 
-	
 }
 
 </script>

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 
 @Service
@@ -58,6 +59,11 @@ public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesServic
 	public ResponseList<TimeSheetDayEntries> getTimesheetDayEntriesByTaskUUIDAndUserId(String taskUUID, Long userId,
 			Long locationId, int start, int length, String searchValue) throws Exception {
 		return timeSheetDayEntriesDao.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID, userId, locationId, start, length, searchValue);
+	}
+
+	@Override
+	public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId, Long masterCandidateId,Date timesheetDate) {
+		return timeSheetDayEntriesDao.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(projectId,masterCandidateId,timesheetDate);
 	}
 
 }
