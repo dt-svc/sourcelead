@@ -40,6 +40,7 @@ $(document).ready(function() {
 			getNoticePeriodList();
 			getJobLocations();
 			var jobType = '${requirement.jobType}';
+		
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
 				  $("#jobOtherType").attr("data-validation-optional", "true");
@@ -1902,6 +1903,7 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
+			    	 $('#jobType').attr('readonly', true);
 			    	$("#experienceLevel").val(json.experienceLevel);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
@@ -1913,6 +1915,8 @@ function setTemplateValues(){
 			    	$("#projectId").trigger("chosen:updated");
 			    	
 			    	$("#jobOtherType").val(json.otherJobType);
+			    	
+					
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);
@@ -2011,12 +2015,22 @@ function setTemplateValues(){
 			    		var result = "";
 			    		result = result + '<label class="col-md-3">Gender</label>';
 			    		result = result + '<div class="col-md-9">';
-			    		if(json.gender == "Y"){
-			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="gender"><span class="mr5"></span>Yes</span>';
-				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="gender"><span class="mr5"></span>No</span>';
-			    		}else {
-			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="gender"><span class="mr5"></span>Yes</span>';
-				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		if(json.gender == "Male"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>';
+			    		    result = result + '<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>';
+			    		}
+			    		else if(json.gender == "Female")
+			    			{
+			    			result = result + '<span class="paddingRight"><input type="radio" value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>';
+			    		    result = result + '<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>';
+			    			
+			    			}
+			    		else {
+			    			result = result + '<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>';
+				    		 result = result + '<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>';
 			    		}
 			    		result = result + '<div>';
 			    		$("#genderDivId").empty();
@@ -2035,6 +2049,23 @@ function setTemplateValues(){
 						  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 						  $("#jobOtherType").val('');
 					}
+			    	
+			    	  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
+			    			
+							 document.getElementById("projectDurationYearsDiv").style.display="block";
+							 document.getElementById("projectDurationMonthsDiv").style.display="block";
+							 $("#projectDurationYears").val(json.projectDurationYears);
+							 $("#projectDurationMonths").val(json.projectDurationMonths);
+							 $('#projectDurationYears').attr('readonly', true);
+							 $('#projectDurationMonths').attr('readonly', true);
+						
+							 
+						  
+						}else{
+							document.getElementById("projectDurationYearsDiv").style.display="none";
+							document.getElementById("projectDurationMonthsDiv").style.display="none";
+							
+						}
 			    	
 			    	var country = '';
 					 var state = '';
@@ -2069,7 +2100,7 @@ function setTemplateValues(){
 					$('#education').val('').trigger('chosen:updated');
 					$('#skills').val('').trigger('chosen:updated');
 					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
-						var skills = [];
+					var skills = [];
 			            skills = json.skills.split(",");
 			            $("#skills").val(skills);
 			            $('#skills').trigger("chosen:updated");
@@ -2662,11 +2693,14 @@ function checkTemplateforDouplicate(){
 <script>
 function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
+
+	
 	if(jobType.value == 'Other'){
 		 document.getElementById("jobTypeDiv").style.display="block";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
-	}else{
+	}
+	else{
 		document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
