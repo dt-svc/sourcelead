@@ -602,6 +602,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setEmail(userImport.getEmailId());
 			user.setMobilePhone(userImport.getMobileNumber());
 			user.setExtensionNumber(userImport.getExtensionNumber());
+			user.setEmploymentType(userImport.getEmploymentType());
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
@@ -706,6 +707,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
+				candidate.setDesignationType(userImport.getEmploymentType());
 				candidate.setStatus(Constants.RECORD_ACTIVE);
 				candidate.setCreatedBy(user.getUserCode());
 				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -1009,10 +1011,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				return false;
 			}
 			
-			/*if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
-				userImport.setReason("Manager is Required");
-				return false;
-			}*/
 			
 			if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
 				userImport.setReason("Manager is Required");
@@ -1096,20 +1094,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
-			/*if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
-				userImport.setReason("Required fields is not filled");
-				return false;
-			}*/
-				/*if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-					String dayHours = getCellValueAsString(row.getCell(9), fileName);
-					if (dayHours != null && !"".endsWith(dayHours)) {
-						isValidated = isDayHourValid(dayHours);
-						if (isValidated == false) {
-							userImport.setReason("Invalid Day Hours");
-							return isValidated;
-						}
-					}
-				}*/
+			
 		}
 		return true;
 	}
