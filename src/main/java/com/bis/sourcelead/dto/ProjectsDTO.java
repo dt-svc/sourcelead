@@ -57,7 +57,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private Integer estimatedBudget;
 	
-	private Integer flatPercentage;
+	private String flatPercentage;
 	
 	private String staticPath;
 	
@@ -837,11 +837,11 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.estimatedBudget = estimatedBudget;
 	}
 
-	public Integer getFlatPercentage() {
+	public String getFlatPercentage() {
 		return flatPercentage;
 	}
 
-	public void setFlatPercentage(Integer flatPercentage) {
+	public void setFlatPercentage(String flatPercentage) {
 		this.flatPercentage = flatPercentage;
 	}
 }

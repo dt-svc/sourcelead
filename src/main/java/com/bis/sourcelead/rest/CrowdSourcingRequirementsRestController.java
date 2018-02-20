@@ -324,8 +324,12 @@ public class CrowdSourcingRequirementsRestController {
 		 					boolean flag = userId.contains(user.getId());
 		 					if(flag == true && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 		 						requirementIndex.setIsJobApplied(Constants.YES);
-		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-		 		 	    		   if(null != submission){
+		 						RequirementSubmission submission = null;
+		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 }
+		 						 if(null != submission){
 		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 		 		 	    		   }
 		 					}else{
@@ -339,8 +343,13 @@ public class CrowdSourcingRequirementsRestController {
 	 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
 	 	    		  if(!isNullOrEmpty(loginUserRole)){
 	 		    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
-	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	 		 	    		   if(null != submission){
+	 		    			 RequirementSubmission submission = null;
+	 		    			 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	 		    			 if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 }
+	 		    			 
+	 		    			 if(null != submission){
 	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),submission.getCreatedDate()));
 	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
@@ -433,8 +442,12 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
-    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	  		 		 	    		   if(null != submission){
+    		 						RequirementSubmission submission = null;
+    		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+    		 						 if(submission == null) {
+    			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+    			 		 	    		 } 
+    		 						 if(null != submission){
 	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	  		 		 	    		   }
     		 					}else{
@@ -543,8 +556,14 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
-    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	  		 		 	    		   if(null != submission){
+    		 						RequirementSubmission submission = null;
+    		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	  		 		 	    		   
+    		 						 if(submission == null) {
+ 			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+ 			 		 	    		 } 
+    		 						 
+    		 						 if(null != submission){
 	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	  		 		 	    		   }
     		 					}else{
@@ -821,8 +840,14 @@ public class CrowdSourcingRequirementsRestController {
 				 					boolean flag = userId.contains(user.getId());
 				 					if(flag == true){
 				 						requirementIndex.setIsJobApplied(Constants.YES);
-				 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-			 		 	    		     if(null != submission){
+				 						RequirementSubmission submission = null;
+				 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 		 	    		    
+				 						 if(submission == null) {
+		 			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 			 		 	    		 } 
+				 						 
+				 						 if(null != submission){
 			 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 			 		 	    		     }
 				 					}else{
@@ -834,7 +859,12 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	   }
 			 	    	    
 			 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
-			 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 	    		  RequirementSubmission submission = null;
+			 	    		   submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 	    		  
+			 	    		  if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 } 
 			 	    		   if(null != submission){
 			 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.elkDateFormatter(submission.getCreatedDate()));
 			 	    		   }
@@ -2005,8 +2035,12 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementRate(rr.getRequirementId().getRate());
 						rr.setRequirementRateType(rr.getRequirementId().getRateType());
 						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						RequirementSubmission rs = null;
+						rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
 						
-						RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
+						if(rs == null) {
+							rs = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(), candidateId);
+ 		 	    		 } 
 						if(null != rs){
 							rr.setSubmissionStatus(rs.getSubmissionStatus().toString());	
 						}
