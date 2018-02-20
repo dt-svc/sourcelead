@@ -7,7 +7,7 @@
   	<h2 class="text-center">Vendor Management System</h2>
   	<div class="clearfix mt mb"><img src="/resources/static-web/images/vmsicons.png" alt="img"></div>
   	<p>
-  		We at Sourcelead identify your business need and help recruitment firms design integrated business model. Analyze the requirement, Increase your revenues, and expand your business horizons with Sourcelead VMS solution.
+  		We at Sourcelead identify your business need and help recruitment firms design integrated business model. Analyze the requirement,<br>Increase your revenues, and expand your business horizons with Sourcelead VMS solution.
   	</p>
   		</div>
   </div>
@@ -62,7 +62,7 @@
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-automation.png" alt="Image" class="animated bounceIn">
 	</div>
-		<h4>Integrate and Automat</h4>
+		<h4>Integrate and Automate</h4>
 		<ul class="list-styles">
 		<li>Customized data integration options</li>
 		<li>Automated tracking and status updates for the VMS requests</li>
@@ -125,7 +125,7 @@
 			<li>The multi-tier MSP model enables you to streamline the contingent  human capital management </li>
 			<li>Monitors the multiple application features  using a single console</li>
 			<li>Reduces time invested on mundane operational tasks </li>
-			<li>Helps divert the available time and resources for new business possibilities.</li>
+			<li>Helps divert the available time and resources for new business possibilities</li>
 		</ul>
 	</div>
 </div>
@@ -145,3 +145,9 @@
   </div>
 </section>
 <!-- Benefits of sourcelead  --><jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#featuresID").addClass("slactive");
+	$("#vmsID").addClass("slactive");
+}
+</script>

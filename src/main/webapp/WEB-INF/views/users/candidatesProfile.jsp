@@ -430,6 +430,7 @@ function editCandidate(candidateId){
 							result = result + ' <option '+(json.designationType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
 							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
 							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+							result = result + '<option  '+(json.designationType == "Offshore C2C" ? "selected" : '') +'>Offshore C2C</option>';
 							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
 							result = result + ' </select>';
 							result = result + '</div>';
@@ -483,7 +484,7 @@ function editCandidate(candidateId){
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
 							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','','address');
-							zipcodeMask(json.country,'cpZipCode');
+							//zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							
 							if(json.designationType == "Other"){
@@ -1599,7 +1600,7 @@ var currentRate = document.getElementById("currentRate").value;
 function employementType(){
 	 var employementType = $('#designationType1').val(); 
 	 var preval = document.getElementById("hiddenId").value;
-		if(employementType == 'C2C'){
+		if(employementType == 'C2C' || employementType == 'Offshore C2C'){
 			/* document.getElementById("hideVendor").style.display="block";
 			 $('#vendorName').attr("data-validation","required"); 
 			 $('#vendorcontactName').attr("data-validation","required"); 

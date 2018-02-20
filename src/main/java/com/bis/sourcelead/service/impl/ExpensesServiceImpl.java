@@ -244,6 +244,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder edDate=new StringBuilder();
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
+		            StringBuilder statusStringBuilder = new StringBuilder();
 		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
@@ -270,6 +271,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
 			        	}
+			      
 			        if(expenses.getTotalAmount() != 0){
 			        	StringBuilder str = new StringBuilder();
 			        	BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
@@ -278,6 +280,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));	
 			        	}
+			        if(null != expenses.getExpenseStatus()){
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append(expenses.getExpenseStatus()).toString()));
+			        }else {
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append("--").toString()));	
+			        }
 			       }else if(approverType.equalsIgnoreCase("APPROVER")){
 			    	   StringBuilder expenseId=new StringBuilder();
 			    	   	StringBuilder nameBuilder=new StringBuilder();
@@ -1266,6 +1273,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Override
 	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception {
 		return expensesDao.getAllExpensesByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long OrglocationId,Date startDate, Date endDate) throws Exception {
+		return expensesDao.getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(projectId, OrglocationId,startDate,endDate);
 	}
 	
 }

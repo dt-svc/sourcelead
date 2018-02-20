@@ -4,7 +4,7 @@ function campaignSender(ele,senderId, fromType) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
 		$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
-			$(".popUpOut").fadeIn(100);
+			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
 			// save sender details
 			 $("#saveCampaignSender").click(function () {
@@ -12,18 +12,19 @@ function campaignSender(ele,senderId, fromType) {
 				 if ($('#capn_add_sender').validate(false, validationSettings)) {
 					  /*	var formData = $($('#capn_add_sender')[0]).serialize();*/
 					 var formData = getFormData('capn_add_sender');
-						$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						$("#senderLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == true){
 								senderClose();
 								if(fromType == "hotList" || fromType == "jobList"){
 					            	$(".popMask").fadeOut(200);
-				            		$(".popUpOut").fadeOut(100);
+				            		$("#campaignSender").fadeOut(100);
 					             }else{
 					            	 getSendersList("success");
 //								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
 					             }
 					  			 $("#popUp").empty();
+//					  			$("#senderLoading").removeAttr("style");
 					 			 $(".project_inn_mask").fadeOut(200);
 					             	
 							}
@@ -56,7 +57,7 @@ $('body').on('blur', '#capn_add_sender', function() {
 
 function senderClose() {
 	$(".popMask").fadeOut(200);
-	$(".popUpOut").fadeOut(100);
+	$("#campaignSender").fadeOut(100);
 };
 
 

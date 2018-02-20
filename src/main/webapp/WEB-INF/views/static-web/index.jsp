@@ -1,4 +1,12 @@
   <!--   HTML   -->	  
+  <%
+    if (request.getRequestURL().toString().indexOf("www.") == -1 
+            && request.getRequestURL().toString().indexOf("localhost") == -1
+            && request.getRequestURL().toString().indexOf("qa.") == -1
+            && request.getRequestURL().toString().indexOf("staging.") == -1
+            && request.getRequestURL().toString().indexOf("demo.") == -1) {
+        response.sendRedirect("https://www.sourcelead.com/login");
+    } %>
 <jsp:include page="../staticHeader.jsp" /> 
 <div class="homeBanner">
 <div class="home-caption">
@@ -117,7 +125,7 @@
 			<div class="col-md-6">
 			<div class="aboutinner-content animated bounceIn">
 				<h2>SourceLead is</h2>
-				<p>a <span>SaaS</span> based integrated software, which uses the most powerful and<br>cutting edge <span>Artificial Intelligence</span> for efficient sourcing.<br>Our next level technology enables you to easily manage, search, and track all applicants from Requisition to On Boarding. All it takes is a click to nail the best talent effectively.</p>
+				<p>a <span>SaaS</span> based end to end talent management solution, <br> which uses the most powerful and cutting edge <span>Artificial Intelligence</span><br>for efficient sourcing. Our next level technology enables you to easily manage, <br>search, and track all applicants from Requisition to On Boarding.<br>All it takes is a click to nail the best talent effectively.</p>
 				 <a href="/about-us.html" class="btn btn-primary mt">Read More</a>
 			</div>
 			</div>
@@ -304,4 +312,9 @@
   </div>
 </section>
 <!-- Benefits of sourcelead  -->
-<jsp:include page="../staticFooter.jsp" /> 
+<jsp:include page="../staticFooter.jsp" />
+<script type="text/javascript">
+window.onload = function() {
+	$("#indexpageID").addClass("slactive");
+}
+</script>

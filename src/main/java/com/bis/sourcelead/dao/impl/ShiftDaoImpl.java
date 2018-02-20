@@ -53,8 +53,8 @@ public class ShiftDaoImpl implements ShiftDao {
 	public Shift getShiftById(String shiftId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Shift shift where shift.id=:shiftId";
-		List<Shift> shiftList = session.createQuery(query).setString("shiftId", shiftId).list();
+		String query = "from Shift shift where shift.shiftUUID=:shiftUUID";
+		List<Shift> shiftList = session.createQuery(query).setString("shiftUUID", shiftId).list();
 		if(shiftList != null && shiftList.size()>0){
 			return shiftList.get(0);
 		}else{

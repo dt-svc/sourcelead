@@ -244,7 +244,7 @@ function jpagination(url,sourceleadUrl){
 		 },{
 	   	  	"targets": colIndex++,
 		  	"data": "generatedId",
-		  	"sortable": false,
+		  	"sortable": true,
 		  	"render": function(data, type, opt, meta) {
 		  		 var result = "";
 		  		 result = result +"<td>";
@@ -335,7 +335,7 @@ function jpagination(url,sourceleadUrl){
 			   		        result = result +'<div class="show_Empdetails showjoblist">';
 		   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 	
-		   		        	result = result +'<div class="emailvalues">';
+		   		        	result = result +'<div class="emailvalues emailvaluesNew">';
 		   		        	
  							for(var k=0; k<opt.locationsList.length; k++){
  								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';

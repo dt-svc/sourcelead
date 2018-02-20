@@ -26,6 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +88,7 @@ import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 /**
  * Handles contract related functionalities
@@ -182,23 +187,33 @@ public class ContractRestController {
 	{
 		//ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));	
 		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(id);	
-		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
-		String totalBody = header + contractsTemplate.getTemplateContent();
-    	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-  	    Document document = new Document();
-  	    PdfWriter.getInstance(document, byteArray);
-  	    document.open();
-  	    HTMLWorker htmlWorker = new HTMLWorker(document);
-  	    htmlWorker.parse(new StringReader(totalBody));
-  	    document.close();
-  	    byte[] pdfBytes = byteArray.toByteArray();
-  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-  	    response.setContentType("application/pdf");
-  	    response.setContentLength(pdfBytes.length);
-          ServletOutputStream sos = response.getOutputStream();
-          sos.write(pdfBytes);
-          sos.flush();
-          sos.close();
+		
+		try {
+			String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
+			String totalBody =header+ contractsTemplate.getTemplateContent();
+		     org.jsoup.nodes.Document doc = Jsoup.parse(totalBody);
+		     doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);    
+	         String finalString=doc.html();
+		    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		   
+		    Document document = new Document();
+		    PdfWriter writer = PdfWriter.getInstance(document, byteArray);
+		    document.open();
+		    XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(finalString));
+		    document.close();
+		    byte[] pdfBytes = byteArray.toByteArray();
+	  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    response.setContentLength(pdfBytes.length);
+	          ServletOutputStream sos = response.getOutputStream();
+	          sos.write(pdfBytes);
+	          sos.flush();
+	          sos.close();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+		
+    	
 	}
 	
 	@RequestMapping(value = "/viewContractPdf/{uuid}/{templateName}", method = RequestMethod.GET)
@@ -502,11 +517,11 @@ public class ContractRestController {
 		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), sowType);
 		if(requirementList.size() > 0){
 			for(Requirement requirement : requirementList){
-				if(null != requirement.getSpocId() && (requirement.getSpocId().getClientUser().getFirstName() != null && requirement.getSpocId().getClientUser().getFirstName() != "" && requirement.getSpocId().getClientUser().getLastName() != null && requirement.getSpocId().getClientUser().getLastName() != "" )){
+				if(null != requirement.getSpocId() && (requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getFirstName() != "" && requirement.getManagerUserId().getLastName() != null && requirement.getManagerUserId().getLastName() != "" )){
 					StringBuilder spocSB = new StringBuilder();
-					requirement.setSpocName(spocSB.append(" (").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).append(")").toString());
+					requirement.setSpocName(spocSB.append(" (").append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).append(")").toString());
 				}else if(null != requirement.getSpocId()){
-					requirement.setSpocName(" ("+requirement.getSpocId().getClientUser().getFirstName()+")");
+					requirement.setSpocName(" ("+requirement.getManagerUserId().getFirstName()+")");
 				}else{
 					requirement.setSpocName("");
 				}

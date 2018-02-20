@@ -127,7 +127,7 @@ function getFormData(formId) {
 	$.map(unindexed_array, function (n, i) {
 		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
 			indexed_array[n['name']] = n['value'].trim().replace(/  +/g,' ');
-		else
+		else if(n['name'])
 			indexed_array[n['name']] = n['value'];
 	});
 	return indexed_array;
@@ -140,7 +140,7 @@ function getFormData1(formId) {
 	$.map(unindexed_array, function (n, i) {
 		if(($("[name="+n[name]+"]").attr('type') && $("[name="+n[name]+"]").attr('type').toLowerCase() === "text") || $("[name="+n[name]+"]").is("textarea"))
 			formData.append(n['name'], n['value'].trim().replace(/  +/g,' '));
-		else
+		else if(n['name'])
 			formData.append(n['name'], n['value']);
 	});
 	return formData;
@@ -321,7 +321,7 @@ function saveUserProfileImage(formId,data){
                 success: function(result) {
                     if(result)
                         $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                      location.replace(sourceleadUrl+"/orgSettings");  
+                    location.reload();
                   },  
               });
         }
@@ -464,9 +464,9 @@ var reqListDate = '';
 function removeEmptyLines(ele) { //removeEmptyLines($(".."))
 	if($(ele).is(":visible")) {
 		$(ele).val($(ele).val().trim().replace(/  +/g,' ').replace(/(^(\r\n|\n|\r))/gm, ''));
-		if($(ele).val().endsWith("\n")) {
+		if($(ele).val().match("\n")) {
 			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\n")));
-		} else if($(ele).val().endsWith("\r")) {
+		} else if($(ele).val().match("\r")) {
 			$(ele).val($(ele).val().substring(0, $(ele).val().lastIndexOf("\r")));
 		}
 	}
