@@ -91,6 +91,13 @@ function Immigration(){
 	}
 	
 	this.savePetitionTemplateTaskDetails= function(){
+		var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+		
 		if ($('#petitionTemplateTaskDetails').validate(false, validationSettings)) {
 		var formData = getFormData1("petitionTemplateTaskDetails");
 		$.ajax({
@@ -115,4 +122,9 @@ function Immigration(){
 			return false;
 		}
 	}
+	$('body').on('blur', '#petitionTemplateTaskDetails', function() {
+	$("#petitionTemplateTaskDetails").showHelpOnFocus();
+	$("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);  
+});
+
 }
