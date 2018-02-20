@@ -15,7 +15,7 @@
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix" id="templateFormDivStatic">
 				<div class="col-md-12 clearfix noPad mt">
-				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required" placeholder="Form name" /></div>
+				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
 				  <div class="col-md-3">
 				   <input type="hidden" name="id" id="templateId"/>
 					<div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
@@ -27,7 +27,7 @@
 					  </div>				  	
 				  </div>
 				  <div class="col-md-5 noPad">
-						<input type="text" class="form-control" name="immigrationFormList[0].formDescription" id="formDescription0" placeholder="Description" />
+						<input type="text" class="form-control" name="immigrationFormList[0].formDescription" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
 				  </div>
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-6 noPad">
@@ -88,7 +88,7 @@ function uploadFormDocs(id){
 	   var result = "";
 		result = result+ "<div id='dynamicFormRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
 		result = result+ "<div class='col-md-2 padding_right'>";
-		result = result+ "<input type='text' id= 'formName"+rowId+"' name = 'immigrationFormList["+rowId+"].formName' class='form-control' field-name='Form Name' placeholder='Form name' data-validation = 'required' />";
+		result = result+ "<input type='text' id= 'formName"+rowId+"' name = 'immigrationFormList["+rowId+"].formName' class='form-control' field-name='Form Name' placeholder='Form name' data-validation = 'required validate_length length2-100' />";
 		result = result+ "</div>";
 		
 		result = result+ "<div class='col-md-3'>";
@@ -100,7 +100,7 @@ function uploadFormDocs(id){
 		result = result+ "</div>";		
 	  	result = result+ "</div>";		
 		result = result+ "<div class='col-md-5 noPad'>";
-		result = result+ "<input type='text' title='Description' name='immigrationFormList["+rowId+"].formDescription' id='formDescription"+rowId+"' class='form-control' placeholder='Description' /></div>";
+		result = result+ "<input type='text' title='Description' name='immigrationFormList["+rowId+"].formDescription' id='formDescription"+rowId+"' class='form-control' placeholder='Description' data-validation = 'validate_length length2-500' data-validation-optional='true' /></div>";
 		result = result+ "<div class='col-md-2 clearfix'>";
 		result = result+ "<label class='switch mt5 text-center'>";
 		result = result+ "<input checked title='Is Required' onclick='checkIsReqDoc("+rowId+")' value='Y' id='requiredCheck"+rowId+"' name='immigrationFormList["+rowId+"].isRequired' type='checkbox'>";

@@ -160,7 +160,7 @@
 				<div class="col-md-6 noPad">
 					<div class="col-md-12 mb10">
 					  <label>Subject<span class="text-danger">*</span></label>
-					  <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" >
+					  <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_length length2-100">
 					</div>
 					<div class="col-md-12 mb10">
 					  <label>Priority</label>
@@ -229,7 +229,7 @@
 							   <div class="col-md-6 paddingRight">
 								<label>Months</label> <br>
 									<div class="select-field">
-										<select id="dueAfterMonths" name="dueAfterMonths" class="form-control input-sm">
+										<select id="dueAfterMonths" name="dueAfterMonths" field-name= "Months" class="form-control input-sm" data-validation = "required">
 											<option selected="" value="">--Select Month--</option>
 												<option>1</option>
 												<option>2</option>
@@ -250,7 +250,7 @@
 							<div class="col-md-6 paddingLeft">
 							<label>Days</label>
 								<div class="select-field">
-									<select id="dueAfterDays" name="dueAfterDays" class="form-control input-sm">
+									<select id="dueAfterDays" name="dueAfterDays" class="form-control input-sm" field-name = "Days" data-validation = "required">
 										<option selected="" value="">--Select Days--</option>
 										<option>1</option>
 										<option>2</option>
@@ -293,7 +293,7 @@
 					  
 					<div class="col-md-12 clearfix mb10">
 					  <label>Description</label>
-					  <textarea id="taskDescription" name="taskDescription" rows="2" placeholder="Description" class="form-control valid"></textarea>
+					  <textarea id="taskDescription" name="taskDescription" rows="2" placeholder="Description" class="form-control valid" field-name= "Description" data-validation = "validate_length length2-500" data-validation-optional = "true"></textarea>
 					</div>	
 																			
 				</div>				

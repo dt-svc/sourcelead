@@ -91,6 +91,7 @@ function Immigration(){
 	}
 	
 	this.savePetitionTemplateTaskDetails= function(){
+		if ($('#petitionTemplateTaskDetails').validate(false, validationSettings)) {
 		var formData = getFormData1("petitionTemplateTaskDetails");
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateTaskDetails",
@@ -109,5 +110,9 @@ function Immigration(){
 		    	   }
 		       }
 		});
+		return true;
+		} else {
+			return false;
+		}
 	}
 }
