@@ -17,7 +17,7 @@
 				<div class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required" placeholder="Form name" /></div>
 				  <div class="col-md-3">
-					<div class="input-group col-md-12" style="margin:0 auto">
+					<div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
 						<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 						  <input style="display: none;" onchange="uploadBtnFile(0);"  id="uploadBtn0"  class="upload" type="file">
 						  </span></label>
@@ -49,9 +49,9 @@
      </form>
 		<div class="addImmiFoot">
 			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('templateDocs')" class="pull-left">Prev</a>
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('four')" class="ml10">Next</a>
-			<a href="javascript:void(0)" onclick="immigration.savePetitionFormDetailsAndContinue()" class="nextBtn">Save &amp; Continue</a>
-			<a href="javascript:void(0)">Reset</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionFormDetails('saveContinue')" class="nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionFormDetails('save')" class="nextBtn">Save</a>
+			<a href="javascript:void(0)" onclick="immigration.resetFormData('petitionTemplateFormDetails')">Reset</a>
 			<div class="clearfix"></div>
 		</div>   
    </div>
@@ -81,7 +81,7 @@ function uploadFormDocs(id){
 		result = result+ "</div>";
 		
 		result = result+ "<div class='col-md-3'>";
-		result = result+ " <div class='input-group col-md-12' style='margin:0 auto'>";
+		result = result+ " <div class='input-group col-md-12 errorInptgroup' style='margin:0 auto'>";
 		result = result+ " <label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadFormDocs("+rowId+");'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
 		result = result+ " <input style='display: none;' multiple onchange='uploadBtnFile("+rowId+");' id='uploadBtn"+rowId+"' class='upload' type='file'>";
 		result = result+ " </span></label>";

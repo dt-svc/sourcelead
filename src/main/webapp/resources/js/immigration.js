@@ -67,22 +67,23 @@ function Immigration(){
 		}
 	}
 	
-	this.savePetitionFormDetailsAndContinue = function(){
+	this.savePetitionFormDetails = function(status){
 		if ($('#petitionTemplateFormDetails').validate(false, validationSettings)) {
 		var formData = getFormData("petitionTemplateFormDetails");
 		formData.id = immTemplId;
+		alert("ffff"+status)
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateFormDetails",
 		       type : "POST",
 		       data: formData,
-		       /*processData: false,
-			   contentType:false, */
 		       success: function(data) {
 		    	   console.log("inside savePetitionTemplateFormDetails success");
 		    	   if(data == 'success'){
+		    		   if(status == 'saveContinue'){
 			    	   $("#addNewPetitionTemplateDiv").empty();
 			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=taskList");
 		    	   }
+		    	 }
 		       }
 		});
 		
