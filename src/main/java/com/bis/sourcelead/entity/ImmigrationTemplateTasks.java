@@ -63,6 +63,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "TASK_REPEAT")
    	private String taskRepeat;
 	
+	@Column(name = "TASK_REMINDER")
+   	private String taskReminder;
+	
 	@Column(name = "TASK_EMAIL")
    	private String taskEmail;
 	
@@ -176,6 +179,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setTaskRepeat(String taskRepeat) {
 		this.taskRepeat = taskRepeat;
+	}
+
+	public String getTaskReminder() {
+		return taskReminder;
+	}
+
+	public void setTaskReminder(String taskReminder) {
+		this.taskReminder = taskReminder;
 	}
 
 	public String getTaskEmail() {

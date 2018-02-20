@@ -17,6 +17,7 @@
 			<div class="immiTemp clearfix" id="templateDocDivStatic">
 				<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-3">
+				  <input type="hidden" name="id" id="templateId"/>
 					<select class="form-control chosen-select" 
 									name="immigrationDocList[0].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
 						<option value="" selected>--Select Document--</option>
@@ -92,4 +93,10 @@
 	   $("#dynamicRow"+id).remove();
    }
    	</script>
+   	<script>
+$(document).ready(function(){
+	$("#templateId").val(jsonObj.id);
+	console.log(" getting the temp id value"+$('#templateId').val());
+});
+</script> 
    
