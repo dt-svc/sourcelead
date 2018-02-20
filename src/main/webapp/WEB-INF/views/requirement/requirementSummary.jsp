@@ -15,12 +15,15 @@ $(document).ready(function() {
 	 var candidateId = '${candidateId}';
 	 var type = '${type}';
 	 if(type != null && type != '' && type != 'undefined'){
-			sideBar(requirementId,type);
+		 sideBar(requirementId,type);
 	 }
 	 
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
-		requirementPipeline(requirementId,type);
+	 requirementPipeline(requirementId,type);
 	 }
+ if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+		 requirementPipeline(requirementId,type);
+		 }
 });	
 </script>
 <script>
@@ -711,7 +714,6 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
