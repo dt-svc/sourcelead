@@ -14,7 +14,7 @@
 		
 		<div class="addImmiContent clearfix">
 			<div class="immigraTabsHead">
-				<a href="javascript:void(0)" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
+				<a href="javascript:void(0)" onclick="getAssignToUsersList();" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
 				<span><input class="immigraTabSerach" type="text"></span>
 			</div>	
 			<div class="immigraTable">
@@ -195,8 +195,8 @@
 					<div class="col-md-12 mt">
 					 <label>Alert</label>
 					  <div class="mt2">
-						<label class="paddingRight"><input id="taskEmail" name="taskEmail" type="checkbox"> Email </label>
-						<label class="paddingLeft"><input id="taskNotification" name="taskNotification"  type="checkbox"> Notification </label>
+						<label class="paddingRight"><input id="taskEmail" name="taskEmail"  type="checkbox" value="N" onclick="validateTaskEmail();"> Email </label>
+						<label class="paddingLeft"><input id="taskNotification" name="taskNotification"  type="checkbox" value="N" onclick="validateTaskNotification();"> Notification </label>
 					  </div>
 					</div>															
 				</div>
@@ -213,7 +213,8 @@
 						  </div>
 						  
 						  <div class="clearfix" id="selectUsertextBox" style="display:none;">
-							<input type="text" class="form-control" placeholder="Select User">
+							<select class="chosen-select" multiple data-placeholder="Select User" id="petitionAssignedTo" name="petitionAssignedTo"  field-name="AssignTo"  data-validation-optional="true">
+							  </select>
 						  </div>
 						  
 						  
@@ -375,3 +376,63 @@
     });
     
     </script>
+    <script>
+function getAssignToUsersList(){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    success: function(json) {
+	    	 var result = "";
+        	 for (var i=0; i<json.length; i++)
+ 			{
+        		var report = json[i];
+        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+			}
+        	 $("#petitionAssignedTo").empty();
+           	 $("#petitionAssignedTo").append(result); 
+           	 $('#petitionAssignedTo').trigger("chosen:updated");
+	    }
+   }); 
+}
+</script>
+<script>
+function validateDueAfter(){
+	  
+	  var taskMonths = document.getElementById("dueAfterMonths").value;
+	  var taskDays = document.getElementById("dueAfterDays").value;
+	  
+	  if(taskMonths == '' && taskDays == '' ){
+			  $('#dueAfterMonths').removeAttr('data-validation-optional');
+			  $("#dueAfterMonths").attr("data-validation", "required");
+		    
+	  }else{
+		  $('#dueAfterDays').removeAttr('data-validation');
+		  $("#dueAfterMonths").attr("data-validation-optional", "true");
+		    
+	  }  
+	  
+  }
+</script>  
+ <script>
+  function validateTaskEmail(){
+	  var taskEmail = document.getElementById("taskEmail").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskEmail").value = 'Y';
+	  }else{
+		  document.getElementById("taskEmail").value = 'N';
+	  }
+	  
+  }
+  </script>
+  
+  <script>
+  function validateTaskNotification(){
+	  var taskEmail = document.getElementById("taskNotification").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskNotification").value = 'Y';
+	  }else{
+		  document.getElementById("taskNotification").value = 'N';
+	  }
+	  
+  }
+  </script>
