@@ -164,7 +164,7 @@ function getOrgDetails()
           <div class="clearfix form-horizontal inner-content">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='Select the exisitng client name from the list. The new contact will be added to this client name'></i></label>
             <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
@@ -194,7 +194,7 @@ function getOrgDetails()
 					<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 					
 			        	<div class="col-md-9">
-					  <input type="text" class="form-control" id="emailId" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
+					  <input type="text" class="form-control" id="emailId" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();getOwnersList();">
 	                            <span class="hidden">Valid Email</span>
 			     	</div>
 					</div>
@@ -237,7 +237,7 @@ function getOrgDetails()
 	             <div class="form-group">
 	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner Name"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
 		                       <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.fullName}</option>
 	                </c:forEach>
@@ -341,11 +341,10 @@ function getOrgDetails()
 function validateEmail(){
 	var email = document.getElementById("emailId").value;
 	var vendorName = document.getElementById("vendorName").value;
-	var orgRelationId = vendorName.split(",")[0];
-	if(email != null  && email != '' && orgRelationId != null){
+	if(email != null  && email != ''){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=client",
+			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -355,9 +354,9 @@ function validateEmail(){
 					document.getElementById("emailId").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
 				}else if(result == 'Valid Email') {
-					$('input#email').removeAttr("class record-exist record-exist-errormsg");
-					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$('input#emailId').removeAttr("class record-exist record-exist-errormsg");
+					$('input#emailId').attr('class','valid form-control');
 					
 				}
 			},
@@ -366,6 +365,8 @@ function validateEmail(){
 	}
 }
 </script>
+
+
 
 
 <script type="text/javascript">

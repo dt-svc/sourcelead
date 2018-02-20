@@ -962,7 +962,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				} catch (Exception e) {}
 			    if(tdeList != null && !tdeList.isEmpty()){
 				   for(TimeSheetDayEntries tde :tdeList) {
-					   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+					   if(tde.getTotalHours() != null && !tde.getTotalHours().isEmpty()) {
+						   totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+					   }
+					  
 				   }
 			   }
 			}

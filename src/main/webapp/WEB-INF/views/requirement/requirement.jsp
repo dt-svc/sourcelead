@@ -863,7 +863,7 @@ $(document).ready(function () {
             </div>
           
           <div class="form-group">
-	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="It's a period driven by company's policy during which a candidate won't be allowed to apply for multiple jobs while the decision is awaiting or other reasons."></i></label>
+	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="The time period during which the applicant will not be able to apply for new jobs (due to awaiting feedbacks or other reasons)"></i></label>
 	         <div class="col-md-9 selectpicker_maxheight">
 	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             
@@ -947,7 +947,8 @@ $(document).ready(function () {
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
 					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
-					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+					            <label>&nbsp;&nbsp;<strong>Is Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
+					            </strong>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
@@ -956,7 +957,8 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+							   <label>&nbsp;&nbsp;<strong>Is Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
+							   </strong>
 								&nbsp;&nbsp;
 							   </label>
 							</div>
@@ -1052,7 +1054,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary</label>
+                <label class="col-md-3">Bill Rate / Salary&nbsp;<i class='fa fa-info-circle' title='Client proposed bill rate for the particular job (strictly for internal reference only)'></i></label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1163,7 +1165,7 @@ $(document).ready(function () {
               <div class="clearfix"></div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Submission Form<span class="text-danger paddingLeft">*</span></label>
+                <label class="col-md-3">Submission Form<span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title="Select client specific Submission Template to provide the applicant's information"></i></label>
                 <div class="col-md-9">
                   <div>
                   <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1254,8 +1256,8 @@ $(document).ready(function () {
                 <input type="radio" name="approver" id="seqentialApprovers"  onClick="approvalType('Sequential');">
                 <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
-                
-                  <i id="navbar" class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
+                 
+                  <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                
@@ -1360,7 +1362,7 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="form-group" id="internalSubmissionFrom">
-            <label class="col-md-3">Application Form<span class="text-danger paddingLeft">*</span></label>
+            <label class="col-md-3">Application Form<span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The applicant provides the required information for the job application'></i></label>
             <div class="col-md-9">
                
                <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
@@ -1376,7 +1378,7 @@ $(document).ready(function () {
             <!-- <div id="assignedToSavingDiv"></div>
             <div id="defaultAssignedToSavingDiv"></div> -->
 													
-            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign To team in the organization who will process the resources for this job'></i></label>
+            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign the job to the internal team to process the resources for the job'></i></label>
             
             <div class="col-md-9">
               <div class="form-icon">
@@ -1406,7 +1408,7 @@ $(document).ready(function () {
 							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Assign to all</strong>
+					<label>&nbsp;&nbsp;<strong>Assign to all <i class='fa fa-info-circle' title='Job will be made visible to all users within the organization. Users will be able to add the applicants for the job'></i></strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1892,7 +1894,7 @@ function setTemplateValues(){
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
-		getRequirementAndLookUpSkills(requirementId);
+// 		getRequirementAndLookUpSkills(requirementId);
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -1903,8 +1905,9 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
-			    	 $('#jobType').attr('readonly', true);
-			    	$("#experienceLevel").val(json.experienceLevel);
+
+			    	$("#experienceLevel").val(json.experienceLevel.name);
+
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');
@@ -1914,6 +1917,15 @@ function setTemplateValues(){
 			    	$("#projectId").val(json.projectId);
 			    	$("#projectId").trigger("chosen:updated");
 			    	
+			    	$('#skills').val('').trigger('chosen:updated');
+					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+						var skills = [];
+			            skills = json.skills.split(",");
+			            $("#skills").val(skills);
+			            $('#skills').trigger("chosen:updated");
+					}
+
+					
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	
 					
@@ -2008,7 +2020,6 @@ function setTemplateValues(){
 			    		 $("#backgroundCheckTemplate").css("display","none"); 
 			    	}
 			    	
-			    	
 			    	if(json.gender !=  null && json.gender != '' && json.gender != 'undefined'){
 			    		 $("#genderTemplate").css("display","block"); 
 			    		 $("#addGender").css("display","none"); 
@@ -2017,6 +2028,7 @@ function setTemplateValues(){
 			    		result = result + '<div class="col-md-9">';
 			    		if(json.gender == "Male"){
 			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>';
+
 				    		result = result + '<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>';
 			    		    result = result + '<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>';
 			    		}
@@ -2031,8 +2043,8 @@ function setTemplateValues(){
 			    			result = result + '<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>';
 				    		result = result + '<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>';
 				    		 result = result + '<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>';
-			    		}
-			    		result = result + '<div>';
+						}
+						result = result + '<div>';
 			    		$("#genderDivId").empty();
 			    		$("#genderDivId").append(result);
 			    	}else{
@@ -2098,6 +2110,7 @@ function setTemplateValues(){
 					$('#description').val('');
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');
+
 					$('#skills').val('').trigger('chosen:updated');
 					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
 					var skills = [];
@@ -2105,6 +2118,7 @@ function setTemplateValues(){
 			            $("#skills").val(skills);
 			            $('#skills').trigger("chosen:updated");
 					}
+
 
 					
 					if(json.education != null && json.education != '' && json.education != 'undefined'){
@@ -2256,17 +2270,12 @@ function removeApprovers(){
 	$('#sequentialApprover2').val('');
 	$('#sequentialApprover2').trigger('chosen:updated');
 	
-	
+	 
 	if(!$("#apprverReq").is(':checked')){
-	     
-        $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+         $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+    }else{
+		 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
     } 
-
-else{
-	
-	 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
-	
-    }
 }
 </script> 
 
@@ -2341,6 +2350,20 @@ function approvalType(type){
 			$('#sequentialApprover2').attr("data-validation-optional","true"); 
 			$('#parallelApprover').attr("data-validation-optional","true"); 
 		}
+	  
+	    //Written by mamatha ,purpose : added tooltip
+	    if(type == "Default" || type == "Parallel"){
+	    	
+	    	$('#navbar').attr("title","Either of the approver can approve the job");
+	    	
+	    	
+	    }else if(type == "Sequential"){
+	    	$('#navbar').attr("title","The job approval is required from both the approver levels");
+	    	
+	    }
+	   
+	  
+	       
 	  
 }
 </script>

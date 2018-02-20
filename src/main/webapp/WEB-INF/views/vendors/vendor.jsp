@@ -416,7 +416,7 @@ function getVendorDetails(){
 
 						<div class="form-group">
 						<div class="clearfix mb">
-							<label class="col-md-3">Tier</label>
+							<label class="col-md-3">Tier <i class='fa fa-info-circle' title='Classify the vendors basing on their performance'></i></label>
 							<div class="col-md-9 dropdown-select">
 								<select class="form-control" id="level" name="level">
 									<option value="Tier-1">Tier-1</option>
@@ -552,7 +552,7 @@ function getVendorDetails(){
 
 						<div class="form-group">
 							<label class="col-md-3">Owner Name<span
-								class="text-danger">&nbsp;*</span></label>
+								class="text-danger">&nbsp;*</span><i class='fa fa-info-circle' title='The internal point of contact to the vendor. A single contact can have multiple owners'></i></label>
 							<div class="col-md-9 candAdvsrch">
 								<select data-placeholder="select owner" multiple
 									class="chosen-select form-control" name="owner" id="owner"

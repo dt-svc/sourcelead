@@ -84,7 +84,7 @@
 				</div>
 
 				 <div class="form-group">
-                  <label class="col-md-3">Purpose</label>
+                  <label class="col-md-3">Purpose <i class='fa fa-info-circle' title='The expenditure particulars'></i></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" autocomplete="off"   name="expensePurpose" value="${expenses.expensePurpose}" id="expensePurposeId" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
@@ -104,7 +104,7 @@
 	                  </div>
 				</div>               
 	            <div class="form-group">
-	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
+	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='Expenditure particulars should be added between the specified duration only'></i></label>
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">

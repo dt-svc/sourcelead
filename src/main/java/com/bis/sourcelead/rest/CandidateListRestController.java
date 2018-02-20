@@ -438,7 +438,12 @@ public class CandidateListRestController {
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
 	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), newDate);
-			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(updatedDate));
+
+	        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+	        String endDateStr = dateFormat1.format(endDate2); 
+			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDateStr));
+			
+
 		}
 		
 		// Rate Type
