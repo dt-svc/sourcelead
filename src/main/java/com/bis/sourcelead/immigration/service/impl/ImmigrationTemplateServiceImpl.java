@@ -74,7 +74,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			immigrationTemplateDocs.setUpdatedBy(user);
 			immigrationTemplateDocs.setDocumentType(tempObj.getDocumentType());
 			immigrationTemplateDocs.setDescription(tempObj.getDescription());
+			if(tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())){
 			immigrationTemplateDocs.setIsRequired(tempObj.getIsRequired());
+			}else{
+			immigrationTemplateDocs.setIsRequired(Constants.NO);
+			}
 			immigrationTemplateDocs.setIsMultipleRequired(tempObj.getMultiple());
 			immigrationTemplateDocs.setStatus(1);// active
 			immigrationTemplateDao.savePetitionTemplateDocDetails(immigrationTemplateDocs);
@@ -125,39 +129,43 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		List<ImmigrationTemplateFormDTO> formsList = templateDTO.getImmigrationFormList();
 		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
 		immiTemplate.setId(templateDTO.getId());
-		
+
 		for (ImmigrationTemplateFormDTO tempObj : formsList) {
 			ImmigrationTemplateForms immigrationTemplateForms = new ImmigrationTemplateForms();
 			immigrationTemplateForms.setImmigrationTempId(immiTemplate);
 			immigrationTemplateForms.setFormName(tempObj.getFormName());
 			immigrationTemplateForms.setDescription(tempObj.getFormDescription());
-			immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
+			if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
+				immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
+			} else {
+				immigrationTemplateForms.setIsRequired(Constants.NO);
+			}
 			immigrationTemplateForms.setCreatedDate(new Date());
 			immigrationTemplateForms.setCreatedBy(user);
 			immigrationTemplateForms.setUpdatedDate(new Date());
 			immigrationTemplateForms.setUpdatedBy(user);
 			immigrationTemplateForms.setStatus(Constants.RECORD_ACTIVE);
 			immigrationTemplateForms.setFormUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			if (tempObj.getImmigrationFormFileInfo() != null && tempObj.getImmigrationFormFileInfo().size()>0 && !tempObj.getImmigrationFormFileInfo().isEmpty()) {
+			if (tempObj.getImmigrationFormFileInfo() != null && !tempObj.getImmigrationFormFileInfo().isEmpty()) {
 				FileInfo info = tempObj.getImmigrationFormFileInfo().get(0);
-				if(info != null){
-				immigrationTemplateForms.setFileName(info.getFileName());
-				immigrationTemplateForms.setFileUrl(info.getFileURL());
-				immigrationTemplateForms.setFileContentType(info.getContentType());
-				
+				if (info != null) {
+					immigrationTemplateForms.setFileName(info.getFileName());
+					immigrationTemplateForms.setFileUrl(info.getFileURL());
+					immigrationTemplateForms.setFileContentType(info.getContentType());
+
 					try {
 						FileUploadUtil.moveFile(templateDTO.getStaticPath(), info, "ImmigrationFormDocs");
 					} catch (java.io.IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				
-			}
+
+				}
 			}
 			immigrationTemplateDao.savePetitionTemplateFormDetails(immigrationTemplateForms);
 
 		}
 
-}
+	}
 	
 }

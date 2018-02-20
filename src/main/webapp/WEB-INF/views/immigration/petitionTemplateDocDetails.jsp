@@ -32,7 +32,7 @@
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-4 noPad">
 						<label class="switch mt5 text-center">
-						<input checked="" id="requiredCheck0" name="immigrationDocList[0].isRequired" title="Is Required" type="checkbox">
+						<input checked id="requiredCheck0" name="immigrationDocList[0].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
 						<div class="slider round"></div>
 						</label>
 					  </div>
@@ -75,7 +75,7 @@
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad'>";
 		templateDocDetails = templateDocDetails+ "<label class='switch mt5 text-center'>";
-		templateDocDetails = templateDocDetails+ "<input checked='' title='Is Required' id='requiredCheck"+rowId+"' name='immigrationDocList["+rowId+"].isRequired' type='checkbox'>";
+		templateDocDetails = templateDocDetails+ "<input checked title='Is Required' value = 'Y' onclick = 'tempDocReq("+rowId+");' id='requiredCheck"+rowId+"' name='immigrationDocList["+rowId+"].isRequired' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<div class='slider round'></div></label>";
 		templateDocDetails = templateDocDetails+ "</div><div class='col-md-4'><div class='mt5 ml5 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='' name='immigrationDocList["+rowId+"].multiple' type='checkbox'>";
@@ -93,6 +93,18 @@
 	   $("#dynamicRow"+id).remove();
    }
    	</script>
+   	
+   	<script type="text/javascript">
+function tempDocReq(id){
+	var checked = document.getElementById("requiredCheck"+id).checked
+	if(checked == true){
+		$("#requiredCheck"+id).val("Y");
+	}else{
+		$("#requiredCheck"+id).val("N");
+	}
+}
+</script>
+
    	<script>
 $(document).ready(function(){
 	$("#templateId").val(jsonObj.id);
