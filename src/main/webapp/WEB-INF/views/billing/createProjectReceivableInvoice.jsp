@@ -89,7 +89,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
               <div class="col-md-9" id="errDuedate">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
               </div>
