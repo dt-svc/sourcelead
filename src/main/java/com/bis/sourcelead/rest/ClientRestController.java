@@ -1524,17 +1524,17 @@ public class ClientRestController {
 		 */
 		String[] tableColumns1 = null;
 		if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "responderWebSite", "responderCity.keyword", "responderLevel", "createdBy.keyword", "noContacts"};
+			String[] tableColumns = {"responderOrgName.keyword", "responderWebSite", "responderCity.keyword", "responderLevel", "createdBy.keyword", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
-			String[] tableColumns = {"responderOrgName", "", "responderCity.keyword", "","createdBy.keyword","releasedJobsCount", "noContacts"};
+			String[] tableColumns = {"responderOrgName.keyword", "", "responderCity.keyword", "","createdBy.keyword","releasedJobsCount", "noContacts"};
 			tableColumns1 = tableColumns;
 		}else if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
 				Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 			/**
 			 * this fields for job campaigns and hotlist campaigns
 			 */
-			String[] tableColumns = {"ischeck", "responderOrgName",  "website", "responderCity", "createdBy.keyword", "noContacts"};
+			String[] tableColumns = {"ischeck", "responderOrgName.keyword",  "website", "responderCity.keyword", "createdBy.keyword", "noContacts"};
 			tableColumns1 = tableColumns;
 		}
 		
@@ -1791,6 +1791,49 @@ public class ClientRestController {
 			String	json = hit.getSourceAsString();
 				mapper.setDateFormat(df);
 				ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+				OrgLocations childOrgLocations = null;
+				boolean flag = false;
+				if(StringUtils.isNotBlank(clientVendorDTO.getSearchCountry()) || StringUtils.isNotBlank(clientVendorDTO.getFilterSearchValue())){
+					
+					if(clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()) {
+						childOrgLocations = orgLocationService.getOrgLocations(clientVendor.getOrgLocationId().longValue());
+					}else {
+						childOrgLocations = orgLocationService.getOrgLocations(clientVendor.getResponderLocationId().longValue());
+					}
+					
+					if(childOrgLocations != null) {
+						    
+						if(StringUtils.isNotBlank(clientVendorDTO.getSearchCountry())){
+							  if(StringUtils.isNotBlank(childOrgLocations.getCountry()) && childOrgLocations.getCountry().equalsIgnoreCase(clientVendorDTO.getSearchCountry())) {
+								  flag = true;
+							  }else {
+								  flag = false;
+							  }
+					    }
+					
+						if(StringUtils.isNotBlank(clientVendorDTO.getSearchState())){
+							 if(StringUtils.isNotBlank(childOrgLocations.getState()) && childOrgLocations.getState().equalsIgnoreCase(clientVendorDTO.getSearchState())) {
+								 flag = true;
+							 }else {
+								 flag = false;
+							 }
+					    }
+						
+						if(StringUtils.isNotBlank(clientVendorDTO.getSearchCity())){
+							 if(StringUtils.isNotBlank(childOrgLocations.getCity()) && childOrgLocations.getCity().equalsIgnoreCase(clientVendorDTO.getSearchCity())) {
+								 flag = true;
+							 }else {
+								 flag = false;
+							 }
+					    }
+						
+					}
+					
+					if(flag == false)
+						continue;
+					
+				}
+				
 				
 				//  This is to get the number of Contacts based  on Org Relation Id
 				 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
@@ -1835,7 +1878,9 @@ public class ClientRestController {
 		     clientVendorList.add(clientVendor);
 				
 			}
+			
 			response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+			
 			SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
 							0, 10, "createdBy.keyword", SortOrder.DESC, boolQueryBuilderForCount);
@@ -1843,7 +1888,7 @@ public class ClientRestController {
 			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 		}
 		response.setData(clientVendorList);
-		 return response;
+		return response;
 
 	}
 	
@@ -1913,10 +1958,14 @@ public class ClientRestController {
 					Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 				String[] tableColumns = {"", "orgName.keyword",  "spocName.keyword", "spocEmail.keyword", "spocStatus"};
 				tableColumns1 = tableColumns;
-			}else{
+			}else if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
 				String[] tableColumns = {"clientLocationId", "clientUserFirstName.keyword", "clientUserEmail.keyword", "", "ownerUserId", "spocStatus","invitationStatus.keyword",""};
 				tableColumns1 = tableColumns;
+			}else{
+				String[] tableColumns = {"vendorLocationId", "vendorUserFirstName.keyword", "vendorUserEmail.keyword", "", "ownerUserId", "spocStatus","invitationStatus.keyword",""};
+				tableColumns1 = tableColumns;
 			}
+				
 			
 			if(clientVendorDTO.getResponderType().equalsIgnoreCase(Constants.JOB_CAMPAIGN_VENDOR)){
 				clientVendorDTO.setResponderType(Constants.VENDOR);
