@@ -457,8 +457,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
     		params.put("managerUserId",user.getId());
     		
-    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' ";
-    		
+    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode";
+    		params.put("usercode",user.getUserCode());
     		
     		String subQuery = "";
     		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
@@ -2555,7 +2555,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
 		    		params.put("managerUserId",user.getId());
 		    		
-		    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' ";
+		    		String subQuery4 = " rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode";
+		    		params.put("usercode",user.getUserCode());
 		    		
 		    		String subQuery = "";
 		    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
