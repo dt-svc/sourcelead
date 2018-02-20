@@ -623,9 +623,10 @@ function getEmailDetails(uuid,type){
 	   			 if(opt.comments != null && opt.comments != 'undefined' && opt.comments != ""){
 	   				result = result +'<p>'+opt.comments+'</p>';
 	   			}
-	   			/* if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
+	   			
+	   			if(opt.body != null && opt.body != 'undefined' && opt.body != "" && opt.mailType == '1'){
 	   				result = result +'<p>'+opt.body+'</p><br/>';
-	   			}  */
+	   			}  
 	   			if(opt.campaignTableData != null && opt.campaignTableData != 'undefined' && opt.campaignTableData != ""){
 	   				result = result +'<p>'+opt.campaignTableData+'</p><br/>';
 	   			}
@@ -637,12 +638,15 @@ function getEmailDetails(uuid,type){
 	   				result = result +'<div class="clearfix"></div>';
 	   			}
 	            
-                
-             /*  if(opt.signature != null && opt.signature != "" && opt.signature != 'undefined'){
-            	  result = result +'<p>'+opt.signature+'</p>';
-              }else{
-            	  result = result +'<p>Thanks,<br>'+opt.fromMail+'</p>';
-              } */
+              
+	   		if(opt.mailType == '1'){
+	   			if(opt.signature != null && opt.signature != "" && opt.signature != 'undefined'){
+	            	  result = result +'<p>'+opt.signature+'</p>';
+	              }else{
+	            	  result = result +'<p>Thanks,<br>'+opt.fromMail+'</p>';
+	              } 
+	   		}	
+              
             
             $("#mailBoxList").empty(); 
             $("#mailDetails").empty(); 
