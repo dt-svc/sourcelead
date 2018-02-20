@@ -9,6 +9,8 @@ function Immigration(){
 			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=templateDetails");
 		}else if(temp == 'templateDocs'){
 			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=docDetails");
+		}else if(temp == 'formDetails'){
+			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=formDetails");
 		}
 	}
 	

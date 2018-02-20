@@ -12,8 +12,8 @@
 <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix cusFieldHead">
-      <div class="pull-left positionRelative"><h2>Add Petitation Templates</h2></div>
-      <div class="pull-right brud-crum">Home &raquo; Petitation Templates &raquo; Add Templates</div>
+      <div class="pull-left positionRelative"><h2>Add Petition Templates</h2></div>
+      <div class="pull-right brud-crum">Home &raquo; Petition Templates &raquo; Add Templates</div>
 	<div class="clearfix"></div>
     </section>
     <div id="addNewPetitionTemplateDiv"></div>

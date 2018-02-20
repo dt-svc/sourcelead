@@ -139,7 +139,7 @@
  		</div>
    
 		<div class="addImmiFoot">
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('three')" class="pull-left">Prev</a>
+			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('formDetails')" class="pull-left">Prev</a>
 			<a href="javascript:void(0)" class="nextBtn">Add Template</a>
 			<a href="javascript:void(0)">Reset</a>
 			<div class="clearfix"></div>
