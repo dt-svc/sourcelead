@@ -602,6 +602,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setEmail(userImport.getEmailId());
 			user.setMobilePhone(userImport.getMobileNumber());
 			user.setExtensionNumber(userImport.getExtensionNumber());
+			user.setEmploymentType(userImport.getEmploymentType());
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
@@ -706,6 +707,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
+				candidate.setDesignationType(userImport.getEmploymentType());
 				candidate.setStatus(Constants.RECORD_ACTIVE);
 				candidate.setCreatedBy(user.getUserCode());
 				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
