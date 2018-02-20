@@ -51,7 +51,7 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
+	 result = result + '<div class="add_inter_head"> <span>Schedule Interview </span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row <i class="fa fa-info-circle" title="Schedule multiple interviews for multiple applicants in different time slots"></i></a>'; 
 // 	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
@@ -80,7 +80,7 @@ function addInterview(requirementId){
 	result = result + '<div class="schedule_widget clearfix mb eventAlert" style="display:none;" id="availbleDiv">        								        ';
 	result = result + '    <div class="row">                                                                            ';
 	result = result + '      <div class="col-xs-12 col-md-12 event_calendar">                                           ';
-	result = result + '        <h4>Available Slots</h4>                                                               ';
+	result = result + '        <h4>Available Slots <i class="fa fa-info-circle" title="Check the available time slots for Applicants & Interviewers"></i></h4>                                                               ';
 	result = result + '      </div>                                                                                     ';
 	result = result + '      <!-- show Calendar -->                                                                     ';
 	result = result + '      <div class="col-xs-12 col-md-5 mb">                                                        ';
@@ -124,9 +124,9 @@ function addInterview(requirementId){
 	if(parentRequirement == 'Y'){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
-	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others</b></label>';
+	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersValInterview();showOthersDivInterview();"><b>Notify to Others <i class="fa fa-info-circle" title="Notify the schedule to those other than the interviewers using their respective email ids"></i></b></label>';
 
-	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
+	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time <i class="fa fa-info-circle" title="Applicants can propose their available time slots"></i></b></label>';
 	
 	result = result + '</div>';
 	
@@ -140,7 +140,7 @@ function addInterview(requirementId){
 	result = result + '<div class="mb10 mt clearfix interview-form">';
 	
 	result = result + '<div id="emptyTemplate" style="dispaly:none">';
-	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
+	result = result + '<strong class="clearfix col-md-12">Interview Template <i class="fa fa-info-circle" title="The interview feedback template"></i></strong>';
 	 result = result +'<div class="col-md-6 chooRadius mb">';
 	 result = result +'<div class="input-group col-md-10 pull-left chooOverFlow">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
@@ -155,7 +155,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	
 	
-	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before</strong>';
+	result = result + '<strong class="clearfix col-md-12 mb">Reminder Before <i class="fa fa-info-circle" title="Set a reminder about the scheduled interview to both the interviewers and applicants"></i></strong>';
 	result = result + '<div class="col-md-3 select-field">';
 	result = result + '<span>Hours</span>';
 	result = result + '<select class="form-control mt10" id="reminderHours" name="reminderHours">';

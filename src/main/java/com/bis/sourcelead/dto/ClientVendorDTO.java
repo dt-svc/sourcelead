@@ -79,6 +79,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String searchValue;
 	
+	private String filterSearchValue;
+	
 	private String orgType;
 	
 	private Map<String,String> clientCustomFieldlabelNameAndValue;
@@ -633,6 +635,14 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setRecipientsEmails(String recipientsEmails) {
 		this.recipientsEmails = recipientsEmails;
+	}
+
+	public String getFilterSearchValue() {
+		return filterSearchValue;
+	}
+
+	public void setFilterSearchValue(String filterSearchValue) {
+		this.filterSearchValue = filterSearchValue;
 	}
 
 	

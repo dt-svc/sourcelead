@@ -6,7 +6,7 @@
 		<div class="modal-content">
 			<div class="modalHeader">
 				<button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Assign To</h4>
+				<h4 class="modal-title">Assign To<i class='fa fa-info-circle' title='Assign the job to the internal team to process the resources for the job'></i></h4>
 			</div>
 			<div class="modal-body">
 
