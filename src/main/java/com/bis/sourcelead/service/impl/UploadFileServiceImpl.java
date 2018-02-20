@@ -1009,10 +1009,6 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				return false;
 			}
 			
-			/*if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
-				userImport.setReason("Manager is Required");
-				return false;
-			}*/
 			
 			if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
 				userImport.setReason("Manager is Required");
@@ -1096,20 +1092,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			
-			/*if (row.getCell(15) == null || "".equalsIgnoreCase(row.getCell(15).toString())) {
-				userImport.setReason("Required fields is not filled");
-				return false;
-			}*/
-				/*if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-					String dayHours = getCellValueAsString(row.getCell(9), fileName);
-					if (dayHours != null && !"".endsWith(dayHours)) {
-						isValidated = isDayHourValid(dayHours);
-						if (isValidated == false) {
-							userImport.setReason("Invalid Day Hours");
-							return isValidated;
-						}
-					}
-				}*/
+			
 		}
 		return true;
 	}
