@@ -1127,7 +1127,6 @@ function getOfferDetails(submissionId){
 	                        	 '</sec:authorize>';
 	                    	 }
 	                    	 result = result + '</span>';
-	                    	 
 	                    	 result = result + '<span id="'+report.offerId.id+'showOfferStatus"></span>';
 	                    	 if(report.offerId.offerStatus == "OFFERACCEPTED"){
 	                    		 result = result +' <font color="green" class="brder-int">Offer Accepted</font>';
@@ -1139,6 +1138,9 @@ function getOfferDetails(submissionId){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
+	                    	 if(report.offerId.offerStatus == "CLIENT_OFFERACCEPTED"){
+	                    		 result = result +' <font color="green" class="brder-int">Client Offer Accepted</font>';
+	                    	 }
 	                    	 
 	                    	 if(report.notifyToApplicant == null || report.notifyToApplicant == '' || report.notifyToApplicant =='undefined' || report.notifyToApplicant == 'N'){
 	                    		 result = result + '<span id="'+report.id+'offerApplicantDiv">';
