@@ -2246,7 +2246,6 @@ function validateRegisterCompanyName(){
 				    type: "GET",
        	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
 			        success: function(data) {
-			        	alert("data"+data)
 			        	 var result = data;
 			        		if(result == "Company Duplicated") {
 		        			//Existed company
