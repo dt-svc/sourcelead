@@ -31,7 +31,7 @@
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-6 noPad">
 						<label class="switch mt5 text-center">
-						<input checked="" id="requiredCheck0" name="immigrationFormList[0].isRequired" title="Is Required" type="checkbox">
+						<input checked id="requiredCheck0" name="immigrationFormList[0].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc(0)" value="Y">
 
 						<div class="slider round"></div>
 						</label>
@@ -62,8 +62,18 @@
 		  	$('#uploadFile'+id).val($("#uploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''));
  }
  
- </script>  
-   
+ </script> 
+
+   <script>
+function checkIsReqDoc(id){
+	var checked = document.getElementById("requiredCheck"+id).checked
+	if(checked == true){
+		$("#requiredCheck"+id).val("Y");
+	}else{
+		$("#requiredCheck"+id).val("N");
+	}
+}
+</script>
    
 <script>
 function uploadFormDocs(id){
@@ -92,7 +102,7 @@ function uploadFormDocs(id){
 		result = result+ "<input type='text' title='Description' name='immigrationFormList["+rowId+"].formDescription' id='formDescription"+rowId+"' class='form-control' placeholder='Description' /></div>";
 		result = result+ "<div class='col-md-2 clearfix'>";
 		result = result+ "<label class='switch mt5 text-center'>";
-		result = result+ "<input checked='' title='Is Required' id='requiredCheck"+rowId+"' name='immigrationFormList["+rowId+"].isRequired' type='checkbox'>";
+		result = result+ "<input checked title='Is Required' onclick='checkIsReqDoc("+rowId+")' value='Y' id='requiredCheck"+rowId+"' name='immigrationFormList["+rowId+"].isRequired' type='checkbox'>";
 		result = result+ "<div class='slider round'></div></label>";
 		result = result+ "<div class='col-md-6 pull-right'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempFormRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div>";
 		return result 
