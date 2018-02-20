@@ -107,7 +107,7 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		  
 		    logger.debug("In RequirementOfferHistoryDaoImpl class getCrowdSourcingOfferDetailsBySubmissionId method");
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementOfferHistory roh where roh.submissionId.id = :submissionId ";
+			String query = "from RequirementOfferHistory roh left join fetch roh.offerId left join fetch roh.submissionId where roh.submissionId.id = :submissionId ";
 			List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("submissionId", submissionId).list();
 			
 			return offersList;
