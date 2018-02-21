@@ -180,7 +180,7 @@ public interface CandidateService {
 	
 	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate,User loginUser) throws Exception;
 	
-	public ResponseList<CandidateDTO> getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
+	public ResponseList<CandidateDTO> getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,List<Long> teamIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
 
 	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception;
 
