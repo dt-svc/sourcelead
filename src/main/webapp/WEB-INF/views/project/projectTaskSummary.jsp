@@ -787,7 +787,8 @@ $(document).ready(function() {
             $('#time_entry_form').find('p.jquery_form_error_message').remove();
             $('#timesheetDate').val('');
         	$('#timesheetComments').val('');
-        	$('#timesheetHours').val('00:00');
+        	$('#timesheetHours').val('');
+        	$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
         	$('#savetask').removeAttr('disabled','disabled');
         }
         </script>

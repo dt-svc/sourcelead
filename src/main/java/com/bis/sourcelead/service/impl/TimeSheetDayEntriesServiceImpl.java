@@ -65,5 +65,10 @@ public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesServic
 	public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId, Long masterCandidateId,Date timesheetDate) {
 		return timeSheetDayEntriesDao.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(projectId,masterCandidateId,timesheetDate);
 	}
+	
+	@Override
+	public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate,Long projectTaskId) {
+		return timeSheetDayEntriesDao.getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(projectId,masterCandidateId,timesheetDate,projectTaskId);
+	}
 
 }

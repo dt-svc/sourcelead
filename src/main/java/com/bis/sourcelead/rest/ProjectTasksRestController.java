@@ -1377,5 +1377,19 @@ public class ProjectTasksRestController {
 			return falg;
 	}
 	
+	@RequestMapping(value = "/editProjectTaskTimesheetDayEntry", method = RequestMethod.POST)
+	public TimeSheetDayEntries editProjectTaskTimesheetDayEntry(@RequestParam(value = "timeDate", required = false) String timeDate,
+			@RequestParam(value = "projectMember", required = false) Long projectMember,@RequestParam(value = "taskUUID", required = false) String taskUUID, HttpServletRequest request) throws Exception {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			TimeSheetDayEntries totalHours = null;
+			ProjectMembers proMember =projectMembersService.getProjectMemberById(projectMember);
+			ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
+		    if(timeDate != null && StringUtils.isNotBlank(timeDate)) {
+			    if(proMember != null && proMember.getProjects() != null && proMember.getMasterCandidateId().getId()!= null) {
+			    	totalHours = timeSheetDayEntriesService.getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate),projectTask.getId());
+			    }
+		    }
+			return totalHours;
+	}
 	
 }
