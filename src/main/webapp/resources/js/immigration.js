@@ -48,7 +48,6 @@ function Immigration(){
 		if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
 		var formData = getFormData("PetitionTemplateDocDetails");
 		console.log(formData);
-		alert("hi");
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDocDetails",
 		       type : "POST",
@@ -61,9 +60,7 @@ function Immigration(){
 				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=formDetails");
 		    		   }
 		    		   else if(status == 'save'){
-		    			   alert("abcd");
 		    			   $("#addNewPetitionTemplateDiv").empty();
-		    			   
 				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=docDetails");
 		    		   }
 		    	   }

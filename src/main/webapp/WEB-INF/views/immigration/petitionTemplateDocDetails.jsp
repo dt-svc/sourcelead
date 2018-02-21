@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var = "docsLst" scope = "request" value = '<%= session.getAttribute("templateDocList") %>'/>
-<script>   var rowId=0; </script>
+<c:set var = "docsLst" scope = "page" value = '<%= session.getAttribute("templateDocList") %>'/>
+<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index -->
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -19,124 +19,119 @@
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix" id="templateDocDivStatic">
     			<c:choose>
-    				<c:when  test="${empty docsLst}"> 
-    				
-				<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
-				  <div class="col-md-3">
-				  
-					<select class="form-control chosen-select" 
-									name="immigrationDocList[0].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
-						<option value="" selected>--Select Document--</option>
-						<c:forEach var="edu" items="${educationsList}">
-										<option value="${edu.id}">${edu.name}</option>
-									</c:forEach>
-					</select>
-				  </div>
-				  <div class="col-md-7 noPad">
-						<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
-				  </div>
-				  <div class="col-md-2 clearfix">
-					  <div class="col-md-4 noPad">
-						<label class="switch mt5 text-center">
-						<input checked id="requiredCheck0" name="immigrationDocList[0].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
-						<div class="slider round"></div>
-						</label>
+    			   <c:when  test="${empty docsLst}"> <!--  when list is empty loads default row -->
+				      <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
+				  		<div class="col-md-3">
+					  
+						<select class="form-control chosen-select" 
+										name="immigrationDocList[0].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
+							<option value="" selected>--Select Document--</option>
+							<c:forEach var="edu" items="${educationsList}">
+											<option value="${edu.id}">${edu.name}</option>
+										</c:forEach>
+						</select>
+					   </div>
+					   <div class="col-md-7 noPad">
+							<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+					   </div>
+					  <div class="col-md-2 clearfix">
+						  <div class="col-md-4 noPad">
+							<label class="switch mt5 text-center">
+							<input checked id="requiredCheck0" name="immigrationDocList[0].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
+							<div class="slider round"></div>
+							</label>
+						  </div>
+						   <div class="col-md-4">
+						   		<div class="mt5 ml5 clearfix">
+							   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[0].multiple" class="" type="checkbox">
+							   <!-- <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label> -->
+							   </div>
+						   </div>						  
+						  <div id="divButton" class="col-md-4">
+						  		<button type="button" id="btnDynamicRow0" onclick="appendTempDocDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
+						  </div>				  					  					  						  	
 					  </div>
-					   <div class="col-md-4">
-					   		<div class="mt5 ml5 clearfix">
-						   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[0].multiple" class="" type="checkbox">
-						   <!-- <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label> -->
-						   </div>
-					   </div>						  
-					  <div id="divButton" class="col-md-4">
-					  		<button type="button" id="btnDynamicRow0" onclick="appendTempDocDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
-					  </div>				  					  					  						  	
-				  </div>
-				</div>
-				<script>  rowId=rowId+1;  console.log(" inside for emoty record -->"+rowId);</script>
-				</c:when> 
-				
+					</div>
+					<c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/><!--setting rowIndex as 1 when default row is loaded -->
+				 </c:when> 
 				<c:otherwise>		
 				<c:forEach var="items" items="${docsLst}" varStatus="rows">
-				
 				 <c:choose>
-				<c:when test="${rows.count == 1}">
-				<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
-				  <div class="col-md-3">
-				  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId"/>
-				  
-					<select class="form-control chosen-select" 
-									name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
-						<option value="" selected>--Select Document--</option>
-						<c:forEach var="edu" items="${educationsList}">
-										<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
-									</c:forEach>
-					</select>
-				  </div>
-				  <div class="col-md-7 noPad">
-						<input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0" value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
-				  </div>
-				  <div class="col-md-2 clearfix">
-					  <div class="col-md-4 noPad">
-						<label class="switch mt5 text-center">
-						<input checked id="requiredCheck0" name="immigrationDocList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
-						<div class="slider round"></div>
-						</label>
+					<c:when test="${rows.count == 1}"><!--when rowIndex is 1 defatult(first) row is loaded with add button-->
+					<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
+					  <div class="col-md-3">
+					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId"/>
+					  
+						<select class="form-control chosen-select" 
+										name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
+							<option value="" selected>--Select Document--</option>
+							<c:forEach var="edu" items="${educationsList}">
+											<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
+							</c:forEach>
+						</select>
 					  </div>
-					   <div class="col-md-4">
-					   		<div class="mt5 ml5 clearfix">
-						   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[${rows.count-1}].multiple" class="" type="checkbox">
-						   <!-- <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label> -->
-						   </div>
-					   </div>						  
-					  <div id="divButton" class="col-md-4">
-					  		<button type="button" id="btnDynamicRow0" onclick="appendTempDocDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
-					  </div>				  					  					  						  	
-				  </div>
-				</div>
-				</c:when>
-				<c:otherwise>
-				<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
-				  <div class="col-md-3">
-				  <input type="hidden"  name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId"/>
-					<select class="form-control chosen-select" 
-									name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
-						
-						<option value="" >--Select Document--</option>
-						<c:forEach var="edu" items="${educationsList}">
-										<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
-										
-									</c:forEach>
-									
-					</select>
-				  </div>
-				  <div class="col-md-7 noPad">
-						<input type="text" name="immigrationDocList[${rows.count-1}].description" value ="${items.description}" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
-				  </div>
-				  <div class="col-md-2 clearfix">
-					  <div class="col-md-4 noPad">
-						<label class="switch mt5 text-center">
-						<input checked id="requiredCheck0" name="immigrationDocList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
-						<div class="slider round"></div>
-						</label>
+					  <div class="col-md-7 noPad">
+							<input type="text" name="immigrationDocList[${rows.count-1}].description" id="description0" value ="${items.description}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 					  </div>
-					   <div class="col-md-4">
-					   		<div class="mt5 ml5 clearfix">
-						   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[${rows.count-1}].multiple" class="" type="checkbox">
-						   <!-- <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label> -->
+					  <div class="col-md-2 clearfix">
+						  <div class="col-md-4 noPad">
+							<label class="switch mt5 text-center">
+							<input checked id="requiredCheck0" name="immigrationDocList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
+							<div class="slider round"></div>
+							</label>
+						  </div>
+						   <div class="col-md-4">
+						   		<div class="mt5 ml5 clearfix">
+							   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[${rows.count-1}].multiple" class="" type="checkbox">
+							   <!-- <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label> -->
+							   </div>
+						   </div>						  
+						  <div id="divButton" class="col-md-4">
+						  		<button type="button" id="btnDynamicRow0" onclick="appendTempDocDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
+						  </div>				  					  					  						  	
+					  </div>
+					</div>
+					</c:when>
+					<c:otherwise>
+						<div id="dynamicRow${rows.count-1}" class="col-md-12 clearfix noPad mt"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
+						  <div class="col-md-3">
+						  <input type="hidden"  name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId"/>
+							<select class="form-control chosen-select" 
+											name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
+								
+								<option value="" >--Select Document--</option>
+								<c:forEach var="edu" items="${educationsList}">
+												<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
+								</c:forEach>
+							 </select>
 						   </div>
-					   </div>						  
-					  <div id="divButton" class="col-md-4">
-					  		<button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempDocDiv("+rowId+")' ><i class='fa fa-remove text-danger'></i></button>
-					  </div>				  					  					  						  	
-				  </div>
-				</div>
-				</c:otherwise>
-				</c:choose>
-				<script>  rowId=rowId+1;  console.log(" inside for each rowId -->"+rowId);</script>
+						   <div class="col-md-7 noPad">
+								<input type="text" name="immigrationDocList[${rows.count-1}].description" value ="${items.description}" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
+						  </div>
+						  <div class="col-md-2 clearfix">
+							  <div class="col-md-4 noPad">
+								<label class="switch mt5 text-center">
+								<input checked id="requiredCheck0" name="immigrationDocList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
+								<div class="slider round"></div>
+								</label>
+							  </div>
+							   <div class="col-md-4">
+							   		<div class="mt5 ml5 clearfix">
+								   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[${rows.count-1}].multiple" class="" type="checkbox">
+								   <!-- <label for="checkbox-1" class="checkbox-custom-label fmcheckbox-lable"></label> -->
+								   </div>
+							   </div>						  
+							  <div id="divButton" class="col-md-4">
+							  		<button type="button" class="btn btm-sm" id="btnDynamicRow${rows.count-1}" onclick="removeTempDocDiv('${rows.count-1}')"><i class='fa fa-remove text-danger'></i></button>
+							  </div>				  					  					  						  	
+						  </div>
+						 </div>
+						</c:otherwise>
+						</c:choose>
+				<c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/><!--increment the rowIndex  for dynamic rows after save or page navigation  -->
 				</c:forEach>
-				</c:otherwise>	
-			   	</c:choose>
+			</c:otherwise>	
+		   </c:choose>
 			</div>
  		</div>
    </form>
@@ -151,7 +146,6 @@
    </section>
    <script type="text/javascript">
    function appendTemplateDocDetails(rowId){
-	   console.log(" inside appendTemplateDocDetails function  rowId -->"+rowId);
 	   var templateDocDetails = "";
 		templateDocDetails = templateDocDetails+ "<div id='dynamicRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
@@ -177,13 +171,13 @@
 	
  
    function appendTempDocDiv(){
-	   console.log(" before rowId -->"+rowId);
+         var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
 	   $("#templateDocDivStatic").append(appendTemplateDocDetails(rowId++));
    }
    
    function removeTempDocDiv(id){
 	   $("#dynamicRow"+id).remove();
-	   rowId--;
+	   rowId--;// decrement rowid when deleted in UI.
    }
    	</script>
    	
