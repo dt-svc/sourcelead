@@ -1650,6 +1650,9 @@ public class TimesheetRestController {
 	    	ProjectMembers projectMember = null;
 			if(tedDTO != null && tedDTO.getProjectMemberId() != null){
 				  projectMember = projectMembersService.getProjectMemberById(tedDTO.getProjectMemberId());
+				  tedDTO.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
+				  tedDTO.setEmployeeName(projectMember.getProjectMemberCandidteId().getFullName());
+				  tedDTO.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			}
 			Date frequencyStartDate = null;
 			Date frequencyEndDate = null;
