@@ -103,7 +103,7 @@ public interface CandidateDao {
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception;
 	
-	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds, String resourceType, List<Long> associatesIds, Long projectId) throws Exception;
+	public ResponseList<CandidateDTO>  getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId, List<Long> roleIds,List<Long> teamIds, String resourceType, List<Long> associatesIds, Long projectId) throws Exception;
 	
 	public Candidate checkCandidateIdNumberInDatebase(Long orgLocationId);
 	
