@@ -139,7 +139,7 @@
  		</div>
    
 		<div class="addImmiFoot">
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinuePetitionTemplate('three')" class="pull-left">Prev</a>
+			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('formDetails')" class="pull-left">Prev</a>
 			<a href="javascript:void(0)" class="nextBtn">Add Template</a>
 			<a href="javascript:void(0)">Reset</a>
 			<div class="clearfix"></div>
@@ -160,7 +160,7 @@
 				<div class="col-md-6 noPad">
 					<div class="col-md-12 mb10">
 					  <label>Subject<span class="text-danger">*</span></label>
-					  <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_length length2-100">
+					  <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
 					</div>
 					<div class="col-md-12 mb10">
 					  <label>Priority</label>
@@ -208,7 +208,7 @@
 					      <div class="clearfix">
 						  <label>Assign To<span class="text-danger">*</span></label>
 						  <div class="clearfix">
-							<label class="paddingRight"> <input type="radio"  name="assignToType" checked="checked" onclick="validateAssignToType('assingToCandidate');"> Candidate </label>
+							<label class="paddingRight"> <input type="radio"  name="assignToType" checked="checked" onclick="validateAssignToType('assingToCandidate');"> Beneficiary </label>
 							<label class="paddingLeft"> <input type="radio"  name="assignToType"  onclick="validateAssignToType('assingToUser');"> User </label>
 						  </div>
 						  </div>

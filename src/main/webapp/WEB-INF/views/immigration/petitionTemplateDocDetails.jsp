@@ -91,6 +91,7 @@
    
    function removeTempDocDiv(id){
 	   $("#dynamicRow"+id).remove();
+	   rowId--;
    }
    	</script>
    	
@@ -108,7 +109,6 @@ function tempDocReq(id){
    	<script>
 $(document).ready(function(){
 	$("#templateId").val(jsonObj.id);
-	console.log(" getting the temp id value"+$('#templateId').val());
 });
 </script> 
    
