@@ -193,7 +193,11 @@ function approvedEmployeesPagination(url){
 	    	  	"data": "approvedBy",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+	    	  		 if(opt.approvedBy != null && opt.approvedBy != 'undefined' && opt.approvedBy != ''){
+	    	  			result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+	    	  		 }else{
+	    	  			result = result + '     <div class="tblminwidth-75">System Approved</div>';
+	    	  		 }
   	                return result; 
 	    	  	}
 	    	  },{

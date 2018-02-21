@@ -389,6 +389,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
+
 								if((json.city != null &&  json.city!='' && json.city !='undefined')&&(json.state != null &&  json.state!='' && json.state !='undefined')){
 									appendComa1=' , ';
 								}
@@ -397,6 +398,7 @@
 								}
 								
 								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" readonly="readonly" value="'+city+appendComa1+state+appendComa2+country+'" field-name="Address" placeholder="Address" data-validation="required">';
+
 // 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
@@ -415,17 +417,17 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 								result = result + '<label>State</label>';
-								result = result + '<input type="text"  class="form-control" name="state" readonly="readonly" value="'+state+'" id="clientState" field-name="State"  > ';
+								result = result + '<input type="text"  class="form-control" name="state" value="'+state+'" id="clientState" field-name="State"  > ';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>City</label>';
-								result = result + '<input type="text"  class="form-control" name="city" readonly="readonly" id="clientCity" value="'+city+'" field-name="City"  > ';
+								result = result + '<input type="text"  class="form-control" name="city" id="clientCity" value="'+city+'" field-name="City"  > ';
 								result = result + '</div> ';
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Zip Code</label>';
-								result = result + '<input type="text"  class="chosen-select form-control" readonly="readonly" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+								result = result + '<input type="text"  class="chosen-select form-control" name="zipcode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 								result = result + '</div> ';
 								
 						}
@@ -446,7 +448,7 @@
                         result = result + '<div class="user_summary_edit_cta">';
 						result = result + '<label>Street Address</label>';
 						if(json.address != null && json.address !='' && json.address != 'undefined'){
-						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" readonly="readonly" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
+						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
 						}else{
 							result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
 						}

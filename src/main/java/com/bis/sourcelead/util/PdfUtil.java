@@ -31,6 +31,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
@@ -67,6 +68,9 @@ public class PdfUtil {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	 CommonUtil commonUtil;
@@ -976,7 +980,6 @@ public class PdfUtil {
 	    
 
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
-		
 			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
 				 UserRole userRole;
 				try {
@@ -1029,11 +1032,13 @@ public class PdfUtil {
 			}else {
 				empArray[6] = "--";
 			}
-			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
-				empArray[7] = projectMember.getDraftHrs();
+			if(projectMember.getCandidateId() != null){
+				 Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "APPROVED");
+				    empArray[7] = String.valueOf(approvalTimesheetsSubmissionsCountAsEmployee);
 			}else {
 				empArray[7] = "--";
 			}
+			
 		return empArray;
 	}
 	
