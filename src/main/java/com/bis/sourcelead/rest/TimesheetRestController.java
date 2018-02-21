@@ -2314,7 +2314,7 @@ public class TimesheetRestController {
 			HashMap<String,Long> totalMap = new HashMap<>();
 			/*while(actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)){*/
 					  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(taskUUID);
-					  TimeSheetDayEntries timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), actualStartDate);
+					  TimeSheetDayEntries timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), timesheetDate);
 					  if(timesheetDayEntries == null){
 						 timesheetDayEntries = new TimeSheetDayEntries();
 						 timesheetDayEntries.setBillableHours("00:00");
