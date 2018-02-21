@@ -97,7 +97,7 @@ function getInterviewsDates(){
 			  }if(locationDate.match("dd-MM-yyyy")){
 				  date = date.getDate()+"-"+month+"-"+date.getFullYear();
 			  }if(locationDate.match("MM-dd-yyyy")){
-				  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+				  date = month+"-"+date.getDate()+"-"+date.getFullYear();
 			  }if(locationDate.match("yyyy-dd-MM")){
 				  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
 			  }

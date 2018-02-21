@@ -1791,6 +1791,49 @@ public class ClientRestController {
 			String	json = hit.getSourceAsString();
 				mapper.setDateFormat(df);
 				ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+				OrgLocations childOrgLocations = null;
+				boolean flag = false;
+				if(StringUtils.isNotBlank(clientVendorDTO.getSearchCountry()) || StringUtils.isNotBlank(clientVendorDTO.getFilterSearchValue())){
+					
+					if(clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()) {
+						childOrgLocations = orgLocationService.getOrgLocations(clientVendor.getOrgLocationId().longValue());
+					}else {
+						childOrgLocations = orgLocationService.getOrgLocations(clientVendor.getResponderLocationId().longValue());
+					}
+					
+					if(childOrgLocations != null) {
+						    
+						if(StringUtils.isNotBlank(clientVendorDTO.getSearchCountry())){
+							  if(StringUtils.isNotBlank(childOrgLocations.getCountry()) && childOrgLocations.getCountry().equalsIgnoreCase(clientVendorDTO.getSearchCountry())) {
+								  flag = true;
+							  }else {
+								  flag = false;
+							  }
+					    }
+					
+						if(StringUtils.isNotBlank(clientVendorDTO.getSearchState())){
+							 if(StringUtils.isNotBlank(childOrgLocations.getState()) && childOrgLocations.getState().equalsIgnoreCase(clientVendorDTO.getSearchState())) {
+								 flag = true;
+							 }else {
+								 flag = false;
+							 }
+					    }
+						
+						if(StringUtils.isNotBlank(clientVendorDTO.getSearchCity())){
+							 if(StringUtils.isNotBlank(childOrgLocations.getCity()) && childOrgLocations.getCity().equalsIgnoreCase(clientVendorDTO.getSearchCity())) {
+								 flag = true;
+							 }else {
+								 flag = false;
+							 }
+					    }
+						
+					}
+					
+					if(flag == false)
+						continue;
+					
+				}
+				
 				
 				//  This is to get the number of Contacts based  on Org Relation Id
 				 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
@@ -1835,7 +1878,9 @@ public class ClientRestController {
 		     clientVendorList.add(clientVendor);
 				
 			}
+			
 			response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+			
 			SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
 							0, 10, "createdBy.keyword", SortOrder.DESC, boolQueryBuilderForCount);
@@ -1843,7 +1888,7 @@ public class ClientRestController {
 			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 		}
 		response.setData(clientVendorList);
-		 return response;
+		return response;
 
 	}
 	

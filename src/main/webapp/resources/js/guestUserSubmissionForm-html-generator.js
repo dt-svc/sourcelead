@@ -1,4 +1,5 @@
 /**
+
  * Simple Jquery Form Builder (SJFB)
  * Copyright (c) 2015 Brandon Hoover, Hoover Web Development LLC (http://bhoover.com)
  * http://bhoover.com/simple-jquery-form-builder/
@@ -275,7 +276,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
         		 if(required == 1){
         			 if(label == 'Email Id'){
         				 datavalidation = 'data-validation="required validate_email validate_Space validate_length length2-100"';
-        				 onBlurEvent = 'onblur="validateSubmissionCandidateEmail();getUserByUserEmail();"';
+        				 onBlurEvent = 'onblur="validateSubmissionCandidateEmail();"';
         				 
         			 }else if(label == 'Phone Number'){
         				 datavalidation = 'data-validation="required validate_phone validate_Space validate_length length9-20"';

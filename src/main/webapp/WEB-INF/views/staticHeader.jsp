@@ -7,8 +7,8 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-<meta name="Description" content="SourceLead">
-<meta name="Keywords" content="">
+<meta name="description" content="Sourcelead is an integrated human resource solution which provides an automated process for the talent search. Be it a niche profile or a generic role, you have access to marketplace.">
+<meta name="keywords" content="Application tracking system, ats software, top applicant tracking systems, payroll software, vendor management, client management, onboard candidate, offboard candidate, top hr tracking software"> <meta name="robots" content="index, follow">
 	<link rel="stylesheet" href="/resources/static-web/css/prettyPhoto.css" type="text/css"/>
 	<link rel="stylesheet" href="/resources/static-web/css/owl.carousel.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
