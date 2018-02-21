@@ -92,7 +92,8 @@ public class CampaignUtil {
 			}
 			return isSenderCreated;
 		} catch (IOException ex) {
-			throw ex;
+//			throw ex;
+			return ex.getMessage();
 		}
 	}
 

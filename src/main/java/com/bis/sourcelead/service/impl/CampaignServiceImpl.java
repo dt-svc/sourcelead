@@ -70,7 +70,7 @@ public class CampaignServiceImpl implements CampaignService{
 			 createSender = new CreateSender();
 		}
 		
-		if (senderCreated != null) {
+		if (senderCreated != null && !senderCreated.contains("400Body")) {
 			
 			createSender.setFromName(createSenderDTO.getCpnSenderName().trim());
 			createSender.setFromMail(createSenderDTO.getCpnSenderFromMail().trim());
