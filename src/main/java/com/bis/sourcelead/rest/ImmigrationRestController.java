@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.User;
@@ -88,6 +89,8 @@ public class ImmigrationRestController {
 			} else if (status.equalsIgnoreCase("docDetails")) {
 				List<LookUpData> educationsList = null;
 				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating dropdown values in UI.
+				/*List<ImmigrationTemplateDTO> templateDTO =  (List<ImmigrationTemplateDTO>)request.getSession().getAttribute("templateDTO");
+				model.addObject("templateDTO", );*/
 				model.addObject("educationsList", educationsList);
 				model.setViewName("/immigration/petitionTemplateDocDetails");
 			} else if (status.equalsIgnoreCase("formDetails")) {
@@ -109,6 +112,7 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		request.getSession().removeAttribute("templateDTO");
+		request.getSession().removeAttribute("templateDocList");
 		model.setViewName("/immigration/addPetitionTemplate");
 		return model;
 	}
@@ -181,15 +185,16 @@ public class ImmigrationRestController {
 	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,@RequestParam(value = "templateId", required = false) String templateId) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		List<ImmigrationTemplateDocDTO> templateDocList = null;
 		try {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
+		templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user);
 		}
 		catch (Exception e) {
 			logger.error("Exception occured while saving Petition Template Doc Details"+e.getMessage());
 			e.printStackTrace();
 		}
-		request.getSession().setAttribute("templateDTO", templateDTO);
+		request.getSession().setAttribute("templateDocList", templateDocList);
 		return "success";
 	}
 	@RequestMapping(value={"/savePetitionTemplateFormDetails"},method = RequestMethod.POST)

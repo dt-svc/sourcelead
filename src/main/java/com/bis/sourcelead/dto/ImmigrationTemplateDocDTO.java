@@ -1,11 +1,18 @@
 package com.bis.sourcelead.dto;
 
 public class ImmigrationTemplateDocDTO {
-	
+	private Long id;
 	private Long documentType;
 	private String description;
 	private String isRequired;
 	private String multiple;
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public Long getDocumentType() {
 		return documentType;
 	}
