@@ -135,5 +135,23 @@ function Immigration(){
 	$("#petitionTemplateTaskDetails").showHelpOnFocus();
 	$("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);  
 });
-
+	// immigration view navigation if don't required comment below code start here.
+	this. savePageOneContinue = function (status){
+		$("#newPetitionTemplateDiv").empty();
+		if(status == 'one'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=one");
+		}else if(status == 'two'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=two");
+		}else if(status == 'three'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=three");
+		}else if(status == 'four'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=four");
+		}else if(status == 'five'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=five");
+		}else if(status == 'six'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=six");
+		}else if(status == 'seven'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=seven");
+		}
+	}// immigration end if don't required comment above code end here.
 }
