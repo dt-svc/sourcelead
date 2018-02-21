@@ -17,11 +17,11 @@
 				<div class="col-md-7 clearfix noPad mt">
 					<div class="col-md-12 noPad mb">
 					  <label class="col-md-3">Template Name<span class="text-danger paddingLeft">*</span></label>
-					  <div class="col-md-9"><input type="text" id="templateName" name="templateName" class="form-control" field-name="Template Name" data-validation="required validate_length length2-100"></div>
+					  <div class="col-md-9"><input type="text" id="templateName" value="${not empty templateDTO.templateName ? templateDTO.templateName : ''}" name="templateName" class="form-control" field-name="Template Name" data-validation="required validate_length length2-100"></div>
 					</div> 
 					<div class="col-md-12 noPad mb">
 					  <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
-					  <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3" field-name="Description" data-validation="required validate_length length2-500"></textarea></div>
+					  <div class="col-md-9"><textarea id="templateDescription" name="templateDescription" class="form-control" rows="3" field-name="Description" data-validation="required validate_length length2-500">${not empty templateDTO.templateDescription ? templateDTO.templateDescription : ''} </textarea></div>
 					</div> 
 				</div>
 			</div>

@@ -15,12 +15,13 @@
 		<form id="PetitionTemplateDocDetails" name="PetitionTemplateDocDetails">
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix" id="templateDocDivStatic">
-				<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
+				<%-- <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-3">
 				  <input type="hidden" name="id" id="templateId"/>
 					<select class="form-control chosen-select" 
 									name="immigrationDocList[0].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
 						<option value="" selected>--Select Document--</option>
+						
 						<c:forEach var="edu" items="${educationsList}">
 										<option value="${edu.id}">${edu.name}</option>
 									</c:forEach>
@@ -46,7 +47,7 @@
 					  		<button type="button" id="btnDynamicRow0" onclick="appendTempDocDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
 					  </div>				  					  					  						  	
 				  </div>
-				</div>
+				</div> --%>
 			</div>
  		</div>
    </form>
@@ -60,7 +61,14 @@
    </div>
    </section>
    <script type="text/javascript">
+   
    function appendTemplateDocDetails(rowId){
+	   var buttonDiv = "";
+	   if(rowId == 0){
+		   buttonDiv = "<button type='button' id='btnDynamicRow"+rowId+"' onclick='appendTempDocDiv();' class='btn btm-sm'><i class='fa fa-plus text-primary'></i></button>";
+	   }else{
+		   buttonDiv = "<button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempDocDiv("+rowId+")' ><i class='fa fa-remove text-danger'></i></button>"
+	   }
 	   var templateDocDetails = "";
 		templateDocDetails = templateDocDetails+ "<div id='dynamicRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
@@ -80,7 +88,7 @@
 		templateDocDetails = templateDocDetails+ "</div><div class='col-md-4'><div class='mt5 ml5 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='' name='immigrationDocList["+rowId+"].multiple' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<label for='checkbox-1' class='checkbox-custom-label fmcheckbox-lable'></label></div></div>";
-		templateDocDetails = templateDocDetails+ "<div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempDocDiv("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div></div>";
+		templateDocDetails = templateDocDetails+ "<div class='col-md-4'>"+buttonDiv+"</div></div></div>";
 		return templateDocDetails 
    }
 	
@@ -91,6 +99,7 @@
    
    function removeTempDocDiv(id){
 	   $("#dynamicRow"+id).remove();
+	   rowId--;
    }
    	</script>
    	
@@ -107,6 +116,8 @@ function tempDocReq(id){
 
    	<script>
 $(document).ready(function(){
+	appendTemplateDocDetails(rowId);
+	
 	$("#templateId").val(jsonObj.id);
 	console.log(" getting the temp id value"+$('#templateId').val());
 });

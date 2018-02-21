@@ -78,8 +78,27 @@ public class ImmigrationRestController {
 	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		if(status.equalsIgnoreCase("templateDetails")) {
-			model.setViewName("/immigration/petitionTemplateDetails");
+		try {
+			if(status.equalsIgnoreCase("templateDetails")) {
+				ImmigrationTemplateDTO dto = (ImmigrationTemplateDTO) request.getSession().getAttribute("templateDTO");
+				model.addObject("templateDTO",dto);
+				model.setViewName("/immigration/petitionTemplateDetails");
+			}if (status.equalsIgnoreCase("tempDetails")) {
+				model.setViewName("/immigration/petitionTemplateDetails");
+			} else if (status.equalsIgnoreCase("docDetails")) {
+				List<LookUpData> educationsList = null;
+				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating dropdown values in UI.
+				model.addObject("educationsList", educationsList);
+				model.setViewName("/immigration/petitionTemplateDocDetails");
+			} else if (status.equalsIgnoreCase("formDetails")) {
+				System.out.println(" inside formDetails controller --->");
+				model.setViewName("/immigration/petitionTemplateFormDetails");
+			} else if (status.equalsIgnoreCase("taskList")) {
+				model.setViewName("/immigration/immigrationTemplateTaskList");
+			}
+		} catch (Exception e) {
+			logger.error("Exception occured in controller while navigating-->");
+			e.printStackTrace();
 		}
 		return model;
 	}
@@ -89,6 +108,7 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		request.getSession().removeAttribute("templateDTO");
 		model.setViewName("/immigration/addPetitionTemplate");
 		return model;
 	}
@@ -154,6 +174,7 @@ public class ImmigrationRestController {
 			logger.error("Exception occured while saving Petition Template Deatils"+e.getMessage());
 			e.printStackTrace();
 		}
+		request.getSession().setAttribute("templateDTO", templateDTO);
 		return "{status:'success', id:"+immigrationId+ "}";
 	}
 	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
@@ -168,6 +189,7 @@ public class ImmigrationRestController {
 			logger.error("Exception occured while saving Petition Template Doc Details"+e.getMessage());
 			e.printStackTrace();
 		}
+		request.getSession().setAttribute("templateDTO", templateDTO);
 		return "success";
 	}
 	@RequestMapping(value={"/savePetitionTemplateFormDetails"},method = RequestMethod.POST)
