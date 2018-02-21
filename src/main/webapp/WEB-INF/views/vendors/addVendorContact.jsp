@@ -80,7 +80,7 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Vendor Name<span class="text-danger">&nbsp;*</span></label>
 
             <div class="col-md-9 chooRadius">
             <div class="input-group col-md-10 pull-left">
