@@ -3,6 +3,7 @@
  */
 package com.bis.sourcelead.immigration.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,17 +58,18 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	}
 
 	@Override
-	public void savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user) {
+	public List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user) {
 
 		List<ImmigrationTemplateDocDTO> docsList = templateDTO.getImmigrationDocList();
 		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
 		immiTemplate.setId(templateDTO.getId());
 		// delete the records if exist in database and reinsert. 
-		immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getId());
-		
+		//immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getId());
+		List<ImmigrationTemplateDocDTO> docsListAfterSave = new ArrayList<ImmigrationTemplateDocDTO>();
 		for (ImmigrationTemplateDocDTO tempObj : docsList) {
-			if(tempObj.getDocumentType() == null) continue;  // added code for to ignore null records entry.
+			if(tempObj.getDocumentType() == null) continue;
 			ImmigrationTemplateDocs immigrationTemplateDocs = new ImmigrationTemplateDocs();
+			immigrationTemplateDocs.setId(tempObj.getId());
 			immigrationTemplateDocs.setImmigrationTempId(immiTemplate);
 			immigrationTemplateDocs.setCreatedDate(new Date());
 			immigrationTemplateDocs.setCreatedBy(user);
@@ -82,8 +84,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			}
 			immigrationTemplateDocs.setIsMultipleRequired(tempObj.getMultiple());
 			immigrationTemplateDocs.setStatus(1);// active
-			immigrationTemplateDao.savePetitionTemplateDocDetails(immigrationTemplateDocs);
+			Long id=immigrationTemplateDao.savePetitionTemplateDocDetails(immigrationTemplateDocs);
+			tempObj	.setId(id);
+			docsListAfterSave.add(tempObj);
 		}
+		return docsListAfterSave;
 
 	}
 
