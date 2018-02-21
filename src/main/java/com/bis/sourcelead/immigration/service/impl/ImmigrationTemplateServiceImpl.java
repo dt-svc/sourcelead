@@ -66,6 +66,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getId());
 		
 		for (ImmigrationTemplateDocDTO tempObj : docsList) {
+			if(tempObj.getDocumentType() == null) continue;  // added code for to ignore null records entry.
 			ImmigrationTemplateDocs immigrationTemplateDocs = new ImmigrationTemplateDocs();
 			immigrationTemplateDocs.setImmigrationTempId(immiTemplate);
 			immigrationTemplateDocs.setCreatedDate(new Date());

@@ -119,7 +119,6 @@ $(document).ready(function(){
 	appendTemplateDocDetails(rowId);
 	
 	$("#templateId").val(jsonObj.id);
-	console.log(" getting the temp id value"+$('#templateId').val());
 });
 </script> 
    
