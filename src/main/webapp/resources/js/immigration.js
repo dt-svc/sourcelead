@@ -8,9 +8,9 @@ function Immigration(){
 		if(temp == 'templateDetails'){
 			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=templateDetails");
 		}else if(temp == 'templateDocs'){
-			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=docDetails");
+			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=docDetails");
 		}else if(temp == 'formDetails'){
-			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=formDetails");
+			$("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=formDetails");
 		}
 	}
 	
@@ -28,7 +28,7 @@ function Immigration(){
 		    		   immTemplId=jsonObj.id;
 		    		   if(status == 'saveContinue'){
 				    	   $("#addNewPetitionTemplateDiv").empty();
-				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=docDetails");
+				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=docDetails");
 		    		   }
 		    	   }
 		       }
@@ -55,7 +55,7 @@ function Immigration(){
 		    	   if(data == 'success'){
 		    		   if(status == 'saveContinue'){
 				    	   $("#addNewPetitionTemplateDiv").empty();
-				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=formDetails");
+				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=formDetails");
 		    		   }
 		    	   }
 		       }
@@ -78,7 +78,7 @@ function Immigration(){
 		    	   if(data == 'success'){
 		    		   if(status == 'saveContinue'){
 			    	   $("#addNewPetitionTemplateDiv").empty();
-			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=taskList");
+			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=taskList");
 		    	   }
 		    	 }
 		       }
@@ -112,7 +112,7 @@ function Immigration(){
 				   $("#taskViewPopup").fadeOut(100);
 		    	   if(data == 'success'){
 			    	   $("#addNewPetitionTemplateDiv").empty();
-			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/addPetitionTemplate?forwardTo=taskList");
+			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=taskList");
 			    	   
 		    	   }
 		       }
