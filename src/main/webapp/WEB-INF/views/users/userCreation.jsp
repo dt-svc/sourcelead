@@ -202,7 +202,7 @@
        
        <span id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor <i class='fa fa-info-circle' title='Select/Add the vendor details of the respective associate. (This applies to C2C and C2C 1099 employment types)'></i></span><span class="text-danger pull-left" id="man1">*</span></label>
 			<div class="col-md-9 chooRadius" id="errorvendor">
 			 <div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();vendorContactEmpty();removeValiationVendor();">
@@ -235,7 +235,7 @@
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager<span class="text-danger">&nbsp;*</span></label>
+                  <label class="col-md-3">Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
                   <div class="col-md-9">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager" data-validation="required">
                         <option value="">-Select Manager-</option>
