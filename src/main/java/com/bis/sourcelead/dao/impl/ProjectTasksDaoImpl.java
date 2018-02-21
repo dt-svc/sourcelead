@@ -405,13 +405,15 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		StringBuilder query1 = new StringBuilder("");
 		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
 		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
-		       .append("OR pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+		       .append("OR (pt.generatedId like '%" + projectTasksDTO.getSearchValue() + "%' )")
+		       .append("OR (concat(pt.generatedId,pt.taskName) like '%" + projectTasksDTO.getSearchValue().replace("-", "").replaceAll("[\\s]+", "").trim() + "%' )")
+		       .append("OR (pt.priority IS NOT NULL and pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' )")
 			   .append("OR pt.taskType.name = '%" + projectTasksDTO.getSearchValue() + "%' ")
 			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
 					
 		}
-		 
-		 String queryStr = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1'" ;
+		 //concat(userRole.user.firstName,userRole.user.lastName) like
+		 String queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and pt.status ='1'" ;
 		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
 		 String subQueryStr = "";
 		 if(StringUtils.isNotEmpty(taskType)) {

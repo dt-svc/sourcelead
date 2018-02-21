@@ -796,7 +796,8 @@ public class InvoiceRestController {
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
-				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
+//				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
+				Candidate candidate = projectMember.getProjectMemberCandidteId();
 				if(candidate != null){
 					projectMember.setSubmissionApproverHierarchyId(sah.getId());
 					StringBuilder candidateName = new StringBuilder();
@@ -898,7 +899,9 @@ public class InvoiceRestController {
 		if(null !=sahList && sahList.size() >0){
 			for(SubmissionApproverHierarchy sah : sahList){
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
-				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
+//				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
+				Candidate candidate = projectMember.getProjectMemberCandidteId();
+				
 				if(candidate != null) {
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
