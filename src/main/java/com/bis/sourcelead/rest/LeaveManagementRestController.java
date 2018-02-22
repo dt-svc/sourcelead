@@ -275,9 +275,9 @@ public class LeaveManagementRestController {
 		   UserRole userRole = userRoleService.getUserRoleByUserId(userId);
 
 		   Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
-		   int balanceLeaveCounts = 0;
+		   float balanceLeaveCounts = 0;
 		   int pendingLeaveCounts = 0;
-		   int takenLeaveCounts = 0;
+		   float takenLeaveCounts = 0;
 		   List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocations.getId()));
 
 		   List<LeaveType> roleLeaveType = new ArrayList<>();
@@ -296,27 +296,28 @@ public class LeaveManagementRestController {
 				int totalLeaves = 0;
 				
 				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,loginUser);
-				
+				float totalbalanceLeaveCounts = totalLeaves;
 				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), loginUser.getId());
 				for (Leave leave : totalleavesTaken) {
+					float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 //						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-						totalLeaves = totalLeaves - (leave.getNumberOfDays() - leave.getExtraLeavesTaken());
+						totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
 //						else
 //							totalLeaves = totalLeaves - leave.getNumberOfDays();
 						
-						takenLeaveCounts = takenLeaveCounts + leave.getNumberOfDays();
+						takenLeaveCounts = takenLeaveCounts + appliedLeaveCount;
 					}
 				}
 				
-				balanceLeaveCounts += totalLeaves;
-				type.setBalanceLeaveCounts(balanceLeaveCounts);
+				balanceLeaveCounts += totalbalanceLeaveCounts;
+				type.setTotalBalanceLeaveCounts(balanceLeaveCounts);
 				type.setPendingLeaveCounts(pendingLeaveCounts);
-				type.setTakenLeaveCounts(takenLeaveCounts);
-				type.setRemainingTotalLeaveCounts(totalLeaves);
+				type.setTakenLeaves(takenLeaveCounts);
+				type.setLeaveTypeBalanceLeaveCount(totalbalanceLeaveCounts);
 				}
 		   }
 		return roleLeaveType;
@@ -1233,13 +1234,17 @@ public class LeaveManagementRestController {
 			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 			leaveDto.setApproverUsers(String.join(",", aphlist)); 
 			Map<String,Integer> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-			leaveDto.setLeavesTaken(String.valueOf(nuberOfLeavestaken.get("numberOfLeavsTaken")));
-			int thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
-			leaveDto.setThisMonthLeaves(String.valueOf(thisMonthLeaves));
+			
+			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
+			leaveDto.setActualLeavesTaken(leavesTaken);
+			
+			float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+			leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
+			
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 //			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
-			int balLeaves = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken");
-			leaveDto.setBalanceleaves(String.valueOf(balLeaves));
+			float balLeaves = totalLeavesperYear - leavesTaken;
+			leaveDto.setTotalBalLeaves(balLeaves);
 		}
 		return leaveDto;
 	}
@@ -1537,36 +1542,39 @@ public class LeaveManagementRestController {
 		   List<LeaveTypeDTO> leaveTypeDTOList = new ArrayList<>();
 		   if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 				for(LeaveType type : leaveTypeList) {
-					int pendingCounts = 0;
-				    int approvedCounts = 0;
-					int rejectedCounts = 0;
-					int cancelCounts = 0;
-					int noOfDays = 0;
+					float pendingCounts = 0;
+				    float approvedCounts = 0;
+					float rejectedCounts = 0;
+					float cancelCounts = 0;
+					float noOfDays = 0;
 					LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
 					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
 					int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
 					if(totalleavesTaken != null && totalleavesTaken.size() > 0) {
 						for (Leave leave : totalleavesTaken) {
+							
+							float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+							
 							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-								pendingCounts = pendingCounts + 1;
+								pendingCounts = pendingCounts + appliedLeaveCount;
 							}
 							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								approvedCounts = approvedCounts + 1;
+								approvedCounts = approvedCounts + appliedLeaveCount;
 								
-								noOfDays = noOfDays + leave.getNumberOfDays();
+								noOfDays = noOfDays + appliedLeaveCount;
 								if(noOfDays > totalLeavesperYear) {
-									int totalLeaves =  totalLeavesperYear - noOfDays;
-									leaveTypeDto.setNumberOfDaysCount(String.valueOf(totalLeaves));
+									float totalLeaves =  totalLeavesperYear - noOfDays;
+									leaveTypeDto.setTotalNoOfDays(totalLeaves);
 								}else {
-									leaveTypeDto.setNumberOfDaysCount(String.valueOf(noOfDays));
+									leaveTypeDto.setTotalNoOfDays(noOfDays);
 								}
 								
 							}
 							if(Constants.REJECTED.equalsIgnoreCase(leave.getStatus())) {
-								rejectedCounts = rejectedCounts + 1;
+								rejectedCounts = rejectedCounts + appliedLeaveCount;
 							}
 							if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus())) {
-								cancelCounts = cancelCounts + 1;
+								cancelCounts = cancelCounts + appliedLeaveCount;
 							}
 							
 					 }
@@ -1574,10 +1582,10 @@ public class LeaveManagementRestController {
 						leaveTypeDto.setName(type.getName());
 						leaveTypeDto.setLeaveTypeId(type.getId());
 						leaveTypeDto.setNoOfLeavesPerYear(String.valueOf(totalLeavesperYear));
-						leaveTypeDto.setApprovedCount(approvedCounts);
-					    leaveTypeDto.setRejectedCount(rejectedCounts);
-					    leaveTypeDto.setPendingCount(pendingCounts);
-					    leaveTypeDto.setCancelCount(cancelCounts);
+						leaveTypeDto.setTotalApprovedCount(approvedCounts);
+					    leaveTypeDto.setTotalRejectedCount(rejectedCounts);
+					    leaveTypeDto.setTotalPendingCount(pendingCounts);
+					    leaveTypeDto.setTotalCancelCount(cancelCounts);
 					    leaveTypeDTOList.add(leaveTypeDto);					
 					}
 					}
