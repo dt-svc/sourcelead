@@ -263,7 +263,7 @@ function removeEndValid(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
-        		  output = output +'<option value='+leave.id+'>'+leave.name+'</option>';
+        		  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -447,13 +447,13 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var leaveTypeId = $("#leaveType").val();
+	var leaveTypeUUID = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+leaveTypeId,	 
+		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
 		    success: function(report) {
 		    	if(report.duration == "Full Day"){
 		    		$("#fromHalfDayDiv").hide();
