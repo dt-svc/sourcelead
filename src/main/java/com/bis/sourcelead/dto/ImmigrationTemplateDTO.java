@@ -16,6 +16,8 @@ public class ImmigrationTemplateDTO {
 
 	private String immigrationDocDeletedListIds;
 	
+	private String immigrationFormDeletedListIds;
+	
 	private List<ImmigrationTemplateDocDTO> immigrationDocList;
 	
 	private List<ImmigrationTemplateFormDTO> immigrationFormList;
@@ -230,6 +232,14 @@ public class ImmigrationTemplateDTO {
 
 	public void setImmigrationDocDeletedListIds(String immigrationDocDeletedListIds) {
 		this.immigrationDocDeletedListIds = immigrationDocDeletedListIds;
+	}
+
+	public String getImmigrationFormDeletedListIds() {
+		return immigrationFormDeletedListIds;
+	}
+
+	public void setImmigrationFormDeletedListIds(String immigrationFormDeletedListIds) {
+		this.immigrationFormDeletedListIds = immigrationFormDeletedListIds;
 	}
 
 }

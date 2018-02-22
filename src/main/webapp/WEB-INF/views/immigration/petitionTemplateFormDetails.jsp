@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var = "formsList" scope = "page" value = '<%= session.getAttribute("templateFormsList") %>'/>
+<c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -12,12 +15,16 @@
 			</ul>
 		</div>
 		<form id="petitionTemplateFormDetails" name="petitionTemplateFormDetails">
+		 <input type="hidden" name="id" id="templateId"/>
 		<div class="addImmiContent clearfix">
 			<div class="immiTemp clearfix" id="templateFormDivStatic">
+			<c:choose>
+    			   <c:when  test="${empty formsList}"> <!--  when list is empty loads default row -->
+				      
 				<div class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
 				  <div class="col-md-3">
-				   <input type="hidden" name="id" id="templateId"/>
+				  
 					<div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
 						<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 						  <input style="display: none;" onchange="uploadBtnFile(0);"  id="uploadBtn0"  class="upload" type="file">
@@ -42,8 +49,57 @@
 					  </div>			  					  					  						  	
 				  </div>
 				</div>
+				<c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/><!--setting rowIndex as 1 when default row is loaded -->
 				
+				</c:when>
+				<c:otherwise>
+				<c:forEach var="item" items="${formsList}" varStatus="rows">
+				<c:if test="${rows.count == 1}"> <!--adding add row div for first row-->
+					<div class="immiTemp clearfix" id="templateFormDivStatic">
+					  </c:if>
+					  <c:if test="${rows.count > 1}"><!--when rowIndex is 1 default(first) row is loaded with add button-->
+					    <div id="dynamicFormRow${rows.count-1}" class="col-md-12 clearfix noPad mt"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
+					  </c:if>
+				<div class="col-md-12 clearfix noPad mt">
+				<input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
 				
+				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
+				  <div class="col-md-3">
+					<div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
+						<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs('${rows.count-1}');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+						  <input style="display: none;" onchange="uploadBtnFile('${rows.count-1}');"  id="uploadBtn0"  class="upload" type="file">
+						  </span></label>
+						   <input type="text" class="form-control" readonly id="uploadFile${rows.count-1}" name = "immigrationFormList[${rows.count-1}].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required">
+<!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
+					  </div>				  	
+				  </div>
+				  <div class="col-md-5 noPad">
+						<input type="text" class="form-control" name="immigrationFormList[${rows.count-1}].formDescription" value= "${item.formDescription}" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
+				  </div>
+				  <div class="col-md-2 clearfix">
+					  <div class="col-md-6 noPad">
+						<label class="switch mt5 text-center">
+						<input checked id="requiredCheck0" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc(0)" value="Y">
+
+						<div class="slider round"></div>
+						</label>
+					  </div>
+					<c:if test="${rows.count == 1}"><!--Adding 'add row' div for the first row-->					  
+					  <div id="divFormButton" class="col-md-4">
+					  		<button type="button" id="divFormButtonDynamicRow0" onclick="appendFormDetailsDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
+					  </div>
+					  </c:if>
+					  <c:if test="${rows.count > 1}"><!--adding 'remove div' for 2 row onwards-->
+							  <div id="divButton" class="col-md-4">
+							  		<button type="button" class="btn btm-sm" id="btnDynamicRowDelete${rows.count-1}" onclick="removeTempFormRow('${rows.count-1}')"><i class='fa fa-remove text-danger'></i></button>
+							  </div>				  					  					  						  	
+					  </c:if>			  					  					  						  	
+				  </div>
+				</div>
+				<c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/><!--increment the rowIndex  for dynamic rows after save or page navigation  -->
+				</c:forEach>
+				</c:otherwise>
+				</c:choose>
 								  					  	
 			</div>
  		</div>
@@ -105,19 +161,22 @@ function uploadFormDocs(id){
 		result = result+ "<label class='switch mt5 text-center'>";
 		result = result+ "<input checked title='Is Required' onclick='checkIsReqDoc("+rowId+")' value='Y' id='requiredCheck"+rowId+"' name='immigrationFormList["+rowId+"].isRequired' type='checkbox'>";
 		result = result+ "<div class='slider round'></div></label>";
-		result = result+ "<div class='col-md-6 pull-right'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempFormRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div>";
+		result = result+ "<div class='col-md-6 pull-right'><button type='button' class='btn btm-sm' id='btnDynamicRowDelete"+rowId+"' onclick='removeTempFormRow("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div>";
 		return result 
    }
 	
    /* $(document).ready(function(){
 	   $("#templateDocDivStatic").append(appendresult());
    }); */
-   var rowId=0;
+   var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
    function appendFormDetailsDiv(){
-	   $("#templateFormDivStatic").append(appendTemplateFormDetails(++rowId));
+	   $("#templateFormDivStatic").append(appendTemplateFormDetails(rowId++));
    }
-   
+   var deletedFormsListIds = new Array();
    function removeTempFormRow(id){
+	   if($("#templateId"+id).val() !==  undefined ){
+		   deletedFormsListIds.push($("#templateId"+id).val());   
+	   }
 	   $("#dynamicFormRow"+id).remove();
 	   rowId--;
    }

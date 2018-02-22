@@ -23,6 +23,8 @@ public interface ImmigrationTemplateDao {
 	
 	void deletePetitionTemplateDocDetails(String remainingDocsIds);
 	
+	void deletePetitionTemplateFormDetails(String remainingFormIds);
+	
 	List<ImmigrationTemplateView> getAllTemplateDetails();
 	
 	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);

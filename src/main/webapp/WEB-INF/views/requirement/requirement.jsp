@@ -1904,7 +1904,7 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
-			    	$("#experienceLevel").val(json.experienceLevel.name);
+			    	$("#experienceLevel").val(json.experienceLevelStr);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');
@@ -2079,7 +2079,7 @@ function setTemplateValues(){
 						}
 						
 					 		
-					
+						var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 					$('#description').val('');
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');

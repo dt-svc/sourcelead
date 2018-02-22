@@ -291,12 +291,14 @@ public class UserRole implements Serializable {
 	private String userCode;
 
 	@Transient
+	@JsonProperty
 	private String vendorOrgRelationId;
 
 	@Transient
 	private String designationOtherType;
 
 	@Transient
+	@JsonProperty
 	private String vendorSpocId;
 
 	@Transient
