@@ -141,8 +141,15 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		
 		List <ImmigrationTemplateFormDTO> savedFormList = new ArrayList<ImmigrationTemplateFormDTO>(); 
 
+		if(!StringUtils.isEmpty(templateDTO.getImmigrationFormDeletedListIds())) {
+			immigrationTemplateDao.deletePetitionTemplateFormDetails(templateDTO.getImmigrationFormDeletedListIds());
+		}
+		
 		for (ImmigrationTemplateFormDTO tempObj : formsList) {
 			ImmigrationTemplateForms immigrationTemplateForms = new ImmigrationTemplateForms();
+			if(tempObj.getId() != null){
+				immigrationTemplateForms.setId(tempObj.getId());
+			}
 			immigrationTemplateForms.setImmigrationTempId(immiTemplate);
 			immigrationTemplateForms.setFormName(tempObj.getFormName());
 			immigrationTemplateForms.setDescription(tempObj.getFormDescription());
@@ -175,6 +182,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			}
 			ImmigrationTemplateForms immigrationForms = immigrationTemplateDao.savePetitionTemplateFormDetails(immigrationTemplateForms);
 			tempObj.setId(immigrationForms.getId());
+			tempObj.setFileName(immigrationForms.getFileName());
+			tempObj.setFileUrl(immigrationForms.getFileUrl());
 			savedFormList.add(tempObj);
 		}
 		

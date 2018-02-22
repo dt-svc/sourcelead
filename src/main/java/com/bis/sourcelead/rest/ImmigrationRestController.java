@@ -148,6 +148,7 @@ public class ImmigrationRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		request.getSession().removeAttribute("templateDTO");
 		request.getSession().removeAttribute("templateDocList");
+		request.getSession().removeAttribute("templateFormsList");
 		model.setViewName("/immigration/addPetitionTemplate");
 		return model;
 	}

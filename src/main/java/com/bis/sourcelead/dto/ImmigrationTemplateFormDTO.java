@@ -12,6 +12,10 @@ public class ImmigrationTemplateFormDTO {
 	
 	private String formName;
 	
+	private String fileName;
+	
+	private String fileUrl;
+	
 	private List<FileInfo> immigrationFormFileInfo;
 	
 	public String getFormDescription() {
@@ -53,6 +57,22 @@ public class ImmigrationTemplateFormDTO {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 
 	

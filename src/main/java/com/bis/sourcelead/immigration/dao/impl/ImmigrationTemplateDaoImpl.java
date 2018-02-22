@@ -146,6 +146,18 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		logger.debug("Number of records deleted-->"+count);
 	}
 	
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deletePetitionTemplateFormDetails(String remainingFormIds) {
+		logger.debug("Delete Template Docs-->");
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("delete from ImmigrationTemplateForms itf where itf.id in (:templateIds)").setString("templateIds", remainingFormIds);
+		int count = query.executeUpdate();
+		logger.debug("Number of records deleted-->"+count);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
