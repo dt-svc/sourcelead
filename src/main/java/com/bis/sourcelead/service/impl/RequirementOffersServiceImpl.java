@@ -1494,7 +1494,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		
     		candidate.setCandidateType("Candidate");
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-    		candidate.setDesignationType("C2C");
+    		
+    		if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+    			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+    		}
+    		
+    		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+    			candidate.setDesignationType(requirementOffers.getPositionType());
+    		}else {
+    			candidate.setDesignationType("C2C");
+    		}
+    		
     		candidate.setStatus(Constants.RECORD_ACTIVE);
     		candidate.setCurrentRate(requirementOffers.getAmount());
     		candidate.setCurrentRateType(requirementOffers.getPaymentMode());
