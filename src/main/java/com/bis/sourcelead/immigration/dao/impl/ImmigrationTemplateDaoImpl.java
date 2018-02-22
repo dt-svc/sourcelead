@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -157,5 +158,21 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			   exception.printStackTrace();
 			}
 		return templateList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationTemplateDocDTO> getTemplateDocList(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateDocDTO>  templateDocList= null;
+		try {
+			  Query query= session.createQuery("from ImmigrationTemplateDocs templateDocs where templateDocs.immigrationTempId.id = :templateId").setLong("templateId", id);
+			  templateDocList = query.list();
+			 
+		} catch (Exception exception) {
+			logger.error("Error Occured  while fetching template details-->");
+			   exception.printStackTrace();
+			}
+		return templateDocList;
 	}
 }
