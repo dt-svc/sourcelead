@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -140,6 +141,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 ClientService clientService;
+	 
+	 @Autowired
+	 OrgSpocService orgSpocService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -971,7 +975,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						
 					}
 					
-					if(candidate.getParentCandidateId() != null){
+					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						int level = 1;
 						while(parentCandidatId != null){
@@ -1015,7 +1019,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 									pah.setProjectId(projects);
 									pah.setProjectClientsId(projectClients);
-									pah.setApproverUserId(cand.getOrgLocationId().getUser());
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										pah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										pah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
 									pah.setLevel(1);
 									pah.setStatus("1");
 									projectApproverHierarchyList.add(pah);
@@ -1529,7 +1541,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 					pah.setProjectId(projects);
 					pah.setProjectClientsId(pc);
-					pah.setApproverUserId(cand.getOrgLocationId().getUser());
+					
+					if(cand.getOrgLocationId().getUser() != null) {
+						pah.setApproverUserId(cand.getOrgLocationId().getUser());
+					}else {
+						OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+						pah.setApproverUserId(orgSpoc.getVendorUser());
+					}
+					
 					pah.setLevel(1);
 					pah.setStatus("1");
 					projectApproverHierarchyList.add(pah);
@@ -1595,6 +1614,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,
 			Long projectId, Long locationId) throws Exception {
 		return projectMembersDao.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId, Long projectId) throws Exception {
+		return projectMembersDao.getAllProjectMembersByMasterCandidateId(masterCandidateId, projectId);
 	}
 
 }

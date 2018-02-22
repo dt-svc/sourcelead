@@ -128,5 +128,32 @@ Please mail us at </p>
 <script src="/resources/static-web/js/bootstrap.min.js"></script> 
 <script src="/resources/static-web/js/jquery.prettyPhoto.js" type="text/javascript"></script>
 <script src="/resources/static-web/js/customscripts.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function(){
+	// MarQ Script 
+	$(".marQ").hide();
+	var location = window.location.origin;
+	 $.ajax({
+        url: location+"/getScheduleStatus",
+        success: function(data) {
+        	if(data !== ""){
+        		$(".marQ").show();
+        		$("#maintenanceStatus").append(data.mainMessage);
+        		$(".customNavBar").addClass("customNavBarTop");
+        		$(".staticBan").addClass("staticBanTop");
+        		$(".termsWrap").addClass("termsWrapTop");
+        	}else{
+        		$(".marQ").hide();
+        		$(".customNavBar").removeClass("customNavBarTop");
+        		$(".staticBan").removeClass("staticBanTop");
+        		$(".termsWrap").removeClass("termsWrapTop");
+        	}
+        }
+	}); 	
+	
+});
+</script>
+
 </body>
 </html>

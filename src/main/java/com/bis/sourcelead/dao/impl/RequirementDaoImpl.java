@@ -1695,7 +1695,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 		
 		if(requirementDTO.getJobCampaignType().equalsIgnoreCase("openJobs")){
-			String query = "from Requirement requirement  where requirement.orgLocationId.id =:orglocationId and requirement.requirementSubmissionStatus = 'OPEN' or  requirement.requirementSubmissionStatus = 'NEW'";
+			String query = "from Requirement requirement  where requirement.orgLocationId.id =:orglocationId and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW')";
 			 
 				if(query1.toString() != null && !query1.toString().isEmpty()){
 					 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
@@ -1938,7 +1938,7 @@ Session session = this.sessionFactory.getCurrentSession();
 	public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select req from Requirement req where req.requirementUUID =:requirementUUID and (req.managerUserId.id = :userId OR req.createdBy.id = :userId or req.id IN(select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.requirementUUID =:requirementUUID) or req.id IN (select rah.requirementId.id from RequirementApproverHierarchy rah where rah.approverUserId.id = :userId and rah.requirementId.requirementUUID =:requirementUUID))";
+		String query = "select req from Requirement req where req.requirementUUID =:requirementUUID and (req.releaseJobToAllUsers = 'Y' OR req.managerUserId.id = :userId OR req.createdBy.id = :userId or req.id IN(select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.requirementUUID =:requirementUUID and rat.status <> '0') or req.id IN (select rah.requirementId.id from RequirementApproverHierarchy rah where rah.approverUserId.id = :userId and rah.requirementId.requirementUUID =:requirementUUID))";
 		List requirementList = session.createQuery(query).setLong("userId", userId).setString("requirementUUID", requirementUUID).list();
 		Requirement requirement = null;
 		if(requirementList != null && !requirementList.isEmpty())

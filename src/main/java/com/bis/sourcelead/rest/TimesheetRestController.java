@@ -1650,6 +1650,9 @@ public class TimesheetRestController {
 	    	ProjectMembers projectMember = null;
 			if(tedDTO != null && tedDTO.getProjectMemberId() != null){
 				  projectMember = projectMembersService.getProjectMemberById(tedDTO.getProjectMemberId());
+				  tedDTO.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
+				  tedDTO.setEmployeeName(projectMember.getProjectMemberCandidteId().getFullName());
+				  tedDTO.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			}
 			Date frequencyStartDate = null;
 			Date frequencyEndDate = null;
@@ -2311,7 +2314,7 @@ public class TimesheetRestController {
 			HashMap<String,Long> totalMap = new HashMap<>();
 			/*while(actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)){*/
 					  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(taskUUID);
-					  TimeSheetDayEntries timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), actualStartDate);
+					  TimeSheetDayEntries timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), timesheetDate);
 					  if(timesheetDayEntries == null){
 						 timesheetDayEntries = new TimeSheetDayEntries();
 						 timesheetDayEntries.setBillableHours("00:00");

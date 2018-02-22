@@ -11,6 +11,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
+<link href="/resources/css/jobs/css/main-style.css" rel="stylesheet">
 <script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -101,6 +102,16 @@ jQuery(document).ready(function($) {
 				<span>--</span>
 				</c:if>
 				</div>	
+
+				<div class="skills mb">
+				<strong class="pull-left">Location(s) :</strong>
+				<ul class="list-unstyled list-inline joblocations-li">
+				<c:forEach var="location" items="${location}">
+				<li>${location}</li>
+				</c:forEach>
+				</ul>
+				</div>	
+				
 				<div class="clearfix"></div>
 				<ul class="list-unstyled list-inline"><li>
 				<div class="jobType">
@@ -125,14 +136,7 @@ jQuery(document).ready(function($) {
 				</c:if>
 				</div>
 				</li><li>
-				<div class="location">
-				<c:if test="${!empty location}">
-				<span><i class="fa fa-map-marker paddingRight"></i>${location}</span>
-				</c:if>
-				<c:if test="${empty location}">
-				<span><i class="fa fa-map-marker paddingRight"></i>--</span>
-				</c:if>
-				</div>
+				 
 				</li><li>
 				<div class="rate">
 				<c:if test="${!empty minRate && !empty maxRate}">
@@ -642,6 +646,9 @@ function validate_fileupload(fileName)
  
 <script>
 function guestCancel(){
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
 	 window.location = sourceleadUrl+"/jobs"
 }
 </script>

@@ -3173,6 +3173,13 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			reqTemplate.setMinExp(null);
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationYears())) {
+			reqTemplate.setProjectDurationYears(requirementDTO.getProjectDurationYears());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
+			reqTemplate.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
+		}
+	
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
 			reqTemplate.setRate(requirementDTO.getRate());
 		}
@@ -3719,7 +3726,7 @@ public class RequirementServiceImpl implements RequirementService {
 			else {
 				globalVarsMap.put("jobName", requirement.getJobTitle());
 			}
-		}
+		} 
 		 
 		StringBuilder sb = new StringBuilder();
 		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))

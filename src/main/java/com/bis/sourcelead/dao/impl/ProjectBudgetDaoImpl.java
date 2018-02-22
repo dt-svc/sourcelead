@@ -87,7 +87,7 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ProjectBudget> getProjectBudgetByProjectTaskId(Long projectId,Long loginOrgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.projectId.orgLocationsId =:loginOrgLocationId ";
+		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.projectId.orgLocationsId =:loginOrgLocationId and projectbudget.status = '1'";
 		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("loginOrgLocationId", loginOrgLocationId).list();
 		return ProjectBudgetList;
 	}
@@ -154,10 +154,10 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
+	public List<ProjectBudget> getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.budgetStatus = 'Approved' and projectbudget.createdDate >= :startDateUTC and projectbudget.createdDate <= :endDateUTC";
-		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setDate("startDateUTC", startDateUTC).setDate("endDateUTC", endDateUTC).list();
+		String query = "from ProjectBudget  projectbudget  where projectbudget.projectId.id =:projectId and projectbudget.budgetStatus = 'Approved' and projectbudget.projectId.orgLocationsId =:orgLocationId";
+		List<ProjectBudget> ProjectBudgetList = session.createQuery(query).setLong("projectId", projectId).setLong("orgLocationId", orgLocationId).list();
 		return ProjectBudgetList;
 	}
 }

@@ -474,7 +474,12 @@ public class LeaveServiceImpl implements LeaveService{
 					
 					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
-					leave.setExtraLeavesTaken(numberOfDays - carryForwardLeaves);
+					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod())){
+						leave.setExtraLeavesTaken(Math.abs(numberOfDays - carryForwardLeaves));
+					}else{
+						leave.setExtraLeavesTaken(0);
+					}
+					
 					
 					int numberOfLeavesPerYear = totalLeaves - numberOfDays + leave.getExtraLeavesTaken();
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
@@ -552,62 +557,62 @@ public class LeaveServiceImpl implements LeaveService{
 				switch (i) {
 					case 0:
 						if(janLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - janLeaves);
 						}
 						break;
 					case 1:
 						if(febLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - febLeaves);
 						}
 						break;
 					case 2:
 						if(marLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - marLeaves);
 						}
 						break;
 					case 3:
 						if(aprLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - aprLeaves);
 						}
 						break;
 					case 4:
 						if(mayLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - mayLeaves);
 						}
 						break;
 					case 5:
 						if(junLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - junLeaves);
 						}
 						break;
 					case 6:
 						if(julLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - julLeaves);
 						}
 						break;
 					case 7:
 						if(augLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - augLeaves);
 						}
 						break;
 					case 8:
 						if(sepLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - sepLeaves);
 						}
 						break;
 					case 9:
 						if(octLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - octLeaves);
 						}
 						break;
 					case 10:
 						if(novLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - novLeaves);
 						}
 						break;
 					case 11:
 						if(decLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += 1;
+							carryForwardLeaves += (monthlyAllowedLeaves - decLeaves);
 						}
 						break;
 				}
@@ -975,9 +980,13 @@ public class LeaveServiceImpl implements LeaveService{
 		int balanceLeaveCounts = 0;
 		int pendingLeaveCounts = 0;
 		
+		   int takenLeaveCounts = 0;
+		
 		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 		User user = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		UserRole userRole = userRoleService.getUserRoleByUserId(userId);
+		Employees emp = employeesService.getEmployeeByUserId(user.getId());
 
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
@@ -998,38 +1007,49 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocationId));
 		List<LeaveType> roleLeaveType = new ArrayList<>();  
+		
+		
 		if(leaveTypeList !=null && !leaveTypeList.isEmpty()) {
 			   for(LeaveType leaveType : leaveTypeList) {
 				   Set<Long> roleIds = new HashSet<>();
 				   for(LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
 					   roleIds.add(leaveRole.getRoleId().getId());
 				   }
-				   if(roleIds.contains(roleId) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+				   if(roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
 					   roleLeaveType.add(leaveType);
 				   }
 			   }
 			   
-			   Employees emp = employeesService.getEmployeeByUserId(userId);
-			   for (LeaveType leaveType : roleLeaveType) {
-				  
-					   int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leaveType,emp,orgLocations,user);
-					   if(totalLeaves > 0){
-//					   int totalLeaves = Integer.valueOf(leaveType.getNumbefrOfLeavesPeryear());
-					   List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getId(),orgLocationId, userId);
-					   for (Leave leave : totalleavesTaken) {
-							if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-								pendingLeaveCounts = pendingLeaveCounts + leave.getNumberOfDays();
-							}
-							if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
-								totalLeaves = totalLeaves - leave.getNumberOfDays();
-							}
-						}
-						   balanceLeaveCounts += totalLeaves;
-				   }
-			   
-			   
-		}
-	}
+				for(LeaveType type : roleLeaveType) {
+				int totalLeaves = 0;
+				
+				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
+				
+				List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
+				for (Leave leave : totalleavesTaken) {
+					if(Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+//						totalLeaves = totalLeaves - (Integer.valueOf(leave.getNumberOfDays()));
+						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
+					}
+					if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+						totalLeaves = totalLeaves - (leave.getNumberOfDays() - leave.getExtraLeavesTaken());
+//						else
+//							totalLeaves = totalLeaves - leave.getNumberOfDays();
+						
+						takenLeaveCounts = takenLeaveCounts + leave.getNumberOfDays();
+					}
+				}
+				
+				balanceLeaveCounts += totalLeaves;
+//				type.setBalanceLeaveCounts(balanceLeaveCounts);
+//				type.setPendingLeaveCounts(pendingLeaveCounts);
+//				type.setTakenLeaveCounts(takenLeaveCounts);
+//				type.setRemainingTotalLeaveCounts(totalLeaves);
+				}
+		   }
+		
+		
+		
 		leaveDto.setSelfPendingCounts(String.valueOf(selfPendingCounts));
 		leaveDto.setSelfApprovedCounts(String.valueOf(selfApprovedCounts));
 		leaveDto.setSelfRejectedCounts(String.valueOf(selfRejectedCounts));

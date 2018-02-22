@@ -101,12 +101,30 @@ public class VendorOnboardController {
 	
 	@RequestMapping(value = "/rejectVendorOnboardInvitation")
  	public void rejectVendorOnboardInvitation(@RequestParam(value="onboardUUID", required = true)String onboardUUID,
- 			@RequestParam(value="notificationUUID", required = true)String notificationUUID,HttpServletRequest request,HttpServletResponse response) throws Exception {
+ 			@RequestParam(value="notificationUUID", required = true)String notificationUUID,
+ 			HttpServletRequest request,HttpServletResponse response,
+ 			@RequestParam(value="orgSpocUUID", required = true)String orgSpocUUID) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		VendorOnboarding vendorOnboard = vendorOnboardService.getVendorOnboardingByUUID(onboardUUID);
 		OrgLocations vendorOrgLocations = vendorOnboard.getVendorLocationId();
-		vendorOnboardService.finishVendorOnboardProcess(vendorOnboard.getId(), notificationUUID, user,Constants.MAIL_REJECTED);
+		if(vendorOnboard.getOnboardSubmitted().equalsIgnoreCase("N")) {
+			vendorOnboardService.finishVendorOnboardProcess(vendorOnboard.getId(), notificationUUID, user,Constants.MAIL_REJECTED);
+		}else {
+			 Notifications notifications = notificationsService.getNotificationsByUUID(notificationUUID);
+			 if(null != notifications){
+				 notifications.setUserNotificationStatus(Constants.MAIL_REJECTED);
+				 notificationsService.saveNotification(notifications);
+			 }
+			 
+			 OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(orgSpocUUID);
+			 if(null != orgSpoc ){
+				 orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
+				 orgSpoc.setSpocStatus("In-Active");
+				 orgSpocService.addOrgSpoc(orgSpoc);
+			 }
+		}
+		
 		StringBuilder redirectUrl = new StringBuilder();
 		response.sendRedirect(redirectUrl.append("/app/dashboard/").append(vendorOrgLocations.getId()).toString());
 		

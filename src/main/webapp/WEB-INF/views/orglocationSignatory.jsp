@@ -220,7 +220,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
 	result = result +"<label class='col-md-4'>First Name<span class='text-danger'>&nbsp;*</span></label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='firstName' id='firstName' field-name='First Name'  pattern='[A-Za-z\s]*' maxlength='100' data-validation='required validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<input class='form-control' type='text' name='firstName' id='firstName' field-name='First Name'  maxlength='100' data-validation='required validate_Space validate_AlphaNumber validate_length length1-100'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
@@ -229,7 +229,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4'>Last Name</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='lastName' id='lastName' field-name='Last Name' data-validation-optional='true' pattern='[A-Za-z\s]*' maxlength='100' data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<input class='form-control' type='text' name='lastName' id='lastName' field-name='Last Name' data-validation-optional='true' maxlength='100' data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
@@ -282,7 +282,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4'>Designation</label>";
 	result = result +"<div class='col-md-8 padding_right'>";
-	result = result +"<input class='form-control' type='text' name='designationType' id='designationType' field-name='Designation'pattern='[A-Za-z\s]*' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
+	result = result +"<input class='form-control' type='text' name='designationType' id='designationType' field-name='Designation' data-validation-optional='true'  data-validation='validate_Space validate_AlphaNumber validate_length length1-100'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";

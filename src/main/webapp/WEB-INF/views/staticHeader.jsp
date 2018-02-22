@@ -7,8 +7,8 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-<meta name="Description" content="SourceLead">
-<meta name="Keywords" content="">
+<meta name="description" content="Sourcelead is an integrated human resource solution which provides an automated process for the talent search. Be it a niche profile or a generic role, you have access to marketplace.">
+<meta name="keywords" content="Application tracking system, ats software, top applicant tracking systems, payroll software, vendor management, client management, onboard candidate, offboard candidate, top hr tracking software"> <meta name="robots" content="index, follow">
 	<link rel="stylesheet" href="/resources/static-web/css/prettyPhoto.css" type="text/css"/>
 	<link rel="stylesheet" href="/resources/static-web/css/owl.carousel.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -24,27 +24,11 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script src="/resources/js/jquery-2.1.4.min.js"></script> 
+    <!-- <script src="/resources/js/jquery-2.1.4.min.js"></script> --> 
 </head>
-<script>
-$(document).ready(function(){
-	var location = window.location.origin;
-	 $.ajax({
-        url: location+"/getScheduleStatus",
-        success: function(data) {
-        	if(data !== ""){
-        		$("#maintenanceStatus").append(data.mainMessage);
-        	}else{
-        		$(".marQ").hide();
-        		$(".customNavBar").addClass("customNavBarTop");
-        	}
-        }
-	}); 
-});
-</script> 
 <body>
 <div class="marQ">
-        <marquee behavior="scroll" direction="left" id="">
+        <marquee behavior="scroll" direction="left">
         <p id="maintenanceStatus"></p>
         </marquee>
     </div>
@@ -68,30 +52,30 @@ $(document).ready(function(){
 	<div class="customNavBar-inner deskMenu">
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 	<ul class="">
-	<li><a href="/" class="slactive">Home</a></li>
+	<li><a href="/" id="indexpageID">Home</a></li>
 	 <li class="dropdown dropdown-featureshome">
-	 <a data-target="#featureshome" href="javascript:void(0)">Features
+	 <a data-target="#featureshome" href="javascript:void(0)" id="featuresID">Features
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
 <!--
 				<li><a href="features.html">Features</a></li>
 -->
-				<li><a href="/ats.html">ATS</a></li>
-				<li><a href="/vms.html">VMS</a></li>
-				<li><a href="/crms.html">CRM</a></li>
-				<li><a href="/pms.html">PMS</a></li>
-				<li><a href="/hrms.html">HRMS/Contracts</a></li>
-				<li><a href="/ims.html">IMS</a></li>
+				<li><a href="/ats.html" id="atsID">ATS</a></li>
+				<li><a href="/vms.html" id="vmsID">VMS</a></li>
+				<li><a href="/crms.html" id="crmID">CRM</a></li>
+				<li><a href="/pms.html" id="pmsID">PMS</a></li>
+				<li><a href="/hrms.html" id="hrmsID">HRMS/Contracts</a></li>
+				<li><a href="/ims.html" id="imsID">IMS</a></li>
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html">Search Job</a></li>
-	<li><a href="/marketplace.html">Marketplace</a></li>
-	<li><a href="/about-us.html">About Us</a></li>
+	<li><a href="/sourceleadJobPage.html" id="searchjobID">Search Job</a></li>
+	<li><a href="/marketplace.html" id="marketplaceID">Marketplace</a></li>
+	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
-	<li><a href="/blog.html">Blog</a></li>
-	<li><a href="/contact.html">Contact</a></li>
+	<li><a href="/blog.html" id="blogID">Blog</a></li>
+	<li><a href="/contact.html" id="contactID">Contact</a></li>
 	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
-	<li><a href="/register" title="Login">Sign Up</a></li>
+	<!-- <li><a href="/register" title="Login">Sign Up</a></li> -->
 	</ul>
 		</div>
 		

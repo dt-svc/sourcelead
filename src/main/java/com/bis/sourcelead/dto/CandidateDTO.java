@@ -208,6 +208,8 @@ public class CandidateDTO extends SearchDTO{
 	private String projectUUID;
 	
 	private String roles;
+	
+	private String teams;
 
 	private String vendorOrgRelationId;
 	
@@ -1041,6 +1043,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setCandidateCustomFieldData(Map<String, String> candidateCustomFieldData) {
 		this.candidateCustomFieldData = candidateCustomFieldData;
+	}
+
+	public String getTeams() {
+		return teams;
+	}
+
+	public void setTeams(String teams) {
+		this.teams = teams;
 	}
 	
 }

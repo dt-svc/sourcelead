@@ -30,7 +30,11 @@ margin-right: 15px;
 	}
 </script>
 
+<!--success msg -->
 
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
   <!-- Content Area -->
   
   <section class="content-wraper">

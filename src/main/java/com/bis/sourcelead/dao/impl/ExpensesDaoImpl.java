@@ -304,4 +304,23 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		return expensesList;
 	}
 
+	@Override
+	@Transactional
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long orglocationId,Date startDate, Date endDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		String query = "from Expenses  expenses where expenses.projects.id =:projectId and expenses.orgLocationId.id =:orglocationId and"
+				+ "(expenses.startDate = :startDate OR expenses.endDate = :endDate  OR expenses.endDate BETWEEN :startDate and :endDate) ";
+		List<Expenses>  expensesList = session.createQuery(query).setLong("orglocationId", orglocationId).setLong("projectId", projectId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+		return expensesList;
+	}
+
 }

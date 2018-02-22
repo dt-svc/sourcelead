@@ -869,35 +869,35 @@ function educationSelectScoreType(){
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
+			  $("#save_button").removeAttr("disabled");
 			   return true;
 		  }		  
 		 else{
 				$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }
 	 else if(selectedText =='CGPA'){
 		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
 			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
+				  $("#save_button").removeAttr("disabled");
 				   return true;
 			  }		  
 			 else{
 				 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 			return false; 
 			 }
 	  } 
 	 else if(selectedText =='GRADE'){
 		 var grades = /^([A-E][-+]{0,2})?$/
 			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
+				 $("#save_button").removeAttr("disabled");
 				 return true;
 			}else{
 				$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 	    		return false;
 	    		
 			}
@@ -918,7 +918,7 @@ function educationscoreAndScoreType(){
 	 if(candidateScore.match(floatNum)){
 		 $("#scoreEducationType").val('Percentage'); 
 		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
-		 $("#addCandidate").removeAttr("disabled");
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(grades)){
 		 $("#scoreEducationType").val('GRADE'); 

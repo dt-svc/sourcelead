@@ -75,8 +75,8 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
           
-<div class="input-group positionRelative col-md-12 noPad">
-<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
+<div class="input-group positionRelative col-md-12 noPad" onclick="manuallyEnterToEmail();">
+<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList"  data-validation="required" name="Toemails"></select>
 
 
 <!-- 		<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipientContactsList();"><i class="fa fa-refresh "></i></span>	 -->
@@ -310,6 +310,11 @@ $(function() {
   
   
   <script type="text/javascript">
+  function manuallyEnterToEmail(){
+	  $('#emailsList_chosen ul li input').attr('readonly', true);
+  }
+  
+  
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
 		nicEditors.findEditor('bodytext').saveContent();
@@ -1557,23 +1562,37 @@ function listPagination(){
 </script>
 
 <script>
+
+	 
+
 function getRecipantsContacts(){
-		var internalOutput = "";
+		
 		
 		var internalOutput = "";
 		 for(var e in recepiantscontactsList) {
 			 var checkbox_value = recepiantscontactsList[e].split(",");
-			 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			 var elist=$("#emailsList").chosen().find("option:selected" ).text();
+			 var searchString=elist.search(checkbox_value[1]);
+			 if(searchString==-1)
+				{
+				 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			    }
+			 
+			 
 		  }
 		
-		
-		    $("#emailsList").append(internalOutput);
+            $("#emailsList").append(internalOutput);
 			$("#emailsList").trigger("chosen:updated");
 			
 			$("input[name='contactids[]']:checked").removeAttr('checked');
 			$('#checkAllRecipantsntacts').removeAttr('checked');
 		
 }
+
+
+	  
+	  // this function is run when the country changes
+	
 </script>
   <!-- End -->
   
