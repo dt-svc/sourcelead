@@ -330,7 +330,7 @@ function tagItBykeyForEmails(e){
 			var candidateId = '${candidateId}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/ws/getRateHistoryBySubmissionIdPublic?&submissionId="+submissionId+"&candidateId="+candidateId,
 						success : function(data) {
 							if("success"){
 								var json = JSON.parse(data);

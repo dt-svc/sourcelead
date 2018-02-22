@@ -48,6 +48,12 @@ public class LeaveTypeDTO {
 	private String noOfDays;
 	private String leaveTypeUUID;
 	
+	private float totalApprovedCount;
+	private float totalPendingCount;
+	private float totalRejectedCount;
+	private float totalCancelCount;
+	private float totalNoOfDays;
+	
 	
 	public String getLeaveTypeUUID()
 	{
@@ -405,6 +411,45 @@ public class LeaveTypeDTO {
 	{
 		this.noOfDays = noOfDays;
 	}
-		
+	public float getTotalApprovedCount()
+	{
+		return totalApprovedCount;
+	}
+	public void setTotalApprovedCount(float totalApprovedCount)
+	{
+		this.totalApprovedCount = totalApprovedCount;
+	}
+	public float getTotalPendingCount()
+	{
+		return totalPendingCount;
+	}
+	public void setTotalPendingCount(float totalPendingCount)
+	{
+		this.totalPendingCount = totalPendingCount;
+	}
+	public float getTotalRejectedCount()
+	{
+		return totalRejectedCount;
+	}
+	public void setTotalRejectedCount(float totalRejectedCount)
+	{
+		this.totalRejectedCount = totalRejectedCount;
+	}
+	public float getTotalCancelCount()
+	{
+		return totalCancelCount;
+	}
+	public void setTotalCancelCount(float totalCancelCount)
+	{
+		this.totalCancelCount = totalCancelCount;
+	}
+	public float getTotalNoOfDays()
+	{
+		return totalNoOfDays;
+	}
+	public void setTotalNoOfDays(float totalNoOfDays)
+	{
+		this.totalNoOfDays = totalNoOfDays;
+	}
 	
 }
