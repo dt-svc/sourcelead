@@ -142,9 +142,9 @@
 		return templateDocDetails 
    }
 	
- 
+   var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
    function appendTempDocDiv(){
-         var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
+         console.log(" rowId "+rowId);
 	   $("#templateDocDivStatic").append(appendTemplateDocDetails(rowId++)); 
    }
    
