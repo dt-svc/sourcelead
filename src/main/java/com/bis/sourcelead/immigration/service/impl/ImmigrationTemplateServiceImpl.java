@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
@@ -38,11 +39,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	ImmigrationTemplateDao immigrationTemplateDao;
 
 	@Override
-	public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, String templateId) {
+	public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations, String templateId) {
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate();
 		if(!templateId.equalsIgnoreCase("null") && !templateId.isEmpty()) {
 			immigrationTemplate.setId(Long.parseLong(templateId));
 		}
+		immigrationTemplate.setOrgLocations(orgLocations);
 		immigrationTemplate.setName(templateDTO.getTemplateName());
 		immigrationTemplate.setDescription(templateDTO.getTemplateDescription());
 		immigrationTemplate.setCreatedBy(user);

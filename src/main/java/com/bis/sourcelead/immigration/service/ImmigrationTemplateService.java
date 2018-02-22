@@ -9,6 +9,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -16,7 +17,7 @@ import com.bis.sourcelead.entity.User;
  *
  */
 public interface ImmigrationTemplateService {
-	Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, String templateId);
+	Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations, String templateId);
 	
 	List<ImmigrationTemplateDocDTO> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, User user);
 	

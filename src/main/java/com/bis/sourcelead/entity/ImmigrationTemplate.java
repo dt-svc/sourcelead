@@ -41,6 +41,10 @@ public class ImmigrationTemplate implements Serializable {
 
 	@Column(name = "CREATED_DATE ")
 	private Date createdDate;
+	
+	@ManyToOne
+	@JoinColumn(name="ORG_LOCATION_ID", nullable=false ) 
+	private OrgLocations orgLocations;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY")
@@ -125,5 +129,15 @@ public class ImmigrationTemplate implements Serializable {
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
+	}
+	
+	
 
 }
