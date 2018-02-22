@@ -840,6 +840,7 @@ $('body').on('blur', '#addonboardTask_form', function() {
 
 <script>
 function getTemplateDetails(){
+	$("#onboardTasksList").empty();
 	var templateId = document.getElementById("templateId").value;
 	if(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
@@ -850,9 +851,6 @@ function getTemplateDetails(){
 	        	
 	        	 $("input[name=templateName]").val(json.templateName);
 	        	 $("textarea[name=description]").val(json.description);
-	        	 
-	        	 $("#onboardTasksList").empty();
-		        
 	        },
 	    }); 
 	}

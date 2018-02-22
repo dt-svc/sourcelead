@@ -92,7 +92,13 @@ function requirementTemplateList(){
 		                     result = result +"</td>";
 		                     if(null != opt.jobType && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 if(opt.jobType=='Other'){
+		                    		   if(null != opt.otherJobType && opt.otherJobType !='' && opt.otherJobType !='undefined'){
 		                    		 result = result +"<td><div><span title="+opt.otherJobType+">"+opt.otherJobType+"</span></div></td>";
+		                    		   }
+		                    		   else
+		                    			   {
+		                    			   result = result +"<td><div>-----</div></td>";
+		                    			   }
 		                    	 }else{
 		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                    	 }

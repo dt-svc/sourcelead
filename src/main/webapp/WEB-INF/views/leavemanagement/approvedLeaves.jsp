@@ -116,10 +116,10 @@ function getApprovedLeavesList(){
 			        		 }
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
-			        		 if(opt.updatedBy !=null && opt.updatedBy != 'undefined' && opt.updatedBy != ''){
-			        			 result = result + '     <div title="'+opt.updatedBy+'" class="tblminwidth-75">'+opt.updatedBy+'</div>';	 
+			        		 if(opt.approvedByUser !=null && opt.approvedByUser != 'undefined' && opt.approvedByUser != ''){
+			        			 result = result + '     <div title="'+opt.approvedByUser+'" class="tblminwidth-75">'+opt.approvedByUser+'</div>';	 
 			        		 }else{
-			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
+			        			 result = result + '     <div title="" class="tblminwidth-75">System Approved</div>';	
 			        		 }
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
