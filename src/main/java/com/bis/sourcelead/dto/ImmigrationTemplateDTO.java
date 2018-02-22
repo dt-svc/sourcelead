@@ -13,6 +13,8 @@ public class ImmigrationTemplateDTO {
 	private String templateName;
 	
 	private String templateDescription;
+
+	private String immigrationDocDeletedListIds;
 	
 	private List<ImmigrationTemplateDocDTO> immigrationDocList;
 	
@@ -221,7 +223,13 @@ public class ImmigrationTemplateDTO {
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
 	}
-	
-	
-	
+
+	public String getImmigrationDocDeletedListIds() {
+		return immigrationDocDeletedListIds;
+	}
+
+	public void setImmigrationDocDeletedListIds(String immigrationDocDeletedListIds) {
+		this.immigrationDocDeletedListIds = immigrationDocDeletedListIds;
+	}
+
 }

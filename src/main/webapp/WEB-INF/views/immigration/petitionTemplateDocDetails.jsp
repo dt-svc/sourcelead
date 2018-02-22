@@ -63,7 +63,7 @@
 					    <div id="dynamicRow${rows.count-1}" class="col-md-12 clearfix noPad mt"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
 					  </c:if>
 					  <div class="col-md-3">
-					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId"/>
+					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId${rows.count-1}"/>
 					  
 						<select class="form-control chosen-select" 
 										name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
@@ -142,13 +142,15 @@
 		return templateDocDetails 
    }
 	
- 
+   var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
    function appendTempDocDiv(){
-         var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
 	   $("#templateDocDivStatic").append(appendTemplateDocDetails(rowId++)); 
    }
-   
+   var deletedDocListIds = new Array();
    function removeTempDocDiv(id){
+	   if($("#templateId"+id).val() !==  undefined ){
+		   deletedDocListIds.push($("#templateId"+id).val());   
+	   }
 	   $("#dynamicRow"+id).remove();
 	   rowId--;// decrement rowid when deleted in UI.
    }
