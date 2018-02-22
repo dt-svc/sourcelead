@@ -757,14 +757,44 @@ public class InvoiceRestController {
 	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
 		
 		Projects projects = projectsService.getProjectById(projectId);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		List<String> frequencyDates = new ArrayList<>();
 		
 		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
-		
+	
 				for (Map.Entry<String, String> entry : map.entrySet())
 				{
+					String startDate=null;
+					String endDate=null;
 					StringBuffer sb = new StringBuffer();
-				    sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
+					String stdate= entry.getKey();
+					String endate= entry.getValue();
+					String[] stdatestr=stdate.split("-");
+					String[] endatestr=endate.split("-");
+					String orgLocDateFormat=orgLocation.getDateFormat();
+					if(orgLocDateFormat.equals("MM-dd-yyyy"))
+					{
+						startDate=stdatestr[1]+"-"+stdatestr[0]+"-"+stdatestr[2];
+						endDate=endatestr[1]+"-"+endatestr[0]+"-"+endatestr[2];
+					}
+					if(orgLocDateFormat.equals("dd-MM-yyyy"))
+					{
+						startDate=stdatestr[0]+"-"+stdatestr[1]+"-"+stdatestr[2];
+						endDate=endatestr[0]+"-"+endatestr[1]+"-"+endatestr[2];
+					}
+					if(orgLocDateFormat.equals("yyyy-MM-dd"))
+					{
+						startDate=stdatestr[2]+"-"+stdatestr[1]+"-"+stdatestr[0];
+						endDate=endatestr[2]+"-"+endatestr[1]+"-"+endatestr[0];
+					}
+					if(orgLocDateFormat.equals("yyyy-dd-MM"))
+					{
+						startDate=stdatestr[2]+"-"+stdatestr[0]+"-"+stdatestr[1];
+						endDate=endatestr[2]+"-"+endatestr[0]+"-"+endatestr[1];
+					}
+					
+				    sb.append(startDate).append("/").append(endDate);
 				    frequencyDates.add(sb.toString());
 				}
 		return commonUtil.toJSON(frequencyDates);
