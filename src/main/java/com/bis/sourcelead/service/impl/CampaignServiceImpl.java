@@ -201,7 +201,7 @@ public class CampaignServiceImpl implements CampaignService{
 			return isListInserted;
 		}
 		String listResponse = campaignUtil.createList(campaignListDTO);
-		if(StringUtils.isNotBlank(listResponse)) {
+		if(StringUtils.isNotBlank(listResponse) && !listResponse.contains("400Body")) {
 			JSONObject jObject  = new JSONObject(listResponse); 
 			String listId = jObject.getString("id");
 			CampaignList  campaignList = new CampaignList();

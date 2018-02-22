@@ -169,7 +169,8 @@ public class CampaignUtil {
 				isListCreated = response.getBody();
 			}
 		} catch (IOException ex) {
-			throw ex;
+//			throw ex;
+			return ex.getMessage();
 		}
 		return isListCreated;
 	}
