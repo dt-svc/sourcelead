@@ -64,9 +64,14 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		List<ImmigrationTemplateDocDTO> docsList = templateDTO.getImmigrationDocList();
 		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
 		immiTemplate.setId(templateDTO.getId());
-		List<ImmigrationTemplateDocDTO> templateDocList = immigrationTemplateDao.getTemplateDocList(templateDTO.getId());
-		// delete the records if exist in database and reinsert. 
-		//immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getId());
+		List<Long> templateDocListIds = immigrationTemplateDao.getTemplateDocList(templateDTO.getId());
+		List<Long> templateDtoDocsListIds = new ArrayList<Long>();
+		for(ImmigrationTemplateDocDTO docsDto : templateDTO.getImmigrationDocList()) {
+			templateDtoDocsListIds.add(docsDto.getId());
+		}
+		List<Long> remainingDocsIds = new ArrayList<Long>(templateDocListIds);
+		remainingDocsIds.removeAll(templateDtoDocsListIds);
+		//immigrationTemplateDao.deletePetitionTemplateDocDetails(remainingDocsIds);
 		List<ImmigrationTemplateDocDTO> docsListAfterSave = new ArrayList<ImmigrationTemplateDocDTO>();
 		for (ImmigrationTemplateDocDTO tempObj : docsList) {
 			if(tempObj.getDocumentType() == null) continue;

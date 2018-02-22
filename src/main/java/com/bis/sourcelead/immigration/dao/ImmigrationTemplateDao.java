@@ -20,11 +20,11 @@ public interface ImmigrationTemplateDao {
 	
 	void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask);
 	
-	void deletePetitionTemplateDocDetails(Long id);
+	void deletePetitionTemplateDocDetails(List<Long> remainingDocsIds);
 	
 	List<ImmigrationTemplateView> getAllTemplateDetails();
 	
-	List<ImmigrationTemplateDocDTO> getTemplateDocList(Long id);
+	List<Long> getTemplateDocList(Long id);
 
 	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
 
