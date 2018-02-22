@@ -39,9 +39,12 @@ function campaignRecipient(ele,listId, fromType) {
 					             }
 					             
 							}else{
-								alert("Something went wrong ..!");
-								$("#loading").removeAttr("style");
-								$("#errorMessage").text("List not created/updated please try again");
+								$("#loadingRecipient").removeAttr("style");
+								var name = $("#cpnListName").val();
+								$('#cpnListNameDiv').find('p.jquery_form_error_message').remove();
+				          		$("#addList").removeAttr("disabled");
+						        $("#addList").attr("disabled", "disabled");
+								$("input#cpnListName").after( "<p class='jquery_form_error_message'>" + name + " is already existed</span>");
 							}
 						});
 						return true;

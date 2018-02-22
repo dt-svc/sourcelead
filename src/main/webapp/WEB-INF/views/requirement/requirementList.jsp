@@ -551,10 +551,11 @@ function statusvalidating(id){
 						<li><a href="<c:url value='${appPath}/requirement'/>"><i
 								class="fa fa-plus"></i>Add Job</a></li>
 					</sec:authorize>
-					<sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
+					<%-- Team Creation and Team List Moved To Role Configuration --%>
+					<%-- <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
 						<li><a href="<c:url value='${appPath}/team'/>"><i
 								class="fa fa-plus"></i>Team</a></li>
-					</sec:authorize>
+					</sec:authorize> --%>
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
 						<li title="Import"><a href="<c:url value='${appPath}/uploadJobs'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 					</sec:authorize>
