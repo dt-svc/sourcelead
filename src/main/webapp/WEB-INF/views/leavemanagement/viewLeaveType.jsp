@@ -247,13 +247,13 @@ function msgFadein() {
 </script>
 
 <script>
-function openLeaveTypeSummary(typeId){
+function openLeaveTypeSummary(leaveTypeUUID){
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+typeId,	    	   
+	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	    	   
 	    success: function(report) {
 	    	var result = "";
 			result +='<div class="new_side_wrap">';
@@ -530,7 +530,7 @@ function openLeaveTypeSummary(typeId){
 			}
 	    }
 			result +='              <div class="col-md-12 mb mt40">';
-			result +='                  <label class="col-md-2 control-label"><b>Crated By:</b></label>';
+			result +='                  <label class="col-md-2 control-label"><b>Created By:</b></label>';
 			result +='                  <div class="col-md-8">';
 			if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 				result +='                      <span>'+report.createdUser+'</span>';

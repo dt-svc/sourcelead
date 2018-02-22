@@ -432,16 +432,18 @@ public class CandidateListRestController {
 		String updatedDateRange = search.getUpdatedDateRange();
 		if (StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)&& !updatedDateRange.equalsIgnoreCase("all") && !updatedDateRange.equalsIgnoreCase("undefined")) {
 			 Calendar c = Calendar.getInstance();
-			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Integer dateRange = Integer.parseInt(updatedDateRange);
 	        c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 	        String updatedDate     = dateFormat.format(c.getTime());
 	        Date newDate = dateFormat.parse(updatedDate);
 	        Date endDate2 = commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), newDate);
+
 	        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
 	        String endDateStr = dateFormat1.format(endDate2); 
 			boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDateStr));
 			
+
 		}
 		
 		// Rate Type
