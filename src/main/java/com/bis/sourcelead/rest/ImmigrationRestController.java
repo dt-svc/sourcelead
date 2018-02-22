@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.User;
@@ -230,13 +231,16 @@ public class ImmigrationRestController {
 		request.getSession().setAttribute("templateDocList", templateDocList);
 		return "success";
 	}
+	
 	@RequestMapping(value={"/savePetitionTemplateFormDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		List<ImmigrationTemplateFormDTO> templateFormsList = null;
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		templateDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
+		templateFormsList =immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user);
+		request.getSession().setAttribute("templateFormsList", templateFormsList);
 		return "success";
 	}
 	

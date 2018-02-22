@@ -24,9 +24,10 @@ public interface ImmigrationTemplateDao {
 	
 	List<ImmigrationTemplateView> getAllTemplateDetails();
 	
-	void savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
-
 	List<ImmigrationTemplateDocDTO> getTemplateDocList(Long id);
+
+	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
+
 	
 	
 }

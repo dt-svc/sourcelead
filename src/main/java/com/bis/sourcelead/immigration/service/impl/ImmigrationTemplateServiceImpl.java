@@ -26,7 +26,6 @@ import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.itextpdf.io.IOException;
 
 /**
  * @author Srinivas.Sabbu
@@ -132,10 +131,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	}
 	
 	@Override
-	public void savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user) {
+	public List <ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user) {
 		List<ImmigrationTemplateFormDTO> formsList = templateDTO.getImmigrationFormList();
 		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
 		immiTemplate.setId(templateDTO.getId());
+		
+		List <ImmigrationTemplateFormDTO> savedFormList = new ArrayList<ImmigrationTemplateFormDTO>(); 
 
 		for (ImmigrationTemplateFormDTO tempObj : formsList) {
 			ImmigrationTemplateForms immigrationTemplateForms = new ImmigrationTemplateForms();
@@ -169,10 +170,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 				}
 			}
-			immigrationTemplateDao.savePetitionTemplateFormDetails(immigrationTemplateForms);
-
+			ImmigrationTemplateForms immigrationForms = immigrationTemplateDao.savePetitionTemplateFormDetails(immigrationTemplateForms);
+			tempObj.setId(immigrationForms.getId());
+			savedFormList.add(tempObj);
 		}
-
+		
+		return savedFormList;
 	}
 	
 }
