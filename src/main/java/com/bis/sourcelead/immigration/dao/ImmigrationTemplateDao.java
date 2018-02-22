@@ -23,7 +23,7 @@ public interface ImmigrationTemplateDao {
 	
 	List<ImmigrationTemplateView> getAllTemplateDetails();
 	
-	void savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
+	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
 	
 	
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 public class ImmigrationTemplateFormDTO {
 	
+	private Long id;
+	
 	private String formDescription;
 	
 	private String isRequired;
@@ -43,6 +45,14 @@ public class ImmigrationTemplateFormDTO {
 
 	public void setImmigrationFormFileInfo(List<FileInfo> immigrationFormFileInfo) {
 		this.immigrationFormFileInfo = immigrationFormFileInfo;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	

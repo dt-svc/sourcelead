@@ -114,7 +114,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms) {
+	public ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms) {
 		logger.debug("Saving Temlate Task Details-->");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
@@ -130,6 +130,8 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 				e.printStackTrace();
 			}
 		}
+		
+		return immigrationTemplateForms;
 	}
 	
 	@Override
