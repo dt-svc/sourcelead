@@ -48,7 +48,6 @@ function Immigration(){
 		if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
 		var formData = getFormData("PetitionTemplateDocDetails");
 		console.log(formData);
-		alert("hi");
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDocDetails",
 		       type : "POST",
@@ -61,9 +60,7 @@ function Immigration(){
 				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=formDetails");
 		    		   }
 		    		   else if(status == 'save'){
-		    			   alert("abcd");
 		    			   $("#addNewPetitionTemplateDiv").empty();
-		    			   
 				    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=docDetails");
 		    		   }
 		    	   }
@@ -135,5 +132,23 @@ function Immigration(){
 	$("#petitionTemplateTaskDetails").showHelpOnFocus();
 	$("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);  
 });
-
+	// immigration view navigation if don't required comment below code start here.
+	this. savePageOneContinue = function (status){
+		$("#newPetitionTemplateDiv").empty();
+		if(status == 'one'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=one");
+		}else if(status == 'two'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=two");
+		}else if(status == 'three'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=three");
+		}else if(status == 'four'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=four");
+		}else if(status == 'five'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=five");
+		}else if(status == 'six'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=six");
+		}else if(status == 'seven'){
+			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=seven");
+		}
+	}// immigration end if don't required comment above code end here.
 }

@@ -56,23 +56,56 @@ public class ImmigrationRestController {
 	@Autowired
 	private ImmigrationTemplateService immigrationTemplateService;
 
-	/*@RequestMapping(value={"/viewImmigrationList"})
-	public ModelAndView loadImmigrationList(HttpServletRequest request ) {
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		model.setViewName("/immigration/immigrationList");
-		return model;
-	}*/
+	//====================immigration view startviewImmigration if you don't required comment below code start here==============================
+		@RequestMapping(value={"/viewImmigrationList"})
+		public ModelAndView loadImmigrationList(HttpServletRequest request ) {
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			model.setViewName("/immigration/immigrationList");
+			return model;
+		}
 
-	/*@RequestMapping(value={"/loadNewPetition"})
-	public ModelAndView loadNewPetition(HttpServletRequest request ) {
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		model.setViewName("/immigration/newPetition");
-		return model;
-	}*/
+		@RequestMapping(value={"/loadNewPetition"})
+		public ModelAndView loadNewPetition(HttpServletRequest request ) {
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			model.setViewName("/immigration/newPetition");
+			return model;
+		}
+		@RequestMapping(value={"/loadNewPetitionPage"})
+		public ModelAndView loagNewPetitionPageView(HttpServletRequest request, @RequestParam(value = "status", required = false) String status ) {
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			if(status.equalsIgnoreCase("one")) {
+				model.setViewName("/immigration/newPetitionPage1");
+			}else if(status.equalsIgnoreCase("two")) {
+				model.setViewName("/immigration/newPetitionPage2");
+			}else if(status.equalsIgnoreCase("three")) {
+				model.setViewName("/immigration/newPetitionPage3");
+			}else if(status.equalsIgnoreCase("four")) {
+				model.setViewName("/immigration/newPetitionPage4");
+			}else if(status.equalsIgnoreCase("five")) {
+				model.setViewName("/immigration/newPetitionPage5");
+			}else if(status.equalsIgnoreCase("six")) {
+				model.setViewName("/immigration/newPetitionPage6");
+			}else if(status.equalsIgnoreCase("seven")) {
+				model.setViewName("/immigration/newPetitionPage7");
+			}
+			return model;
+		}
+		
+		@RequestMapping(value={"/viewImmigration"})
+		public ModelAndView viewImmigration(HttpServletRequest request ) {
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			model.setViewName("/immigration/immigrationView");
+			return model;
+		}
+		
+		//============= immigration view End. if you don't required comment above code end here============================
 	
 	
 	@RequestMapping(value={"/gotoTemplatePreviousPage"})
@@ -221,12 +254,5 @@ public class ImmigrationRestController {
 		}
 		return "success";
 	}
-	/*@RequestMapping(value={"/viewImmigration"})
-	public ModelAndView viewImmigration(HttpServletRequest request ) {
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		model.setViewName("/immigration/immigrationView");
-		return model;
-	}*/
+	
 }
