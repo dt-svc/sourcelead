@@ -581,6 +581,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
 	private String assignedMembersCount;
 	
+	@Transient
+	@JsonProperty
+	private String experienceLevelStr;
+	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
 	}
@@ -1941,6 +1945,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
+	}
+	
+	public String getExperienceLevelStr() {
+		if(StringUtils.isNotEmpty(experienceLevelStr))
+			return experienceLevelStr;
+		else{
+			if(experienceLevel != null){
+				experienceLevelStr = experienceLevel.getName();
+			}
+			return experienceLevelStr;
+		}
+	}
+
+	public void setExperienceLevelStr(String experienceLevelStr)
+	{
+		this.experienceLevelStr = experienceLevelStr;
 	}
 
 	
