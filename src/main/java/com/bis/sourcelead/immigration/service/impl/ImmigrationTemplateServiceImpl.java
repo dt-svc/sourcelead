@@ -4,6 +4,7 @@
 package com.bis.sourcelead.immigration.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -64,14 +65,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		List<ImmigrationTemplateDocDTO> docsList = templateDTO.getImmigrationDocList();
 		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
 		immiTemplate.setId(templateDTO.getId());
-		List<Long> templateDocListIds = immigrationTemplateDao.getTemplateDocList(templateDTO.getId());
-		List<Long> templateDtoDocsListIds = new ArrayList<Long>();
-		for(ImmigrationTemplateDocDTO docsDto : templateDTO.getImmigrationDocList()) {
-			templateDtoDocsListIds.add(docsDto.getId());
+		if(!StringUtils.isEmpty(templateDTO.getImmigrationDocDeletedListIds())) {
+			immigrationTemplateDao.deletePetitionTemplateDocDetails(templateDTO.getImmigrationDocDeletedListIds());
 		}
-		List<Long> remainingDocsIds = new ArrayList<Long>(templateDocListIds);
-		remainingDocsIds.removeAll(templateDtoDocsListIds);
-		//immigrationTemplateDao.deletePetitionTemplateDocDetails(remainingDocsIds);
 		List<ImmigrationTemplateDocDTO> docsListAfterSave = new ArrayList<ImmigrationTemplateDocDTO>();
 		for (ImmigrationTemplateDocDTO tempObj : docsList) {
 			if(tempObj.getDocumentType() == null) continue;

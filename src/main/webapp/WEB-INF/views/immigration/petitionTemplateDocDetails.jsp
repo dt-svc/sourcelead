@@ -142,17 +142,15 @@
 		return templateDocDetails 
    }
 	
- 
+   var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
    function appendTempDocDiv(){
-         var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.
 	   $("#templateDocDivStatic").append(appendTemplateDocDetails(rowId++)); 
    }
-   var arr = new Array();
+   var deletedDocListIds = new Array();
    function removeTempDocDiv(id){
-	   if($("#templateId"+id).val().length != 0 ){
-		   arr.push($("#templateId"+id).val());   
+	   if($("#templateId"+id).val() !==  undefined ){
+		   deletedDocListIds.push($("#templateId"+id).val());   
 	   }
-	   alert(arr);
 	   $("#dynamicRow"+id).remove();
 	   rowId--;// decrement rowid when deleted in UI.
    }

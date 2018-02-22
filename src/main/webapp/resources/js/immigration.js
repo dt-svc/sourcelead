@@ -47,6 +47,7 @@ function Immigration(){
 	this.savePetitionDoc = function(status){
 		if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
 		var formData = getFormData("PetitionTemplateDocDetails");
+		formData.immigrationDocDeletedListIds = deletedDocListIds.join();
 		console.log(formData);
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDocDetails",

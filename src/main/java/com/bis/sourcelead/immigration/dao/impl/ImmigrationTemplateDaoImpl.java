@@ -1,6 +1,7 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -137,13 +138,14 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void deletePetitionTemplateDocDetails(List<Long> remainingDocsIds) {
+	public void deletePetitionTemplateDocDetails(String remainingDocsIds) {
 		logger.debug("Delete Template Docs-->");
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query = session.createQuery("delete from ImmigrationTemplateDocs docs where docs.immigrationTempId in (:templateIds").setParameterList("templateIds", remainingDocsIds);
+		Query query = session.createQuery("delete from ImmigrationTemplateDocs docs where docs.id in (:templateIds)").setString("templateIds", remainingDocsIds);
 		int count = query.executeUpdate();
 		logger.debug("Number of records deleted-->"+count);
 	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -162,18 +164,4 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		return templateList;
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Long> getTemplateDocList(Long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		List<Long>  templateDocList= null;
-		try {
-			  Query query= session.createQuery("select templateDocs.id from ImmigrationTemplateDocs templateDocs where templateDocs.immigrationTempId.id = :templateId").setLong("templateId", id);
-			  templateDocList = query.list();
-		} catch (Exception exception) {
-			logger.error("Error Occured  while fetching template details-->");
-			   exception.printStackTrace();
-			}
-		return templateDocList;
-	}
 }
