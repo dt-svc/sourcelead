@@ -23,6 +23,7 @@
 
 <script>
  window.onload = function() {
+	 getContractTemplates();
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
 	 var spocUserCode = '${spocUserCode}';
