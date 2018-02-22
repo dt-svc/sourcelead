@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -206,7 +207,8 @@ public class ImmigrationRestController {
 		Long immigrationId = null;
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-			immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user, templateId);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user,orgLocations, templateId);
 		}
 		catch (Exception e) {
 			logger.error("Exception occured while saving Petition Template Deatils"+e.getMessage());
