@@ -639,8 +639,8 @@ function getPieChartBasedOnUser(){
        			for (var i = 0; i < data.length; i++) {
       		 		 var opt = data[i];
       		 		 var numberOfDaysCount = 0;
-      		 		 if(opt.numberOfDaysCount != null && opt.numberOfDaysCount != "" && opt.numberOfDaysCount != 'undefined'){
-      		 			numberOfDaysCount = opt.numberOfDaysCount 
+      		 		 if(opt.totalNoOfDays != null && opt.totalNoOfDays != "" && opt.totalNoOfDays != 'undefined'){
+      		 			numberOfDaysCount = opt.totalNoOfDays 
       		 		 }
       		 		result = result +'  <div class="col-md-2 mb">';
       	            result = result +'   <h4 class="text-center tbldata-dotdot-vsm" title="'+opt.name+'">'+opt.name+'</h4>';
