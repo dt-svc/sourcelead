@@ -753,13 +753,15 @@ public class UsersListRestController {
 			 }
 			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
 			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,userId);
-			 Map<String,String> dataMap = new HashMap<>();
+			 Map<Long,String> dataMap = new HashMap<>();
 			 if(userData!= null && !userData.isEmpty()) {
 				 for(Entry<Long, String[]> userCustomData:userData.entrySet()) {
 					String labelName = userCustomData.getValue()[0];
 					 String labelData = userCustomData.getValue()[1];
-					 String labelId = userCustomData.getValue()[2];
-					 dataMap.put(labelName, labelData);
+					 Long id = userCustomData.getKey();
+					 StringBuilder keyValue =  new StringBuilder();
+					 keyValue.append(labelName).append("$").append(labelData);
+					 dataMap.put(id, keyValue.toString());
 					 userRole.setUserCustomFieldlabelNameAndValue(dataMap);
 				 	}
 			 	}

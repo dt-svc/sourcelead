@@ -23,14 +23,17 @@ import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.OrglocationFormSubFields;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SourceleadFormSections;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
+import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
@@ -71,6 +74,13 @@ public class CustomFormRestController {
 	@Autowired
 	private UserCustomFieldDataService userCustomFieldDataService;
 	
+	@Autowired
+	private ClientCustomFieldDataService clientCustomFieldDataService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
+	
+	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
     public  ModelAndView getFormSectionsByActionId(@RequestParam(value="actionId", required=true) Long actionId,HttpServletRequest request) throws Exception {
     	ModelAndView model = new ModelAndView();
@@ -96,10 +106,10 @@ public class CustomFormRestController {
     
     @RequestMapping(value="/getAllASectionCustomFields",method = RequestMethod.POST)
     public ModelAndView getAllCustomFormFieldsBySectionIdandOrgLocationIdWeb(CustomFieldsRequestTypeDTO CustomFieldsRequestTypeDTO,HttpServletRequest request) throws Exception {
-    	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	if(CustomFieldsRequestTypeDTO.getRequestFrom()!= null && StringUtils.isNotEmpty(CustomFieldsRequestTypeDTO.getRequestFrom()) && CustomFieldsRequestTypeDTO.getRequestFrom().equalsIgnoreCase("candidate")) {
     		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
-		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocation.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocations.getId());
     		 CustomFieldsRequestTypeDTO.setSectionId(sections.get(0).getId());
     	}
     	
@@ -125,7 +135,7 @@ public class CustomFormRestController {
     		OrglocationFormFieldsDTO customFormSectonsListDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(customForm, CustomFormSubFields);
     		OrglocationFormFieldsDTOList.add(customFormSectonsListDTO);
     	}
-    		jobData  = getDataByEntityIdActionIdandType(CustomFieldsRequestTypeDTO,actionId,orgLocation);
+    		jobData  = getDataByEntityIdActionIdandType(CustomFieldsRequestTypeDTO,actionId,loginOrgLocations);
 	    	model.addObject("dataMapList", jobData);
 	    	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
 			model.addObject("currentIndex",currentIndex);
@@ -152,25 +162,37 @@ public class CustomFormRestController {
 		return formFieldId;
     }
 
-	private Map<Long, String[]> getDataByEntityIdActionIdandType(CustomFieldsRequestTypeDTO customFieldsRequestTypeDTO,Long actionId, OrgLocations orgLocation) throws Exception {
+	private Map<Long, String[]> getDataByEntityIdActionIdandType(CustomFieldsRequestTypeDTO customFieldsRequestTypeDTO,Long actionId, OrgLocations loginOrgLocations) throws Exception {
 		Map<Long, String[]> jobData = null;
-		 		 List<CustomFormFieldDTO> formFieldId = getSectionDataDetailsByActionId(actionId,orgLocation);
-		 		 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocation.getId());
+		 		 List<CustomFormFieldDTO> formFieldId = getSectionDataDetailsByActionId(actionId,loginOrgLocations);
+		 		 OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocations.getId());
 		 		 if(customFieldsRequestTypeDTO != null && StringUtils.isNotEmpty(customFieldsRequestTypeDTO.getRequestFrom())) {
 		 		 switch (customFieldsRequestTypeDTO.getRequestFrom()) {
 		 		 	case "requirement":
-			 			if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null && customFieldsRequestTypeDTO.getRequirementId()!= null) {
+			 			if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getRequirementId()!= null) {
 							 jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getRequirementId());
 						 }
 			 			break;
 		 		 	case "candidate":
-		 		 		if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null && customFieldsRequestTypeDTO.getCandidateId() != null) {
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getCandidateId() != null) {
 							 jobData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getCandidateId());
 						 }
 			 			break;
 		 		 	case "user" :
-		 		 		if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null && customFieldsRequestTypeDTO.getUserId() != null){
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getUserId() != null){
 		 		 			jobData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getUserId());
+		 		 		}
+		 		 	     break;
+		 		 	case "clientAndVendor":
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getOrgRelationID()!= null && customFieldsRequestTypeDTO.getClientLocationId() != null){
+		 		 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId( customFieldsRequestTypeDTO.getClientLocationId(), customFieldsRequestTypeDTO.getOrgRelationID(),loginOrgLocations.getId());
+		 		 			if(orgRelation.getResponderLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
+		 		 				jobData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+		 		 			}else if(orgRelation.getLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
+		 		 				jobData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+		 		 			}
+		 		 			
+		 		 			
 		 		 		}
 		 		 	}
 		 		 }

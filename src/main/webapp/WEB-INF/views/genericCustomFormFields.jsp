@@ -4,7 +4,7 @@
 
 	<c:forEach var="customForm" items="${customFieldsList}" varStatus="customFormIndex">
 	<c:if test="${customForm.fieldType == 'textfield'}">
-		<div class="form-group">
+		<div class="form-group clearfix">
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
