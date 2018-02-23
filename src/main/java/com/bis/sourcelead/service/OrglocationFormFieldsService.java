@@ -24,5 +24,7 @@ public interface OrglocationFormFieldsService {
 	public OrglocationFormFields getOrglocationFormFieldsById(Long id) throws Exception;
 
 	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long customFieldId);
+	
+	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(Long sectionId,Long orgLocation);
 
 }

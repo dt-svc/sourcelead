@@ -1,6 +1,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- client details View starts-->
 
@@ -12,6 +13,15 @@
     height: 28px;
     line-height: 14px;
 }
+.NewStyleFullWidth {
+	width: 100%; padding: 0px 0px; margin: 0px auto;
+}
+.NewStyleFullWidth .col-md-9 {
+	width: 100%; padding: 0px 0px;
+}
+.NewStyleFullWidth .form-group {
+	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
+}
 </style>
  
 <script type="text/javascript">
@@ -19,7 +29,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
+					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID+"&requestType=Client",
 					success : function(json) {
 					//	var json = JSON.parse(data);
 						getClientNeworgname(json.orgName);
@@ -177,7 +187,7 @@
 						}
 						result = result + '</div>';
 						
-						for (var key in json.clientCustomFieldlabelNameAndValue) {
+						/* for (var key in json.clientCustomFieldlabelNameAndValue) {
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>'+key+' :</strong>';
 							if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue !='' && json.clientCustomFieldlabelNameAndValue !='undefined'){
@@ -186,7 +196,18 @@
 								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
-						}
+						} */
+						
+						if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue != "" && json.clientCustomFieldlabelNameAndValue != 'undefined'){
+				              $.each(json.clientCustomFieldlabelNameAndValue, function(key, value) {
+				            	  var labelNameAndlabelData = value.split("$");
+				            	  result = result + '	<div class="project_details_cta">';
+				            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+				            	  result = result + '	</div>';
+				              });
+			              }
+						
+						
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editClientDetailsDiv"></div>';
@@ -200,6 +221,7 @@
 			    		$("#tab-4").empty();
 			    		$("#tab-5").empty();
 			    		$("#tab-3").empty();
+			    		
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
 						$("#tab-1").show();
@@ -233,10 +255,10 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID,
+						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID+"&requestType=Client",
 						success : function(json) {
 					//	var json = JSON.parse(data);
-						
+					
 						var result = "";
 						
 					    var selected1 = '';
@@ -252,6 +274,12 @@
 						var paymentTerms4 = '';
 						var paymentTerms5 = '';
 						var paymentTerms6 = '';
+						
+						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						  var sectionId = '${section.id}';
+						  preapareCustomFieldDetails(clientLocationId,orgRelationID,sectionId);
+						</c:forEach> 
+						
 						
 						if(json.level == 'Tier-1'){
 								selected1 = 'selected';
@@ -302,6 +330,8 @@
 						 var website ='';
 						 var zipCode = '';
 						 var location = '';
+						 var appendComa1='';
+						 var appendComa2='';
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -335,7 +365,13 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readonly="readonly" value="'+location+'" readonly="readonly" field-name="Location" placeholde="Location" data-validation="required">';
+								if((json.city != null &&  json.city!='' && json.city !='undefined')&&(json.state != null &&  json.state!='' && json.state !='undefined')){
+									appendComa1=' , ';
+								}
+								if((json.country != null &&  json.country!='' && json.country !='undefined')&&((json.city != null &&  json.city!='' && json.city !='undefined')||(json.state != null &&  json.state!='' && json.state !='undefined'))){
+									appendComa2=' , ';
+								}
+								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readonly="readonly" value="'+city+appendComa1+state+appendComa2+country+'" readonly="readonly" field-name="Address" placeholder="Address" data-validation="required">';
 // 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
@@ -381,7 +417,16 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Address" placeholde="Address" data-validation="required">';
+
+								if((json.city != null &&  json.city!='' && json.city !='undefined')&&(json.state != null &&  json.state!='' && json.state !='undefined')){
+									appendComa1=' , ';
+								}
+								if((json.country != null &&  json.country!='' && json.country !='undefined')&&((json.city != null &&  json.city!='' && json.city !='undefined')||(json.state != null &&  json.state!='' && json.state !='undefined'))){
+									appendComa2=' , ';
+								}
+								
+								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" readonly="readonly" value="'+city+appendComa1+state+appendComa2+country+'" field-name="Address" placeholder="Address" data-validation="required">';
+
 // 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
@@ -459,6 +504,9 @@
                         result = result + ' </select>';
                         result = result + ' </div>'; 
 						
+                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth"  id="customFieldDataId"></div>';
+                        
+                        
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta pull-right">';
 						result = result + '<input class="us-btn" id="save_client" type="button" value="Save" onclick="storeClientDetails('+orgRelationID+','+clientLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetails('+clientLocationId+','+orgRelationID+')"/>';
@@ -499,6 +547,22 @@
 		 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
 	}
 </script>
+
+
+
+<script type="text/javascript">
+function preapareCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
+
 
 <script type="text/javascript">
 	function storeClientDetails(orgRelationId,clientLocationId) {

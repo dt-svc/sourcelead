@@ -172,6 +172,9 @@ public class Constants {
 	
 	public static final String MAIL_SEND_PROJECT_DOCUMENTS = "SendProjectDocuments";
 	
+	public static final String ORGREQUEST_EMAIL = "orgRequestEmail";
+	public static final String ORGREQUEST_NOTIFICATION = "orgRequestNotification";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -478,6 +481,7 @@ public class Constants {
 	
 	public static final String TASKTYPE = "TaskType";
 	public static final String TASKSEVERITY = "TaskSeverity";
+	public static final String REQUEST_ORG = "Request_Org";
 	public static final String TASKPRIORITY = "TaskPriority";
 	public static final String TASKSTATUS = "TaskStatus";
 	public static final String COMPANY_ONBOARD_BUSINESS_TYPE = "Company Onboard Business type";
