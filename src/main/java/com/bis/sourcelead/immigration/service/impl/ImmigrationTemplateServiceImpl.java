@@ -146,16 +146,22 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		}
 		
 		for (ImmigrationTemplateFormDTO tempObj : formsList) {
-			ImmigrationTemplateForms immigrationTemplateForms = new ImmigrationTemplateForms();
-			if(tempObj.getId() != null){
+			ImmigrationTemplateForms immigrationTemplateForms = null;
+			if(tempObj.getFormName() == null) continue;
+			/*if(tempObj.getId() != null){
 				immigrationTemplateForms.setId(tempObj.getId());
+			}*/
+			if(tempObj.getId() != null){
+				immigrationTemplateForms = getImmigrationTemplateFormsById(tempObj.getId());
+			}else{
+				immigrationTemplateForms = new ImmigrationTemplateForms();
 			}
 			immigrationTemplateForms.setImmigrationTempId(immiTemplate);
 			immigrationTemplateForms.setFormName(tempObj.getFormName());
 			immigrationTemplateForms.setDescription(tempObj.getFormDescription());
 			if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
 				immigrationTemplateForms.setIsRequired(tempObj.getIsRequired());
-			} else {
+			} else{
 				immigrationTemplateForms.setIsRequired(Constants.NO);
 			}
 			immigrationTemplateForms.setCreatedDate(new Date());
@@ -166,12 +172,14 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			immigrationTemplateForms.setFormUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			if (tempObj.getImmigrationFormFileInfo() != null && !tempObj.getImmigrationFormFileInfo().isEmpty()) {
 				FileInfo info = tempObj.getImmigrationFormFileInfo().get(0);
-				if (info != null) {
+				
+				if (info != null && info.getFileURL() != null) {
 					immigrationTemplateForms.setFileName(info.getFileName());
 					immigrationTemplateForms.setFileUrl(info.getFileURL());
 					immigrationTemplateForms.setFileContentType(info.getContentType());
 
 					try {
+						
 						FileUploadUtil.moveFile(templateDTO.getStaticPath(), info, "ImmigrationFormDocs");
 					} catch (java.io.IOException e) {
 						// TODO Auto-generated catch block
@@ -181,6 +189,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 				}
 			}
 			ImmigrationTemplateForms immigrationForms = immigrationTemplateDao.savePetitionTemplateFormDetails(immigrationTemplateForms);
+			
 			tempObj.setId(immigrationForms.getId());
 			tempObj.setFileName(immigrationForms.getFileName());
 			tempObj.setFileUrl(immigrationForms.getFileUrl());
@@ -188,6 +197,10 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		}
 		
 		return savedFormList;
+	}
+
+	private ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId) {
+		return immigrationTemplateDao.getImmigrationTemplateFormsById(immigrationId);
 	}
 	
 }
