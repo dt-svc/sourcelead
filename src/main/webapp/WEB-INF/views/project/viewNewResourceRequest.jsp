@@ -155,7 +155,7 @@ function getRequestedAssociatesList(){
 					 if(opt.minExperience != null && opt.minExperience != '' && opt.minExperience != 'undefined'){
 						 minExperience = "Min Exp."+opt.minExperience;
 					 }else if(opt.minExperience == 0){
-						 minExperience = "Min Exp."+0;
+						 minExperience = "Min Exp."+opt.minExperience;
 					 }else{
 						 minExperience = '--';
 					 }
