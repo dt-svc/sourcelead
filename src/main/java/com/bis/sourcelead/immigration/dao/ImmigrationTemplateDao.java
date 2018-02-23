@@ -29,6 +29,8 @@ public interface ImmigrationTemplateDao {
 	
 	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
 
+	ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId);
+
 	
 	
 }

@@ -20,7 +20,6 @@
 			<div class="immiTemp clearfix" id="templateFormDivStatic">
 			<c:choose>
     			   <c:when  test="${empty formsList}"> <!--  when list is empty loads default row -->
-				      
 				<div class="col-md-12 clearfix noPad mt">
 				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
 				  <div class="col-md-3">
@@ -55,21 +54,26 @@
 				<c:otherwise>
 				<c:forEach var="item" items="${formsList}" varStatus="rows">
 				<c:if test="${rows.count == 1}"> <!--adding add row div for first row-->
-					<div class="immiTemp clearfix" id="templateFormDivStatic">
 					  </c:if>
 					  <c:if test="${rows.count > 1}"><!--when rowIndex is 1 default(first) row is loaded with add button-->
 					    <div id="dynamicFormRow${rows.count-1}" class="col-md-12 clearfix noPad mt"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
 					  </c:if>
-				<div class="col-md-12 clearfix noPad mt">
+				
 				<input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
 				
 				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
-				  <div class="col-md-3">
+				  
+				   <div class="col-md-4" id="docNameDiv${rows.count-1}">
+			 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
+			<input  type="hidden" id="generalExisitingFile${rows.count-1}" name = "generalExisitingFile[${rows.count-1}].immigrationFormFileInfo[0].docFile" value="${item.fileName}">
+			  </div>
+				  
+				  <div class="col-md-3" id ="showDocDiv${rows.count-1}" style="display: none;">
 					<div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
 						<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs('${rows.count-1}');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-						  <input style="display: none;" onchange="uploadBtnFile('${rows.count-1}');"  id="uploadBtn0"  class="upload" type="file">
+						  <input style="display: none;" onchange="uploadBtnFile('${rows.count-1}');"  id="uploadBtn${rows.count-1}"  class="upload" type="file">
 						  </span></label>
-						   <input type="text" class="form-control" readonly id="uploadFile${rows.count-1}" name = "immigrationFormList[${rows.count-1}].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required">
+						   <input type="text" class="form-control" readonly id="uploadFile${rows.count-1}" name = "immigrationFormList[${rows.count-1}].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment">
 <!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
 					  </div>				  	
 				  </div>
@@ -79,7 +83,7 @@
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-6 noPad">
 						<label class="switch mt5 text-center">
-						<input checked id="requiredCheck0" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc(0)" value="Y">
+						<input checked id="requiredCheck${rows.count-1}" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc(0)" value="Y">
 
 						<div class="slider round"></div>
 						</label>
@@ -129,6 +133,14 @@ function checkIsReqDoc(id){
 	}else{
 		$("#requiredCheck"+id).val("N");
 	}
+}
+</script>
+
+<script type="text/javascript">
+function deleteDoc(id){
+	 $("#docNameDiv"+id).hide();
+	 $("#showDocDiv"+id).show();
+	 $("#uploadFile"+id).attr("data-validation","required");
 }
 </script>
    
