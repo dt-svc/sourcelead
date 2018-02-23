@@ -1956,7 +1956,7 @@ public class UsersListRestController {
 			
 			if(addUserDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0 ) {
 						UserCustomFieldData userCustomFields = null;
 						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
 							userCustomFields = userCustomFieldDataService.getUserCustomFieldDataById(customFields.getEntityId());

@@ -91,4 +91,18 @@ public class ClientCustomFieldDataDaoImpl implements ClientCustomFieldDataDao {
 		return userCustomFieldDataMap;
 	}
 
+
+	@Override
+	@Transactional
+	public ClientCustomFieldData getClientCustomFieldDataById(Long entityId) {
+		Session session = sessionFactory.getCurrentSession();
+		ClientCustomFieldData clientCustomFieldData = null;
+		try {
+			 clientCustomFieldData = (ClientCustomFieldData) session.get(ClientCustomFieldData.class, entityId);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return clientCustomFieldData;
+	}
+
 }

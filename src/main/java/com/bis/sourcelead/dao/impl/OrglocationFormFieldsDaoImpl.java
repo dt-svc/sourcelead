@@ -50,6 +50,17 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationId(Long sectionId,Long orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc  where slSection.id =:sectionId and orgLoc.id =:orgLocation and orgForm.status = 1";
+		List<OrglocationFormFields> orglocaFormField = session.createQuery(query).setLong("sectionId", sectionId).setLong("orgLocation", orgLocation).list();
+		return orglocaFormField;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(Long sectionId,Long orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc  where slSection.id =:sectionId and orgLoc.id =:orgLocation";
 		List<OrglocationFormFields> orglocaFormField = session.createQuery(query).setLong("sectionId", sectionId).setLong("orgLocation", orgLocation).list();
 		return orglocaFormField;
@@ -60,7 +71,7 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long formFieldId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrglocationFormSubFields orgSubForm left join fetch orgSubForm.formField formField where formField.id =:formFieldId and orgSubForm.status = 1";
+		String query = "from OrglocationFormSubFields orgSubForm left join fetch orgSubForm.formField formField where formField.id =:formFieldId ";
 		List<OrglocationFormSubFields> orglocaFormSubField = session.createQuery(query).setLong("formFieldId", formFieldId).list();
 		return orglocaFormSubField;
 	}

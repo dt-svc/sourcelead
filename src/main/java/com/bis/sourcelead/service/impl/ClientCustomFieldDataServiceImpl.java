@@ -33,4 +33,9 @@ public class ClientCustomFieldDataServiceImpl implements ClientCustomFieldDataSe
 		return clientCustomFieldDataDao.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(clientVendorOrgId,formFieldId,orgId);
 	}
 
+	@Override
+	public ClientCustomFieldData getClientCustomFieldDataById(Long entityId) {
+		return clientCustomFieldDataDao.getClientCustomFieldDataById(entityId);
+	}
+
 }
