@@ -3007,10 +3007,13 @@ Please mail us at </p>
 
 <script>
 function applyJob(requirementUUID){
-	$(".modal.modalApplyjob").fadeIn();
-	$(".comMask").fadeIn();
-	loginPopup(requirementUUID)
-	
+    if('${SourceLeadWeb_user.id}' != null && '${SourceLeadWeb_user.id}' != ''){
+        location.replace(sourceleadUrl+"/dashboard");  
+    }else{
+        $(".modal.modalApplyjob").fadeIn();
+        $(".comMask").fadeIn();
+        loginPopup(requirementUUID)
+    }
 }
 function closeApplyJob(){
 	$(".modal.modalApplyjob").fadeOut();
