@@ -193,7 +193,7 @@ function getClientContactList(){
 			    	  		 var result = "";
 			    	  		result = result + ' <td><div id="invitationStatus'+report.id+'">';
 					   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-					   		  result = result +' <a class="fa fa-check" alt="Accept" href="'+sourceleadUrl+'/acceptVendorOnboardInvitation?onboardUUID='+report.onboardUUID+'&notificationUUID='+report.notificationUUID+'"></a>|<a class="fa fa-times" alt="Rejected" href="'+sourceleadUrl+'/rejectVendorOnboardInvitation?onboardUUID='+report.onboardUUID+'&notificationUUID='+report.notificationUUID+'"></a>';
+					   		  result = result +' <a class="fa fa-check" alt="Accept" href="'+sourceleadUrl+'/acceptVendorOnboardInvitation?onboardUUID='+report.onboardUUID+'&notificationUUID='+report.notificationUUID+'"></a>|<a class="fa fa-times" alt="Rejected" href="'+sourceleadUrl+'/rejectVendorOnboardInvitation?onboardUUID='+report.onboardUUID+'&notificationUUID='+report.notificationUUID+'&orgSpocUUID='+report.orgSpocUUUID+'"></a>';
 					   		}
 					   		
 					   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){

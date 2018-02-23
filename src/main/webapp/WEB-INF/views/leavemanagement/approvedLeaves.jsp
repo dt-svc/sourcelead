@@ -209,8 +209,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-				 result = result +'<span>'+data.leavesTaken+'</span>';
+             if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -326,13 +326,13 @@ function approvedListPagination(){
 <div id="popUp"></div>
 
 <script>
-function withDrawLeave(leaveUUID, userId){
+function withDrawLeave(leaveUUID, locationId){
 	var result = "";
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='withdrawReason' class='form-control' field-name='Withdraw Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Withdraw Reason' rows='2'></textarea>";
 	result = result + ' <div id="withdrawReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveUUID+'\','+userId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Withdraw" onclick="withdraw(\''+leaveUUID+'\','+locationId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -349,8 +349,9 @@ function cancelTermination(){
 }
 </script>
 <script>
-function withdraw(leaveUUID,userId){
+function withdraw(leaveUUID,locationId){
 	 var reason = document.getElementById("withdrawReason").value;
+	 var userId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 // 	 var userId = '${SourceLeadWeb_userId}';
 	 if(reason == null || reason == '' || reason == 'undefined'){
