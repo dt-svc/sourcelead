@@ -199,5 +199,7 @@ public interface CandidateService {
 	public void saveOrglocationAsssociate(AddAssociateDTO addAssociateDTO, User user, OrgLocations orgLocations,Org org) throws Exception;
 	
 	Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception;
+	
+	public Candidate getCandidateByEmail(String email) throws Exception;
 
 }

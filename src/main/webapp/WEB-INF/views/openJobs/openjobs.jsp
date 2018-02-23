@@ -1623,7 +1623,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
-				result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>';
+				/* result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>'; */
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+json.requirementOrgName+'-'+json.orgLocationId.id+'"><h4 class="orgLink">'+json.requirementOrgName+'</h4></a>';
 				description =  description+'Posted By :'+json.requirementOrgName+";";
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	
@@ -3007,12 +3008,21 @@ Please mail us at </p>
 
 <script>
 function applyJob(requirementUUID){
+
 	
 	$(".modal.modalApplyjob").fadeIn();
 	$(".comMask").fadeIn();
 	$("#requirementUUID").val(requirementUUID);
 	loginPopup(requirementUUID)
-	
+
+    if('${SourceLeadWeb_user.id}' != null && '${SourceLeadWeb_user.id}' != ''){
+        location.replace(sourceleadUrl+"/dashboard");  
+    }else{
+        $(".modal.modalApplyjob").fadeIn();
+        $(".comMask").fadeIn();
+        loginPopup(requirementUUID)
+    }
+
 }
 function closeApplyJob(){
 	$(".modal.modalApplyjob").fadeOut();

@@ -1529,5 +1529,18 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidate;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByEmail(String email) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.email = :email  ";  
+		List<Candidate> candidateList =  session.createQuery(query).setString("email", email).list();
+		Candidate candidate = null;
+		if (candidateList != null && candidateList.size() > 0) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
+	}
+
 }
 
