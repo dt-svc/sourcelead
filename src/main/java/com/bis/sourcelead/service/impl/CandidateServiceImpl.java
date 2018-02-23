@@ -1988,4 +1988,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
 	}
 
+	@Override
+	public Candidate getCandidateByEmail(String email) throws Exception {
+		return candidateDao.getCandidateByEmail(email);
+	}
+
 }
