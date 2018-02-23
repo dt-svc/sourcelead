@@ -60,7 +60,7 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long formFieldId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrglocationFormSubFields orgSubForm left join fetch orgSubForm.formField formField where formField.id =:formFieldId and orgSubForm.status = '1'";
+		String query = "from OrglocationFormSubFields orgSubForm left join fetch orgSubForm.formField formField where formField.id =:formFieldId and orgSubForm.status = 1";
 		List<OrglocationFormSubFields> orglocaFormSubField = session.createQuery(query).setLong("formFieldId", formFieldId).list();
 		return orglocaFormSubField;
 	}
