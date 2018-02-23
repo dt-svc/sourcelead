@@ -132,18 +132,18 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LEAVE_TYPE_ID")
+	private LeaveType leaveType;
 	
     @OneToMany(mappedBy="projectTaskId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectAssignTask> projectAssignTask;
     
-    
-    
 	@OneToMany(mappedBy = "projectTaskId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
     private List<ProjectTaskActivity> projectTaskActivity;
-    
 
 	@OneToMany(mappedBy="projectTaskId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
@@ -615,5 +615,13 @@ public class ProjectTasks implements Serializable{
 	public void setProjectTaskActivity(List<ProjectTaskActivity> projectTaskActivity) {
 		this.projectTaskActivity = projectTaskActivity;
 	}
-	 
+
+	public LeaveType getLeaveType() {
+		return leaveType;
+	}
+
+	public void setLeaveType(LeaveType leaveType) {
+		this.leaveType = leaveType;
+	}
+	
 }
