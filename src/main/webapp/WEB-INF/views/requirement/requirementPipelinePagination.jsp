@@ -520,7 +520,6 @@
 // 		    	   $("#interviewli").removeClass("reqAct");
 // 		    	   $("#offerMadeli").removeClass("reqAct");
 		    	  
-		    	  
 		    	   requirementStatusBar(requirementId);
 		    	   $("#applicantli").removeClass("reqAct");
 		    	   $("#rejectedli").addClass("reqAct");

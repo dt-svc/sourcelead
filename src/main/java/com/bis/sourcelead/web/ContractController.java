@@ -160,7 +160,7 @@ public class ContractController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_CONTRACT','ROLE_ADD_NEW_CONTRACT','ROLE_ADD_EXISTING_CONTRACT')")
 	@RequestMapping(value = "/contractListbyStatus")
-	public ModelAndView contractListbyStatus(HttpServletRequest request) throws Exception {
+	public ModelAndView contractListbyStatus(HttpServletRequest request, @RequestParam(value="status", required=false)String status, @RequestParam(value="contractType", required=false)String contractType) throws Exception {
 		logger.debug("display contract template page");
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -176,8 +176,12 @@ public class ContractController {
 		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
 		
 		ModelAndView model = new ModelAndView();
-		
-		
+		if(!isNullOrEmpty(status)){
+			model.addObject("status", status);
+		}
+		if(!isNullOrEmpty(contractType)){
+			model.addObject("contractType", contractType);
+		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);
@@ -186,6 +190,12 @@ public class ContractController {
 	}
 	
 	
+	private boolean isNullOrEmpty(String status)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/**
 	 * display add new contract  page
 	 * @return model
@@ -679,14 +689,15 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		model.addObject("contract", contract);
-		if(contract.getContactUser().getLastName() != null) {
+		if(StringUtils.isNotEmpty(contract.getContactUser().getLastName()) ) {
 			StringBuilder sb = new StringBuilder();
 			model.addObject("signatory",sb.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()));
 		}else {
 			model.addObject("signatory",contract.getContactUser().getFirstName());
 		}
-		if(contract.getContactUser().getLastName() != null) {
+		if(StringUtils.isNotEmpty(contract.getContactUser().getLastName())) {
 			StringBuilder sbn = new StringBuilder();
+
 			model.addObject("initial",sbn.append(contract.getContactUser().getFirstName().charAt(0)).append(contract.getContactUser().getLastName().charAt(0)));
 		}else {
 			model.addObject("initial",contract.getContactUser().getFirstName().charAt(0));

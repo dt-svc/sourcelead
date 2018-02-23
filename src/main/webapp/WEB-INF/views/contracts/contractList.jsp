@@ -7,6 +7,89 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	
+	var status='${status}'
+	var contractType='${contractType}'
+	if(status == "waiting"){
+		$("#draft").removeClass("draft"); 
+	    $("#approve").addClass("wApp");
+	    $("#contractStage").val("WAITING_FOR_APPROVER");
+	   if(contractType == "Vendor MSA" || contractType == "Vendor SOW"){
+			$("#Vendor1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
+		if(contractType == "Client MSA" || contractType == "Client SOW"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").addClass("active"); 
+			getTemplateList();
+			Check('Clients');
+		}
+		if(contractType == "Full time offer"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").removeClass("active");
+			$("#Applicants1").addClass("active");
+			getTemplateList();
+			Check('Applicants');
+		}
+	}
+	if(status == "rejected"){
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").removeClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").addClass("rej");
+        
+        $("#contractStage").val("REJECTED");
+        if(contractType == "Vendor MSA" || contractType == "Vendor SOW"){
+			$("#Vendor1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
+		if(contractType == "Client MSA" || contractType == "Client SOW"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").addClass("active"); 
+			getTemplateList();
+			Check('Clients');
+		}
+		if(contractType == "Full time offer"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").removeClass("active");
+			$("#Applicants1").addClass("active");
+			getTemplateList();
+			Check('Applicants');
+		}
+	}
+	if(status == "verify"){
+		$("#draft").removeClass("draft"); 
+        $("#approve").removeClass("wApp");
+        $("#sign").removeClass("wSig");
+        $("#verify").addClass("wVer");
+        $("#finalised").removeClass("fin");
+        $("#expired").removeClass("exp");
+        $("#rejected").removeClass("rej");
+        
+        $("#contractStage").val("WAITING_TO_BE_VERIFY");
+        if(contractType == "Vendor MSA" || contractType == "Vendor SOW"){
+			$("#Vendor1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
+		if(contractType == "Client MSA" || contractType == "Client SOW"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").addClass("active"); 
+			getTemplateList();
+			Check('Clients');
+		}
+		if(contractType == "Full time offer"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").removeClass("active");
+			$("#Applicants1").addClass("active");
+			getTemplateList();
+			Check('Applicants');
+		}
+	}
    $("#contractStage").val("DRAFT");
    getTemplateList();
    getStageCounts();
@@ -61,21 +144,21 @@ padding: 2px 300px 2px 0px;
       <div class="col-md-4 mt25">
         <div class="small-widget bgGreen"> <a href="<c:url value="${appPath}/addNewContract" />" title="New Contract">
           <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
-          <strong class="clearfix">New Contract</strong> <i class='fa fa-info-circle' title='Generate a new contract through the configured template'></i></a> </div>
+          <strong class="clearfix">New Contract</strong> </a> </div>
       </div>
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
           <div class="small-widget bg-yellow"> <a href="<c:url value="${appPath}/addCustomContract" />" title="Custom Contract">
             <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
-            <strong class="clearfix">Custom Contract</strong><i class='fa fa-info-circle' title='Generate contract by uploading the custom template'></i> </a> </div>
+            <strong class="clearfix">Custom Contract</strong> </a> </div>
         </div>
         </sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
           <div class="small-widget bg-purple"> <a href="<c:url value="${appPath}/addExistingContract" />" title="Existing Contract">
             <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
-            <strong class="clearfix">Existing Contract</strong> <i class='fa fa-info-circle' title='This includes the ongoing or completed contracts'></i> </a> </div>
+            <strong class="clearfix">Existing Contract</strong> </a> </div>
         </div>
         </sec:authorize>        
        </div>
