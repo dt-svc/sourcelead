@@ -25,7 +25,7 @@ public class ReadMail {
 		      properties.put("mail.imap.host", host);
 		      properties.put("mail.imap.port", "993");
 		      properties.put("mail.imap.starttls.enable", "true");
-		      Session emailSession = Session.getDefaultInstance(properties);
+		      Session emailSession = Session.getInstance(properties);
 		  
 		      //create the POP3 store object and connect with the pop server
 		      Store store = emailSession.getStore("imaps");
