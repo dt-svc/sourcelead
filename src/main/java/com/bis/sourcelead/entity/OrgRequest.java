@@ -30,28 +30,28 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @Column(name = "FIRSTNAME")
+    @Column(name = "FIRST_NAME")
    	private String firstName;
     
-    @Column(name = "LASTNAME")
+    @Column(name = "LAST_NAME")
    	private String lastName;
     
-    @Column(name = "PHONENUMBER")
+    @Column(name = "PHONE_NUMBER")
    	private String phoneNumber;
     
     @Column(name = "EMAIL")
    	private String email;
     
-    @Column(name = "COMPANYNAME")
+    @Column(name = "COMPANY_NAME")
    	private String companyName;
     
-    @Column(name = "COMPANYWEBSITE")
+    @Column(name = "COMPANY_WEBSITE")
    	private String companywebsite;
     
     @Column(name = "COUNTRY")
    	private String country;
     
-    @Column(name = "COMPANYADDRESS")
+    @Column(name = "COMPANY_ADDRESS")
 	@Type(type="text")
 	private String companyAddress;
     
