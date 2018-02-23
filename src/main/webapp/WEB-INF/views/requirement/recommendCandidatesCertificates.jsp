@@ -803,9 +803,13 @@ function scoreAndScoreType(){
 	 }
 	 if(candidateScore.match(grades)){
 		 $("#scoreType").val('GRADE'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#addCandidate").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(cgpanum)){
 		 $("#scoreType").val('CGPA'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#addCandidate").removeAttr("disabled");
 	 }
 	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
 		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");

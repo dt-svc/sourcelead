@@ -885,15 +885,18 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 		var grades = /^([A-E][-+]{0,2})?$/
 		if (candidateScore.match(floatNum)) {
 			$("#scoreType").val('Percentage');
-			$('#candidateScoreDiv').parent()
-					.find('p.jquery_form_error_message').remove();
+			$('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 			$("#addCandidate").removeAttr("disabled");
 		}
 		if (candidateScore.match(grades)) {
 			$("#scoreType").val('GRADE');
+			$('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+			$("#addCandidate").removeAttr("disabled");
 		}
 		if (candidateScore.match(cgpanum)) {
 			$("#scoreType").val('CGPA');
+			$('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+			$("#addCandidate").removeAttr("disabled");
 		}
 		if ((selectedText == '') && (!candidateScore.match(floatNum))
 				&& (!candidateScore.match(cgpanum))
