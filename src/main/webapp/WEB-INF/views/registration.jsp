@@ -146,14 +146,14 @@ window.onload = function () {
 		            <div class="form-group clearfix" id="firstNameDivPopUp">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
-		                    <input type="text" class="form-control" name="firstName" field-name="First Name" id="popfirstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNamePop();">
+		                    <input type="text" class="form-control" name="firstName" field-name="First Name" id="popfirstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber  validate_length length1-100" onkeydown="removeValidationNamePop();">
 		                     <b></b>
 		                  </span>
 		            </div>
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Last Name</label>
 		              <span class="col-md-8">
-		                 <input type="text"  class="form-control" name="lastName" field-name="Last Name" id="poplastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+		                 <input type="text"  class="form-control" name="lastName" field-name="Last Name" id="poplastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
 		                 <b></b>
 		              </span>
 		            </div>
@@ -263,14 +263,14 @@ window.onload = function () {
 		            <div class="form-group clearfix" id="poprecruiterFirstNameDiv">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
-		                     <input type="text" class="form-control" name="firstName" field-name="First Name" id="poprecruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNameRecPop();">
+		                     <input type="text" class="form-control" name="firstName" field-name="First Name" id="poprecruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameRecPop();">
 		                     <b></b>
 		                  </span>
 		            </div>
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Last Name</label>
 		              <span class="col-md-8">
-		                 <input type="text"  class="form-control" name="lastName" field-name="Last Name" id="poprecruiterLastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+		                 <input type="text"  class="form-control" name="lastName" field-name="Last Name" id="poprecruiterLastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
 		                 <b></b>
 		              </span>
 		            </div>
@@ -368,13 +368,13 @@ window.onload = function () {
                 <div class="col-xs-12 col-md-12 mb10" id="firstNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNameDiv();">
+                    <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-12 mb10" id="lastNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
-                    <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
@@ -464,13 +464,13 @@ window.onload = function () {
                 <div class="col-xs-12 col-md-12 mb10" id="firstNameDivRec">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNameDivRec();">
+                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDivRec();">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
-                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
@@ -539,13 +539,13 @@ window.onload = function () {
 	                <div class="col-xs-12 col-md-12">
 	                    <i class="fa fa-user-circle"></i>
 	                    <label>First Name <span class="text-danger">*</span></label>
-	                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+	                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 	                    <b></b>
 	                </div>
 	                <div class="col-xs-12 col-md-12">
 	                    <i class="fa fa-user-circle"></i>
 	                    <label>Last Name</label>
-	                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+	                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
 	                    <b></b>
 	                </div>
 	                </div>
@@ -595,13 +595,13 @@ window.onload = function () {
                 <div class="col-xs-12 col-md-12 mb" id="firstNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNameDiv();">
+                    <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-12 mb" id="lastNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
-                    <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
                     <b></b>
                 </div>
                 
