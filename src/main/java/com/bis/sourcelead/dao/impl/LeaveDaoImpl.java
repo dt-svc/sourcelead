@@ -347,6 +347,10 @@ public class LeaveDaoImpl implements LeaveDao{
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
 		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
 		leavesMap.put("numberOfLeavsTaken", numberOfLeavsTaken);
+//		int halfDayCount = leavesList.stream().mapToInt(ll->ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(supplier, accumulator, combiner);
+		int fromhalfDayCount = leavesList.stream().filter(ll->ll.getFromHalfDay() != null && ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		int tohalfDayCount = leavesList.stream().filter(ll->ll.getToHalfDay() != null && ll.getToHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		leavesMap.put("halfdayLeavesCount", fromhalfDayCount + tohalfDayCount);
 		int numberOfExtraLeaves = leavesList.stream().mapToInt(l->l.getExtraLeavesTaken()).sum();
 		leavesMap.put("numberOfExtraLeaves", numberOfExtraLeaves);
 		return leavesMap;
@@ -355,7 +359,7 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public int getThisMonthLeavesTakenByUser(Long userId,Long leaveTypeId) {
+	public float getThisMonthLeavesTakenByUser(Long userId,Long leaveTypeId) {
 		Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
 		int month = c.get(Calendar.MONTH);
@@ -372,7 +376,10 @@ public class LeaveDaoImpl implements LeaveDao{
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate)
 				.list();
 		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
-		return numberOfLeavsTaken;
+		int fromhalfDayCount = leavesList.stream().filter(ll->ll.getFromHalfDay() != null && ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		int tohalfDayCount = leavesList.stream().filter(ll->ll.getToHalfDay() != null && ll.getToHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		float leavesTaken = (float) (numberOfLeavsTaken - ((fromhalfDayCount+tohalfDayCount) * 0.5));
+		return leavesTaken;
 	}
 
 

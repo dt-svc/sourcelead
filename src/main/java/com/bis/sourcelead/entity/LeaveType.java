@@ -184,6 +184,18 @@ public class LeaveType {
 	@Transient
 	@JsonProperty
 	private int takenLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private float totalBalanceLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private float leaveTypeBalanceLeaveCount;
+	
+	@Transient
+	@JsonProperty
+	private float takenLeaves;
 
 	public Long getId()
 	{
@@ -665,4 +677,34 @@ public class LeaveType {
 		this.leaveTypeUUID = leaveTypeUUID;
 	}
 
+	public float getTotalBalanceLeaveCounts()
+	{
+		return totalBalanceLeaveCounts;
+	}
+
+	public void setTotalBalanceLeaveCounts(float totalBalanceLeaveCounts)
+	{
+		this.totalBalanceLeaveCounts = totalBalanceLeaveCounts;
+	}
+
+	public float getLeaveTypeBalanceLeaveCount()
+	{
+		return leaveTypeBalanceLeaveCount;
+	}
+
+	public void setLeaveTypeBalanceLeaveCount(float leaveTypeBalanceLeaveCount)
+	{
+		this.leaveTypeBalanceLeaveCount = leaveTypeBalanceLeaveCount;
+	}
+
+	public float getTakenLeaves()
+	{
+		return takenLeaves;
+	}
+
+	public void setTakenLeaves(float takenLeaves)
+	{
+		this.takenLeaves = takenLeaves;
+	}
+	
 }
