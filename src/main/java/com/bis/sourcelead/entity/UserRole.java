@@ -312,7 +312,7 @@ public class UserRole implements Serializable {
 
 	@Transient
 	@JsonProperty
-	private Map<String,String> userCustomFieldlabelNameAndValue;
+	private Map<Long,String> userCustomFieldlabelNameAndValue;
 	
 	public String getUserName() {
 		return userName;
@@ -911,13 +911,15 @@ public class UserRole implements Serializable {
 		this.userCode = userCode;
 	}
 
-	public Map<String, String> getUserCustomFieldlabelNameAndValue() {
+	public Map<Long, String> getUserCustomFieldlabelNameAndValue() {
 		return userCustomFieldlabelNameAndValue;
 	}
 
-	public void setUserCustomFieldlabelNameAndValue(Map<String, String> userCustomFieldlabelNameAndValue) {
+	public void setUserCustomFieldlabelNameAndValue(Map<Long, String> userCustomFieldlabelNameAndValue) {
 		this.userCustomFieldlabelNameAndValue = userCustomFieldlabelNameAndValue;
 	}
+
+	
 
 	
 	
