@@ -1904,7 +1904,7 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
-			    	$("#experienceLevel").val(json.experienceLevel.name);
+			    	$("#experienceLevel").val(json.experienceLevelStr);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');

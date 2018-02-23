@@ -229,6 +229,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 ExpensesApprovalService expensesApprovalService;
+
+	private UserDTO userStatus;
 	 
 	 
 /*	 @Override
@@ -922,7 +924,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
-		
+		UserRole userStatus = userRoleService.getUserByUserId(user.getId());
+		if(userStatus.getUserState().toString().equalsIgnoreCase("ACTIVE")) {
 		Set<Projects> projectsSet = new HashSet<>();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -993,6 +996,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
 		 sendWeeklyBaseNotiFication(user,orgLocations,projectsSet);
+		}
 	}
 
 
@@ -2175,12 +2179,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 @Override
 public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,User user1) throws Exception {
 	     User user = null;
+	     
 	     if(user1!=null){
 	    	 user = user1;
 	     }else{
 	    	 user = orgLocations.getUser();
 	     }
 	     if(user != null){
+	    	 UserRole userStatus = userRoleService.getUserByUserId(user.getId());
+	    	 if(userStatus.getUserState().toString().equalsIgnoreCase("ACTIVE")) {
 	    	 StringBuilder fNameStringBuilder=new StringBuilder();
 			 EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(user.getFirstName());
@@ -2222,7 +2229,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 			 
 	     }
-	    
+	     }
 		
 }
 

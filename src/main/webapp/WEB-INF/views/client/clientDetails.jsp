@@ -302,6 +302,8 @@
 						 var website ='';
 						 var zipCode = '';
 						 var location = '';
+						 var appendComa1='';
+						 var appendComa2='';
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -335,7 +337,13 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readonly="readonly" value="'+location+'" readonly="readonly" field-name="Location" placeholde="Location" data-validation="required">';
+								if((json.city != null &&  json.city!='' && json.city !='undefined')&&(json.state != null &&  json.state!='' && json.state !='undefined')){
+									appendComa1=' , ';
+								}
+								if((json.country != null &&  json.country!='' && json.country !='undefined')&&((json.city != null &&  json.city!='' && json.city !='undefined')||(json.state != null &&  json.state!='' && json.state !='undefined'))){
+									appendComa2=' , ';
+								}
+								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readonly="readonly" value="'+city+appendComa1+state+appendComa2+country+'" readonly="readonly" field-name="Address" placeholder="Address" data-validation="required">';
 // 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
@@ -381,7 +389,16 @@
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Address<span class="text-danger">&nbsp; *</span></label>';
-								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+location+'" field-name="Address" placeholde="Address" data-validation="required">';
+
+								if((json.city != null &&  json.city!='' && json.city !='undefined')&&(json.state != null &&  json.state!='' && json.state !='undefined')){
+									appendComa1=' , ';
+								}
+								if((json.country != null &&  json.country!='' && json.country !='undefined')&&((json.city != null &&  json.city!='' && json.city !='undefined')||(json.state != null &&  json.state!='' && json.state !='undefined'))){
+									appendComa2=' , ';
+								}
+								
+								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" readonly="readonly" value="'+city+appendComa1+state+appendComa2+country+'" field-name="Address" placeholder="Address" data-validation="required">';
+
 // 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								
