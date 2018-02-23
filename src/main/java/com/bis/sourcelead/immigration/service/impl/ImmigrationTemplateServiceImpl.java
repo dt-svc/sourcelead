@@ -193,6 +193,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			tempObj.setId(immigrationForms.getId());
 			tempObj.setFileName(immigrationForms.getFileName());
 			tempObj.setFileUrl(immigrationForms.getFileUrl());
+			tempObj.setIsRequired(immigrationForms.getIsRequired());
 			savedFormList.add(tempObj);
 		}
 		

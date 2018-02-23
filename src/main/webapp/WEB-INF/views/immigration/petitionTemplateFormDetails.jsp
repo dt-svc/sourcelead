@@ -83,7 +83,7 @@
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-6 noPad">
 						<label class="switch mt5 text-center">
-						<input checked id="requiredCheck${rows.count-1}" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc(0)" value="Y">
+						<input  id="requiredCheck${rows.count-1}" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc('${rows.count-1}')" value= "${item.isRequired}" ${item.isRequired == 'Y' ? 'checked' : ''}>
 
 						<div class="slider round"></div>
 						</label>
@@ -188,8 +188,10 @@ function uploadFormDocs(id){
    function removeTempFormRow(id){
 	   if($("#templateId"+id).val() !==  undefined ){
 		   deletedFormsListIds.push($("#templateId"+id).val());   
+		   $("#petitionTemplateFormDetails input[data-id*=uploadBtn]"+id).remove();
 	   }
 	   $("#dynamicFormRow"+id).remove();
+	   $("#petitionTemplateFormDetails input[data-id*=uploadBtn]"+id).remove();
 	   rowId--;
    }
    	</script>
