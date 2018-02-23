@@ -27,6 +27,10 @@ function campaignSender(ele,senderId, fromType) {
 //					  			$("#senderLoading").removeAttr("style");
 					 			 $(".project_inn_mask").fadeOut(200);
 					             	
+							}else{
+								$("#senderLoading").removeAttr("style");
+								$('#nickNameDiv').find('p.jquery_form_error_message').remove();
+								$("input#cpnNickName").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same nickname.</span>");
 							}
 						});
 						return true;
@@ -75,11 +79,13 @@ function validateNickName(senderId){
 					$("input#cpnNickName").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same nickname.</span>");
 					document.getElementById("cpnNickName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("cpnNickName").setAttribute( 'record-exist-errorMsg',"You already have a sender identity with the same nickname.");
+					$('#saveCampaignSender').attr("disabled","disabled");
 					
 				}else if(result == false) {
 					$('input#cpnNickName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#cpnNickName').attr('class','valid form-control');
 					$('#nickNameDiv').find('p.jquery_form_error_message').remove();
+					$("#saveCampaignSender").removeAttr("disabled", "disabled");
 					
 				}
 			},

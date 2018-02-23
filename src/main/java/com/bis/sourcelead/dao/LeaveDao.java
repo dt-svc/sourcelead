@@ -35,7 +35,7 @@ public interface LeaveDao {
 	
 	Map<String, Integer> getNumberOfLeavesTakenByUser(Long userId, Long leaveTypeId) throws Exception;
 
-	int getThisMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
+	float getThisMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
