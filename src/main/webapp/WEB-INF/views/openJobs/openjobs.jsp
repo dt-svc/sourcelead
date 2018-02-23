@@ -1623,7 +1623,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
-				result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>';
+				/* result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>'; */
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+json.requirementOrgName+'-'+json.orgLocationId.id+'"><h4 class="orgLink">'+json.requirementOrgName+'</h4></a>';
 				description =  description+'Posted By :'+json.requirementOrgName+";";
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	

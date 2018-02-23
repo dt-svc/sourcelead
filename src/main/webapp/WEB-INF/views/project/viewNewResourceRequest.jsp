@@ -154,9 +154,12 @@ function getRequestedAssociatesList(){
 					 }
 					 if(opt.minExperience != null && opt.minExperience != '' && opt.minExperience != 'undefined'){
 						 minExperience = "Min Exp."+opt.minExperience;
+					 }else if(opt.minExperience == 0){
+						 minExperience = "Min Exp."+opt.minExperience;
 					 }else{
 						 minExperience = '--';
 					 }
+					 
 					if(opt.maxExperience != null && opt.maxExperience != '' && opt.maxExperience !='undefined'){
 						maxExperience = "Max Exp."+opt.maxExperience;
 					}else{
@@ -190,6 +193,7 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 						result = result +'<div class="width90px inr_values">';
+						
 						result = result +'<small>'+minExperience+'</small> <small>'+maxExperience+'</small>';
 						result = result +'</div>';
 						result = result +'</td>';
