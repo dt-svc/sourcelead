@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveManagementHistoryService;
@@ -109,6 +110,8 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     EmployeesService employeesService;
     
+    @Autowired
+    private TimesheetRestController timesheetRestController;
     
 	@Override
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
@@ -451,6 +454,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 		boolean isApproved = false;
 		Employees emp = null;
+		Leave updaetedLeave = null;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveDao.getLeaveByLeaveUUId(leaveUUID);
 		
@@ -490,7 +494,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
-			Leave updaetedLeave = leaveDao.saveLeave(leave);
+			updaetedLeave =  leaveDao.saveLeave(leave);
 			if(updaetedLeave != null) {
 				isApproved = true;
 			}
@@ -505,6 +509,9 @@ public class LeaveServiceImpl implements LeaveService{
 		leaveManagementHistory.setUpdatedDate(new Date());
 		leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 		sendApprovedAndRejectedLeaveMailToEmployee(orgLocations, user, leaveManagementHistory);
+		if(isApproved = true) {
+			timesheetRestController.linkLeaveTypeWithTimeSheet(user, orgLocations, leaveTypeId, updaetedLeave);
+		}
 		return isApproved;
 	}
 
