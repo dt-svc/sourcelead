@@ -17,11 +17,12 @@
 		<form id="petitionTemplateFormDetails" name="petitionTemplateFormDetails">
 		 <input type="hidden" name="id" id="templateId"/>
 		<div class="addImmiContent clearfix">
-			<div class="immiTemp clearfix" id="templateFormDivStatic">
+			<div class=" clearfix" id="templateFormDivStatic">
 			<c:choose>
     			   <c:when  test="${empty formsList}"> <!--  when list is empty loads default row -->
-				<div class="col-md-12 clearfix noPad mt">
-				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
+				      <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
+				  		<div class="col-md-12 clearfix noPad mt">
+				  <div class="col-md-3 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
 				  <div class="col-md-3">
 				  
 					<div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
@@ -32,7 +33,7 @@
 <!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
 					  </div>				  	
 				  </div>
-				  <div class="col-md-5 noPad">
+				  <div class="col-md-4 noPad">
 						<input type="text" class="form-control" name="immigrationFormList[0].formDescription" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
 				  </div>
 				  <div class="col-md-2 clearfix">
@@ -48,17 +49,16 @@
 					  </div>			  					  					  						  	
 				  </div>
 				</div>
-				<c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/><!--setting rowIndex as 1 when default row is loaded -->
-				
-				</c:when>
-				<c:otherwise>
+						
+						
+					</div>
+					<c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/><!--setting rowIndex as 1 when default row is loaded -->
+				 </c:when> 
+				<c:otherwise>		
 				<c:forEach var="item" items="${formsList}" varStatus="rows">
-				<c:if test="${rows.count == 1}"> <!--adding add row div for first row-->
-					  </c:if>
-					  <c:if test="${rows.count > 1}"><!--when rowIndex is 1 default(first) row is loaded with add button-->
-					    <div id="dynamicFormRow${rows.count-1}" class="col-md-12 clearfix noPad mt"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
-					  </c:if>
-				
+				 <c:choose>
+					<c:when test="${rows.count == 1}"><!--when rowIndex is 1 defatult(first) row is loaded with add button-->
+				<div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
 				<input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
 				
 				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
@@ -83,31 +83,68 @@
 				  <div class="col-md-2 clearfix">
 					  <div class="col-md-6 noPad">
 						<label class="switch mt5 text-center">
-						<input checked id="requiredCheck${rows.count-1}" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc(0)" value="Y">
+						<input  id="requiredCheck${rows.count-1}" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc('${rows.count-1}')" value= "${item.isRequired}" ${item.isRequired == 'Y' ? 'checked' : ''}>
 
 						<div class="slider round"></div>
 						</label>
 					  </div>
-					<c:if test="${rows.count == 1}"><!--Adding 'add row' div for the first row-->					  
+									  
 					  <div id="divFormButton" class="col-md-4">
 					  		<button type="button" id="divFormButtonDynamicRow0" onclick="appendFormDetailsDiv();" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
 					  </div>
-					  </c:if>
-					  <c:if test="${rows.count > 1}"><!--adding 'remove div' for 2 row onwards-->
+					 				  					  					  						  	
+				  </div>
+				</div>
+					
+					</c:when>
+					<c:otherwise>
+						
+						 <div id="dynamicFormRow${rows.count-1}" class="col-md-12 clearfix noPad mt"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
+				<input type="hidden" name="immigrationFormList[${rows.count-1}].id" value="${item.id}" id="templateId${rows.count-1}"/>
+				
+				  <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" /></div>
+				  
+				   <div class="col-md-4" id="docNameDiv${rows.count-1}">
+			 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
+			<input  type="hidden" id="generalExisitingFile${rows.count-1}" name = "generalExisitingFile[${rows.count-1}].immigrationFormFileInfo[0].docFile" value="${item.fileName}">
+			  </div>
+				  
+				  <div class="col-md-3" id ="showDocDiv${rows.count-1}" style="display: none;">
+					<div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
+						<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs('${rows.count-1}');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+						  <input style="display: none;" onchange="uploadBtnFile('${rows.count-1}');"  id="uploadBtn${rows.count-1}"  class="upload" type="file">
+						  </span></label>
+						   <input type="text" class="form-control" readonly id="uploadFile${rows.count-1}" name = "immigrationFormList[${rows.count-1}].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment">
+<!-- 						<input class="form-control" id="uploadFile0" placeholder="Attachment" type="text"> -->
+					  </div>				  	
+				  </div>
+				  <div class="col-md-5 noPad">
+						<input type="text" class="form-control" name="immigrationFormList[${rows.count-1}].formDescription" value= "${item.formDescription}" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
+				  </div>
+				  <div class="col-md-2 clearfix">
+					  <div class="col-md-6 noPad">
+						<label class="switch mt5 text-center">
+						<input  id="requiredCheck${rows.count-1}" name="immigrationFormList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" onclick="checkIsReqDoc('${rows.count-1}')" value= "${item.isRequired}" ${item.isRequired == 'Y' ? 'checked' : ''}>
+
+						<div class="slider round"></div>
+						</label>
+					  </div>
+					 
 							  <div id="divButton" class="col-md-4">
 							  		<button type="button" class="btn btm-sm" id="btnDynamicRowDelete${rows.count-1}" onclick="removeTempFormRow('${rows.count-1}')"><i class='fa fa-remove text-danger'></i></button>
 							  </div>				  					  					  						  	
-					  </c:if>			  					  					  						  	
 				  </div>
 				</div>
+						
+						</c:otherwise>
+						</c:choose>
 				<c:set var="rowIndex" value="${rowIndex + 1}" scope="page"/><!--increment the rowIndex  for dynamic rows after save or page navigation  -->
 				</c:forEach>
-				</c:otherwise>
-				</c:choose>
-								  					  	
+			</c:otherwise>	
+		   </c:choose>
 			</div>
  		</div>
-     </form>
+   </form>
 		<div class="addImmiFoot">
 			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('templateDocs')" class="pull-left">Prev</a>
 			<a href="javascript:void(0)" onclick="immigration.savePetitionFormDetails('saveContinue')" class="nextBtn">Save &amp; Continue</a>
@@ -155,7 +192,7 @@ function uploadFormDocs(id){
    function appendTemplateFormDetails(rowId){
 	   var result = "";
 		result = result+ "<div id='dynamicFormRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
-		result = result+ "<div class='col-md-2 padding_right'>";
+		result = result+ "<div class='col-md-3 padding_right'>";
 		result = result+ "<input type='text' id= 'formName"+rowId+"' name = 'immigrationFormList["+rowId+"].formName' class='form-control' field-name='Form Name' placeholder='Form name' data-validation = 'required validate_length length2-100' />";
 		result = result+ "</div>";
 		
@@ -167,7 +204,7 @@ function uploadFormDocs(id){
  		result = result+ '<input type="text" class="form-control" readonly id="uploadFile'+rowId+'" name = "immigrationFormList['+rowId+'].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required">';
 		result = result+ "</div>";		
 	  	result = result+ "</div>";		
-		result = result+ "<div class='col-md-5 noPad'>";
+		result = result+ "<div class='col-md-4 noPad'>";
 		result = result+ "<input type='text' title='Description' name='immigrationFormList["+rowId+"].formDescription' id='formDescription"+rowId+"' class='form-control' placeholder='Description' data-validation = 'validate_length length2-500' data-validation-optional='true' /></div>";
 		result = result+ "<div class='col-md-2 clearfix'>";
 		result = result+ "<label class='switch mt5 text-center'>";
@@ -188,8 +225,10 @@ function uploadFormDocs(id){
    function removeTempFormRow(id){
 	   if($("#templateId"+id).val() !==  undefined ){
 		   deletedFormsListIds.push($("#templateId"+id).val());   
+		   $("#petitionTemplateFormDetails input[data-id*=uploadBtn]"+id).remove();
 	   }
 	   $("#dynamicFormRow"+id).remove();
+	   $("#petitionTemplateFormDetails input[data-id*=uploadBtn]"+id).remove();
 	   rowId--;
    }
    	</script>
