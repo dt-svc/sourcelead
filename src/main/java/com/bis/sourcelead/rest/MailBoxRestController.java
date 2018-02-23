@@ -815,7 +815,7 @@ public class MailBoxRestController {
     	}
         
         
-    	@RequestMapping(value = "/app/getAllJobCampaignsList", method = RequestMethod.GET)
+    	@RequestMapping(value = "/getAllJobCampaignsList", method = RequestMethod.GET)
      	public List<RequirementDTO> getAllJobCampaignsList(@RequestParam(value="jobCampaignUUID", required=false) String jobCampaignUUID) throws Exception {
     		   
     		List<Long> requirementIds = new ArrayList<>();
@@ -840,7 +840,7 @@ public class MailBoxRestController {
 	        });
 	        return xstream.toXML(obj);
 	    }
-	 @RequestMapping(value = "/app/addEmailAccount" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/addEmailAccount" , method = RequestMethod.POST)
 		public String addEmailAccount(EmailAccountSettingsDTO emailAccountSettingsDTO, HttpServletRequest request)
 				throws Exception {
 		 
@@ -860,7 +860,7 @@ public class MailBoxRestController {
 		  return folders;
 			
 		}
-	 @RequestMapping(value = "/app/emailFolderRead" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/emailFolderRead" , method = RequestMethod.POST)
 		public @ResponseBody List<ReadMailDTO> emailFolderRead(Long id,String  folderName, HttpServletRequest request)
 				throws Exception {
 		 
@@ -871,7 +871,7 @@ public class MailBoxRestController {
 		  return readMailList;
 			
 		}
-	 @RequestMapping(value = "/app/deleteEmailAccount" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/deleteEmailAccount" , method = RequestMethod.POST)
 		public @ResponseBody String deleteEmailAccount(Long id, HttpServletRequest request)
 				throws Exception {
 		 
@@ -882,7 +882,7 @@ public class MailBoxRestController {
 			
 		}
 	 
-	 @RequestMapping(value = "/app/editEmailAccount" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/editEmailAccount" , method = RequestMethod.POST)
 		public @ResponseBody EmailAccountSettingsDTO editEmailAccount(Long id, HttpServletRequest request)
 				throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
