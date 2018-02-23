@@ -407,8 +407,9 @@ $(document).ready(function(){
 				 
 				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
 		              $.each(json.userCustomFieldlabelNameAndValue, function(key, value) {
+		            	  var labelNameAndlabelData = value.split("$");
 		            	  result = result + '	<div class="project_details_cta">';
-		            	  result = result + '	<strong>'+key+':</strong><span class="fix">'+value+'</span><div class="clearfix"></div>';
+		            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
 		            	  result = result + '	</div>';
 		              });
 	              }
@@ -1287,7 +1288,6 @@ function getChangeRole(userId,userRoleId){
 <script>
 function editUserDetails(userId){
 $("#editRoleDetailsList").empty(); 
-	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 

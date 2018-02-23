@@ -1,4 +1,3 @@
-@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -5754,7 +5753,7 @@ h4.orgLink {
     cursor: pointer; float: left;
 }
 h4.orgLink:hover{
-    color:#4e71a8; border-bottom:1px solid #368ee0;
+    color:#4e71a8; /*border-bottom:1px solid #368ee0;*/
 }
 .modal.modalInvite {
 	display: none; z-index: 99999;
@@ -6582,7 +6581,7 @@ ul.leavelist {
   position: relative;
 }
 ul.leavelist li{
-    padding: 10px; margin-bottom: 0px; border-bottom: 1px dotted #ddd;
+    padding: 10px 0; margin-bottom: 0px; border-bottom: 1px dotted #ddd;
     transition: all 0.3s ease-in-out;
 }
 ul.leavelist li:hover{

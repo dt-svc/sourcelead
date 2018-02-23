@@ -388,10 +388,8 @@ left:12px
     display: block;
 }
 .checkbox-area .checkmark:after {
-	left: 6px;
-    top: 2px; width: 8px; height: 13px; border: solid white;
-    border-width: 0 3px 3px 0; -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg); transform: rotate(45deg);
+	left: 6px; top: 2px; width: 8px; height: 13px; border: solid white;
+    border-width: 0 3px 3px 0; -webkit-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg);
 }
 .getDemo.Rdemo span {
     padding: 0px;
@@ -408,9 +406,7 @@ left:12px
 .noMar {
 	margin: 0px !important;
 }
-
 .btn-primary {
-	    background-color: #a31e23;
-    border-color: #a31e23;
+	background-color: #a31e23; border-color: #a31e23;
 }
 /* checkbox styles */

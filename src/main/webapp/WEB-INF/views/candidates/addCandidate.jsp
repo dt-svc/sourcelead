@@ -130,7 +130,7 @@
 							<div class="positionRelative">
 								<input class="form-control positionRelative"
 									id="candidateLocation" name="location"
-									placeholder="Enter your address" type="text"
+									placeholder="Enter address" type="text"
 									field-name="Address" data-validation="required"></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
@@ -143,7 +143,7 @@
 						<label class="col-md-3">Street Address</label>
 						<div class="col-md-9">
 							<input type="text" class="form-control" id="address"
-								name="address" value="${address}" field-name="Street Address" placeholder="Enter your Street Addres"
+								name="address" value="${address}" field-name="Street Address" placeholder="Enter Street Addres"
 								data-validation="validate_Space validate_length length2-250"
 								data-validation-optional="true">
 						</div>
