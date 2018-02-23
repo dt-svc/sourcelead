@@ -36,8 +36,8 @@ $(document).ready(function(){
           </ul>
           <div class="tab-content clearfix">
             <div id="self" class="tab-pane fade in active">
-              <div class="col-md-3 padding_left" style="position:absolute; top:16px; left:140px;">
-                        <label class="pull-left">Balance Leaves</label>
+              <div class="col-md-4 padding_left" style="position:absolute; top:16px; left:140px;">
+                        <label class="pull-left mr">Balance Leaves</label>
                         <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
               </div>
               <div class="db-widget-sm clearfix row">
@@ -358,8 +358,8 @@ function getSelfTotalCounts(){
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }
-   			if((report.selfBalancedCounts != null && report.selfBalancedCounts != '' && report.selfBalancedCounts != 'undefined') || report.selfBalancedCounts == '0'){
-   			   $("#selfBalancedCounts").html(report.selfBalancedCounts); 
+   			if((report.totalBalLeaves != null && report.totalBalLeaves != '' && report.totalBalLeaves != 'undefined') || report.totalBalLeaves == '0'){
+   			   $("#selfBalancedCounts").html(report.totalBalLeaves); 
    		   }
    		   
    		 AmCharts.makeChart("empselfLeaves",
