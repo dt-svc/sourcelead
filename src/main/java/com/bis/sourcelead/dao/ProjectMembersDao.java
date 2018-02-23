@@ -97,7 +97,7 @@ public interface ProjectMembersDao {
 
 	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
 	
-	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status,String roleIds) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status,String roleIds,String teamIds) throws Exception;
 	
 	public ProjectMembers getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(Long candidateId,Long projectId,Long orgLocationId) throws Exception;
 	

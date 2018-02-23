@@ -203,18 +203,18 @@ function editCandidate(candidateId){
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields select-arrow">';
-								result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" readonly></input>';
+								result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter State" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '</div>';
 								
 								result = result + '<div class="clearfix mb10">';
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" readonly></input>';
+								result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter City" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text"></input>';
+								result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter Zip code" type="text"></input>';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields hidden">';

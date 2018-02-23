@@ -449,20 +449,20 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(
-			Long approverUserId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId, projectMemberId, startDate, endDate);
+			Long approverUserId,Long locationsId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId,locationsId, projectMemberId, startDate, endDate);
 	}
 
 	@Override
 	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(
-			Long approverUserId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId, projectMemberId, startDate, endDate);
+			Long approverUserId,Long locationsId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
+		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId,locationsId, projectMemberId, startDate, endDate);
 	}
 
 	@Override
-	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId,
+	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId,Long locationsId,
 			Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, startDate, endDate);
+		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId,locationsId, startDate, endDate);
 	}
 
 	@Override
