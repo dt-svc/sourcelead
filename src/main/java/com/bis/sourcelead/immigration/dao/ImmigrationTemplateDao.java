@@ -1,14 +1,13 @@
 package com.bis.sourcelead.immigration.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
-import com.bis.sourcelead.entity.ImmigrationTemplateView;
 /**
  * @author Srinivas.Sabbu
  *
@@ -25,7 +24,7 @@ public interface ImmigrationTemplateDao {
 	
 	void deletePetitionTemplateFormDetails(String remainingFormIds);
 	
-	List<ImmigrationTemplateView> getAllTemplateDetails();
+	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue);
 	
 	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,6 +19,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -159,17 +162,41 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationTemplateList");
-		try {
-		List<ImmigrationTemplateView> templateList= immigrationTemplateService.getAllTemplateDetails();
+	/*	try {
+	//	List<ImmigrationTemplateView> templateList= immigrationTemplateService.getAllTemplateDetails();
 		System.out.println("template list size is "+templateList.size());
 		model.addObject("templateList", templateList);
 		}
 		catch (Exception e) {
 			logger.error("Exception occured while getting template list-->"+e.getMessage());
 			e.printStackTrace();
-		}
+		}*/
 		return model;
 	}
+	
+
+@RequestMapping(value="/getImmigrationTemplateList")
+public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(ImmigrationTemplateListDTO templateListDTO,@RequestParam(value = "searchValue", required = false) String searchValue,HttpServletRequest request) {
+		ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
+		try {
+			String[] tableColumns = { "name", "description", "docsCount", "formsCount", "tasksCount" };//should be entity names 
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "asc"; // by default ascending order
+			if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction of the sorting.
+			}
+			templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			templateListDTO.setSortOrder(sortColumnOrder);
+			System.out.println("searchValue in controller ---> "+searchValue);
+			templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(templateListDTOList.getRecordsTotal()>0)
+		System.out.println("After getAlltemplateList in controller ---> "+templateListDTOList.getData().get(0).getDocsCount());
+		return templateListDTOList;
+}
 	
 	@RequestMapping(value={"/addPetitionTemplate"})
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,

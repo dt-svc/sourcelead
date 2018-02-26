@@ -17,6 +17,8 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -134,8 +136,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		immigrationTemplateDao.savePetitionTemplateTaskDetails(immigrationTemplateTask);
 	}
 	@Override
-	public List<ImmigrationTemplateView> getAllTemplateDetails() {
-		List<ImmigrationTemplateView> templateList= immigrationTemplateDao.getAllTemplateDetails();
+	public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue) {
+		ResponseList<ImmigrationTemplateListDTO> templateList= immigrationTemplateDao.getAllTemplateDetails(templateListDTO, searchValue);
 		return templateList;
 	}
 	

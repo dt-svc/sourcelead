@@ -4,11 +4,14 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.h2.engine.SysProperties;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -16,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -23,6 +28,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
+
 
 /**
  * @author Srinivas.Sabbu
@@ -158,24 +164,76 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		logger.debug("Number of records deleted-->"+count);
 	}
 	
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ImmigrationTemplateView> getAllTemplateDetails() {
+	public List<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue) {
 		logger.debug("fetching template details-->");
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ImmigrationTemplateView>  templateList= null;
+		List<ImmigrationTemplateListDTO>  templateDtoList= null;
 		try {
 			  Query query= session.createQuery("from ImmigrationTemplateView");
-			  templateList = query.list();
+			  templateDtoList = query.list();
 			 
 		} catch (Exception exception) {
 			logger.error("Error Occured  while fetching template details-->");
 			   exception.printStackTrace();
 			}
-		return templateList;
+		return templateDtoList;
 	}
 
+*/
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		List<ImmigrationTemplateView> ImmigrationTemplateViewLst = null;
+		ResponseList<ImmigrationTemplateListDTO> responseList = new ResponseList<>();
+
+		StringBuilder query1 = new StringBuilder("");
+		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+			query1.append(" where (tempView.name like '%" + searchValue + "%' )");
+			query1.append(" or (tempView.description like '%" + searchValue + "%' )");
+			query1.append(" or (tempView.status like '%" + searchValue + "%' )");
+		}
+		// usertList sorting order
+		String sortingQry = "";
+		if (StringUtils.isNotBlank(templateListDTO.getSortColumn())) {
+			sortingQry = " order by tempView." + templateListDTO.getSortColumn() + " " + templateListDTO.getSortOrder();
+		} else {
+			sortingQry = " order by tempView.name ";
+		}
+		String listQuery = "from ImmigrationTemplateView tempView";
+		ImmigrationTemplateViewLst = session.createQuery(listQuery + query1 + sortingQry).list();
+		String listQueryCount = "select count(*) from ImmigrationTemplateView tempView";
+		countlist = session.createQuery(listQueryCount + query1).setFirstResult(templateListDTO.getStart())
+				.setMaxResults(templateListDTO.getLength()).list();
+		int totalCount = 0;
+		if (templateListDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}
+		responseList.setRecordsTotal(totalCount);
+		if (query1.toString() != null && !query1.toString().isEmpty()) {
+			responseList.setRecordsFiltered(filterCount);
+		} else {
+			responseList.setRecordsFiltered(totalCount);
+		}
+		List<ImmigrationTemplateListDTO> tempalteDTOList = new ArrayList<ImmigrationTemplateListDTO>();
+		for (ImmigrationTemplateView source : ImmigrationTemplateViewLst) {
+			System.out.println(" DocsCount"+source.getDocsCount());
+			ImmigrationTemplateListDTO target = new ImmigrationTemplateListDTO();
+			BeanUtils.copyProperties(source, target);
+			System.out.println(" DocsCount target"+target.getDocsCount());
+			tempalteDTOList.add(target);
+		}
+		responseList.setData(tempalteDTOList);
+		return responseList;
+}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId) {
