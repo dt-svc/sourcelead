@@ -122,6 +122,12 @@ public class VendorController {
 		
 		//for get the owners list for spocs
 		//List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLoc.getId());
+		 model.addObject("sourceleadSectionList",sections);
+		
 		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR));
 		model.addObject("userList", userList);
 	

@@ -24,6 +24,9 @@ window.onload = function () {
 	text-decoration : none;
 	pointer-events: none;
 }
+
+
+
 </style>
 
 <script>
