@@ -108,7 +108,7 @@
           <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter your address" type="text" field-name="Address" data-validation="required"></input>
+          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter address" type="text" field-name="Address" data-validation="required"></input>
           <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','address');"></i>
           </div>
           </div>
@@ -117,21 +117,21 @@
 		<div class="form-group">
           <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter your Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateCity" name="city" placeholder="Enter your City" type="text" ></input>
+          <input class="form-control" id="candidateCity" name="city" placeholder="Enter City" type="text" ></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">State</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateState" name="state" placeholder="Enter your State" type="text" ></input>
+          <input class="form-control" id="candidateState" name="state" placeholder="Enter State" type="text" ></input>
           </div>
         </div>
         
@@ -145,7 +145,7 @@
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter Zip code" type="text"></input>
           </div>
         </div>
         

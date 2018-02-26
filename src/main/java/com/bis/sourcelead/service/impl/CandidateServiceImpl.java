@@ -661,7 +661,7 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(candidateDto.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
 					CandidateCustomFieldData candidateCustomFields = null;
 					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
 						candidateCustomFields = candidateCustomFieldDataService.getCandidateCustomFieldDataById(customFields.getEntityId());
@@ -2064,6 +2064,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateByEmail(String email) throws Exception {
+		return candidateDao.getCandidateByEmail(email);
 	}
 
 }
