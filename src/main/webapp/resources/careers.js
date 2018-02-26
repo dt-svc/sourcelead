@@ -40,7 +40,7 @@ function getParams(a) {
     return{};
 }
 
-var searchPageNo = 0, searchPageSize = 2;
+var searchPageNo = 0, searchPageSize = 10;
 function loadOffers(flag) {
     var search = $("#jobSearchText").val().trim();
     $.post(path, {search: search, employmentType: $("#jobEmploymentType").val(), location: $("#jobLocation").val(), pageNo: searchPageNo, pageSize: searchPageSize}, function (data) {
@@ -76,7 +76,7 @@ function loadOffers(flag) {
             searchPageNo = searchPageNo + 1;
             loadOffers(true);
         });
-        $("#resultTitle").html("Showing "+(searchPageNo*searchPageSize+1)+" - "+((searchPageNo+1)*searchPageSize)+" of "+data.recordsTotal + " results");
+        $("#resultTitle").html("Showing "+(searchPageNo*searchPageSize+1)+" - "+(((searchPageNo+1)*searchPageSize) > data.recordsTotal ? data.recordsTotal : ((searchPageNo+1)*searchPageSize))+" of "+data.recordsTotal + " results");
 
     });
 }
