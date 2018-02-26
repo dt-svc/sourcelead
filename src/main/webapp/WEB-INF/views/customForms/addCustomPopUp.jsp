@@ -94,12 +94,12 @@
 							<div class="col-md-6">
 							<c:forEach var="options" items="${customFormPopDetails.optionData}" varStatus="optionStatus">
 								<input name="optionData[${optionStatus.index}].id" value="${options.id}" id ="selectOptionId" type="hidden">
-								<input name="optionData[${optionStatus.index}].option" value="${options.option}" id ="selectOptionId" class="field-label form-control input-sm mb" type="text">
+								<input name="optionData[${optionStatus.index}].option" value="${options.option}" id ="selectOptionId" field-name="Data" class="field-label form-control input-sm mb" type="text" data-validation="required">
 							</c:forEach>
 							 </div>	
 						</c:if>
 						<c:if test="${empty customFormPopDetails.optionData}">
-							<div class="col-md-6"><input name="optionData[0].option" value="" id ="selectOptionId" class="field-label form-control input-sm" type="text"> </div>
+							<div class="col-md-6"><input name="optionData[0].option" field-name="Data" value="" id ="selectOptionId" class="field-label form-control input-sm" type="text" data-validation="required"> </div>
 						</c:if>
 						<div class="col-md-3 lblHeight"><span>&nbsp;</span>
 					</div>
