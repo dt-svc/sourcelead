@@ -2,8 +2,9 @@
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
 		<h2>Template Details</h2>
+			
 			<ul class="addImmiSteps">
-				<li class="active">1</li>
+				<li value="" class= "${not empty templateDTO.templateName ? 'active page-updated' : 'active'}">1</li>
 				<li>2</li>
 				<li>3</li>
 				<li>4</li>

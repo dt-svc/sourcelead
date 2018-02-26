@@ -5,14 +5,26 @@
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
 			<h2>Form Details</h2>
+			<c:if test="${empty formsList}">
 			<ul class="addImmiSteps">
-				<li class="active">1</li>
-				<li class="active">2</li>
+				<li class="active page-updated">1</li>
+				<li class="active page-updated">2</li>
 				<li class="active">3</li>
 				<li>4</li>
 				<b></b>
 				<div class="clearfix"></div>
 			</ul>
+			</c:if>
+			<c:if test="${!empty formsList}">
+			<ul class="addImmiSteps">
+				<li class="active page-updated">1</li>
+				<li class="active page-updated">2</li>
+				<li class="active page-updated">3</li>
+				<li>4</li>
+				<b></b>
+				<div class="clearfix"></div>
+			</ul>
+			</c:if>
 		</div>
 		<form id="petitionTemplateFormDetails" name="petitionTemplateFormDetails">
 		 <input type="hidden" name="id" id="templateId"/>
