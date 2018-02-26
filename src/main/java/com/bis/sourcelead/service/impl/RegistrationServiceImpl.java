@@ -31,10 +31,12 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
+import com.bis.sourcelead.dao.OrgRequestDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.EmployerRegistrationDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -48,6 +50,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRequest;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -74,6 +77,7 @@ import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -200,6 +204,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	OrgRequestService orgRequestService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -2062,6 +2069,37 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		 return token;
 				
+	}
+
+	@Override
+	public String saveIndividualEmployer(EmployerRegistrationDTO employerRegistrationDTO) throws Exception {
+		OrgRequest orgRequest = new OrgRequest();
+		orgRequest.setFirstName(employerRegistrationDTO.getFirstName());
+		if(!employerRegistrationDTO.getLastName().isEmpty()) {
+			orgRequest.setLastName(employerRegistrationDTO.getLastName());
+		}
+		orgRequest.setPhoneNumber(employerRegistrationDTO.getPhoneNumber());
+		orgRequest.setEmail(employerRegistrationDTO.getEmail());
+		orgRequest.setCompanyName(employerRegistrationDTO.getCompanyName());
+		orgRequest.setCompanywebsite(employerRegistrationDTO.getCompanyWebsite());
+		orgRequest.setCountry(employerRegistrationDTO.getCountry());
+		if(!employerRegistrationDTO.getCompanyAddress().isEmpty()) {
+			orgRequest.setCompanyAddress(employerRegistrationDTO.getCompanyAddress());
+		}
+		
+		orgRequest.setModules(employerRegistrationDTO.getModulesList().toString());
+		orgRequest.setStatus(Constants.RECORD_ACTIVE);
+		orgRequest.setCreatedDate(new Date());
+		orgRequestService.saveOrgRequest(orgRequest);
+		
+		orgRequestService.senEmailOrgRequestToSourcelead(orgRequest);
+		return "success";
+	}
+
+	@Override
+	public Boolean validateOrgRequestCompanyNameByName(String companyName) throws Exception {
+		Boolean flag = orgRequestService.validateOrgRequestCompanyNameByName(companyName);
+		return flag;
 	}
 
 }

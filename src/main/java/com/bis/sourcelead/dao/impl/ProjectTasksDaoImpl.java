@@ -399,9 +399,10 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	public ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO, Long projectId, String taskType, String taskStatus, String userRole,String assignedMembers) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
+		List<Long> teamsIdsList = null;
 		Integer filterCount = 0;
 		ResponseList<ProjectTasksDTO> response = new ResponseList<>();
-		
+		 
 		StringBuilder query1 = new StringBuilder("");
 		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
 		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
@@ -426,6 +427,15 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
 		 }
 		 
+		 if(StringUtils.isNotEmpty(projectTasksDTO.getTeams())) {
+			String[] teamIds = projectTasksDTO.getTeams().split(",");
+			teamsIdsList = new ArrayList<>();
+			for(int i=0; i<teamIds.length; i++) {
+				teamsIdsList.add(Long.valueOf(teamIds[i]));
+			}
+			 subQueryStr = subQueryStr+" and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.projectMemberCandidteId.consultantUser.id IN (select teamMembers.memberUserId.id from TeamMembers teamMembers where teamMembers.status = '1' and teamMembers.teamId.id IN (:teamsIdsList))) ";
+		 }
+		 
 		//usertList sorting order
 		String sortingQry = "";
 		if(StringUtils.isNotBlank(projectTasksDTO.getSortColumn())) {
@@ -433,12 +443,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		
 		 Query query = session.createQuery(queryStr+subQueryStr+query1+sortingQry);
-		
-		  List projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
-		
-		 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
+		 List projectTasksList = null;
+		 if(StringUtils.isNotEmpty(projectTasksDTO.getTeams())) {
+			 projectTasksList =query.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 		 
-		 countlist =countQuery.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
+			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
+			 countlist = countQuery.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
+			 
+		 }else {
+			 projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
+			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
+			 countlist = countQuery.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
+			 
+		 }
 		 
 		
 		int totalCount = 0;
