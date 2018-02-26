@@ -88,7 +88,7 @@
 					</div>
 					</form>
 					                <!-- TimeEntry Modal Pop Ends -->	        
-
+                     
 					 <div id="tableContent" class="clearfix project_wrap_table">
 			                    <table>
 			                        <thead>
@@ -101,6 +101,7 @@
 			                                <th>Edit</th>
 			                            </tr>
 			                        </thead>
+			                        <c:set var="projectMemID" value="${projectmember.id}" scope="session"/>
 			                        <tbody id="timeDayEntriesData">
 			                        		<jsp:include page="projectTaskTableData.jsp"></jsp:include>
 			                        </tbody>
@@ -197,6 +198,7 @@ function saveTaskDetails(){
 <script>
 function editProjectTaskTimesheetDayEntry(timesheetDate){
 	var projectMember = '${projectmember.id}';
+	if(projectMember!= null && projectMember !='' && projectMember!='undefined'){
 	var timeDate = '';
 	if(timesheetDate != null && timesheetDate !='' && timesheetDate !='undefined'){
 		 $(".modal-Time").fadeIn();
@@ -220,6 +222,7 @@ function editProjectTaskTimesheetDayEntry(timesheetDate){
 		  			}
 				},
 			});
+	}
 }
 </script>
 
