@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -69,6 +71,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -178,6 +181,9 @@ public class TimesheetRestController {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	private LeaveTypeService leaveTypeService;
 	
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -1855,6 +1861,7 @@ public class TimesheetRestController {
 								
 								timesheetDayEntries.setComments(teDTO.getComments());
 								timesheetDayEntries.setTimesheetDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),teDTO.getDate()));
+								timesheetDayEntries.setStatus(1);
 								timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 								timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 								timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
@@ -2490,5 +2497,21 @@ public class TimesheetRestController {
 	            timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
 	            return "success";
 	    }
+
+		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave) throws Exception {
+			List<ProjectTasks> projectTaskList = leaveTypeService.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocations.getId(),leaveTypeId);
+			if(projectTaskList != null && !projectTaskList.isEmpty()) {
+			for(ProjectTasks projectTask: projectTaskList) {
+				ProjectMembers projectMember = projectMembersService.getProjectMemberByUserIdAndProjectId(leave.getUser().getId(), projectTask.getProjectId().getId());
+				if(projectMember!= null) {
+					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
+					String leaveDate[] = dateList.split(",");
+					for(int i=0;i<leaveDate.length;i++) {
+						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations);
+						}
+					}
+				}
+			}
+		}
 		
 }
