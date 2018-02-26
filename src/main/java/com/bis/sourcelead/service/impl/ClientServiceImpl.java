@@ -336,7 +336,7 @@ public class ClientServiceImpl implements ClientService {
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0) {
 					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
 					 clientCustomFields.setOrg(savedClient);
 					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
@@ -978,6 +978,22 @@ public class ClientServiceImpl implements ClientService {
 				orgLocations.setBillingAddress("");
 			}
 			orgLocationForELk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(orgLocationForELk.getOrg());
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
@@ -1113,6 +1129,27 @@ public class ClientServiceImpl implements ClientService {
 			 * orgLocations.setEmail(""); }
 			 */
 			orgLocationsForElk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+						ClientCustomFieldData clientCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+						}else {
+							clientCustomFields = new ClientCustomFieldData();
+						}
+					clientCustomFields.setOrg(orgLocationsForElk.getOrg());
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					clientCustomFields.setOrglocationsFormFields(orgFormField);
+					clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
