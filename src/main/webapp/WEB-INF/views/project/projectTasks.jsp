@@ -47,7 +47,34 @@ function taskNameValidation(){
 }
 </script>
  
-
+<script>
+function getTasksOrgLocationTeams(){
+	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+	        success: function(json) {
+	        	
+	        	var output = "";
+	        	if(json.length > 0){
+	        		for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="projectTaskList()"><label>'+opt.name+'</label></li>';
+					}
+	        	}else{
+	        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+	        	}
+	        	
+	        	$("#tasksOrgLocationTeams").empty();
+		        $("#tasksOrgLocationTeams").append(output);
+	        }
+	        
+	 });
+}
+</script>
 <script>
 function projectTask(projectId, status) {
 	var result = "";
@@ -64,6 +91,16 @@ function projectTask(projectId, status) {
 		result = result	+ '</span>';
 		result = result +'</li>';
 	}
+	
+		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
+		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox scroll-dropdown">';
+		result = result	+ '	    	<ul>';
+		result = result +'<div id="tasksOrgLocationTeams"></div>';  
+		result = result	+ '	        </ul>';
+		result = result	+ '	    </div>';                	
+		result = result	+ '	</li>';
+		
+
 	
 		result = result	+ '	<li class="dropdown"><div class="dropdown-toggle pull-left" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Assigned To</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|</div>';
 		result = result	+ '		<div class="dropdown-menu bootstrap_dropdownMenu dropdownPadding checkBox scroll-dropdown">';
@@ -136,7 +173,7 @@ function projectTask(projectId, status) {
 				$(tab).fadeIn();
 			});
 	projectTaskList();
-	
+	getTasksOrgLocationTeams();
 }
 </script>
 
@@ -165,9 +202,15 @@ function projectTask(projectId, status) {
 			assignedMembers.push($(this).val());
 	    });
 		
+		var teams = [];
+		$('input:checkbox[name=teams]:checked').each(function() 
+	    {
+			teams.push($(this).val());
+		});
+		
 		var searchValue = $("#taskDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers;
+		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams;
 		prepareTasksList(url);
 	}
 </script>

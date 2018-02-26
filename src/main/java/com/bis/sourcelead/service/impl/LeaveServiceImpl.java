@@ -123,7 +123,27 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setUser(user);
 		}
 		leave.setToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getToDate()));
-		LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
+		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+		
+		if(leaveType.getCreatedBy() != null){
+			User createdUser = userService.getUserByUserCode(leaveType.getCreatedBy());
+			StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(createdUser.getFirstName()) && StringUtils.isNotBlank(createdUser.getLastName()))
+				leaveType.setCreatedUser(sb.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+			else
+				leaveType.setCreatedUser(createdUser.getFirstName());
+		}
+		
+		if(leaveType.getUpdatedBy() != null){
+			User updatedUser = userService.getUserByUserCode(leaveType.getUpdatedBy());
+			StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(updatedUser.getFirstName()) && StringUtils.isNotBlank(updatedUser.getLastName()))
+				leaveType.setUpdatedUser(sb.append(updatedUser.getFirstName()).append(" ").append(updatedUser.getLastName()).toString());
+			else
+				leaveType.setUpdatedUser(updatedUser.getFirstName());
+		}
+
+		
 		leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 		leave.setLeaveType(leaveType);
 		leave.setReason(leaveDTO.getReason());
