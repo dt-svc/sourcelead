@@ -43,7 +43,7 @@ public class SourceleadFormSectionsServiceImpl  implements SourceleadFormSection
 		List<SourceleadSectionDTO> sectionDTOlist = new ArrayList<>();
 		for(SourceleadFormSections section:slFormSections) {
 			List<SourceleadFormFields> fieldsList = sourceleadFormFieldsDao.getAllFormFieldsBySectionId(section.getId());
-			List<OrglocationFormFields> customFieldsList = orglocationFormFieldsDao.getAllCustomFormFieldsBySectionIdandOrgLocationId(section.getId(), locationId);
+			List<OrglocationFormFields> customFieldsList = orglocationFormFieldsDao.getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(section.getId(), locationId);
 			sectionDTO  = sourceleadFormSectionsDTOConverter(section,fieldsList,customFieldsList);
 			sectionDTOlist.add(sectionDTO);
 		}

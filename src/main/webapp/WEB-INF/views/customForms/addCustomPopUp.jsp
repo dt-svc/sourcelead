@@ -75,13 +75,13 @@
 				<div  id="dateFieldDiv" style="display: none">
 					<div class="col-sm-12 noPad mt clearfix">
 					   <div class="col-md-3 noPad labHeight">Min Date</div>
-						<div class="col-md-6"><input name="minDate" id="minDate" value="${customFormPopDetails.minDate}" id = "minDate" class="field-label form-control input-sm calendar" type="text"> </div>
+						<div class="col-md-6"><input name="minDate" readonly id="minDate" value="${customFormPopDetails.minDate}" id = "minDate" class="field-label form-control input-sm calendar" type="text"> </div>
 						<div class="col-md-3 lblHeight"><span>&nbsp;</span></div>
 					</div>
 					
 					<div class="col-sm-12 noPad mt clearfix">
 						   <div class="col-md-3 noPad labHeight">Max Date</div>
-							<div class="col-md-6"><input name="maxDate" id="maxDate" value="${customFormPopDetails.maxDate}" id = "maxDate" class="field-label form-control input-sm calendar" type="text"> </div>
+							<div class="col-md-6"><input name="maxDate" readonly id="maxDate" value="${customFormPopDetails.maxDate}" id = "maxDate" class="field-label form-control input-sm calendar" type="text"> </div>
 							<div class="col-md-3 lblHeight"><span>&nbsp;</span></div>
 					</div>
 			  </div>

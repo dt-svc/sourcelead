@@ -133,6 +133,12 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long customFieldId) {
 		return orglocationFormFieldsDao.getAllCustomFormSubFieldsBySectionIdandOrgLocationId(customFieldId);
 	}
+
+
+	@Override
+	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(Long sectionId,Long orgLocation) {
+		return orglocationFormFieldsDao.getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(sectionId,orgLocation);
+	}
 	
 	
 
