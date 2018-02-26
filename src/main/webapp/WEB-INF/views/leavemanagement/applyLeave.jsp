@@ -263,7 +263,7 @@ function removeEndValid(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
-        		  output = output +'<option value='+leave.id+'>'+leave.name+'</option>';
+        		  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -273,9 +273,9 @@ function removeEndValid(){
 //         	  $('#leaveType').prop('disabled', true).trigger("chosen:updated");
         	  
         	  var counts = json[json.length-1];
-        	  var totalBalanceCounts = counts.balanceLeaveCounts;
+        	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
         	  var totalPendingCounts = counts.pendingLeaveCounts;
-        	  var totalTakenCounts = counts.takenLeaveCounts;
+        	  var totalTakenCounts = counts.takenLeaves;
         	  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
         	  
         	  var result = "";
@@ -286,7 +286,7 @@ function removeEndValid(){
 				        result = result +'	<li>';
 				  		result = result +'			<label>'+leaveType.name+'</label>';
 				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-				  		result = result +'			<span class="label label-info" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.remainingTotalLeaveCounts+'</span>';
+				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
 				  		result = result +'	</li>'; 
 	        	  }
 	        	  result = result +'	</ul>'; 
@@ -447,21 +447,21 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var leaveTypeId = $("#leaveType").val();
+	var leaveTypeUUID = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+leaveTypeId,	 
+		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
 		    success: function(report) {
-		    	if(report.duration == "Full Day"){
+		    	/* if(report.duration == "Full Day"){
 		    		$("#fromHalfDayDiv").hide();
 		    		$("#toHalfDayDiv").hide();
 		    	}else{
 		    		$("#fromHalfDayDiv").show();
 		    		$("#toHalfDayDiv").show();
-		    	}
+		    	} */
 		    	
 		    	if(report.reasonRequired == "Y"){
 			 		$("#reason").attr('data-validation',"required");

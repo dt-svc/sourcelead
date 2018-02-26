@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.EmployerRegistrationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -330,6 +331,30 @@ public class RegistrationRestController {
 	 
 	 
 	 
+	 @RequestMapping(value = "/app/ws/registerAsIndividualEmployer" , method = RequestMethod.POST)
+	 public  String registerAsIndividualEmployer(EmployerRegistrationDTO employerRegistrationDTO, HttpServletRequest request) throws Exception {
+		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
+		 return "success";
+	   }
+	 
+	 
+	 @RequestMapping(value = "/app/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
+	 public  String validateOrgRequestCompanyNameByName(@RequestParam(value="companyNames", required=false) String companyNames) throws Exception {
+		 
+		 String result = "New Org";
+		 OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgLocationName(companyNames);
+		 if(orgLocations == null) {
+			 Boolean flag =  registrationService.validateOrgRequestCompanyNameByName(companyNames); 
+			 if(flag == true) {
+				 result = "Requested Org"; 
+			 }
+		 }else {
+			 result = "Existed Org";
+		 }
+		
+		 return result;
+	   }
+	 
 	 
 	 @RequestMapping(value = "/app/ws/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
@@ -343,6 +368,9 @@ public class RegistrationRestController {
 	 	
 		 return "success";
 	   }
+	 
+	 
+	 
 	 
 	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {

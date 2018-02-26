@@ -292,4 +292,27 @@ public class LeaveManagementUtil {
 		return monthlyLeaves;
 	}
 		
+	public float calculateAppliedLeavesCountWithHalfDays(Leave leave)
+	{
+		float halfday = 0 ;
+		float actualApplied = 0;
+		
+		if("YES".equalsIgnoreCase(leave.getFromHalfDay())){
+			halfday += 0.5f;
+		}
+		if("YES".equalsIgnoreCase(leave.getToHalfDay())){
+			halfday += 0.5f;
+		}
+		int days = leave.getNumberOfDays();
+		if("YES".equalsIgnoreCase(leave.getFromHalfDay()) && "YES".equalsIgnoreCase(leave.getToHalfDay())){
+			if(days > 1){
+				actualApplied = days - halfday;
+			}else{
+				actualApplied = halfday;
+			}
+		}else{
+			actualApplied = days - halfday;
+		}
+		return actualApplied;
+	}
 }

@@ -311,7 +311,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 						StringBuilder sb = new StringBuilder();
 						double amount = 0;
 						double finalAmount = 0;
-						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
+						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),orgLocation.getId(),startDate,endDate);
 						if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();

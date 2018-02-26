@@ -10,6 +10,19 @@ overflow-x: auto;
 .dropdown-select.paddingNone select {
 border:none; background-color: none !important; padding:0 5px !important;
 }
+
+.NewStyleFullWidth {
+	width: 100%; padding: 0px 0px; margin: 0px auto;
+}
+.NewStyleFullWidth .col-md-9 {
+	width: 100%; padding: 0px 0px;
+}
+.NewStyleFullWidth .form-group {
+	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
+}
+
+
+
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
@@ -1639,7 +1652,7 @@ function getVendorOrgname(vendorOrgname){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
+					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId+"&requestType=Vendor",
 					success : function(json) {
 						
 						getVendorOrgname(json.orgName);
@@ -1931,16 +1944,14 @@ function getVendorOrgname(vendorOrgname){
 							result = result + '</div>';
 							}
 							
-							for (var key in json.clientCustomFieldlabelNameAndValue) {
-								result = result + '<div class="project_details_cta">';
-								result = result + '<strong>'+key+' :</strong>';
-								if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue !='' && json.clientCustomFieldlabelNameAndValue !='undefined'){
-									result = result + '<span>'+json.clientCustomFieldlabelNameAndValue[key]+'</span><div class="clearfix"></div>';
-								}else{
-									result = result + '<span> --- </span><div class="clearfix"></div>';
-								}
-								result = result + '</div>';
-							}
+							if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue != "" && json.clientCustomFieldlabelNameAndValue != 'undefined'){
+					              $.each(json.clientCustomFieldlabelNameAndValue, function(key, value) {
+					            	  var labelNameAndlabelData = value.split("$");
+					            	  result = result + '	<div class="project_details_cta">';
+					            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+					            	  result = result + '	</div>';
+					              });
+				              }
 							
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorDetailsDiv"></div>';
 							result = result + '</div>';

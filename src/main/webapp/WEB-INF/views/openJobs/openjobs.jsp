@@ -1409,7 +1409,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
 				result = result +'	<div class="share">';			  
-				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
@@ -1623,7 +1623,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
-				result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>';
+				/* result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>'; */
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+json.requirementOrgName+'-'+json.orgLocationId.id+'"><h4 class="orgLink">'+json.requirementOrgName+'</h4></a>';
 				description =  description+'Posted By :'+json.requirementOrgName+";";
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	
@@ -1799,7 +1800,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 						jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
 				    } 
 					
-				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1958,7 +1959,7 @@ function openJobSearchRequirement(){
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 
 										result = result +'	<div class="share">';
-										result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+										result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
@@ -3006,10 +3007,13 @@ Please mail us at </p>
 
 <script>
 function applyJob(requirementUUID){
-	$(".modal.modalApplyjob").fadeIn();
-	$(".comMask").fadeIn();
-	loginPopup(requirementUUID)
-	
+    if('${SourceLeadWeb_user.id}' != null && '${SourceLeadWeb_user.id}' != ''){
+        location.replace(sourceleadUrl+"/dashboard");  
+    }else{
+        $(".modal.modalApplyjob").fadeIn();
+        $(".comMask").fadeIn();
+        loginPopup(requirementUUID)
+    }
 }
 function closeApplyJob(){
 	$(".modal.modalApplyjob").fadeOut();

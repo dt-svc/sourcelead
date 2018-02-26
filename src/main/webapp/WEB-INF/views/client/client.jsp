@@ -72,7 +72,7 @@ margin-top: -50px;
 	          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Address"  type="text" field-name="Address" data-validation="required"></input>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter Address"  type="text" field-name="Address" data-validation="required"></input>
 	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode','addressId');"></i>
 	          </div>
 	          </div>
@@ -90,14 +90,14 @@ margin-top: -50px;
 		  <div class="form-group ">
 				<label class="col-md-3">Street address</label>
 				<div class="col-md-9">
-				<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Address"  data-validation="validate_length length2-250" data-validation-optional="true"></input>
+				<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter Street Address"  data-validation="validate_length length2-250" data-validation-optional="true"></input>
 				</div>
 			</div>
 			
 			<div class="form-group" id="cityDiv" style="display: block;">
 	          <label class="col-md-3">City</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text"></input>
+	          <input class="form-control" id="clientCity" name="city" placeholder="Enter City" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -112,7 +112,7 @@ margin-top: -50px;
 		   <div class="form-group" id="stateDiv" style="display: block;">
 	          <label class="col-md-3">State</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text"></input>
+	          <input class="form-control" id="clientState" name="state" placeholder="Enter State" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -127,7 +127,7 @@ margin-top: -50px;
 		 	 <div class="form-group" id="zipCodeDiv" style="display: block;">
 	          <label class="col-md-3">ZipCode</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 	          </div>
 	        </div>
 	        

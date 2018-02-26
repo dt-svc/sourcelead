@@ -834,7 +834,11 @@ public class CandidateListRestController {
 					 for(Entry<Long, String[]> candidateCustomData:candidateData.entrySet()) {
 						 String labelName = candidateCustomData.getValue()[0];
 						 String labelData = candidateCustomData.getValue()[1];
-						 dataMap.put(labelName, labelData);
+						 String labelId = candidateCustomData.getValue()[2];
+						 Long id = candidateCustomData.getKey();
+						 StringBuilder keyValue =  new StringBuilder();
+						 keyValue.append(labelName).append("$").append(labelData);
+						 dataMap.put(id.toString(), keyValue.toString());
 						 candidateDTO.setCandidateCustomFieldData(dataMap);
 					 	}
 				 	}
