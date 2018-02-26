@@ -44,7 +44,7 @@
 						  </div>
 						   <div class="col-md-4">
 						   		<div class="mt5 ml5 clearfix">
-							   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[0].multiple" class="" type="checkbox">
+							   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[0].multiple"  type="checkbox" value = "N" onclick = "tempDocCheckBox(0)">
 							   </div>
 						   </div>						  
 						  <div id="divButton" class="col-md-4">
@@ -79,13 +79,13 @@
 					  <div class="col-md-2 clearfix">
 						  <div class="col-md-4 noPad">
 							<label class="switch mt5 text-center">
-							<input checked id="requiredCheck0" name="immigrationDocList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq(0);">
+							<input id="requiredCheck${rows.count-1}" name="immigrationDocList[${rows.count-1}].isRequired" title="Is Required" type="checkbox" value = "Y" onclick = "tempDocReq('${rows.count-1}');" ${items.isRequired == 'Y' ? 'checked' : '' }>
 							<div class="slider round"></div>
 							</label>
 						  </div>
 						   <div class="col-md-4">
 						   		<div class="mt5 ml5 clearfix">
-							   <input id="multipleCheck0" title="Allow multiple Docs" name="immigrationDocList[${rows.count-1}].multiple" class="" type="checkbox">
+							   <input id="multipleCheck${rows.count-1}" title="Allow multiple Docs" name="immigrationDocList[${rows.count-1}].multiple" value = "N" onclick = "tempDocCheckBox('${rows.count-1}')" type="checkbox" ${items.multiple == 'Y' ? 'checked' : '' }>
 							   </div>
 						   </div>						  
 						<c:if test="${rows.count == 1}"><!--Adding 'add row' div for the first row-->
@@ -136,7 +136,7 @@
 		templateDocDetails = templateDocDetails+ "<input checked title='Is Required' value = 'Y' onclick = 'tempDocReq("+rowId+");' id='requiredCheck"+rowId+"' name='immigrationDocList["+rowId+"].isRequired' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<div class='slider round'></div></label>";
 		templateDocDetails = templateDocDetails+ "</div><div class='col-md-4'><div class='mt5 ml5 clearfix'>";
-		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='' name='immigrationDocList["+rowId+"].multiple' type='checkbox'>";
+		templateDocDetails = templateDocDetails+ "<input title='Allow multiple Docs' id='multipleCheck"+rowId+"' class='' name='immigrationDocList["+rowId+"].multiple' type='checkbox' value = 'N' onclick = 'tempDocCheckBox("+rowId+")'>";
 		templateDocDetails = templateDocDetails+ "<label for='checkbox-1' class='checkbox-custom-label fmcheckbox-lable'></label></div></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4'><button type='button' class='btn btm-sm' id='btnDynamicRow"+rowId+"' onclick='removeTempDocDiv("+rowId+")' ><i class='fa fa-remove text-danger'></i></button></div></div></div>";
 		return templateDocDetails 
@@ -165,6 +165,18 @@
 		}
 	}
 	</script>
+	
+	<script type="text/javascript">
+	function tempDocCheckBox(id){
+		var checked = document.getElementById("multipleCheck"+id).checked
+		if(checked == true){
+			$("#multipleCheck"+id).val("Y");
+		}else{
+			$("#multipleCheck"+id).val("N");
+		}
+	}
+	</script>
+	
 	<script>
 	$(document).ready(function(){
 		$("#templateId").val(jsonObj.id);

@@ -85,10 +85,16 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 			}else{
 			immigrationTemplateDocs.setIsRequired(Constants.NO);
 			}
+			if(tempObj.getMultiple() != null && "Y".equalsIgnoreCase(tempObj.getMultiple())){
 			immigrationTemplateDocs.setIsMultipleRequired(tempObj.getMultiple());
+			}else{
+				immigrationTemplateDocs.setIsMultipleRequired(Constants.NO);	
+			}
 			immigrationTemplateDocs.setStatus(1);// active
-			Long id=immigrationTemplateDao.savePetitionTemplateDocDetails(immigrationTemplateDocs);
-			tempObj	.setId(id);
+			ImmigrationTemplateDocs docs = immigrationTemplateDao.savePetitionTemplateDocDetails(immigrationTemplateDocs);
+			tempObj	.setId(docs.getId());
+			tempObj.setIsRequired(docs.getIsRequired());
+			tempObj.setMultiple(docs.getIsMultipleRequired());
 			docsListAfterSave.add(tempObj);
 		}
 		return docsListAfterSave;

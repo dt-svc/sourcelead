@@ -17,7 +17,7 @@ public interface ImmigrationTemplateDao {
 
 	Long savePetitionTemplateDetails(ImmigrationTemplate immigrationTemplate, String templateId);
 	
-	Long savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
+	ImmigrationTemplateDocs savePetitionTemplateDocDetails(ImmigrationTemplateDocs immigrationTemplateDocs);
 	
 	void savePetitionTemplateTaskDetails(ImmigrationTemplateTasks immigrationTemplateTask);
 	
