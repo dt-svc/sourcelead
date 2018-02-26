@@ -7982,6 +7982,9 @@ display: initial;
 .list-borderright ul li a {
 	border-right: 1px solid #ddd; padding: 0 15px 0 0;
 }
+.active.page-updated {
+	background-color:#4CAF50 !important; position: relative;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
