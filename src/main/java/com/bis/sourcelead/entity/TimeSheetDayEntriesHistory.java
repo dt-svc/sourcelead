@@ -4,7 +4,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,10 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -68,7 +63,10 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 	
 	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
-	 
+
+	@Column(name="STATUS")
+	private Integer status; 
+	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "CREATED_DATE")
@@ -199,6 +197,14 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	
 }
