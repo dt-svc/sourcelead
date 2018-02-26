@@ -7985,6 +7985,9 @@ display: initial;
 .active.page-updated {
 	background-color:#4CAF50 !important; position: relative;
 }
+.active.page-updated:after {
+	content:"\f00c"; position: absolute; right:2; top:10px; font-family:fontawesome; font-size: 10px; color: #fff;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
