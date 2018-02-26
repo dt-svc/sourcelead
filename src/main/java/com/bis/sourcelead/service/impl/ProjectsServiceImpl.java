@@ -925,7 +925,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 		UserRole userStatus = userRoleService.getUserByUserId(user.getId());
-		if(userStatus.getUserState().toString().equalsIgnoreCase("ACTIVE")) {
+		if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())) {
 		Set<Projects> projectsSet = new HashSet<>();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
