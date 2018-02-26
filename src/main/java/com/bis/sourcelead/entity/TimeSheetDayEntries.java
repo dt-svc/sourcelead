@@ -4,7 +4,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,10 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -57,14 +52,15 @@ public class TimeSheetDayEntries implements Serializable{
 	  
 	@Column(name = "TOTALHOURS")
 	private String totalHours;
-	 
-	@Column(name ="TASK_TYPE")
-	private String taskType;
 	
 	@Column(name = "COMMENTS", columnDefinition = "TEXT default NULL")
     private String comments;
 	
+	@Column(name ="STATUS")
+	private Integer status;
 	
+	@Column(name ="TASK_TYPE")
+	private String taskType;
 	
 	@Column(name = "IS_MANUALLY_ADDED")
 	private String isManuallyAdded;
@@ -199,6 +195,14 @@ public class TimeSheetDayEntries implements Serializable{
 
 	public void setIsManuallyAdded(String isManuallyAdded) {
 		this.isManuallyAdded = isManuallyAdded;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	
 }
