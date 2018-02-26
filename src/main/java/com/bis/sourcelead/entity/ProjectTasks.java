@@ -58,7 +58,7 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "GENERATED_ID")
 	private String generatedId;
 	  
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION" , columnDefinition = "LONGTEXT default NULL")
 	@Type(type="text")
 	private String description;
 	

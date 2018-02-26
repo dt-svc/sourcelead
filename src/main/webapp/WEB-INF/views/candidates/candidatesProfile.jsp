@@ -821,7 +821,10 @@ function candidateProfile(candidateId,candidateType){
 							result = result +'<ul class="list-unstyled listUlLi">';
 							if(json.candidateCustomFieldData != null && json.candidateCustomFieldData != '' && json.candidateCustomFieldData != 'undefined'){
 					              $.each(json.candidateCustomFieldData, function(key, value) {
-					              	result = result+'<li><span class="col-md-3 padding_left paddingRight text-muted">'+key+':</span><span class="col-md-8 padding_left padding_right">'+value+'</span><div class="clearfix"></div></li>';
+					            	  var labelNameAndlabelData = value.split("$");
+					            	  result = result + '	<div class="project_details_cta">';
+					            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+					            	  result = result + '	</div>';
 					              });
 				              }
 							result = result +'<div class="clearfix"></div>';

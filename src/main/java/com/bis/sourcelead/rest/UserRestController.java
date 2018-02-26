@@ -358,6 +358,13 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 		userDTO.setFirstName(user.getFirstName());
 			 	userDTO.setLastName(user.getLastName());
 			 	userDTO.setMobilePhone(user.getMobilePhone());
+		 	}else {
+		 		Candidate candidate = candidateService.getCandidateByEmail(EmailId);
+		 		if(candidate != null) {
+		 			userDTO.setFirstName(candidate.getFirstName());
+				 	userDTO.setLastName(candidate.getLastName());
+				 	userDTO.setMobilePhone(candidate.getMobilePhone());
+		 		}
 		 	}
 			return userDTO;
 	   }

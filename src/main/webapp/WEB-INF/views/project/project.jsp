@@ -6,8 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
@@ -31,14 +30,6 @@
 }
 </style>
 
-<script>
-	$(document).ready(function() {
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
-	});
-</script>
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
