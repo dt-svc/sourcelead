@@ -152,7 +152,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		Leave savedLeave =  leaveDao.saveLeave(leave);
 		
-		Map<String,Integer> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
+		Map<String,Float> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
 		saveMonthlyLeaves(monthlyLeaves,leave,user);
 		
 		if(savedLeave !=null) {
@@ -252,7 +252,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 	}
 
-	private void saveMonthlyLeaves(Map<String, Integer> monthlyLeaves, Leave leave, User user)
+	private void saveMonthlyLeaves(Map<String, Float> monthlyLeaves, Leave leave, User user)
 	{
 		MonthlyLeaves leaves = new MonthlyLeaves();
 		leaves.setLeaveId(leave);
@@ -329,7 +329,7 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder sb = new StringBuilder();
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
-				Map<String,Integer> nuberOfLeavestaken = null;
+				Map<String,Float> nuberOfLeavestaken = null;
 				float leavesTaken = 0;
 				if (leave.getUser() != null) {
 					try {
@@ -463,7 +463,7 @@ public class LeaveServiceImpl implements LeaveService{
         
 		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),user.getId(),yearStartDate,fromDate);
 //		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocations.getId(),Constants.APPROVED,user.getId());
-		int carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
+		float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
 		
 		leaveManagementHistory.setFromStage(leave.getStatus());
 		if (leave != null) {
@@ -474,16 +474,17 @@ public class LeaveServiceImpl implements LeaveService{
 					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
 					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 					
-					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
+//					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
+					float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod())){
-						leave.setExtraLeavesTaken(Math.abs(numberOfDays - carryForwardLeaves));
+						leave.setExtraLeavesTaken(appliedLeaves - carryForwardLeaves);
 					}else{
 						leave.setExtraLeavesTaken(0);
 					}
 					
 					
-					int numberOfLeavesPerYear = totalLeaves - numberOfDays + leave.getExtraLeavesTaken();
+					float numberOfLeavesPerYear = totalLeaves - appliedLeaves + leave.getExtraLeavesTaken();
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
@@ -512,7 +513,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 	
 
-	private int calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate, LeaveType leaveType)
+	private float calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate, LeaveType leaveType)
 	{
 		Calendar sDate = Calendar.getInstance();
         Calendar eDate = Calendar.getInstance();
@@ -521,19 +522,19 @@ public class LeaveServiceImpl implements LeaveService{
         int difInMonths = eDate.get(Calendar.MONTH) - sDate.get(Calendar.MONTH) + 1;
         int fromMonth = sDate.get(Calendar.MONTH);
 		
-		int carryForwardLeaves = 0;
-		int janLeaves = 0;
-		int febLeaves = 0;
-		int marLeaves = 0;
-		int aprLeaves = 0;
-		int mayLeaves = 0;
-		int junLeaves = 0;
-		int julLeaves = 0;
-		int augLeaves = 0;
-		int sepLeaves = 0;
-		int octLeaves = 0;
-		int novLeaves = 0;
-		int decLeaves = 0;
+		float carryForwardLeaves = 0;
+		float janLeaves = 0;
+		float febLeaves = 0;
+		float marLeaves = 0;
+		float aprLeaves = 0;
+		float mayLeaves = 0;
+		float junLeaves = 0;
+		float julLeaves = 0;
+		float augLeaves = 0;
+		float sepLeaves = 0;
+		float octLeaves = 0;
+		float novLeaves = 0;
+		float decLeaves = 0;
 		int monthlyAllowedLeaves = leaveType.getNoOfDays();
 		if("Monthly".equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
 			for(Leave userLeave : leaveList){
