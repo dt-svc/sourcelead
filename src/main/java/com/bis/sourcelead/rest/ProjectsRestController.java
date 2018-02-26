@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
@@ -479,6 +481,88 @@ public class ProjectsRestController {
 	    	
 	    	
 	       return "success";
+	    }
+	    
+	    
+	    @RequestMapping(value = "/editProjectAssignedProjectMember", method = RequestMethod.POST)
+		public  ProjectMembersDTO editProjectAssignedProjectMember(@RequestParam(value="projectMemberId", required=true) Long projectMemberId,
+				HttpServletRequest request) throws Exception {
+	    
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	     
+	      ProjectMembersDTO projectMebersDTO = new ProjectMembersDTO();
+	      ProjectMembers projectMebers = projectMembersService.getProjectMemberById(projectMemberId);
+	      if(projectMebers != null) {
+	    	  projectMebersDTO.setBillRateRateType(projectMebers.getRateType());
+	    	  projectMebersDTO.setBillRateCurrency(projectMebers.getBillRateCurrency());
+	    	  projectMebersDTO.setBillRate(projectMebers.getCurrentBillRate());
+	    	  
+	    	  projectMebersDTO.setPayRate(projectMebers.getPayRate());
+	    	  projectMebersDTO.setPayRateRateType(projectMebers.getPayRateType());
+	    	  projectMebersDTO.setPayRateCurrency(projectMebers.getPayRateCurrency());
+	    	  SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+	    	  
+	    	  if(projectMebers.getProjectAssignedDate() != null) {
+	    		  projectMebersDTO.setProjectStartDate(dateFormat.format(projectMebers.getProjectAssignedDate()));
+	    	  }
+	    	 
+	    	  if(projectMebers.getProjectEndDate() != null) {
+	    		  projectMebersDTO.setProjectEndDate(dateFormat.format(projectMebers.getProjectEndDate()));
+	    	  }
+	    	
+	    	  
+	    	  projectMebersDTO.setEstHours(projectMebers.getEstimatedHours());
+	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
+	    	  
+	    	  projectMebersDTO.setProjectMemberId(projectMebers.getId());
+	      }
+	    	
+	       return projectMebersDTO;
+	    }
+	    
+	    @RequestMapping(value = "/updateProjectMemberDetails", method = RequestMethod.POST)
+		public String updateProjectMemberDetails(ProjectMembersDTO projectMembersDTO,
+				HttpServletRequest request) throws Exception {
+	    	 
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	    	  
+	    	ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMembersDTO.getProjectMemberId()); 
+	    	if(projectMembers != null) {
+	    		projectMembers.setPayRate(projectMembersDTO.getPayRate());
+	    		projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
+	    		projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
+	    		
+	    		projectMembers.setCurrentBillRate(projectMembersDTO.getBillRate());
+	    		projectMembers.setRateType(projectMembersDTO.getBillRateRateType());
+	    		projectMembers.setBillRateCurrency(projectMembersDTO.getBillRateCurrency());
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberStartDate())){
+	    			Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+	    			projectMembers.setProjectAssignedDate(projectAssignedStartDate);
+	    		}
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberEndDate())){
+	    			Date projectAssignedEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+	    			projectMembers.setProjectEndDate(projectAssignedEndDate);
+	    		}
+	    		
+	    		if(projectMembersDTO.getEstBudget() != null){
+	    			projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
+	    		}else {
+	    			projectMembers.setEstimatedBudget(null);
+	    		}
+	    		
+	    		if(projectMembersDTO.getEstHours() != null){
+	    			projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
+	    		}else {
+	    			projectMembers.setEstimatedHours(null);
+	    		}
+	    		
+	    		projectMembersService.saveProjectMember(projectMembers);
+	    	}
+	    	
+	    	
+	    	return "success";
 	    }
 	  
 
