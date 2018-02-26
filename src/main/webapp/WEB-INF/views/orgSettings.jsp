@@ -573,7 +573,13 @@ function cancelOrgImg(){
                                                         </div>
                                                     </div>
                                                 </c:if>
-                                            </div>         
+                                            </div>  
+                                                <div class='clearfix'>
+                                                    <span>Please copy & paste this in your career page</span>
+                                                    <textarea class='form-control' rows="3" readonly="readonly" id='careerPageCode'>
+                                                        
+                                                    </textarea>
+                                                </div>
                                         </div> 
            			</c:if>
            			
@@ -757,6 +763,7 @@ $(function() {
                 text += '<div class="col-md-1"><div class="toggle-button"><label class="switch"><input type="checkbox" checked id="changeCareerPageKeyStatus"/><div class="slider round"></div></label></div></div>';
                 text += '</div>';
                 $("#careerPageInnerContent").html(text);
+                applyCareerPageCode(data.split(';')[1]);
                 applyCareerPageStatusEvent();
             } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
                 alert("Session timedout");
@@ -767,6 +774,7 @@ $(function() {
         });
     });
     
+    applyCareerPageCode('${SourceLeadWeb_org.careerPageKey}')
     applyCareerPageStatusEvent();
 });
 function applyCareerPageStatusEvent() {
@@ -795,6 +803,11 @@ function applyCareerPageStatusEvent() {
             }
         });
     });
+}
+
+function applyCareerPageCode(code) {
+    var url = '${sourceleadUrl}'.replace('app','');
+    $("#careerPageCode").text("<div id='jobList'></div>\n<script type='text/javascript' src='"+url+"resources/careers.js?key="+code+"'></script"+">");
 }
 </script>
 
