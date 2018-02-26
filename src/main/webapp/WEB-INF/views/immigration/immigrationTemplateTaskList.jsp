@@ -3,9 +3,9 @@
 		<div class="immiStepsHead clearfix">
 			<h2>Task Details</h2>
 			<ul class="addImmiSteps">
-				<li class="active">1</li>
-				<li class="active">2</li>
-				<li class="active">3</li>
+				<li class="active page-updated">1</li>
+				<li class="active page-updated">2</li>
+				<li class="active page-updated">3</li>
 				<li class="active">4</li>
 				<b></b>
 				<div class="clearfix"></div>
