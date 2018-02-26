@@ -1861,6 +1861,7 @@ public class TimesheetRestController {
 								
 								timesheetDayEntries.setComments(teDTO.getComments());
 								timesheetDayEntries.setTimesheetDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),teDTO.getDate()));
+								timesheetDayEntries.setStatus(1);
 								timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 								timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 								timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
