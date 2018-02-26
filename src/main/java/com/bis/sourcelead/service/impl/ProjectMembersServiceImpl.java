@@ -878,7 +878,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			User user, OrgLocations orgLocations) throws Exception {
 		
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-		List<Long> savedProjectMemberIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projects.getId(),orgLocations.getId());
+		//List<Long> savedProjectMemberIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projects.getId(),orgLocations.getId());
 		ProjectClients projectClients = null;
 		List<Long> updatedProjectMembers = new ArrayList<Long>();
 		if(projectAssignedMembersDTO.getProjectMembers() != null && projectAssignedMembersDTO.getProjectMembers().size() > 0){
@@ -1059,7 +1059,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		projects.setIsProjectMembersFilled(Constants.YES);
 		projectsService.saveProject(projects);
 		
-		updatedProjectMembers.retainAll(savedProjectMemberIds);
+		/*updatedProjectMembers.retainAll(savedProjectMemberIds);
 		savedProjectMemberIds.removeAll(updatedProjectMembers);
 		
 		if(savedProjectMemberIds != null && savedProjectMemberIds.size() > 0){
@@ -1085,7 +1085,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	    			}
 	    		}
 			}
-		}
+		}*/
 	}
 	
 	private void saveProjectMembersHistory(ProjectMembers projectMembers,User user,ProjectClients projectClients) throws Exception{

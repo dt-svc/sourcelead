@@ -237,8 +237,8 @@ function getAssignedMembers(){
 	 
 	 $("#searchAssociatesList").empty();
      $("#searchAssociatesList").append(result);
-     
-     loadProjectAssignedMembers(projectId);
+     emptyRecordsList();
+    // loadProjectAssignedMembers(projectId);
      
 }
 </script>
