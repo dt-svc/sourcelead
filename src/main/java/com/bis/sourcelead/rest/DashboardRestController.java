@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
@@ -986,6 +987,81 @@ public class DashboardRestController {
 			}
 			return interviewDatesList;
 		}
+		
+		/**
+		   * @author Venkat Kesav
+		   * @since  feb 22 2018
+		   * @version 0.0.1
+		   * 
+		   * This method is used for getting Interviews and TasksList By login User for mobile App
+		   *  
+		   * @return EventsDTO 
+		   * 
+		   * @throws NullPointer
+		   */
+		@RequestMapping(value = "/rest/getInterviewsAndTasksList", method = RequestMethod.POST )
+		public EventsDTO getInterviewsAndTasksList(EventsDTO eventsDTO, HttpServletRequest request) throws Exception {
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			List<RequirementInterviewHistory> requirementInterviewList = new ArrayList<RequirementInterviewHistory>();
+			List<Tasks> taklist = new ArrayList<Tasks>();
+			String currentTime = null;
+			String userType = null;
+			Timezone timezone = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			
+			Date startUTCDate = null;
+			Date endUTCDate = null;
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			if(!StringUtils.isNotBlank(eventsDTO.getStartDate())) {
+				Date startDateWithTime = new Date();
+				String startTimeTS = Constants.TZ_DF.format(startDateWithTime);
+				String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+				startUTCDate = TZ_DF_TS.parse(startDateString);
+				/*if(!StringUtils.isNotBlank(eventsDTO.getEndDate())) {
+					DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+					String endTimeTS = END_TZ_DF.format(startDateWithTime);
+					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+					endUTCDate = TZ_DF_TS.parse(endDateString);
+				}*/
+			}else if(StringUtils.isNotBlank(eventsDTO.getStartDate())) {
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),eventsDTO.getStartDate());
+				String startTimeTS = Constants.TZ_DF.format(startTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
+				startUTCDate = TZ_DF_TS.parse(startDateString);
+			}
+			
+			if(StringUtils.isNotBlank(eventsDTO.getEndDate())) {
+				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),eventsDTO.getEndDate());
+				String endTimeTS = Constants.TZ_DF.format(endTime);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+				endUTCDate = TZ_DF_TS.parse(endDateString);
+			}
+				
+			if(eventsDTO.getEventType().equalsIgnoreCase("interviews")) {
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+					}else{
+						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+				}
+			}else if(eventsDTO.getEventType().equalsIgnoreCase("tasks")) {
+				String status =  "myTask";
+				Date converteDate = null;
+				taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,eventsDTO.getDateRange(),converteDate,timezone);
+			}
+			
+			eventsDTO.setInterviewerList(requirementInterviewList);
+			eventsDTO.setTasksList(taklist);
+			return eventsDTO;
+		}
+		
 		
 		@RequestMapping(value = "/getInterviewsandTasks")
 		public String getInterviewsandTasks(String dateRange, HttpServletRequest request) throws Exception {

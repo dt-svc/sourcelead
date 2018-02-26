@@ -232,10 +232,15 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
+						if(opt.rejectedReason==null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +'<b class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
+						result = result +'</div>';}
+						if(opt.rejectedReason!=null){
 						result = result +'<div class="tbldata-dotdot-vsm paTp">';
 			     		result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 	    				result = result +'<b class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</b>';
-						result = result +'</div>';
+						result = result +'</div>';}
 						result = result +'</td>';
 						
 					 result = result +'</tr>';

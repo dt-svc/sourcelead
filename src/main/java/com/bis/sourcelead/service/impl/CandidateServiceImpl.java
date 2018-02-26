@@ -661,7 +661,7 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		if(candidateDto.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
 					CandidateCustomFieldData candidateCustomFields = null;
 					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
 						candidateCustomFields = candidateCustomFieldDataService.getCandidateCustomFieldDataById(customFields.getEntityId());
