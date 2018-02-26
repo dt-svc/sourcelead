@@ -730,7 +730,7 @@ function loadProjectMembersDetails(data,candidateName){
 	
 	result = result +" <div id='edit_member_pop' class='edit_member_pop'>";
 	result = result +"	<h4>Edit Team Member</h4>";
-	result = result +"	<p>Emp Name : "+candidateName+"</p>";
+	result = result +"	<p>Emp Name : <strong>"+candidateName+"</strong></p>";
 	result = result + '<div class="form-horizontal clearfix">';
 	result = result + '<form id="editProjectMemberform" name="editProjectMemberform">';
 	result = result +" <div id='editMemberLoading'></div>"; 
@@ -875,7 +875,6 @@ function loadProjectMembersDetails(data,candidateName){
 			dateFormat : finalDateFormatAssignEmpUpdate,
 			changeMonth: true,
 			changeYear: true, 
-			maxDate:projectEndDate,
 			minDate: projectStartDate,
 	        onClose : function(selected) {
 	        	 var dt = $(this).datepicker('getDate', '-1d');

@@ -566,6 +566,20 @@ public class ProjectsRestController {
 	    		
 	    		projectMembersService.saveProjectMember(projectMembers);
 	    		
+	    		ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberStartDate())){
+	    			Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+	    			pmh.setProjectAssignedDate(projectAssignedStartDate);
+	    		}
+	    		
+	    		if(StringUtils.isNotBlank(projectMembersDTO.getMemberEndDate())){
+	    			Date projectAssignedEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
+	    			pmh.setProjectTerminationDate(projectAssignedEndDate);
+	    		}
+	    		
+	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
+	    		
 	    		/*ProjectMembersRateHistory projectMembersRateHistory = new ProjectMembersRateHistory();
 	    		projectMembersRateHistory.setProjectMemberId(projectMembers);
 	    		projectMembersRateHistory.setCandidateId(projectMembers.getProjectMemberCandidteId());
