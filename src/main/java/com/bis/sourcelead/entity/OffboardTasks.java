@@ -23,7 +23,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "OFFBOARD_TASKS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="offboardTasks")
 public class OffboardTasks implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -36,12 +35,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "TASK_NAME")
    	private String taskName;
     
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CANDIDATE_OFF_BOARDING_ID", nullable = false)
    	private CandidateOffBoarding candidateOffBoardingId;
     
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OFF_BOARDING_TEMPLATE_ID", nullable = false)
 	private OffBoardingTemplate offboardingTemplateId;

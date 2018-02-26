@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_CLIENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectClients")
 public class ProjectClients implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,21 +38,21 @@ public class ProjectClients implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROJECT_ID")
 	@JsonBackReference
     private Projects projectId;
 	
     
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
     
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
@@ -76,12 +75,12 @@ public class ProjectClients implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;

@@ -86,7 +86,7 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 			}
 			
         }
-		return query.setCacheable(true).list();
+		return query.list();
 	}
 
 	@Override

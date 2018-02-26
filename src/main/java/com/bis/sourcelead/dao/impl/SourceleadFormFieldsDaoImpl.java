@@ -22,7 +22,7 @@ public class SourceleadFormFieldsDaoImpl implements SourceleadFormFieldsDao {
 	public List<SourceleadFormFields> getAllFormFieldsBySectionId(Long sectionId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = " from SourceleadFormFields sff left join fetch sff.sourceleadFormSections sfs where sfs.id = :sectionId";
-	    List<SourceleadFormFields> fieldList = session.createQuery(query.toString()).setLong("sectionId", sectionId).setCacheable(true).list();
+	    List<SourceleadFormFields> fieldList = session.createQuery(query.toString()).setLong("sectionId", sectionId).list();
         return fieldList;
         
 	}

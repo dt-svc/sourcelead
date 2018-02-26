@@ -193,9 +193,10 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								expensesApproverHierarchy.setExpensesProjectName("--");
 							}
 							
-					 ProjectMembers projectMember = expensesApproverHierarchy.getExpenseId().getProjectMembers();
+					 ProjectMembers projectMember = projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(expensesApproverHierarchy.getExpenseId().getProjectMembers().getMasterCandidateId().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getId(),orgLoc.getId());
+							 //expensesApproverHierarchy.getExpenseId().getProjectMembers();
 					 ProjectMembers pmWithUser =projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
-					if (null !=projectMember.getProjectMemberCandidteId()) {
+					if (projectMember != null && null != projectMember.getProjectMemberCandidteId()) {
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getDesignationType())){
 								String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
@@ -238,7 +239,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 					}
 				}
 			}
-			ExpensesApproverHierarchyDTO expensesApproverHierarchyDto = convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(expensesApproverHierarchy);
+			ExpensesApproverHierarchyDTO expensesApproverHierarchyDto = convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(expensesApproverHierarchy,orgLoc);
 			expensesApproverDTO.setTotalRows(expApperoverHierarchy.getRecordsTotal());
 			int totalRows = expApperoverHierarchy.getRecordsTotal();
 			if(totalRows > 0) {
@@ -260,7 +261,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	}
 
 
-	private ExpensesApproverHierarchyDTO convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(ExpensesApproverHierarchy expensesApproverHierarchy) {
+	private ExpensesApproverHierarchyDTO convertExpensesApproverHierarchyTOExpensesApproverHierarchyDTO(ExpensesApproverHierarchy expensesApproverHierarchy,OrgLocations orgLocations) throws Exception {
+		ProjectMembers projectMember = projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getMasterCandidateId().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getId(),orgLocations.getId());
 		ExpensesApproverHierarchyDTO expensesApproverHierarchyDto = new ExpensesApproverHierarchyDTO();
 		expensesApproverHierarchyDto.setExpenseEmpUserFirstNameLastName(expensesApproverHierarchy.getExpenseEmpUserFirstNameLastName());
 		expensesApproverHierarchyDto.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseEmpUserEmail());
@@ -278,12 +280,28 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		expensesApproverHierarchyDto.setExpenseId(expensesApproverHierarchy.getExpenseId().getExpenseId());
 		expensesApproverHierarchyDto.setExpensesStatus(expensesApproverHierarchy.getExpenseStatus().getValue());
 		expensesApproverHierarchyDto.setExpenseApprovalStatus(expensesApproverHierarchy.getExpenseApprovalStatus().toString());
-		if(expensesApproverHierarchy.getExpenseId().getClientName()!= null && StringUtils.isNotEmpty(expensesApproverHierarchy.getExpenseId().getClientName())) {
-			expensesApproverHierarchyDto.setClientName(expensesApproverHierarchy.getExpenseId().getClientName());
-		}
+		 if(null != projectMember && 
+				 null != projectMember.getProjectClientsId().getOrgRelationId()){
+	    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+	   	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelations.getResponderLocationId() != null){
+						expensesApproverHierarchyDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+					}
+				}
+				if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					if(orgRelations.getLocationId() != null){
+						expensesApproverHierarchyDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
+					}
+				}
+	    }
 		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
 		expensesApproverHierarchyDto.setTdSpanLength("9");
-		expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
+		 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());
+		 	expensesApproverHierarchyDto.setActionPerformedBy(actionPerformedBy.getOrgLocationName());
+		}else {
+			expensesApproverHierarchyDto.setActionPerformedBy(expensesApproverHierarchy.getActionPerformedBy());
+		}
 		expensesApproverHierarchyDto.setNoOfExpenses(expensesApproverHierarchy.getExpenseId().getNoOfExpenses());
 		expensesApproverHierarchyDto.setExpId(expensesApproverHierarchy.getExpenseId().getId());
 		expensesApproverHierarchyDto.setProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
@@ -385,35 +403,35 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseById(ex.getExpId());
 			if(null != expenseId.getProjectMembers()){
-				if(null != expenseId.getProjectMembers().getEmployee()){
-					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+				//if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
 							StringBuffer sb = new StringBuffer();
-							expenseArray[0] = sb.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString();
-						}else if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
-							expenseArray[0] = expenseId.getProjectMembers().getEmployee().getUser().getFirstName();
+							expenseArray[0] = sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString();
+						}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
+							expenseArray[0] = expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName();
 						}
 						else
 						{
 							expenseArray[0] = "--";
 						}
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
 
-							expenseArray[1] = expenseId.getProjectMembers().getEmployee().getUser().getEmail();
+							expenseArray[1] = expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail();
 						}else{
 							expenseArray[1] = "--";
 						}
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone())){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone())){
 
-							expenseArray[2] = expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone();
+							expenseArray[2] = expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone();
 						}else{
 							expenseArray[2] = "--";
 						}
 						
 					}
-					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getEmployee().getUserEmploymentType())){
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType())){
 
-						expenseArray[3] = expenseId.getProjectMembers().getEmployee().getUserEmploymentType();
+						expenseArray[3] = expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType();
 					}else{
 						expenseArray[3] = "--";
 					}
@@ -430,7 +448,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 							expenseArray[4] = "--";
 						}
 					}
-				}
+				//}
 				if(null != expenseId.getProjectMembers().getProjects()){
 					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
 						expenseArray[5] = expenseId.getProjectMembers().getProjects().getProjectName();
@@ -483,10 +501,10 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			if(null != expenseId.getStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				    if(eah.getReopenRejectedReason()!= null) {
-				    	expenseArray[12] = "Rejected";
+				    if(eah.getReopenRejectedReason() != null) {
+				    	expenseArray[12] = submissionStatus.getValue().toUpperCase();
 				    }else {
-				    	expenseArray[12] = submissionStatus.getValue();	
+				    	expenseArray[12] = "Rejected";
 				    }
 			}else{
 				expenseArray[12] = "--";
@@ -575,32 +593,32 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			Expenses expenseId =expensesService.getExpenseById(expensesList.getExpId());
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
-					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
 						
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
 							StringBuffer sb = new StringBuffer();
-							writeRow.createCell(0).setCellValue(sb.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString());
+							writeRow.createCell(0).setCellValue(sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString());
 							createExcelsheet.autoSizeColumn(0);
-						}else if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
-							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
+						}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
+							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 							createExcelsheet.autoSizeColumn(0);
 						}
 						
-						/*if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
-							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
+						/*if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
+							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 							createExcelsheet.autoSizeColumn(0);
 						}*/
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
-							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getEmail());
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
+							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail());
 							createExcelsheet.autoSizeColumn(1);
 						}
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone()){
-							writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone());
+						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone()){
+							writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone());
 							createExcelsheet.autoSizeColumn(2);
 						}
 					}
-					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType()){
-						writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getEmployee().getUserEmploymentType());
+					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType()){
+						writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType());
 						createExcelsheet.autoSizeColumn(3);
 					}
 					
@@ -657,9 +675,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId());
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
 			    if(eah.getReopenRejectedReason()!= null) {
-			    	writeRow.createCell(12).setCellValue("Rejected");
+			    	writeRow.createCell(12).setCellValue(submissionStatus.getValue().toUpperCase());
 			    }else {
-				writeRow.createCell(12).setCellValue(submissionStatus.getValue());
+			    	writeRow.createCell(12).setCellValue("Rejected");
 				createExcelsheet.autoSizeColumn(12);
 			    }
 			}

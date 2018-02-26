@@ -9,6 +9,7 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Long sectionId;
+	private SourceleadSectionDTO sectionData;
 	private Long orglocationId;
 	private Long orgId;
 	private String labelName;
@@ -25,6 +26,7 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	private Long slDependedntField;
 	private Long customDependentField;
 	private int status;
+	private String customEditType;
 	
 	public Long getId() {
 		return id;
@@ -127,6 +129,18 @@ public class OrglocationFormFieldsDTO implements Serializable {
 	}
 	public void setMaxDate(String maxDate) {
 		this.maxDate = maxDate;
+	}
+	public SourceleadSectionDTO getSectionData() {
+		return sectionData;
+	}
+	public void setSectionData(SourceleadSectionDTO sectionData) {
+		this.sectionData = sectionData;
+	}
+	public String getCustomEditType() {
+		return customEditType;
+	}
+	public void setCustomEditType(String customEditType) {
+		this.customEditType = customEditType;
 	}
 	
 	

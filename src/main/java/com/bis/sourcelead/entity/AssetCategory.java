@@ -22,7 +22,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ASSET_CATEGORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetCategory")
 public class AssetCategory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,8 +39,8 @@ public class AssetCategory implements Serializable{
 	@Type(type="text")
 	private String description;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
 	

@@ -291,7 +291,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
 					}
 				
-		 }if(candidate == null){
+		 }
+		 
+		 if(candidate == null){
 			       candidate = new Candidate();
 			       
 					if(orgLocations == null){
@@ -536,6 +538,21 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 		 }else{
 			 requirementSubmission.setCandidate(candidate);
+			 
+			 
+			if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+				 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+			}
+			
+			if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+				 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+			}
+			
+		    candidate = candidateDao.storeCandidate(candidate);
+			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+				
+			
 		 }
 		 
 		 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
@@ -850,7 +867,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant")) && (!"Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 if(jsonObj.getString("notifyToApplicant").equals("Y")){
-				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
+				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations,"");
 			 }
 		 }
 		 
@@ -950,7 +967,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 
-	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
+	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations, String submissionType) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1060,7 +1077,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String subject = "";
+		 if(submissionType.equalsIgnoreCase("EditSubmission")) {
+			 subject = "Application details are updated";
+		}else {
+			subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		}
+		 
+		 
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = sourceleadUrl;
@@ -2215,7 +2239,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
          if(null != requirement.getParentRequirement()){
              Integer totalApplicatsCountForRequirement = 0;
-             Requirement req = requirement.getParentRequirement();
+             Requirement req = requirementService.getRequirementByRequirementId(requirement.getParentRequirement().getId()) ;
             //updating total number of applicants for requrement
              totalApplicatsCountForRequirement = getNumberOfApplicantsForRequirement(requirement.getParentRequirement().getOrgLocationId().getId(), requirement.getParentRequirement().getId());
 //             totalApplicatsCountForRequirement = requirementSubmissionService.getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(orgLocations,requirement.getId(),user,userRoleName);
@@ -2435,8 +2459,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String subject = "";
 			String body = "";
 			//String signature = user.getFirstName();
-			String url = "";
-			
+			//String url = sourceleadUrl;
 			RequirementSubmission reqSub=null;
 			List<String> submissionIsd = Arrays.asList(submissionId);
 			for(String subIds :submissionIsd){
@@ -2484,7 +2507,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
 			notificationScenario.setBody(notificationbody);
 			
-			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, url, loginOrgLocation.getOrg(),loginOrgLocation);
+			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, sourceleadUrl, loginOrgLocation.getOrg(),loginOrgLocation);
 			emailMessage.setSubject(subject);
 			emailMessage.setMessageBody(emailTemplate);
 			
@@ -4900,12 +4923,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		RequirementSubmission requirementSubmission = null;
 		 if(jsonObj.has("submissionId") && !isNullOrEmpty(jsonObj.getString("submissionId"))){
 			 requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(Long.valueOf(jsonObj.getString("submissionId")));
-			 
+			 CandidateResumes candidateResumes = new CandidateResumes();
 			 if(requirementSubmission != null){
 				 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
-					 CandidateResumes candidateResumes = new CandidateResumes();;
 					 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
 					 requirementSubmission.setCandidateResumes(candidateResumes);
+				 }
+				 
+				 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
+					 if(jsonObj.getString("notifyToApplicant").equals("Y")){
+						 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirementSubmission.getRequirement(),candidateResumes.getCandidateId(),user,orgLocations,"EditSubmission");
+					 }
 				 }
 				 
 				 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
@@ -5048,5 +5076,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception {
 		return requirementSubmissionDao.getSubmmisionsForIsClientJob(submissionIds);
+	}
+
+	@Override
+	public RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(
+			Long requirementId, Long candidateId) throws Exception {
+		return requirementSubmissionDao.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementId, candidateId);
 	}
 }

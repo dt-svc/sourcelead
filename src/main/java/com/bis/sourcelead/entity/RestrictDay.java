@@ -33,17 +33,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "RESTRICT_DAY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "restrictDay")
 public class RestrictDay implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(generator ="uuid2", strategy = GenerationType.IDENTITY)
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID")
 	private OrgLocations orgLocationId;
 
@@ -80,7 +79,9 @@ public class RestrictDay implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	@Column(name = "RESTRICT_UUID")
+	private String restrictUUID;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "restrictDay")
 	private Set<LeaveRole> restrictDayRolesList;
 
@@ -91,13 +92,12 @@ public class RestrictDay implements Serializable{
 	@Transient
 	@JsonProperty
 	private String endDateStr;
-
-
-	public String getId() {
+	
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -232,6 +232,16 @@ public class RestrictDay implements Serializable{
 
 	public void setDeleteReason(String deleteReason) {
 		this.deleteReason = deleteReason;
+	}
+
+	public String getRestrictUUID()
+	{
+		return restrictUUID;
+	}
+
+	public void setRestrictUUID(String restrictUUID)
+	{
+		this.restrictUUID = restrictUUID;
 	}
 
 }

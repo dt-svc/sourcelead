@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEWER")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterviewer")
 	public class RequirementInterviewer implements Serializable{
 
 	
@@ -35,13 +34,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEWER_USER_ID", nullable=false )        
     private User interviewerUser;
 	

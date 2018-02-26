@@ -246,7 +246,7 @@ function addEducation(candidateId) {
 	
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
-	result = result  +'	                     <select class=""  name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
+	result = result  +'	                     <select class="newSelect valid"  name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">%</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -479,7 +479,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                                                                                                                                                       ';
 	
 	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-4" positionRelative>';
+	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
 	result = result  +'	                     <select class="chosen-select" value="'+ json.gradeType +'" name="gradeType" id="scoreType" onchange="recSelectType();clearSearchKey();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 												if (json.gradeType == "Percentage") {
@@ -499,8 +499,8 @@ function EditEducation(candidateId,candidateEducationId) {
 												}
 	result = result  +'	                      </select>';
 	result = result  +'	                   </div>';
-	result  = result + '                  <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();"';
+	result  = result + '                  <div class="col-md-6" positionRelative paddingLeft id="candidateScoreDiv">';
+	result  = result + '                     <input type="text" class="form-control input-sm" value="'+grade+'" name="grade" placeholder="Score" id="candidateScore" onkeyup="recSelectType();scoreAndScoreType();"';
 	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 	result  = result + '                 	 </div>';
 	result = result  +'	                   </div>';
@@ -822,45 +822,41 @@ function recSelectType(){
 	}
 	
 	 var selectedText = document.getElementById("scoreType").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
+	
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
+			  $("#save_button").removeAttr("disabled");
 			   return true;
 		  }		  
 		 else{
 				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }
 	 else if(selectedText =='CGPA'){
 		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
 			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
+				  $("#save_button").removeAttr("disabled");
 				   return true;
 			  }		  
 			 else{
 				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 			return false; 
 			 }
 	  } 
 	 else if(selectedText =='GRADE'){
 		 var grades = /^([A-E][-+]{0,2})?$/
 			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
+				 $("#save_button").removeAttr("disabled");
 				 return true;
 			}else{
 				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 	    		return false;
 	    		
 			}
@@ -880,13 +876,17 @@ function scoreAndScoreType(){
 	 if(candidateScore.match(floatNum)){
 		 $("#scoreType").val('Percentage'); 
 		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
-		 $("#addCandidate").removeAttr("disabled");
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(grades)){
 		 $("#scoreType").val('GRADE'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(cgpanum)){
 		 $("#scoreType").val('CGPA'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
 		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");

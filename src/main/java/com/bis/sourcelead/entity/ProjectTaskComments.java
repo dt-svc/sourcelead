@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_TASK_COMMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTaskComments")
 public class ProjectTaskComments implements Serializable{
 	
 private static final long serialVersionUID = 1L;

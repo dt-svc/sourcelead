@@ -998,7 +998,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			      
 			     
 			      if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
-			      sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			    	  if(requirementOffers.getSubmissionId().getSourceSubmission() != null) {
+			    		  sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			    	  }
+			    	 
 			      }
 			      
 		      	  if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
@@ -1033,7 +1036,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    	
 	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
-	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+	    			 if(requirementOffers.getSubmissionId().getSourceSubmission() != null) {
+	    				 sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+	    			 }
 			      }
 	    	
 	    	  //Changing the status of offerTable 
@@ -1485,7 +1490,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		
     		candidate.setCandidateType("Candidate");
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-    		candidate.setDesignationType("C2C");
+    		
+    		if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+    			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+    		}
+    		
+    		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+    			candidate.setDesignationType(requirementOffers.getPositionType());
+    		}else {
+    			candidate.setDesignationType("C2C");
+    		}
+    		
     		candidate.setStatus(Constants.RECORD_ACTIVE);
     		candidate.setCurrentRate(requirementOffers.getAmount());
     		candidate.setCurrentRateType(requirementOffers.getPaymentMode());
@@ -1548,7 +1563,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		 }
     		}
     		
-    		candidate.setParentCandidateId(vendorCandidate);
+    		if(vendorCandidate != null) {
+    			candidate.setParentCandidateId(vendorCandidate);
+    			if(vendorCandidate.getPrimarySkill() != null && !vendorCandidate.getPrimarySkill().isEmpty()) {
+        			candidate.setPrimarySkill(vendorCandidate.getPrimarySkill());
+        		}
+    		}
+    		
+    		
     		candidateService.saveOrUpdateCandidate(candidate);
 	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 	    	

@@ -2,11 +2,11 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,29 +15,24 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "LEAVE_OPTION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveoptions")
 public class Option {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DEPARTMENT_ID", nullable = false)
 	private Department departmentId;
 
@@ -77,20 +72,21 @@ public class Option {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	@Column(name = "OPTION_UUID")
+	private String optionUUID;
+	
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leavesOptionId")
 	private Set<LeaveRole> leaverolesSet;
 	
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-
-
 
 	public OrgLocations getOrgLocations() {
 		return orgLocations;
@@ -204,5 +200,14 @@ public class Option {
 		this.deleteReason = deleteReason;
 	}
 
+	public String getOptionUUID()
+	{
+		return optionUUID;
+	}
+
+	public void setOptionUUID(String optionUUID)
+	{
+		this.optionUUID = optionUUID;
+	}
 	
 }

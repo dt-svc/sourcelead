@@ -125,9 +125,6 @@ public class TimeApprovalRedefinedRestController {
 			return model;
 			
 		}
-		
-		
-		
 		private TimesheetApprovalDTO timesheetApprovalDetails(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 if(orgLocations == null && StringUtils.isNotEmpty(timesheetApprovalDTO.getLocationCode())){
@@ -439,7 +436,7 @@ public class TimeApprovalRedefinedRestController {
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getClient()) && !timesheetApprovalDTO.getClient().equalsIgnoreCase("All")){
 	        	clientId =Long.parseLong(timesheetApprovalDTO.getClient());
 	        }
-	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),start,length);
+	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),start,length,"");
 	        
 	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
 			
@@ -613,10 +610,20 @@ public class TimeApprovalRedefinedRestController {
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			          	 ts.setRejectedReason(sah.getRejectedReason());
-			          	 ts.setActionPerformedBy(sah.getActionPerformedBy());
+			          	 if(sah.getActionPerformedByOrgLocationId() != null) {
+			          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
+			          		ts.setActionPerformedBy(orglocation.getOrgLocationName());
+			          	 }else {
+			          		ts.setActionPerformedBy(sah.getActionPerformedBy());
+			          	 }
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED){
+			    	 if(sah.getActionPerformedByOrgLocationId() != null) {
+		          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
+		          		 	ts.setActionPerformedBy(orglocation.getOrgLocationName());
+		          	 }else {
 			   	            ts.setActionPerformedBy(sah.getActionPerformedBy());
+		          	 }
 			     }  
 		     return ts;
        }
@@ -661,7 +668,7 @@ public class TimeApprovalRedefinedRestController {
 				    	 timesheetApprovalDTO.setFrequencyStartDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate));
 						 timesheetApprovalDTO.setFrequencyEndDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
 				    	 timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,loginOrgLocations);
-						 ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
+						 ProjectMembers projectMember = projectMembersService.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getMasterCandidateId().getId(),submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId(),loginOrgLocations.getId());
 						 TimesheetApprovalSubmissionDetailsDTO timeSub = getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, loginOrgLocations, actualStartDate, actualEndDate, user, tdSpanLength);
 						  timeSub.setDashboardInvoiceFrequency(projectMember.getProjects().getInvoiceFrequency());
 						  timeSub.setCurrentTimeFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+"To"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));

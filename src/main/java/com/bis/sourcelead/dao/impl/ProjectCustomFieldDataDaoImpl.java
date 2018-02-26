@@ -49,7 +49,7 @@ public class ProjectCustomFieldDataDaoImpl implements ProjectCustomFieldDataDao 
 			formIds.add(form.getCustomFormFieldId());
 		}
 		String query = "from ProjectCustomFieldData projectData left join fetch projectData.orglocationsFormFields formField left join fetch projectData.projects proj where proj.id =:projectId and formField.id IN(:formFieldId)";
-		List<ProjectCustomFieldData> projectFieldData  = session.createQuery(query).setLong("projectId", projectId).setParameterList("formFieldId", formIds).setCacheable(true).list();
+		List<ProjectCustomFieldData> projectFieldData  = session.createQuery(query).setLong("projectId", projectId).setParameterList("formFieldId", formIds).list();
 		return projectFieldData;
 	}
 

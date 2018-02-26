@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -436,8 +437,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	@Override
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId, Long approverUserId,
-			Date startDate, Date endDate, String status, String rejectedReason) throws Exception {
-		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason);
+			Date startDate, Date endDate, String status, String rejectedReason,OrgLocations orglocations) throws Exception {
+		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason,orglocations);
 	}
 
 	@Override
@@ -448,24 +449,24 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(
-			Long approverUserId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId, projectMemberId, startDate, endDate);
+			Long approverUserId,Long locationsId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId,locationsId, projectMemberId, startDate, endDate);
 	}
 
 	@Override
 	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(
-			Long approverUserId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId, projectMemberId, startDate, endDate);
+			Long approverUserId,Long locationsId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
+		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId,locationsId, projectMemberId, startDate, endDate);
 	}
 
 	@Override
-	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId,
+	public Map<String, Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId,Long locationsId,
 			Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, startDate, endDate);
+		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId,locationsId, startDate, endDate);
 	}
 
 	@Override
-	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId,Long orgLocationsId, Date frequencyStartDate, Date frequencyEndDate,String invoiceType)
+	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId,Long orgLocationsId, Date frequencyStartDate, Date frequencyEndDate,String invoiceType) throws Exception
 	{
 		return submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,orgLocationsId,frequencyStartDate,frequencyEndDate,invoiceType);
 	}
@@ -499,6 +500,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	@Override
 	public Boolean getPendingForApprovalTimesheetReportByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
 		return submissionApproverHierarchyDao.getPendingForApprovalTimesheetReportByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+	}
+
+	@Override
+	public List<SubmissionApproverHierarchy> getAllSubmissionApproverHierarchiesByProjectMemberId(
+			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId,Long locationId) throws Exception {
+		return submissionApproverHierarchyDao.getAllSubmissionApproverHierarchiesByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId,locationId);
 	}
 	
 	

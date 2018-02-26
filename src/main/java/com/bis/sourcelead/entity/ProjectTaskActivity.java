@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_TASK_ACTIVITY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectTaskActivity")
 public class ProjectTaskActivity implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -35,16 +34,16 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
 	@JoinColumn(name = "PROJECT_TASK_ID", nullable = false)
 	private ProjectTasks projectTaskId;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projecId;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_USER_ID", nullable = false)
    	private User userId;
     
@@ -55,11 +54,11 @@ private static final long serialVersionUID = 1L;
     @Type(type="text")
 	private String activity;
  
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PRIORITY")	
 	private LookUpData priority;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="TASK_STATUS")	
 	private LookUpData taskStatus;
 	

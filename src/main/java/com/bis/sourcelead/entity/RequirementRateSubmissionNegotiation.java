@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,17 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_RATE_NEGOTIATION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementRateSubmissionNegotiation")
 public class RequirementRateSubmissionNegotiation {
 
 	@Id
@@ -32,8 +27,8 @@ public class RequirementRateSubmissionNegotiation {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID", nullable=false )        
     private RequirementSubmission requirementsubmissionId;
 	
@@ -41,8 +36,8 @@ public class RequirementRateSubmissionNegotiation {
 	@Enumerated(EnumType.STRING)
 	private SubmissionRateStatus rateInitiatorType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INITIATOR_ORG_LOCATION_ID", nullable=false )        
     private OrgLocations initiatorOrgLocationId;
 	

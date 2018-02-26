@@ -106,7 +106,7 @@
 											+ '     <div class="pull-left tbldata-dotdot-me" title="'
 											+ opt.leaveType
 											+ '" onclick="getRequestedAproveSummary(\''
-											+ opt.id
+											+ opt.leaveUUID
 											+ '\','
 											+ orgLocationId
 											+ ');">'
@@ -218,11 +218,11 @@
 </script>
 
 <script>
-	function getRequestedAproveSummary(leaveId, orgLocationId) {
+	function getRequestedAproveSummary(leaveUUID, orgLocationId) {
 		$.get(
 						sourceleadUrl + "/getRequestedAproveSummary?"
 								+ tokenParamName + "=" + tokenValue
-								+ "&leaveId=" + leaveId + "&orgLocationId="
+								+ "&leaveUUID=" + leaveUUID + "&orgLocationId="
 								+ orgLocationId,
 						function(data) {
 							if (data != null) {
@@ -286,8 +286,8 @@
 								result = result
 										+ '<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
 								result = result + ' <div class="col-md-8">';
-								if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-									 result = result +'<span>'+data.leavesTaken+'</span>';
+								if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+									 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 								 }else{
 						            	result = result +' <span>--</span>';
 						            }

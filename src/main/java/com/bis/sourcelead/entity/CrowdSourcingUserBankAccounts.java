@@ -20,7 +20,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CROWDSOURCING_USER_BANK_ACCOUNTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "crowdSourcingUserBankAccounts")
 public class CrowdSourcingUserBankAccounts implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -30,7 +29,7 @@ public class CrowdSourcingUserBankAccounts implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ACCOUNT_USER_ID")        
     private User accountUserId;

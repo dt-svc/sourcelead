@@ -1,5 +1,6 @@
 package com.bis.sourcelead.elk.index;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,8 +10,10 @@ import javax.persistence.Column;
  * @author Rajashekar and Prasanna
  * @date 11th jan 2017
  */
-public class RequirementIndex {
+public class RequirementIndex implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Long requirementId;
 	
 	private Long orgLocationId;
@@ -189,6 +192,8 @@ public class RequirementIndex {
 	private String[] visaTypes;
 	private String url;
 	private String generatedId;
+	
+	private List<String> locationsList;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -967,6 +972,14 @@ public class RequirementIndex {
 	public void setSpocId(String spocId)
 	{
 		this.spocId = spocId;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
 	}
 	
 }

@@ -61,8 +61,13 @@
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
 				</c:if>
+				
+				<c:if test="${SourceLeadWeb_ats == 'Y'}">
 				<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice</a></li>
+				</c:if>
+				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${appPath}/missingBillReport'>Missing Bill</a></li>
+				</c:if>
 				<!-- <li><a href="#">Profit &amp; Loss</a></li>
 				<li><a href="#">Balance Sheet</a></li>
 				<li><a href="#">Client Balance</a></li>
@@ -129,7 +134,7 @@
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 					<li><a href="${appPath}/payrollReport">Associate ROI</a></li>
 					<li><a href="${appPath}/payrollAllBalanceReport">All Associate ROI</a></li>
-<%-- 					<li><a href='${appPath}/campaignStats'>Campaign Reports</a></li> --%>
+					<li><a href='${appPath}/campaignStats'>Campaign Reports</a></li>
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>

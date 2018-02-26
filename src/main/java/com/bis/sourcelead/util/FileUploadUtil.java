@@ -22,13 +22,23 @@ import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrgStorageDetailDTO;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -112,6 +122,11 @@ public class FileUploadUtil {
 				fileInfoList.addAll(list);
 		} catch (Exception e) {
 			e.printStackTrace();
+			try {
+				Files.move(file.toPath(), inFile.toPath());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		return fileInfoList;
 	}
@@ -140,7 +155,7 @@ public class FileUploadUtil {
 					FileInfo fileInfo = new FileInfo();
 					// fileInfo.setDate(new
 					// Date(file.toFile().lastModified()).toString());
-					fileInfo.setContentType(extenstion.equalsIgnoreCase(".doc")
+					fileInfo.setContentType(extenstion.equalsIgnoreCase(".doc") || extenstion.equalsIgnoreCase(".docx")
 							? "application/msword"
 							: "");
 					fileInfo.setTempFolderName("temp-files" + time1);
@@ -219,7 +234,7 @@ public class FileUploadUtil {
 		object.getClass().getMethod("setUploadedFileInfo", List.class).invoke(object, uploadedFileInfo);
 	}
 	
-	public static String getResumeZipFileName(String staticPath, HttpServletRequest request, String uploadid, boolean failed) {
+	public static String getResumeZipFileName(String staticPath, long orgId, long orgLocationId, String uploadid, boolean failed) {
 		File file = null;
 		FileOutputStream fos = null;
 		ZipOutputStream zos = null;
@@ -227,17 +242,7 @@ public class FileUploadUtil {
 			file = File.createTempFile("temp/"+(failed ? "failed" : "existed")+"-", ""+ uploadid + ".zip");
 			fos = new FileOutputStream(file);
 			zos = new ZipOutputStream(fos);
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			long orgId = 0, orgLocationId = 0;
-			if (org != null) {
-				orgId = org.getId();
-			}
-			if (loginOrgLocation != null) {
-				orgLocationId = loginOrgLocation.getId();
-			}
-
+			
 			File folder = new File(staticPath, orgId+"/"+orgLocationId+"/resumes-"+(failed ? "failed" : "existed")+"-"+uploadid);
 			if(!folder.exists() || folder.list().length == 0) {
 				return "No "+(failed ? "Failed" : "Duplicate")+" Resumes Found";
@@ -275,5 +280,119 @@ public class FileUploadUtil {
 		}	
 		return file == null ? "" : file.getAbsolutePath();
 	}
+
+	public static void processResumeFiles(Map<String, List<ResumeParserJsonUtil>> parsedList, 
+			List<FileInfo> fileInfoList, HttpSession session, String uploadid, String staticPath, 
+			SourceleadResumeParser sourceleadResumeParser,
+			CandidateService candidateService, CandidateResumesService candidateResumeService,
+			String country, OrgLocations loginOrgLocation, String sourceleadUrl, User user) {
+		List<ResumeParserJsonUtil> successList = new ArrayList<>();
+		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
+		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
+		parsedList.put("completed", successList);
+		parsedList.put("failed", failedList);
+		parsedList.put("existed", existedList);
+		int i = 1;
+		int count = fileInfoList.size();
+		for (FileInfo fileInfo : fileInfoList) {
+			if(session != null) {
+				session.setAttribute("uploadstatus" + uploadid,
+				session.getAttribute("uploadstatus" + uploadid) + "<br/>Processing " + fileInfo.getFileName());
+			}
+			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace(
+					"resumes",
+					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
+			ResumeParserJsonUtil resume = null;
+			try {
+				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country);
+				resume.setFileInfo(fileInfo);
+				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
+					throw new Exception("Email ID missing");
+				}
+				Candidate c = candidateService.findByCandidateEmail(resume.getEmail(), loginOrgLocation.getId());
+				boolean flag = false;
+				if (c != null && c.getId() > 0) {
+					CandidateResumes cr = candidateResumeService.getCandidateResumeByCandidateId(c.getId());
+					if (cr == null || cr.getFileURL() == null || cr.getFileURL().isEmpty())
+						flag = true;
+				}
+				if (c != null && c.getId() > 0 && !flag) {
+					fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-existed-" + uploadid));
+					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes-existed-" + uploadid);
+					addToResponse(0, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
+					existedList.add(resume);
+					continue;
+				} else if (flag) {
+					CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
+					List<FileInfo> fileInfoList1 = new ArrayList<>();
+					fileInfoList1.add(fileInfo);
+					candidateResumeDTO.setStaticPath(staticPath);
+					candidateResumeDTO.setFileInfo(fileInfoList1);
+					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c, null, loginOrgLocation);
+					addToResponse(2, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
+					successList.add(resume);
+				} else {
+					CandidateDTO candidateDto = new CandidateDTO();
+					candidateDto.setEmail(resume.getEmail());
+					candidateDto.setCandidateSkills(resume.getSkills());
+					Iterator<String> it = resume.getPhoneNumbers().iterator();
+					while (it.hasNext()) {
+						if (candidateDto.getMobilePhone() == null)
+							candidateDto.setMobilePhone(it.next());
+						else
+							candidateDto.setAlternateMobilePhone(it.next());
+					}
+					candidateDto.setFileName(fileInfo.getFileName());
+					candidateDto.setFileContentType(fileInfo.getContentType());
+					candidateDto.setFileUrl(fileInfo.getFileURL());
+					List<FileInfo> fileInfoList1 = new ArrayList<>();
+					fileInfoList1.add(fileInfo);
+					candidateDto.setFileInfo(fileInfoList1);
+					candidateDto.setStaticPath(staticPath);
+					String name1 = resume.getName();
+					candidateDto.setFirstName(name1.contains(".") ? name1.substring(0, name1.lastIndexOf(".")) : name1);
+					candidateDto.setLastName(name1.contains(".") ? name1.substring(name1.lastIndexOf(".") + 1) : "");
+					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
+					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					addToResponse(1, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
+					successList.add(resume);
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				fileInfo.setFileURL(fileInfo.getFileURL().replace("resumes", "resumes-failed-" + uploadid));
+				try {
+					moveFile(staticPath, fileInfo, "resumes-failed-" + uploadid);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				addToResponse(-1, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
+				failedList.add(resume);
+			}
+		}
+	}
+	
+
+	public static void addToResponse(int type, HttpSession session, String uploadid, ResumeParserJsonUtil resume,
+			FileInfo fileInfo, int count, int i, String sourceleadUrl, CandidateService candidateService) {
+		saveLogMessage(uploadid, "<br/><br/>"
+				+ (type == 1 ? "<span class='a'>Candidate (Resume) added"
+						: type == 2 ? "<span class='b'>Candidate Existed, resume attached "
+								: type == 0 ? "<span class='c'>Candidate Existed"
+										: "<span class='b'>Resume parsing failed")
+				+ "</span><br/>File Name: " + fileInfo.getFileName() + "<br/>Name: " + resume.getName() + "<br/>Email: "
+				+ (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null") ? "" : resume.getEmail()), candidateService);
+		saveLogMessage(uploadid,
+				"<br/><a href='"+ (sourceleadUrl.replace("/app", "")) + fileInfo.getFileURL() + "' target='_blank'>Click here to download the Resume</a>", candidateService);
+		if(session != null)
+			session.setAttribute("uploadstats" + uploadid, i + " of " + count + " Parsed...");
+	}
+	
+	public static void saveLogMessage(String uploadId, String message, CandidateService candidateService) {
+		CandidateImportLog c = new CandidateImportLog();
+		c.setMessage(message);
+		c.setUploadId(uploadId);
+		candidateService.storeCandidateImportLog(c);
+	}
+
 
 }

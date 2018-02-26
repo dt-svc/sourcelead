@@ -972,8 +972,10 @@ public class SubmissionsRestController {
 			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCity()).append(",").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
 		}else if(null != requirement.getState() && !"".equalsIgnoreCase(requirement.getState())){
 			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getState()).append(",").append(requirement.getCountry()).toString());	
-		}else{
+		}else if(null != requirement.getCountry() && !"".equalsIgnoreCase(requirement.getCountry())){
 			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).append("/").append(requirement.getCountry()).toString());
+		}else {
+			requirement.setSubmitToClientMailSubject(subjectSB.append("Applicants received for the").append(" ").append(requirement.getJobTitle()).toString());
 		}
 
 		if (requirement != null && requirement.getParentRequirement() != null) {

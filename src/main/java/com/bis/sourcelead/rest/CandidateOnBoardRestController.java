@@ -496,8 +496,11 @@ public class CandidateOnBoardRestController {
 			
 			for(RequirementOffers offers : candidateOffersList){
 				
-				StringBuilder candidateName = new StringBuilder();
+				CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndLocationId(offers.getSubmissionId().getCandidate().getId(), loginOrgLocation.getId());
 				
+				if(onboarding == null) {
+					StringBuilder candidateName = new StringBuilder();
+					
 					if(null != offers.getSubmissionId().getCandidate().getLastName()){
 						offers.setCandidateName(candidateName.append(offers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(offers.getSubmissionId().getCandidate().getLastName()).toString());
 					}else{
@@ -508,6 +511,7 @@ public class CandidateOnBoardRestController {
 					offers.setJobTitle(offers.getSubmissionId().getRequirement().getJobTitle());
 					
 					offersList.add(offers);
+				}
 			}
 			
 			}
@@ -885,10 +889,22 @@ public class CandidateOnBoardRestController {
 					 String[] savedTemplateIds = onBoardingTemplateDocumentsDTO.getSavedContractsAttcahments().split(",");
 					 for(int i=0; i < savedTemplateIds.length; i++){
 						 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
-						   templateDocument.setCandidateOnBoardingId(onBoarding);
-						    templateDocument.setUpdatedDate(CommonUtil.currentDate());
-						    templateDocument.setUpdatedBy(loginUser.getUserCode());
-		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(templateDocument);
+		                    
+		                    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+		       		        documents.setCandidateOnBoardingId(onBoarding);
+		       		       
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+	          	            documents.setFileURL(templateDocument.getFileURL());
+			       		    documents.setDocumentType(templateDocument.getDocumentType());
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
 					 
 					 }
 					 
@@ -923,10 +939,21 @@ public class CandidateOnBoardRestController {
 					 String[] savedTemplateIds = onBoardingTemplateDocumentsDTO.getSavedFormsAttcahments().split(",");
 					 for(int i=0; i < savedTemplateIds.length; i++){
 						 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
-						    templateDocument.setCandidateOnBoardingId(onBoarding);
-		       		        templateDocument.setUpdatedDate(CommonUtil.currentDate());
-		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
-		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(templateDocument);
+						    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+		       		        documents.setCandidateOnBoardingId(onBoarding);
+		       		       
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+	          	            documents.setFileURL(templateDocument.getFileURL());
+			       		    documents.setDocumentType(templateDocument.getDocumentType());
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
 					 
 					 }
 					 
@@ -961,11 +988,21 @@ public class CandidateOnBoardRestController {
 					 for(int i=0; i < savedTemplateIds.length; i++){
 						 OnBoardingTemplateDocuments templateDocument = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsById(Long.valueOf(savedTemplateIds[i]));
 						   
-						 templateDocument.setCandidateOnBoardingId(onBoarding);
-		       		      
-		                    templateDocument.setUpdatedDate(CommonUtil.currentDate());
-		                    templateDocument.setUpdatedBy(loginUser.getUserCode());
-		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(templateDocument);
+						    OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
+		       		        documents.setCandidateOnBoardingId(onBoarding);
+		       		       
+	          	            documents.setFileName(templateDocument.getFileName());
+	          	            documents.setFileContentType(templateDocument.getFileContentType());
+	          	            documents.setDocumentStatus(OnboardStatus.NEW);
+	          	            documents.setFileURL(templateDocument.getFileURL());
+			       		    documents.setDocumentType(templateDocument.getDocumentType());
+		                    documents.setStatus(Constants.CANDIDATE_ACTIVE);
+		                    documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		                    documents.setCreatedDate(CommonUtil.currentDate());
+		                    documents.setCreatedBy(loginUser.getUserCode());
+		                    documents.setUpdatedDate(CommonUtil.currentDate());
+		                    documents.setUpdatedBy(loginUser.getUserCode());
+		                    onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
 					 
 					 }
 				}

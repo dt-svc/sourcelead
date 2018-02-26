@@ -231,7 +231,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 			    		if(opt.resourceStatus == 'Waiting For Approval' || opt.resourceStatus == 'On hold'){
 			    			
 			    			if(opt.resourceStatus == 'On hold'){
-			    			  result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>&nbsp;|&nbsp;";
+			    			  result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>&nbsp;|&nbsp;";
 			    			}
 			    			result = result + '<a href="javascript:void(0)" onclick="acceptNewAssociate(\''+opt.requestUUID+'\',\''+requestType+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectNewAssociate(\''+opt.requestUUID+'\',\''+opt.roleName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
@@ -242,7 +242,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 				    		
 			    		}else{
 			    			if(opt.resourceStatus == 'Rejected'){
-			    				result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
+			    				result = result +"<i class='glyphicon glyphicon-comment colB edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
 			    			}else{
 			    				result = result + '<b>'+opt.resourceStatus+'</b>';

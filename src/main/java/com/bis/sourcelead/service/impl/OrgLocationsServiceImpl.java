@@ -265,6 +265,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 					clientOrgLocations.setTimezone(timezone);
 					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				} 
+			}else {
+				clientOrgLocations.setTimezone(orgLocations.getTimezone());
 			}
 			
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
@@ -368,5 +370,15 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long userId)
 	{
 		return orgLocationsDao.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(userId);
+	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception {
+		return orgLocationsDao.getAllRegisteredOrgLocationsExceptLoggedInLocation(orgLocationId, orgId);
+	}
+
+	@Override
+	public Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception {
+		return orgLocationsDao.getRegisteredOrgLoctionsCountByOrgId(orgId);
 	}
 }

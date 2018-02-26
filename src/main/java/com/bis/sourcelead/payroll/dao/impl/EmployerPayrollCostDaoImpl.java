@@ -104,12 +104,12 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		if (employerPayrollCostDTO != null && employerPayrollCostDTO.getLength() > 0) {
 			queryObj.setFirstResult(employerPayrollCostDTO.getStart());
 			queryObj.setMaxResults(employerPayrollCostDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
 		employerPayrollCostList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -136,7 +136,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<EmployerPayrollCost> empCostList = null;
 		String query = "from EmployerPayrollCost empPayroll  left join fetch empPayroll.orgLocationId where empPayroll.employeeId =:empId";
-	    empCostList = session.createQuery(query).setString("empId", EmpId).setCacheable(true).list();
+	    empCostList = session.createQuery(query).setString("empId", EmpId).list();
 		if(empCostList != null && empCostList.size() >0)
 		{
 			return empCostList.get(0);
@@ -150,7 +150,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(ep.version)  FROM EmployerPayrollCost ep where ep.orgLocationId.id =:orgLocationId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).list();
 		Integer count = 0;
 		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0);

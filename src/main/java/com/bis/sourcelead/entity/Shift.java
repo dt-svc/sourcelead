@@ -21,17 +21,14 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "SHIFT")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "shift")
-
 public class Shift {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-//	@Column(columnDefinition = "BINARY(16)")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORGLOCATION_ID")        
     private OrgLocations orgLocations;
@@ -68,13 +65,16 @@ public class Shift {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "SHIFT_UUID")
+	private String shiftUUID;
 
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -199,6 +199,14 @@ public class Shift {
 		this.updatedBy = updatedBy;
 	}
 
-	
-	
+	public String getShiftUUID()
+	{
+		return shiftUUID;
+	}
+
+	public void setShiftUUID(String shiftUUID)
+	{
+		this.shiftUUID = shiftUUID;
+	}
+
 }

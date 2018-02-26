@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectApproverHierarchy")
 public class ProjectApproverHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -38,18 +37,18 @@ public class ProjectApproverHierarchy implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "PROJECT_CLIENTS_ID")
     private ProjectClients projectClientsId;
  	
@@ -71,7 +70,7 @@ public class ProjectApproverHierarchy implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;

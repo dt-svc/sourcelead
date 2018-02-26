@@ -20,7 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
@@ -310,20 +310,26 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+
 		if(addUserDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
 				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				UserCustomFieldData userCustomFields = new UserCustomFieldData();
+					UserCustomFieldData userCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						userCustomFields = userCustomFieldDataService.getUserCustomFieldDataById(customFields.getEntityId());
+					}else {
+						userCustomFields = new UserCustomFieldData();
+					}
 				userCustomFields.setUser(user1);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				 userCustomFields.setOrglocationsFormFields(orgFormField);
-				 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				userCustomFields.setOrglocationsFormFields(orgFormField);
+				userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
 				}
 				
 			}	
 		}
+		
 		
 		
 		//for updating cosultantUserId in candidate
@@ -333,6 +339,7 @@ public class UserServiceImpl implements UserService {
 				candidate.setConsultantUser(user1);
 				candidate.setUpdatedBy(loginuser.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidate.setIsAssociate(Constants.YES);
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
@@ -349,6 +356,7 @@ public class UserServiceImpl implements UserService {
 				
 			}else{
 				candidate.setConsultantUser(user);
+				candidate.setIsAssociate(Constants.YES);
 				candidateService.addCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}
@@ -1244,11 +1252,11 @@ public class UserServiceImpl implements UserService {
 				BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 				for (String keywd : anyKeyWordArray) {
 					BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-					ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getUsersMatchQueryBuilderList(keywd);
+					ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getUsersQueryBuilderList(keywd);
 
-					if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-						for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-							anyBoolSubQueryBuilder.should(matchQueryBuilder);
+					if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+						for (QueryBuilder QueryBuilder : QueryBuilderList) {
+							anyBoolSubQueryBuilder.should(QueryBuilder);
 						}
 						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 					}

@@ -13,7 +13,9 @@ height: 225px;
 }
 .profile_details h4 {width: 68%;}
 ul.can-perdt li span { max-width: 80%;}
-
+ul.can-perdt li {
+clear:both;
+}
  </style>
 
 <script>
@@ -182,7 +184,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.fileUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
 				 result = result +'                 </div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -203,7 +205,20 @@ function requirementProfile(requirementUUID){
 					 }
 				 
 				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' - '+maxRate+' '+rateType+' '+currencyCode+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
+				 
+				 
+				 if(json.locationsList != null){
+					 result = result +'<li><i class="fa fa-map-marker pull-left"></i>';
+					 result = result +'<ul class="list-unstyled list-inline joblocations pull-left">';
+	 					for(var k=0; k<json.locationsList.length; k++){
+	 						result = result +'<li>'+json.locationsList[k]+'</li>';
+	 					}
+	 					result = result +'</ul>';
+	 					result = result +'</li>';
+	 				}
+				 
+				 
+// 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 				 result = result +'                      </ul>';

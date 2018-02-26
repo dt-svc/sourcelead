@@ -21,7 +21,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "DEPARTMENT")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="department")
 public class Department implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -31,7 +30,7 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;

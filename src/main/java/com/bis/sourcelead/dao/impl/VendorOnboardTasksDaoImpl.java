@@ -45,7 +45,7 @@ public class VendorOnboardTasksDaoImpl implements VendorOnboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardTasks tasks left join fetch tasks.vendorOnboardingTemplateId where tasks.vendorOnboardingTemplateId.id = :templateId "
 	    		+ " and tasks.status = '1' ";
-	    List<VendorOnboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).setCacheable(true).list();
+	    List<VendorOnboardTasks> tasksList = session.createQuery(query.toString()).setLong("templateId", templateId).list();
         return tasksList;
 	}
 
@@ -72,7 +72,7 @@ public class VendorOnboardTasksDaoImpl implements VendorOnboardTasksDao{
 	@Transactional
 	public VendorOnboardTasks getVendorOnboardTasksByTaskId(Long Id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<VendorOnboardTasks> vendorOnboardTasks = session.createQuery("from VendorOnboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<VendorOnboardTasks> vendorOnboardTasks = session.createQuery("from VendorOnboardTasks tasks where tasks.id =:id" ).setLong( "id", Id ).list();
 		if (vendorOnboardTasks.size() > 0) {
 			return vendorOnboardTasks.get(0);
 		} else {
@@ -89,7 +89,7 @@ public class VendorOnboardTasksDaoImpl implements VendorOnboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardTasks tasks left join fetch tasks.vendorOnboardingTemplateId where tasks.vendorOnboardingTemplateId.id IN (:templateIdsList) "
 	    		+ " and tasks.status = '1' ";
-	    List<VendorOnboardTasks> tasksList = session.createQuery(query.toString()).setParameterList("templateIdsList", templateIdsList).setCacheable(true).list();
+	    List<VendorOnboardTasks> tasksList = session.createQuery(query.toString()).setParameterList("templateIdsList", templateIdsList).list();
         return tasksList;
 	}
 
@@ -101,7 +101,7 @@ public class VendorOnboardTasksDaoImpl implements VendorOnboardTasksDao{
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardTasks tasks left join fetch tasks.vendorOnboardingId where tasks.vendorOnboardingId.id = :vendorOnboardingId "
 	    		+ " and tasks.status = '1' ";
-	    List<VendorOnboardTasks> tasksList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).setCacheable(true).list();
+	    List<VendorOnboardTasks> tasksList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).list();
         return tasksList;
 	}
 
@@ -111,7 +111,7 @@ public class VendorOnboardTasksDaoImpl implements VendorOnboardTasksDao{
 	public Integer getTemplateTasksCountByTemplateId(Long templateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query ="select count(*) from VendorOnboardTasks tasks where tasks.vendorOnboardingTemplateId.id = :templateId ";
+		String query ="select count(*) from VendorOnboardTasks tasks where tasks.vendorOnboardingTemplateId.id = :templateId and  tasks.status = '1'";
 		List<Long> tasksCount = session.createQuery(query.toString()).setLong("templateId", templateId).list();
 			Integer count = 0;
 			if(tasksCount != null && !tasksCount.isEmpty()){

@@ -222,7 +222,7 @@ public class ExpensesController {
 			   isSahReopened = true;
 		     }
 		     model.addObject("isSahReopened", isSahReopened);	
-		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser);
+		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser,orgLoc);
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			

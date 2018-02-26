@@ -97,7 +97,7 @@ public class OrgDaoImpl implements OrgDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug("findOrgByID start");
-		List<Org> orgList = session.createQuery("from Org where id=:id" ).setLong( "id", id ).setCacheable(true).list();
+		List<Org> orgList = session.createQuery("from Org where id=:id" ).setLong( "id", id ).list();
 		return orgList.get(0);
 		}
 		
@@ -180,9 +180,21 @@ public class OrgDaoImpl implements OrgDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Criteria crit = session.createCriteria(Org.class);
-		List<Org> orgList = crit.setCacheable(true).list();
+		List<Org> orgList = crit.list();
 		return orgList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Org> getOpenJobsOrgs() throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Org> orgList;
+		Criteria crit = session.createCriteria(Org.class);
+		orgList = crit.setMaxResults(5).list();
+		return orgList;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -192,7 +204,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Org> orgList;
 		logger.debug("getOrgByOrgCode start");
-		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).setCacheable(true).list();
+		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).list();
 		logger.debug("getOrgByOrgCode end");
 		 
 		if (orgList != null && orgList.size() > 0) {
@@ -206,7 +218,7 @@ public class OrgDaoImpl implements OrgDao {
         boolean isWebSiteFound = false;
         Session session = this.sessionFactory.getCurrentSession();
         String query = "from Org org where org.webSite = :host";
-         List<Org> orglist = session.createQuery(query.toString()).setString("host", host).setCacheable(true).list();
+         List<Org> orglist = session.createQuery(query.toString()).setString("host", host).list();
             if (orglist != null && orglist.size() >0) {
                 isWebSiteFound = true;
             }
@@ -228,7 +240,7 @@ public class OrgDaoImpl implements OrgDao {
 	    		+" where orl.responderLocationId.id = :orgLocationId))";
 	        
 	        
-	         List<Org> orglist = session.createQuery(query.toString()).setString("clientName", clientName).setString("responderType", responderType).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	         List<Org> orglist = session.createQuery(query.toString()).setString("clientName", clientName).setString("responderType", responderType).setLong("orgLocationId", orgLocationId).list();
 	            if (orglist != null && !orglist.isEmpty()) {
 	            	isClientFound = true;
 	            }
@@ -250,7 +262,7 @@ public class OrgDaoImpl implements OrgDao {
 	    		+" where orl.responderLocationId.id = :orgLocationId))";
 	        
 	        
-	     return  session.createQuery(query.toString()).setString("clientName", clientName).setString("responderType", responderType).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	     return  session.createQuery(query.toString()).setString("clientName", clientName).setString("responderType", responderType).setLong("orgLocationId", orgLocationId).list();
 	}
 	
 	
@@ -274,10 +286,10 @@ public class OrgDaoImpl implements OrgDao {
 		if (!isNullOrEmpty(withoutWhitespace)) {
 			orgNameSubQuery = "and org.orgName LIKE :orgName";
 			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
-		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setString("orgName", withoutWhitespace + "%").setCacheable(true).list();
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setString("orgName", withoutWhitespace + "%").list();
 		}else{
 			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
-		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).list();
 		}
 		
 		if(orgsList.size() >= offset){
@@ -298,7 +310,7 @@ public class OrgDaoImpl implements OrgDao {
         Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Org org where org.orgName = :orgName ";
 		 
-		         List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
+		         List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).list();
 		            if (orglist != null && !orglist.isEmpty()) {
 		            	isOrgFound = true;
 		            }
@@ -312,7 +324,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Org org where org.orgName = :orgName ";
 		 
-	    List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).setCacheable(true).list();
+	    List<Org> orglist = session.createQuery(query.toString()).setString("orgName", orgName).list();
 		Org org1 = null;
 		         
 		if(orglist.size()>0){
@@ -388,6 +400,23 @@ public class OrgDaoImpl implements OrgDao {
 		
 		return userList;
 	}
+
+	@Override
+	@Transactional
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		if ("Others".equalsIgnoreCase(alphabet)) {
+			query = ("from Org org where org.orgName <= '@' or org.orgName >= '{'");
+		}
+		else {
+			query = ("from Org org where org.orgName like '" + alphabet + "%'");
+		}
+		List<Org> locationList = session.createQuery(query.toString()).list();
+		return locationList;
+	}
+	
 
 }
 

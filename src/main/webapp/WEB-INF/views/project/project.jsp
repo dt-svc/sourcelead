@@ -6,8 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
@@ -31,14 +30,6 @@
 }
 </style>
 
-<script>
-	$(document).ready(function() {
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
-	});
-</script>
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
@@ -128,7 +119,7 @@ function validateShortCode(){
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
-		<div id="loading"></div>
+		<div id="projectDetailsloading"></div>
 		
 		<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
@@ -328,7 +319,7 @@ function validateShortCode(){
 						
 						<div class="form-group" id="shortCodeDivId">
 							<label class="col-md-3"> Project Short Code <span
-								class="text-danger">*</span>
+								class="text-danger">* </span><i class='fa fa-info-circle' title='The internal unique code for the project'></i>
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
@@ -403,7 +394,7 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
-								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control" data-validation-optional="true"
+								<input type="text" value="" id="estimatedHours"  class="form-control" data-validation-optional="true"
 									data-validation="validate_Space validate_float validate_length length1-15" class="form-control" onblur="">
 							</div>
 						</div>
@@ -440,14 +431,14 @@ function validateShortCode(){
 					                  
 					                </select>
 					                </div>
-									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
+									<input type="text" value="" id="estimatedBudget"  class="form-control"
 										data-validation="validate_Space validate_float validate_length length1-15" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-3">Budget Approver</label>
+							<label class="col-md-3">Budget Approver <i class='fa fa-info-circle' title='The person who approves the budget for the project'></i></label>
 							<div class="col-md-9" id="chosen-budgetapprover">
 								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onchange="getBudgetApprover();">
 								<option value="">-- Select Budget Approver --</option>
@@ -473,7 +464,7 @@ function validateShortCode(){
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="row mt mb10">
-						<h5 class="col-md-1 paddingRight">Documents</h5>
+						<h5 class="col-md-1 paddingRight">Documents <i class='fa fa-info-circle' title='The project documents'></i></h5>
 						<div class="col-md-10 paddingLeft">
 						<input id="Button1" type="button" value="Add Document" onclick="addFileUpload()" class="btn btn-sm btn-primary" />
 						</div>
@@ -675,21 +666,17 @@ function getStatus(){
 		    var estimatedHours = document.getElementById("estimatedHours").value;
 		    
 		    
-		    if(formData.get("estimatedBudget") === "") {
-		    	formData.set("estimatedBudget","0");
-		    }
-		    if(formData.get("estimatedHours") === "") {
-		    	formData.set("estimatedHours","0");
-		    }
+// 		    if(formData.get("estimatedBudget") === "") {
+// 		    	formData.set("estimatedBudget","0");
+// 		    }
+// 		    if(formData.get("estimatedHours") === "") {
+// 		    	formData.set("estimatedHours","0");
+// 		    }
 		    
-		   /*  if(estimatedBudget === "") {
-		    	formData["estimatedBudget"] = "0";
-		    }
-		    if(estimatedHours === "") {
-		    	formData["estimatedHours"] = "0";
-		    } */
+		    	formData.append("estimatedBudget", estimatedBudget === "" ? "0" : estimatedBudget);
+		    	formData.append("estimatedHours", estimatedHours === "" ? "0" : estimatedHours);
 		    
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#projectDetailsloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
@@ -702,11 +689,12 @@ function getStatus(){
 								 $("#startDateStr").val(projects.startDateStr);
 								 $("#endDateStr").val(projects.endDateStr);
 								 
-								 $("#loading").removeAttr("style");
+								 $("#projectDetailsloading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 document.getElementById("assignedMembers").removeAttribute("class");
 								 assignedMembers.href="#tab-b"; 
-								 assignedMembers.click();
+								 $("#assignedMembers").click();
+// 								 assignedMembers.click();
 
 						},
 					});
@@ -733,7 +721,7 @@ function getProjectDetails(){
 	if(projectId){
 		$("#FileUploadContainer").empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#projectDetailsloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
@@ -868,7 +856,7 @@ function getProjectDetails(){
       			   }
       			 
       			   
-      			   $("#loading").removeAttr("style");
+      			   $("#projectDetailsloading").removeAttr("style");
 		        
 	        },
 	    });  
@@ -1293,13 +1281,26 @@ function flatPercentageType(){
 	  
 </script>
 
+<!-- <script type="text/javascript">
+    $(function () {
+        $("#endDate").bind("click", function () {
+            $("#status")[0].selectedIndex = 0;
+        });
+    });
+</script> -->
 
   <script>
  /* function clearStartDate(){
 	$("#startDate").val("");
 	}; */ 
 function clearProjectEndDate(){
-	$("#endDate").val("");
-	};
-	
+		 $("#endDate").val("");
+		 $("#status").empty();
+		 $('#status').append('<option >Select Status</option>');
+		 $('#status').append('<option >In-Progress</option>');
+		 $('#status').append('<option >Not Started</option>');
+		 $('#status').append('<option >Completed</option>');
+		 $('#status').append('<option >On-Hold</option>');
+		 $('#status').append('<option >Dropped</option>');
+	}
 </script> 

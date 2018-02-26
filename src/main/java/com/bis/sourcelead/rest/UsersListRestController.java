@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -239,10 +241,21 @@ public class UsersListRestController {
 
 	/* this method is used to display the users list onload */
 	@RequestMapping(value = "/detDynamicUserList", method = RequestMethod.POST)
-	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,HttpServletRequest request) throws Exception {
+	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
+	    int sortColumnIndex = 1; //by default sorting using updated date
+		String sortColumnOrder = "asc"; //by default descending order
+		if(userRoleDto.getOrder() != null && !userRoleDto.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(userRoleDto.getOrder().get(0).get("column"));
+			sortColumnOrder = userRoleDto.getOrder().get(0).get("dir");
+		}
+		userRoleDto.setSortColumn(tableColumns[sortColumnIndex]);
+		userRoleDto.setSortOrder(sortColumnOrder);
+		
 		ResponseList<UserRoleDTO> response = new ResponseList<UserRoleDTO>();
 		List<UserRoleDTO> userRolesList = new ArrayList<>();
 			Long userRoleType ;
@@ -251,30 +264,30 @@ public class UsersListRestController {
 			}else{
 				 userRoleType = null;
 			}
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
 				for(UserRole role : rolesList.getData()){
-					UserRoleDTO userRoleDto = new UserRoleDTO();
+					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
 					
-					userRoleDto.setUserRoleName(role.getRoles().getDisplayName());
-					userRoleDto.setIsMailSent(role.getIsMailSent().toString());
+					userRoleDTO.setUserRoleName(role.getRoles().getDisplayName());
+					userRoleDTO.setIsMailSent(role.getIsMailSent().toString());
 					if(!isNullOrEmpty(role.getUser().getLastName())){
 						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
-						userRoleDto.setUserName(userName.toString());
+						userRoleDTO.setUserName(userName.toString());
 						
 					}else{
-						userRoleDto.setUserName(role.getUser().getFirstName());
+						userRoleDTO.setUserName(role.getUser().getFirstName());
 					}
-					userRoleDto.setUserEmail(role.getUser().getEmail());
-					userRoleDto.setUserId(role.getUser().getId());
-					userRoleDto.setUserCode(role.getUser().getUserCode());
-					userRoleDto.setUserState(role.getUserState().toString());
+					userRoleDTO.setUserEmail(role.getUser().getEmail());
+					userRoleDTO.setUserId(role.getUser().getId());
+					userRoleDTO.setUserCode(role.getUser().getUserCode());
+					userRoleDTO.setUserState(role.getUserState().toString());
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
-							userRoleDto.setFileUrl(role.getUser().getFileUrl());
+							userRoleDTO.setFileUrl(role.getUser().getFileUrl());
 						}
 					}
-					userRoleDto.setMobilePhone(role.getUser().getMobilePhone());
+					userRoleDTO.setMobilePhone(role.getUser().getMobilePhone());
 					if(role.getReportingManager() !=null){
 						StringBuilder reportingManagerName = new StringBuilder();
 						if(role.getReportingManager().getLastName() !=null && !"".equalsIgnoreCase(role.getReportingManager().getLastName())){
@@ -282,15 +295,15 @@ public class UsersListRestController {
 						}else{
 							reportingManagerName.append(role.getReportingManager().getFirstName());
 						}
-						userRoleDto.setReportingManagerName(reportingManagerName.toString());
+						userRoleDTO.setReportingManagerName(reportingManagerName.toString());
 					}
 					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(role.getUser().getId(),orgLocations.getId());
 					if(emp !=null){
 						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
-							userRoleDto.setEmployeMentType(emp.getUserEmploymentType());
+							userRoleDTO.setEmployeMentType(emp.getUserEmploymentType());
 						}
 					}
-					userRolesList.add(userRoleDto);
+					userRolesList.add(userRoleDTO);
 				}
 				response.setRecordsFiltered(rolesList.getRecordsFiltered());
 				response.setRecordsTotal(rolesList.getRecordsTotal());
@@ -430,12 +443,12 @@ public class UsersListRestController {
 			BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : excludeKeyWordArray) {
 				BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
 
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						excludeBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 				}
@@ -451,11 +464,11 @@ public class UsersListRestController {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
@@ -470,11 +483,11 @@ public class UsersListRestController {
 			BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : allKeyWordArray) {
 				BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
 
-				if (null != matchQueryBuilderList && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						allBoolSubQueryBuilder.should(matchQueryBuilder);
+				if (null != QueryBuilderList && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						allBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 				}
@@ -600,31 +613,31 @@ public class UsersListRestController {
 		return keyWordList;
 	}
 
-	private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd) {
-		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
-		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
+	private ArrayList<QueryBuilder> getQueryBuilderList(String keywd) {
+		ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		QueryBuilderList.add(QueryBuilders.matchQuery("firstName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("lastName", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("email", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userType", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("ratePer", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", keywd));
+		QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
 
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			// QueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
 			// keywd));
 			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
 
-		return matchQueryBuilderList;
+		return QueryBuilderList;
 	}
 
 	/**
@@ -653,7 +666,7 @@ public class UsersListRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
-	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
+	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
 		String resultJson = null;
 
@@ -739,20 +752,23 @@ public class UsersListRestController {
 				 }
 			 }
 			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
-			 List<UserCustomFieldData> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(userId,formFieldId);
-			 Map<String,String> dataMap = new HashMap<>();
+			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,userId);
+			 Map<Long,String> dataMap = new HashMap<>();
 			 if(userData!= null && !userData.isEmpty()) {
-				 for(UserCustomFieldData userCustomData:userData) {
-					 String labelName = userCustomData.getOrglocationsFormFields().getLabelName();
-					 String labelData = userCustomData.getCustomFormFieldData();
-					 dataMap.put(labelName, labelData);
+				 for(Entry<Long, String[]> userCustomData:userData.entrySet()) {
+					String labelName = userCustomData.getValue()[0];
+					 String labelData = userCustomData.getValue()[1];
+					 Long id = userCustomData.getKey();
+					 StringBuilder keyValue =  new StringBuilder();
+					 keyValue.append(labelName).append("$").append(labelData);
+					 dataMap.put(id, keyValue.toString());
 					 userRole.setUserCustomFieldlabelNameAndValue(dataMap);
 				 	}
 			 	}
 			 }
 		 }
-		resultJson = toJSON(userRole);
-		return resultJson;
+		//resultJson = toJSON(userRole);
+		return userRole;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
@@ -1026,7 +1042,6 @@ public class UsersListRestController {
 				}
 
 			}
-
 			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
@@ -1149,7 +1164,7 @@ public class UsersListRestController {
 
 			List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByUserIdAndLocationId(userId,
 					orgLocations.getId());
-			if (null != teamMembersList) {
+			if (null != teamMembersList && !teamMembersList.isEmpty()) {
 				for (TeamMembers teamMembers : teamMembersList) {
 					teamMembers.setStatus("0");
 					teamMembers.setUpdatedBy(user.getUserCode());
@@ -1939,18 +1954,23 @@ public class UsersListRestController {
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			User updatedUser = userService.addUser(user);
 			
-			if(addUserDTO.getCustomFormData() != null){
+			if(addUserDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-					UserCustomFieldData userCustomFields = new UserCustomFieldData();
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0 ) {
+						UserCustomFieldData userCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							userCustomFields = userCustomFieldDataService.getUserCustomFieldDataById(customFields.getEntityId());
+						}else {
+							userCustomFields = new UserCustomFieldData();
+						}
 					userCustomFields.setUser(updatedUser);
-					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-					 userCustomFields.setOrglocationsFormFields(orgFormField);
-					 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-					 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					userCustomFields.setOrglocationsFormFields(orgFormField);
+					userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
 					}
 					
-				}
+				}	
 			}
 			
 			userRoleService.addUserRole(userRole);
@@ -2046,6 +2066,12 @@ public class UsersListRestController {
 				candidate.setSpocId(null);
 			}
 			
+			candidate.setFirstName(addUserDTO.getFirstName());
+			if(StringUtils.isNotBlank(addUserDTO.getLastName())){
+				candidate.setLastName(addUserDTO.getLastName());
+			}
+			
+			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
@@ -2121,12 +2147,12 @@ public class UsersListRestController {
 	
 	
 	@RequestMapping(value = "/getUserListForConnections", method = RequestMethod.POST)
-	public @ResponseBody List<UserRoleDTO> getUserListForConnections(
+	public @ResponseBody List<ConnectionsDTO> getUserListForConnections(
 			@RequestParam(value = "searchValue", required = false) String searchValue, 
 			@RequestParam(value = "offset", required = false) Integer offset,HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<UserRoleDTO> userRoleDTOList = new ArrayList<>();
+		List<ConnectionsDTO> userRoleDTOList = new ArrayList<>();
 		userRoleDTOList = userRoleService.getUserListForConnections(searchValue, offset, user.getId());
 		return userRoleDTOList;
 

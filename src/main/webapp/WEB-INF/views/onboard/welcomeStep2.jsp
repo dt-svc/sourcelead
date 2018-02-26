@@ -70,7 +70,7 @@
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
@@ -89,7 +89,7 @@
 				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='${sourceleadUrl}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -138,7 +138,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space"  id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
+				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space" field-name="Street Address 1" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
 			  </div>
 			</div>
 		</div>

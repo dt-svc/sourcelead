@@ -73,7 +73,7 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 		
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' or (ac.defaultCategory = '1')"; 
-		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return assetCategoryList;
 	}
 
@@ -84,7 +84,7 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	public AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' and ac.id = :categoryId"; 
-		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", catLocationId).setLong("categoryId", categoryId).setCacheable(true).list();
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", catLocationId).setLong("categoryId", categoryId).list();
 		return assetCategoryList.get(0);
 	}
 	
@@ -93,7 +93,7 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	public AssetCategory getAssetCategoryByCategoryId(Long categoryId) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from AssetCategory ac where ac.status = '1' and ac.id = :categoryId"; 
-		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("categoryId", categoryId).setCacheable(true).list();
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setLong("categoryId", categoryId).list();
 		return assetCategoryList.get(0);
 	}
 
@@ -104,7 +104,7 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	public Boolean validateCategoryName(String categoryName, Long orgLocationId) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' and ac.categoryName = :categoryName"; 
-		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setString("categoryName", categoryName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setString("categoryName", categoryName).setLong("orgLocationId", orgLocationId).list();
          boolean isCategoryFound = false;
 		if (assetCategoryList != null && !assetCategoryList.isEmpty()) {
          	isCategoryFound = true;
@@ -122,10 +122,10 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 		List<AssetCategory> assetCategoryList = null;
 		if(name.equals("Laptop") || name.equals("Desktop") || name.equals("Others")){
 		 query = "from AssetCategory ac where ac.status = '1' and ac.categoryName =:name";
-		 assetCategoryList = session.createQuery(query.toString()).setString("name", name).setCacheable(true).list();
+		 assetCategoryList = session.createQuery(query.toString()).setString("name", name).list();
 		}else{
 		 query = "from AssetCategory ac where ac.orgLocations.id =:orgLocationId and ac.status = '1' and ac.categoryName =:name";
-		 assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("name", name).setCacheable(true).list();
+		 assetCategoryList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("name", name).list();
 		}
 		AssetCategory category = null;
 		if (assetCategoryList != null && assetCategoryList.size() > 0) {

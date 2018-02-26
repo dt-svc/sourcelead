@@ -77,7 +77,7 @@
 	    	<i class="fa fa-check-circle"></i><span id="relMsgDiv"></span>
 	    </div>
          <div class="clearfix">
-          <h2 onclick="opennetwork();">Open Network</h2>
+          <h2 onclick="opennetwork();">Release To Open Networks</h2>
           <div class="content clearfix" >
             <div class="row">
               <div class="col-md-6">
@@ -178,10 +178,8 @@
             <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
         
 
-            <div class="share mt10">
-		   	<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('linkedin');"><i class="fa-2x fa fa-linkedin-square"></i></a>
-			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('twitter');"><i class="fa-2x fa fa-twitter-square paddingLeft paddingRight"></i></a>				  
-			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('facebook');"><i class="fa-2x fa fa-facebook-square"></i></a>
+            <div class="share mt10"> 
+			<div class="addthis_inline_share_toolbox_g28q" data-url="${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"></div>
 			</div>
             </div>
 
@@ -191,6 +189,9 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Public / Crowdsourcing  is mandatory</span>
+	           <c:if test="${!empty jobRecommendations}">
+	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
+	           </c:if>
            	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
             <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'">
           </div>
@@ -202,7 +203,9 @@
       <div class="form-footer clearfix row mt" id="releaseToVendors" style="display: block">
         <div class="col-lg-12">
           <div class="pull-right">
-         
+               <c:if test="${!empty jobRecommendations}">
+	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
+	           </c:if>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
@@ -255,7 +258,9 @@ function getPercentageValue(){
 <script> 
 $(document).ready(function(){
 	getVendorLists();
-	var referLink = "${sourceleadUrl}/openJobsPublicPage?requirementUUID=${requirementUUID}"
+	 var sourceleadShareUrl ='${sourceleadShareUrl}';
+	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
+			
 	$("#referralLink").val(referLink);
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){
@@ -342,6 +347,8 @@ function releaseTo(){
 	    var isCrowdScourcingGlobel = $("#isCrowdScourcingGlobel").val();
 	    var releaseRequirement = true;
 	    var percentageRewardValue = '';
+	    var jobRecommendations = '${jobRecommendations}';
+	    var requirementUUID = '${requirementUUID}';
 	    
 	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	 	    	$('span.jquery_form_error_message').hide();
@@ -351,11 +358,19 @@ function releaseTo(){
 	 			$("#releaseBtn").prop('value', 'Processing');
 	 		    var sourceleadUrl ='${sourceleadUrl}';
 	 		    var requirementId = '${requirementId}';
+	 		    
 	 		 	 $.ajax({
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
-	 		            	location.replace(sourceleadUrl+"/jobs");	 		            },
+	 		            	
+ 		            	if(jobRecommendations){
+	 		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+ 		     		    }else{
+ 		     		    	   location.replace(sourceleadUrl+"/jobs");
+ 	     		    	 } 		            
+	 		            	
+	 		            },
 	 		    });  
 	 	    }else{
 	 	    	$('span.jquery_form_error_message').show();
@@ -409,7 +424,8 @@ function releaseToOneVendor(vendorcheckboxId){
      		}else{
      			 document.getElementById("openNetworkRelease").style.display="";
      		}
-     		
+     		  var jobRecommendations = '${jobRecommendations}';
+     		  var requirementUUID = '${requirementUUID}';
        	    
 	        if(isContinue){
 	       	     $.ajax({
@@ -420,7 +436,12 @@ function releaseToOneVendor(vendorcheckboxId){
 		    			$("#relTocro").css({ display: "block" });
 						$("#relMsgDiv").html("Success!! Job Release To Open Network");
 		       			relMsgFadeinFunction();
-		       			location.replace(sourceleadUrl+"/jobs");
+		       			
+		       		 if(jobRecommendations){
+		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+		     		    }else{
+		     		    	location.replace(sourceleadUrl+"/jobs");
+	     		     }
 			        	
 			        },
 			    });  
@@ -1325,5 +1346,5 @@ $('#selectorReleaseMsg').delay(2000).fadeOut('slow');
 .footer-area {
 display: none;}
 </style>
-
+<script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

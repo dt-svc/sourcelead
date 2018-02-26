@@ -275,6 +275,15 @@ public class SubmissionsRateRestController {
 		return "success";
 	}
 	
+	
+	@RequestMapping(value = "/ws/getRateHistoryBySubmissionIdPublic", method = RequestMethod.POST)
+	public @ResponseBody String getRateHistoryBySubmissionIdPublic(@RequestParam(value = "submissionId", required = false) Long submissionId,
+															 @RequestParam(value = "candidateId", required = false) Long candidateId,
+															 @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+															 HttpServletRequest request) throws Exception {
+		return commonUtil.toJSON(getNegotiationListHistoryCommon(submissionId, candidateId, orgLocationId, request ));
+	}
+	
 
 	
 	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
@@ -282,136 +291,7 @@ public class SubmissionsRateRestController {
 															 @RequestParam(value = "candidateId", required = false) Long candidateId,
 															 @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 															 HttpServletRequest request) throws Exception {
-		 
-		User logInUsers = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
-		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
-		String expectedRateRN = "";
-		String expectedRateTypeRN = "";
-		String expectedRatePerRN = "";
-		OrgLocations orgLocations = requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getOrgLocationId();
-		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		if(null != requirementSubmissionTemplateFields){
-				if(null  != requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement()){
-					requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
-				}
-				
-				requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
-				requirementRateSubmission.setExpectedRateType(requirementSubmissionTemplateFields.getExpectedRateType());
-				requirementRateSubmission.setExpectedRatePer(requirementSubmissionTemplateFields.getExpectedRatePer());
-				
-				expectedRateRN = requirementSubmissionTemplateFields.getExpectedCTC();
-				expectedRateTypeRN = requirementSubmissionTemplateFields.getExpectedRateType();
-				expectedRatePerRN = requirementSubmissionTemplateFields.getExpectedRatePer();
-				
-				requirementRateSubmission.setExpectedRateRN(expectedRateRN);
-				requirementRateSubmission.setExpectedRateTypeRN(expectedRateTypeRN);
-				requirementRateSubmission.setExpectedRatePerRN(expectedRatePerRN);
-				
-				if(null != requirementSubmissionTemplateFields.getExpectedCTC() &&  null != requirementSubmissionTemplateFields.getExpectedRatePer()){
-					StringBuilder rateAndType = new StringBuilder();
-					requirementRateSubmission.setRateAndType(rateAndType.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());	
-				}
-				User proposedByUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
-				if(null != proposedByUser.getFirstName() && null != proposedByUser.getLastName() && !"".equalsIgnoreCase(proposedByUser.getFirstName()) && !"".equalsIgnoreCase(proposedByUser.getLastName())){
-					 StringBuilder sb = new StringBuilder();
-					 requirementRateSubmission.setProposeByName(sb.append(proposedByUser.getFirstName()).append(" ").append(proposedByUser.getLastName()).toString());
-				}else{
-					requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
-				}
-				//DateFormat date = LoginSessionController.DATEFORMAT;
-				String commonDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmissionTemplateFields.getCreatedDate());
-				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
-				requirementRateSubmission.setIsNeedApplicantPermit(requirementSubmissionTemplateFields.getRequirementSubmission().getNeedApplicantPermit());
-		}
-		
-		//to get rate history of a requirement
-		List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,candidateId);
-		for(RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation : allSubmissionRateHistory){
-			
-			RequirementRateSubmissionNegotiation rate = allSubmissionRateHistory.get(allSubmissionRateHistory.size()-1);
-			if(null != rate){
-				if(null != rate.getCreatedBy() && "" != rate.getCreatedBy()){
-					requirementRateSubmissionNegotiation.setPreviouslyProposedBy("User");
-					if(rate.getRequirementsubmissionId().getCandidate() != null && rate.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && rate.getCreatedBy().equalsIgnoreCase(rate.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode())){
-						requirementRateSubmissionNegotiation.setPreviouslyProposedBy("Candidate");
-					}
-				}else{
-					requirementRateSubmissionNegotiation.setPreviouslyProposedBy("Candidate");
-				}
-			}
-		
-			requirementRateSubmissionNegotiation.setRateStage(requirementRateSubmissionNegotiation.getRateStage());
-			if(null != requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement()){
-				requirementRateSubmissionNegotiation.setRequirementName(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getJobTitle());	
-			}
-			requirementRateSubmissionNegotiation.setRequirementRate(requirementRateSubmissionNegotiation.getExpectedRate());
-			requirementRateSubmissionNegotiation.setExpectedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
-			
-			/*if(requirementRateSubmissionNegotiation.getCreatedBy() != null && "" != requirementRateSubmissionNegotiation.getCreatedBy()){
-	        	 User proposedUser = userService.getUserByUserCode(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getCreatedBy());
-	        	 requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName()+" "+proposedUser.getLastName());
-			}else{
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				if(candidate.getLastName() != null){
-					requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName()+" "+candidate.getLastName());
-				}else{
-					requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName());
-				}
-			}*/
-			//DateFormat standardFormat = new SimpleDateFormat( "dd-MM-yyyy");
-			String commonDateFormat = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementRateSubmissionNegotiation.getCreatedDate());
-			requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
-			
-			if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){
-				if(null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
-					StringBuilder candiSB = new StringBuilder();
-					requirementRateSubmissionNegotiation.setProposeByName(candiSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
-				}else{
-					requirementRateSubmissionNegotiation.setProposeByName(requirementSubmissionTemplateFields.getFirstName());
-				}
-				
-			}else if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CLIENT || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.VENDOR || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
-				User proposedUser = userService.getUserDetailsByUserCode(requirementRateSubmissionNegotiation.getCreatedBy());
-				if(null != proposedUser){
-					if(null != proposedUser.getLastName() && !"".equalsIgnoreCase(proposedUser.getLastName())){
-						StringBuilder proposedSB = new StringBuilder();
-						requirementRateSubmissionNegotiation.setProposeByName(proposedSB.append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).toString());
-					}else{
-						requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
-					}
-				}
-			}
-			
-			requirementRateSubmissionNegotiation.setInitiatorOrgLocationIdStr(requirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
-			if( requirementRateSubmissionNegotiation.getExpectedRate() != null && requirementRateSubmissionNegotiation.getExpectedRateType() != null){
-				StringBuilder rateTypeSB = new StringBuilder();
-				requirementRateSubmissionNegotiation.setRateAndType(rateTypeSB.append(requirementRateSubmissionNegotiation.getExpectedRate()).append(" ").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());	
-			}
-			
-			if(requirementRateSubmissionNegotiation.getCreatedBy() != null && logInUsers != null && requirementRateSubmissionNegotiation.getCreatedBy().equalsIgnoreCase(logInUsers.getUserCode())){
-				requirementRateSubmissionNegotiation.setIsLastProposedUser("Y");
-			}else{
-				requirementRateSubmissionNegotiation.setIsLastProposedUser("N");
-			}
-			
-			
-			if(null != requirementRateSubmissionNegotiation.getRequirementsubmissionId() && null != requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus()){
-				requirementRateSubmissionNegotiation.setSubmissionRateStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
-			}
-			
-			requirementRateSubmissionNegotiation.setIsNeedApplicantPermit(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getNeedApplicantPermit());
-			requirementRateSubmissionNegotiation.setSubmissionStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
-			
-			requirementRateSubmissionNegotiation.setExpectedRateRN(expectedRateRN);
-			requirementRateSubmissionNegotiation.setExpectedRateTypeRN(expectedRateTypeRN);
-			requirementRateSubmissionNegotiation.setExpectedRatePerRN(expectedRatePerRN);
-		}
-		
-		if(allSubmissionRateHistory.isEmpty()){
-			allSubmissionRateHistory.add(requirementRateSubmission);
-		}
-		 return commonUtil.toJSON(allSubmissionRateHistory);
+		 return commonUtil.toJSON(getNegotiationListHistoryCommon(submissionId, candidateId, orgLocationId, request ));
 	}
 	
 	
@@ -658,6 +538,138 @@ public class SubmissionsRateRestController {
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations, rejectreason, null, null, submissionId);
 			return "success";
+		}
+	 
+	 private List<RequirementRateSubmissionNegotiation> getNegotiationListHistoryCommon(Long submissionId, Long candidateId, Long orgLocationId, HttpServletRequest request ) throws Exception {
+			User logInUsers = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+			RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
+			String expectedRateRN = "";
+			String expectedRateTypeRN = "";
+			String expectedRatePerRN = "";
+			OrgLocations orgLocations = requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getOrgLocationId();
+			//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+			if(null != requirementSubmissionTemplateFields){
+					if(null  != requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement()){
+						requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
+					}
+					
+					requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
+					requirementRateSubmission.setExpectedRateType(requirementSubmissionTemplateFields.getExpectedRateType());
+					requirementRateSubmission.setExpectedRatePer(requirementSubmissionTemplateFields.getExpectedRatePer());
+					
+					expectedRateRN = requirementSubmissionTemplateFields.getExpectedCTC();
+					expectedRateTypeRN = requirementSubmissionTemplateFields.getExpectedRateType();
+					expectedRatePerRN = requirementSubmissionTemplateFields.getExpectedRatePer();
+					
+					requirementRateSubmission.setExpectedRateRN(expectedRateRN);
+					requirementRateSubmission.setExpectedRateTypeRN(expectedRateTypeRN);
+					requirementRateSubmission.setExpectedRatePerRN(expectedRatePerRN);
+					
+					if(null != requirementSubmissionTemplateFields.getExpectedCTC() &&  null != requirementSubmissionTemplateFields.getExpectedRatePer()){
+						StringBuilder rateAndType = new StringBuilder();
+						requirementRateSubmission.setRateAndType(rateAndType.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());	
+					}
+					User proposedByUser = userService.getUserDetailsByUserCode(requirementSubmissionTemplateFields.getCreatedBy());
+					if(null != proposedByUser.getFirstName() && null != proposedByUser.getLastName() && !"".equalsIgnoreCase(proposedByUser.getFirstName()) && !"".equalsIgnoreCase(proposedByUser.getLastName())){
+						 StringBuilder sb = new StringBuilder();
+						 requirementRateSubmission.setProposeByName(sb.append(proposedByUser.getFirstName()).append(" ").append(proposedByUser.getLastName()).toString());
+					}else{
+						requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
+					}
+					//DateFormat date = LoginSessionController.DATEFORMAT;
+					String commonDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmissionTemplateFields.getCreatedDate());
+					requirementRateSubmission.setCreatedDateStr(commonDate.toString());
+					requirementRateSubmission.setIsNeedApplicantPermit(requirementSubmissionTemplateFields.getRequirementSubmission().getNeedApplicantPermit());
+			}
+			
+			//to get rate history of a requirement
+			List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,candidateId);
+			for(RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation : allSubmissionRateHistory){
+				
+				RequirementRateSubmissionNegotiation rate = allSubmissionRateHistory.get(allSubmissionRateHistory.size()-1);
+				if(null != rate){
+					if(null != rate.getCreatedBy() && "" != rate.getCreatedBy()){
+						requirementRateSubmissionNegotiation.setPreviouslyProposedBy("User");
+						if(rate.getRequirementsubmissionId().getCandidate() != null && rate.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && rate.getCreatedBy().equalsIgnoreCase(rate.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode())){
+							requirementRateSubmissionNegotiation.setPreviouslyProposedBy("Candidate");
+						}
+					}else{
+						requirementRateSubmissionNegotiation.setPreviouslyProposedBy("Candidate");
+					}
+				}
+			
+				requirementRateSubmissionNegotiation.setRateStage(requirementRateSubmissionNegotiation.getRateStage());
+				if(null != requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement()){
+					requirementRateSubmissionNegotiation.setRequirementName(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getRequirement().getJobTitle());	
+				}
+				requirementRateSubmissionNegotiation.setRequirementRate(requirementRateSubmissionNegotiation.getExpectedRate());
+				requirementRateSubmissionNegotiation.setExpectedRateType(requirementRateSubmissionNegotiation.getExpectedRateType());
+				
+				/*if(requirementRateSubmissionNegotiation.getCreatedBy() != null && "" != requirementRateSubmissionNegotiation.getCreatedBy()){
+		        	 User proposedUser = userService.getUserByUserCode(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getCreatedBy());
+		        	 requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName()+" "+proposedUser.getLastName());
+				}else{
+					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+					if(candidate.getLastName() != null){
+						requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName()+" "+candidate.getLastName());
+					}else{
+						requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName());
+					}
+				}*/
+				//DateFormat standardFormat = new SimpleDateFormat( "dd-MM-yyyy");
+				String commonDateFormat = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementRateSubmissionNegotiation.getCreatedDate());
+				requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
+				
+				if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){
+					if(null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+						StringBuilder candiSB = new StringBuilder();
+						requirementRateSubmissionNegotiation.setProposeByName(candiSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+					}else{
+						requirementRateSubmissionNegotiation.setProposeByName(requirementSubmissionTemplateFields.getFirstName());
+					}
+					
+				}else if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CLIENT || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.VENDOR || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
+					User proposedUser = userService.getUserDetailsByUserCode(requirementRateSubmissionNegotiation.getCreatedBy());
+					if(null != proposedUser){
+						if(null != proposedUser.getLastName() && !"".equalsIgnoreCase(proposedUser.getLastName())){
+							StringBuilder proposedSB = new StringBuilder();
+							requirementRateSubmissionNegotiation.setProposeByName(proposedSB.append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).toString());
+						}else{
+							requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
+						}
+					}
+				}
+				
+				requirementRateSubmissionNegotiation.setInitiatorOrgLocationIdStr(requirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+				if( requirementRateSubmissionNegotiation.getExpectedRate() != null && requirementRateSubmissionNegotiation.getExpectedRateType() != null){
+					StringBuilder rateTypeSB = new StringBuilder();
+					requirementRateSubmissionNegotiation.setRateAndType(rateTypeSB.append(requirementRateSubmissionNegotiation.getExpectedRate()).append(" ").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());	
+				}
+				
+				if(requirementRateSubmissionNegotiation.getCreatedBy() != null && logInUsers != null && requirementRateSubmissionNegotiation.getCreatedBy().equalsIgnoreCase(logInUsers.getUserCode())){
+					requirementRateSubmissionNegotiation.setIsLastProposedUser("Y");
+				}else{
+					requirementRateSubmissionNegotiation.setIsLastProposedUser("N");
+				}
+				
+				
+				if(null != requirementRateSubmissionNegotiation.getRequirementsubmissionId() && null != requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus()){
+					requirementRateSubmissionNegotiation.setSubmissionRateStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
+				}
+				
+				requirementRateSubmissionNegotiation.setIsNeedApplicantPermit(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getNeedApplicantPermit());
+				requirementRateSubmissionNegotiation.setSubmissionStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
+				
+				requirementRateSubmissionNegotiation.setExpectedRateRN(expectedRateRN);
+				requirementRateSubmissionNegotiation.setExpectedRateTypeRN(expectedRateTypeRN);
+				requirementRateSubmissionNegotiation.setExpectedRatePerRN(expectedRatePerRN);
+			}
+			
+			if(allSubmissionRateHistory.isEmpty()){
+				allSubmissionRateHistory.add(requirementRateSubmission);
+			}
+			return allSubmissionRateHistory;
 		}
 	 
 	 

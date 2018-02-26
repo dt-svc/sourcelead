@@ -5,8 +5,8 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-<jsp:include page="addApplicant.jsp" />
-<jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
+<%-- <jsp:include page="addApplicant.jsp" />
+<jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
 <div id="popUp" ></div>
 <script>
@@ -82,9 +82,9 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 	    result = result +'<div class="rec_head">';
 	    if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
-		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
+		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score <i class="fa fa-info-circle" title="Customise Score based on your requierement"></i>             ';
 		    result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
-		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
+		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare <i class="fa fa-info-circle" title="Compare Recommended Resumes,Minimum 2 candidates should select to compare"></i> </a>            ';
 		    result = result +'			<a class="comTextLi" title="Share" onclick="shareAllRecommendations('+requirementId+');" ><i class="fa fa-share-alt"></i></a>            ';
 
 		    result = result +'		        </div>';
@@ -412,7 +412,7 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 					  }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[1,'desc']],
+		    	"aaSorting": [[7,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
@@ -498,7 +498,13 @@ function shareRecomendedApplicant(requirementId,candidateId){
     	type: "POST",
         url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
         success: function(result) {
-        },
+            $("#recommendationsLoading").removeAttr("style");
+        	$("#selector4").removeAttr("style");
+   			$("#selector4").css({ display: "block" });
+   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
+   			eduMsgFadeinFunction();
+   			toggleShareRecommendation();
+         },
     });
 }
 function toggleShareRecommendation(source){

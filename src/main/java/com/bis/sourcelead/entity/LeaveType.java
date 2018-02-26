@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,22 +28,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_TYPE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveType")
 public class LeaveType {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-//	@Column(columnDefinition = "BINARY(16)")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DEPARTMENT_ID", nullable = false)
 	private Department departmentId;
 	
@@ -94,7 +91,9 @@ public class LeaveType {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	@Column(name = "LEAVE_TYPE_UUID")
+	private String leaveTypeUUID;
+	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
 	private Set<LeaveRole> leaveTypeRolesSet;
@@ -185,13 +184,25 @@ public class LeaveType {
 	@Transient
 	@JsonProperty
 	private int takenLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private float totalBalanceLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private float leaveTypeBalanceLeaveCount;
+	
+	@Transient
+	@JsonProperty
+	private float takenLeaves;
 
-	public String getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -656,6 +667,44 @@ public class LeaveType {
 		this.takenLeaveCounts = takenLeaveCounts;
 	}
 
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
+	}
+
+	public float getTotalBalanceLeaveCounts()
+	{
+		return totalBalanceLeaveCounts;
+	}
+
+	public void setTotalBalanceLeaveCounts(float totalBalanceLeaveCounts)
+	{
+		this.totalBalanceLeaveCounts = totalBalanceLeaveCounts;
+	}
+
+	public float getLeaveTypeBalanceLeaveCount()
+	{
+		return leaveTypeBalanceLeaveCount;
+	}
+
+	public void setLeaveTypeBalanceLeaveCount(float leaveTypeBalanceLeaveCount)
+	{
+		this.leaveTypeBalanceLeaveCount = leaveTypeBalanceLeaveCount;
+	}
+
+	public float getTakenLeaves()
+	{
+		return takenLeaves;
+	}
+
+	public void setTakenLeaves(float takenLeaves)
+	{
+		this.takenLeaves = takenLeaves;
+	}
 	
- 
 }

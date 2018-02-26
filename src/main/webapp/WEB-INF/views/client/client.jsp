@@ -72,7 +72,7 @@ margin-top: -50px;
 	          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Address"  type="text" field-name="Address" data-validation="required"></input>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter Address"  type="text" field-name="Address" data-validation="required"></input>
 	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode','addressId');"></i>
 	          </div>
 	          </div>
@@ -90,14 +90,14 @@ margin-top: -50px;
 		  <div class="form-group ">
 				<label class="col-md-3">Street address</label>
 				<div class="col-md-9">
-				<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter your Street Address"  data-validation="validate_length length2-250" data-validation-optional="true"></input>
+				<input type="text" id="addressId" name="address"   field-name="Street Address" class="form-control" placeholder="Enter Street Address"  data-validation="validate_length length2-250" data-validation-optional="true"></input>
 				</div>
 			</div>
 			
 			<div class="form-group" id="cityDiv" style="display: block;">
 	          <label class="col-md-3">City</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text"></input>
+	          <input class="form-control" id="clientCity" name="city" placeholder="Enter City" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -112,7 +112,7 @@ margin-top: -50px;
 		   <div class="form-group" id="stateDiv" style="display: block;">
 	          <label class="col-md-3">State</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text"></input>
+	          <input class="form-control" id="clientState" name="state" placeholder="Enter State" type="text"></input>
 	          </div>
 	        </div>
 	        
@@ -127,7 +127,7 @@ margin-top: -50px;
 		 	 <div class="form-group" id="zipCodeDiv" style="display: block;">
 	          <label class="col-md-3">ZipCode</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter Zip code" type="text"  onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 	          </div>
 	        </div>
 	        
@@ -178,7 +178,7 @@ margin-top: -50px;
             <div class="form-group">
             
             <div class="clearfix mb">
-              <label class="col-md-3">Tier</label>
+              <label class="col-md-3">Tier <i class='fa fa-info-circle' title='Classify the clients basing on their performance'></i></label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="level" name="level">
                     <option value="Tier-1">Tier-1</option>
@@ -235,7 +235,7 @@ margin-top: -50px;
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
 	                            <span class="hidden">Valid Email</span>
 				</div>
 			</div>
@@ -289,9 +289,9 @@ margin-top: -50px;
             </div>
             
             <div class="form-group">
-              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The internal point of contact to the client. A single contact can have multiple owners'></i></label>
               <div class="col-md-9 candAdvsrch">
-                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner Name"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                 </c:forEach>
@@ -585,7 +585,6 @@ function getRolesList(){
 
 <script type="text/javascript">
 function validateEmail(){
-// 	alert("he")
 	var email = document.getElementById("email").value;
 	if(email != null){
 		$.ajax({

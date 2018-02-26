@@ -146,7 +146,27 @@ function getUsersSearchResult(searchValue){
 				</select>
 		   </li>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
-	           <li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add Associate</a></li>
+	                    
+                  <c:if test="${orgLocationsCount > 1}">
+		                    <li>
+								<a class="action" onclick="getActions();"
+									href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i
+									class="fa fa-caret-down"></i>
+								</a>
+								<div class="action-pop">
+									<span> 
+									<a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-plus"></i>Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>"><i class="fa fa-plus"></i>Add From Loc</a>
+									</span>
+								</div>
+							</li>
+				</c:if>
+				
+				<c:if test="${orgLocationsCount == 1}">
+				<li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add Associate</a></li>
+				</c:if>		
+	           
+						
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
@@ -756,12 +776,12 @@ function dynamicUserListPagination(url){
           pages: 10
         }),
         "columns": [
-            { "data": "userNme" },
-            { "data": "emailId"},
-            { "data": "phoneNo"},
-            { "data": "role"},
+            { "data": "userName" },
+            { "data": "email"},
+            { "data": "mobilePhone"},
+            { "data": "displayName"},
             { "data": "manager"},
-            { "data": "employmentType"},
+            { "data": "userEmploymentType"},
             { "data": "status"}
         ],
 		 "columnDefs": [ {
@@ -772,7 +792,7 @@ function dynamicUserListPagination(url){
 		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
 		        			   result = result +"<td><div class='tbldata-dotdot-200'>"    
-		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft'>";
+		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
 		        			    }else{
@@ -787,11 +807,11 @@ function dynamicUserListPagination(url){
 		    	  	}
 		      },{
 		    	  "targets": colIndex++,
-		          "data": "emailId",
+		          "data": "email",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
 		        	  if(userRole.userEmail !=null && userRole.userEmail !='' && userRole.userEmail !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot">'+userRole.userEmail+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+userRole.userEmail+'">'+userRole.userEmail+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 						}
@@ -800,7 +820,7 @@ function dynamicUserListPagination(url){
 		          }
 		          },{
 		        "targets": colIndex++,
-		        "data": "phoneNo",
+		        "data": "mobilePhone",
 		        "render": function ( data, type, userRole, meta ) {
 		        	if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
 					    	mobilePhone = userRole.mobilePhone;
@@ -808,28 +828,25 @@ function dynamicUserListPagination(url){
 					    	mobilePhone = "--"
 					    }
 		        	  var result = "";
-		        	  if(mobilePhone !=null && mobilePhone !='' && mobilePhone !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-100">'+mobilePhone+'</div></td>';
-						}else{
-							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
-						}
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+mobilePhone+'">'+mobilePhone+'</div></td>';
 		        	 return result;
 		        }
 		      }, {
 		          "targets": colIndex++,
-		          "data": "role",
+		          "data": "displayName",
 		          "render": function ( data, type, userRole, meta ) {
 		        	  var result = "";
-		        	  result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.userRoleName+'</div></td>';
+		        	  result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.userRoleName+'">'+userRole.userRoleName+'</div></td>';
 		        	  return result;
 		          }
 		        }, {
 		            "targets": colIndex++,
 		            "data": "manager",
+		            "sortable": false,
 		            "render": function ( data, type, userRole, meta ) {
 		            	var result = "";
 		            	if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-sm">'+userRole.reportingManagerName+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-sm" title = "'+userRole.reportingManagerName+'">'+userRole.reportingManagerName+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-sm">--</div></td>';
 						}
@@ -838,11 +855,12 @@ function dynamicUserListPagination(url){
 		      },
 		      {
 		          "targets": colIndex++,
-		          "data": "employmentType",
+		          "data": "userEmploymentType",
+		          "sortable": false,
 		          "render": function ( data, type, userRole, meta ) {
 		          	var result = "";
 		          	 if(userRole.employeMentType !=null && userRole.employeMentType !='' && userRole.employeMentType !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.employeMentType+'</div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.employeMentType+'">'+userRole.employeMentType+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
 						}
@@ -852,6 +870,7 @@ function dynamicUserListPagination(url){
 		    {
 		        "targets": colIndex++,
 		        "data": "status",
+		        "sortable": false,
 		        "render": function ( data, type, userRole, meta ) {
 		        	var result = "";
 		            if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
@@ -893,5 +912,16 @@ $("#dynamicUserDataTableSearch").keydown(function(e) {
 	});
 </script> 
  
-
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+</script>
     

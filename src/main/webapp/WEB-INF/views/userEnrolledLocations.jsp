@@ -28,11 +28,22 @@
 				 <label for="userRoleId"></label>
 			</div>
 					
-			<span><img onerror="this.src='/resources/images/office-image.jpg'" src="${sourceleadUrl}/ws/displayOrgImage/${userRole.orgLocations.org.orgCode}"></span>
+			<span><img onerror="this.src='/resources/images/office-image.jpg'" data-id="orgImage" src="${userRole.orgLocations.org.fileUrl}"></span>
 			<div class="orgtext">
 				<b>${userRole.orgLocations.orgLocationName}</b>
 				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : ""} ${userRole.orgLocations.country}</p>
-				<p><i class="fa fa-user"></i> ${userRole.roles.displayName}</p>
+				<c:choose>
+				<c:when test="${userRole.roles.displayName == 'Professional'}">
+				<p><i class="fa fa-user"></i>Job Seeker</p>
+				</c:when>
+				<c:when test="${userRole.roles.displayName == 'Independent Recruiter'}">
+				<p><i class="fa fa-user"></i>Freelance Recruiter</p>
+				</c:when>
+				<c:otherwise>
+                <p><i class="fa fa-user"></i> ${userRole.roles.displayName}</p>
+                </c:otherwise>
+                </c:choose>
+				
 <%-- 				<p><i class="flag-image"><a><img src="/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p> --%>
 			</div>
 	    </div>
@@ -87,7 +98,7 @@ function validateTwoStepAuth() {
 	if((isTwoStepEnabled == null || isTwoStepEnabled == '' || isTwoStepEnabled == 'undefined' || isTwoStepEnabled  == 'N') && (userLoginSecurity == null || userLoginSecurity == '' || userLoginSecurity == 'undefined' || userLoginSecurity  == 'N')){
 		$.ajax({
 		      type : "POST",
-		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId,        
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&userRoleId="+userRoleId,        
 		       success :function(result) {
 		    	 if(result == "true"){
 		    		 location.replace(sourceleadUrl+"/dashboard");   

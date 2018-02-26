@@ -61,7 +61,7 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding left join fetch offboarding.userId "
-				+ " where offboarding.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+				+ " where offboarding.id =:id" ).setLong( "id", Id ).list();
 		if (candidateOffBoarding.size() > 0) {
 			return candidateOffBoarding.get(0);
 		} else {
@@ -76,7 +76,7 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from CandidateOffBoarding offboarding left join fetch offboarding.orgLocationId where offboarding.orgLocationId.id =:orgLocationId ";
-	    List<CandidateOffBoarding> candidateOffBoardingList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<CandidateOffBoarding> candidateOffBoardingList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
         return candidateOffBoardingList;
 	}
 
@@ -102,7 +102,7 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding  "
-				+ " where offboarding.offboardUUID =:offboardUUID" ).setString( "offboardUUID", offboardUUID ).setCacheable(true).list();
+				+ " where offboarding.offboardUUID =:offboardUUID" ).setString( "offboardUUID", offboardUUID ).list();
 		if (candidateOffBoarding.size() > 0) {
 			return candidateOffBoarding.get(0);
 		} else {
@@ -118,7 +118,7 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding left join fetch offboarding.userId left join fetch offboarding.orgLocationId   "
-				+ " where offboarding.orgLocationId.id =:orgLocationId and offboarding.userId.id = :offboardingUser and offboarding.status = '1' " ).setLong("offboardingUser", offboardingUser).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " where offboarding.orgLocationId.id =:orgLocationId and offboarding.userId.id = :offboardingUser and offboarding.status = '1' " ).setLong("offboardingUser", offboardingUser).setLong( "orgLocationId", orgLocationId ).list();
 		if (candidateOffBoarding.size() > 0) {
 			return candidateOffBoarding.get(0);
 		} else {
@@ -131,7 +131,7 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 	@Transactional
 	public List<CandidateOffBoarding> candidateOffboringDelayMail(){
 		Session session = this.sessionFactory.getCurrentSession();	
-		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding").setCacheable(true).list();
+		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding").list();
 		return candidateOffBoarding;
 	}
 }

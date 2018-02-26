@@ -41,7 +41,7 @@ function getAddApplicant(requirementId){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
+	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript);
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -91,7 +91,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '</div>';
 	
-	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
+	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="addApplicantLoading"></div> <div id="emailDiv"></div>';
 	
 	result = result + '</div>';
 	
@@ -104,9 +104,9 @@ function getAddApplicant(requirementId){
 	result = result + '<label class="col-md-4">Skills</label>';
 	result = result + '<div class="col-md-8">';
 	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
-	result = result + '<c:forEach var="skill" items="${skillsList}">';
-	result = result + '<option value="${skill.name}">${skill.name}</option>';
-	result = result + ' </c:forEach>';
+	            <c:forEach var="sk" items="${skillsList}">
+	result = result + "<option value='${sk.name}'>${sk.name}</option>";
+	            </c:forEach>
 	result = result + '</select>';
 	result = result + '		 </div>';
 	result = result + '	 </div>';
@@ -368,7 +368,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	result = result + '</div>';
 	
-	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
+	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="addApplicantLoading"></div> <div id="emailDiv"></div>';
 	
 	result = result + '</div>';
 	
@@ -491,7 +491,7 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	
 	result = result + '</div>';
 	
-	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
+	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="addApplicantLoading"></div> <div id="emailDiv"></div>';
 	
 	result = result + '</div>';
 	
@@ -499,12 +499,12 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	result = result + '</div>';
 	
 	
-	/* result = result + '	<div class="col-md-6 upresume mb">';
+	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
-	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
-	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	/* result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>'; */
+	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
 	result = result + '</div>';
-	result = result + '</div>'; */
+	result = result + '</div>';
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
@@ -526,10 +526,10 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	$("body").css('overflow-y', 'hidden');
 	
 	getSubmittedCandidateResumes(candidateId,resumeId);
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	setTimeout(function () {
 		       getSubmittedCandidateDetails(submissionId);
-		    $("#loading").removeAttr('style');
+		    $("#addApplicantLoading").removeAttr('style');
     }, 3000);
 	
 }
@@ -655,7 +655,7 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
       con = encodeURIComponent(con);
       
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
   	     $.ajax({
 	    	type: "POST",
@@ -1006,7 +1006,7 @@ function addApplicantSubmission(){
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
-	     		  if(null != inputValue){
+	     		  if(inputValue != null && inputValue != 'undefined' && inputValue != ''){
 	     			  if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
@@ -1053,7 +1053,7 @@ function addApplicantSubmission(){
    
     
 		
-     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
 	     $.ajax({
 	    	type: "POST",
@@ -1205,7 +1205,7 @@ function addRequirementRecommendations(){
 	     
 	      
 			
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	       $("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      
 	  	     $.ajax({
 		    	type: "POST",
@@ -2165,7 +2165,7 @@ function getSubmissionCandidateCities(city){
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
@@ -2182,7 +2182,7 @@ function getSubmissionCandidateCities(city){
 	            	$('#submissionCity').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
 	            }
 	            $('#submissionCity').trigger("chosen:updated");
-	            $("#loading").removeAttr("style"); 
+	            $("#addApplicantLoading").removeAttr("style"); 
 	        },
 	        error: function(e){
 	        }
@@ -2303,7 +2303,7 @@ function SubmissionUploadFileDoc1(){
 	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
    		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
  	 
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$("#addApplicantLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#addApplicant_form')[0];
   		var formData = new FormData(form); 
 		   $.ajax({
@@ -2362,7 +2362,7 @@ function SubmissionUploadFileDoc1(){
 			        	 
 						 validateSubmissionCandidateEmail();
 						 getUserByUserEmail();
-						 $("#loading").removeAttr("style");
+						 $("#addApplicantLoading").removeAttr("style");
 					},
 				});
  	 }

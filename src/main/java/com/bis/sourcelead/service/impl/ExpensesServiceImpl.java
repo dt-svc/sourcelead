@@ -39,13 +39,11 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -101,6 +99,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private ExpensesApprovalService expensesApprovalService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
@@ -243,6 +244,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder edDate=new StringBuilder();
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
+		            StringBuilder statusStringBuilder = new StringBuilder();
 		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
@@ -269,6 +271,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
 			        	}
+			      
 			        if(expenses.getTotalAmount() != 0){
 			        	StringBuilder str = new StringBuilder();
 			        	BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
@@ -277,6 +280,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));	
 			        	}
+			        if(null != expenses.getExpenseStatus()){
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append(expenses.getExpenseStatus()).toString()));
+			        }else {
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append("--").toString()));	
+			        }
 			       }else if(approverType.equalsIgnoreCase("APPROVER")){
 			    	   StringBuilder expenseId=new StringBuilder();
 			    	   	StringBuilder nameBuilder=new StringBuilder();
@@ -445,8 +453,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 			 }
 			 
 			 if(approverType.equalsIgnoreCase("APPROVER")){
-				 if(expEntries.getExpensesId().getExpenseStatus() != null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().toString())){	
-					   userArray[7] = expEntries.getExpensesId().getExpenseStatus().getValue();
+				 if(expEntries.getExpensesId() != null){	
+					 ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expEntries.getExpensesId().getId(),orgLoc.getId());
+					   userArray[7] = eah.getExpenseStatus().getValue().toUpperCase();
 				   }else{
 					   userArray[7] = "--";
 				 } 
@@ -1264,6 +1273,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Override
 	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception {
 		return expensesDao.getAllExpensesByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long OrglocationId,Date startDate, Date endDate) throws Exception {
+		return expensesDao.getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(projectId, OrglocationId,startDate,endDate);
 	}
 	
 }

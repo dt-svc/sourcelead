@@ -92,6 +92,7 @@ public class SecurityConfig  {
 
     		.authorizeRequests()
        		     .antMatchers("/").permitAll() 
+       		     .antMatchers("/getScheduleStatus").permitAll() 
     		    .antMatchers("/login").permitAll() 
     		    .antMatchers("/*.html").permitAll() 
     		    .antMatchers("/resetPassword").permitAll() 
@@ -115,6 +116,8 @@ public class SecurityConfig  {
     			.antMatchers("/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/parseResume/**").permitAll()
     			.antMatchers("/app/getActionHistoryList/**").permitAll()
+    			.antMatchers("/app/jobCampaignSummary/**").permitAll()
+    			.antMatchers("/app/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
     		    .formLogin().loginPage("/login")

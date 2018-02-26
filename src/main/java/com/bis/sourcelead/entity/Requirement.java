@@ -18,15 +18,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -35,7 +32,6 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	/**
@@ -44,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 */
 	@Entity
 	@Table(name = "REQUIREMENT")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
 	public class Requirement implements Serializable{
 
 	
@@ -120,7 +115,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
-	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
+	@Column(name = "DESCRIPTION" , columnDefinition = "LONGTEXT default NULL")
 	private String description;
 	
 	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
@@ -235,7 +230,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientSubmissionTemplateJsonString;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
@@ -353,8 +348,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementLocations> requirementLocations = new HashSet<RequirementLocations>(0);
+	
+	
 	@Transient
 	private String searchType;;
+	
+	@Transient
+	@JsonProperty
+	private List<String> locationsList;
 	
 	@Transient
 	@JsonProperty
@@ -574,6 +580,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String assignedMembersCount;
+	
+	@Transient
+	@JsonProperty
+	private String experienceLevelStr;
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -1909,6 +1919,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.experienceLevel = experienceLevel;
 	}
 
+
+	public Set<RequirementLocations> getRequirementLocations() {
+		return requirementLocations;
+	}
+
+	public void setRequirementLocations(Set<RequirementLocations> requirementLocations) {
+		this.requirementLocations = requirementLocations;
+	}
+
+
 	public String getAssignedMembersCount()
 	{
 		return assignedMembersCount;
@@ -1918,5 +1938,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	{
 		this.assignedMembersCount = assignedMembersCount;
 	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+	
+	public String getExperienceLevelStr() {
+		if(StringUtils.isNotEmpty(experienceLevelStr))
+			return experienceLevelStr;
+		else{
+			if(experienceLevel != null){
+				experienceLevelStr = experienceLevel.getName();
+			}
+			return experienceLevelStr;
+		}
+	}
+
+	public void setExperienceLevelStr(String experienceLevelStr)
+	{
+		this.experienceLevelStr = experienceLevelStr;
+	}
+
 	
 }

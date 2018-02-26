@@ -6,6 +6,9 @@
 .chosen-container {
     width: 100% !important;
 }
+.add_inter  .customchosen-select .chosen-container {
+width: 100% !important;
+}
 .validationError p.jquery_form_error_message {
 width: 75px; padding: 0 !important;
 }
@@ -87,16 +90,16 @@ function getInterviewsDates(){
 		var date = $("#eventCalendar").val();
 		if(date == null || date == '' || date == 'undefined'){
 			date = new Date(); 
-			
+			var month = parseInt(date.getMonth())+parseInt(1);
 			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 			  if(locationDate.match("yyyy-MM-dd")){
-			      date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
+			      date = date.getFullYear()+"-"+month+"-"+date.getDate();
 			  }if(locationDate.match("dd-MM-yyyy")){
-				  date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+				  date = date.getDate()+"-"+month+"-"+date.getFullYear();
 			  }if(locationDate.match("MM-dd-yyyy")){
-				  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+				  date = month+"-"+date.getDate()+"-"+date.getFullYear();
 			  }if(locationDate.match("yyyy-dd-MM")){
-				  date = date.getFullYear()+"-"+date.getDate()+"-"+date.getMonth()+1;
+				  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
 			  }
 		}
 		
@@ -357,15 +360,15 @@ function dashboardAddInterview(){
 	
 	result = result + '<div class="row pad2">';
 	result = result + '<div class="col-md-12 mt10">';
-	result = result + '<div class="ne-ch">';
+	result = result + '<div class="ne-ch row">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
 	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	result = result + '</div>';
 	
 	
-	result = result + '<div id="emptyTemplate" style="dispaly:none">';
+	result = result + '<div id="emptyTemplate" style="dispaly:none" class="row">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="chosen-select col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-4 customchosen-select">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -424,15 +427,17 @@ function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
+	        success: function(json) {
 	        var output = "";
 	        if(json.length > 0){
 	         	for (var i=0; i<json.length; i++)
 	 			{
 	 	        		var opt = json[i];
-	 	        		
-	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 	        		if(opt.isDefault == "Y"){
+	 	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+	 	        		}else{
+		 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 	        		} 
 	 			}
 	         	$("#interviewSubmissionTemplate").empty();
 	 	        $("#interviewSubmissionTemplate").append(output);

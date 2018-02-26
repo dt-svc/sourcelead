@@ -23,7 +23,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CONTACTS_GROUP")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="contactsGroup")
 public class ContactsGroup implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -36,7 +35,7 @@ public class ContactsGroup implements Serializable {
 	@Column(name = "GROUP_NAME", columnDefinition = "TEXT default NULL")
 	private String groupName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_USER", nullable = false)
    	private User createdUser;

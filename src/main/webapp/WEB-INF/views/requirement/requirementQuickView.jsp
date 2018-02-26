@@ -19,8 +19,7 @@
 				<div class="col-md-3">
 					<div class="company-logo">
 						<div class="imageParent">
-							<img onerror="predefineOrgImage(this);"
-								src="${sourceleadUrl}/displayOrgImage/${requirement.orgLocationId.org.orgCode}"
+							<img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${requirement.orgLocationId.org.fileUrl}"
 								alt="Company" title="Company Logo" class="img-responsive">
 						</div>
 				</div>
@@ -35,7 +34,21 @@
 									  <i class="fa ${!empty requirement.currencyCode && requirement.currencyCode == 'INR'  ? 'fa-rupee' :!empty requirement.currencyCode && requirement.currencyCode == ('USD' || 'AUD' || 'SGD' ) ? 'fa-dollar': !empty requirement.currencyCode && requirement.currencyCode == 'EUR' ? 'fa-eur' : !empty requirement.currencyCode && requirement.currencyCode == 'GBP' ? 'fa-gbp' : 'fa-rupee' } " title="Job Rate"></i>
 								      <span>${!empty requirement.rate ? requirement.rate : '---'}${!empty requirement.maxRate ? ' - ':''}${!empty requirement.maxRate ? requirement.maxRate : ''}  ${!empty requirement.currencyCode ? requirement.currencyCode : ''}${!empty requirement.rateType ? ' / ':''}${!empty requirement.rateType ? requirement.rateType : ''} </span>
 									</li>
-									<li><i class="fa fa-map-marker" title="Location"></i><span title="${!empty requirement.city ? requirement.city : ''} ${!empty requirement.city ? ',' : ''} ${!empty requirement.state ? requirement.state : ''} ${!empty requirement.state ? ',' : ''}${!empty requirement.country ? requirement.country : ''}">${!empty requirement.city ? requirement.city : ''} ${!empty requirement.city ? ',' : ''} ${!empty requirement.state ? requirement.state : ''} ${!empty requirement.state ? ',' : ''}${!empty requirement.country ? requirement.country : ''}</span></li>
+									<%-- <li><i class="fa fa-map-marker" title="Location"></i>
+									<c:forEach var ="reqLocs" items="${locationsList}">
+									 <span title="${reqLocs.location}">${reqLocs.location}</span>
+									</c:forEach>
+									</li> --%>
+									
+									<li><i class="fa fa-map-marker pull-left mt5"></i>
+									<ul class="list-unstyled joblocations-public col-md-10">
+									<c:forEach var ="reqLocs" items="${locationsList}">
+									 <li title="${reqLocs.location}">${reqLocs.location}</li>
+									</c:forEach>
+									</ul>
+									</li>
+									
+									
 									<li><i class="fa fa-cab" title="Travel allowance"></i><span title="${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}">${!empty requirement.travelAllowance ? requirement.travelAllowance : ''}</span></li>
 								</ul>
 							</div>
@@ -235,7 +248,17 @@
 				            </div> 	
 				              <div class="require_wrap_details_cta"> <b>Experience Level:</b><span>${!empty requirement.experienceLevel.name ? requirement.experienceLevel.name : ' -- '}</span>
 				            	<div class="clearfix"></div> 
-				            </div> 			            
+				            </div>
+				            
+				            <c:if test="${not empty dataMapListJobs}">
+				            <c:forEach var="customJobData" items="${dataMapListJobs}">
+				            	<c:set var="labelnameAndLabelData" value="${fn:split(customJobData.value, '$')}" />
+					             <div class="require_wrap_details_cta"> <b>${labelnameAndLabelData[0]}:</b><span>${labelnameAndLabelData[1]}</span>
+					            	<div class="clearfix"></div> 
+					            </div>
+				            </c:forEach> 
+				            </c:if>
+				             			            
 				            <div class="clearfix"></div> 
 			            </div> 
 

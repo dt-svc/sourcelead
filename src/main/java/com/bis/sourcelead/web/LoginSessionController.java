@@ -342,6 +342,8 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", orgLocationsList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", orgLocationsList.size());
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", userRole.getRoles().getRoleName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserDisplayName", userRole.getRoles().getDisplayName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginOrgName", userRole.getRoles().getOrgLocations().getOrgLocationName());
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
 				}
 			}else{
@@ -447,7 +449,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
-			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getCountry());
 			

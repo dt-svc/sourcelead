@@ -72,13 +72,13 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(loginUserId,orgLocationId);
 		if (isadmin) {
 			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.sourceType = :sourceType and od.status = '1' ";
-			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
+			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).list();
 		}else if(managerUserIds != null && !managerUserIds.isEmpty()){
 			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and (od.ownerUser.id = :loginUserId OR od.ownerUser IN (:managerUserIds)) and od.sourceType = :sourceType and od.status = '1' ";
-			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setParameterList("managerUserIds", managerUserIds).setString("sourceType", sourceType).setCacheable(true).list();
+			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setParameterList("managerUserIds", managerUserIds).setString("sourceType", sourceType).list();
 		}else{
 			String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.ownerUser.id = :loginUserId and od.sourceType = :sourceType and od.status = '1' ";
-			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("sourceType", sourceType).setCacheable(true).list();
+			orgDocumentsList = session.createQuery(query).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("sourceType", sourceType).list();
 		}
 		return orgDocumentsList;	
 	}
@@ -89,7 +89,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		logger.debug("In getOrgDocumentsById");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from OrgDocuments od where od.id = :Id" ;
-		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).setCacheable(true).list(); 
+		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).list(); 
 		OrgDocuments orgDocuments = null;
 		if(orgDocumentsList != null && !orgDocumentsList.isEmpty()){
 			orgDocuments = orgDocumentsList.iterator().next();
@@ -103,7 +103,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 			Long responderLocationId, Long orgLocationId, Long spocUserId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrgDocuments od left join fetch od.spocUser left join fetch od.ownerUser where od.locationId =:orgLocationId and od.responderLocationId.id =:responderLocationId and od.spocUser.id =:spocUserId and od.status = '1' ";  
-		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("spocUserId", spocUserId).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("spocUserId", spocUserId).setLong("responderLocationId", responderLocationId).setLong("orgLocationId", orgLocationId).list();
 		return orgDocuments;
 	}
 	
@@ -132,7 +132,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		logger.debug("In getOrgDocumentsByIdAndSpocId");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from OrgDocuments od where od.id = :Id and od.spocUser.id =:userId" ;
-		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", docId).setLong("userId", userId).setCacheable(true).list(); 
+		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", docId).setLong("userId", userId).list(); 
 		OrgDocuments orgDocuments = null;
 		if(orgDocumentsList != null && !orgDocumentsList.isEmpty()){
 			orgDocuments = orgDocumentsList.iterator().next();
@@ -151,7 +151,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 					+ " where orgDocuments.ownerUser.id = :userId and orgDocuments.locationId.id = :orgLocationId "
 					+ " and orgDocuments.sourceType = :sourceType and orgDocuments.status = '1' ";
 			
-			List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
+			List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).list();
 			Integer count = 0;
 			if(projectsCount != null && !projectsCount.isEmpty()){
 					count = projectsCount.get(0).intValue();
@@ -167,7 +167,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		String query = "from OrgDocuments orgDocuments "
 					+ " where orgDocuments.ownerUser.id = :userId and orgDocuments.locationId.id = :orgLocationId "
 					+ " and orgDocuments.sourceType = :sourceType and orgDocuments.status = '1' ";  
-		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
+		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).list();
 		return orgDocuments;
 	}
 
@@ -178,7 +178,7 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		logger.debug("In getOrgDocumentsById");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from OrgDocuments od where od.id = :Id and od.locationId= :locationId" ;
-		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).setLong("locationId", locationId).setCacheable(true).list(); 
+		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).setLong("locationId", locationId).list(); 
 		OrgDocuments orgDocuments = null;
 		if(orgDocumentsList != null && !orgDocumentsList.isEmpty()){
 			orgDocuments = orgDocumentsList.iterator().next();

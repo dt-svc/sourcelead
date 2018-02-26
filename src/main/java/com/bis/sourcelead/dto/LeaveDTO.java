@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LeaveDTO extends SearchDTO implements Serializable{
 
-	private String id;
+	private long id;
 	private String orgLocationId;
 	private String userId;
 	private String user;
@@ -18,7 +18,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String toDate;
 	private String toHalfDay;
 	private String leaveType;
-	private String leaveTypeId;
+	private long leaveTypeId;
 	private String reason;
 	private List<String> approverUser;
 	private String approvedBy;
@@ -34,7 +34,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String staticPath;
 	private String empName;
 	private String duration;
-	private String noOfDays;
+	private int noOfDays;
 	private String balanceleaves;
 	private String fileUrl;
 	private String fileName;
@@ -81,6 +81,12 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String isBillable;
 	private int selfBalancedCounts;
 	private String topLeaveTakersreportYear;
+	private int extraLeavesTaken;
+	private String leaveUUID;
+	private float appliedNoOfDays;
+	private float actualLeavesTaken;
+	private float thisMonthLeavesTaken;
+	private float totalBalLeaves;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -89,11 +95,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 		this.leavesTaken = leavesTaken;
 	}
 	
-	public String getId()
+	public long getId()
 	{
 		return id;
 	}
-	public void setId(String id)
+	public void setId(long id)
 	{
 		this.id = id;
 	}
@@ -161,11 +167,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	{
 		this.leaveType = leaveType;
 	}
-	public String getLeaveTypeId()
+	public long getLeaveTypeId()
 	{
 		return leaveTypeId;
 	}
-	public void setLeaveTypeId(String leaveTypeId)
+	public void setLeaveTypeId(long leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
 	}
@@ -289,11 +295,11 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	{
 		this.duration = duration;
 	}
-	public String getNoOfDays()
+	public int getNoOfDays()
 	{
 		return noOfDays;
 	}
-	public void setNoOfDays(String noOfDays)
+	public void setNoOfDays(int noOfDays)
 	{
 		this.noOfDays = noOfDays;
 	}
@@ -568,6 +574,54 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setTopLeaveTakersreportYear(String topLeaveTakersreportYear) {
 		this.topLeaveTakersreportYear = topLeaveTakersreportYear;
+	}
+	public int getExtraLeavesTaken()
+	{
+		return extraLeavesTaken;
+	}
+	public void setExtraLeavesTaken(int extraLeavesTaken)
+	{
+		this.extraLeavesTaken = extraLeavesTaken;
+	}
+	public String getLeaveUUID()
+	{
+		return leaveUUID;
+	}
+	public void setLeaveUUID(String leaveUUID)
+	{
+		this.leaveUUID = leaveUUID;
+	}
+	public float getAppliedNoOfDays()
+	{
+		return appliedNoOfDays;
+	}
+	public void setAppliedNoOfDays(float appliedNoOfDays)
+	{
+		this.appliedNoOfDays = appliedNoOfDays;
+	}
+	public float getActualLeavesTaken()
+	{
+		return actualLeavesTaken;
+	}
+	public void setActualLeavesTaken(float actualLeavesTaken)
+	{
+		this.actualLeavesTaken = actualLeavesTaken;
+	}
+	public float getThisMonthLeavesTaken()
+	{
+		return thisMonthLeavesTaken;
+	}
+	public void setThisMonthLeavesTaken(float thisMonthLeavesTaken)
+	{
+		this.thisMonthLeavesTaken = thisMonthLeavesTaken;
+	}
+	public float getTotalBalLeaves()
+	{
+		return totalBalLeaves;
+	}
+	public void setTotalBalLeaves(float totalBalLeaves)
+	{
+		this.totalBalLeaves = totalBalLeaves;
 	}
 
 }

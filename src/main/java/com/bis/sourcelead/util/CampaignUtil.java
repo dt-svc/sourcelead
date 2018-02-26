@@ -92,7 +92,8 @@ public class CampaignUtil {
 			}
 			return isSenderCreated;
 		} catch (IOException ex) {
-			throw ex;
+//			throw ex;
+			return ex.getMessage();
 		}
 	}
 
@@ -168,7 +169,8 @@ public class CampaignUtil {
 				isListCreated = response.getBody();
 			}
 		} catch (IOException ex) {
-			throw ex;
+//			throw ex;
+			return ex.getMessage();
 		}
 		return isListCreated;
 	}
@@ -181,23 +183,21 @@ public class CampaignUtil {
 	 */
 	public String createRecipients(String email) throws Exception
 	{
-		  String str = null;
+		 String result = null;
 		try {
-			 String lasteName = "";
-			 String firstName = "";
-		      SendGrid sg = new SendGrid(sendgridKey);
+			  SendGrid sg = new SendGrid(sendgridKey);
 		      Request request = new Request();
 		      request.setMethod(Method.POST);
 		      request.setEndpoint("contactdb/recipients");
-		      request.setBody("[{\"last_name\":\""+lasteName+"\",\"email\":\""+email+"\",\"first_name\":\""+firstName+"\"}]");
+		      request.setBody("["+email+"]");
 		      Response response = sg.api(request);
-		     if(response.getStatusCode() ==200 || response.getStatusCode() == 201) {
-		    	 str = response.getBody();
-		     }
-		    } catch (IOException ex) {
+		      if(response.getStatusCode() == 200 || response.getStatusCode() == 201) {
+		    	  result = response.getBody();
+		      }
+		    } catch (Exception ex) {
 		      throw ex;
 		    }
-		return str;
+		return result;
 	}
 
 	public String createCampaign(JobListEmailCampaignDTO jobListEmailCampaignDTO, String htmlContent, String otherRecilistId) throws IOException

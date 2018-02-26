@@ -21,7 +21,6 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "SOURCELEAD_ACTIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="sourceleadActions")
 public class SourceleadActions implements Serializable{
 
 	
@@ -41,8 +40,8 @@ public class SourceleadActions implements Serializable{
 	@Column(name = "ACTION_ROLE")
 	private String actionRole;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TAB_ID")
 	private Tabs tabs;
 	

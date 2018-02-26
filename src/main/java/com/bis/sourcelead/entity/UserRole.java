@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "USER_ROLE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userRole")
 public class UserRole implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -43,28 +42,28 @@ public class UserRole implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roles;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org orgId;
 
@@ -124,87 +123,114 @@ public class UserRole implements Serializable {
 	private String loginSecurity;
 
 	@Transient
+	@JsonProperty
 	private String userRoleName;
 
 	@Transient
+	@JsonProperty
 	private String currencyConversionWithCountry;
 
 	@Transient
+	@JsonProperty
 	private String employeeId;
 
 	@Transient
+	@JsonProperty
 	private String userEmploymentType;
 
 	@Transient
+	@JsonProperty
 	private Integer projectsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer openTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer approvedTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer rejectedTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private Integer waitingTimeSheetsCount;
 
 	@Transient
+	@JsonProperty
 	private String rate;
 
 	@Transient
+	@JsonProperty
 	private String ratePer;
 
 	@Transient
+	@JsonProperty
 	private String InvoiceFrequency;
 
 	@Transient
+	@JsonProperty
 	private String hireDateStr;
 
 	@Transient
+	@JsonProperty
 	private String dailyHours;
 
 	@Transient
+	@JsonProperty
 	private String currentCurrency;
 
 	@Transient
+	@JsonProperty
 	List<User> allReportingManagers;
 
 	@Transient
+	@JsonProperty
 	private String vendorName;
 
 	@Transient
+	@JsonProperty
 	private String vendorContactName;
 
 	@Transient
+	@JsonProperty
 	private String departmentName;
 
 	@Transient
+	@JsonProperty
 	private String userName;
 	
 	@Transient
+	@JsonProperty
 	private String fileUrl;
 
 	@Transient
+	@JsonProperty
 	List<User> reportingManagers;
 
 	@Transient
+	@JsonProperty
 	List<User> clientUsersList;
 
 	@Transient
+	@JsonProperty
 	List<User> vendorUsersList;
 
 	@Transient
+	@JsonProperty
 	List<User> requirementManagersList;
 
 	@Transient
 	List<User> requirementApproversList;
 
 	@Transient
+	@JsonProperty
 	List<User> teamOwnersList;
 
 	@Transient
+	@JsonProperty
 	List<User> projectApproversList;
 
 	@Transient
@@ -216,6 +242,7 @@ public class UserRole implements Serializable {
 	private String mobilePhone;
 	
 	@Transient
+	@JsonProperty
 	List<Roles> rolesList;
 
 	@Transient
@@ -264,12 +291,14 @@ public class UserRole implements Serializable {
 	private String userCode;
 
 	@Transient
+	@JsonProperty
 	private String vendorOrgRelationId;
 
 	@Transient
 	private String designationOtherType;
 
 	@Transient
+	@JsonProperty
 	private String vendorSpocId;
 
 	@Transient
@@ -283,7 +312,7 @@ public class UserRole implements Serializable {
 
 	@Transient
 	@JsonProperty
-	private Map<String,String> userCustomFieldlabelNameAndValue;
+	private Map<Long,String> userCustomFieldlabelNameAndValue;
 	
 	public String getUserName() {
 		return userName;
@@ -882,13 +911,15 @@ public class UserRole implements Serializable {
 		this.userCode = userCode;
 	}
 
-	public Map<String, String> getUserCustomFieldlabelNameAndValue() {
+	public Map<Long, String> getUserCustomFieldlabelNameAndValue() {
 		return userCustomFieldlabelNameAndValue;
 	}
 
-	public void setUserCustomFieldlabelNameAndValue(Map<String, String> userCustomFieldlabelNameAndValue) {
+	public void setUserCustomFieldlabelNameAndValue(Map<Long, String> userCustomFieldlabelNameAndValue) {
 		this.userCustomFieldlabelNameAndValue = userCustomFieldlabelNameAndValue;
 	}
+
+	
 
 	
 	

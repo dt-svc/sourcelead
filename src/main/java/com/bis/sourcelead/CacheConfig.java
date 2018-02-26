@@ -3,15 +3,6 @@
  * Business Intelli Solutions India Pvt. Ltd. PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 package com.bis.sourcelead;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
-/*import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;*/
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  * This class is used to configure the caching with ehcache..
@@ -20,9 +11,9 @@ import org.springframework.core.io.ClassPathResource;
  * @author: Srinivas Vemula
  * @date: 23-May-2016
  */
-@Configuration
-@EnableCaching
-public class CacheConfig {
+/*@Configuration
+@EnableCaching*/
+/*public class CacheConfig {
 	
     @Bean 
     public EhCacheManagerFactoryBean ehCacheManagerFactoryBean() {
@@ -37,4 +28,4 @@ public class CacheConfig {
     public EhCacheCacheManager ehCacheCacheManager() {
       return new EhCacheCacheManager(ehCacheManagerFactoryBean().getObject());
     }
-}
+}*/

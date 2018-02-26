@@ -18,7 +18,6 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 @Entity
 @Table(name = "SOURCELEAD_FORM_SUB_FIELDS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="sourceleadFormSubFields")
 public class SourceleadFormSubFields implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -27,7 +26,7 @@ public class SourceleadFormSubFields implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="FORM_FIELD_ID", nullable=false )        
     private SourceleadFormFields sectionId;

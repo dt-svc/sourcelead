@@ -122,7 +122,7 @@ function requirementList(){
 			         	        '</sec:authorize>';
 			         	        
 			         	       '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
-			         				result = result +'<div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assing To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-user-secret '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+'"></i></a></div>';
+			         				result = result +'<div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assing To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-address-book '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+'"></i></a></div>';
 			         		   '</sec:authorize>';
 			         	        
 			         	       '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';

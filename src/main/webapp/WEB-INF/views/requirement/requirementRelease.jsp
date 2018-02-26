@@ -43,6 +43,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
     <ul class="newPrTabsMenu">
 				<li><a href="<c:url value='${appPath}/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
 				<li class="current"><a href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
+				<li><a href="<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 	   <div class="clearfix"></div>

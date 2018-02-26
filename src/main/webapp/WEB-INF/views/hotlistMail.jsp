@@ -75,10 +75,15 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
           
-<div class="input-group positionRelative col-md-12 noPad">
-<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
+<div class="input-group positionRelative col-md-12 noPad" onclick="manuallyEnterHotlistToEmail();">
+<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList"  data-validation="required" name="Toemails"></select>
+
+
+<!-- 		<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipientContactsList();"><i class="fa fa-refresh "></i></span>	 -->
+		
+		
 <span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 					 
-<!-- <a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a> -->
+<!-- <a class="input-group-addon" onclick="campaignRecipient('','','hotList');"><i class="fa fa-plus cursorPointer"></i></a>
 <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->
 </div>
             <!-- Modal content Multiple mail -->
@@ -305,6 +310,11 @@ $(function() {
   
   
   <script type="text/javascript">
+  function manuallyEnterHotlistToEmail(){
+	  $('#emailsList_chosen ul li input').attr('readonly', true);
+  }
+  
+  
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
 		nicEditors.findEditor('bodytext').saveContent();
@@ -1272,6 +1282,30 @@ function getSenders(){
 }
 </script>
 
+<script>
+function getRecipient(){
+	    var typeOfCampaign = "0";
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getRecipientList?"+tokenParamName+"="+tokenValue+"&typeOfCampaign="+typeOfCampaign,
+		success :function(json) {
+		var output = "";
+		output = output + "<option value=''>Select Recipient</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.listId+ "'>"+opt.recipientEmail+"("+opt.listName+")</option>";
+		
+		}
+		
+		$("#emailsList").empty();
+		$("#emailsList").append(output);
+		$('#emailsList').trigger("chosen:updated");
+		},
+		});
+}
+</script>
+
  <!-- Added by rajashekar -->
  <script>
 function getRecipientContactsList(){
@@ -1303,20 +1337,20 @@ function getRecipientContactsList(){
 	    $("#mailBoxVendorsList").empty();
 	    $("#mailBoxVendorsList").append(result);
 	    recepiantscontactsList = {}
-	    vendorContactDataTableList();
+	    vendorContactDataTableList1();
 	    
 	   
 }
 </script>
 
 <script>
-function vendorContactDataTableList(){
+function vendorContactDataTableList1(){
 	 var searchValue = $("#vendorContactsDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
 	 searchValue = searchValue ? searchValue : "";
 	 var typeOfCampaign = "0";
 	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
-	 vendorContactpagination(url);
+	 vendorContactpagination1(url);
 }
 </script>
 
@@ -1349,7 +1383,7 @@ $('input[class="myRecipantsContactsCheckbox"]').each(function(i) {
 </script>
 
 <script>
-	function vendorContactpagination(url){
+	function vendorContactpagination1(url){
 		var colIndex = 0;
 		 $('#vendorconDataTable').DataTable( { 
 	    	"processing": true,
@@ -1528,23 +1562,37 @@ function listPagination(){
 </script>
 
 <script>
+
+	 
+
 function getRecipantsContacts(){
-		var internalOutput = "";
+		
 		
 		var internalOutput = "";
 		 for(var e in recepiantscontactsList) {
 			 var checkbox_value = recepiantscontactsList[e].split(",");
-			 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			 var elist=$("#emailsList").chosen().find("option:selected" ).text();
+			 var searchString=elist.search(checkbox_value[1]);
+			 if(searchString==-1)
+				{
+				 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			    }
+			 
+			 
 		  }
 		
-		
-		    $("#emailsList").append(internalOutput);
+            $("#emailsList").append(internalOutput);
 			$("#emailsList").trigger("chosen:updated");
 			
 			$("input[name='contactids[]']:checked").removeAttr('checked');
 			$('#checkAllRecipantsntacts').removeAttr('checked');
 		
 }
+
+
+	  
+	  // this function is run when the country changes
+	
 </script>
   <!-- End -->
   

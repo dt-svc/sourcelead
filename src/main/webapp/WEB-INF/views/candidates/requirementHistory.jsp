@@ -19,7 +19,7 @@ function requirementHistory(candidateId){
 	/* result  = result + '<div class="success_pop" id="selector8" style="display: none;">'; */
 		result = result  +'<span class="pad-sea"></span>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div class="reqPop reqPopHeight" id="requirementHistoryPopDiv" ></div>';
+		result  = result + '   <div class="reqPop" id="requirementHistoryPopDiv" ></div>';
 		result  = result + '   <div id="requirementHistoryDiv" class="datatable_filter"></div>';
    /* result  = result + '   </div>'; */
    
@@ -87,12 +87,6 @@ function requirementHistoryList(candidateId){
            	 }else{
            		rate = "--";
            	 }
-           	 if(report.country != null && report.country != '' && report.country != 'undefined'){
-           		country  = report.country;
-           	 }else{
-           		country = "--"
-           	 }
-           	 
            	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
             		clientName  = report.clientName;
             	 }else{
@@ -101,7 +95,28 @@ function requirementHistoryList(candidateId){
 	           	result = result  +'	          <tr>';
 	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+jobType+'">'+jobType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span" title="'+country+'">'+country+'</span></div></td>';
+	    		
+	    		result = result +'<td>';
+	    		result = result +'<div class="positionRelative">';
+  		         for(var k=0; k<1; k++){
+  		        	result = result + '<p class="tbldata-dotdot-sm pull-left">'+report.locationsList[k]+'</p>';
+  		         }
+		    	
+  		        result = result +'<div class="show_Empdetails showjoblist">';
+		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+		        	result = result +'<div class="emailvalues">';
+		        	
+				for(var k=0; k<report.locationsList.length; k++){
+					result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+   		        	
+		    	 	}
+		        	result = result +'</div>';
+		        	result = result +'</div>';
+
+	        	result = result +'</div>';
+	        	result = result +'</td>';
+	    		
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span" title="'+clientName+'">'+clientName+'</span></div></td>';
@@ -169,7 +184,9 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 	          				result = result  +'			<li>';
 		            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		            		result = result  +'<span>Issued offer by '+port.clientName+' <b>'+port.createDateStr+'</b></span>';
+		            		if(port.fileContentType != null && port.fileContentType != '' && port.fileContentType!= 'undefined'){
 		            		result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		            		}
 		            		result = result  +'<div class="clearfix"></div>';
 		            		result = result  +'			</li>';
 	          			}

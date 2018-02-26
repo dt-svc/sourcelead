@@ -16,5 +16,6 @@
 	    <td><div><span>${timeDayEntry.hours}</span></div></td>
 	    <td><div class="tbldata-dotdot-me" title="${timeDayEntry.comments}">${timeDayEntry.comments}</div></td>
 	    <td><div><span>${timeDayEntry.approvalStatus}</span></div></td>
+	    <td><div class="fa fa-edit" onclick="editProjectTaskTimesheetDayEntry('${timeDayEntry.timesheetDate}');"></div></td>
 </tr>
 </c:forEach>

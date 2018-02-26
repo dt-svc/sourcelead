@@ -2,9 +2,11 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -15,16 +17,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CustomFieldsRequestTypeDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.OrglocationFormSubFields;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SourceleadFormSections;
+import com.bis.sourcelead.service.CandidateCustomFieldDataService;
+import com.bis.sourcelead.service.ClientCustomFieldDataService;
+import com.bis.sourcelead.service.JobCustomFieldDataService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
@@ -44,6 +58,28 @@ public class CustomFormRestController {
 	
 	@Autowired
 	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private JobCustomFieldDataService jobCustomFieldDataService;
+	
+	@Autowired
+	private CandidateCustomFieldDataService candidateCustomFieldDataService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private UserCustomFieldDataService userCustomFieldDataService;
+	
+	@Autowired
+	private ClientCustomFieldDataService clientCustomFieldDataService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
+	
 	
     @RequestMapping(value = "/getFormSectionsByActionId",  method = RequestMethod.POST)
     public  ModelAndView getFormSectionsByActionId(@RequestParam(value="actionId", required=true) Long actionId,HttpServletRequest request) throws Exception {
@@ -69,14 +105,19 @@ public class CustomFormRestController {
     }
     
     @RequestMapping(value="/getAllASectionCustomFields",method = RequestMethod.POST)
-    public ModelAndView getAllCustomFormFieldsBySectionIdandOrgLocationIdWeb(@RequestParam(value="sectionId")Long sectionId,HttpServletRequest request) throws Exception {
-		
+    public ModelAndView getAllCustomFormFieldsBySectionIdandOrgLocationIdWeb(CustomFieldsRequestTypeDTO CustomFieldsRequestTypeDTO,HttpServletRequest request) throws Exception {
+    	OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	if(CustomFieldsRequestTypeDTO.getRequestFrom()!= null && StringUtils.isNotEmpty(CustomFieldsRequestTypeDTO.getRequestFrom()) && CustomFieldsRequestTypeDTO.getRequestFrom().equalsIgnoreCase("candidate")) {
+    		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocations.getId());
+    		 CustomFieldsRequestTypeDTO.setSectionId(sections.get(0).getId());
+    	}
     	
-    	List<OrglocationFormFields> orglocationFormFieldList  = getAllCustomFormFieldsBySectionIdandOrgLocationId(sectionId, request);
-    	
+    	List<OrglocationFormFields> orglocationFormFieldList  = getAllCustomFormFieldsBySectionIdandOrgLocationId(CustomFieldsRequestTypeDTO.getSectionId(), request);
 		ModelAndView model = new ModelAndView();
 		List<OrglocationFormFieldsDTO> OrglocationFormFieldsDTOList =new ArrayList<>();
 		Long actionId = null;
+		Map<Long, String[]> jobData = null;
 		long currentIndex = 0;
     	for(OrglocationFormFields customForm:orglocationFormFieldList) {
     		List<OrglocationFormSubFields>  CustomFormSubFields = orglocationFormFieldsService.getAllCustomFormSubFieldsBySectionIdandOrgLocationId(customForm.getId());
@@ -94,29 +135,71 @@ public class CustomFormRestController {
     		OrglocationFormFieldsDTO customFormSectonsListDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(customForm, CustomFormSubFields);
     		OrglocationFormFieldsDTOList.add(customFormSectonsListDTO);
     	}
-    	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
-		model.addObject("currentIndex",currentIndex);
+    		jobData  = getDataByEntityIdActionIdandType(CustomFieldsRequestTypeDTO,actionId,loginOrgLocations);
+	    	model.addObject("dataMapList", jobData);
+	    	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
+			model.addObject("currentIndex",currentIndex);
+		
     	model.setViewName("genericCustomFormFields");
     	return model;
     }
     
-    
-    /*@RequestMapping(value="/getAllSectionByActionId",method = RequestMethod.POST)
-    public  ModelAndView getAllSectionByActionId(@RequestParam(value="actionId", required=true) Long actionId, HttpServletRequest request) throws Exception {
-    	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-    	ModelAndView model = new ModelAndView();
-    	List<OrglocationFormFields> customFormSectonsList = orglocationFormFieldsService.getAllSectionByActionId(actionId,orgLocation);
-    	OrglocationFormFieldsDTO customFormSectonsListDTO = null;
-    	List<OrglocationFormFieldsDTO> OrglocationFormFieldsDTOList =new ArrayList<>();
-    	for(OrglocationFormFields customForm:customFormSectonsList) {
-    		customFormSectonsListDTO = sourceleadFormSectionsService.CustomFormFieldsDTOConverter(customForm, null);
-    		OrglocationFormFieldsDTOList.add(customFormSectonsListDTO);
+    private  List<CustomFormFieldDTO> getSectionDataDetailsByActionId(Long actionId, OrgLocations orgLocation) throws Exception {
+    	 List<CustomFormFieldDTO> formFieldId = null;
+    	if(actionId != null){
+			 formFieldId = new ArrayList<>();
+			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionId,orgLocation.getId());
+			 if(sections != null && !sections.isEmpty()) {
+				 for(SourceleadSectionDTO sec:sections) {
+					 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+						 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+						 custom.setCustomFormFieldId(customFields.getId());
+						 formFieldId.add(custom);
+					 }
+				 }
+			 }
     	}
-    	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
-    	model.setViewName("genericCustomFormFields");
-    	return model;
-    	
+		return formFieldId;
     }
-    */
+
+	private Map<Long, String[]> getDataByEntityIdActionIdandType(CustomFieldsRequestTypeDTO customFieldsRequestTypeDTO,Long actionId, OrgLocations loginOrgLocations) throws Exception {
+		Map<Long, String[]> jobData = null;
+		 		 List<CustomFormFieldDTO> formFieldId = getSectionDataDetailsByActionId(actionId,loginOrgLocations);
+		 		 OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocations.getId());
+		 		 if(customFieldsRequestTypeDTO != null && StringUtils.isNotEmpty(customFieldsRequestTypeDTO.getRequestFrom())) {
+		 		 switch (customFieldsRequestTypeDTO.getRequestFrom()) {
+		 		 	case "requirement":
+			 			if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getRequirementId()!= null) {
+							 jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getRequirementId());
+						 }
+			 			break;
+		 		 	case "candidate":
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getCandidateId() != null) {
+							 jobData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getCandidateId());
+						 }
+			 			break;
+		 		 	case "user" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getUserId() != null){
+		 		 			jobData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getUserId());
+		 		 		}
+		 		 	     break;
+		 		 	case "clientAndVendor":
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getOrgRelationID()!= null && customFieldsRequestTypeDTO.getClientLocationId() != null){
+		 		 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId( customFieldsRequestTypeDTO.getClientLocationId(), customFieldsRequestTypeDTO.getOrgRelationID(),loginOrgLocations.getId());
+		 		 			if(orgRelation.getResponderLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
+		 		 				jobData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+		 		 			}else if(orgRelation.getLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
+		 		 				jobData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+		 		 			}
+		 		 			
+		 		 			
+		 		 		}
+		 		 	}
+		 		 }
+		 		 
+		 		 
+				 
+		return jobData;
+	}
     
 }

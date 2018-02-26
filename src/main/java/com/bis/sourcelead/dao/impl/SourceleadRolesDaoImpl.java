@@ -41,7 +41,7 @@ public class SourceleadRolesDaoImpl implements SourceleadRolesDao {
 	@Transactional
 	public List<SourceleadRoles> getSourceleadRoles() {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from SourceleadRoles sourceleadRoles where sourceleadRoles.status = '1' ").setCacheable(true).list();
+		return session.createQuery("from SourceleadRoles sourceleadRoles where sourceleadRoles.status = '1' ").list();
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class SourceleadRolesDaoImpl implements SourceleadRolesDao {
 		Session session = this.sessionFactory.getCurrentSession();
 
 		 String actionI= actionId;
-		//actionlist =  session.createQuery("from SourceleadRoles sourceleadRoles where    FIND_IN_SET("+actionI+",sourceleadRoles.actionId) and sourceleadRoles.SDisplayName = roleName ").setCacheable(true).list();
+		//actionlist =  session.createQuery("from SourceleadRoles sourceleadRoles where    FIND_IN_SET("+actionI+",sourceleadRoles.actionId) and sourceleadRoles.SDisplayName = roleName ").list();
 		/* DISPLAY_NAME  ='"+roleName+"' and */
 		
 		String sql = "SELECT * FROM sourcelead.SOURCELEAD_ROLES where DISPLAY_NAME  ='"+roleName+"' and  FIND_IN_SET("+actionId+",ACTION_ID)";

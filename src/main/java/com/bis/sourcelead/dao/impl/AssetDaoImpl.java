@@ -125,7 +125,7 @@ public class AssetDaoImpl implements AssetDao{
 		}
 		
 		String query = "from Asset asset left join fetch asset.shiftAEmployee.user left join fetch asset.shiftBEmployee.user  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subquery1+" "+subquery2+" "; 
-		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return assetList;
 	}
 
@@ -135,7 +135,7 @@ public class AssetDaoImpl implements AssetDao{
 		
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from Asset asset left join fetch asset.shiftAEmployee.user left join fetch asset.shiftBEmployee.user  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "; 
-		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return assetList;
 	}
 

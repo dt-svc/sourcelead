@@ -88,7 +88,7 @@
 </div>
 </c:if>
 <div class="clearfix"></div>
-<div class="timesheetNewTabs">
+<div id="timesheetNewTabs" class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
 	   <input type="hidden" name="timesheetSubmission.id" value="${timesheetSubmissionDTO.id}"/>
 	   <input type="hidden" id="currentTimeSubFrequency" name="currentTimeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
@@ -144,7 +144,14 @@
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 														       <c:if test="${pt.id == entry.key}">
-														         <c:set var="taskType" value="${pt.taskType}" />
+														        <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+																	       <c:forEach var="ted" items="${entry.value}">
+																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+																           </c:forEach>
+															       </c:if>
+															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
+															             <c:set var="taskType" value="${pt.taskType}" />
+															        </c:if>
 														          <c:set var="taskId" value="${pt.id}" />
 														          <c:set var="taskName" value="${pt.taskName}" />
 														         <option value='${pt.id}' selected>${pt.taskName}</option>
@@ -166,10 +173,17 @@
 											         <c:if test="${entry.key != 0}">
 											             <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 															       <c:if test="${pt.id == entry.key}">
-															           <c:set var="taskType" value="${pt.taskType}" />
-															           <c:set var="taskId" value="${pt.id}" />
-															           <c:set var="taskName" value="${pt.taskName}" />
-															          <p>${!empty pt.taskName ? pt.taskName : '--'}</p>
+															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+																	       <c:forEach var="ted" items="${entry.value}">
+																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+																           </c:forEach>
+															       </c:if>
+															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
+															             <c:set var="taskType" value="${pt.taskType}" />
+															        </c:if> 
+														           <c:set var="taskId" value="${pt.id}" />
+														           <c:set var="taskName" value="${pt.taskName}" />
+														          <p>${!empty pt.taskName ? pt.taskName : '--'}</p>
 															       </c:if>
 												         </c:forEach>
 												       </c:if>
@@ -324,7 +338,7 @@
 						</div>
 						<div class="timesheet_bot">
 							<div class="timesheet_button">
-							   <div class="totalWrap pull-left">
+							   <div class="totalWrap pull-left timesheethours-li">
 									<ul>
 										<li><span>Billable Hours</span><input
 											id="grandBillableTotal"
@@ -1559,6 +1573,12 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	        	    }); 
 	}
 </script> 
+<script type="text/javascript">
+$(".content-wraper").click(function() {
+	//alert("hello");
+	bodyClick();
+});
+</script>
 <!-- Tab Switching -->
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 

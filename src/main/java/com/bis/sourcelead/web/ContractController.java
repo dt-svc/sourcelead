@@ -466,6 +466,13 @@ public class ContractController {
 				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
 				contract.setStartDateStr(currentDateInTimezone);
 			}
+			if(null != contract && null != contract.getJoinDate()){
+				String currentTimeStr = Constants.TZ_DF.format(contract.getJoinDate());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
+				contract.setJoinedDateStr(currentDateInTimezone);
+			}
 			if(null != contract && null != contract.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
@@ -672,6 +679,19 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		model.addObject("contract", contract);
+		if(contract.getContactUser().getLastName() != null) {
+			StringBuilder sb = new StringBuilder();
+			model.addObject("signatory",sb.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()));
+		}else {
+			model.addObject("signatory",contract.getContactUser().getFirstName());
+		}
+		if(contract.getContactUser().getLastName() != null) {
+			StringBuilder sbn = new StringBuilder();
+			model.addObject("initial",sbn.append(contract.getContactUser().getFirstName().charAt(0)).append(contract.getContactUser().getLastName().charAt(0)));
+		}else {
+			model.addObject("initial",contract.getContactUser().getFirstName().charAt(0));
+		}
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("type", type);
 		model.setViewName("contracts/upload");

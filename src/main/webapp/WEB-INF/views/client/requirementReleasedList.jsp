@@ -128,22 +128,37 @@ function clientRequirementList(orgRelationId){
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
 
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 				  {	        		
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		
 	        		
 	        		result = result + '<tr>';
                		result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 	                
-	                if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
-	                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+               		
+               		result = result +'<td>';
+   		        	result = result +'<div class="positionRelative">';
+	   		         for(var k=0; k<1; k++){
+	   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+	   		         }
+   		    	
+	   		        result = result +'<div class="show_Empdetails showjoblist">';
+   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 
-	                }else{
-	                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-	                }
+   		        	result = result +'<div class="emailvalues">';
+   		        	
+						for(var k=0; k<opt.locationsList.length; k++){
+							result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+		   		        	
+   		    	 	}
+   		        	result = result +'</div>';
+   		        	result = result +'</div>';
+   
+
+		        	result = result +'</div>';
+		        	result = result +'</td>';
+	                
 	                if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
 	           	 {
 	          	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
@@ -154,7 +169,7 @@ function clientRequirementList(orgRelationId){
 	           	 }else{
 	           		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
 	           	 }
-	                result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
+	                result = result +"<td><div class='tblminwidth-100'>"+opt.postedDateStr+"</div></td>";
 	                result = result + '<td><div class="tbldata-dotdot-vsm"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
 	               	result = result + '<td><div>'+opt.noOfApplicants+'</div></td>';
 	            	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
@@ -182,7 +197,7 @@ function clientRequirementList(orgRelationId){
    		        	 }else if(opt.requirementSubmissionStatus == "CANCEL"){
    		        		cancelCount = cancelCount +1;   
    		        	 } */
- 	                result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
+ 	                result = result + '<td><div class="width50px"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
    		         }
    		         else{
    		        	result = result + '<div class="tblminwidth-75 ">---</div>';

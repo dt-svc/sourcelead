@@ -22,7 +22,7 @@ window.onload = function() {
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
     </section>
     <div class="content-area content-new clearfix">
-     <div id="loading"></div> 
+     <div id="leaveLoading"></div> 
     <form:form id="apply_leave_form" name="apply_leave_form" method="post">
       <div class="clearfix form-horizontal inner-content">
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
@@ -104,7 +104,7 @@ window.onload = function() {
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
-                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);" data-validation="required">
+                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);">
                       <a id="Button0value=">
                       <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
@@ -188,7 +188,6 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			getLeaveDetails(finalDateFormatEndDate);
-			
 			}
 		});
 		
@@ -264,7 +263,7 @@ function removeEndValid(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
-        		  output = output +'<option value='+leave.id+'>'+leave.name+'</option>';
+        		  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -274,9 +273,9 @@ function removeEndValid(){
 //         	  $('#leaveType').prop('disabled', true).trigger("chosen:updated");
         	  
         	  var counts = json[json.length-1];
-        	  var totalBalanceCounts = counts.balanceLeaveCounts;
+        	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
         	  var totalPendingCounts = counts.pendingLeaveCounts;
-        	  var totalTakenCounts = counts.takenLeaveCounts;
+        	  var totalTakenCounts = counts.takenLeaves;
         	  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
         	  
         	  var result = "";
@@ -287,7 +286,7 @@ function removeEndValid(){
 				        result = result +'	<li>';
 				  		result = result +'			<label>'+leaveType.name+'</label>';
 				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-				  		result = result +'			<span class="label label-info" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.remainingTotalLeaveCounts+'</span>';
+				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
 				  		result = result +'	</li>'; 
 	        	  }
 	        	  result = result +'	</ul>'; 
@@ -389,7 +388,7 @@ function applyLeave(){
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
 			if(data == true){
 				location.replace(sourceleadUrl+ "/leaveManagementReports");
@@ -448,21 +447,21 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var leaveTypeId = $("#leaveType").val();
+	var leaveTypeUUID = $("#leaveType").val();
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
-	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+leaveTypeId,	 
+		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
 		    success: function(report) {
-		    	if(report.duration == "Full Day"){
+		    	/* if(report.duration == "Full Day"){
 		    		$("#fromHalfDayDiv").hide();
 		    		$("#toHalfDayDiv").hide();
 		    	}else{
 		    		$("#fromHalfDayDiv").show();
 		    		$("#toHalfDayDiv").show();
-		    	}
+		    	} */
 		    	
 		    	if(report.reasonRequired == "Y"){
 			 		$("#reason").attr('data-validation',"required");
@@ -579,12 +578,13 @@ function validateMaxLeave(data){
 		userId = '${SourceLeadWeb_userId}';
 	}
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
 	var leaveTypeId = $("#leaveType").val();
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
-		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
+		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
 				$('.jquery_form_error_message').remove();
 				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
@@ -598,6 +598,40 @@ function validateMaxLeave(data){
 	
 }
 </script>
+
+<script>
+function validateCarryForwardLeaves(){
+	alert("sdasdsadsa")
+	$('.jquery_form_error_message cOrange').hide();
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
+	var leaveTypeId = $("#leaveType").val();
+	if(userId != null && userId !='' && userId !='undefined'){
+	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
+		alert("asdas")
+		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+			if(data == true){
+				$('.jquery_form_error_message').remove();
+				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
+			}else{
+				$('.jquery_form_error_message').hide();
+			}
+		}); 
+	}
+	
+  }
+	
+}
+</script>
+
 <div class='comMask'></div>
 <script>
 function validateDate(){

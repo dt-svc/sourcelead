@@ -31,7 +31,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -51,9 +51,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -70,6 +72,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -80,6 +83,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -95,6 +99,7 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
@@ -179,6 +184,10 @@ public class RequirementListRestController {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -1440,12 +1449,14 @@ public class RequirementListRestController {
 								&& requirementSubmissionHistoryServiceList.size() > 0) {
 							RequirementSubmissionHistory requirementSubmissionHistory = requirementSubmissionHistoryServiceList.get(0);
 							User usr = userService.getUserByUserCode(requirementSubmissionHistory.getCreatedBy());
-							if (usr.getFirstName() != null && usr.getLastName() != null) {
+							if (usr != null && usr.getFirstName() != null && usr.getLastName() != null) {
 								StringBuilder name = new StringBuilder();
 								requirementSubmission.setSubmittedBy(name.append(usr.getFirstName()).append(" ").append(usr.getLastName()).toString());
+							}else if(usr != null && usr.getFirstName() != null) {
+								requirementSubmission.setSubmittedBy(usr.getFirstName());
 							}
 							else {
-								requirementSubmission.setSubmittedBy(usr.getFirstName());
+								requirementSubmission.setSubmittedBy("---");
 							}
 							requirementSubmission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
 						}
@@ -1604,7 +1615,7 @@ public class RequirementListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "generatedId","jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
+		String[] tableColumns = {"", "generatedId.keyword","jobTitle.keyword", "client.keyword", "jobType.keyword", "country.keyword", "", "manager.keyword", "createdDate", ""};
 		
 		int sortColumnIndex = 8; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
@@ -1628,10 +1639,10 @@ public class RequirementListRestController {
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : anyKeyWordArray){
 						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForUniversalSearch(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderListForUniversalSearch(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								anyBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							DateFormat df = orgLocation.getLocFullFormDateFormatter();
 							try{
@@ -1667,26 +1678,35 @@ public class RequirementListRestController {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
 	    }
 	   //Country
-		if(StringUtils.isNotEmpty(search.getCountry())){
-			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry()));
+		/*if(StringUtils.isNotEmpty(search.getCountry())){
+			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("country", search.getCountry().split(",")[0]));
 	    }
 		 //State
 		if(StringUtils.isNotEmpty(search.getState())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
-	    }
-		//City
+	    }*/
+	 
+		//multiple City
 		if(StringUtils.isNotEmpty(search.getCity())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery("city", search.getCity()));
-	    }
+			ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(search.getCity());
+			if(cityArray != null && !cityArray.isEmpty()){
+				BoolQueryBuilder multiCityBoolQueryBuilder = new BoolQueryBuilder();
+				for(String keywd : cityArray){
+					multiCityBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("city", keywd));
+				}
+				boolQueryBuilder.must(multiCityBoolQueryBuilder);
+			} 
+		}
+		
 		
 		if(StringUtils.isNotEmpty(search.getNoticePeriod())){
 			ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(search.getNoticePeriod());
 			if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
-				BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
+				BoolQueryBuilder noticePeriodBoolQueryBuilder = new BoolQueryBuilder();
 				for(String keywd : noticePeriodArray){
-					edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
+					noticePeriodBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
 				}
-				boolQueryBuilder.must(edunBoolQueryBuilder);
+				boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 			} 
 		}
 			
@@ -1909,7 +1929,7 @@ public class RequirementListRestController {
 		}
 		 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 		 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,
+				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
 						0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
 		
 		 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
@@ -1930,28 +1950,28 @@ public class RequirementListRestController {
 		
        return keyWordList;
    }
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
-		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobId", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("client", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("priority", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+	 private ArrayList<QueryBuilder> getQueryBuilderListForUniversalSearch(String keywd){
+		    ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		    QueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobTitle", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobId", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchPhraseQuery("skills", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("country", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("city", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("state", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("client", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("jobType", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("priority", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 //				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
 			}
-			return matchQueryBuilderList; 
+			return QueryBuilderList; 
 	 }
       public String UpdateOnToDate(String updatedOn){
 		
@@ -2041,6 +2061,17 @@ public class RequirementListRestController {
         if(null != requirementIndex.getRequirementUUID()){
     		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
     	   }
+        
+    	List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				requirementLocationsList.add(location.getLocation());
+			}
+		}
+        
+		requirement.setLocationsList(requirementLocationsList);
+        
       	return requirement;
  	}
     private String getReqSkills(String[] skills) {
@@ -2060,6 +2091,61 @@ public class RequirementListRestController {
 		resultJson = commonUtil.toJSON(timezoneList);
 		return resultJson;
 	}
+	
+	
+	
+	@RequestMapping(value = "/getRequirementLocations")
+	public @ResponseBody List<RequirementLocationsDTO> getRequirementLocations(@RequestParam(value = "requirementUUID", required = true) String requirementUUID) throws Exception
+	{
+		
+		List<RequirementLocationsDTO> locationsDTOList = new ArrayList<>();
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations locations : locationsList) {
+				RequirementLocationsDTO locationsDTO = new RequirementLocationsDTO();
+				locationsDTO.setLocationName(locations.getLocation());
+				
+				if(!isNullOrEmpty(locations.getCountry())) {
+					locationsDTO.setCountry(locations.getCountry());
+				}else {
+					locationsDTO.setCountry("");
+				}
+				
+				if(!isNullOrEmpty(locations.getState())) {
+					locationsDTO.setState(locations.getState());
+				}else {
+					locationsDTO.setState("");
+				}
+				if(!isNullOrEmpty(locations.getCity())) {
+					locationsDTO.setCity(locations.getCity());
+				}else {
+					locationsDTO.setCity("");
+				}
+				if(!isNullOrEmpty(locations.getZipCode())) {
+					locationsDTO.setZipcode(locations.getZipCode());
+				}else {
+					locationsDTO.setZipcode("");
+				}
+				if(!isNullOrEmpty(locations.getLatitude())) {
+					locationsDTO.setLatitude(locations.getLatitude());
+				}else {
+					locationsDTO.setLatitude("");
+				}
+				if(!isNullOrEmpty(locations.getLongitude())) {
+					locationsDTO.setLongitude(locations.getLongitude());
+				}else {
+					locationsDTO.setLongitude("");
+				}
+				
+				locationsDTO.setLocationUUID(locations.getLocationUUID());
+				locationsDTO.setId(locations.getId());
+				locationsDTOList.add(locationsDTO);
+			}
+		}
+		return locationsDTOList;
+	}
+	
 	
 	@SuppressWarnings("unused")
 	public void modifiedReqStatusMailtoVendorContact(Requirement requirement, User loginUser, OrgLocations loginOrgLocation) throws Exception

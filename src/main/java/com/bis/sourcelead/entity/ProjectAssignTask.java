@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_ASSIGN_TASK")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectAssignTask")
 public class ProjectAssignTask implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -34,13 +33,13 @@ public class ProjectAssignTask implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 		 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_TASK_ID", nullable=false )	
 	private ProjectTasks projectTaskId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_MEMBER_ID", nullable=false )	
 	private ProjectMembers projectMemberId;
  

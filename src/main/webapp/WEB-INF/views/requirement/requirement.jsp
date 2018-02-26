@@ -29,6 +29,7 @@
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
+	//addLocationAuto('addlocation','0');
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
@@ -37,6 +38,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 		window.onload = function () {
 			getNoticePeriodList();
+			getJobLocations();
 			var jobType = '${requirement.jobType}';
 			if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
@@ -202,22 +204,25 @@ $(document).ready(function () {
   	
   </section>
   <div class="content-area content-new clearfix">
-  <div id="loading"></div>
+  <div id="requirementLoading"></div>
    
    <div class="newPrDetails newPrDetailsPMO"> 
  		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
 				<c:if test="${empty requirementUUID}">
 				<li class="current"><a href="#tab-a" data-toggle="tab">Job Details</a></li>
-				<li><a href="#tab-b" data-toggle="tab" id="jobRelease">Job Release</a></li>
+				<li><a href="#"  id="jobRelease">Job Release</a></li>
+				<li><a href="#"  id="recommendations">Recommendations</a></li>
 				</c:if>
 				<c:if test="${!empty requirementUUID}">
 				<li class="current"><a href="<c:url value='${appPath}/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
 				<c:if test="${requirementStatus == 'OPEN'}">
 					<li><a href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
+				    <li><a href="<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
 				</c:if>
 				<c:if test="${requirementStatus != 'OPEN'}">
-					<li><a href="#tab-b" data-toggle="tab" id="jobRelease">Job Release</a></li>
+					<li><a href="#" id="jobRelease">Job Release</a></li>
+					<li><a href="#" id="recommendations">Recommendations</a></li>
 				</c:if>
 				</c:if>
 				<div class="clearfix mb"></div>
@@ -555,41 +560,41 @@ $(document).ready(function () {
             </c:if>
 		     </c:if>
           
-          <div class="form-group">
+          <%-- <div class="form-group">
 				<label class="col-md-3">Address<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
 				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Address" data-validation="required"></input>
-          			<i class="fa fa-refresh btn btn-primary refresh-icon mr" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
+          			<i class="fa fa-refresh btn btn-primary refresh-icon mr6" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
 				</div>
-		</div>
+		</div> --%>
 		
-		 <div class="form-group">
+		 <%-- <div class="form-group">
 			<label class="col-md-3">City</label>
 			<div class="col-md-9">
 			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City" >
 			</div>
-		</div>
+		</div> --%>
 		
-		 <div class="form-group">
+		 <%-- <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
 				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State">
 				</div>
-		 </div>
+		 </div> --%>
 		 
-		  <div class="form-group">
+		  <%-- <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
 			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code">
 			</div>
-		</div>
+		</div> --%>
 		
-		<div class="form-group">
+		<%-- <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
 				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country">
 				</div>
-		</div>
+		</div> --%>
 	 
          <div class="form-group">
               <label class="col-md-3">Skills</label>
@@ -857,7 +862,7 @@ $(document).ready(function () {
             </div>
           
           <div class="form-group">
-	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="It's a period driven by company's policy during which a candidate won't be allowed to apply for multiple jobs while the decision is awaiting or other reasons."></i></label>
+	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="The time period during which the applicant will not be able to apply for new jobs (due to awaiting feedbacks or other reasons)"></i></label>
 	         <div class="col-md-9 selectpicker_maxheight">
 	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             
@@ -941,7 +946,8 @@ $(document).ready(function () {
 			   				<!-- here the isClient checkbox name is changes to isClientEdit because, readonly check box is not working and onclick methods are effected (Venkat Kesav) -->
 					            <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 					            ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();" hidden="true" checked="checked">
-					            <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+					            <label>&nbsp;&nbsp;<strong>Is Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
+					            </strong>
 					            &nbsp;&nbsp;
 					            </label>
 						  	</div>
@@ -950,7 +956,8 @@ $(document).ready(function () {
 						   <div class="ml">
 							  <input type="checkbox" name="isClient" id="isClientJob" class="isClient" value="${requirement.isClientJob}"
 							   ${requirement.isClientJob  == 'Y' ? "checked" : ''} onclick="getIsClientVal();">
-							   <label>&nbsp;&nbsp;<strong>Is Client Job</strong>
+							   <label>&nbsp;&nbsp;<strong>Is Client Job <i class='fa fa-info-circle' title='Post the job including the related client information'></i>
+							   </strong>
 								&nbsp;&nbsp;
 							   </label>
 							</div>
@@ -1046,7 +1053,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary</label>
+                <label class="col-md-3">Bill Rate / Salary&nbsp;<i class='fa fa-info-circle' title='Client proposed bill rate for the particular job (strictly for internal reference only)'></i></label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1157,7 +1164,7 @@ $(document).ready(function () {
               <div class="clearfix"></div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Submission Form<span class="text-danger paddingLeft">*</span></label>
+                <label class="col-md-3">Submission Form<span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title="Select client specific Submission Template to provide the applicant's information"></i></label>
                 <div class="col-md-9">
                   <div>
                   <c:set var="val" value="${requirement.isClientJob}"/>
@@ -1193,11 +1200,32 @@ $(document).ready(function () {
           </div>
         </div>
       </div>
+      
+      
+        <!-- Locations -->
+        
+          <div class="clearfix">
+		        <div class="col-lg-12">
+		          <h3>Locations</h3>
+		        </div>
+		       <div class="col-md-6">
+				 <label class="col-md-12">Job Locations (Format  city,state,country)</label>
+				 <div class="clearfix"></div>
+					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom jobdocsCustom">
+		                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
+						        <span class="uploadAttachments"> 
+					              <div id="jobLocationsList"></div>
+						        </span>
+		                      </div>
+		                      </div>
+					
+				</div>
+          </div>
 
        <!-- Internal Details html -->
       <div class="clearfix">
         <div class="col-lg-12">
-          <h3>Internal Details</h3>
+          <h3 class="margin-top0">Internal Details</h3>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12  myForm">
 
@@ -1227,8 +1255,8 @@ $(document).ready(function () {
                 <input type="radio" name="approver" id="seqentialApprovers"  onClick="approvalType('Sequential');">
                 <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
-                
-                  <i id="navbar" class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
+                 
+                  <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                
@@ -1333,7 +1361,7 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="form-group" id="internalSubmissionFrom">
-            <label class="col-md-3">Application Form<span class="text-danger paddingLeft">*</span></label>
+            <label class="col-md-3">Application Form<span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The applicant provides the required information for the job application'></i></label>
             <div class="col-md-9">
                
                <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
@@ -1349,7 +1377,7 @@ $(document).ready(function () {
             <!-- <div id="assignedToSavingDiv"></div>
             <div id="defaultAssignedToSavingDiv"></div> -->
 													
-            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign To team in the organization who will process the resources for this job'></i></label>
+            <label class="col-md-3">Assign To <i class='fa fa-info-circle' title='Assign the job to the internal team to process the resources for the job'></i></label>
             
             <div class="col-md-9">
               <div class="form-icon">
@@ -1379,7 +1407,7 @@ $(document).ready(function () {
 							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Assign to all</strong>
+					<label>&nbsp;&nbsp;<strong>Assign to all <i class='fa fa-info-circle' title='Job will be made visible to all users within the organization. Users will be able to add the applicants for the job'></i></strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -1482,11 +1510,29 @@ $(document).ready(function () {
   </div>
 </section>
 
+<div id="divLocTd1" style="display: none; float: left;">
+    <div class='positionRelative'>
+		 <input type="text"  placeholder="Location" onclick="addLocationAuto('REPLACEROWIDaddlocation','REPLACEROWID','REPLACEROWIDlongitude','REPLACEROWIDlatitude')" class="form-control joblocinput" id="REPLACEROWIDaddlocation" name="locationInfo[REPLACEROWID].locationName"  data-validation="required" field-name="Location" > 
+	     <div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation('REPLACEROWID');"></div>
+	     <input type="hidden"  name="locationInfo[REPLACEROWID].country" id="REPLACEROWIDcountry">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].state" id="REPLACEROWIDstate">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].city" id="REPLACEROWIDcity">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].zipcode" id="REPLACEROWIDzipcode">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].longitude" id="REPLACEROWIDlongitude">
+		 <input type="hidden"  name="locationInfo[REPLACEROWID].latitude" id="REPLACEROWIDlatitude">
+	 </div>
+</div>
+
+<div id="divLocTd2" style="display: none; float: left;">
+   <i class="fa fa-times" onclick="removeLocationRow(REPLACEROWID);"></i> 
+</div> 
+
 <script>
 function getCustomDependentField(sectionId){
+	var requirementId = '${requirement.id}';
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"&requestFrom=requirement",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -1584,7 +1630,7 @@ function validate_fileupload(fileName)
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		checkTemplateforDouplicate();
 		validateJobId();
 		$('#addClient').empty();
@@ -1658,7 +1704,7 @@ function validate_fileupload(fileName)
 		     if ($('#requirement_form').validate(false, validationSettings)){ 
       		var formData = getFormData1("requirement_form");
 			$( "#submitForApproval" ).addClass('button').val('Processing..');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -1666,7 +1712,7 @@ function validate_fileupload(fileName)
 	  		         contentType:false, 
 					  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
 					  	success : function(result) {
-					  	$("#loading").removeAttr("style");	
+					  	//$("#requirementLoading").removeAttr("style");	
 					  	if(saveType != 'saveAndContinue'){
 					  		location.replace(sourceleadUrl+"/jobs");
 					  	}
@@ -1847,7 +1893,7 @@ function setTemplateValues(){
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
 		
-		getRequirementAndLookUpSkills(requirementId);
+// 		getRequirementAndLookUpSkills(requirementId);
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -1858,7 +1904,7 @@ function setTemplateValues(){
 		    		}
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
-			    	$("#experienceLevel").val(json.experienceLevel);
+			    	$("#experienceLevel").val(json.experienceLevelStr);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
 			    	$('#coolingOff').trigger('chosen:updated');
@@ -1868,6 +1914,15 @@ function setTemplateValues(){
 			    	$("#projectId").val(json.projectId);
 			    	$("#projectId").trigger("chosen:updated");
 			    	
+			    	$('#skills').val('').trigger('chosen:updated');
+					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
+						var skills = [];
+			            skills = json.skills.split(",");
+			            $("#skills").val(skills);
+			            $('#skills').trigger("chosen:updated");
+					}
+
+					
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
@@ -1960,19 +2015,24 @@ function setTemplateValues(){
 			    		 $("#backgroundCheckTemplate").css("display","none"); 
 			    	}
 			    	
-			    	
 			    	if(json.gender !=  null && json.gender != '' && json.gender != 'undefined'){
 			    		 $("#genderTemplate").css("display","block"); 
 			    		 $("#addGender").css("display","none"); 
 			    		var result = "";
 			    		result = result + '<label class="col-md-3">Gender</label>';
 			    		result = result + '<div class="col-md-9">';
-			    		if(json.gender == "Y"){
-			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Y" name="gender"><span class="mr5"></span>Yes</span>';
-				    		result = result + '<span class="paddingLeft"><input type="radio" value="N" name="gender"><span class="mr5"></span>No</span>';
-			    		}else {
-			    			result = result + '<span class="paddingRight"><input type="radio"  value="Y" name="gender"><span class="mr5"></span>Yes</span>';
-				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="N" name="gender"><span class="mr5"></span>No</span>';
+			    		if(json.gender == "Male"){
+			    			result = result + '<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>';
+			    		}else if(json.gender == "Female"){
+			    			result = result + '<span class="paddingRight"><input type="radio" value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>';
+			    		}else if(json.gender == "All"){
+			    			result = result + '<span class="paddingRight"><input type="radio" value="Male" name="gender"><span class="mr5"></span>Male</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>';
+				    		result = result + '<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>';
 			    		}
 			    		result = result + '<div>';
 			    		$("#genderDivId").empty();
@@ -2019,18 +2079,10 @@ function setTemplateValues(){
 						}
 						
 					 		
-					
+						var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 					$('#description').val('');
 					$('#rate').val('');
 					$('#education').val('').trigger('chosen:updated');
-					$('#skills').val('').trigger('chosen:updated');
-					if(json.skills != null && json.skills != '' && json.skills != 'undefined'){
-						var skills = [];
-			            skills = json.skills.split(",");
-			            $("#skills").val(skills);
-			            $('#skills').trigger("chosen:updated");
-					}
-
 					
 					if(json.education != null && json.education != '' && json.education != 'undefined'){
 			            var educations = [];
@@ -2181,17 +2233,12 @@ function removeApprovers(){
 	$('#sequentialApprover2').val('');
 	$('#sequentialApprover2').trigger('chosen:updated');
 	
-	
+	 
 	if(!$("#apprverReq").is(':checked')){
-	     
-        $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+         $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+    }else{
+		 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
     } 
-
-else{
-	
-	 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
-	
-    }
 }
 </script> 
 
@@ -2266,6 +2313,20 @@ function approvalType(type){
 			$('#sequentialApprover2').attr("data-validation-optional","true"); 
 			$('#parallelApprover').attr("data-validation-optional","true"); 
 		}
+	  
+	    //Written by mamatha ,purpose : added tooltip
+	    if(type == "Default" || type == "Parallel"){
+	    	
+	    	$('#navbar').attr("title","Either of the approver can approve the job");
+	    	
+	    	
+	    }else if(type == "Sequential"){
+	    	$('#navbar').attr("title","The job approval is required from both the approver levels");
+	    	
+	    }
+	   
+	  
+	       
 	  
 }
 </script>
@@ -2843,6 +2904,238 @@ function refreshRequirementClientContactList(){
 	if(valueArray[0] != ""){
 		clientContactList(valueArray[0],valueArray[1]);
 	}
+}
+</script>
+
+
+<script>
+function getJobLocations(){
+	
+	var requirementUUID = '${requirementUUID}';
+	
+	if(requirementUUID){
+		$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
+		        success: function(json) {
+		        	
+		        	 var result = "";
+		        	 var addlocation = 'addlocation0';
+		        	 var locCount = json.length;
+		        	 
+		         	 for (var i = 0; i < json.length; i++) { 
+		         		 var opt = json[i]; 
+		         		 var j = i+1000;
+		         		 result = result +"<div class='positionRelative mt5' id='location"+opt.id+"'>";
+		         		 result = result +'<input type="text" value="'+opt.locationName+'" placeholder="Location" id="'+j+'addlocation" onclick="addLocationAuto(\''+j+'addlocation\','+j+',\''+j+'longitude\',\''+j+'latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="savedLocationInfo['+i+'].locationName">';
+		         		 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon pull-right" title="Clear" onClick="refreshLocation('+j+');"></div>';
+		         		 result = result +"<span class='fa fa-trash jobloc-trash cursorPointer' onclick='deleteSavedLocation("+opt.id+")'></span>";
+		         		 result = result +'<input type="hidden" value="'+opt.country+'"  name="savedLocationInfo['+i+'].country" id="'+j+'country">';
+			        	 result = result +'<input type="hidden" value="'+opt.state+'"  name="savedLocationInfo['+i+'].state" id="'+j+'state">';
+			        	 result = result +'<input type="hidden" value="'+opt.city+'" name="savedLocationInfo['+i+'].city" id="'+j+'city">';
+			        	 result = result +'<input type="hidden" value="'+opt.zipcode+'" name="savedLocationInfo['+i+'].zipcode" id="'+j+'zipcode">';
+			        	 result = result +'<input type="hidden" value="'+opt.longitude+'" name="savedLocationInfo['+i+'].longitude" id="'+j+'longitude">';
+			        	 result = result +'<input type="hidden" value="'+opt.latitude+'" name="savedLocationInfo['+i+'].latitude" id="'+j+'latitude">';
+			        	 result = result +'<input type="hidden" value="'+opt.locationUUID+'" name="savedLocationInfo['+i+'].locationUUID" >';
+	   				     result = result +"</div>";
+		         	 }
+		        	 
+		        	 
+		         	 result = result +"<input type='hidden' name='savedlocationsMaxRowNumber'  id='savedlocationsMaxRowNumber' value='"+locCount+"' />";
+		        	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
+		             result = result +"<input type='hidden' id='locationsRowCount' value='1' />";
+		        	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0'>";
+		        	 result = result +"<tr id='divAttachmentTsRow0'>";
+		        	 result = result +"<td>";
+		        	 result = result +"<div class='positionRelative mt5'>";
+		        	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation-optional="true" field-name="Location" name="locationInfo[0].locationName">';
+		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation(0);"></div>';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].zipcode" id="0zipcode">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].longitude" id="0longitude">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].latitude" id="0latitude">';
+		        	 result = result +"</td>";
+		        	 result = result +"</div>";
+		        	 result = result +"<td><i class='fa fa-plus' id='addLocRow' onclick='addNewLocation()'></i></td>";
+		        	 result = result +"</tr>";
+		        	 result = result +"</table>";
+		        	
+		        	 $("#jobLocationsList").empty();
+		        	 $("#jobLocationsList").append(result);
+		        	 $("#requirementLoading").removeAttr("style");	
+		        }
+		 });
+	}else{
+		
+		 
+		        	 var result = "";
+		        	 var addlocation = 'addlocation0'
+		        	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
+		             result = result +"<input type='hidden' id='locationsRowCount' value='1' />";
+		        	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0'>";
+		        	 result = result +"<tr id='divAttachmentTsRow0'>";
+		        	 result = result +"<td>";
+		        	 result = result +"<div class='positionRelative'>";
+		        	 result = result +'<input type="text"  placeholder="Location" id="0addlocation" onclick="addLocationAuto(\'0addlocation\',0,\'0longitude\',\'0latitude\')" class="form-control joblocinput"  data-validation="required" field-name="Location" name="locationInfo[0].locationName">';
+		        	 result = result +'<div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation(0);"></div>';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].country" id="0country">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].state" id="0state">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].city" id="0city">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].zipcode" id="0zipcode">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].longitude" id="0longitude">';
+		        	 result = result +'<input type="hidden"  name="locationInfo[0].latitude" id="0latitude">';
+		        	 result = result +"</td>";
+		        	 result = result +"</div>";
+		        	 result = result +"<td><i class='fa fa-plus' id='addLocRow' onclick='addNewLocation()'></i></td>";
+		        	 result = result +"</tr>";
+		        	 result = result +"</table>";
+		        	
+		        	 $("#jobLocationsList").empty();
+		        	 $("#jobLocationsList").append(result);
+		
+	}
+	
+	 
+	
+	 
+	 
+	
+}
+</script>
+
+<script>
+function addNewLocation(){
+	
+	var checkMaxTsRowNum = $("#locationsMaxRowNumber").val();
+	var tbl = document.getElementById("locationTable");
+	var maxRowNum = parseInt($("input[name = 'locationsMaxRowNumber']").val());
+	$("input[name = 'locationsMaxRowNumber']").val(maxRowNum + 1);
+	$("input[id = 'locationsRowCount']").val(maxRowNum + 1);
+	
+	var row = tbl.insertRow(maxRowNum);
+	row.setAttribute("id", "divLocationRow" + maxRowNum);
+	
+	
+	
+	var cell0 = row.insertCell(0);
+	var divDocTypeTdStr = document.getElementById("divLocTd1").innerHTML;
+	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell0.innerHTML = divDocTypeTdStr;
+	
+	var cell2 = row.insertCell(1);
+	var divDocCheckTdStr = document.getElementById("divLocTd2").innerHTML;
+	divDocCheckTdStr = divDocCheckTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell2.innerHTML = divDocCheckTdStr;
+}
+</script>
+
+
+<script>
+function removeLocationRow(rowId){
+	
+	var addedDocumentsRowCount = document.getElementById("locationsRowCount").value;
+	 $("input[id = 'locationsRowCount']").val(parseInt(addedDocumentsRowCount) - 1);
+	 
+	 var documentsRow = document.getElementById("locationsRowCount").value;
+	 
+	 document.getElementById("divLocationRow"+rowId).style.display = 'none';
+	 document.getElementById("divLocationRow"+rowId).value= '';
+	 var  rId = "locationsRowCount"+rowId;
+	  var r = document.getElementById("locationsRowCount").rows[rId];
+     var count = 2*(r.cells.length);
+	    for(i=0;i<=count;i++){
+	        r.deleteCell(0);
+	    } 
+}
+</script>
+
+<script>
+function refreshLocation(rowId){
+	  $("#"+rowId+"addlocation").val('');
+	  $("#"+rowId+"country").val('');
+	  $("#"+rowId+"state").val('');
+	  $("#"+rowId+"city").val('');
+	  $("#"+rowId+"zipcode").val('');
+
+}
+
+
+function deleteSavedLocation(id){
+	var elem =document.getElementById("location"+id);
+	elem.parentNode.removeChild(elem);
+	
+	var savedlocationsMaxRowNumber = parseInt($("input[name = 'savedlocationsMaxRowNumber']").val());
+	$("input[name = 'savedlocationsMaxRowNumber']").val(savedlocationsMaxRowNumber - 1);
+	
+	var savedlocMaxRowNumber = parseInt($("input[name = 'savedlocationsMaxRowNumber']").val());
+	if(savedlocMaxRowNumber == 0){
+		$("#0addlocation").removeAttr("data-validation-optional");
+		$("#0addlocation").attr("data-validation","required");
+	}
+	
+	
+}
+</script>
+
+
+<script>
+function addLocationAuto(locationId,rowId,longtitudeId,latitudeId) {
+	initialize1(locationId,rowId);
+    geolocate1(rowId);
+}
+function initialize1(locationId,rowId,latitudeId,longtitudeId) {
+	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+		types: ['geocode'],
+  
+    });
+   
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+       case "route":
+    	 address.name=place.address_components[i].long_name;
+    	 break;
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+ 
+  $("#"+rowId+"country").val(address.country).change();
+  $("#"+rowId+"state").val(address.state).change();
+  $("#"+rowId+"city").val(address.city).change();
+  $("#"+rowId+"zipcode").val(address.zipcode).change();
+  $("#"+rowId+"latitude").val(place.geometry.location.lat());
+  $("#"+rowId+"longitude").val(place.geometry.location.lng());
+  
+});
+}
+function geolocate1(rowId) {
+	if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+       	     $("#"+rowId+"latitude").val(latitude);
+             $("#"+rowId+"longitude").val(longitude);
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
 }
 </script>
 <jsp:include page="../masterFooter.jsp" />

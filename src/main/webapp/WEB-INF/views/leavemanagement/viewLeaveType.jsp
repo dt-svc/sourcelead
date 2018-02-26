@@ -80,7 +80,7 @@ $(document).ready(function(){
 	    		 result += '<tr>';
 		         result += '    <td>';
 		         if(report.name != null && report.name != '' && report.name != 'undefined'){
-		        	 result += '      <div class="proj_show tbldata-dotdot-big" onclick="openLeaveTypeSummary(\''+report.id+'\');">';
+		        	 result += '      <div class="proj_show tbldata-dotdot-big" onclick="openLeaveTypeSummary(\''+report.leaveTypeUUID+'\');">';
 		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.name+'" >'+report.name+'</div>';
 		        	 result += '          <i class="fa fa-binoculars pull-right"></i>';
 			         result += '      </div>';
@@ -113,11 +113,11 @@ $(document).ready(function(){
 		         result += '    </td>';
 		         result += '    <td>';
 		         result += '        <div class="tblminwidth-50">';
-		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+report.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
+		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editLeaveType?leaveTypeUUID='+report.leaveTypeUUID+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
 		         if(report.status == 1){
-		              	result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.id+'\')"></i></span>';
+		              	result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }else{
-		        	 	result += '            <span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.id+'\')"></i></span>';
+		        	 	result += '            <span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }
 		         result += '        </div>';
 		         result += '    </td>';
@@ -182,7 +182,7 @@ function deleteType(typeId){
 		$("#deleteLeaveTypeDiv").empty(); 
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
+		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
 		    success: function(data) {
 	             if(data == true){
 	 				location.replace(sourceleadUrl+ "/viewLeaveTypes");
@@ -209,7 +209,7 @@ function reactiveLeaveType(typeId, from){
 	
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+typeId+"&status=reactive",	    	   
+		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&status=reactive",	    	   
 		    success: function(data) {
 	             if(data == true){
 	            	 if(from == "summary"){
@@ -247,13 +247,13 @@ function msgFadein() {
 </script>
 
 <script>
-function openLeaveTypeSummary(typeId){
+function openLeaveTypeSummary(leaveTypeUUID){
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+typeId,	    	   
+	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	    	   
 	    success: function(report) {
 	    	var result = "";
 			result +='<div class="new_side_wrap">';
@@ -265,9 +265,9 @@ function openLeaveTypeSummary(typeId){
 			if(report.status == 1){
 			result +='            <a href="javascript:void(0)" class= "btn btn-primary btn-sm mr10" title="Active">Active</a>';
 	        }else{
-	        	result +='            <a class= "btn btn-danger btn-sm mr10" onclick="reactiveLeaveType(\''+report.id+'\', \'summary\')" title="Re-Active">Re-Active</a>';
+	        	result +='            <a class= "btn btn-danger btn-sm mr10" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\', \'summary\')" title="Re-Active">Re-Active</a>';
 	        }
-			result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+typeId+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
+			result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeUUID='+leaveTypeUUID+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
 			result +='          </div> ';
 			
 			
@@ -530,7 +530,7 @@ function openLeaveTypeSummary(typeId){
 			}
 	    }
 			result +='              <div class="col-md-12 mb mt40">';
-			result +='                  <label class="col-md-2 control-label"><b>Crated By:</b></label>';
+			result +='                  <label class="col-md-2 control-label"><b>Created By:</b></label>';
 			result +='                  <div class="col-md-8">';
 			if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 				result +='                      <span>'+report.createdUser+'</span>';

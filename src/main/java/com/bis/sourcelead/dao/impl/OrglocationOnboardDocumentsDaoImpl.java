@@ -66,7 +66,7 @@ public class OrglocationOnboardDocumentsDaoImpl implements OrglocationOnboardDoc
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationOnboardDocuments documents where documents.documentName = :documentName and documents.orgLocationId.id = :orgLocationId and documents.status = '1' ";  
-		List<OrglocationOnboardDocuments> orglocationOnboardDocumentsList =  session.createQuery(query).setString("documentName", documentName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<OrglocationOnboardDocuments> orglocationOnboardDocumentsList =  session.createQuery(query).setString("documentName", documentName).setLong("orgLocationId", orgLocationId).list();
 		OrglocationOnboardDocuments orglocationOnboardDocuments = null;
 		if (orglocationOnboardDocumentsList != null && orglocationOnboardDocumentsList.size() > 0) {
 			orglocationOnboardDocuments = (OrglocationOnboardDocuments) orglocationOnboardDocumentsList.iterator().next();
@@ -81,7 +81,7 @@ public class OrglocationOnboardDocumentsDaoImpl implements OrglocationOnboardDoc
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationOnboardDocuments documents where documents.uuid = :uuid and documents.status = '1' ";  
-		List<OrglocationOnboardDocuments> orglocationOnboardDocumentsList =  session.createQuery(query).setString("uuid", uuid).setCacheable(true).list();
+		List<OrglocationOnboardDocuments> orglocationOnboardDocumentsList =  session.createQuery(query).setString("uuid", uuid).list();
 		OrglocationOnboardDocuments orglocationOnboardDocuments = null;
 		if (orglocationOnboardDocumentsList != null && orglocationOnboardDocumentsList.size() > 0) {
 			orglocationOnboardDocuments = (OrglocationOnboardDocuments) orglocationOnboardDocumentsList.iterator().next();

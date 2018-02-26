@@ -145,7 +145,8 @@ function getPendingForApprovalTimesheetReports(){
 		        result = result	+ '    <th>Project</th>  ';
 		        result = result	+ '    <th>Duration</th>';
 		        result = result	+ '    <th>Manager</th> ';
-		        result = result	+ '    <th>Due</th>';
+		        result = result	+ '    <th>Submitted On</th> ';
+		        result = result	+ '    <th>no.of days</th>';
 		        result = result	+ '  </tr> ';
 		        result = result	+ '  </thead>';
 		        result = result +'<tbody>';
@@ -190,6 +191,7 @@ function getPendingForApprovalTimesheetReports(){
 	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
 	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
 	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+managerName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.submittedOn+' </div></td>';
 	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
    				}

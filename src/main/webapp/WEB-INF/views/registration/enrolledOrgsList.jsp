@@ -30,7 +30,11 @@ margin-right: 15px;
 	}
 </script>
 
+<!--success msg -->
 
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
   <!-- Content Area -->
   
   <section class="content-wraper">
@@ -170,7 +174,7 @@ margin-right: 15px;
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
 	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+org.orgCode+"' alt='image'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+org.fileUrl+" alt='image'>";
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	result = result +"</div>";

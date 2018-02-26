@@ -1,7 +1,10 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.User;
@@ -12,11 +15,9 @@ public interface ConnectionsDao {
 	
 	Connections updateConnection(Connections connections) throws Exception;
 
-	List<UserRoleDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String connectionStatus, String status) throws Exception;
+	List<ConnectionsDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String connectionStatus) throws Exception;
 
 	int acceptConnection(User user, User toUser, String status);
-
-	List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String value);
 
 	Long getConnectionReceivedCount(Long id);
 	
@@ -25,5 +26,9 @@ public interface ConnectionsDao {
 	Long checkUserInContacts(Long fromUid, Long toUid);
 
 	int deleteConnection(String connectionUUID);
+
+	Map<String, BigInteger> getCountValuesForSentReceivedConnected(Long userId);
+	
+	
 
 }

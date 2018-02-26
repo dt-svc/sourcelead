@@ -19,9 +19,9 @@
 				<strong>Please Note</strong>
 			</p>
 			<ul class="liststyels-custom">
-				<li>Please map the fields appropriately to import the date.</li>
+				<li>Please map the fields appropriately to import the data.</li>
 				<li>Choose the excel columns from the dropdown to map with the
-					TalentHire columns.</li>
+					SourceLead Fields.</li>
 				<li>Click on Import to start the importing.</li>
 			</ul>
 			

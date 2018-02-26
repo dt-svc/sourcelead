@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -69,6 +69,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -84,6 +85,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
@@ -162,6 +164,9 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@Autowired
 	ContactsGroupService contactsGroupService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -319,8 +324,12 @@ public class CrowdSourcingRequirementsRestController {
 		 					boolean flag = userId.contains(user.getId());
 		 					if(flag == true && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 		 						requirementIndex.setIsJobApplied(Constants.YES);
-		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-		 		 	    		   if(null != submission){
+		 						RequirementSubmission submission = null;
+		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 }
+		 						 if(null != submission){
 		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 		 		 	    		   }
 		 					}else{
@@ -334,8 +343,13 @@ public class CrowdSourcingRequirementsRestController {
 	 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
 	 	    		  if(!isNullOrEmpty(loginUserRole)){
 	 		    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
-	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	 		 	    		   if(null != submission){
+	 		    			 RequirementSubmission submission = null;
+	 		    			 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	 		    			 if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 }
+	 		    			 
+	 		    			 if(null != submission){
 	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),submission.getCreatedDate()));
 	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
@@ -367,6 +381,15 @@ public class CrowdSourcingRequirementsRestController {
 	 	    	    }
 	 	    	    
 	 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
+	 	    	    List<String> requirementLocationsList = new ArrayList<>();
+	 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+	 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+	 	    	    	for(RequirementLocations locations : locationsList) {
+	 	    	    		requirementLocationsList.add(locations.getLocation());
+	 	    	    	}
+	 	    	    }
+	 	    	    requirementIndex.setLocationsList(requirementLocationsList);
+	 	    	    
 	 	    	    requirementList.add(requirementIndex);
 	 	    	}
 	 	    }
@@ -419,8 +442,12 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
-    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	  		 		 	    		   if(null != submission){
+    		 						RequirementSubmission submission = null;
+    		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+    		 						 if(submission == null) {
+    			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+    			 		 	    		 } 
+    		 						 if(null != submission){
 	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	  		 		 	    		   }
     		 					}else{
@@ -465,8 +492,17 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	    }else{
 			 	    	    	requirementIndex.setIsJobSaved(Constants.NO);
 			 	    	    }
+			 	    	    
+			 	    	    List<String> requirementLocationsList = new ArrayList<>();
+			 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(refer.getRequirementId().getId());
+			 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+			 	    	    	for(RequirementLocations locations : locationsList) {
+			 	    	    		requirementLocationsList.add(locations.getLocation());
+			 	    	    	}
+			 	    	    }
+			 	    	    requirementIndex.setLocationsList(requirementLocationsList);
 						  
-    					  requirementList.add(requirementIndex);
+    					    requirementList.add(requirementIndex);
 	    			 } 
     			 }else{
     				 isELKSearchEnable = false;
@@ -520,8 +556,14 @@ public class CrowdSourcingRequirementsRestController {
     		 					boolean flag = userId.contains(user.getId());
     		 					if(flag == true){
     		 						requirementIndex.setIsJobApplied(Constants.YES);
-    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-	  		 		 	    		   if(null != submission){
+    		 						RequirementSubmission submission = null;
+    		 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	  		 		 	    		   
+    		 						 if(submission == null) {
+ 			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+ 			 		 	    		 } 
+    		 						 
+    		 						 if(null != submission){
 	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	  		 		 	    		   }
     		 					}else{
@@ -562,7 +604,17 @@ public class CrowdSourcingRequirementsRestController {
 						  requirementIndex.setRequirementUUID(savedJobs.getRequirementId().getRequirementUUID());
 						  requirementIndex.setIsJobSaved(Constants.YES);
 						  requirementIndex.setSavedJobUUID(savedJobs.getSavedJobUUID());
-    					  requirementList.add(requirementIndex);
+						  
+						  List<String> requirementLocationsList = new ArrayList<>();
+			 	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(savedJobs.getRequirementId().getId());
+			 	    	    if(locationsList != null && !locationsList.isEmpty()) {
+			 	    	    	for(RequirementLocations locations : locationsList) {
+			 	    	    		requirementLocationsList.add(locations.getLocation());
+			 	    	    	}
+			 	    	    }
+			 	    	    requirementIndex.setLocationsList(requirementLocationsList);
+			 	    	    
+    					   requirementList.add(requirementIndex);
 	    			 }
 	    			 
 	    		 }else{
@@ -788,8 +840,14 @@ public class CrowdSourcingRequirementsRestController {
 				 					boolean flag = userId.contains(user.getId());
 				 					if(flag == true){
 				 						requirementIndex.setIsJobApplied(Constants.YES);
-				 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
-			 		 	    		     if(null != submission){
+				 						RequirementSubmission submission = null;
+				 						 submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 		 	    		    
+				 						 if(submission == null) {
+		 			 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 			 		 	    		 } 
+				 						 
+				 						 if(null != submission){
 			 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 			 		 	    		     }
 				 					}else{
@@ -801,7 +859,12 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	   }
 			 	    	    
 			 	    	   if (requirementType.equalsIgnoreCase("AppliedJobs")){
-			 	    		   RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 	    		  RequirementSubmission submission = null;
+			 	    		   submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+			 	    		  
+			 	    		  if(submission == null) {
+		 		 	    			submission = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+		 		 	    		 } 
 			 	    		   if(null != submission){
 			 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.elkDateFormatter(submission.getCreatedDate()));
 			 	    		   }
@@ -815,6 +878,18 @@ public class CrowdSourcingRequirementsRestController {
 			 	    	    }
 			 	    	   
 			 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
+			 	    	    
+			 	    	    
+			 	    	   List<String> requirementLocationsList = new ArrayList<>();
+			 	  		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementIndex.getRequirementId());
+			 	  		if(locationsList != null && !locationsList.isEmpty()) {
+			 	  			for(RequirementLocations location : locationsList) {
+			 	  				requirementLocationsList.add(location.getLocation());
+			 	  			}
+			 	  		}
+			 	          
+			 	  		requirementIndex.setLocationsList(requirementLocationsList);
+			 	  		
 			 	    	    requirementList.add(requirementIndex);
 			 	    	}
 			 	    }
@@ -843,10 +918,10 @@ public class CrowdSourcingRequirementsRestController {
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : excludeKeyWordArray){
 						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								excludeBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 						}
@@ -862,10 +937,10 @@ public class CrowdSourcingRequirementsRestController {
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : anyKeyWordArray){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -881,10 +956,10 @@ public class CrowdSourcingRequirementsRestController {
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
 							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									allBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 							}
@@ -900,16 +975,24 @@ public class CrowdSourcingRequirementsRestController {
 			    }
 			 //Country
 				if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+					boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country").split(",")[0]));
 			    }
 				 //State
 				if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
 			    }
-				//City
+				
+				//mukltiple cities
 				if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
-			    }
+					ArrayList<String> cityArray = getSearchKeywordsFromChosenSelectField(jsonObj, "city");
+					if(cityArray != null && !cityArray.isEmpty()){
+						BoolQueryBuilder cityBoolQueryBuilder = QueryBuilders.boolQuery();
+						for(String keywd : cityArray){
+							cityBoolQueryBuilder.should(QueryBuilders.matchQuery("city", keywd));
+						}
+						boolQueryBuilder.must(cityBoolQueryBuilder);
+					} 	
+				}
 				
 				// currency
 			    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
@@ -973,7 +1056,7 @@ public class CrowdSourcingRequirementsRestController {
 					} 	
 				}
 				
-				//Requirement Skills
+				//Requirement Organizations
 				if(jsonObj.has("organizations") && !"".equalsIgnoreCase(jsonObj.getString("organizations"))){
 					ArrayList<String> organizationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "organizations");
 					if(organizationArray != null && !organizationArray.isEmpty()){
@@ -1019,37 +1102,37 @@ public class CrowdSourcingRequirementsRestController {
      }
 	 
 	 
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+	 private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
 		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
+		   ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
+		    QueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    QueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
 			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			QueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
 			
 			
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
 			}
 
 				
-			return matchQueryBuilderList; 
+			return QueryBuilderList; 
 	 }
 	 
 	 
@@ -1946,14 +2029,28 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrgLocationName());
 						rr.setRequirementJobType(rr.getRequirementId().getJobType());
+						
+						 List<String> requirementLocationsList = new ArrayList<>();
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rr.getRequirementId().getId());
+						 if(locationsList != null && !locationsList.isEmpty()) {
+						 for(RequirementLocations location : locationsList) {
+						 requirementLocationsList.add(location.getLocation());
+						 }
+						 }
+						 rr.setLocationsList(requirementLocationsList);
+						 
 						rr.setRequirementCountry(rr.getRequirementId().getCountry());
 						rr.setRequirementState(rr.getRequirementId().getState());
 						rr.setRequirementCity(rr.getRequirementId().getCity());
 						rr.setRequirementRate(rr.getRequirementId().getRate());
 						rr.setRequirementRateType(rr.getRequirementId().getRateType());
 						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
+						RequirementSubmission rs = null;
+						rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
 						
-						RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
+						if(rs == null) {
+							rs = requirementSubmissionService.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(), candidateId);
+ 		 	    		 } 
 						if(null != rs){
 							rr.setSubmissionStatus(rs.getSubmissionStatus().toString());	
 						}
@@ -1976,6 +2073,16 @@ public class CrowdSourcingRequirementsRestController {
 						rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
 						rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrgLocationName());
 						rs.setEmployeeType(rs.getRequirement().getJobType());
+						
+						List<String> requirementLocationsList = new ArrayList<>();
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rs.getId());
+						 if(locationsList != null && !locationsList.isEmpty()) {
+						 for(RequirementLocations location : locationsList) {
+						 requirementLocationsList.add(location.getLocation());
+						 }
+						 }
+						 rs.setLocationsList(requirementLocationsList);
+						
 						rs.setCountry(rs.getRequirement().getCountry());
 						rs.setState(rs.getRequirement().getState());
 						rs.setCity(rs.getRequirement().getCity());

@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -79,6 +80,9 @@ public class UserController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
 
 	
 	/**
@@ -118,6 +122,39 @@ public class UserController {
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    
 			model.setViewName("users/userCreation");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+		return model;
+
+	}
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
+	@RequestMapping(value = "/addAssociateFromLocations")
+	public ModelAndView addAssociateFromLocations(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		ModelAndView model = new ModelAndView();
+		
+		    Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		
+		    Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+            model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
+			}
+		    
+		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		    model.addObject("rolesList", rolesList);
+		    
+		    List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsExceptLoggedInLocation(orgLocations.getId(), org.getId());
+		 	model.addObject("orgLocationsList", orgLocationsList);
+		   		    
+		    commonUtil.highLightMenu(Constants.Users, request);
+		    
+			model.setViewName("users/addAssociateFromLocations");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 		return model;

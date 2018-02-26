@@ -22,6 +22,8 @@
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 
+ <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+
 <script type="text/javascript">
 window.onload = function () {
 	loadRegisteredOrgs();
@@ -48,15 +50,25 @@ z-index: 1000000000 !important;
 <script>
   function navtoggle(elementRef){
 	  
-	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' != 'ROLE_PRODUCTION_SUPPORT'){
+		 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area'
+		     document.getElementById("spockLinksList").style.display="block";
+		 }else{
+			 document.getElementById("spockLinksList").removeAttribute("class")
+			 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+			 document.getElementById("spockLinksList").style.display="block";
+		 }
+	 }
+	 
+	 if('${SourceLeadWeb_prodSupportLoginUserRole}' == 'ROLE_PRODUCTION_SUPPORT'){
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area'
 	     document.getElementById("spockLinksList").style.display="block";
-	 }else{
-		 document.getElementById("spockLinksList").removeAttribute("class")
-		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
-		 document.getElementById("spockLinksList").style.display="block";
 	 }
+	 
+	  
   }
   </script>
 
@@ -89,23 +101,24 @@ $(function(){
 				<div class="comLogHead">
 				
 				
-				<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
 		<div class="offOrg offOrgCompanyOnboard ">
              <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                    <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                   <c:if test="${!empty links.orgLocations.org.fileContentType}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                   </c:if>
 				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
 				                     <img src="/resources/images/office-image.jpg">
 				                   </c:if>
+				                     
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
@@ -121,6 +134,33 @@ $(function(){
 	            </div>
 	            </div>
           </c:if>
+          
+          
+          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+          	<div class="offOrg offOrgCompanyOnboard ">
+             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
+	              <ul class="list-unstyled">
+		              <li>
+		              <a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_prodSupportOrgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
+					                <div class="clearfix">
+					                   <div class="pull-left image-parent positionRelative">
+						                   <div class="imageParent org-imagelink">
+						                   <img src="/resources/images/office-image.jpg">
+						                     </div>
+						                   </div>
+					                       <div class="pull-left">
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${SourceLeadWeb_prodSupportLoginOrgName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${SourceLeadWeb_prodSupportLoginUserDisplayName}</p>
+						                   </div>
+					                </div>
+				                </a>
+		              </li>
+	              </ul>
+	            </div>
+	            </div>		
+		              			
+              </c:if>
           
 					<div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
@@ -259,7 +299,7 @@ function loadRegisteredOrgs(){
 	 				result = result +"<div class='user-profile'>";
 	 				result = result +"<div class='col-xs-4 col-sm-4'>";
 	 				result = result +"<div class='comLocaImg'>";
-	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	 				result = result +"<img  onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src='"+orgLoc.fileUrl+"' alt='image'>";
 	 				result = result +"</div>";
 	 				result = result +"</div>";
 	 				result = result +"<div class='col-sm-8'>";
@@ -951,13 +991,12 @@ var validationSettings = {
    };  
          $('body').on('submit', '#createOrg_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
+        		  
         		e.preventDefault();
-        		var frm = $('#createOrg_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+        		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
-         		 var modulesList = [];
+         		
+         		var modulesList = [];
          		 $("input[name='modulesList[]']:checked").each( function (i) {
          			modulesList[i] = $(this).val();
          		});
@@ -967,13 +1006,12 @@ var validationSettings = {
          		 $("input[name='submodulesList[]']:checked").each( function (i) {
          			submodulesList[i] = $(this).val();
          		});
-         		
+         		 
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          	 	 	$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+          	      data: formData,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
                 			  
                 			  
                   	success: function(result) {
@@ -983,6 +1021,9 @@ var validationSettings = {
 			        	else if((result == 'Invalid Sub Modules')){
 			        		$("#loading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
+			        	}else if((result == 'DataMissing')){
+			        		showError("Invalid data");
+			        		$("#loading").removeAttr('style');
 			        	}
 			        	
 			        },  

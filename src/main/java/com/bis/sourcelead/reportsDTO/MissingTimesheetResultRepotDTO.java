@@ -13,6 +13,8 @@ public class MissingTimesheetResultRepotDTO {
 	private String managerName;
 	
 	private Long dueDays;
+	
+	private String submittedOn;
 
 	public String getEmployeName() {
 		return employeName;
@@ -63,4 +65,11 @@ public class MissingTimesheetResultRepotDTO {
 		this.dueDays = dueDays;
 	}
 
+	public String getSubmittedOn() {
+		return submittedOn;
+	}
+
+	public void setSubmittedOn(String submittedOn) {
+		this.submittedOn = submittedOn;
+	}
 }

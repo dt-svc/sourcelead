@@ -24,7 +24,6 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "ACTION_ROLES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="actionRole")
 public class ActionRoles implements Serializable {
 	
 	
@@ -41,22 +40,22 @@ public class ActionRoles implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private Status isNotify;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ACTION_ID", nullable = false)
 	private TabActions tabActions;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ROLE_ID", nullable = false)
 	private Roles roles;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org org;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;

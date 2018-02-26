@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT_ASSIGN_TO")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementAssignTo")
 	public class RequirementAssignTo implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -33,23 +32,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="TEAM_ID", nullable=false )        
     private Team teamId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ROLE_ID", nullable=false )        
     private Roles roleId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ASSIGN_USER_ID", nullable=false )        
     private User assignUserId;
 	

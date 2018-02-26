@@ -16,6 +16,13 @@ right: 15px;
 }
 </style>
 
+<!--success msg -->
+
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
+
+
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
@@ -102,7 +109,7 @@ function deleteImage(){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure to delete image?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteOrgImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelOrgImg();'></b>";
 	result = result +"	</div>";
@@ -155,8 +162,13 @@ function cancelOrgImg(){
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
       <div id="loading"></div>
+      <div id="regLoading"></div>
       <div id="popUp"></div>  
       <div id="signatureLoading"></div>
+      
+        <div class="success_pop" id="resendOrg" style="display: none;">
+			<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+		</div>
         <!-- Tab Pills navbar -->
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
@@ -186,19 +198,17 @@ function cancelOrgImg(){
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab org-settings-area">
 		  <div class="tab-content panel-body">
-			<div class="clearfix">
-			  <form:form class="login-form clearfix mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
-			  
-			  <div class="col-xs-12 col-sm-3 col-md-3">
+		  	<form:form class="login-form mt10"  id="orgImage_form"  name="orgImage_form" method="post" > 
+		  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/app/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
 					  <button type="button" class="btn btn-sm btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -211,6 +221,11 @@ function cancelOrgImg(){
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not allowed</p>
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
+			  </form:form>
+			<div class="clearfix">
+			  <form:form class="login-form  mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
+			  
+			  
 			  <div id="popUp" ></div>
 			  			
 				<div class="col-xs-12 col-sm-9 col-md-9">
@@ -248,7 +263,7 @@ function cancelOrgImg(){
 							<div class="form-group">
 								<label class="col-md-3">ZipCode</label>
 								<div class="col-md-9">
-								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
 							
@@ -307,7 +322,7 @@ function cancelOrgImg(){
 							</div>
 							
 							<div class="form-group mt" id="generatedUserIdDiv">
-							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
@@ -542,6 +557,65 @@ function cancelOrgImg(){
 			                      </label>
 	                   			</div>
 	               			</div>         
+	           			</div> 
+           			</c:if>
+           			
+           			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	            			<div class="tab-content panel-body">
+	               			<h4>Financial Year</h4>
+	               			<div class="form-group">
+		               			<label class="col-md-3">Financial Year<i class="" title="Login Security"></i></label>  
+		               			<div class="col-md-2 toggle-button" >
+			                      <select class="chosen-select" id="financialStartYear" onChange="validateFinancialYear();">
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.startMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.startMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.startMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.startMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.startMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.startMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.startMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.startMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.startMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.startMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.startMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.startMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	                   			<div class="col-md-2 toggle-button">
+			                      <select class="chosen-select" id="financialEndYear" disabled="disabled" readonly="">
+			                      <option value = "">--Select Month--</option>
+			                      <option ${orgLocations.endMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${orgLocations.endMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${orgLocations.endMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${orgLocations.endMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${orgLocations.endMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${orgLocations.endMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${orgLocations.endMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${orgLocations.endMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${orgLocations.endMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${orgLocations.endMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${orgLocations.endMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${orgLocations.endMonth == 'December' ? 'selected' : ''}>December</option>
+			                      </select>
+	                   			</div>
+	               			</div>
+	               			<div class="mt clearfix">
+           			  	<div class="pull-right">
+           			  		<button type="button" class="btn btn-primary btn-sm mr" onclick="financialYear();">Save</button>
+           			  		<!-- <button type="button" class="btn btn-default btn-sm" onclick="cancel();">Cancel</button> -->
+           			  	</div>
+           			  </div>
+           			  
+           			  <c:if test="${!empty msg}">
+	                       <div class="success_pop" id="selector"  style="display: none;">
+		                   <i class="fa fa-check-circle"></i><span>${msg}</span>
+			               </div>
+	              </c:if>
+	                 <div class="success_pop" id="selector1" style="display: none;">
+ 		            	<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+                     </div>
+	               			         
 	           			</div> 
            			</c:if>
            			           			
@@ -852,19 +926,10 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
 	          		
-	          		var frm = $('#orgSettings_form').serializeFormJSON();
-	            	var con = JSON.stringify(frm);
-				    con = con.replace(/[{}]/g, "");
-				  //It will escape all the special characters
-    		        var jsonData = encodeURIComponent(con);
-				    
-	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
-	          		var form = $('#orgSettings_form')[0];
-	           		var formData = new FormData(form);
+	           		var formData = getFormData("orgSettings_form");
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
-	           		
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
@@ -873,13 +938,7 @@ var validationSettings = {
 	                  $.ajax({
 	              	      type: "POST",
 	              	      data: formData,
-	              	      contentType : 'application/json; charset=utf-8',
-	              	      enctype: 'multipart/form-data',
-	          	          processData: false,
-	          	          contentType:false,
-	              	      dataType : 'json',
-	              	      
-	                    	  url: sourceleadUrl+"/saveOrgSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
 	  			        	 if((result == 'home')){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
@@ -1201,7 +1260,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/app/displayOrgImage/${SourceLeadWeb_orgCode}"/>" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}
@@ -1494,7 +1553,7 @@ function loadRegisteredOrgs(){
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
 	       	    	result = result +"<div class='imageParent'>";
-	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+orgLoc.fileUrl+" alt='image'>";
 	       	    	result = result +"</div>";
 	       	    	
 	       	    	result = result +"</div>";
@@ -1798,8 +1857,8 @@ function resendInvitation(userId){
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
-			        	$("#mailMsg").fadeIn(200);
-		   		        $('#mailMsg').delay(2000).fadeOut('slow');
+			        	$("#resendOrg").fadeIn(200);
+		   		        $('#resendOrg').delay(2000).fadeOut('slow');
 			        },
 			    });
 		 }
@@ -1908,7 +1967,7 @@ function createOrg(){
 				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
@@ -1917,7 +1976,7 @@ function createOrg(){
 			    result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Street Address</label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter your Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
 	            result = result +'</div>';
 	            result = result +'</div>';
 		            
@@ -2205,7 +2264,7 @@ function validateRegisterCompanyName(){
 							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyName').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2289,7 +2348,7 @@ function validateWebsite (){
 		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
 		    				$('input#companyWebsite').attr('record-exist','yes');
 		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' '+result+''); 
-		    				$( "#register_button" ).addClass('sign_btn').val('Register');
+		    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 		    				$("#register_button").removeAttr("disabled");
 			        	}
 			        	else{
@@ -2299,7 +2358,7 @@ function validateWebsite (){
 							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyWebsite').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2331,7 +2390,7 @@ function validateCompanyEmail(){
 			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
 			    				$('input#companyEmail').attr('record-exist','yes');
 			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					     } 
 					     else if(data == 'Existed Email'){
@@ -2341,7 +2400,7 @@ function validateCompanyEmail(){
 			    	    		$("input#companyEmail").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
 			    				$('input#companyEmail').attr('record-exist','yes');
 			    				$('input#companyEmail').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
-			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$( "#register_button" ).addClass('btn btn-primary').val('Register');
 			    				$("#register_button").removeAttr("disabled");
 					    	 
 					     }
@@ -2352,7 +2411,7 @@ function validateCompanyEmail(){
 							$('#emailDiv').find('p.jquery_form_error_message').remove();
 							$('input#companyEmail').attr('class','valid form-control');
 							$( "#register_button" ).removeAttr("style");
-							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).addClass('btn btn-primary').val('Register');
 							$( "#register_button" ).click(function() {
 							 if ($(this).validate(false, validationSettings)){
 							 }
@@ -2570,12 +2629,9 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	
-        		var frm = $('#createOrg_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
+        	
          		var sourceleadUrl ='${sourceleadUrl}';
-         		
+         		var formData = getFormData("createOrg_form");
          		 var modulesList = [];
          		 $("input[name='modulesList[]']:checked").each( function (i) {
          			modulesList[i] = $(this).val();
@@ -2587,21 +2643,24 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+         		$("#regLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+          	      data: formData,
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
                 			  
                 			  
                   	success: function(result) {
 			        	if((result == 'orgList')){
+			        		$("#regLoading").removeAttr('style');
 			        		loadRegisteredOrgs();
 			        	}
 			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
+			        		$("#regLoading").removeAttr("style");
 			        		document.getElementById("subModule").style.display="";
+			        	}else if((result == 'DataMissing')){
+			        		showError("Invalid data");
+			        		$("#regLoading").removeAttr('style');
 			        	}
 			        	
 			        },  
@@ -2958,7 +3017,71 @@ function deleteIP(id){
 			     });
 }
 
+
 </script>
+
+<script>
+function validateFinancialYear(){
+	var startMonth = $("#financialStartYear").val();
+	if(startMonth == ""){
+		$("#financialEndYear").val("");
+	}else if(startMonth == "January"){
+		$("#financialEndYear").val("December");
+	}else if(startMonth == "February"){
+		$("#financialEndYear").val("January");
+	}else if(startMonth == "March"){
+		$("#financialEndYear").val("February");
+	}else if(startMonth == "April"){
+		$("#financialEndYear").val("March");
+	}else if(startMonth == "May"){
+		$("#financialEndYear").val("April");
+	}else if(startMonth == "June"){
+		$("#financialEndYear").val("May");
+	}else if(startMonth == "July"){
+		$("#financialEndYear").val("June");
+	}else if(startMonth == "August"){
+		$("#financialEndYear").val("July");
+	}else if(startMonth == "September"){
+		$("#financialEndYear").val("August");
+	}else if(startMonth == "October"){
+		$("#financialEndYear").val("September");
+	}else if(startMonth == "November"){
+		$("#financialEndYear").val("October");
+	}else if(startMonth == "December"){
+		$("#financialEndYear").val("November");
+	}
+	$("#financialEndYear").trigger("chosen:updated");
+}
+</script>
+
+<script>
+function financialYear(){
+	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var startMonth = $("#financialStartYear").val();
+	var endMonth = $("#financialEndYear").val();
+	if(startMonth != null && startMonth != 'undefined' && endMonth != null && endMonth != 'undefined'){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+"/saveFinanacialYear?&locationId="+locationId+"&startMonth="+startMonth+"&endMonth="+endMonth,
+			success : function(result) {
+				$("#selector1").removeAttr("style");
+    			$("#selector1").css({ display: "block" });
+    			$("#msgDiv").html("Details Updated Successfully");
+		    	 msgFadein();
+				
+			},
+		});
+	}
+}
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <jsp:include page="masterFooter.jsp" />
 

@@ -157,6 +157,7 @@ public class MailBoxController {
  				if(null != mailBox){
  					model.addObject("subject", mailBox.getSubject());
  					model.addObject("fromEmail", mailBox.getFromMail());
+ 					model.addObject("toEmail",mailBox.getToMail());
  				}else{
  					model.setViewName("registration/persmissionDenied");
  				}
@@ -212,7 +213,7 @@ public class MailBoxController {
 	
 	
 
-	@RequestMapping(value = "/requestForCandidateResume")
+	@RequestMapping(value = "/app/requestForCandidateResume")
  	public ModelAndView requestForCandidateResume(@RequestParam(value="UUID", required=false) String UUID,
 			 HttpServletRequest request) {
 		    ModelAndView model = new ModelAndView();

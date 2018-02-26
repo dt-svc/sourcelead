@@ -156,7 +156,7 @@
             </div>
 
                <div class="form-group" id="effectiveDateDiv">
-                  <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The start date for the offboardong of the candidate'></i></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
                 </div>
@@ -177,7 +177,7 @@
                 </div>
                   
                 <div class="form-group" id="endDateDiv">
-                  <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">* </span><i class='fa fa-info-circle' title='The employment end date for the employee'></i></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
                   </div>
@@ -356,7 +356,7 @@
                                       Offboard User </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
@@ -294,13 +295,18 @@ public class DashboardRestController {
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     UserRole userRole = null;
+		    
+		     if(!isNullOrEmpty(switchUserType) && switchUserType.equalsIgnoreCase("Professional") && orgLocationId == 1L) {
+		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
+		     }else {
+		    	 userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     }
+		     
+		     
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
   			    userRole.setUserState(Status.ACTIVE);
   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
-  			   
-  			   
   			   
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
@@ -320,8 +326,17 @@ public class DashboardRestController {
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     UserRole userRole = null;
+		     
+		     if(!isNullOrEmpty(switchUserType) && switchUserType.equalsIgnoreCase("Recruiter") && orgLocationId == 1L) {
+		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
+		     }else {
+		    	 userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     }
+		     
+		    
+		     
+		     
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
  			    userRole.setUserState(Status.ACTIVE);
  			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
@@ -348,8 +363,14 @@ public class DashboardRestController {
 		     //to update user state in user role based on location----> Prasad Salina
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     UserRole userRole = null;
+		     if(!isNullOrEmpty(switchUserType) && (switchUserType.equalsIgnoreCase("Professional") || switchUserType.equalsIgnoreCase("Recruiter")) && orgLocationId == 1L){
+		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
+		     }else {
+		    	 userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     }
+		     
+		     
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
   			    userRole.setUserState(Status.ACTIVE);
   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
@@ -967,6 +988,81 @@ public class DashboardRestController {
 			return interviewDatesList;
 		}
 		
+		/**
+		   * @author Venkat Kesav
+		   * @since  feb 22 2018
+		   * @version 0.0.1
+		   * 
+		   * This method is used for getting Interviews and TasksList By login User for mobile App
+		   *  
+		   * @return EventsDTO 
+		   * 
+		   * @throws NullPointer
+		   */
+		@RequestMapping(value = "/rest/getInterviewsAndTasksList", method = RequestMethod.POST )
+		public EventsDTO getInterviewsAndTasksList(EventsDTO eventsDTO, HttpServletRequest request) throws Exception {
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			List<RequirementInterviewHistory> requirementInterviewList = new ArrayList<RequirementInterviewHistory>();
+			List<Tasks> taklist = new ArrayList<Tasks>();
+			String currentTime = null;
+			String userType = null;
+			Timezone timezone = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			
+			Date startUTCDate = null;
+			Date endUTCDate = null;
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			if(!StringUtils.isNotBlank(eventsDTO.getStartDate())) {
+				Date startDateWithTime = new Date();
+				String startTimeTS = Constants.TZ_DF.format(startDateWithTime);
+				String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+				startUTCDate = TZ_DF_TS.parse(startDateString);
+				/*if(!StringUtils.isNotBlank(eventsDTO.getEndDate())) {
+					DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+					String endTimeTS = END_TZ_DF.format(startDateWithTime);
+					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+					endUTCDate = TZ_DF_TS.parse(endDateString);
+				}*/
+			}else if(StringUtils.isNotBlank(eventsDTO.getStartDate())) {
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),eventsDTO.getStartDate());
+				String startTimeTS = Constants.TZ_DF.format(startTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
+				startUTCDate = TZ_DF_TS.parse(startDateString);
+			}
+			
+			if(StringUtils.isNotBlank(eventsDTO.getEndDate())) {
+				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),eventsDTO.getEndDate());
+				String endTimeTS = Constants.TZ_DF.format(endTime);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+				endUTCDate = TZ_DF_TS.parse(endDateString);
+			}
+				
+			if(eventsDTO.getEventType().equalsIgnoreCase("interviews")) {
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+					}else{
+						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+				}
+			}else if(eventsDTO.getEventType().equalsIgnoreCase("tasks")) {
+				String status =  "myTask";
+				Date converteDate = null;
+				taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,eventsDTO.getDateRange(),converteDate,timezone);
+			}
+			
+			eventsDTO.setInterviewerList(requirementInterviewList);
+			eventsDTO.setTasksList(taklist);
+			return eventsDTO;
+		}
+		
+		
 		@RequestMapping(value = "/getInterviewsandTasks")
 		public String getInterviewsandTasks(String dateRange, HttpServletRequest request) throws Exception {
 			
@@ -1188,6 +1284,62 @@ public class DashboardRestController {
 		}
 		resultJson = commonUtil.toJSON(requirementList);
 		return resultJson;
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getAllRequirementByOrgLocationIdAndUserIdAndPostedDateWithCustomDates")
+	public List<Requirement> getAllRequirementByOrgLocationIdAndUserIdAndPostedDateWithCustomDates(@RequestParam(value="postedDateRange", required=false) String postedDateRange, @RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,@RequestParam(value="managerId", required=false) Long managerId,HttpServletRequest request) throws Exception {
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String numberOfDays;
+		int Days;
+		 switch (postedDateRange) {
+		 	 case "today" :
+		 		 numberOfDays = "1";
+		 		 break;
+		 	 case "yesterday" :
+		 		 numberOfDays = "2";
+		 		 break;
+		 	 case "week" :
+				 numberOfDays = "7";
+			      break;
+			 case "twoweeks" :
+				 Days  = (2 * 7);
+				 numberOfDays = Integer.toString(Days);
+			     break;
+			 case "month" :
+				 numberOfDays = "30";
+			     break;
+			 case "twomonths" :
+				 Days  = (2 * 30);
+				 numberOfDays = Integer.toString(Days);
+			     break;
+			 case "custome" :
+				 numberOfDays = "0";
+				 if(startDate != null && startDate != "" && endDate != null && endDate !="") {
+					 Date startDates = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
+					 Date endDates = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
+					 Long customeDays =  CalendarUtil.getNumberOfDaysCount(startDates,endDates);
+					 numberOfDays = String.valueOf(customeDays);
+				 } 
+			     break;
+			 default:
+				 numberOfDays = "1";
+		 }
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String userCode = user.getUserCode();
+		String userType = null;
+		List<Requirement>   requirementList = null;
+		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+			userType = Constants.ADMIN;
+			requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(loginOrgLocation.getId(), userType, user.getId(), userCode, numberOfDays,managerId);
+		}else{
+			requirementList = requirementService.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(loginOrgLocation.getId(), userType, user.getId(), userCode, numberOfDays,managerId);
+		}
+		return requirementList;
 	}
 	
 }

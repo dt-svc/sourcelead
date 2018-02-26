@@ -20,7 +20,7 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
@@ -336,7 +336,7 @@ public class ClientServiceImpl implements ClientService {
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0) {
 					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
 					 clientCustomFields.setOrg(savedClient);
 					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
@@ -934,8 +934,9 @@ public class ClientServiceImpl implements ClientService {
 				}
 				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 					org.setClientBillingAddress(clientDTO.getBillingAddress());
+				}else {
+					org.setClientBillingAddress("");
 				}
-				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
@@ -972,8 +973,27 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 				orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			} else {
+
+				orgLocations.setBillingAddress("");
 			}
 			orgLocationForELk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(orgLocationForELk.getOrg());
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
@@ -1097,6 +1117,8 @@ public class ClientServiceImpl implements ClientService {
 			 
 			 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
 				 orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			 }else{
+				 orgLocations.setBillingAddress("");
 			 }
 			
 
@@ -1107,6 +1129,27 @@ public class ClientServiceImpl implements ClientService {
 			 * orgLocations.setEmail(""); }
 			 */
 			orgLocationsForElk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+						ClientCustomFieldData clientCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+						}else {
+							clientCustomFields = new ClientCustomFieldData();
+						}
+					clientCustomFields.setOrg(orgLocationsForElk.getOrg());
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					clientCustomFields.setOrglocationsFormFields(orgFormField);
+					clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
@@ -1693,11 +1736,11 @@ public class ClientServiceImpl implements ClientService {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper
-						.getMatchQueryBuilderListForClientVendor(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper
+						.getQueryBuilderListForClientVendor(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
@@ -1796,13 +1839,13 @@ public class ClientServiceImpl implements ClientService {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				// ArrayList<MatchQueryBuilder> matchQueryBuilderList =
-				// getMatchQueryBuilderList(keywd);
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper
-						.getMatchQueryBuilderListForClientVendor(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				// ArrayList<QueryBuilder> QueryBuilderList =
+				// getQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper
+						.getQueryBuilderListForClientVendor(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}

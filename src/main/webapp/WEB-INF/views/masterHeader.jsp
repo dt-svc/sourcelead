@@ -47,6 +47,7 @@
 <link href="/resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/bootstrap-datetimepicker.min.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -136,6 +137,8 @@
 <script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
+
 
 <!--  Data tables script files -->
 <!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
@@ -420,10 +423,10 @@ function preventTabkey(e){
   <i>
  	 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	 	<img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img src="<c:url value='${appPath}/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 
@@ -540,7 +543,7 @@ function preventTabkey(e){
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
 	        </li>
             <li class="reportsH">
-					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
             <li class="reportsH">
@@ -576,7 +579,7 @@ function preventTabkey(e){
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 						                     </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -593,7 +596,7 @@ function preventTabkey(e){
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -609,7 +612,7 @@ function preventTabkey(e){
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -627,7 +630,7 @@ function preventTabkey(e){
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
 					                   <div class="imageParent org-imagelink ${links.id == SourceLeadWeb_orgLocationId  ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.org.orgCode}">
+					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.org.fileUrl}">
 					                     </div>
 					                   </div>
 					                   <div class="pull-left">
@@ -693,10 +696,16 @@ function preventTabkey(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
-	                     
-	                     <li><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="javascript:void(0)" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
+	                     </sec:authorize>
+	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="subMenuView">
+		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
+		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
+	                     	</div>
+	                     </li>
 	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
-	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
@@ -717,25 +726,11 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
 						  
-						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 						  	
-						 <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
-						 	<div class="subMenuView">
-						 	
-						 	
-<%-- 						 	<c:if test="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient'}"> --%>
-<!--                               <ul class="collapses" style="display: none"> -->
-<%--                                   <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
-<%--                                   <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
-<!--                               </ul> -->
-<%--                            </c:if> --%>
-                              
-<%--                            <c:if test="${sessionData.nav != 'Campaigns' || sessionData.nav != 'CampaignSender' || sessionData.nav != 'CampaignRecipient'}"> --%>
-<!--                            <ul class="collapses" style="display: none"> -->
-<%--                                <li class="${sessionData.nav == 'CampaignSender' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/campaignSendersList'/>" title="Senders">Senders</a></li> --%>
-<%--                                 <li class="${sessionData.nav == 'CampaignRecipient' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/recipientsList'/>" title="Recipients">Recipients</a></li> --%>
-<!--                            </ul> -->
-<%--                            </c:if> --%>
+						 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="campsubMenuView">
+						 
 						 	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 			
 			                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
@@ -820,7 +815,7 @@ function preventTabkey(e){
 
  function getUserDetailsbyroleId(roleId){
 	 $.ajax({
-		 type : "GET",
+		 type : "POST",
 	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
 	       success :function(data) {
 	    	   if(data != null){
@@ -1667,6 +1662,39 @@ $("#searchType").selectpicker('refresh');
    	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
 </div>
 <div class="sideMask"></div>
+<div class="modal modalBulkImport" class="invite" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Bulk Import</h4>
+        </div>
+        <form:form id="bulkImportForm" name="bulkImportForm" method="post">
+         
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-folder-open-o  paddingRight text-info" aria-hidden="true"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Folder Path" id="folderPath" name="folderPath" field-name="Folder Path" data-validation="required validate_Space">
+                </div>
+            </div>
+            <div id='bulkImportStatus' class="form-group clearfix">
+            </div>
+       </div>
+       
+       <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="paddingRight"></i>Continue</button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushBulkImportPath();"></i>Cancel
+            </button>
+                </div>
+        </div>
+     </form:form>
+   </div>
+  </div>
+</div>
 <div class="modal modalInvite" class="invite" role="dialog">
     <div class="modal-dialog">
     
@@ -1725,10 +1753,165 @@ $("#searchType").selectpicker('refresh');
     </div>
   </div>
   
-  
+  <%-- <div class="modal modalInvite" class="invite" id="scheduleMPopDiv" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Schedule Maintenance</h4>
+        </div>
+        <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
+         
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Date <span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">                  
+					<div class="input-group errorInptgroup">
+						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleDate" readonly="readonly">
+	                    <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+					</div>                    
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Message</label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Message" name="message" id="scheduleMessage">
+                </div>
+            </div>
+        </div>
+        <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushInviteCompany();"></i>Cancel
+            </button>
+                </div>
+        </div>
+        </form:form>
+        
+      </div>
+      
+    </div>
+  </div> --%>
   
   <div class="popMask"></div>
+  <div class="popUpOut" id="scheduleMPopDiv">
+		<div class="popupHead">
+			<h2>Schedule Maintenance</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+		</div>
+		<form:form id="scheduleMaintenance_form" name="scheduleMaintenance_form" method="post">
+	<div class="popupMid popupMidHeight clearfix">
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Date<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<div class="input-group errorInptgroup">
+						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleMDate" field-name="Schedule Date" data-validation="required">
+	                    <span class="input-group-addon" onclick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+					</div>
+				</div>
+			</div>
+			 <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Start Time<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input class="form-control" name="startTime" id="startTime" field-name="Start Time" data-validation="required"></input>
+				</div>
+			</div>
+			 <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">End Time<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<input class="form-control" name="endTime" id="endTime" field-name="End Time" data-validation="required"></input>
+				</div>
+			</div>	
+          <div class="col-sm-12 noPad mt clearfix">
+				<label class="col-md-4 padding_left">Message<span class="text-danger paddingLeft">*</span></label>
+              	<div class="col-md-8 padding_right">
+              		<textarea class="form-control" name="scheduleMessage" id="scheduleMessage" maxlength="250" field-name="Schedule Message" rows="3" data-validation="required"></textarea>
+				</div>
+			</div>
+		</div>
+		
+		<div class="immiPopFoot">
+            <input value="Save" class="" onclick="saveScheduleMaintenance();" type="button">
+            <input value="Cancel" class="popCan" type="button">
+          </div>
+          </form:form>		
+	</div>
+  <script>
+  $("#scheduleMPopup").click(function(){
+	  $("#scheduleMPopDiv").fadeIn();
+	  $(".popMask").fadeIn();
+	  clearDate();
+  });
+  function flushScheduleMaintenance(){
+	  document.getElementById("scheduleMaintenance_form").reset();
+	  $("scheduleMaintenance_form").validate().resetForm();
+  }
   
+  $(function() {
+	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  $('#scheduleMDate').datepicker({
+		  minDate:new Date(),
+		  dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true,
+	  }).on('changeTime', function() {
+          $("#startTime").timepicker('option', 'minTime', $(this).val().getTime())
+	  });
+	  $("#startTime").timepicker({
+		  	timeFormat: 'g:ia',
+		  	'showDuration': true,
+			'disableTextInput': true
+		}).on('changeTime', function() {
+          $("#endTime").timepicker('option', 'minTime', $(this).val());
+      });
+		
+	 $("#endTime").timepicker({
+			'showDuration': true,
+			 'maxTime': '23:30:00',
+			'disableTextInput': true
+		}) 
+  });
+  function clearDate(){
+		$("#scheduleMDate").val("");
+  };
+  
+  $(".popCan").click(function(){
+	  $("#scheduleMPopDiv").fadeOut();
+	  $(".popMask").fadeOut();
+	  flushScheduleMaintenance();
+ });
+  function saveScheduleMaintenance() {
+		if ($('#scheduleMaintenance_form').validate(false, validationSettings)) {
+				var formData = getFormData("scheduleMaintenance_form");
+				var sourceleadUrl = '${sourceleadUrl}';
+				$.ajax({
+						type : "POST",
+						 data: formData,
+						url : sourceleadUrl+"/storeScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}",
+						success : function(result) {
+							$("#scheduleMPopDiv").fadeOut();
+							$(".popMask").fadeOut(); 
+   	        			    flushScheduleMaintenance();
+						},
+					}); 
+			return true;
+		} else {
+			return false;
+		}
+	}
+$(document).ready(function(){
+	$("#subMenu").click(function(){
+		$(".subMenuView").slideToggle(100);
+	});
+	$("#campSubMenu").click(function(){
+		$(".campsubMenuView").slideToggle(100);
+	});	
+});
+</script>
   
   <script>
   function flushInviteCompany(){
@@ -1741,16 +1924,48 @@ $("#searchType").selectpicker('refresh');
   $(".modalInvite").fadeIn();
   $(".sideMask").fadeOut();
   });
+  $("#bulkImport").click(function(){
+	  $(".modalBulkImport").fadeIn();
+	  $(".sideMask").fadeOut();
+	  });
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
-	  });
+	  flushBulkImportPath();
+ });
   $(".btnClose").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
+	  flushBulkImportPath();
 	  });
+  
+  function flushBulkImportPath() {
+	  $("#folderPath").val('');
+  }
+  
+  function processCopiedFiles() {
+	  if ($('#bulkImportForm').validate(false, validationSettings)) {
+		  var val = $("#folderPath").val().trim();
+		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
+			  if(data && data.indexOf("Session timedout") !== -1) {
+				  alert(data);
+				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
+			  } else if(data) {
+				  $("#bulkImportStatus").html(data)
+				  if(data.indexOf("Invalid") === -1) {
+					  $("#folderPath").val('');
+				  }
+			  }
+		  });
+	  } else {
+			return false;
+		}
+	 
+  }
   </script>
 <!--  Company invite pop ends -->
 
@@ -1867,10 +2082,10 @@ function geolocate() {
 
 <script>
 function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
-    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId);
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId);
     geolocate(latitudeId,longtitudeId);
 }
-function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId) {
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId) {
     if(type == "invite"){
     	 var input = (document.getElementById(locationId));
     	    var options = {
@@ -1918,6 +2133,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   $("#"+countryId).val(address.country).change();
   $("#"+countryId).trigger("chosen:updated");
 
+  $("#"+latitudeId).val(place.geometry.location.lat());
+  $("#"+longtitudeId).val(place.geometry.location.lng());
+  
   if(type == "invite"){
 	  getTimezonesList();
   }
@@ -1932,10 +2150,10 @@ function geolocate(latitudeId,longtitudeId) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
             if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
-                document.getElementById("latitude").value = latitude;
+            	$("#"+latitudeId).val(latitude);
             }
             if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
-                document.getElementById("longitude").value = longitude;
+                $("#"+longtitudeId).val(longitude);
             }
             autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
         });
@@ -1975,11 +2193,5 @@ function zipcodeMask(country,zipCodeId){
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
-<script>
-$(document).ready(function(){
-	$("#subMenu").click(function(){
-		$(".subMenuView").slideToggle(100);
-	});
-});
-</script>
+
 

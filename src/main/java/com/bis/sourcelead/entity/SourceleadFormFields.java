@@ -20,7 +20,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "SOURCELEAD_FORM_FIELDS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormFields")
 public class SourceleadFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +28,7 @@ public class SourceleadFormFields implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SECTION_ID", nullable=false )        
     private SourceleadFormSections sourceleadFormSections;
@@ -67,7 +66,7 @@ public class SourceleadFormFields implements Serializable{
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CREATED_BY", nullable=false )
 	private User createdBy;
@@ -75,7 +74,7 @@ public class SourceleadFormFields implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="UPDATED_BY", nullable=false )
 	private User updatedBy;

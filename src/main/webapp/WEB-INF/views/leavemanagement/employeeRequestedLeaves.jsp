@@ -100,6 +100,7 @@ function prepareRequestedEmployeesList(url){
 		result = result + '<th>Leave Type</th>';
 		result = result + '<th>Duration</th>';
 		result = result + '<th>No Of Days</th>';
+// 		result = result + '<th>No Of Extra Days</th>';
 		result = result + '<th>Leaves Taken</th>';
 		result = result + '<th>This Month</th>';
 		result = result + '<th>Balance leaves</th>';
@@ -142,11 +143,11 @@ function requestedEmployeesPagination(url){
 	    	  		    var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
 		    	  			result = result + '     <div class="proj_show divmax-width">';
-		    	  			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');"></i>';
+		    	  			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');"></i>';
 		    	  			result = result + '     </div>';
 		        		}else{
 		        			result = result + '     <div class="proj_show divmax-width">';
-		        			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'<i class="fa fa-binoculars pull-right"></i></div>';
+		        			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'<i class="fa fa-binoculars pull-right"></i></div>';
 		        			result = result + '     </div>';
 		        		}
 		              return result; 
@@ -173,15 +174,23 @@ function requestedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	      result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+' day(s)</div>';	 
+            	      result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+' day(s)</div>';	 
             	    return result; 
               }
-            }, {
+            },/* {
+                "targets": colIndex++,
+                "data": "noOfDays",
+                "render": function ( data, type, opt, meta ) {
+              	   var result = "";
+              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+' day(s)</div>';	 
+              	    return result; 
+                }
+              }, */{
                 "targets": colIndex++,
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
                 		 var result = "";
-                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+                		result = result + '     <div class="tblminwidth-75">'+opt.actualLeavesTaken+'</div>';
     	                return result; 
                 }
           },{
@@ -189,7 +198,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "thisMonthLeaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeaves+'</div>';
+	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeavesTaken+'</div>';
   	                return result; 
 	    	  	}
 	    	  },{
@@ -197,7 +206,7 @@ function requestedEmployeesPagination(url){
 	    	  	"data": "balanceleaves",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + ' <div class="tblminwidth-75">'+opt.balanceleaves+'</div>';
+	    	  		result = result + ' <div class="tblminwidth-75">'+opt.totalBalLeaves+'</div>';
 	    	  		return result; 
 	    	  	}
 	    	  }, {
@@ -212,8 +221,8 @@ function requestedEmployeesPagination(url){
 		        		 }else{
 		        			 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">';
 		        			 result = result + '<div class="tblminwidth-75 pull-left text-center ml10">';
-                             result = result + ' <span title="APPROVE" class="paddingRight pull-left"><i class="fa fa-check text-success cursorPointer" onclick="approveLeavePopup(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
-                             result = result + '  <span title="REJECT" class="paddingLeft  pull-left"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.id+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
+                             result = result + ' <span title="APPROVE" class="paddingRight pull-left"><i class="fa fa-check text-success cursorPointer" onclick="approveLeavePopup(\''+opt.leaveUUID+'\',\''+opt.leaveTypeId+'\',\'APPROVED\',\''+opt.noOfDays+'\');"></i></span>';
+                             result = result + '  <span title="REJECT" class="paddingLeft  pull-left"><i class="fa fa-times text-danger cursorPointer" onclick="rejectLeave(\''+opt.leaveUUID+'\',\''+opt.leaveTypeId+'\',\''+opt.noOfDays+'\',\'REJECTED\');"></i></span>';
                              result = result + '</div>';
                              '</sec:authorize>';
 
@@ -245,22 +254,22 @@ function requestedEmployeesPagination(url){
 
  
 <script>
-function approveLeavePopup(leaveId,leaveTypeId,approveStatus,numberOfDays){
+function approveLeavePopup(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId, function(data) {
+	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID, function(data) {
 		if(data == true){
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>"; 
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>This Employee applied leave on restricted day</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="approveLeave(\''+leaveId+'\',\''+leaveTypeId+'\',\''+approveStatus+'\',\''+numberOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="approverPopupCancel();"></b>';
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="approveLeave(\''+leaveUUID+'\',\''+leaveTypeId+'\',\''+approveStatus+'\',\''+numberOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="approverPopupCancel();"></b>';
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
 		}else{
-			approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays);
+			approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays);
 		}
 	}); 
 }
@@ -268,7 +277,7 @@ function approveLeavePopup(leaveId,leaveTypeId,approveStatus,numberOfDays){
 
 
 <script>
-function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
+function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId = '${SourceLeadWeb_userId}';
 	 if(approveStatus == 'REJECTED'){
@@ -277,7 +286,7 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 	 if((reason != null && reason != '' && reason != 'undefined') || (approveStatus == 'APPROVED')) {
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveId="+leaveId+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
+			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
 					if(data == true){
 						$("#popUp").empty();
 						$("#appRejLoading").removeAttr("style");
@@ -304,16 +313,16 @@ function approveLeave(leaveId,leaveTypeId,approveStatus,numberOfDays){
 </script>
 
 <script>
-function getRequestedAproveSummary(leaveId,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+function getRequestedAproveSummary(leaveUUID,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
 		if(data != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +'<span class="btn btn-primary btn-sm mr10" title="APPROVE" onclick="approveLeavePopup(\''+data.id+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">APPROVE</span>';
-			 result = result +'<span class="btn btn-danger btn-sm mr10" title="REJECT" onclick="rejectLeave(\''+data.id+'\',\''+data.leaveTypeId+'\',\''+data.noOfDays+'\',\'REJECTED\');">REJECT</span>';
+			 result = result +'<span class="btn btn-primary btn-sm mr10" title="APPROVE" onclick="approveLeavePopup(\''+data.leaveUUID+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">APPROVE</span>';
+			 result = result +'<span class="btn btn-danger btn-sm mr10" title="REJECT" onclick="rejectLeave(\''+data.leaveUUID+'\',\''+data.leaveTypeId+'\',\''+data.noOfDays+'\',\'REJECTED\');">REJECT</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';
@@ -398,8 +407,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-        	 if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-				 result = result +'<span>'+data.leavesTaken+'</span>';
+        	 if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -408,8 +417,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.thisMonthLeaves != null && data.thisMonthLeaves !='' && data.thisMonthLeaves !='undefined'){
-				 result = result +'<span>'+data.thisMonthLeaves+'</span>';
+             if(data.thisMonthLeavesTaken != null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.thisMonthLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -418,8 +427,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.balanceleaves != null && data.balanceleaves !='' && data.balanceleaves !='undefined'){
-				 result = result +'<span>'+data.balanceleaves+'</span>';
+             if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
+				 result = result +'<span>'+data.totalBalLeaves+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -468,14 +477,14 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 </script>
 
 <script>
-function rejectLeave(id, leaveTypeId, noOfDays){
+function rejectLeave(leaveUUID, leaveTypeId, noOfDays){
 	var result = "";
 	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='leaveReasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Rejected Reason' rows='2'></textarea>";
 	result = result + ' <div id="rejectReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Save" onclick="approveLeave(\''+id+'\',\''+leaveTypeId+'\',\'REJECTED\',\''+noOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Save" onclick="approveLeave(\''+leaveUUID+'\',\''+leaveTypeId+'\',\'REJECTED\',\''+noOfDays+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);

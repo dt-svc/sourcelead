@@ -67,7 +67,7 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ContactsGroup cg  left join fetch cg.createdUser user where user.id =:userId and cg.status ='1'";
-		List<ContactsGroup> contactsGroupList  =   session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true) .list();
+		List<ContactsGroup> contactsGroupList  =   session.createQuery(query.toString()).setLong("userId", userId) .list();
 		return contactsGroupList;
 	}
 
@@ -77,7 +77,7 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ContactsGroup cg  where cg.id =:groupId";
-		List cgList = session.createQuery(query).setLong("groupId", groupId).setCacheable(true).list();
+		List cgList = session.createQuery(query).setLong("groupId", groupId).list();
 		ContactsGroup contactsGroup = null;
 		if(cgList != null && !cgList.isEmpty())
 		{
@@ -153,7 +153,7 @@ public class ContactsGroupDaoImpl implements ContactsGroupDao {
 		logger.debug("findByContactsGroupAndUserId start");
 		try{
 			contactsGroup = session.createQuery("from ContactsGroup cg where cg.groupName = :groupName and cg.createdUser.id = :userId")
-					.setString( "groupName", groupName ).setLong("userId", userId ).setCacheable(true).list();
+					.setString( "groupName", groupName ).setLong("userId", userId ).list();
 			
 			logger.debug("findByCandidateEmail end");
 			if (contactsGroup.size() > 0) {

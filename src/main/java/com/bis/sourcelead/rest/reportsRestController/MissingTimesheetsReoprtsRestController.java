@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetRepotDTO;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
@@ -247,6 +248,8 @@ public class MissingTimesheetsReoprtsRestController {
 					            	mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignation());
 					            	mtr.setFrequency(unfilledFrequency);
 					            	mtr.setDueDays(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()));
+					                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate,frequencyEndDate ,pm.getId());
+					                mtr.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sah.getUpdatedDate()));
 					            	List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(pm.getProjects().getId(),orgLocations.getId()) ;
 							    	String approverName = "";
 							    	String seperator = "";

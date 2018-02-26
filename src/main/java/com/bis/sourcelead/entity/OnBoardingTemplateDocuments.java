@@ -27,7 +27,6 @@ import com.bis.sourcelead.enums.OnboardStatus;
 
 @Entity
 @Table(name = "ON_BOARDING_TEMPLATE_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="onBoardingTemplateDocuments")
 public class OnBoardingTemplateDocuments implements Serializable{
 
 private static final long serialVersionUID = 1L;
@@ -37,12 +36,12 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ON_BOARDING_TEMPLATE_ID", nullable = false)
 	private OnBoardingTemplate onboardingTemplateId;
     
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID", nullable = false)
 	private CandidateOnBoarding candidateOnBoardingId;

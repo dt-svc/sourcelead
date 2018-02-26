@@ -29,8 +29,8 @@ function candidateEducation(candidateId){
 		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt10">  ';
 	}
 	
-	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
-    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+	result  = result + '<div class="success_pop" id="selector04" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDivEmp"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		if(candidateType == "Candidates"){
@@ -86,8 +86,8 @@ function candidateEducation(candidateId){
 <!-- Show success message after form submission script -->
 <script>
 	function eduMsgFadeinFunction() {
-		$("#selector4").fadeIn(200);
-        $('#selector4').delay(2000).fadeOut('slow');
+		$("#selector04").fadeIn(200);
+        $('#selector04').delay(2000).fadeOut('slow');
 	}
 </script> 
 <!-- End -->
@@ -298,11 +298,12 @@ function addEducation(candidateId) {
 	result  = result + '					<div class="clearDate" onClick="clearCandidateEduEndDate();"></div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result  = result + '                   </div>';
+	result  = result + '                   </div>';
 
 	result = result  +'                                                                                                                                                       ';
 	result  = result + '                 <div class="clearfix mb10">';
 	result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative">';
-	result = result  +'	                     <select class="newSelect"  name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
+	result = result  +'	                     <select class="newSelect valid"  name="gradeType" id="scoreEducationType" onchange="educationSelectScoreType();clearSearchKeyEducation();">';
 	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 	result = result  +'	                       <option value="Percentage">Percentage</option>';
 	result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -734,9 +735,9 @@ function candidateEducationStore(candidateId){
     			$("#quickDisVal").append(data+'%');
     			
        		    $("#popUpDiv").removeClass("edit-details-active");
-    			$("#selector4").removeAttr("style");
-    			$("#selector4").css({ display: "block" });
-				$("#eduMsgDiv").html("Success!! New Education added");
+    			$("#selector04").removeAttr("style");
+    			$("#selector04").css({ display: "block" });
+				$("#eduMsgDivEmp").html("Success!! New Education added");
        			candidateEducationList(candidateId);
        			eduMsgFadeinFunction();
        			qveducationSubmission(candidateId);
@@ -857,9 +858,9 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
        				$("#quickDisVal").append(data+'%');
            			
            			
-           			 	 $("#selector4").removeAttr("style");
-            			 $("#selector4").css({ display: "block" });
-            			 $("#eduMsgDiv").html("Education deleted");
+           			 	 $("#selector04").removeAttr("style");
+            			 $("#selector04").css({ display: "block" });
+            			 $("#eduMsgDivEmp").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
              			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
@@ -893,35 +894,35 @@ function educationSelectScoreType(){
 	 if(selectedText =='Percentage'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
+			  $("#save_button").removeAttr("disabled");
 			   return true;
 		  }		  
 		 else{
 				$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 				return false; 
 		 	 }
 	  }
 	 else if(selectedText =='CGPA'){
 		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
 			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
+				  $("#save_button").removeAttr("disabled");
 				   return true;
 			  }		  
 			 else{
 				 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 			return false; 
 			 }
 	  } 
 	 else if(selectedText =='GRADE'){
 		 var grades = /^([A-E][-+]{0,2})?$/
 			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
+				 $("#save_button").removeAttr("disabled");
 				 return true;
 			}else{
 				$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
+				 $("#save_button").attr("disabled", "disabled");
 	    		return false;
 	    		
 			}
@@ -933,7 +934,6 @@ function educationSelectScoreType(){
 
 <script type="text/javascript">
 function educationscoreAndScoreType(){
-	
 	 var candidateScore = document.getElementById("candidateEducationScore").value;
 	 var selectedText = document.getElementById("scoreEducationType").value;
 	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
@@ -942,13 +942,17 @@ function educationscoreAndScoreType(){
 	 if(candidateScore.match(floatNum)){
 		 $("#scoreEducationType").val('Percentage'); 
 		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
-		 $("#addCandidate").removeAttr("disabled");
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(grades)){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 		 $("#scoreEducationType").val('GRADE'); 
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(cgpanum)){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 		 $("#scoreEducationType").val('CGPA'); 
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
 		 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
@@ -991,23 +995,20 @@ function clearSearchKeyEducation() {
 		if ($('#education_form').validate(false,
 				validationSettings)) {
 
-			var frm = $('#education_form')[0];
 
-			var formData = new FormData(frm);
+			var formData = getFormData('education_form');
 			 $("#education_form").attr("disabled", "disabled");
 			 $("#save_button").attr("disabled", "disabled");
 			 
 			 $.ajax({
 						type : "POST",
 						data :formData,
-						processData: false,
-		    	        contentType:false,
 						url : sourceleadUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId ,
 						success : function(result) {
 							closePopup();
-		            			$("#selector4").removeAttr("style");
-		            			$("#selector4").css({ display: "block" });
-		            			$("#eduMsgDiv").html("Education details updated");
+		            			$("#selector04").removeAttr("style");
+		            			$("#selector04").css({ display: "block" });
+		            			$("#eduMsgDivEmp").html("Education details updated");
 							candidateEducationList(candidateId)
 							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);

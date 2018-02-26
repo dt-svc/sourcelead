@@ -182,7 +182,7 @@
                                       Vendor</label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -573,7 +573,15 @@ $('body').on('blur', '#onboardTemplate_form', function() {
 	$("#onboardTemplate_form").validateOnBlur(false, validationSettings);  
 });
 </script>
-
+<script>
+$(document).on("keypress", 'form', function (e) {
+    var code = e.keyCode || e.which;
+    if (code == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
 <script>
 function createTemplateDocs(saveType){
 			var validationSettings = {
@@ -816,7 +824,7 @@ function validateDocumentName(id){
 	 for (var i = 0; i < checkMaxTsRowNum; i++) { 
 		
 		 if(id != i){
-			 if(documentName != "undefined"){
+			 if(documentName != "undefined" && documentName != '' && documentName != null){
 				 var docName = $("#"+i+"contractsdocFileName").val();
 				 if(documentName == docName){
 					 flag = false;

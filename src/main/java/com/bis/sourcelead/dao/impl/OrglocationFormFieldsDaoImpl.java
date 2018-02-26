@@ -50,8 +50,19 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationId(Long sectionId,Long orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc  where slSection.id =:sectionId and orgLoc.id =:orgLocation and orgForm.status = '1'";
-		List<OrglocationFormFields> orglocaFormField = session.createQuery(query).setLong("sectionId", sectionId).setLong("orgLocation", orgLocation).setCacheable(true).list();
+		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc  where slSection.id =:sectionId and orgLoc.id =:orgLocation and orgForm.status = 1";
+		List<OrglocationFormFields> orglocaFormField = session.createQuery(query).setLong("sectionId", sectionId).setLong("orgLocation", orgLocation).list();
+		return orglocaFormField;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(Long sectionId,Long orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc  where slSection.id =:sectionId and orgLoc.id =:orgLocation";
+		List<OrglocationFormFields> orglocaFormField = session.createQuery(query).setLong("sectionId", sectionId).setLong("orgLocation", orgLocation).list();
 		return orglocaFormField;
 	}
 	
@@ -60,30 +71,37 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long formFieldId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrglocationFormSubFields orgSubForm left join fetch orgSubForm.formField formField where formField.id =:formFieldId and orgSubForm.status = '1'";
-		List<OrglocationFormSubFields> orglocaFormSubField = session.createQuery(query).setLong("formFieldId", formFieldId).setCacheable(true).list();
+		String query = "from OrglocationFormSubFields orgSubForm left join fetch orgSubForm.formField formField where formField.id =:formFieldId ";
+		List<OrglocationFormSubFields> orglocaFormSubField = session.createQuery(query).setLong("formFieldId", formFieldId).list();
 		return orglocaFormSubField;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String deleteCustomFieldById(Long customID) {
+	public String deleteCustomFieldById(Long customID,String status) {
+		Long statusValue = null;
+		if(status.equalsIgnoreCase("deactivate")) {
+			 statusValue = 0L;
+		}else {
+			 statusValue = 1L;
+		}
+		
 		String returnResult = "";
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "update OrglocationFormSubFields subFields set subFields.status ='0' where subFields.formField in(:customID)";
-		 Query result = session.createQuery(query).setLong("customID", customID).setCacheable(true);
+		String query = "update OrglocationFormSubFields subFields set subFields.status ='"+statusValue+"' where subFields.formField in(:customID)";
+		 Query result = session.createQuery(query).setLong("customID", customID);
 		 int count = result.executeUpdate();
 		 if(count > 0) {
-			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='0' where  formField.id =:customID";
-			 Query resultformField = session.createQuery(formFieldQuery).setLong("customID", customID).setCacheable(true);
+			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='"+statusValue+"' where  formField.id =:customID";
+			 Query resultformField = session.createQuery(formFieldQuery).setLong("customID", customID);
 			  int formFieldResult = resultformField.executeUpdate();
 			  if(formFieldResult > 0) {
 				  returnResult =  "success"; 
 			  }
 		 }else {
-			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='0' where  formField.id =:customID";
-			 Query resultformField = session.createQuery(formFieldQuery).setLong("customID", customID).setCacheable(true);
+			 String formFieldQuery = "update OrglocationFormFields formField set formField.status ='"+statusValue+"' where  formField.id =:customID";
+			 Query resultformField = session.createQuery(formFieldQuery).setLong("customID", customID);
 			 int formFieldResult = resultformField.executeUpdate();
 			  if(formFieldResult > 0) {
 				  returnResult ="success"; 
@@ -100,7 +118,7 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	public List<OrglocationFormFields> getAllSectionByActionId(Long actionId, OrgLocations orgLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationFormFields orgForm left join fetch orgForm.sourceleadFormSections slSection left join fetch orgForm.orgLocations orgLoc left join fetch slSection.sourceleadActions action  where action.id =:actionId and orgLoc.id =:orgLocation and orgForm.status = '1'";
-		List<OrglocationFormFields> result = session.createQuery(query).setLong("actionId", actionId).setLong("orgLocation", orgLocation.getId()).setCacheable(true).list();
+		List<OrglocationFormFields> result = session.createQuery(query).setLong("actionId", actionId).setLong("orgLocation", orgLocation.getId()).list();
 		return result;
 	}
 
@@ -109,7 +127,7 @@ public class OrglocationFormFieldsDaoImpl implements OrglocationFormFieldsDao{
 	public Long getCurrentIndexBySourceleadActionIdAndOrders(Long actionId, List<Long> orders) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "Select Count(*) from OrglocationFormFields orgForm    where orgForm.sourceleadFormSections.sourceleadActions.id =:actionId and orgForm.sourceleadFormSections.order IN(:orders) and orgForm.status ='1'";
-		List<Long> list = session.createQuery(query).setLong("actionId", actionId).setParameterList("orders", orders).setCacheable(true).list();
+		List<Long> list = session.createQuery(query).setLong("actionId", actionId).setParameterList("orders", orders).list();
 		Long result = 0l;
 		if(list != null && !list.isEmpty()) {
 			result = list.iterator().next();

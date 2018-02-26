@@ -3,7 +3,7 @@
 <section class="staticBan blogBan">
 	<div class="staticBanInn"><h4>SourceLead blogs</h4><div class="clear"></div></div>
 </section>  
-
+          
 <section class="testiWrap">
 
 <section class="blogWrap">
@@ -13,16 +13,16 @@
     	<h2>Recent Posts<i class="fa fa-caret-down"></i></h2>
         <div class="resSlide">
     	<div class="blogRight">
-    		<a href="blog1.html"><i class="fa fa-caret-right"></i>Recruiting Through Social Media Platform</a>
-			<a href="blog2.html"><i class="fa fa-caret-right"></i>Loyal Relationships with Recruiters</a>
-        	<a href="blog3.html"><i class="fa fa-caret-right"></i>Existing Process without using any Tool</a>
-            <a href="blog4.html"><i class="fa fa-caret-right"></i>Problems of Existing Recruiting process without Tools.</a>
-            <a href="blog5.html"><i class="fa fa-caret-right"></i>Applicant Tracking System</a>
+    		<a href="/blog1.html"><i class="fa fa-caret-right"></i>Recruiting Through Social Media Platform</a>
+			<a href="/blog2.html"><i class="fa fa-caret-right"></i>Loyal Relationships with Recruiters</a>
+        	<a href="/blog3.html"><i class="fa fa-caret-right"></i>Existing Process without using any Tool</a>
+            <a href="/blog4.html"><i class="fa fa-caret-right"></i>Problems of Existing Recruiting process without Tools.</a>
+            <a href="/blog5.html"><i class="fa fa-caret-right"></i>Applicant Tracking System</a>
         </div>                       
         <div class="blogRightBot">
         	<p>Ready to Learn More?</p>
             <span>Let us help you choose the perfect solution for your firm.</span>
-            <a href="javascript:void(0)" class="requestDemo">Request a Demo</a><a href="javascript:void(0)" class="freeTrail">Free Trial</a>
+            <a href="javascript:void(0)" class="requestDemo">Get a Demo</a>
         </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
     	<div class="blogInn">
         	<h1>Problems of Existing Recruiting process without Tools.</h1>
             <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>12 DEC 2016 at 11:05 AM</span></h3>
-            <div class="blogImg"><img src="/resources/css/static-web/images/bl3.jpg" alt=""/></div>
+            <div class="blogImg"><img src="/resources/static-web/images/bl3.jpg" alt=""/></div>
             <p>As the current business process is not automated the company needs to cope up with the following set of problems.
             </p>
             <b>Performance: </b>
@@ -56,9 +56,7 @@
          <p>Follow up the resource is very poor.<br>
          Inconsistency in decision making while rating employees.</p>
           </div>         
-
-          
-          
+    
     </div>
     
 <div class="clear"></div>  

@@ -27,8 +27,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CANDIDATE_EMPLOYERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployers")
-
 public class CandidateEmployers implements Serializable{
 	
 	
@@ -40,13 +38,13 @@ public class CandidateEmployers implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 		

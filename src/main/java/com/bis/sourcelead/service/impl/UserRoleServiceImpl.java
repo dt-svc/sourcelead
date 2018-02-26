@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -323,11 +324,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
 		   if(userRoles.getRoles() != null){
-			   writeRow.createCell(8).setCellValue(userRoles.getRoles().getDisplayName());
+			   writeRow.createCell(7).setCellValue(userRoles.getRoles().getDisplayName());
 		   }
-		   if(userRoles.getUser().getLocation() !=null){
+		  /* if(userRoles.getUser().getLocation() !=null){
 			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
-		   }
+		   }*/
 		   if(userRoles.getReportingManager() !=null){
 			   StringBuilder reportingManager = new StringBuilder();
 			   if(userRoles.getReportingManager().getLastName() != null && !userRoles.getReportingManager().getLastName().isEmpty()) {
@@ -335,17 +336,17 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   }else {
 				   reportingManager = reportingManager.append(userRoles.getReportingManager().getFirstName());
 			   }
-			   writeRow.createCell(9).setCellValue(reportingManager.toString());
+			   writeRow.createCell(8).setCellValue(reportingManager.toString());
 		   }
 		   
 		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-			   writeRow.createCell(10).setCellValue("Invite");
+			   writeRow.createCell(9).setCellValue("Invite");
 	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
-	   			writeRow.createCell(10).setCellValue("Resend");
+	   			writeRow.createCell(9).setCellValue("Resend");
 	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			writeRow.createCell(10).setCellValue("Active");
+	   			writeRow.createCell(9).setCellValue("Active");
 	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			writeRow.createCell(10).setCellValue("In-active");
+	   			writeRow.createCell(9).setCellValue("In-active");
 	   		   }
 		   
 		return createExcelsheet;
@@ -626,12 +627,12 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
-		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,roleId, locationId, userState, userId, loginUserRole, userCode);
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
+		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,userRoleDTO,roleId, locationId, userState, userId, loginUserRole, userCode);
 	}
 
 	@Override
-	public List<UserRoleDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception {
+	public List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception {
 		return userRoleDao.getUserListForConnections(searchByName,offSet,userId);
 	}
 

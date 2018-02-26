@@ -84,7 +84,7 @@ function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requi
 	var loginUserId = '${SourceLeadWeb_userId}';
 	$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
+	    	  url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId, 
 	    			
 	    	  success: function(data) {
     		  var result = "";
@@ -757,7 +757,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 		result = result + '<c:forEach var="skill" items="${skillsList}">';
-		result = result + '<option value="${skill.name}">${skill.name}</option>';
+		result = result + "<option value='${skill.name}'>${skill.name}</option>";
 		result = result + ' </c:forEach>';
 		result = result + '</select>';
 		result = result + '		 </div>';
@@ -844,7 +844,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 		result = result + '<c:forEach var="skill" items="${skillsList}">';
-		result = result + '<option value="${skill.name}">${skill.name}</option>';
+		result = result + "<option value='${skill.name}'>${skill.name}</option>";
 		result = result + ' </c:forEach>';
 		result = result + '</select>';
 		result = result + '		 </div>';
@@ -893,7 +893,6 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
-		result = result + '</form>';
 		result = result + '</form>';
 		
 		getCandidatesList(requirementId,'Candidate');

@@ -14,8 +14,8 @@
 <link
 	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="/resources/css/static-web/reset.css?staticTime=${staticTime}">
+<%-- <link rel="stylesheet"
+	href="/resources/css/static-web/reset.css?staticTime=${staticTime}"> --%>
 <link
 	href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
@@ -46,7 +46,7 @@
 	type="text/css">
 
 <script
-	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU"
+	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
 	type="text/javascript"></script>
 <script
 	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
@@ -77,9 +77,14 @@
 	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<!-- <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script> -->
 
-
- 
+ <title>.:: Jobs ::.</title>
+ <style>
+ .navbar-default {
+ background: #fff !important; border-bottom: 1px solid #ededed !important;
+ }
+ </style>
 <!--  Modal Pop for apply Jobs -->
   <!-- Modal -->
   <div class="comMask"></div>
@@ -129,7 +134,7 @@ window.onload = function () {
 		getDropDownCount(); */
 	}else{
 		getDropDownCount();
-		getOpenJobsELKList();
+		getOpenJobsELKList('','manual');
 		
 	}
 	if('${companies}' != null && '${companies}' != '' && '${companies}' != 'undefined'){
@@ -140,6 +145,33 @@ window.onload = function () {
 	}
  };
 </script>
+
+
+
+<script>
+
+
+$(document).scroll(function(e){
+    // grab the scroll amount and the window height
+    var scrollAmount = $(window).scrollTop();
+    var documentHeight = $(document).height();
+    offset = $("#orgOffset").val();
+    // calculate the percentage the user has scrolled down the page
+    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+    	var avilableCount = $("#openJobsOffset").val();
+    	avilableCount = parseInt(avilableCount) + parseInt(10); 
+    	$("#openJobsOffset").val(avilableCount);
+    	 //getConnectionsList("scroll");
+    	 //requirementsFilter("scroll");
+	if('${requirementUUID}' == null || '${requirementUUID}' == '' || '${requirementUUID}' == 'undefined'){
+    	 getOpenJobsELKList('',"scroll")
+	}
+    }
+    
+});
+</script>
+
+
 
 <script>
  function socialPostSucess(service,status){
@@ -270,12 +302,15 @@ a.alertBtn {
 .modal {
 	z-index: 10500 !important;
 }
+.ref-top{
+top: 21px;height: 32px; line-height: 18px;
+}
 </style>
 
 
 <!-- Content Area -->
 <jsp:include page="../staticHeader.jsp" />
-<div class="innerPageSearch"> 
+<div class="innerPageSearch" style="padding-top: 75px;"> 
 <c:if test="${!empty guestusermsg}">
 	        <div class="success_pop" id="guestselector"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${guestusermsg}</span>
@@ -322,7 +357,7 @@ a.alertBtn {
 	<div class="filter" id="filterDiv">
 		<h2>
 			Filter your search <i class="fa fa-refresh" aria-hidden="true"
-				onclick="clearFilters(); getOpenJobsELKList();"
+				onclick="clearFilters(); getOpenJobsELKList('','manual');"
 				style="cursor: pointer;"></i>
 		</h2>
 		<div class="filterCta" id="dateFilterId">
@@ -492,7 +527,8 @@ a.alertBtn {
 
 		<div id="companiesListDiv" class="filterCta">
 				<h3 onclick="getOrgsList('none','main');">Companies<i class="fa fa-caret-down"></i></h3>
-				<ul id="orgList"></ul>
+				<ul id="orgList">
+				</ul>
 			</div>	
 
 		<!-- <div class="filLoad">
@@ -722,7 +758,7 @@ a.alertBtn {
 				</div>
 				<div class="clearfix">
 				</div>
-				<div class="clearfix">
+				<%-- <div class="clearfix">
 					<div class="col-md-4">
 						<label>Country</label>
 						<div class="clearfix adv-srh-chosen">
@@ -757,7 +793,7 @@ a.alertBtn {
 							</select>
 						</div>
 					</div>
-				</div>
+				</div> --%>
 
 				<div class="clearfix">
 					<div class="col-md-4">
@@ -790,6 +826,41 @@ a.alertBtn {
 						</div>
 					</div>
 				</div>
+				
+				<div class="clearfix">
+						<%-- <div class="col-md-4">
+								<label>Country</label>
+								<div class="clearfix adv-srh-chosen">
+									<select class="chosen-select" name="country" id="country" field-name="Country">
+										<option value="">---select Country---</option>
+										<c:forEach var="cntry" items="${countryList}">
+											<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div> --%>
+							
+						   <div class="col-md-4">
+								<label>Choose City</label>
+								<div class="clearfix">
+								<div class="col-md-14">
+							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								 </div>
+								</div>
+							</div>
+							
+							<div class="col-md-8">
+								<label>Selected Cities</label>
+								<div class="clearfix">
+								   <select class="chosen-select form-control input-sm" multiple
+										data-placeholder="sletected cites" id="city" name="city">
+									</select>
+									
+								</div>
+							</div>
+							
+						</div>
 			</div>
 			<div class="row form-footer">
 				<div class="pull-right mr">
@@ -806,7 +877,7 @@ a.alertBtn {
 </section>
 <!-- Content Area Ends-->
 <footer>
-    <div class="footerInn">
+    <!-- <div class="footerInn">
         <div class="footerInnCta resFoot">
             <h3>SourceLead</h3>
             <ul>
@@ -814,10 +885,10 @@ a.alertBtn {
                         us</a></li>
                 <li><a href="/team.html"><i class="fa fa-caret-right"></i>Our
                         team</a></li>
-                <!--<li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>-->
+                <li><a href="about-us.html#client"><i class="fa fa-caret-right"></i>Clients</a></li>
                 <li><a href="/testimonial.html"><i
                         class="fa fa-caret-right"></i>Testimonial</a></li>
-                <!--<li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>-->
+                <li><a href="careers.html"><i class="fa fa-caret-right"></i>Careers</a></li>
                 <li><a href="/contact.html"><i class="fa fa-caret-right"></i>Contact
                         us</a></li>
             </ul>
@@ -866,11 +937,11 @@ a.alertBtn {
             </div>
         </div>
         <div class="clear"></div>
-    </div>
+    </div> -->
     <jsp:include page="../masterFooter.jsp" />
     <div class="copyrightOut">
         <div class="copyright">
-            <b>© 2016 SourceLead. All rights reserved.</b> <span> <a
+            <b>� 2018 SourceLead. All rights reserved.</b> <span> <a
                 href="/privacy.html">Privacy Policy</a> <a href="/terms.html">Terms
                     of Use</a>
             </span>
@@ -892,12 +963,12 @@ a.alertBtn {
 <script>
 $("#guestselector").fadeIn(200);
 $('#guestselector').delay(2000).fadeOut('slow');
-	function loadMoreReq(){
+	/* function loadMoreReq(){
     	var avilableCount = $("#openJobsOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(10); 
     	$("#openJobsOffset").val(avilableCount);
     	requirementsFilter("more");
-	}
+	} */
 </script>
 
 
@@ -973,7 +1044,7 @@ function requirementsFilter(type){
     });
 	
 	var offset = 0;
-	if(type == "more"){
+	if(type == "scroll"){
 		offset = $("#openJobsOffset").val();
 	}
 	
@@ -1072,7 +1143,8 @@ function getOpenJobsELKListJOBS(){
 </script>
 
 <script>
-function getOpenJobsELKList(orgLocationId){
+function getOpenJobsELKList(orgLocationId,type){
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	var openJobsRequirementTitle = document.getElementById("openJobsRequirementTitleId").value;
 	
@@ -1104,6 +1176,15 @@ function getOpenJobsELKList(orgLocationId){
 		orgLocationIds.push($(this).val());
 // 		orgLocationIds	+=	(orgLocationIds==""?"":"--") + $(this).val();
     });
+	var offset = 0;
+	if(type === "scroll"){
+		offset = $("#openJobsOffset").val();
+	}
+	if(type === "manual"){
+		$("#openJobsRequirementsList").empty();
+		$("#openJobsOffset").val(0);
+		    offset = 0;
+	}
 // 	if(orgLocationId != null){
 	var orgListType = '${specificCompany}';
 		if(orgListType !=null && orgListType !='' && orgListType !='undefined' && orgListType == 'specificCompany') {
@@ -1113,13 +1194,12 @@ function getOpenJobsELKList(orgLocationId){
 		 $("#companiesListDiv").hide();
 // 		 document.getElementById("jobResultHeadId").style.display="block";
 	}
-	var offset = '${offset}';
-	if(offset == ''){
-		offset = 0;
-	}else{
-		$("#openJobsOffset").val(offset)
-	}
-	
+// 	var offset = '${offset}';
+// 	if(offset == ''){
+// 		offset = 0;
+// 	}else{
+// 		$("#openJobsOffset").val(offset)
+// 	}
 	
 	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
 	if(openJobsRequirementTitle)
@@ -1147,20 +1227,27 @@ function getOpenJobsELKList(orgLocationId){
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
 				var newOffset = parseInt(offset) + 10;
-	    		if(json[0].noOfSearchHits < newOffset){
-	    			$("#loadMoreReq").css("display", "none");
-	    		}else{
-	    			$("#loadMoreReq").css("display", "block");
-	    		}
+				if(json.length< 10){
+					$('#loadMoreDiv').empty();
+					$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
+	 			}else if(json.length != null && json.length >= 10 && json.length > offset){
+	 				$('#loadMoreDiv').empty();
+	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
+	 			}else{
+	 				$('#loadMoreDiv').empty();
+	 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
+	 			}
 	    		prepareOpenJobsElkList(data,offset);
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
+	    		
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
 				$("#loadMoreReq").css("display", "none");
 				$("#noResultsDiv").css("display", "block");
+	
 	        }
 	    }
 	 });  
@@ -1247,6 +1334,17 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<h4>--</h4>';
 				}
+				
+				result = result +'<strong class="pull-left mr10">Location(s) : </strong>';
+				result = result +'<ul class="joblocations-li list-unstyled">';
+ 				if(requirements.locationsList != null){
+ 					for(var k=0; k<requirements.locationsList.length; k++){
+ 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+ 					}
+ 				}
+ 				result = result +'</ul>';
+ 				result = result +'<div class="clearfix"></div>';
+ 				
 				result = result +'	<div class="skills">';
 				result = result +'	<strong>Skills :</strong>';
 				if(requirements.skills != null && requirements.skills != '' && requirements.skills !='undefined'){
@@ -1272,12 +1370,12 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 				result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';	
 				}
-				if(location != null && location != '' && location !='undefined'){
+				/* if(location != null && location != '' && location !='undefined'){
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 				description =  description+'Job Location: '+location+";";
 				}else{
 				result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
-				}
+				} */
 				
 				if(rate != null && rate != '' && rate !='undefined'){
 				result = result +'	<b><i class="fa fa-rupee"></i>'+rate+'-'+rateType+'/'+currencyType+'</b>';
@@ -1311,7 +1409,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
 				result = result +'	<div class="share">';			  
-				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
@@ -1322,17 +1420,18 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	</div>';
 			}
 			$("#openJobsRequirementsSummary").empty();
-			if(offset > 0){
+			if(json.length > 0){
+				$("#openJobsRequirementsList").empty();
 // 				$('#loadMoreDiv').empty(); 
-				$("#loadMoreDiv").append(result); 
+				$("#openJobsRequirementsList").append(result); 
 			}else{
 				$("#openJobsRequirementsList").empty();
 				$("#openJobsRequirementsList").append(result); 
 			}
 			
 			window.setTimeout(function() {
-				addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-				addthis.init(".addthis_inline_share_toolbox_s1a2");
+				addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+				addthis.init(".addthis_inline_share_toolbox_g28q");
 				addthis.layers.refresh();
 	        }, 500);
 			
@@ -1360,7 +1459,7 @@ function getPostedOrgJobs(id){
 		 
 	}
 	$("#companiesListDiv").hide();
-	getOpenJobsELKList(locationId);
+	getOpenJobsELKList(locationId,'manual');
 // 	requirementsFilter("postedOrg");
 }
 </script>
@@ -1377,7 +1476,7 @@ function getOrgsList(alphabet,type){
 	var selectedCompanies = companies.split(",");
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country,
+	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country+"&type="+type,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	var result = "";
@@ -1422,10 +1521,12 @@ function getOrgsList(alphabet,type){
 		    			
 		    		}
 		    	}
-	    		if(json.length > 5){
-	    			var orgCount = json.length - 5 ;
-			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+orgCount+' More</a>';
-	    		}
+// 	    		if(json.length > 5){
+// 	    			var orgCount = json.length - 5 ;
+				if(opt.noOfDays != '' && opt.noOfDays != 'undfined' && opt.noOfDays != null){
+			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+opt.noOfDays+' More</a>';
+
+				}
 				var org = "";    	
 				for(var i=0; i<json.length; i++){
 					var opt1 = json[i];
@@ -1518,15 +1619,26 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		      
 				result = result +'	<section class="innerContent">';
 				result = result +'  <div class="jobDetails positionRelative">';
-				result = result +'	<div class="jobResultsInn job_ResultsInn">';
+				result = result +'	<div class="jobResultsInn job_ResultsInn width100Percnt">';
 		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
-				result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>';
+				/* result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>'; */
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+json.requirementOrgName+'-'+json.orgLocationId.id+'"><h4 class="orgLink">'+json.requirementOrgName+'</h4></a>';
 				description =  description+'Posted By :'+json.requirementOrgName+";";
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	
 		    	}
+		    	result = result +'	<div class="clearfix"></div>';
+		    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
+		    	result = result +'<ul class="joblocations-li list-unstyled pull-left">';
+ 				if(json.locationsList != null){
+ 					for(var k=0; k<json.locationsList.length; k++){
+ 						result = result +'<li>'+json.locationsList[k]+'</li>';
+ 					}
+ 				}
+ 				result = result +'</ul>';
+				result = result +'	</div>';
 				
 		    	result = result +'	<div class="clearfix"></div>';
 		    	result = result +'	<div class="skills clearfix"><strong>Skills :</strong>';
@@ -1555,13 +1667,13 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 		        result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';		
 				}
-				if(null != json.city && json.city!='undefined'){
+			/* 	if(null != json.city && json.city!='undefined'){
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+','+json.state +','+json.city+'</b>';
 				}else if(null != json.state && json.state!='undefined'){
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+','+json.state +'</b>';	
 				}else{
 				result = result +'	<b><i class="fa fa-map-marker"></i>'+json.country+'</b>';	
-				}
+				} */
 				if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod !='undefined'){
 				result = result +'	<b><i class="fa fa-bell"></i>'+json.noticePeriod+'</b>';
 				description =  description+'Notice Period :'+json.noticePeriod+";";
@@ -1599,13 +1711,13 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<p></p>'; 	
 				}
 				result = result +'	<h4>Other details:</h4>';
-				if(json.location != null && json.location != '' && json.location !='undefined'){
+			/* 	if(json.location != null && json.location != '' && json.location !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>&nbsp;'+json.location+'</b>';
 				description =  description+'Job Location: '+json.location+";";
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label>--</b>';
 	
-				}
+				} */
 				if(json.positions != null && json.positions != '' && json.positions !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions:</label>'+json.positions+'</b>';
 				}else{
@@ -1688,7 +1800,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 						jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
 				    } 
 					
-				result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'--'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1699,8 +1811,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				$("#openJobsRequirementsSummary").empty();
 
 				window.setTimeout(function() {
-					addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-					addthis.init(".addthis_inline_share_toolbox_s1a2");
+					addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+					addthis.init(".addthis_inline_share_toolbox_g28q");
 					addthis.layers.refresh();
 		        }, 500);
 				
@@ -1717,7 +1829,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 }
 
 function backtoList(){
-	getOpenJobsELKList();
+	getOpenJobsELKList('','manual');
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	if(maxJobCount > 10){
@@ -1766,7 +1878,6 @@ function openJobSearchRequirement(){
 						     var json = JSON.parse(data);
 					       	 var experience ="";
 					       	 var location = "";
-						     if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
 						   	 if(json.length > 0)	
 						   		{
 						 			    for(var i=0; i<json.length; i++){
@@ -1812,14 +1923,29 @@ function openJobSearchRequirement(){
 // 										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
 										result = result +'<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';
 // 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
+
+										result = result +'	<div class="clearfix"></div>';
+								    	result = result +'	<div class="skills clearfix"><strong class="pull-left mr10">Locations :</strong>';
+								    	result = result +'<ul class="joblocations-li pull-left list-unstyled">';
+						 				if(requirements.locationsList != null){
+						 					for(var k=0; k<requirements.locationsList.length; k++){
+						 						result = result +'<li>'+requirements.locationsList[k]+'</li>';
+						 					}
+						 				}
+						 				result = result +'</ul>';
+										result = result +'	</div>';
+										
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
 										result = result +'  <span>'+skills+'</span>';
 										result = result +'	</div>';					
 										result = result +'	<span>';
 										result = result +'	<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
-										result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-										result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
+										if(experience == 'undefined'){
+											result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
+										}else{
+											result = result +'	<b><i class="fa fa-briefcase"></i>--</b>';
+										}
 										result = result +'	</span>';
 										result = result +'	</div>';
 										
@@ -1833,7 +1959,7 @@ function openJobSearchRequirement(){
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 
 										result = result +'	<div class="share">';
-										result = result +' <div class="addthis_inline_share_toolbox_s1a2" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'--'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+										result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
@@ -1847,14 +1973,13 @@ function openJobSearchRequirement(){
 										$("#openJobsRequirementsList").append(result); 
 								}
 							}
-						}
 					}
 				});
 			}
 	
 				 window.setTimeout(function() {
-						addthis.toolbox(".addthis_inline_share_toolbox_s1a2");
-						addthis.init(".addthis_inline_share_toolbox_s1a2");
+						addthis.toolbox(".addthis_inline_share_toolbox_g28q");
+						addthis.init(".addthis_inline_share_toolbox_g28q");
 						addthis.layers.refresh();
 			        }, 500);
 				$('body').on('blur','#openJobsAdvancedForm',function() {
@@ -1886,72 +2011,7 @@ function openJobSearchRequirement(){
 	})(jQuery);
 </script>
 
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(countryName != null && countryName !='' && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	         success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---Select City---</option>');
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
+ 
 
 
 <script type="text/javascript">
@@ -2115,12 +2175,17 @@ $.noConflict();
 		    	         }
 			    });
 		    
-		      $("#country").on('change', function (e) {
+			  tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+				   
+		      /* $("#country").on('change', function (e) {
+		    	  getcites('apiLocation','city');
+		    	  $("#apiLocation").val('');
+		    	  $("#city").val('').trigger("chosen:updated");
 		    	   getStates();
-		       });
-		       $("#state").on('change', function (e) {
-		    	   getCities();
-		       });
+		       }); */
+		      getcites('apiLocation','city','recommendation');
+
 				for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
@@ -2308,7 +2373,7 @@ $(".LettSelec a").click(function(){
 <!-- Create Alert modal Popup -->
 <div class="pop_mask"></div>
 <!-- Modal -->
-<div class="modal_createalert" id="myModal" role="dialog">
+<div class="modal_createalert" id="myModal" role="dialog" >
 	<div id="createAlertPopUpDiv"></div>
 </div>
 <!-- Create Alert modal Popup Ends -->
@@ -2323,6 +2388,8 @@ function alertClose(){
 	$(".pop_mask").fadeOut();
 	$(".modal_createalert").removeClass("modal");
 	$(".modal.modal_createalert").fadeOut();
+	document.getElementById("myModal").style.display="none";
+	
 }
 </script>
 <!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
@@ -2572,7 +2639,7 @@ function createAlert(requirementUUID){
         	 result = result +'         	<div class="col-md-9">';
         	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple field-name="Keywords/Skills" id="candidateSkills" data-validation="required" name="skills">';
         	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
-        	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+        	 result = result + "<option value='${skill.name}'>${skill.name}</option>";
         	 result = result +'						</c:forEach>;'
         	 result = result +'         		</select>';
         	 result = result +'         	</div>';
@@ -2724,6 +2791,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 
 
 <script type="text/javascript">
+jQuery.noConflict( true );
 (function ($) {
    $.fn.serializeFormJSON = function () {
 
@@ -2767,140 +2835,7 @@ var validationSettings = {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
-</script>
-
-<script type="text/javascript">
-function getAllCountriesJObalert(country){
-	var sourceleadUrl ='${sourceleadUrl}';
-}
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: sourceleadUrl + "/ws/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#countryjobalert').empty();
-        	$('#countryjobalert').append('<option value="">---Select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	
-            	if(country != 'undefined' && country != null && country != '' && json[i] == country){
-            		$('#countryjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else{
-            		$('#countryjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            		
-           	}
-            
-            $('#countryjobalert').trigger("chosen:updated");
-            if(country == "undefined" || country == null){
-            	 getStatesjobalert();
-            }
-           
-        },
-        error: function(e){
-        }
-    });
-</script>
-
-
-<script>
-function getStatesjobalert(country,state){
-	
-	var countryName = '';
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#countryjobalert").val();
-	
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#statejobalert').empty();
-	        	$('#statejobalert').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != '' && state != 'undefined' && json[i] == state){
-	            		$('#statejobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#statejobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            	
-	            }
-	            $('#statejobalert').trigger("chosen:updated");
-	            
-	            $('#cityjobalert').empty();
-	            $('#cityjobalert').append('<option value="">---Select City---</option>');
-	            $('#cityjobalert').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#statejobalert').empty();
-    	$('#statejobalert').append('<option value="">---Select State---</option>');
-    	$('#statejobalert').trigger("chosen:updated");
-    	$('#cityjobalert').empty();
-    	$('#cityjobalert').append('<option value="">---Select City---</option>');
-        $('#cityjobalert').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<script>
-function getCitiesjobalert(country,state,city){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var countryName = '';
-	var stateName = '';
-	
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#countryjobalert").val();
-	}
-	
-	if(state != null && state != '' && state != 'undefined'){
-		stateName = state;
-	}else{
-		stateName = $("#statejobalert").val();
-	}
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: sourceleadUrl + "/ws/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#cityjobalert').empty();
-	        	$('#cityjobalert').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	
-	            	if(city != null && city != '' && state != 'undefined' && json[i] == city){
-	            		$('#cityjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#cityjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            	
-	            }
-	            $('#cityjobalert').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#cityjobalert').empty();
-    	$('#cityjobalert').append('<option value="">---Select City---</option>');
-    	$('#cityjobalert').trigger("chosen:updated");
-	}
-}
-</script>
+</script> 
 
 <script>
 function getRate(){
@@ -3072,10 +3007,13 @@ Please mail us at </p>
 
 <script>
 function applyJob(requirementUUID){
-	$(".modal.modalApplyjob").fadeIn();
-	$(".comMask").fadeIn();
-	loginPopup(requirementUUID)
-	
+    if('${SourceLeadWeb_user.id}' != null && '${SourceLeadWeb_user.id}' != ''){
+        location.replace(sourceleadUrl+"/dashboard");  
+    }else{
+        $(".modal.modalApplyjob").fadeIn();
+        $(".comMask").fadeIn();
+        loginPopup(requirementUUID)
+    }
 }
 function closeApplyJob(){
 	$(".modal.modalApplyjob").fadeOut();
@@ -3098,7 +3036,7 @@ function forgotPassword(){
  function loginPopup(requirementUUID){
 	 var result = "";
 	 result = result +'<div class="pull-left">';
-	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply as Guest User</button>';
+	 result = result +'<button type="button" class="btn btn-primary btn-sm mr">Login</button><button type="button" onclick="guestUserRest(\''+requirementUUID+'\');" class="btn btn-warning btn-sm">Apply</button>';
 	 result = result +'</div>';
 	 $("#gustLoginId").empty();
 	 $("#gustLoginId").append(result);

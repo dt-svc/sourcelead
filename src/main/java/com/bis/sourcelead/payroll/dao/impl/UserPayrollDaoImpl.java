@@ -75,7 +75,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 				qry.setDate(str, (Date) params.get("endDate"));
 			}
         }
-		return qry.setCacheable(true).list();
+		return qry.list();
 	}
 
 	@Override
@@ -89,9 +89,9 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		}
 		String query = "from UserPayroll userPayroll  left join fetch userPayroll.userId where userPayroll.orgLocationId.id =:orgLocationId and userPayroll.userId.id = :userId "+subQuery+"";
 		if(startDay != null && endDay != null){
-			userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameter("startDay", startDay).setParameter("endDay", endDay).setCacheable(true).list();
+			userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameter("startDay", startDay).setParameter("endDay", endDay).list();
 		}else{
-			userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+			userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 		}
 		if(userPayrollList != null && userPayrollList.size() >0)
 		{
@@ -137,12 +137,12 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		if (checksDTO != null && checksDTO.getLength() > 0) {
 			queryObj.setFirstResult(checksDTO.getStart());
 			queryObj.setMaxResults(checksDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocationId).list();
 		}
 		checksList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -164,7 +164,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		/*Session session = this.sessionFactory.getCurrentSession();
 		List<Checks> checkslList = null;
 		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
-		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if (checkslList != null && checkslList.size() > 0) {
 			return checkslList;
 		}
@@ -177,7 +177,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Checks> checkslList = null;
 		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId";
-		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
+		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
 		if (checkslList != null && checkslList.size() > 0) {
 			return checkslList;
 		}
@@ -190,7 +190,7 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Checks checks = null;
 		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId";
-		List<Checks> checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("empId", empId).setCacheable(true).list();
+		List<Checks> checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("empId", empId).list();
 		if (checkslList != null && checkslList.size() > 0) {
 			checks =  checkslList.get(0);
 		}

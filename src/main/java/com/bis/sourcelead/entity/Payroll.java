@@ -17,7 +17,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "PAYROLL")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "PAYROLL")
 public class Payroll implements Serializable{
 
 	private static final long serialVersionUID = 1L;

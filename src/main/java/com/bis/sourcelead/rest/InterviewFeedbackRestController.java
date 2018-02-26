@@ -247,11 +247,10 @@ public class InterviewFeedbackRestController {
         */
     
     @RequestMapping(value = "/getInterviewFeedbackTemplatesList", method = RequestMethod.POST)
- 	@ResponseBody String getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
+ 	@ResponseBody List<SubmissionTemplate> getInterviewFeedbackTemplatesList(HttpServletRequest request) throws Exception {
  		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
  		List<SubmissionTemplate> submissiontTemplateList  = submissionTemplateService.getInterviewFeedbackTemplatesByOrgLocationId(orgLocations.getId());
- 		
- 		return commonUtil.toJSON(submissiontTemplateList);
+ 		return submissiontTemplateList;
  	}
     
     

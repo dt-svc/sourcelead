@@ -6,6 +6,12 @@
 <script type="text/javascript">
 $(document).ready(function(){
     getSendersList();
+    /* if('${msg}' == "success"){
+    	$("#selector1").removeAttr("style");
+		$("#selector1").css({ display: "block" });
+	    $("#msgDiv").html("Successfully Created sender identity");
+	    msgFadein();
+    } */
 });
 </script>
 
@@ -13,8 +19,8 @@ $(document).ready(function(){
 <!-- Content Area -->
   <section class="content-wraper">
    <section class="content-header clearfix">
-    <div class="success_pop" id="selector1" style="display: none;">
- 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+    <div class="success_pop" id="campainSenderAlertMsg" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="campainSenderAlertMsgDiv"></span>
      </div>
       <div class="pull-left">
         <h2>Senders list</h2>
@@ -61,10 +67,13 @@ $(document).ready(function(){
 
 
 <script type="text/javascript">
-function getSendersList(){
+function getSendersList(type){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.get( sourceleadUrl+ "/getSendersByLocationId?&orgLocationId="+locationId, function(json) {
+		 
+		 
+		 
 	    	 var result = "";
 	    	 result += '<table id="sendersListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
@@ -128,6 +137,12 @@ function getSendersList(){
       		 result += '</table> ';
       		 $("#sendersListDiv").empty();
       		 $("#sendersListDiv").append(result);
+      		if(type == "success"){
+		    	$("#campainSenderAlertMsg").removeAttr("style");
+				$("#campainSenderAlertMsg").css({ display: "block" });
+			    $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
+			    campainSenderAlertMsgFadein();
+			}
       		 $("#loading").removeAttr('style');
       		 senderListPagination();
     });
@@ -153,9 +168,9 @@ function getSendersList(){
  </script>
  
  <script>
- function msgFadein() {
-	$("#selector1").fadeIn(300);
-    $('#selector1').delay(3000).fadeOut('slow');
+ function campainSenderAlertMsgFadein() {
+	$("#campainSenderAlertMsg").fadeIn(200);
+    $('#campainSenderAlertMsg').delay(2000).fadeOut('slow');
 }
 </script>
 
@@ -182,12 +197,12 @@ function deleteIdentity(senderId){
 	 $("#deleteIdentityDiv").empty();
 	 $.get( sourceleadUrl+ "/deleteSenderIdentity?"+tokenParamName+"="+tokenValue+"&senderId="+senderId, function(data) {
 			if(data == true) {
-				 $("#selector1").removeAttr("style");
-	  			 $("#selector1").css({ display: "block" });
-	  			 $("#msgDiv").html("Successfully deleted sender identity");
+				 $("#campainSenderAlertMsg").removeAttr("style");
+	  			 $("#campainSenderAlertMsg").css({ display: "block" });
+	  			 $("#campainSenderAlertMsgDiv").html("Successfully deleted sender identity");
 	  			 $("#popUp").empty();
 	 			 $(".project_inn_mask").fadeOut(200);
-	             msgFadein();	
+	             campainSenderAlertMsgFadein();	
 	             location.replace(sourceleadUrl+ "/campaignSendersList");
 			}
 		});

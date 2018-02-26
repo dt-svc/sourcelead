@@ -31,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARDING_TEMPLATE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="vendorOnboardingTemplate")
 public class VendorOnboardingTemplate implements Serializable{
 	
     private static final long serialVersionUID = 1L;
@@ -41,7 +40,7 @@ public class VendorOnboardingTemplate implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
@@ -88,7 +87,7 @@ public class VendorOnboardingTemplate implements Serializable{
 	private String createdUser;
 	
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="vendorOnboardingTemplateId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference

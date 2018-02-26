@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -140,6 +141,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 ClientService clientService;
+	 
+	 @Autowired
+	 OrgSpocService orgSpocService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -617,8 +621,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId,String searchValue, int start, int length) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length);
+			Long approverUserId,String searchValue, int start, int length,String timesheetFor) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,start,length,timesheetFor);
 	}
 	
 	@Override
@@ -701,14 +705,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds)
 			throws Exception {
 		
 		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		List<ProjectMembers> projectMembersList = null;
 		List<ProjectMembers> projectMembList = new ArrayList<>();
 		if(projectClients != null){
-			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status,roleIds);
+			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status,roleIds,teamIds);
 			
 			if(projectMembersList != null && projectMembersList.size() > 0) {
 				for(ProjectMembers projectMembers : projectMembersList) {
@@ -971,7 +975,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						
 					}
 					
-					if(candidate.getParentCandidateId() != null){
+					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						int level = 1;
 						while(parentCandidatId != null){
@@ -1015,7 +1019,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 									pah.setProjectId(projects);
 									pah.setProjectClientsId(projectClients);
-									pah.setApproverUserId(cand.getOrgLocationId().getUser());
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										pah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										pah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
 									pah.setLevel(1);
 									pah.setStatus("1");
 									projectApproverHierarchyList.add(pah);
@@ -1273,7 +1285,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
 			throws Exception {
-		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status,"");
+		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status,"","");
 	}
 
 	@Override
@@ -1357,7 +1369,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    				registrationController.saveUserRoleActions(tsModuleId,orgLocations);
+				    				registrationController.saveUserRoleActions(tsModuleId,orgLoc);
 				    			}
 							
 							 
@@ -1445,6 +1457,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			orgRelations.setStatus("ACTIVE");
 			orgRelations.setCreatedBy(user.getUserCode());
 			orgRelations.setCreatedDate(new Date());
+			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			orgRelations.setUpdatedBy(user.getUserCode());
 			orgRelations.setUpdatedDate(new Date());
 			
@@ -1528,7 +1541,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
 					pah.setProjectId(projects);
 					pah.setProjectClientsId(pc);
-					pah.setApproverUserId(cand.getOrgLocationId().getUser());
+					
+					if(cand.getOrgLocationId().getUser() != null) {
+						pah.setApproverUserId(cand.getOrgLocationId().getUser());
+					}else {
+						OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+						pah.setApproverUserId(orgSpoc.getVendorUser());
+					}
+					
 					pah.setLevel(1);
 					pah.setStatus("1");
 					projectApproverHierarchyList.add(pah);
@@ -1588,6 +1608,17 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception {
 		return projectMembersDao.getAllProjectMembersByProjectClientId(projectClientsId);
+	}
+
+	@Override
+	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,
+			Long projectId, Long locationId) throws Exception {
+		return projectMembersDao.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId, Long projectId) throws Exception {
+		return projectMembersDao.getAllProjectMembersByMasterCandidateId(masterCandidateId, projectId);
 	}
 
 }

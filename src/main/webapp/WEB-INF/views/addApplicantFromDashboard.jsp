@@ -97,7 +97,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="col-md-8">';
 	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 	result = result + '<c:forEach var="skill" items="${skillList}">';
-	result = result + '<option value="${skill.name}">${skill.name}</option>';
+	result = result + "<option value='${skill.name}'>${skill.name}</option>";
 	result = result + ' </c:forEach>';
 	result = result + '</select>';
 	result = result + '		 </div>';
@@ -619,8 +619,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	     	  
 	     	  if(name == "WorkExperience"){
 	     		 var monthExp = document.getElementById("monthExp").value; 
-	     		  if(null != inputValue){
-	     			  if(inputValue == "25+"){
+	     		 if(inputValue != null && inputValue != 'undefined' && inputValue != ''){
+	     			 if(inputValue == "50"){
 	     				 inputValue = inputValue+" Years";
 	     			  }else{
 	     				 inputValue = inputValue+" Years"+" "+monthExp+" Months" ;

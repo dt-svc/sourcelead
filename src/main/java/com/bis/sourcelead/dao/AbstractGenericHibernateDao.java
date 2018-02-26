@@ -108,7 +108,7 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 	public List<ProjectDocuments> getProjectDocumentsListByProjectIdId(Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectDocuments  projectDoc  where projectDoc.projects.id =:projectId and projectDoc.status ='1'";
-		List<ProjectDocuments> projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+		List<ProjectDocuments> projectDocumentList = session.createQuery(query).setLong("projectId", projectId).list();
 		return projectDocumentList;
 	}
 
@@ -119,7 +119,7 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectDocuments  projectDoc  where projectDoc.Id =:porjectDocumentId";
 		@SuppressWarnings("unchecked")
-		List<ProjectDocuments> projectDocumentList = session.createQuery(query).setLong("porjectDocumentId", porjectDocumentId).setCacheable(true).list();
+		List<ProjectDocuments> projectDocumentList = session.createQuery(query).setLong("porjectDocumentId", porjectDocumentId).list();
 		ProjectDocuments projectDocument = null;
 		if(projectDocumentList != null){
 			projectDocument = projectDocumentList.iterator().next();
@@ -159,18 +159,18 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 		if(userRoleType.equalsIgnoreCase("ROLE_ADMIN") || userRoleType.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			if(folderId != null) {
 					    String query = "from ProjectDocuments  projectDoc  where projectDoc.projects.id =:projectId and projectFolderId.id =:folderId and projectDoc.status ='1' "+subQuery+"";
-					   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setLong("folderId", folderId).setLong("roleId", roleId).setLong("candidateId", candidateId).setCacheable(true).list();
+					   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setLong("folderId", folderId).setLong("roleId", roleId).setLong("candidateId", candidateId).list();
 				}else {
 					   String query = "from ProjectDocuments  projectDoc  where projectDoc.projects.id =:projectId and projectDoc.status ='1'";
-					   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+					   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).list();
 				}
 		}else {
 			if(folderId != null) {
 				    String query = "from ProjectDocuments  projectDoc  where projectDoc.projects.id =:projectId and projectFolderId.id =:folderId and projectDoc.status ='1' "+subQuery+"";
-				   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setLong("folderId", folderId).setLong("roleId", roleId).setLong("candidateId", candidateId).setCacheable(true).list();
+				   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setLong("folderId", folderId).setLong("roleId", roleId).setLong("candidateId", candidateId).list();
 			}else {
 				   String query = "from ProjectDocuments  projectDoc  where projectDoc.projects.id =:projectId and projectDoc.status ='1'";
-				   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).setCacheable(true).list();
+				   projectDocumentList = session.createQuery(query).setLong("projectId", projectId).list();
 			}
 		}
 		//Permissons bases queryList
@@ -203,7 +203,7 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 		Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
 			 String query = "from ProjectDocumentFolder pdf  where pdf.projectId.id =:projectId and pdf.foderName =:folderName ";
-				Collection<ProjectDocumentFolder> projectDocumentFolderList = session.createQuery(query) .setString("folderName", folderName).setLong("projectId", projectId).setCacheable(true).list();
+				Collection<ProjectDocumentFolder> projectDocumentFolderList = session.createQuery(query) .setString("folderName", folderName).setLong("projectId", projectId).list();
 				if (projectDocumentFolderList != null && projectDocumentFolderList.size() > 0) {
 					flag = true;
 				}
@@ -216,7 +216,7 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 	public void delteEachDocumentById(Long porjectDocumentId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectDocuments pd where pd.id=:porjectDocumentId";
-		List<ProjectDocuments> projectDocumentsList = session.createQuery(query).setLong("porjectDocumentId", porjectDocumentId).setCacheable(true).list();
+		List<ProjectDocuments> projectDocumentsList = session.createQuery(query).setLong("porjectDocumentId", porjectDocumentId).list();
 	   if(projectDocumentsList != null && !projectDocumentsList.isEmpty()) {
 		   for(ProjectDocuments pdf :projectDocumentsList) {
 			   session.delete(pdf);
@@ -230,7 +230,7 @@ public abstract class AbstractGenericHibernateDao<T extends Serializable> implem
 		Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
 			 String query = "from ProjectDocuments pd  where pd.projects.id =:projectId and pd.fileName =:documentName ";
-				Collection<ProjectDocuments> projectDocumentsList = session.createQuery(query) .setString("documentName", documentName).setLong("projectId", projectId).setCacheable(true).list();
+				Collection<ProjectDocuments> projectDocumentsList = session.createQuery(query) .setString("documentName", documentName).setLong("projectId", projectId).list();
 				if (projectDocumentsList != null && projectDocumentsList.size() > 0) {
 					flag = true;
 				}

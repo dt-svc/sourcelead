@@ -64,7 +64,7 @@ public class OrglocationBankingDetailsDaoImpl implements OrglocationBankingDetai
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationBankingDetails bankingDetails where bankingDetails.uuid = :uuid and bankingDetails.status = '1' ";  
-		List<OrglocationBankingDetails> orglocationBankingDetailsList =  session.createQuery(query).setString("uuid", uuid).setCacheable(true).list();
+		List<OrglocationBankingDetails> orglocationBankingDetailsList =  session.createQuery(query).setString("uuid", uuid).list();
 		OrglocationBankingDetails orglocationBankingDetails = null;
 		if (orglocationBankingDetailsList != null && orglocationBankingDetailsList.size() > 0) {
 			orglocationBankingDetails = (OrglocationBankingDetails) orglocationBankingDetailsList.iterator().next();
@@ -79,7 +79,7 @@ public class OrglocationBankingDetailsDaoImpl implements OrglocationBankingDetai
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from OrglocationBankingDetails bankingDetails where bankingDetails.orgLocationId.id = :orgLocationId and bankingDetails.status = '1' ";  
-		List<OrglocationBankingDetails> orglocationBankingDetailsList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<OrglocationBankingDetails> orglocationBankingDetailsList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		OrglocationBankingDetails orglocationBankingDetails = null;
 		if (orglocationBankingDetailsList != null && orglocationBankingDetailsList.size() > 0) {
 			orglocationBankingDetails = (OrglocationBankingDetails) orglocationBankingDetailsList.iterator().next();

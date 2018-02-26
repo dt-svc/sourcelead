@@ -11,9 +11,13 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
+<link href="/resources/css/jobs/css/main-style.css" rel="stylesheet">
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jquery-ui.css" rel="stylesheet">
+<script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
@@ -21,15 +25,13 @@
 <link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 <script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
 <script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+
 
 <style>
 .viewTemplate {
@@ -57,6 +59,25 @@ padding-right:15px; border-right:1px solid #ededed;
 border-right:none;
 }
 </style>
+
+<script>
+jQuery(document).ready(function($) { 
+	var requirementId = '${reqId}';
+	var jobTitle = '${reqName}'
+	var sourceleadUrl = '${sourceleadUrl}';
+	var skills = '${skills}';
+	var jobType = '${jobType}';
+	var experience = '${experience}';
+	var location = '${location}';
+	var rate = '${rate}';
+	var noticePeriod = '${noticePeriod}';
+	var visaTypes = '${visaTypes}';
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
+	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId); 
+	});
+</script>
 </head>
 <body>
 <div class="container new_side_wrap_inn applytoJobDiv">
@@ -81,6 +102,16 @@ border-right:none;
 				<span>--</span>
 				</c:if>
 				</div>	
+
+				<div class="skills mb">
+				<strong class="pull-left">Location(s) :</strong>
+				<ul class="list-unstyled list-inline joblocations-li">
+				<c:forEach var="location" items="${location}">
+				<li>${location}</li>
+				</c:forEach>
+				</ul>
+				</div>	
+				
 				<div class="clearfix"></div>
 				<ul class="list-unstyled list-inline"><li>
 				<div class="jobType">
@@ -105,14 +136,7 @@ border-right:none;
 				</c:if>
 				</div>
 				</li><li>
-				<div class="location">
-				<c:if test="${!empty location}">
-				<span><i class="fa fa-map-marker paddingRight"></i>${location}</span>
-				</c:if>
-				<c:if test="${empty location}">
-				<span><i class="fa fa-map-marker paddingRight"></i>--</span>
-				</c:if>
-				</div>
+				 
 				</li><li>
 				<div class="rate">
 				<c:if test="${!empty minRate && !empty maxRate}">
@@ -172,26 +196,12 @@ border-right:none;
 </div>
 
 <script>
-$(document).ready(function() {
-	var requirementId = '${reqId}';
-	var jobTitle = '${reqName}'
-	var sourceleadUrl = '${sourceleadUrl}';
-	var skills = '${skills}';
-	var jobType = '${jobType}';
-	var experience = '${experience}';
-	var location = '${location}';
-	var rate = '${rate}';
-	var noticePeriod = '${noticePeriod}';
-	var visaTypes = '${visaTypes}';
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
-	}
-	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
-	});
-</script>
-<script>
+var sourceleadUrl = '${sourceleadUrl}';
+if(sourceleadUrl.indexOf("/app")!=-1){
+	sourceleadUrl = sourceleadUrl.split("/app")[0];
+}
 function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId){
-	  var finalDateFormatScript = 'dd-mm-yy'; 
+	var finalDateFormatScript = 'dd-mm-yy'; 
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		var result = "";
@@ -241,7 +251,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<div class="col-md-8">';
 		result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
 		result = result + '<c:forEach var="skill" items="${skillsList}">';
-		result = result + '<option value="${skill.name}">${skill.name}</option>';
+		result = result + "<option value='${skill.name}'>${skill.name}</option>";
 		result = result + ' </c:forEach>';
 		result = result + '</select>';
 		result = result + '		 </div>';
@@ -303,21 +313,11 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '</div>';
 		
 		
-/* 		result = result + '<div class="row">';
-		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv">';
-		result = result + '<label class="col-md-4">Import Resume &nbsp;*</label>';
-		result = result + '		<div class="col-md-8">';
-		result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
-		result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-		result = result + '                   <input type="file" style="display: none;"  id="newUploadBtns"  class="upload">';
-		result = result + '			          </span> </label>';
-		result = result + '			          <input type="text" class="form-control" readonly id="newUploadFiles" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
-		result = result + '			    </div>';
-		result = result + '		 </div>';
-		result = result + '	 </div>';
-		 */
-		
+
 		result = result + '<div class="form-footer clearfix mt">';
+		result = result + '<div class="pull-right mr">';
+		result = result + '<button type="button" id="save_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
+		result = result + '</div>';
 		result = result + '<div class="pull-right mr">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
 		result = result + '</div>';
@@ -424,13 +424,10 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
 	
-	document.getElementById("newUploadBtn123").onchange = function () {
-		$('#newUploadFile123').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	};
-	
 }
 </script>
 <script>
+var sourceleadUrl = '${sourceleadUrl}';
 function importAddApplicantDoc(){
 	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form");
 	var uploadfiles = $("#uploadBtn").val();
@@ -448,9 +445,9 @@ function importGuestAddApplicantDoc(){
 	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
 </script> -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 var sourceleadUrl ='${sourceleadUrl}';
-</script>
+</script> -->
 <!-- <script>
 function uploadAddApplicantCandidateDoc(){
 	fileUpload("newUploadBtns", "addApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
@@ -459,14 +456,14 @@ function uploadAddApplicantCandidateDoc(){
 }
 </script> -->
 <script>
+
  $(document.body).on('change', '#uploadBtn' ,function(){
-	 var sourceleadUrl = '${sourceleadUrl}';
-		if(sourceleadUrl.indexOf("/app")!=-1){
-			sourceleadUrl = sourceleadUrl.split("/app")[0];
-		}
- 
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 if(sourceleadUrl.indexOf("/app")!=-1){
+	 	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	 }
 	 if(validate_fileupload(this.value)){
 	 var docFileSize = $('#uploadFile');
  		 var docSize = this.files[0].size;
@@ -553,7 +550,6 @@ function uploadAddApplicantCandidateDoc(){
   						
  		        		 $("#loading").removeAttr("style");
 						 validateSubmissionCandidateEmail();
-						 getUserByUserEmail();
 						
 					},
 				});
@@ -593,7 +589,6 @@ function uploadAddApplicantCandidateDoc(){
 		        		$("#save_button").removeAttr("disabled");
 		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
 		        		$('.jquery_form_error_message').remove();
-		        		isCoolingOff(requirementId);
 		        	} 
 		        },
 		    });
@@ -649,7 +644,14 @@ function validate_fileupload(fileName)
 	})(jQuery);
 </script>
  
-
+<script>
+function guestCancel(){
+	if(sourceleadUrl.indexOf("/app")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	}
+	 window.location = sourceleadUrl+"/jobs"
+}
+</script>
 <script type="text/javascript">
 function addApplicantSubmission(){
 	var requirementId = '${reqId}';
@@ -766,10 +768,7 @@ function addApplicantSubmission(){
      $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
     
-     /* $.post(sourceleadUrl + "/saveGuestAddApplicant", formData, function(result) {
-    	 window.location.href = "/jobs";
-    	 window.location = "http://localhost:8080/jobs";
-     }); */
+
      
      
      
@@ -783,8 +782,7 @@ function addApplicantSubmission(){
 		     dataType : 'json',
 	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	window.location.href = "/jobs";
-	        	 window.location = "http://localhost:8080/jobs"
+	        	 window.location = sourceleadUrl+"/jobs"
 	        },
 	    });  
     return true; 

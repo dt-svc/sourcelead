@@ -497,7 +497,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	     projectTasks.setUpdatedDate(commonUtil.currentDate());
 	     tasksDao.updateTasks(projectTasks);
 	    
-	     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+	     if(oldData.getPercentage() != null) {
+		     activitySummary.append(oldData.getPercentage()).append(" to ").append(projectTasks.getPercentage());
+	     }else {
+		     activitySummary.append('0').append(" to ").append(projectTasks.getPercentage());
+	     }
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 		
 	}
@@ -520,13 +524,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
-	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
-		return tasksDao.getOverdueTaskListByProjectId(projectId,filterDate,startDateUTC,endDateUTC);
+	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId, Date startDateUTC, Date endDateUTC) throws Exception {
+		return tasksDao.getOverdueTaskListByProjectId(projectId,startDateUTC,endDateUTC);
 	}
 
 	@Override
-	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, String filterDate, Date startDateUTC, Date endDateUTC) throws Exception {
-		return tasksDao.getAllTasksByProjectIdAndFilter(projectId, filterDate, startDateUTC, endDateUTC);
+	public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,  Date startDateUTC, Date endDateUTC) throws Exception {
+		return tasksDao.getAllTasksByProjectIdAndFilter(projectId, startDateUTC, endDateUTC);
 	}
 
 	@Override

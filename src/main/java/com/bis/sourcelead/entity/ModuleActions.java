@@ -19,7 +19,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "MODULE_ACTIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="moduleActions")
 public class ModuleActions implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -30,13 +29,13 @@ public class ModuleActions implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MODULE_ID")
 	private Modules modules;
     
-	@NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.EAGER)
+	
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ACTION_ID")
 	private SourceleadActions sourceleadActions;
     

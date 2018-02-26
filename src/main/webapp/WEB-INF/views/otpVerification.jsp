@@ -26,6 +26,7 @@
 
 <!--  OTP Wrap  -->
     <div class="otp_wrap" style="display:block">
+    <div id="otpLoading"></div>
     	<div class="otpBackNew" style="display: none;"><a onclick="otpClose();" id="otpBackNewId" ><i class="fa fa-close"></i></a></div>
 <%--     <c:if test='${empty SourceLeadWeb_sourceleadUrl}'> --%>
 	    <div class="backBtn" id="gobackBtn">
@@ -82,6 +83,7 @@ function sendOtp() {
 	var sourceleadUrl ='${sourceleadUrl}';
 	var type = "email";
 	var backSwitchType = $("#otpBackNewId").val();
+	$("#otpLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/ws/sendOtpToUser?id="+userId+"&type="+type,        
@@ -112,6 +114,7 @@ function sendOtp() {
 	    		   	$("#sendOTP").attr("style","display:none");
 	    		   	$("#resendOTP").attr("style","display:block");
 	    		   	$("#otpText").html("OTP has been sent to your registered "+type);
+	    		   	$("#otpLoading").removeAttr("style"); 
 	    	   }
 	       },
 	  }); 

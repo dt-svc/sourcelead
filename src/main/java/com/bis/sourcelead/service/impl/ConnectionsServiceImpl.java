@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ConnectionsDao;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.User;
@@ -24,9 +25,8 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 	}
 
 	@Override
-	public List<UserRoleDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId,
-			String connectionStatus, String status) throws Exception {
-		return connectionsDao.getConnectionsListByStatus(searchValue, offset, userId, connectionStatus, status);
+	public List<ConnectionsDTO> getConnectionsListByStatus(String searchValue, Integer offset, Long userId, String status) throws Exception {
+		return connectionsDao.getConnectionsListByStatus(searchValue, offset, userId, status);
 	}
 
 
@@ -39,11 +39,6 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 	@Override
 	public int acceptConnection(User user, User toUser, String status) {
 		return connectionsDao.acceptConnection(user, toUser, status);
-	}
-
-	@Override
-	public List<UserRoleDTO> getConnectedList(String searchValue, Integer offset, Long id, String status) {
-		return connectionsDao.getConnectedList(searchValue, offset, id, status);
 	}
 
 	@Override

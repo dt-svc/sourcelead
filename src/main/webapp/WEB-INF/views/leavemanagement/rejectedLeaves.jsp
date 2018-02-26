@@ -83,7 +83,7 @@ function getRejectedLeavesList(){
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
-			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.id+'\','+orgLocationId+');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right" ></i></div>';
+			        			 result = result + '     <div class="pull-left tbldata-dotdot-me" title="'+opt.leaveType+'" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+orgLocationId+');">'+opt.leaveType+' <i class="fa fa-binoculars pull-right" ></i></div>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
@@ -140,8 +140,8 @@ function getRejectedLeavesList(){
 </script>
 
 <script>
-function getRequestedAproveSummary(leaveId,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
+function getRequestedAproveSummary(leaveUUID,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
 		   if(data != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
@@ -193,8 +193,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">'; 
-             if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-				 result = result +'<span>'+data.leavesTaken+'</span>';
+             if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
