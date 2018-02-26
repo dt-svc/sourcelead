@@ -1791,7 +1791,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        notificationScenario.setBody(notificationbody);
        
        StringBuilder actionLinkBuilder = new StringBuilder();
-       String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=applicants&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
+       String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
        emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
 		
 	}

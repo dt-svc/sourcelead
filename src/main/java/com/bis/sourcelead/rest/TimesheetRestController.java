@@ -22,8 +22,8 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -818,6 +818,11 @@ public class TimesheetRestController {
 			 model.addObject("entriesMap",entriesMap);
 			 model.addObject("projectsTasks",projectsTasks);
 		     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
+		     if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
+		    	 model.addObject("notificationCurrentFrequency",eedDTO.getCurrentTimeFrequency());
+		    	 model.addObject("notificationProMemberId",eedDTO.getProjectMembersId());
+		    	 model.addObject("notificationCurrentSubTimeFrequency",eedDTO.getCurrentTimeSubFrequency());
+		     }
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");
 	 return model;
