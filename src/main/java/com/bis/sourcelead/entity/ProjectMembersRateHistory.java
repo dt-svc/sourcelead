@@ -65,6 +65,9 @@ public class ProjectMembersRateHistory {
 	@Column(name = "BILL_RATE_END_DATE")
 	private Date billRateEndDate;
 	
+	@Column(name = "STATUS")
+	private Integer status;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", nullable = false)
 	@JsonBackReference
@@ -203,6 +206,14 @@ public class ProjectMembersRateHistory {
 
 	public void setBillRateEndDate(Date billRateEndDate) {
 		this.billRateEndDate = billRateEndDate;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	
 }

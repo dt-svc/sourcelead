@@ -1621,4 +1621,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectMembersByMasterCandidateId(masterCandidateId, projectId);
 	}
 
+	@Override
+	public Boolean getPayRateOrBillRateChanges(ProjectMembers projectMembers, ProjectMembersDTO projectMembersDTO)
+			throws Exception {
+		
+		boolean flag = false;
+		
+		
+		
+		return flag;
+	}
+
 }

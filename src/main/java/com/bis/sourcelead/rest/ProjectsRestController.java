@@ -533,6 +533,7 @@ public class ProjectsRestController {
 	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 	    	
 	    	ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMembersDTO.getProjectMemberId()); 
+	    	ProjectMembersRateHistory projectMembersRateHistory = null;
 	    	if(projectMembers != null) {
 	    		projectMembers.setPayRate(projectMembersDTO.getPayRate());
 	    		projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
@@ -580,44 +581,63 @@ public class ProjectsRestController {
 	    		
 	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
 	    		
-	    		/*ProjectMembersRateHistory projectMembersRateHistory = new ProjectMembersRateHistory();
-	    		projectMembersRateHistory.setProjectMemberId(projectMembers);
-	    		projectMembersRateHistory.setCandidateId(projectMembers.getProjectMemberCandidteId());
 	    		
-	    		if(projectMembers.getCurrentBillRate() != null) {
-	    			projectMembersRateHistory.setBillRate(projectMembers.getCurrentBillRate());
+	    		ProjectMembersRateHistory pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByIdAndStatus(projectMembers.getId());
+	    		
+	    		if(pmrh == null) {
+	    			projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
+	    			if(projectMembers.getProjectAssignedDate() != null) {
+	    				projectMembersRateHistory.setPayRateStartDate(projectMembers.getProjectAssignedDate());
+	    				projectMembersRateHistory.setBillRateStartDate(projectMembers.getProjectAssignedDate());
+	    			}
+	    			projectMembersRateHistory.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    			projectMembersRateHistory.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    			projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 	    		}
 	    		
-	    		projectMembersRateHistory.setBillRateCurrency(projectMembers.getBillRateCurrency());
-	    		projectMembersRateHistory.setBillRateType(projectMembers.getRateType());
-	    		
-	    		if(projectMembers.getPayRate() != null) {
-	    			projectMembersRateHistory.setPayRate(projectMembers.getPayRate());
+	    		projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
+	    		if(pmrh != null) {
+	    			projectMembersRateHistory.setPayRateStartDate(pmrh.getPayRateEndDate());
+	    			projectMembersRateHistory.setBillRateStartDate(pmrh.getBillRateEndDate());
+	    			pmrh.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    			pmrh.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    			projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
 	    		}
 	    		
-	    		projectMembersRateHistory.setPayRateCurrency(projectMembers.getPayRateCurrency());
-	    		projectMembersRateHistory.setPayRateType(projectMembers.getPayRateType());
-	    		
-	    		if(projectMembers.getProjectAssignedDate() != null) {
-	    			projectMembersRateHistory.setPayRateEndDate(projectMembers.getProjectAssignedDate());
-	    		}
-	    		
-	    		projectMembersRateHistory.setPayRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-	    		
-	    		if(projectMembers.getProjectEndDate() != null) {
-	    			projectMembersRateHistory.setBillRateEndDate(projectMembers.getProjectEndDate());
-	    		}
-	    		
-	    		projectMembersRateHistory.setBillRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-	    		projectMembersRateHistory.setCreatedBy(user);
-	    		projectMembersRateHistory.setCreatedDate(new Date());
-	    		projectMembersRateHistory.setUpdatedDate(new Date());
-	    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);*/
+	    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 	    		
 	    	}
 	    	
 	    	
 	    	return "success";
+	    }
+	    
+	    
+	    public ProjectMembersRateHistory getProjectMembersRateHistoryDetails(ProjectMembers projectMembers, User user) {
+	    	
+	    	ProjectMembersRateHistory projectMembersRateHistory = new ProjectMembersRateHistory();
+    		projectMembersRateHistory.setProjectMemberId(projectMembers);
+    		projectMembersRateHistory.setCandidateId(projectMembers.getProjectMemberCandidteId());
+    		
+    		if(projectMembers.getCurrentBillRate() != null) {
+    			projectMembersRateHistory.setBillRate(projectMembers.getCurrentBillRate());
+    		}
+    		
+    		projectMembersRateHistory.setBillRateCurrency(projectMembers.getBillRateCurrency());
+    		projectMembersRateHistory.setBillRateType(projectMembers.getRateType());
+    		
+    		if(projectMembers.getPayRate() != null) {
+    			projectMembersRateHistory.setPayRate(projectMembers.getPayRate());
+    		}
+    		
+    		projectMembersRateHistory.setPayRateCurrency(projectMembers.getPayRateCurrency());
+    		projectMembersRateHistory.setPayRateType(projectMembers.getPayRateType());
+    		
+    		projectMembersRateHistory.setCreatedBy(user);
+    		projectMembersRateHistory.setCreatedDate(new Date());
+    		projectMembersRateHistory.setUpdatedDate(new Date());
+    		
+    		return projectMembersRateHistory;
 	    }
 	  
 

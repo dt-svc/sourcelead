@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectMembersRateHistoryDao;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -54,5 +57,21 @@ public class ProjectMembersRateHistoryDaoImpl implements ProjectMembersRateHisto
 		}
 		
 		return projectMembersRateHistory;
+	}
+
+	@Override
+	@Transactional
+	public ProjectMembersRateHistory getProjectMembersRateHistoryByIdAndStatus(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = " from ProjectMembersRateHistory pmrh left join fetch pmrh.projectMemberId projectMember left join fetch pmrh.candidateId candidate "
+				+ "where pmrh.id = :Id and pmrh.status = '1' " ;
+		List<ProjectMembersRateHistory> pmrhList = session.createQuery(query).setLong("Id", Id).list(); 
+		ProjectMembersRateHistory pmrh = null;
+		if(pmrhList != null && !pmrhList.isEmpty())  {
+			pmrh  = pmrhList.iterator().next();
+		}
+		return pmrh; 
 	}
 }
