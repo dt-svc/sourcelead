@@ -66,6 +66,7 @@
 				   <div class="col-md-4" id="docNameDiv${rows.count-1}">
 			 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
 			<input  type="hidden" id="generalExisitingFile${rows.count-1}" name = "generalExisitingFile[${rows.count-1}].immigrationFormFileInfo[0].docFile" value="${item.fileName}">
+			  <a  class="glyphicon glyphicon-download-alt"  href="${item.fileUrl}" download title="Download"></a>
 			  </div>
 				  
 				  <div class="col-md-3" id ="showDocDiv${rows.count-1}" style="display: none;">
@@ -107,6 +108,7 @@
 				   <div class="col-md-4" id="docNameDiv${rows.count-1}">
 			 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
 			<input  type="hidden" id="generalExisitingFile${rows.count-1}" name = "generalExisitingFile[${rows.count-1}].immigrationFormFileInfo[0].docFile" value="${item.fileName}">
+			  <a  class="glyphicon glyphicon-download-alt"  href="${item.fileUrl}" download title="Download"></a>
 			  </div>
 				  
 				  <div class="col-md-3" id ="showDocDiv${rows.count-1}" style="display: none;">
