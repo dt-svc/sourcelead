@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
@@ -51,6 +52,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectQuestionnaireService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -133,6 +135,9 @@ public class ProjectsRestController {
 	
 	@Autowired
 	ProjectClientService projectClientService;
+	
+	@Autowired
+	ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
 	/**
 	 * This method for save the project by json
@@ -525,7 +530,8 @@ public class ProjectsRestController {
 				HttpServletRequest request) throws Exception {
 	    	 
 	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-	    	  
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+	    	
 	    	ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMembersDTO.getProjectMemberId()); 
 	    	if(projectMembers != null) {
 	    		projectMembers.setPayRate(projectMembersDTO.getPayRate());
@@ -559,6 +565,41 @@ public class ProjectsRestController {
 	    		}
 	    		
 	    		projectMembersService.saveProjectMember(projectMembers);
+	    		
+	    		/*ProjectMembersRateHistory projectMembersRateHistory = new ProjectMembersRateHistory();
+	    		projectMembersRateHistory.setProjectMemberId(projectMembers);
+	    		projectMembersRateHistory.setCandidateId(projectMembers.getProjectMemberCandidteId());
+	    		
+	    		if(projectMembers.getCurrentBillRate() != null) {
+	    			projectMembersRateHistory.setBillRate(projectMembers.getCurrentBillRate());
+	    		}
+	    		
+	    		projectMembersRateHistory.setBillRateCurrency(projectMembers.getBillRateCurrency());
+	    		projectMembersRateHistory.setBillRateType(projectMembers.getRateType());
+	    		
+	    		if(projectMembers.getPayRate() != null) {
+	    			projectMembersRateHistory.setPayRate(projectMembers.getPayRate());
+	    		}
+	    		
+	    		projectMembersRateHistory.setPayRateCurrency(projectMembers.getPayRateCurrency());
+	    		projectMembersRateHistory.setPayRateType(projectMembers.getPayRateType());
+	    		
+	    		if(projectMembers.getProjectAssignedDate() != null) {
+	    			projectMembersRateHistory.setPayRateEndDate(projectMembers.getProjectAssignedDate());
+	    		}
+	    		
+	    		projectMembersRateHistory.setPayRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    		
+	    		if(projectMembers.getProjectEndDate() != null) {
+	    			projectMembersRateHistory.setBillRateEndDate(projectMembers.getProjectEndDate());
+	    		}
+	    		
+	    		projectMembersRateHistory.setBillRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    		projectMembersRateHistory.setCreatedBy(user);
+	    		projectMembersRateHistory.setCreatedDate(new Date());
+	    		projectMembersRateHistory.setUpdatedDate(new Date());
+	    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);*/
+	    		
 	    	}
 	    	
 	    	

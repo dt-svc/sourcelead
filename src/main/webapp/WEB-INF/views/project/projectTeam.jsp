@@ -793,14 +793,14 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '</div>';
 	
 	result = result + '	    <div class="clearfix mb10 row" id="startDateDiv">';
-	result = result + '	      <label class="clearfix col-md-12">Start Date</label>';
+	result = result + '	      <label class="clearfix col-md-12">Project Start Date<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '	      <div class="col-md-12">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar" value="'+projectStartDate+'" readonly id="projectStartDate"  name="memberStartDate" field-name="Start Date"  data-validation="required">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	
 	result = result + '	    <div class="clearfix mb10 row" id="endDateDiv">';
-	result = result + '	      <label class="clearfix col-md-12">End Date</label>';
+	result = result + '	      <label class="clearfix col-md-12">Project End Date</label>';
 	result = result + '	      <div class="col-md-12">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar"  value="'+projectEndDate+'" id="projectEndDate" readonly name="memberEndDate" field-name="End Date"  data-validation-optional="true">';
 	result = result + '	      </div>';
