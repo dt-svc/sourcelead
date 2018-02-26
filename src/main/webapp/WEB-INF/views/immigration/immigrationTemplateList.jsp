@@ -27,7 +27,7 @@
 		  	<span><input class="immigraTabSerach" id ="immiTemplateSerach" placeholder="search" type="text"></span>
 		</div>
 		
-	  	<div id ="dynamicImmigrationListViewDiv" class="immigraTable">
+	  	<div id ="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter">
 		</div>
 	  </div>
 	    
@@ -89,9 +89,9 @@
 			  "render": function(data, type, opt, meta) {
 			  var result = "";
 			  if(opt.name !=null && opt.name !='' && opt.name !='undefined'){
-			  result = result + '<td>'+opt.name+'</td>'
+			  result = result + "<td><div class='tbldata-dotdot-me'>"+opt.name+"</div></td>"
 			  }else{
-			  result = result + '<td>---</td>';
+			  result = result + "<td><div class='tbldata-dotdot-me'>---</div></td>";
 			  }
 			  return result;
 			  }
@@ -102,9 +102,9 @@
 			  "render": function ( data, type, opt, meta ) {
 			  var result = "";
 			  if(opt.description !=null && opt.description !='' && opt.description !='undefined'){
-			  result = result + '<td>'+opt.description+'</td>';
+			  result = result + "<td><div class='tbldata-dotdot-big'>"+opt.description+"</div></td>"
 			  }else{
-			  result = result + '<td>---</td>';
+			  result = result + "<td><div class='tbldata-dotdot-big'>---</div></td>";
 			  }
 			  return result;
 			  }
@@ -115,9 +115,9 @@
 			  "render": function ( data, type, opt, meta ) {
 			  var result = "";
 			  if(opt.docsCount !=null && opt.docsCount !='undefined' ){
-			  result = result + '<td>'+opt.docsCount+'</td>';
+				  result = result + "<td><div class='tbldata-dotdot-vsm'>"+opt.docsCount+"</div></td>"
 			  }else{
-			  result = result + '<td>---</td>';
+			  result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
 			  }
 			  return result;
 			  }
@@ -128,28 +128,38 @@
 			  "render": function ( data, type, opt, meta ) {
 			  var result = "";
 			  if(opt.formsCount !=null && opt.formsCount !='undefined'){
-				  result = result + '<td>'+opt.formsCount+'</td>';
+				  result = result + "<td><div class='tbldata-dotdot-vsm'>"+opt.formsCount+"</div></td>"
+			  }else{
+			  result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
 			  }
-			  else{
-				  result = result + '<td>---</td>';
-				  }
 			  return result;
 			  }
 			  },
 			  {
-			  "targets": colIndex++,
-			   "data": "tasksCount",
-			  "render": function ( data, type, opt, meta ) {
-			  var result = "";
-			  if(opt.tasksCount !=null && opt.tasksCount !='undefined'){
-				  result = result + '<td>'+opt.tasksCount+'</td>';
-			  }
-			  else{
-				  result = result + '<td>---</td>';
+			   "targets": colIndex++,
+				"data": "tasksCount",
+				 "render": function ( data, type, opt, meta ) {
+				  var result = "";
+				  if(opt.tasksCount !=null && opt.tasksCount !='undefined'){
+					  result = result + "<td><div class='tbldata-dotdot-vsm'>"+opt.tasksCount+"</div></td>"
+				  }else{
+				  result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
 				  }
-			  return result;
-			  }
-			  }],
+				   
+				  return result;
+				  }
+				  },
+			  {
+			  "targets": colIndex++,
+				   /*"data": "formsCount",*/
+				  "render": function ( data, type, opt, meta ) {
+				  var result = "";
+				   result = result + '<td class="immigraAction"><i class="fa fa-ellipsis-v" aria-hidden="true"></i><div class="mmigraActionInn"><span><a href="javascript:void(0)" class="fa fa-trash"></a><a href="javascript:void(0)" class="fa fa-pencil"></a></span></div></td>';
+				  return result;
+				  }
+				  },
+				  
+			  ],
 	  "scrollCollapse": false,
 	  "lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	  "aaSorting": [[0,'asc']],
@@ -157,7 +167,7 @@
 	  "bDestroy": true,
 	  "ordering": true,
 	  "initComplete": function( settings, json ) {
-	 
+		 
 	  },
 	  "oLanguage": {
 	  "sSearch": "",
@@ -175,4 +185,40 @@
   } 
   </script>
   
+  <script>
+// Error pop addSen
+	$(document).ready(function() {
+		$("#addField").click(function(){
+			$(".popMask").fadeIn(200);
+			$(".cusFielPopup").fadeIn(100);
+		});
+		$(".popCan").click(function(){
+			$(".popMask").fadeOut(200);
+			$(".cusFielPopup").fadeOut(100);
+		});
+	});	
+</script>
+
+<script type="text/javascript">
+        var config = {
+        '.chosen-select'           : {},
+        '.chosen-select-deselect'  : {allow_single_deselect:true},
+        '.chosen-select-no-single' : {disable_search_threshold:10},
+        '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        '.chosen-select-width'     : {width:"95%"}
+        }
+        for (var selector in config) {
+        $(selector).chosen(config[selector]);
+        }
+        $('.chosen-select').each(function() {
+        var $this = $(this);
+        $this.next().css({'width': '100%'});
+        })
+        $(document).ready(function(){
+        $("#cd").click(function(){
+        $(".clientDetails").toggleClass('hidden', 500);
+        });
+
+        });
+    </script> 
   
