@@ -477,7 +477,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "     ) ";
 	     
 	     
-		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient "
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation"
 				+ " where  candidate.orgLocationId.id = :locationsId"
 				    +frequencyQuery
 				    +fillingOptionQuery
