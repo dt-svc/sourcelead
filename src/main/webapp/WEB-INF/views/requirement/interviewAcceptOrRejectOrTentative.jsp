@@ -42,10 +42,12 @@
 			var interviewStatus  = '${interviewStatus}';
 			var intervewStartTime = '${interviewStartTime}';
 			var intervewEndTime = '${interviewEndTime}';
+			alert("interviewStatus"+interviewStatus)
 			if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
 				$("#expire").removeAttr("style");
 			}else{
-				if(interviewStatus == 'Attending'){     
+				if(interviewStatus == 'Attending'){ 
+					alert("1")
 					$("#accept").removeAttr("style");
 				}else if(interviewStatus == 'Not_Attending'){
 					$("#reject").removeAttr("style");
