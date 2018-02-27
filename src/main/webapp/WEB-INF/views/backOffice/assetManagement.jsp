@@ -301,43 +301,6 @@ var validationSettings = {
 </script> 
 
 
-<!-- <script type="text/javascript">
- function validateAssetSno() {
-	 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
-	 var requirementid = document.getElementById("requirementId").value;
-	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
-		 if(jobId == null || jobId == "" || jobId == "undefined"){
-			 jobId = document.getElementById("jobId").value; 
-		 }
-		 var specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/);
-		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
-		 
-		 if(jobId != null && jobId != "" && specialCharacter != null){
-			 $("#draft").attr("disabled", "disabled");
-			 $("#save").attr("disabled", "disabled");
-			 $("#submitForApproval").attr("disabled", "disabled");
-			 $.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&jobId="+jobId+"&requirementid="+requirementid, 
-			        success: function(data) {
-			        	if(data == true){
-							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
-							  document.getElementById("jobId").setAttribute('record-exist','yes');
-							  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
-			        	}
-			        	else{
-			        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
-			        		//$('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
-	                         $("#draft").removeAttr("disabled");
-	                         $("#save").removeAttr("disabled", "disabled");
-	                		 $("#submitForApproval").removeAttr("disabled", "disabled");
-			        	}
-			        },
-			    });
-		 }
- }
- </script>   -->
- 
  <script type="text/javascript">
  function validateAssetSno() {
 	 var assetSno = document.getElementById("sno").value; 
