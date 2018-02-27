@@ -158,7 +158,7 @@ public class DashboardController {
 		String stage ="SUBMIT_TO_CLIENT" ;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
+		/*List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqSubmissionsList) {
 				 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
@@ -169,11 +169,11 @@ public class DashboardController {
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory2.getCreatedDate()));
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
 				}
-			}
+			}*/
 		
 		model.addObject("tab",tab);
 		model.addObject("reqList","subList");
-		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
+//		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementSubmissionsList");
@@ -260,7 +260,7 @@ public class DashboardController {
 	}
 	
 	
-	private List<RequirementSubmissionHistory> getReqSubmissionListByStage(HttpServletRequest request, String stage, String tab) throws Exception
+	public List<RequirementSubmissionHistory> getReqSubmissionListByStage(HttpServletRequest request, String stage, String tab) throws Exception
 	{
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Timezone timezone = null;
