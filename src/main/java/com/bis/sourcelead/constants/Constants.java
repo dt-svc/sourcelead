@@ -1025,7 +1025,7 @@ public class Constants {
 
 	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
 	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
-
-
+	public static final String MAIL_ASSIGNEMPLOYEE_PROJECTTASK = "MailtoAssignEmployeeinProjecttask";
+	
 
 }

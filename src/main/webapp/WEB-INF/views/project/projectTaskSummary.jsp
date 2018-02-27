@@ -469,13 +469,13 @@ $('.chosen-select').chosen().on('change', function() {
 	}else{
 		assignValue = "";
 	}
-	
+	var projectClientUUID = '${projectClientUUID}';
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId, 	   
-		    success: function(data) {
+		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID, 	   
+	 		    success: function(data) {
 		    }
 	 });  
 });
