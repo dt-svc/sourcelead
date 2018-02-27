@@ -645,11 +645,11 @@ function getNotifyToOtersValInterview(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var requirementId = '${requirementId}';
-        var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val()) - 1;
-        //var rowNum = maxRowNum - 1;
-       // var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
+        var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+        var rowNum = maxRowNum - 1;
+        var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
         
-        var selectedInterviewApplicants =maxRowNum;
+        
         
         if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
 	        $("#add_interview").attr("disabled", "disabled");
