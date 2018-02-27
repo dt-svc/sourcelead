@@ -15,7 +15,251 @@
       <div class="clients_wrap">
         <jsp:include page="JobCountFilter.jsp"></jsp:include>
         <div class="clients_wrap_table datatable_filter">
-           <table id="appTable">
+        
+        <div id="previousOfferDiv"></div>
+        
+        
+        </div>
+      </div>
+      <div class="side_mask">
+        <div class="proj_close"></div>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+ $(document).ready(function() {
+	 requirementOfferist();
+	 
+ });
+ 
+ </script>
+ 
+ <script type="text/javascript">
+       function requirementOfferist(){
+		var sourceleadUrl ='${sourceleadUrl}';
+	    var tab = "previous";
+		var searchValue = $("#dataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		searchValue = searchValue ? searchValue : "";
+		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tab="+tab+"&submissionStatus=OFFERMADE";
+	    prepareOfferList(url);
+}
+</script> 
+
+
+<script>
+function prepareOfferList(url){
+        var result = "";
+ 	    result = result +' <div class="modal-header">';
+ 	    result = result +' <div class="remove_search">';
+ 	    result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
+ 	    result = result +'</div>';
+ 	    result = result +'</div>';
+        result = result +'<table id="offerpagination" class="display" cellspacing="0" width="100%" >'; 
+        result = result +'<thead>'; 
+        result = result + '<tr>';
+		result = result + '<th>Applicant name</th>';
+		result = result + '<th>Job</th>';
+		result = result + '<th>Client</th>';
+		result = result + '<th>Resume</th>';
+		result = result + '<th>Join Date</th>';
+		result = result + '<th>Rate</th>';
+		result = result + '<th>Position Type</th>';
+		result = result + '<th>Attachment</th>';
+		result = result + '<th>Offered On</th>';
+		result = result + '<th>Status</th>';
+		result = result + '</tr>';
+        result = result +'</thead>';
+        result = result +'<tbody>'; 
+        result = result +' </tbody>';
+        result = result +'</table>';
+        $("#previousOfferDiv").empty();
+        $("#previousOfferDiv").append(result);
+         offerpagination(url);
+}
+</script>
+
+<script>
+function offerpagination(url){
+	var colIndex = 0;
+    $('#offerpagination').DataTable( { 
+    		"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+            { "data": "applicantName" },
+            { "data": "job"},
+            { "data": "client"},
+            { "data": "resume" },
+            { "data": "joinDate"},
+            { "data": "rate" },
+            { "data": "positionType" },
+            { "data": "attachment"},
+            { "data": "offeredOn"},
+            { "data": "status"}
+            
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "applicantName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
+							result = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
+						}else{
+							result = result + ' <td><div>--</div></td>';
+						}
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "job",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
+            		  result = result + '<td><div class="proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.jobTitle+'<i class="fa fa-binoculars"></i></a></span></div></td>';
+					}else{
+						result = result + ' <td><div>--</div></td>';
+					}
+            	  return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "client",
+            "render": function ( data, type, opt, meta ) {
+            	var result = "";
+            	
+   				if(opt.orgLocationName != null && opt.orgLocationName != '' && opt.orgLocationName !='undefined'){
+   					result = result + '<td><div><span>'+opt.orgLocationName+' </span></div></td>';
+            	 }else{
+            		 result = result + '<td><div><span>---</span></div></td>';
+            	 }
+   				return result;
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "resume",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  if(opt.resumeUUID !=null && opt.resumeUUID !='' && opt.resumeUUID !='undefined'){
+		              result = result + ' <td><div><span>';   
+		              result = result + ' <a target="_blank" href="'+opt.fileUrl+'"><i class="fa fa-download"></i></a>';
+		              result = result + ' <a onclick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.contentType+'\');" class="fa fa-eye ml10 paddingRight"></a>';
+//			              result = result + ' <a href="<c:url value="/downloadResumeCandidate/'+opt.resumeUUID+'"/>"></a>';
+		              result = result + '</span></div></td>';  
+				}else{
+              		 result = result + '<td><div><span>---</span></div></td>';
+              	 }
+            	  return result;
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "joinDate",
+                "render": function ( data, type, opt, meta ) {
+                		var result = "";
+                		if(opt.offerJoinDate !=null && opt.offerJoinDate !='' && opt.offerJoinDate !='undefined'){
+							result = result + ' <td><div><span>'+opt.offerJoinDate+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+    	              return result;
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "rate",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  		if(opt.offerRate !=null && opt.offerRate !='' && opt.offerRate !='undefined'){
+	    	  			result = result + ' <td><div><span>'+opt.offerRate+'</span></div></td>';
+					}else{
+						result = result + ' <td><div>--</div></td>';
+					}
+  	              return result;
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "positionType",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		var result = "";
+	    	  		if(opt.positionType != null && opt.positionType !='' && opt.positionType != 'undefined'){
+	    	  			result = result + ' <td><div><span>'+opt.positionType+'</span></div></td>';
+	    	  		}else{
+	    	  			result = result + ' <td><div><span>---</span></div></td>';
+	    	  		}
+	    	  		return result;
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "attachment",
+                  "render": function ( data, type, opt, meta ) {
+                	  var result = "";
+  	    	  		   if(opt.contentType != null && opt.contentType !='' && opt.contentType != 'undefined'){
+  	    	  			result = result + ' <td><div><span></span></div></td>';
+	  	    	  		result = result + '<a href=" value="${appPath}/ws/downloadOfferAttachment?offerId="'+opt.offerId+'""/><i class="fa fa-paperclip"></i> </a>';
+	  	    	  	    result = result + ' <a class="fa fa-eye ml10" onclick="viewOffersListAttachment(\''+opt.offerId+'\',"shiva")"></a>';
+	  	    	  	    result = result + '</span></div></td>';
+  	    	  		   }else{
+  	    	  			result = result + ' <td><div><span>---</span></div></td>';
+  	    	  		   }
+  	    	  		return result;
+                  }
+                },{
+                    "targets": colIndex++,
+                    "data": "offeredOn",
+                    "render": function ( data, type, opt, meta ) {
+                    	var result = "";
+   	    	  		   if(opt.appliedOn != null && opt.appliedOn !='' && opt.appliedOn != 'undefined'){
+   	    	  			result = result + ' <td><div><span>'+opt.appliedOn+'</span></div></td>';
+   	    	  		   }else{
+   	    	  			result = result + ' <td><div><span>---</span></div></td>';
+   	    	  		   }
+   	    	  		return result;
+                    }
+                  },{
+                      "targets": colIndex++,
+                      "data": "status",
+                      "render": function ( data, type, opt, meta ) {
+                    	  var result = "";
+      	    	  		   if(opt.toStage != null && opt.toStage !='' && opt.toStage != 'undefined'){
+      	    	  			result = result + ' <td><div><span>'+opt.toStage+'</span></div></td>';
+      	    	  		   }else{
+      	    	  			result = result + ' <td><div><span>---</span></div></td>';
+      	    	  		   }
+      	    	  		return result;
+                      }
+                    } ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+// 	    	"aaSorting": [[3,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#offerpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#dataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   requirementOfferist();
+    	   }
+    	});
+}
+
+</script>
+
+        
+           <%-- <table id="appTable">
             <thead>
               <tr>
                 <th>Applicant name</th>
@@ -118,14 +362,8 @@
 			  </c:forEach>
             </tbody>
             
-          </table>
-        </div>
-      </div>
-      <div class="side_mask">
-        <div class="proj_close"></div>
-      </div>
-    </div>
-  </section>
+          </table> --%>
+        
   
   
 <script>
@@ -146,7 +384,7 @@ function viewOffersListAttachment(offerId,title){
 
 
   
-  <script>
+  <!-- <script>
 function pagination1(){ 
     $('#appTable').DataTable( { 
     	"scrollCollapse": false,
@@ -167,5 +405,5 @@ window.onload = function () {
 	pagination1();
  };
  
-</script>
+</script> -->
 <jsp:include page="../masterFooter.jsp" />
