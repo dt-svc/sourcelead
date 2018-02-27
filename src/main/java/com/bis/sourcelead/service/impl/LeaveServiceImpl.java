@@ -247,7 +247,7 @@ public class LeaveServiceImpl implements LeaveService{
 			 EmailScenario  notificationScenario = null;
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 		     emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-//		     notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		     notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 			 
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -263,9 +263,11 @@ public class LeaveServiceImpl implements LeaveService{
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			//calling the sendNotification method of emailScenerioUtil
-//				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
-//				notificationScenario.setBody(notificationBody);
-//				emailScenerioUtil.sendNotification(null,loginUser, approverUser, orgLoc, notificationScenario);
+				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+				notificationScenario.setBody(notificationBody);
+				StringBuilder actionLinkBuilder = new StringBuilder();
+			       String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("getRequestedAproveSummary?leaveUUID="+savedLeave.getLeaveUUID()).toString();
+				emailScenerioUtil.sendNotification(actionLink,loginUser, applyUser, orgLocations, notificationScenario);
 //		}
 //}
 		
