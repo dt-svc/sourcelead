@@ -84,7 +84,7 @@ public class Leave {
 	private int numberOfDays;
 	
 	@Column(name = "EXTRA_LEAVES_TAKEN")
-	private int extraLeavesTaken;
+	private float extraLeavesTaken;
 	
 	@Column(name = "REJECTED_REASON",columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -155,7 +155,7 @@ public class Leave {
 	
 	@Transient
 	@JsonProperty
-	private Integer balanceLeavesCount;
+	private float balanceLeavesCount;
 	
 	@Transient
 	@JsonProperty
@@ -399,11 +399,13 @@ public class Leave {
 		this.createdDateStr = createdDateStr;
 	}
 
-	public Integer getBalanceLeavesCount() {
+	public float getBalanceLeavesCount()
+	{
 		return balanceLeavesCount;
 	}
 
-	public void setBalanceLeavesCount(Integer balanceLeavesCount) {
+	public void setBalanceLeavesCount(float balanceLeavesCount)
+	{
 		this.balanceLeavesCount = balanceLeavesCount;
 	}
 
@@ -415,12 +417,12 @@ public class Leave {
 		this.numberOfDays = numberOfDays;
 	}
 	
-	public int getExtraLeavesTaken()
+	public float getExtraLeavesTaken()
 	{
 		return extraLeavesTaken;
 	}
 
-	public void setExtraLeavesTaken(int extraLeavesTaken)
+	public void setExtraLeavesTaken(float extraLeavesTaken)
 	{
 		this.extraLeavesTaken = extraLeavesTaken;
 	}
