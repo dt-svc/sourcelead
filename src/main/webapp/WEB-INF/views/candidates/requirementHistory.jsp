@@ -105,7 +105,7 @@ function requirementHistoryList(candidateId){
   		        result = result +'<div class="show_Empdetails showjoblist">';
 		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 
-		        	result = result +'<div class="emailvalues">';
+		        	result = result +'<div class="emailvalues emailvaluesNew">';
 		        	
 				for(var k=0; k<report.locationsList.length; k++){
 					result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';

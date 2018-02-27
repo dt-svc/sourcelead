@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dao;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.InviteCompany;
 import com.bis.sourcelead.entity.ScheduleMaintenance;
@@ -20,5 +22,9 @@ public interface InviteCompanyDao {
 	void storeScheduleMaintenance(ScheduleMaintenance maintenance);
 
 	ScheduleMaintenance getScheduleStatus(Date currentDatePlusFive);
+
+	ResponseList<ScheduleMaintenanceDTO> getScheduleMaintenanceList(ScheduleMaintenanceDTO scheduleMaintenanceDTO, String searchValue) throws ParseException;
+
+	void deleteScheduleMaintenance(String id);
 	
 }
