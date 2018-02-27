@@ -1,3 +1,4 @@
+
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
@@ -2091,7 +2092,7 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result + '						<div class="clearfix"></div> ';
 	result = result + '			<div class="clearfix mt5"> ';
 	result = result + '				<div class="pull-right"> ';
-	result = result + '				  <button type="button" class="btn btn-sm btn-primary" onclick="rescheduleInterviewUpdate('+submissionId+')">Reschedule</button> ';
+	result = result + '				  <button type="button" id="save_rescheduleIntervie" class="btn btn-sm btn-primary" onclick="rescheduleInterviewUpdate('+submissionId+')">Reschedule</button> ';
 	result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="rescheduleInterClose();">Cancel</button> ';
 	result = result + '				</div> ';
 	result = result + '			  </div> ';
@@ -2190,7 +2191,8 @@ function rescheduleInterClose(){
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-
+			$("#save_rescheduleIntervie").attr("disabled", "disabled");
+	        $("#save_rescheduleIntervie" ).addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
 						url: sourceleadUrl+"/updateRescheduleInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
