@@ -87,7 +87,7 @@ $(document).ready(function(){
               <div class="form-horizontal clearfix">
                 <div class="clearfix mb10">
                   <div class="col-md-6" id="snoDiv">
-                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial / Port Number *" field-name="Serial / Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200">
+                    <input type="text" class="form-control input-sm" id="sno" name="sno" placeholder="Serial / Port Number *" field-name="Serial / Port Number" onkeyup="validateAssetSno();" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200">
                   </div>
                   <div class="col-md-6" id="makeDiv">
                     <input type="text" class="form-control input-sm" id="make" name="make" placeholder="Make" data-validation-optional="true" data-validation="validate_Space validate_length length2-100">
@@ -300,6 +300,71 @@ var validationSettings = {
      	});
 </script> 
 
+
+<!-- <script type="text/javascript">
+ function validateAssetSno() {
+	 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+	 var requirementid = document.getElementById("requirementId").value;
+	/*  if(requirementid != null && requirementid != '' && requirementid != 'undefined' ){ */
+		 if(jobId == null || jobId == "" || jobId == "undefined"){
+			 jobId = document.getElementById("jobId").value; 
+		 }
+		 var specialCharacter = jobId.match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/);
+		 $('#jobIdDiv').find('p.jquery_form_error_message').remove();
+		 
+		 if(jobId != null && jobId != "" && specialCharacter != null){
+			 $("#draft").attr("disabled", "disabled");
+			 $("#save").attr("disabled", "disabled");
+			 $("#submitForApproval").attr("disabled", "disabled");
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&jobId="+jobId+"&requirementid="+requirementid, 
+			        success: function(data) {
+			        	if(data == true){
+							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
+							  document.getElementById("jobId").setAttribute('record-exist','yes');
+							  document.getElementById("jobId").setAttribute('record-exist-errorMsg',jobId+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#jobId').removeAttr( "record-exist record-exist-errormsg");
+			        		//$('#jobIdDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#draft").removeAttr("disabled");
+	                         $("#save").removeAttr("disabled", "disabled");
+	                		 $("#submitForApproval").removeAttr("disabled", "disabled");
+			        	}
+			        },
+			    });
+		 }
+ }
+ </script>   -->
+ 
+ <script type="text/javascript">
+ function validateAssetSno() {
+	 var assetSno = document.getElementById("sno").value; 
+	 if(assetSno != null && assetSno != ""){
+		 $("#add_asset").attr("disabled", "disabled");
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#snoDiv').find('p.jquery_form_error_message').remove();
+						  $("input#sno").after("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
+						  document.getElementById("sno").setAttribute('record-exist','yes');
+						  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#sno').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#snoDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_asset" ).addClass('us-btn').val('Add');
+                         $("#add_asset").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
 
 <script type="text/javascript">
 (function ($) {
