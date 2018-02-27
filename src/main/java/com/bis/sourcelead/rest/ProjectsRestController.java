@@ -650,6 +650,14 @@ public class ProjectsRestController {
 		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 	    		}
 	    		
+	    		/*if(flag == false) {
+	    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+	    			pmrh.setPayRateStartDate(payRateEstimatedDate);
+		    		Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+		    		pmrh.setBillRateStartDate(billRateEstimatedDate);
+		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
+	    		}*/
+	    		
 	    	}
 	    	
 	    	
