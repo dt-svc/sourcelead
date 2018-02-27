@@ -43,6 +43,6 @@
    
     <script type="text/javascript">
   	$( document ).ready(function() {
-	
+  		immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
   	});
   </script>
