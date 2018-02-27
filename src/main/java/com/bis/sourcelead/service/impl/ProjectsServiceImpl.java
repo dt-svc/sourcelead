@@ -68,6 +68,7 @@ import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
@@ -93,6 +94,7 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectDocumentFolderService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -229,6 +231,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 ExpensesApprovalService expensesApprovalService;
+	 
+	 @Autowired
+	 ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
 	private UserDTO userStatus;
 	 
@@ -2167,6 +2172,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 	                
 	                
 	       	 }	
+	       	 
+	       	 
+	       	 ProjectMembersRateHistory pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(pm.getId());
+	       	 if(pmrh != null) {
+	       		pm.setRateHistroyList(Constants.YES);
+	       	 }else {
+	       		pm.setRateHistroyList(Constants.NO);
+	       	 }
+	       	 
+	       	 
 			 projectMembersArrList.add(pm);
 		 }
 		}

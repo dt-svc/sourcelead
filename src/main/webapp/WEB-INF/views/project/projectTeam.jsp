@@ -492,12 +492,16 @@ function filterStatus() {
 		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
-				                	result = result + '	<td><div>';
+				                	result = result + '	<td><div class="tbldata-dotdot_80">';
 				                	if(status != 'COMPLETED'){
 				                		
 				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
-				                		   result = result + '<span title="Edit Employee"><i class="glyphicon glyphicon-edit" onClick="editProjectAssignedMember('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
-				                		'</sec:authorize>';
+				                		   
+				                		 if(opt.rateHistroyList == 'Y'){
+				                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                		  }  
+				                		     result = result + '<span title="Edit Employee"><i class="glyphicon glyphicon-edit" onClick="editProjectAssignedMember('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                		 '</sec:authorize>';
 				                		
 				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 				                		   result = result + '<span title="Delete Employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
@@ -662,6 +666,13 @@ function inlineEditForEndDate(id,projectMemberId){
    			   
    		    }
 	 });  
+}
+</script>
+
+
+<script>
+function getRateTable(projectMemberId,candidateName){
+	
 }
 </script>
 
