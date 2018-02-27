@@ -137,6 +137,12 @@ function Immigration(){
 	$("#petitionTemplateTaskDetails").showHelpOnFocus();
 	$("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);  
 });
+	
+ this.editTemplateDetailsByRowId = function (templateId){
+		immTemplId = templateId; //updating global variable "immTemplId" with templateId.
+	    window.location.href =sourceleadUrl+immiModulePath+"/addNewPetitionTemplate?templateId="+immTemplId; // for editing mode  
+  }
+	
 	// immigration view navigation if don't required comment below code start here.
 	this. savePageOneContinue = function (status){
 		$("#newPetitionTemplateDiv").empty();

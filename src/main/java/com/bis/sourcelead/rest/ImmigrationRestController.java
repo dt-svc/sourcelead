@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -145,7 +147,7 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value={"/addNewPetitionTemplate"})
-	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) {
+	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) throws ServletRequestBindingException {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -153,6 +155,17 @@ public class ImmigrationRestController {
 		request.getSession().removeAttribute("templateDocList");
 		request.getSession().removeAttribute("templateFormsList");
 		model.setViewName("/immigration/addPetitionTemplate");
+		Long templateId= ServletRequestUtils.getLongParameter(request, "templateId");
+		if(templateId != null) {
+			try {
+				System.out.println(" Edit mode templateId templateId -->" + templateId);
+				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
+				request.getSession().setAttribute("templateDTO", templateDTO);
+			} catch (Exception e) {
+				logger.error(" Exception caught in edit mode in controller -->" + templateId);
+				e.printStackTrace();
+			}
+		}
 		return model;
 	}
 	
@@ -203,7 +216,6 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 			@RequestParam(value = "forwardTo", required = false) String forwardTo) {
 		ModelAndView model = new ModelAndView();
 		try {
-
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			if (forwardTo.equalsIgnoreCase("tempDetails")) {
 				model.setViewName("/immigration/petitionTemplateDetails");
@@ -245,6 +257,7 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		request.getSession().setAttribute("templateDTO", templateDTO);
 		return "{status:'success', id:"+immigrationId+ "}";
 	}
+	
 	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,@RequestParam(value = "templateId", required = false) String templateId) {
 		ModelAndView model = new ModelAndView();

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 
@@ -224,10 +226,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		}
 		List<ImmigrationTemplateListDTO> tempalteDTOList = new ArrayList<ImmigrationTemplateListDTO>();
 		for (ImmigrationTemplateView source : ImmigrationTemplateViewLst) {
-			System.out.println(" DocsCount"+source.getDocsCount());
+			//System.out.println(" DocsCount"+source.getDocsCount());
 			ImmigrationTemplateListDTO target = new ImmigrationTemplateListDTO();
 			BeanUtils.copyProperties(source, target);
-			System.out.println(" DocsCount target"+target.getDocsCount());
+			//System.out.println(" DocsCount target"+target.getDocsCount());
 			tempalteDTOList.add(target);
 		}
 		responseList.setData(tempalteDTOList);
@@ -242,4 +244,22 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		return immigrationTemplateForms;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public  ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationTemplateDTO templateDto= null;
+		logger.debug(" DAO IMPL  templateId  check value is -->" + templateId);
+		try {
+			ImmigrationTemplate entityObj = (ImmigrationTemplate) session.get(ImmigrationTemplate.class, templateId);
+			templateDto = new ImmigrationTemplateDTO();
+			templateDto.setId(entityObj.getId());
+			templateDto.setTemplateName(entityObj.getName());
+			templateDto.setTemplateDescription(entityObj.getDescription());
+		} catch (Exception e) {
+			logger.error("Exception caught in while getting tempalte details with templateId -->"+templateId+" Mesaage is "+e.getMessage());
+			e.printStackTrace();
+		}
+		return templateDto;
+	}
 }
