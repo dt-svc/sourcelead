@@ -131,6 +131,9 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
         }else if(dateRange != null && "upcoming".equals(dateRange)){
         	query = subQueryCommon+ " (DATE(rih.interviewId.startTime) > :startDate)"+ subQuery;
         	params.put("startDate",startUTCDate);
+        }else if(endUTCDate == null){
+        	query = subQueryCommon+ " (DATE(rih.interviewId.startTime) >= :startDate)"+ subQuery;
+        	params.put("startDate",startUTCDate);
         }else{
         	//query = subQueryCommon+ " (rih.interviewId.dateOfInterview between :startDate and :endDate)"; 
         	query = subQueryCommon+ "( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) "+subQuery;

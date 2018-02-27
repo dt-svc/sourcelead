@@ -7556,5 +7556,12 @@ font-weight: 500;
 }
 
 .ui-timepicker-wrapper {
-z-index: 1000000 !important;
+	z-index: 1000000 !important;
 }
+.emailvaluesNew {
+	position: fixed !important; left: 100px !important; right: 0px !important; margin: 0px auto !important; top: 35% !important;
+}
+
+
+
+

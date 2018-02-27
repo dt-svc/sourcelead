@@ -142,6 +142,9 @@ public class ProfessionalRequirementsController {
 					model.addObject("referUUID", referUUID);
 				}
 	 			
+				List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
+				 model.addObject("requestOrgList", requestOrgList);
+				 
 	 			if(!isNullOrEmpty(contactUUID)){
 	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
 	 				if(null == referContacts.getContactUser()){
