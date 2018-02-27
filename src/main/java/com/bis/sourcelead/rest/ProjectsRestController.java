@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -520,6 +521,17 @@ public class ProjectsRestController {
 	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
 	    	  
 	    	  projectMebersDTO.setProjectMemberId(projectMebers.getId());
+	    	  
+	    	  ProjectMembersRateHistory pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMebers.getId());
+	    	  if(pmrh != null) {
+	    		  if(pmrh.getPayRateStartDate() != null) {
+	    			  projectMebersDTO.setPayRateEstimatedDate(dateFormat.format(pmrh.getPayRateStartDate()));
+	    		  }
+	    		  
+	    		  if(pmrh.getBillRateStartDate() != null) {
+	    			  projectMebersDTO.setBillRateEstimatedDate(dateFormat.format(pmrh.getBillRateStartDate()));
+	    		  }
+	    	  }
 	      }
 	    	
 	       return projectMebersDTO;
@@ -542,7 +554,7 @@ public class ProjectsRestController {
 	    		
 	    		
 	    		if(flag == true) {
-		         pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByIdAndStatus(projectMembers.getId());
+		         pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMembers.getId());
 		    		if(pmrh == null) {
 		    			projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
 		    			if(projectMembers.getProjectAssignedDate() != null) {
@@ -553,8 +565,19 @@ public class ProjectsRestController {
 		    				projectMembersRateHistory.setPayRateStartDate(projectAssignedStartDate);
 		    				projectMembersRateHistory.setBillRateStartDate(projectAssignedStartDate);
 		    			}
-		    			projectMembersRateHistory.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-		    			projectMembersRateHistory.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+		    			
+		    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+		    			Calendar cal = Calendar.getInstance();
+		    			cal.setTime(payRateEstimatedDate);
+		    			cal.add( Calendar.DAY_OF_YEAR, -1);
+		    			projectMembersRateHistory.setPayRateEndDate(cal.getTime());
+		    			
+		    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+		    			Calendar cal1 = Calendar.getInstance();
+		    			cal1.setTime(billRateEstimatedDate);
+		    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+		    			projectMembersRateHistory.setBillRateEndDate(cal1.getTime());
+		    			
 		    			projectMembersRateHistory.setStatus(0);
 		    			projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 		    		}
@@ -620,8 +643,11 @@ public class ProjectsRestController {
 		    			projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
 		    		}
 		    		
-		    		projectMembersRateHistory.setPayRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-	    			projectMembersRateHistory.setBillRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+		    		Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+		    		projectMembersRateHistory.setPayRateStartDate(payRateEstimatedDate);
+		    		Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    			projectMembersRateHistory.setBillRateStartDate(billRateEstimatedDate);
+	    			
 	    			projectMembersRateHistory.setStatus(1);
 		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 	    		}

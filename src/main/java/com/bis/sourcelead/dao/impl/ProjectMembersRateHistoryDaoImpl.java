@@ -61,7 +61,7 @@ public class ProjectMembersRateHistoryDaoImpl implements ProjectMembersRateHisto
 
 	@Override
 	@Transactional
-	public ProjectMembersRateHistory getProjectMembersRateHistoryByIdAndStatus(Long Id) throws Exception {
+	public ProjectMembersRateHistory getProjectMembersRateHistoryByMemberIdAndStatus(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());

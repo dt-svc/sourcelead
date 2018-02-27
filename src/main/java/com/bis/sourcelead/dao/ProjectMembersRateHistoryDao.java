@@ -6,5 +6,5 @@ public interface ProjectMembersRateHistoryDao {
 
 	ProjectMembersRateHistory saveProjectMembersRateHistory(ProjectMembersRateHistory projectMembersRateHistory) throws Exception;
 	
-	ProjectMembersRateHistory getProjectMembersRateHistoryByIdAndStatus(Long Id) throws Exception;
+	ProjectMembersRateHistory getProjectMembersRateHistoryByMemberIdAndStatus(Long Id) throws Exception;
 }

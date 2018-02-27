@@ -1648,7 +1648,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				}
 			}
 			
-			if(StringUtils.isNotBlank(projectMembers.getRateType())) {
+			if(StringUtils.isBlank(projectMembers.getRateType())) {
 				if(StringUtils.isNotBlank(projectMembersDTO.getBillRateRateType())) {
 					count = count+1;
 				}

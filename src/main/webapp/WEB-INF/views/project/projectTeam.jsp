@@ -25,7 +25,7 @@ left: 115px !important;
     right: 280px; top: 40px;
 }
 .edit_member_pop {
-	top:12% !important; left: 40%; margin: 0px auto; z-index: 15500; width: 400px;
+	top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
 	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
 }
 .edit_member_pop .footerBtns input {
@@ -701,6 +701,9 @@ function loadProjectMembersDetails(data,candidateName){
     var estHours = '';
     var estBudget = '';
     
+    var payRateEstdDate = '';
+    var billRateEstdDate = '';
+    
     if(data.payRate != null && data.payRate != 'undefined'){
     	payrate = data.payRate;
     }
@@ -724,6 +727,14 @@ function loadProjectMembersDetails(data,candidateName){
     if(data.estBudget != null && data.estBudget != '' && data.estBudget != 'undefined'){
     	estBudget = data.estBudget;
     }
+    
+    if(data.payRateEstimatedDate != null && data.payRateEstimatedDate != '' && data.payRateEstimatedDate != 'undefined'){
+    	payRateEstdDate = data.payRateEstimatedDate;
+    }
+    
+    if(data.billRateEstimatedDate != null && data.billRateEstimatedDate != '' && data.billRateEstimatedDate != 'undefined'){
+    	billRateEstdDate = data.billRateEstimatedDate;
+    }
 	
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
@@ -736,8 +747,13 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result +" <div id='editMemberLoading'></div>"; 
 	result = result + '<input type="hidden" id="projectMemberId" name="projectMemberId" value="'+data.projectMemberId+'">';
 	
+	
 	result = result + '<div class="clearfix mb10 row mt">';
+	
+	result = result + '<div class="col-md-8 paddingRight">';
+	result = result + '<div class="row">';
 	result = result + '<label class="clearfix col-md-12">Pay Rate<span class="text-danger">&nbsp;*</span></label>';
+	
 	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
 	result = result + '<select id="payRateCurrency" name="payRateCurrency">';
 	result = result + '<option value="INR">INR</option>';
@@ -748,10 +764,12 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '<option value="EUR">EUR</option>';
 	result = result + '</select>';
 	result = result + '</div>';
-	result = result + '<div class="col-md-5 padding_right padding_left inputRate">';
+	
+	result = result + '<div class="col-md-4 padding_right padding_left inputRate">';
 	result = result + '<input class="form-control" type="text" id="payRate" name="payRate" value = "'+payrate+'" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">';
 	result = result + '</div>';
-	result = result + '<div class="col-md-4 padding_left drpdownMonthly dropdown-select">';
+	
+	result = result + '<div class="col-md-5 padding_left drpdownMonthly dropdown-select">';
 	result = result + '<select id="payRateRateType" name="payRateRateType">';
 	result = result + '<option value="Hourly">Hourly</option>';
 	result = result + '<option value="Weekly">Weekly</option>';
@@ -763,8 +781,22 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="col-md-4 paddingLeft" id="payRateEstdDiv">';
+	result = result + '<label class="clearfix">Estimated Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="padding_right padding_left inputRate">';
+	result = result + '<input type="text" class="form-control calendar"  id="payRateEstimatedDate" value="'+payRateEstdDate+'"  readonly name="payRateEstimatedDate" field-name="Estd Date"  data-validation="required">';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '</div>';
 	
 	result = result + '<div class="clearfix mb10 row mt">';
+	
+	result = result + '<div class="col-md-8 paddingRight">';
+	result = result + '<div class="row">';
 	result = result + '<label class="clearfix col-md-12">Bill Rate<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
 	result = result + '<select id="billRateCurrency" name="billRateCurrency">';
@@ -776,10 +808,12 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '<option value="EUR">EUR</option>';
 	result = result + '</select>';
 	result = result + '</div>';
-	result = result + '<div class="col-md-5 padding_right padding_left inputRate">';
+	
+	result = result + '<div class="col-md-4 padding_right padding_left inputRate">';
 	result = result + '<input class="form-control" type="text" id="billRate" name="billRate" value = "'+billrate+'" field-name="Bill Rate"  data-validation="required validate_Space validate_float validate_length length1-15">';
 	result = result + '</div>';
-	result = result + '<div class="col-md-4 padding_left drpdownMonthly dropdown-select">';
+	
+	result = result + '<div class="col-md-5 padding_left drpdownMonthly dropdown-select">';
 	result = result + '<select id="billRateRateType" name="billRateRateType">';
 	result = result + '<option value="Hourly">Hourly</option>';
 	result = result + '<option value="Weekly">Weekly</option>';
@@ -791,33 +825,51 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
+	result = result + '</div>';
 	
-	result = result + '	    <div class="clearfix mb10 row" id="startDateDiv">';
-	result = result + '	      <label class="clearfix col-md-12">Project Start Date<span class="text-danger">&nbsp;*</span></label>';
-	result = result + '	      <div class="col-md-12">';
+	
+	result = result + '<div class="col-md-4 paddingLeft" id="billRateEstdDiv">';
+	result = result + '<label class="clearfix">Estimated Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '<div class="padding_right padding_left inputRate">';
+	result = result + '<input type="text" class="form-control calendar"  id="billRateEstimatedDate" value="'+billRateEstdDate+'" placeholder="" readonly name="billRateEstimatedDate" field-name="Estd Date"  data-validation="required">';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	result = result + '</div>';
+	
+	result = result + '	    <div class="row">';
+	
+	result = result + '	    <div class="col-md-6 mb10" id="startDateDiv">';
+	result = result + '	      <label class="clearfix">Project Start Date<span class="text-danger">&nbsp;*</span></label>';
+	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar" value="'+projectStartDate+'" readonly id="projectStartDate"  name="memberStartDate" field-name="Start Date"  data-validation="required">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	
-	result = result + '	    <div class="clearfix mb10 row" id="endDateDiv">';
-	result = result + '	      <label class="clearfix col-md-12">Project End Date</label>';
-	result = result + '	      <div class="col-md-12">';
+	result = result + '	    <div class="col-md-6 mb10" id="endDateDiv">';
+	result = result + '	      <label class="clearfix">Project End Date</label>';
+	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control input-sm calendar"  value="'+projectEndDate+'" id="projectEndDate" readonly name="memberEndDate" field-name="End Date"  data-validation-optional="true">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	
-	result = result + '	    <div class="clearfix mb10 row">';
-	result = result + '	      <label class="clearfix col-md-12">Estimated Hours</label>';
-	result = result + '	      <div class="col-md-12">';
+	result = result + '	    </div>';
+	
+	result = result + '	    <div class="row">';
+	
+	result = result + '	    <div class="clearfix mb10 col-md-6">';
+	result = result + '	      <label class="clearfix">Estimated Hours</label>';
+	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control inlineField"  id="estHours" value="'+estHours+'" name="estHours" field-name="Estimated Hours"  data-validation-optional="true" data-validation="validate_Space validate_int">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	
-	result = result + '	    <div class="clearfix mb10 row">';
-	result = result + '	      <label class="clearfix col-md-12">Estimated Budget</label>';
-	result = result + '	      <div class="col-md-12">';
+	result = result + '	    <div class="clearfix mb10 col-md-6">';
+	result = result + '	      <label class="clearfix">Estimated Budget</label>';
+	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control inlineField"  id="estBudget" value="'+estBudget+'"  name="estBudget" field-name="Estimated Budget"  data-validation-optional="true" data-validation="validate_Space validate_int">';
 	result = result + '	      </div>';
+	result = result + '	    </div>';
 	result = result + '	    </div>';
 	
 	
@@ -884,6 +936,27 @@ function loadProjectMembersDetails(data,candidateName){
 					getEstimatedHours();
 			}
 		});
+		
+		$("#billRateEstimatedDate").datepicker({
+			dateFormat : finalDateFormatAssignEmpUpdate,
+			changeMonth: true,
+			changeYear: true, 
+	        onClose : function(selected) {
+	        	removebillRateEstdValidation();
+			}
+		});
+		
+		$("#payRateEstimatedDate").datepicker({
+			dateFormat : finalDateFormatAssignEmpUpdate,
+			changeMonth: true,
+			changeYear: true, 
+	        onClose : function(selected) {
+	        	removePayRateEstdValidation();
+			}
+		});
+		
+		
+		
 	
 }
 
@@ -894,6 +967,15 @@ function removeStartDateValidation(rowId){
 function removeEndDateValidation(rowId){
 	$('#endDateDiv').find('p.jquery_form_error_message').remove();
 }
+
+function removebillRateEstdValidation(rowId){
+	$('#billRateEstdDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removePayRateEstdValidation(rowId){
+	$('#payRateEstdDiv').find('p.jquery_form_error_message').remove();
+}
+
 
 
 
