@@ -252,7 +252,8 @@
 				            
 				            <c:if test="${not empty dataMapListJobs}">
 				            <c:forEach var="customJobData" items="${dataMapListJobs}">
-					             <div class="require_wrap_details_cta"> <b>${customJobData.key}:</b><span>${customJobData.value}</span>
+				            	<c:set var="labelnameAndLabelData" value="${fn:split(customJobData.value, '$')}" />
+					             <div class="require_wrap_details_cta"> <b>${labelnameAndLabelData[0]}:</b><span>${labelnameAndLabelData[1]}</span>
 					            	<div class="clearfix"></div> 
 					            </div>
 				            </c:forEach> 

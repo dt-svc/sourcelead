@@ -1,6 +1,8 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <style>
 .profilerefresh-icon {
 	position: absolute;
@@ -15,7 +17,7 @@
 	function editVendorDetails(vendorLocationId,orgRelationId) {
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
+						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId+"&requestType=Vendor",
 						success : function(json) {
 						
 						var result = "";
@@ -32,6 +34,11 @@
 						var paymentTerms5 = '';
 						var paymentTerms6 = '';
 						var paymentTerms0 = '';
+						
+						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						  var sectionId = '${section.id}';
+						  preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId);
+						</c:forEach>
 						
 						if(json.level == 'Tier-1'){
 								selected1 = 'selected';
@@ -241,6 +248,8 @@
                         result = result + ' </select>';
                         result = result + ' </div>'; 
 						
+                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth"  id="customFieldDataId"></div>';
+                        
 						 result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta pull-right">';
 						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
@@ -283,6 +292,24 @@ function changeCountry(){
 	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
 }
 </script>
+
+
+
+<script type="text/javascript">
+function preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+vendorLocationId+"&orgRelationID="+orgRelationId+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
+
+
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',

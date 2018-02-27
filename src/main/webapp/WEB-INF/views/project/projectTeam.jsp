@@ -185,6 +185,15 @@ function filterStatus() {
 	 		result = result +'</li>';
 			} 
 			
+			
+			result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></a>';
+		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
+			result = result + '       	<ul>';
+			result = result +'<div id="orgLocationTeams"></div>';  				  
+		    result = result + '           </ul>';
+			result = result + '       </div>'; 
+			result = result + '   </li>';
+			
 			result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play"></i></a>';
 		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
@@ -274,9 +283,41 @@ function filterStatus() {
 	        var tab = $(this).attr("href");
 	        $(".newPrTabs_inn").not(tab).css("display", "none");
 	        $(tab).fadeIn();
-	    });		
+	    });	
+	    
+	    getOrgLocationTeams(projectId,startDateStr,endDateStr,status,projectName);
 		
  }
+ </script>
+ 
+ 
+ <script>
+ function getOrgLocationTeams(projectId,startDateStr,endDateStr,status,projectName){
+		var orgLocations = '${SourceLeadWeb_orgLocations.id}';
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+		        success: function(json) {
+		        	
+		        	var output = "";
+		        	if(json.length > 0){
+		        		for (var i=0; i<json.length; i++)
+						{
+				        		var opt = json[i];
+				        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\')" ><label>'+opt.name+'</label></li>';
+						}
+		        	}else{
+		        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+		        	}
+		        	
+		        	$("#orgLocationTeams").empty();
+			        $("#orgLocationTeams").append(output);
+		        }
+		        
+		 });
+	}
  </script>
  
  
@@ -299,6 +340,14 @@ function filterStatus() {
 	     {
 			roleIds.push($(this).val());
 	     });
+		
+		var teamIds = [];
+		$('input:checkbox[name=teams]:checked').each(function() 
+			    {
+			teamIds.push($(this).val());
+		    });
+		
+		
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  projectempListDate = 'YYYY-MM-DD';
@@ -312,7 +361,7 @@ function filterStatus() {
 	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds, 
+	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds+"&teamIds="+teamIds, 
 	        success: function(json) {
 	        	
 	        	var result = "";

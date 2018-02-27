@@ -705,14 +705,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds)
 			throws Exception {
 		
 		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		List<ProjectMembers> projectMembersList = null;
 		List<ProjectMembers> projectMembList = new ArrayList<>();
 		if(projectClients != null){
-			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status,roleIds);
+			projectMembersList = projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status,roleIds,teamIds);
 			
 			if(projectMembersList != null && projectMembersList.size() > 0) {
 				for(ProjectMembers projectMembers : projectMembersList) {
@@ -975,7 +975,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						
 					}
 					
-					if(candidate.getParentCandidateId() != null){
+					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						int level = 1;
 						while(parentCandidatId != null){
@@ -1285,7 +1285,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId, String status)
 			throws Exception {
-		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status,"");
+		return projectMembersDao.getAllProjectMembersByProjectClientIdAndStatus(projectClientsId, status,"","");
 	}
 
 	@Override

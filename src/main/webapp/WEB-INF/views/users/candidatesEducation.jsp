@@ -893,7 +893,7 @@ function educationSelectScoreType(){
 	 else if(selectedText =='GRADE'){
 		 var grades = /^([A-E][-+]{0,2})?$/
 			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
+				 $("#save_button").removeAttr("disabled");
 				 return true;
 			}else{
 				$("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
@@ -921,10 +921,14 @@ function educationscoreAndScoreType(){
 		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(grades)){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 		 $("#scoreEducationType").val('GRADE'); 
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(cgpanum)){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
 		 $("#scoreEducationType").val('CGPA'); 
+		 $("#save_button").removeAttr("disabled");
 	 }
 	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
 		 $("input#candidateEducationScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");

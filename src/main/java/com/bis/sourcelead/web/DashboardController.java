@@ -260,42 +260,66 @@ public class DashboardController {
 	}
 	
 	
+
 	public List<RequirementSubmissionHistory> getReqSubmissionListByStage(HttpServletRequest request, String stage, String tab) throws Exception
 	{
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		Timezone timezone = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginOrgLocations.getTimezone() != null){
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (loginOrgLocations.getTimezone() != null) {
 			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 		}
 		String userType = null;
 		Date startUTCDate = null;
 		Date endUTCDate = null;
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if("today".equals(tab)){
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);
-		}else{
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
+		if ("today".equals(tab)) {
+
+			DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			String customStartTimeStr = outputFormatter.print(zoned);
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			String endDate = outputFormatter1.print(zoned);
+			Date endDateString = TZ_DF_TS.parse(endDate);
+			endUTCDate = endDateString;
+
+			/*
+			 * DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			 * DateTimeFormatter outputFormatter =
+			 * DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00"); DateTimeFormatter
+			 * outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59"); String
+			 * startDate = outputFormatter.print(zoned); String startDateString =
+			 * CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE,
+			 * startDate); startUTCDate = TZ_DF_TS.parse(startDateString); String endDate =
+			 * outputFormatter1.print(zoned); String endDateString =
+			 * CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE,
+			 * endDate); endUTCDate = TZ_DF_TS.parse(endDateString);
+			 */
+		} else {
+
+			DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			String customStartTimeStr = outputFormatter.print(zoned);
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+
+			/*
+			 * DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			 * DateTimeFormatter outputFormatter =
+			 * DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00"); String startDate =
+			 * outputFormatter.print(zoned); String startDateString =
+			 * CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE,
+			 * startDate); startUTCDate = TZ_DF_TS.parse(startDateString);
+			 */
 		}
-		
-		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+
+		if (Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)) {
 			userType = Constants.ADMIN;
-		} 
-		
-		return requirementSubmissionService.getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),stage,tab,userType,user,startUTCDate,endUTCDate);
+		}
+
+		return requirementSubmissionService.getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(
+				loginOrgLocations.getId(), stage, tab, userType, user, startUTCDate, endUTCDate);
 	}
 
 	

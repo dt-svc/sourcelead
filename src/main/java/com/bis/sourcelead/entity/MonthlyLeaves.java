@@ -1,31 +1,23 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "MONTHLY_LEAVES")
@@ -45,40 +37,40 @@ public class MonthlyLeaves {
 	private Leave leaveId;
 	
 	@Column(name = "JANUARY_LEAVES")
-	private int januaryLeaves;
+	private float januaryLeaves;
 	
 	@Column(name = "FEBRUARY_LEAVES")
-	private int februaryLeaves;
+	private float februaryLeaves;
 	
 	@Column(name = "MARCH_LEAVES")
-	private int marchLeaves;
+	private float marchLeaves;
 	
 	@Column(name = "APRIL_LEAVES")
-	private int aprilLeaves;
+	private float aprilLeaves;
 	
 	@Column(name = "MAY_LEAVES")
-	private int mayLeaves;
+	private float mayLeaves;
 	
 	@Column(name = "JUNE_LEAVES")
-	private int juneLeaves;
+	private float juneLeaves;
 	
 	@Column(name = "JULY_LEAVES")
-	private int julyLeaves;
+	private float julyLeaves;
 	
 	@Column(name = "AUGUST_LEAVES")
-	private int augustLeaves;
+	private float augustLeaves;
 	
 	@Column(name = "SEPTEMBER_LEAVES")
-	private int septLeaves;
+	private float septLeaves;
 	
 	@Column(name = "OCTOBER_LEAVES")
-	private int octoberLeaves;
+	private float octoberLeaves;
 	
 	@Column(name = "NOVEMBER_LEAVES")
-	private int novLeaves;
+	private float novLeaves;
 	
 	@Column(name = "DECEMBER_LEAVES")
-	private int decLeaves;
+	private float decLeaves;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -112,119 +104,124 @@ public class MonthlyLeaves {
 		this.leaveId = leaveId;
 	}
 
-	public int getJanuaryLeaves()
+	public float getJanuaryLeaves()
 	{
 		return januaryLeaves;
 	}
 
-	public void setJanuaryLeaves(int januaryLeaves)
+	public void setJanuaryLeaves(float januaryLeaves)
 	{
 		this.januaryLeaves = januaryLeaves;
 	}
 
-	public int getFebruaryLeaves()
+	public float getFebruaryLeaves()
 	{
 		return februaryLeaves;
 	}
 
-	public void setFebruaryLeaves(int februaryLeaves)
+	public void setFebruaryLeaves(float februaryLeaves)
 	{
 		this.februaryLeaves = februaryLeaves;
 	}
 
-	public int getMarchLeaves()
+	public float getMarchLeaves()
 	{
 		return marchLeaves;
 	}
 
-	public void setMarchLeaves(int marchLeaves)
+	public void setMarchLeaves(float marchLeaves)
 	{
 		this.marchLeaves = marchLeaves;
 	}
 
-	public int getAprilLeaves()
+	public float getAprilLeaves()
 	{
 		return aprilLeaves;
 	}
 
-	public void setAprilLeaves(int aprilLeaves)
+	public void setAprilLeaves(float aprilLeaves)
 	{
 		this.aprilLeaves = aprilLeaves;
 	}
 
-	public int getMayLeaves()
+	public float getMayLeaves()
 	{
 		return mayLeaves;
 	}
 
-	public void setMayLeaves(int mayLeaves)
+	public void setMayLeaves(float mayLeaves)
 	{
 		this.mayLeaves = mayLeaves;
 	}
 
-	public int getJuneLeaves()
+	public float getJuneLeaves()
 	{
 		return juneLeaves;
 	}
 
-	public void setJuneLeaves(int juneLeaves)
+	public void setJuneLeaves(float juneLeaves)
 	{
 		this.juneLeaves = juneLeaves;
 	}
 
-	public int getJulyLeaves()
+	public float getJulyLeaves()
 	{
 		return julyLeaves;
 	}
 
-	public void setJulyLeaves(int julyLeaves)
+	public void setJulyLeaves(float julyLeaves)
 	{
 		this.julyLeaves = julyLeaves;
 	}
 
-	public int getAugustLeaves()
+	public float getAugustLeaves()
 	{
 		return augustLeaves;
 	}
 
-	public void setAugustLeaves(int augustLeaves)
+	public void setAugustLeaves(float augustLeaves)
 	{
 		this.augustLeaves = augustLeaves;
 	}
 
-	public int getSeptLeaves()
+	public float getSeptLeaves()
 	{
 		return septLeaves;
 	}
 
-	public void setSeptLeaves(int septLeaves)
+	public void setSeptLeaves(float septLeaves)
 	{
 		this.septLeaves = septLeaves;
 	}
 
-	public int getOctoberLeaves()
+	public float getOctoberLeaves()
 	{
 		return octoberLeaves;
 	}
 
-	public void setOctoberLeaves(int octoberLeaves)
+	public void setOctoberLeaves(float octoberLeaves)
 	{
 		this.octoberLeaves = octoberLeaves;
 	}
 
-	public int getNovLeaves()
+	public float getNovLeaves()
 	{
 		return novLeaves;
 	}
 
-	public void setNovLeaves(int novLeaves)
+	public void setNovLeaves(float novLeaves)
 	{
 		this.novLeaves = novLeaves;
 	}
 
-	public int getDecLeaves()
+	public float getDecLeaves()
 	{
 		return decLeaves;
+	}
+
+	public void setDecLeaves(float decLeaves)
+	{
+		this.decLeaves = decLeaves;
 	}
 
 	public void setDecLeaves(int decLeaves)
