@@ -1891,7 +1891,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		ProjectMembers projectMembers =projectMembersDao.getProjectMemberById(projectMemberId);
 		// Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.level = '1'";
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = ts.id and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId";
 		String query = "from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projects project left join fetch ts.masterCandidateId mc left join fetch ts.projectMembers pm  left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
 				+ " where pclient.orgLocationsId.id = :locationsId and project.id = :projectId and mc.id = :masterCandidateId and (sah.submissionId.startDate = :startDate OR sah.submissionId.endDate = :endDate OR sah.submissionId.startDate BETWEEN :startDate and :endDate OR sah.submissionId.endDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'"
 				/*
