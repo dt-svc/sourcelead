@@ -28,6 +28,7 @@ import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.ProjectMembersRateHistoryDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
@@ -35,8 +36,6 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectMembersRateHistory;
@@ -63,7 +62,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -684,6 +682,60 @@ public class ProjectsRestController {
     		projectMembersRateHistory.setUpdatedDate(new Date());
     		
     		return projectMembersRateHistory;
+	    }
+	    
+	    
+	    
+	    @RequestMapping(value = "/getProjectMemberRateTablesList", method = RequestMethod.POST)
+		public  List<ProjectMembersRateHistoryDTO> getProjectMemberRateTablesList(@RequestParam(value="projectMemberId", required=true) Long projectMemberId,
+				HttpServletRequest request) throws Exception {
+	    	
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	    	List<ProjectMembersRateHistoryDTO> pmrhDTOList = new ArrayList<>();
+	    	List<ProjectMembersRateHistory> pmrhList = projectMembersRateHistoryService.getProjectMembersRateHistoryListByProjectMemberId(projectMemberId);
+	    	
+	    	if(pmrhList != null && !pmrhList.isEmpty()) {
+	    		
+	    		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	    			ProjectMembersRateHistoryDTO  pmrhDTO = new ProjectMembersRateHistoryDTO();
+	    			pmrhDTO.setBillRate(pmrh.getBillRate());
+	    			pmrhDTO.setBillRateCurrency(pmrh.getBillRateCurrency());
+	    			pmrhDTO.setBillRateType(pmrh.getBillRateType());
+	    			if(pmrh.getBillRateStartDate() != null) {
+	    				pmrhDTO.setBillRateStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getBillRateStartDate()));
+	    			}
+	    			
+	    			if(pmrh.getBillRateEndDate() != null) {
+	    				pmrhDTO.setBillRateEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getBillRateEndDate()));
+	    			}
+	    			
+	    			
+	    			pmrhDTO.setPayRate(pmrh.getPayRate());
+	    			pmrhDTO.setPayRateCurrency(pmrh.getPayRateCurrency());
+	    			pmrhDTO.setPayRateType(pmrh.getPayRateType());
+	    			if(pmrh.getPayRateStartDate() != null) {
+	    				pmrhDTO.setPayRateStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getPayRateStartDate()));
+	    			}
+	    			
+	    			if(pmrh.getPayRateEndDate() != null) {
+	    				pmrhDTO.setPayRateEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmrh.getPayRateEndDate()));
+	    			}
+	    			
+	    			User createdUser = pmrh.getCreatedBy();
+	    			StringBuilder userName = new StringBuilder();
+	    			if(StringUtils.isNotBlank(createdUser.getLastName())) {
+	    				pmrhDTO.setCreatedBy(userName.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+	    			}else {
+	    				pmrhDTO.setCreatedBy(userName.append(createdUser.getFirstName()).toString());
+	    			}
+	    			
+	    			pmrhDTOList.add(pmrhDTO);
+	    			
+	    		}
+	    	}
+	    	
+	    	return pmrhDTOList;
+	    	
 	    }
 	  
 

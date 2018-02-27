@@ -37,6 +37,11 @@ left: 115px !important;
 .edit_member_pop h4 {
 background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-size: 15px;
 }
+
+.member_rate_history_pop {
+	top:30% !important; left: 25%; margin: 0px auto; z-index: 15500; width: 850px;
+	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
+}
 </style>
  <style type="text/css">
  table#assignEmployeePagination tr th {
@@ -672,7 +677,111 @@ function inlineEditForEndDate(id,projectMemberId){
 
 <script>
 function getRateTable(projectMemberId,candidateName){
-	
+	$("#projectMemberDetailsPopUp").empty();
+	var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getProjectMemberRateTablesList?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+		    success: function(data) {
+		    	
+		    	  var result = "";
+		    	  
+		    	  result = result +' <div class="project_inn_mask"></div>'; 
+		    	  result = result +' <div id="edit_member_pop" class="member_rate_history_pop">';
+		    	  
+		    	  result = result +' <div class="row">';
+		    	  result = result +" <p class='col-md-10'>Emp Name : <strong>"+candidateName+"</strong></p>";
+		    	  result = result + '<p class="col-md-2"><i class="pull-right fa fa-times text-danger pull-right cursorPointer"  onClick="closerateHistorydiv();"></i></p>';
+		    	  result = result +' </div>';
+		    	  
+		    	  result = result + '<section class="tbl-scroll project_tabs_inn_table">';
+  			      result = result + '  <table>';
+                  result = result + '    <thead>';
+                  result = result + '      <tr>';
+                  result = result + '        <th>Pay Start Date</th>';
+                  result = result + '        <th>Pay End Date</th>';
+                  result = result + '        <th>Pay Rate</th>';
+                  result = result + '        <th>Bill Start Date</th>';
+                  result = result + '        <th>Bill End Date</th>';
+                  result = result + '        <th>Bill Rate</th>';
+                  result = result + '        <th>Created By</th>';
+                  result = result + '      </tr>';
+                  result = result + '    </thead>';
+                  result = result + '    <tbody>';
+                  
+                 
+                  for (var i=0; i<data.length; i++){
+                	 
+                	  var history = data[i];
+                	  var payRate = '';
+                	  var billRate = '';
+                	  var billStartDate = '';
+                	  var billEndDate = '';
+                	  var payStartDate = '';
+                	  var payEndDate = '';
+                	  
+                	  if(history.payRate != null){
+                		  payRate = history.payRateCurrency+" "+history.payRate+"/ "+history.payRateType;
+                	  }else{
+                		  payRate = "------"
+                	  }
+                	  
+                	  if(history.billRate != null){
+                		  billRate = history.billRateCurrency+" "+history.billRate+"/ "+history.billRateType;
+                	  }else{
+                		  billRate = "------"
+                	  }
+                	  
+                	  if(history.payRateStartDate != null){
+                		  payStartDate = history.payRateStartDate;
+                	  }else{
+                		  payStartDate = "------"
+                	  }
+                	  
+                	  if(history.payRateEndDate != null){
+                		  payEndDate = history.payRateEndDate;
+                	  }else{
+                		  payEndDate = "------"
+                	  }
+                	  
+                	  if(history.billRateStartDate != null){
+                		  billStartDate = history.billRateStartDate;
+                	  }else{
+                		  billStartDate = "------"
+                	  }
+                	  
+                	  if(history.billRateEndDate != null){
+                		 billEndDate = history.billRateEndDate;
+                	  }else{
+                		  billEndDate = "------"
+                	  }
+                	  
+                	  result = result + '<tr class="redtxt">';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payStartDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payEndDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+payRate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billStartDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billEndDate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+billRate+'</div></td>';
+                	  result = result + ' <td><div class="tblminwidth-80">'+history.createdBy+'</div></td>'; 
+                	  result = result + '</tr>'; 
+                  }
+                	  
+                  
+                  result = result + '    </tbody>';
+                  result = result + '  </table>';
+                  result = result + '</section>'
+                  
+              	 $("#projectMemberRateHistoryPopUp").append(result);
+                 $("#edit_member_pop").slideDown(200);
+                 $(".project_inn_mask").fadeIn(200); 
+		    }
+	     });
+}
+
+function closerateHistorydiv(){
+	 $("#projectMemberRateHistoryPopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -692,7 +801,7 @@ function editProjectAssignedMember(projectMemberId,candidateName){
 
 
 function loadProjectMembersDetails(data,candidateName){
-	
+	  $("#projectMemberRateHistoryPopUp").empty();
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatAssignEmpUpdate = '';
 	  if(locationDate.match("yyyy-MM-dd")){

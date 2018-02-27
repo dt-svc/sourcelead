@@ -74,4 +74,19 @@ public class ProjectMembersRateHistoryDaoImpl implements ProjectMembersRateHisto
 		}
 		return pmrh; 
 	}
+
+	@Override
+	@Transactional
+	public List<ProjectMembersRateHistory> getProjectMembersRateHistoryListByProjectMemberId(Long projectMemberId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembersRateHistory pmrh left join fetch pmrh.projectMemberId projectMember left join fetch pmrh.candidateId candidate "
+				+ " left join fetch pmrh.createdBy where pmrh.projectMemberId.id = :projectMemberId)" ;
+		List<ProjectMembersRateHistory> pmrhList = session.createQuery(query)
+											.setLong("projectMemberId", projectMemberId)
+										    .list(); 
+		return pmrhList;  
+		
+	}
 }

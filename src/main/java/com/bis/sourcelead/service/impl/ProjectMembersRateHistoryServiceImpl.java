@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,12 @@ public class ProjectMembersRateHistoryServiceImpl implements ProjectMembersRateH
 	@Override
 	public ProjectMembersRateHistory getProjectMembersRateHistoryByMemberIdAndStatus(Long Id) throws Exception {
 		return projectMembersRateHistoryDao.getProjectMembersRateHistoryByMemberIdAndStatus(Id);
+	}
+
+	@Override
+	public List<ProjectMembersRateHistory> getProjectMembersRateHistoryListByProjectMemberId(Long projectMemberId)
+			throws Exception {
+		return projectMembersRateHistoryDao.getProjectMembersRateHistoryListByProjectMemberId(projectMemberId);
 	}
 
 }
