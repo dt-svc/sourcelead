@@ -7,12 +7,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.boot.model.relational.Loggable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +22,15 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.reports.dao.FinanceDao;
 import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
-import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
+import com.bis.sourcelead.reportsDTO.PaidBillDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -452,6 +455,66 @@ public class FinanceServiceImpl implements FinanceService{
 		Date monthStartDate = calendar.getTime();
 		return commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", monthStartDate);
 
+	}
+
+	@Override
+	public ResponseList<PaidBillDTO> getPaidVendorsList(PaidBillDTO paidBillDTO, OrgLocations orgLocation) {
+
+		ResponseList<PaidBillDTO> response = new ResponseList<>();
+		try {
+			ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+			Map<Long, List<Invoice>> map = new HashMap<>();
+			if (paidInvoiceList.getData() != null) {
+				for (Invoice invoice : paidInvoiceList.getData()) {
+					if (!map.containsKey(invoice.getOrgRelationID().getId())) {
+						List<Invoice> list = paidInvoiceList.getData().stream()
+								.filter(i -> i.getOrgRelationID().getId().longValue() == invoice.getOrgRelationID().getId()).collect(Collectors.toList());
+						map.put(invoice.getOrgRelationID().getId(), list);
+					}
+				}
+			}
+			List<PaidBillDTO> paidBillList = new ArrayList<>();
+			for (Map.Entry<Long, List<Invoice>> entry : map.entrySet()) {
+				PaidBillDTO paidBill = new PaidBillDTO();
+				List<Invoice> invoiceList = entry.getValue();
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoiceList.get(0).getOrgRelationID().getId());
+				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					paidBill.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+				}
+				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					paidBill.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+				}
+				paidBill.setNumberOfAssociates(getNumberOfAssociates(invoiceList));
+				double total = invoiceList.stream().mapToDouble(i -> Double.parseDouble(i.getTotal())).sum();
+				paidBill.setTotalAmount(total);
+				paidBillList.add(paidBill);
+			}
+			response.setData(paidBillList);
+			response.setRecordsFiltered(paidBillList.size());
+			response.setRecordsTotal(paidBillList.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	
+
+	/**
+	 * Get Number Of Associates per invoice
+	 * @param invoiceList
+	 * @return int
+	 */
+	private int getNumberOfAssociates(List<Invoice> invoiceList) {
+		
+		Set<Long> set = new HashSet<>();
+		for(Invoice invoice : invoiceList ) {
+			for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
+				set.add(inlineItems.getCandidate().getId());
+			}
+			
+		}
+		return set.size();
 	}
 
 }

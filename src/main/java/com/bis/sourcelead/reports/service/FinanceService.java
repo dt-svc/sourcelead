@@ -4,6 +4,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
+import com.bis.sourcelead.reportsDTO.PaidBillDTO;
 
 public interface FinanceService {
 
@@ -14,5 +15,7 @@ public interface FinanceService {
 	ResponseList<MissingInvoiceDTO> getMissingInvoiceData(MissingInvoiceDTO missingInvoiceDto,OrgLocations orgLocation, String contractType);
 
 	ResponseList<MissingInvoiceDTO> getMissingInvoiceGraphData(MissingInvoiceDTO missingInvoiceDto,OrgLocations orgLocation, String contractType);
+
+	ResponseList<PaidBillDTO> getPaidVendorsList(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
 
 }

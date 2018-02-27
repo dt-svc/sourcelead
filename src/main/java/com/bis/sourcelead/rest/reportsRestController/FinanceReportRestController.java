@@ -32,6 +32,7 @@ import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
+import com.bis.sourcelead.reportsDTO.PaidBillDTO;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -414,5 +415,57 @@ public class FinanceReportRestController {
 			contractType = Constants.Client_SOW;
 		}
 		return financeService.getMissingInvoiceGraphData(missingInvoiceDto, orgLocation,contractType);
+	}
+	
+	
+	/**
+	 * returns paid Bill report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/paidBillReport")
+	public ModelAndView paidBillReportjSP(HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 
+//		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+//			if(null != vendorList){
+//				for (OrgRelations orgRelations : vendorList) {
+//					String orgName = "";
+//					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+//						orgName = orgRelations.getLocationId().getOrgLocationName();
+//					}
+//					if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+//						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+//					}
+//					orgRelations.setOrgName(orgName);
+//				}
+//			}
+//			
+//		 model.addObject("vendorList", vendorList);
+		 model.setViewName("reports/paidBillReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	
+	/**
+	 * Paid bill reports invoice Data Graph
+	 * 
+	 * @param missingInvoiceDto
+	 * @param request
+	 * @param response
+	 * @return ResponseList<MissingInvoiceDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPaidBillreport", "/rest/getPaidBillreport" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<PaidBillDTO> getPaidBillreport(PaidBillDTO paidBillDTO,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		ResponseList<PaidBillDTO> res = financeService.getPaidVendorsList(paidBillDTO, orgLocation);
+		return res;
 	}
 }

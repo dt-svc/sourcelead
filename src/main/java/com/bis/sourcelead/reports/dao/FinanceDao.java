@@ -10,6 +10,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
+import com.bis.sourcelead.reportsDTO.PaidBillDTO;
 
 public interface FinanceDao {
 
@@ -20,5 +21,7 @@ public interface FinanceDao {
    ResponseList<SubmissionApproverHierarchy> getMissingInvoiceData(MissingInvoiceDTO missingInvoiceDto, OrgLocations orgLocationId);
 
    List<Contracts> getRecentSowcontractListByAssociateId(Long candidateId, OrgLocations orgLocation, OrgRelations orgRelationId,String contractType);
+
+   ResponseList<Invoice> getPaidVendorslist(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
 
 }

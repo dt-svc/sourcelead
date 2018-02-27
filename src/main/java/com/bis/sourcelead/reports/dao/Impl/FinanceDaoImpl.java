@@ -1,7 +1,11 @@
 package com.bis.sourcelead.reports.dao.Impl;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
@@ -28,6 +33,7 @@ import com.bis.sourcelead.reports.dao.FinanceDao;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
+import com.bis.sourcelead.reportsDTO.PaidBillDTO;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
@@ -524,6 +530,67 @@ public class FinanceDaoImpl implements FinanceDao{
 		return contractsList;
 		
 		 
+	
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<Invoice> getPaidVendorslist(PaidBillDTO paidBillDTO,OrgLocations orgLocations) {
+		   Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		if(paidBillDTO.getBillType().equalsIgnoreCase("Payables")){
+			subQuery = " and invoice.invoiceType = 'Payables' ";
+		}else{
+			subQuery = " and invoice.invoiceType = 'Receivable' ";
+		}
+		
+		List<Invoice> invoiceList = null;
+		ResponseList<Invoice> response = new ResponseList<>();
+		
+//		String qry = "";
+//		if(StringUtils.isNotBlank(paidBillDTO.getSortColumn())) {
+//			qry = " order by invoice."+ paidBillDTO.getSortColumn() +" "+paidBillDTO.getSortOrder();
+//		}
+
+		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
+		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id = :orgLocationId and invoice.status = '1' and (invoice.paymentStatus = 'Paid' OR invoice.paymentStatus = 'Partial Paid') "+subQuery;// and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		String countQuery = "";
+		if(paidBillDTO.getBillType().equalsIgnoreCase(Constants.RECEIVABLE)){
+			countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Receivable' and invoice.status = '1'"; // and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		}else{
+		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Payables' and invoice.status = '1'"; // and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		}
+		
+		StringBuilder query1 = new StringBuilder("");
+		
+		Query queryObj = session.createQuery(query + query1.toString());
+		if (paidBillDTO != null && paidBillDTO.getLength() > 0) {
+			queryObj.setFirstResult(paidBillDTO.getStart());
+			queryObj.setMaxResults(paidBillDTO.getLength());
+//			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		}
+		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).list(); // .setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		int count = 0;
+		int filteredCount = 0;
+
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).list(); // .setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+
+		if(countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (paidBillDTO != null) {
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).list(); //.setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		} 
+			response.setData(invoiceList);
+			return response;
+		
+		
 	
 	}
 
