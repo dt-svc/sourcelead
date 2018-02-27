@@ -66,7 +66,7 @@ public class ProjectMembersRateHistoryDaoImpl implements ProjectMembersRateHisto
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		String query = " from ProjectMembersRateHistory pmrh left join fetch pmrh.projectMemberId projectMember left join fetch pmrh.candidateId candidate "
-				+ "where pmrh.id = :Id and pmrh.status = '1' " ;
+				+ "where pmrh.projectMemberId.id = :Id and pmrh.status = '1' " ;
 		List<ProjectMembersRateHistory> pmrhList = session.createQuery(query).setLong("Id", Id).list(); 
 		ProjectMembersRateHistory pmrh = null;
 		if(pmrhList != null && !pmrhList.isEmpty())  {

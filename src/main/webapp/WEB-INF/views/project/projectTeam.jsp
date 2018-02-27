@@ -427,13 +427,13 @@ function filterStatus() {
 		        		}
 		        		
 		        		
-		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
+		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined'){
 		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
 		        		}else{
 		        			billRate = "-----";
 		        		}
 		        		
-		        		if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
+		        		if(opt.payRate != null && opt.payRate != 'undefined'){
 		        			payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
 		        		}else{
 		        			payRate = "-----";
@@ -701,11 +701,11 @@ function loadProjectMembersDetails(data,candidateName){
     var estHours = '';
     var estBudget = '';
     
-    if(data.payRate != null && data.payRate != '' && data.payRate != 'undefined'){
+    if(data.payRate != null && data.payRate != 'undefined'){
     	payrate = data.payRate;
     }
     
-    if(data.billRate != null && data.billRate != '' && data.billRate != 'undefined'){
+    if(data.billRate != null  && data.billRate != 'undefined'){
     	billrate = data.billRate;
     }
     
@@ -737,7 +737,7 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '<input type="hidden" id="projectMemberId" name="projectMemberId" value="'+data.projectMemberId+'">';
 	
 	result = result + '<div class="clearfix mb10 row mt">';
-	result = result + '<label class="clearfix col-md-12">Pay Rate</label>';
+	result = result + '<label class="clearfix col-md-12">Pay Rate<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
 	result = result + '<select id="payRateCurrency" name="payRateCurrency">';
 	result = result + '<option value="INR">INR</option>';
@@ -749,7 +749,7 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '<div class="col-md-5 padding_right padding_left inputRate">';
-	result = result + '<input class="form-control" type="text" id="payRate" name="payRate" value = "'+payrate+'" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">';
+	result = result + '<input class="form-control" type="text" id="payRate" name="payRate" value = "'+payrate+'" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">';
 	result = result + '</div>';
 	result = result + '<div class="col-md-4 padding_left drpdownMonthly dropdown-select">';
 	result = result + '<select id="payRateRateType" name="payRateRateType">';
@@ -765,7 +765,7 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '</div>';
 	
 	result = result + '<div class="clearfix mb10 row mt">';
-	result = result + '<label class="clearfix col-md-12">Bill Rate</label>';
+	result = result + '<label class="clearfix col-md-12">Bill Rate<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '<div class="col-md-3 padding_right dropdown-select drpdownCurrency">';
 	result = result + '<select id="billRateCurrency" name="billRateCurrency">';
 	result = result + '<option value="INR">INR</option>';
@@ -777,7 +777,7 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '<div class="col-md-5 padding_right padding_left inputRate">';
-	result = result + '<input class="form-control" type="text" id="billRate" name="billRate" value = "'+billrate+'" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">';
+	result = result + '<input class="form-control" type="text" id="billRate" name="billRate" value = "'+billrate+'" field-name="Bill Rate"  data-validation="required validate_Space validate_float validate_length length1-15">';
 	result = result + '</div>';
 	result = result + '<div class="col-md-4 padding_left drpdownMonthly dropdown-select">';
 	result = result + '<select id="billRateRateType" name="billRateRateType">';

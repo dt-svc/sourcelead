@@ -1626,9 +1626,78 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			throws Exception {
 		
 		boolean flag = false;
+		Integer count = 0;
+		if(projectMembersDTO.getBillRate() != null || projectMembers.getCurrentBillRate() != null) {
+			if(projectMembers.getCurrentBillRate() == null) {
+				if(projectMembersDTO.getBillRate() != null) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getCurrentBillRate().equals(projectMembersDTO.getBillRate())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isBlank(projectMembers.getBillRateCurrency())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getBillRateCurrency())){
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getBillRateCurrency().equalsIgnoreCase(projectMembersDTO.getBillRateCurrency())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isNotBlank(projectMembers.getRateType())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getBillRateRateType())) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getRateType().equalsIgnoreCase(projectMembersDTO.getBillRateRateType())) {
+					count = count+1;
+				}
+			}
+			
+		}
 		
+		if(projectMembersDTO.getPayRate() != null || projectMembers.getPayRate() != null) {
+			
+			if(projectMembers.getPayRate() == null) {
+				if(projectMembersDTO.getPayRate() != null) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getPayRate().equals(projectMembersDTO.getPayRate())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isBlank(projectMembers.getPayRateCurrency())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getPayRateCurrency())) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getPayRateCurrency().equalsIgnoreCase(projectMembersDTO.getPayRateCurrency())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isBlank(projectMembers.getPayRateType())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getPayRateRateType())) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getPayRateType().equalsIgnoreCase(projectMembersDTO.getPayRateRateType())) {
+					count = count+1;
+				}
+			}
+			
+			
+		}
 		
-		
+		if(count > 0) {
+			flag = true;
+		}
 		return flag;
 	}
 

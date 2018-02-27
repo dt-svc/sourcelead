@@ -533,8 +533,34 @@ public class ProjectsRestController {
 	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 	    	
 	    	ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMembersDTO.getProjectMemberId()); 
+	    	ProjectMembersRateHistory pmrh = null;
+	    	
+	    	boolean flag = projectMembersService.getPayRateOrBillRateChanges(projectMembers, projectMembersDTO);
+	    	
 	    	ProjectMembersRateHistory projectMembersRateHistory = null;
 	    	if(projectMembers != null) {
+	    		
+	    		
+	    		if(flag == true) {
+		         pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByIdAndStatus(projectMembers.getId());
+		    		if(pmrh == null) {
+		    			projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
+		    			if(projectMembers.getProjectAssignedDate() != null) {
+		    				projectMembersRateHistory.setPayRateStartDate(projectMembers.getProjectAssignedDate());
+		    				projectMembersRateHistory.setBillRateStartDate(projectMembers.getProjectAssignedDate());
+		    			}else {
+		    				Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
+		    				projectMembersRateHistory.setPayRateStartDate(projectAssignedStartDate);
+		    				projectMembersRateHistory.setBillRateStartDate(projectAssignedStartDate);
+		    			}
+		    			projectMembersRateHistory.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+		    			projectMembersRateHistory.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+		    			projectMembersRateHistory.setStatus(0);
+		    			projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
+		    		}
+	    		}
+	    		
+	    		
 	    		projectMembers.setPayRate(projectMembersDTO.getPayRate());
 	    		projectMembers.setPayRateType(projectMembersDTO.getPayRateRateType());
 	    		projectMembers.setPayRateCurrency(projectMembersDTO.getPayRateCurrency());
@@ -582,29 +608,23 @@ public class ProjectsRestController {
 	    		projectMembersHistoryService.updateProjectMembersHistory(pmh);
 	    		
 	    		
-	    		ProjectMembersRateHistory pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByIdAndStatus(projectMembers.getId());
 	    		
-	    		if(pmrh == null) {
-	    			projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
-	    			if(projectMembers.getProjectAssignedDate() != null) {
-	    				projectMembersRateHistory.setPayRateStartDate(projectMembers.getProjectAssignedDate());
-	    				projectMembersRateHistory.setBillRateStartDate(projectMembers.getProjectAssignedDate());
-	    			}
-	    			projectMembersRateHistory.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-	    			projectMembersRateHistory.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-	    			projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
+	    		if(flag == true) {
+		    		projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
+		    		if(pmrh != null) {
+		    			projectMembersRateHistory.setPayRateStartDate(pmrh.getPayRateEndDate());
+		    			projectMembersRateHistory.setBillRateStartDate(pmrh.getBillRateEndDate());
+		    			pmrh.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+		    			pmrh.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+		    			pmrh.setStatus(0);
+		    			projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
+		    		}
+		    		
+		    		projectMembersRateHistory.setPayRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    			projectMembersRateHistory.setBillRateStartDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
+	    			projectMembersRateHistory.setStatus(1);
+		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 	    		}
-	    		
-	    		projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
-	    		if(pmrh != null) {
-	    			projectMembersRateHistory.setPayRateStartDate(pmrh.getPayRateEndDate());
-	    			projectMembersRateHistory.setBillRateStartDate(pmrh.getBillRateEndDate());
-	    			pmrh.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-	    			pmrh.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-	    			projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
-	    		}
-	    		
-	    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 	    		
 	    	}
 	    	
