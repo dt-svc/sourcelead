@@ -14,8 +14,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.LeaveTypeDao;
-import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -100,6 +100,15 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 			return null;
 		}
 		
+	}
+ 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getProjectTaskByorgLocationIdAndLeaveTypeId(Long orgLocationId, Long leaveTypeId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="from ProjectTasks proTask left join fetch proTask.leaveType leavetype left join fetch leavetype.orgLocations orgLoc  where leavetype.id = :leaveTypeId and orgLoc.id = :orgLocationId";
+		List<ProjectTasks> projectTasks = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
+		return projectTasks;
 	}
 
 

@@ -6,6 +6,7 @@ public class TimeSheetDayEntriesDTOList {
 	private String timesheetDate;
 	private String hours;
 	private String comments;
+	private Long projectMemberId;
 	public String getEmployeeName() {
 		return employeeName;
 	}
@@ -37,4 +38,11 @@ public class TimeSheetDayEntriesDTOList {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
+	public Long getProjectMemberId() {
+		return projectMemberId;
+	}
+	public void setProjectMemberId(Long projectMemberId) {
+		this.projectMemberId = projectMemberId;
+	}
+	
 }
