@@ -42,7 +42,6 @@
        function requirementInterviewList(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		 var tab = "previous";
-		 alert(searchValue)
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
@@ -323,26 +322,5 @@ function viewInterviewListResumes(resumeUUID,title){
 }
 </script>
   
-  
-  <!-- <script>
-function pagination1(){ 
-    $('#appTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    $("#appTable").wrap("<div class='overflow_Auto'></div>");
-}
-</script>
-<script type="text/javascript">
-window.onload = function () {
-	pagination1();
- };
-</script> -->
+ 
 <jsp:include page="../masterFooter.jsp" />

@@ -1474,8 +1474,8 @@ public class DashboardRestController {
 			
 			rshDTOList.add(rshDTO);
 		}
-		responseList.setRecordsFiltered(rshDTOList.size());
-		responseList.setRecordsTotal(rshDTOList.size());
+		responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
+		responseList.setRecordsTotal(toDayReqApplicantscount.getRecordsTotal());
 		responseList.setData(rshDTOList);
 		return responseList;
 		
