@@ -131,11 +131,11 @@ public class DashboardController {
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="SUBMISSION" ;
 		
-		List<RequirementSubmissionHistory> toDayReqApplicantscount = getReqSubmissionListByStage(request,stage,tab);
+//		List<RequirementSubmissionHistory> toDayReqApplicantscount = getReqSubmissionListByStage(request,stage,tab);
 		
 		model.addObject("tab",tab);
 		model.addObject("reqList","appList");
-		model.addObject("toDayReqApplicantscount", toDayReqApplicantscount);
+//		model.addObject("toDayReqApplicantscount", toDayReqApplicantscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementApplicantsList");
@@ -158,7 +158,7 @@ public class DashboardController {
 		String stage ="SUBMIT_TO_CLIENT" ;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
+		/*List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqSubmissionsList) {
 				 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
@@ -169,11 +169,11 @@ public class DashboardController {
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory2.getCreatedDate()));
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
 				}
-			}
+			}*/
 		
 		model.addObject("tab",tab);
 		model.addObject("reqList","subList");
-		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
+//		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementSubmissionsList");
@@ -194,7 +194,7 @@ public class DashboardController {
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="INTERVIEW" ;
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
+		/*List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
 	  // SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqInterviewscount) {
 			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
@@ -203,10 +203,10 @@ public class DashboardController {
 			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
 			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
 		    }
-		  }
+		  }*/
 		model.addObject("tab",tab);
 		model.addObject("reqList","interList");
-		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
+//		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementInterviewsList");
@@ -227,7 +227,7 @@ public class DashboardController {
 		String stage ="OFFERMADE" ;
 		
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
+		/*List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
 		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory requirementSubmissionHistory : toDayReqOfferscount) {
 			List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmissionHistory.getSubmissionId().getId(), loginOrgLocations.getId());
@@ -247,12 +247,12 @@ public class DashboardController {
 				if("OFFERMADE".equalsIgnoreCase(requirementSubmissionHistory.getToStage())){
 					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
 				}
-		}
+		}*/
 		
 		
 		model.addObject("tab",tab);
 		model.addObject("reqList","offerlist");
-		model.addObject("toDayReqOfferscount", toDayReqOfferscount);
+//		model.addObject("toDayReqOfferscount", toDayReqOfferscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementOffersList");
@@ -260,10 +260,11 @@ public class DashboardController {
 	}
 	
 	
-	private List<RequirementSubmissionHistory> getReqSubmissionListByStage(HttpServletRequest request, String stage,
-			String tab) throws Exception {
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+
+	public List<RequirementSubmissionHistory> getReqSubmissionListByStage(HttpServletRequest request, String stage, String tab) throws Exception
+	{
+		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		Timezone timezone = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
