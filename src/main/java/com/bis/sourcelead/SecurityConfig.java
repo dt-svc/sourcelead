@@ -107,6 +107,7 @@ public class SecurityConfig  {
     			.antMatchers("/jobs/**").permitAll()
     			.antMatchers("/job/**").permitAll()
     			.antMatchers("/openJobs").permitAll() 
+    			.antMatchers("/saveProposeTime").permitAll() 
     			.antMatchers("/ws/displayOrgImageInMail/**").permitAll() 
     			.antMatchers("/app/ws/displayOrgImageInMail/**").permitAll() 
     			.antMatchers("/openJobsPublicPage").permitAll()
