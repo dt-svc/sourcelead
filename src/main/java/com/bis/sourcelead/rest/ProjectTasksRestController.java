@@ -1171,6 +1171,7 @@ public class ProjectTasksRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
+		Long projectMemberId = null;
 		List<TimeSheetDayEntriesDTOList> timeSheetDayEntriesDtoListData = new ArrayList<>();
 		
 		int start = timeSheetDayEntriesDto.getStart();
@@ -1196,6 +1197,7 @@ public class ProjectTasksRestController {
 			timeSheetDayEntriesDtoList.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), timeDayEntries.getTimesheetDate()));
 			timeSheetDayEntriesDtoList.setHours(timeDayEntries.getTotalHours());
 			timeSheetDayEntriesDtoList.setComments(timeDayEntries.getComments());
+			timeSheetDayEntriesDtoList.setProjectMemberId(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getId());
 			timeSheetDayEntriesDtoListData.add(timeSheetDayEntriesDtoList);
 		}
 		
