@@ -69,6 +69,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -90,6 +91,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -122,6 +124,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
+	
+	@Autowired
+	private TimeSheetDayEntriesService timeSheetDayEntriesService;
 	
 	@Autowired
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -370,12 +375,24 @@ public class CommonUtil {
 			timesheetSubmissionsList = timesheetSubmissionsService.getAllTimesheetSubmissionsGreaterThanProjectMemberTerminatedDateAndMemberId(memberId,terminationDate);
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions ts :timesheetSubmissionsList){
-					ts.setStatus(Constants.MEMBER_IN_ACTIVE);
+					List<TimeSheetDayEntries> tdeList = null;
+					if(terminationDate.before(ts.getStartDate())) {
+						ts.setStatus(Constants.MEMBER_IN_ACTIVE);
+					    tdeList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
+					}else {
+					    tdeList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesBySubmissionIdWithStartDateAndEndDate(ts.getId(), CalendarUtil.getNextDate(terminationDate), ts.getEndDate());
+					}
+					if(tdeList != null && !tdeList.isEmpty()) {
+						for(TimeSheetDayEntries tde :tdeList) {
+							tde.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+							timeSheetDayEntriesService.saveTimesheetDayEntries(tde);
+						}
+					}
+					
 				}
 			}
 			timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 			

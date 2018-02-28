@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +17,11 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -1170,7 +1178,8 @@ public class LeaveServiceImpl implements LeaveService{
 			 globalVarsMap.put("noOfDays",String.valueOf(leaveDTO.getNoOfDays()));
 			 
 			 if(null != leaveDTO.getLeaveType()){
-				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
+				 LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+//				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
 				 globalVarsMap.put("leaveType",leaveType.getName());
 				 }
 			 
@@ -1516,5 +1525,127 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		return leaveDao.getLeaveByLeaveUUId(leaveUUID);
 	}
+	
+	@Override
+	public File getLeaveExport(OrgLocations orgLocations,LeaveDTO leaveDTO) throws Exception {
+		
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_"
+				+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+		
+		ResponseList<Leave> leaveResponse = getTopLeavetakers(orgLocations, leaveDTO);
+		
+		List<Leave> leaveList = leaveResponse.getData();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
+		int totalLeaves = 0;
+		int column = 0;
+		LeaveDTO leaveDto = null;
+		float totalbalanceLeaveCounts = 0;
+		
+		for (Leave leave : leaveList) {
+			leaveDto = reportMap.get(leave.getUser().getId());
+			if (leaveDto == null) {
+				leaveDto = new LeaveDTO();
+				totalLeaves = 0;
+				totalbalanceLeaveCounts = leave.getLeaveType().getNoOfDays();
+			}
+			StringBuilder sb = new StringBuilder();
+			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+				sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			} else {
+				sb.append(leave.getUser().getFirstName());
+			}
+			
+			StringBuilder date = new StringBuilder();
+			if(null != leave.getFromDate() && null != leave.getToDate()) {
+				String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getFromDate());
+				String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getFromDate());
+				date.append(startDate).append(" - ").append(toDate);
+			} 
+			
+			
+			float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+				totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
+			}
+			
+			leaveDto.setDuration(date.toString());
+			leaveDto.setUserId(String.valueOf(leave.getUser().getId()));
+			leaveDto.setEmpName(sb.toString());
+			leaveDto.setEmpEmail(leave.getUser().getEmail());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setStatus(leave.getStatus());
+			leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
+			leaveDto.setBalanceleaves(String.valueOf(totalbalanceLeaveCounts));
+			totalLeaves = totalLeaves + leave.getNumberOfDays();
+			leaveDto.setNoOfDays(totalLeaves);
+			reportMap.put(leave.getUser().getId(), leaveDto);
+			
+		}
+
+		for (Map.Entry<Long, LeaveDTO> entry : reportMap.entrySet()) {
+			leaveDtoList.add(entry.getValue());
+		}
+		
+		for (LeaveDTO leaveDTO2 : leaveDtoList) {
+			writeRow = createExcelsheet.createRow(column + 2);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow,leaveDTO2);
+			column++;
+		}
+		
+		file = File.createTempFile(orgLocations.getOrgLocationName() + Constants.LEAVE_DATA
+				+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()), ".xls");
+		file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers  = Constants.TOP_TAKERS_LEAVE_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+		return createExcelsheet;
+	}
+	
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, LeaveDTO leaveDto) {
+		
+		
+		if(null != leaveDto.getUserId()){
+			writeRow.createCell(0).setCellValue(leaveDto.getUserId());
+		}
+		
+		if(null != leaveDto.getEmpName()  && !"".equalsIgnoreCase(leaveDto.getEmpName())){
+			writeRow.createCell(1).setCellValue(leaveDto.getEmpName());
+		}
+		
+		if(null != leaveDto.getEmpEmail()  && !"".equalsIgnoreCase(leaveDto.getEmpEmail())){
+			writeRow.createCell(2).setCellValue(leaveDto.getEmpEmail());
+		}
+		
+		if(null != leaveDto.getLeaveType()){
+			writeRow.createCell(3).setCellValue(leaveDto.getLeaveType());
+		}
+		
+		if(null != leaveDto.getDuration() && null != leaveDto.getDuration()){
+			writeRow.createCell(4).setCellValue(leaveDto.getDuration());
+		}
+		
+			writeRow.createCell(5).setCellValue(leaveDto.getNoOfDays());
+		
+			writeRow.createCell(6).setCellValue(leaveDto.getExtraLeavesTaken());
+		
+			writeRow.createCell(7).setCellValue(leaveDto.getBalanceleaves());
+	return createExcelsheet;
+}
 
 }
