@@ -33,5 +33,5 @@ public interface ImmigrationTemplateService {
 
 	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
 
-	ImmigrationTemplateDTO editImmigrationTaskList(String id);
+	ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception;
 }

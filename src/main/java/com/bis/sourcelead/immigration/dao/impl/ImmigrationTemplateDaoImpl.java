@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
@@ -291,7 +292,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			ImmigrationTemplateDTO target = new ImmigrationTemplateDTO();
 			BeanUtils.copyProperties(source, target);
 			if(source.getAssignToCandidate() != null) {
-				target.setAssignedTo(source.getAssignToCandidate());
+				target.setAssignedTo(Constants.CANDIDATE);
 			}else if(source.getAssignToUsers() != null) {
 				target.setAssignedTo(source.getAssignToUsers());
 			}
@@ -306,7 +307,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 	public ImmigrationTemplateTasks editImmigrationTaskList(String id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ImmigrationTemplateTasks itt where itt.id=:taskId";
-		return (ImmigrationTemplateTasks) session.createQuery(query).setParameter("taskId", id).uniqueResult();
+		return (ImmigrationTemplateTasks) session.createQuery(query).setLong("taskId", Long.parseLong(id.trim())).uniqueResult();
 	}
 
 	public  ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {

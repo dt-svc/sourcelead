@@ -53,6 +53,8 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 	private String staticPath;
 
 	private String petitionAssignedTo;
+	
+	private String petitionAssignedToName;
 
 	private String taskReminder;
 
@@ -248,6 +250,14 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 
 	public void setAssignedTo(String assignedTo) {
 		this.assignedTo = assignedTo;
+	}
+
+	public String getPetitionAssignedToName() {
+		return petitionAssignedToName;
+	}
+
+	public void setPetitionAssignedToName(String petitionAssignedToName) {
+		this.petitionAssignedToName = petitionAssignedToName;
 	}
 
 }

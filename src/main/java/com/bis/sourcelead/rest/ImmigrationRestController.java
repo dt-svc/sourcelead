@@ -25,10 +25,12 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -322,10 +324,24 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		return immiTemplateList;
 	}
 	
-	@RequestMapping(value={"/editImmigrationTaskList"},method = RequestMethod.POST)
+	@RequestMapping(value={"/editImmigrationTaskList"})
 	public ImmigrationTemplateDTO editImmigrationTaskList(HttpServletRequest request,
-			@RequestParam(value = "id", required = false) String id) {
+			@RequestParam(value = "id", required = false) String id) throws NumberFormatException, Exception {
 		ImmigrationTemplateDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
+		/*List<UserRole> userRoleList = userRoleService.getAllActiveUsersListByOrgLocationId(Long.parseLong(templateDTO.getPetitionAssignedTo()));
+		for(UserRole ur :userRoleList){
+			
+			UserRoleDTO userRoleDTO = new UserRoleDTO();
+			StringBuilder userName = new StringBuilder();
+			userRoleDTO.setUserId(ur.getUser().getId());
+			
+			if(null != ur.getUser().getLastName()){
+				userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
+			}else{
+				userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).toString());
+			}
+			
+		}*/
 		return templateDTO;
 	}
 	

@@ -14,7 +14,7 @@
 		
 		<div class="addImmiContent clearfix">
 			<div class="immigraTabsHead">
-				<a href="javascript:void(0)"  onclick="getAssignToUsersList();" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
+				<a href="javascript:void(0)"  onclick="getAssignToUsersList(null);" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
 				<span><input id="immigraListTabSerach" type="text"></span>
 			</div>	
 			<div id="immigrationTempDynamicTaskList" class="project_wrap_table datatable_filter">
@@ -47,7 +47,7 @@
 					</div>
 					<div class="col-md-12 mb10">
 					  <label>Priority</label>
-						<select id ="priority" name="priority" class="form-control">
+						<select class="form-control input-sm valid" id="priority1" name="priority">
 							<option selected="" disabled="">-- Select Priority --</option>
 							<option>High</option>
 							<option>Low</option>
@@ -97,7 +97,7 @@
 						  </div>
 						  
 						  <div class="clearfix" id="assignToUserDiv" style="display:none;">
-							<select class="chosen-select" multiple data-placeholder="Select User"  id="petitionAssignedTo" name="petitionAssignedTo"  field-name="AssignTo"  data-validation-optional="true">
+							<select class="chosen-select" multiple data-placeholder="Select User"  id="petitionAssignedTo1" name="petitionAssignedTo"  field-name="AssignTo"  data-validation-optional="true">
 							  </select>
 						  </div>
 						  
@@ -314,6 +314,7 @@ function immigrationPagination(url){
 	$(document).ready(function() {
 		immigrationDataTableList();
 		$("#addTask").click(function(){
+			document.getElementById("petitionTemplateTaskDetails").reset();
 			$(".popMask").fadeIn(200);
 			$("#taskViewPopup").fadeIn(100);
 		});
@@ -360,25 +361,40 @@ function immigrationPagination(url){
     });
     
     function editImmiTaskList(id){
-    	alert("hi");
     	$.ajax({
     	   	type: "GET",
-    	    url: sourceleadUrl+"/editImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id="+id,	    	   
+    	    url: sourceleadUrl+immiModulePath+"/editImmigrationTaskList?id="+id,	    	   
     	    success: function(data) {
-    	    	alert(data.taskName);
+    	    	console.log(data);
+    	    	document.getElementById("petitionTemplateTaskDetails").reset();
     	    	$(".popMask").fadeIn(200);
     			$("#taskViewPopup").fadeIn(100);
     			$("#taskName").val(data.taskName);
-    			$("#priority").val(data.priority);
+    			$("#priority1").val(data.priority);
     			$("#taskRepeat").val(data.taskRepeat);
-    			$("#taskReminder").val(data.taskReminder);
+    			if(data.taskReminder != null){
+    				$("#reminder").prop('checked', true);
+    				$("#taskReminder").val(data.taskReminder);
+    			}
+    			if(data.taskEmail != null){
+    				$("#taskEmail").prop('checked', true);
+    			}
+    			if(data.taskNotification != null){
+    				$("#taskNotification").prop('checked', true);
+    			}
     			$("#taskEmail").val(data.taskEmail);
     			$("#taskNotification").val(data.taskNotification);
     			if(data.petitionAssignedTo != null){
-    				$("#assignedToU").val(data.assignedTo);
-    				$("#petitionAssignedTo").val(data.petitionAssignedTo);
+    				$("#assignedToU").prop('checked', true);
+    				getAssignToUsersList(data.petitionAssignedTo);
+    				document.getElementById("assignToUserDiv").style.display="";
+    				$("#petitionAssignedTo1").removeAttr('data-validation-optional');
+    				$("#petitionAssignedTo1").attr("data-validation", "required"); 
     			}else if(data.petitionAssignedTo == null){
-    				$("#assignedToB").val(data.assignedTo);	
+    				$("#assignedToB").prop('checked', true);
+    				document.getElementById("assignToUserDiv").style.display="none";
+    				$("#petitionAssignedTo1").removeAttr('data-validation');
+    				$("#petitionAssignedTo1").attr("data-validation-optional", "true");
     			}
     			$("#dueAfterMonths").val(data.dueAfterMonths);
     			$("#dueAfterDays").val(data.dueAfterDays);
@@ -388,20 +404,32 @@ function immigrationPagination(url){
     }
     </script>
     <script>
-function getAssignToUsersList(){
+function getAssignToUsersList(id){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(json) {
 	    	 var result = "";
-        	 for (var i=0; i<json.length; i++)
- 			{
+        	 for (var i=0; i<json.length; i++){
         		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+        		if(id != null){
+        			var ids = id.split(',');
+	        		for (j=0;j<ids.length;j++){
+	        		     if(ids[j] == report.userId){
+	         				result = result +'<option selected value="'+report.userId+'" >'+report.userName+'</option>';
+	         			}
+	        		}
+        			
+        		}else{
+        			result = result +'<option value="'+report.userId+'" >'+report.userName+'</option>';
+        		}
 			}
-        	 $("#petitionAssignedTo").empty();
-           	 $("#petitionAssignedTo").append(result); 
-           	 $('#petitionAssignedTo').trigger("chosen:updated");
+        	 /* if(id!=null){
+        		 $("#petitionAssignedTo1 :selected").val(id); 
+        	 } */
+        	 $("#petitionAssignedTo1").empty();
+           	 $("#petitionAssignedTo1").append(result); 
+           	 $('#petitionAssignedTo1').trigger("chosen:updated");
 	    }
    }); 
 }
@@ -446,7 +474,7 @@ function validateDueAfter(){
 		  document.getElementById("assignToUserDiv").style.display="none";
 		  $("#petitionAssignedTo").removeAttr('data-validation');
 		  $("#petitionAssignedTo").attr("data-validation-optional", "true");
-		  getAssignToUsersList();
+		  getAssignToUsersList(null);
 	  }
   }
   </script>

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
@@ -41,6 +42,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 	@Autowired
 	ImmigrationTemplateDao immigrationTemplateDao;
+	
+	@Autowired
+	private UserDao userDao;
 
 	@Override
 	public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations,
@@ -230,22 +234,24 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	}
 
 	@Override
-	public ImmigrationTemplateDTO editImmigrationTaskList(String id) {
+	public ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception {
 		ImmigrationTemplateTasks templateTasks = immigrationTemplateDao.editImmigrationTaskList(id);
 		ImmigrationTemplateDTO templateDTO = new ImmigrationTemplateDTO();
 		if(templateTasks != null) {
-			BeanUtils.copyProperties(templateTasks, templateDTO);
-			/*templateDTO.setTaskName(templateTasks.getTaskName());
-			templateDTO.setPriority(templateTasks.getPriority());
+			//BeanUtils.copyProperties(templateTasks, templateDTO);
+			templateDTO.setTaskName(templateTasks.getTaskName());
+			templateDTO.setPriority(templateTasks.getPriority().trim());
 			templateDTO.setTaskRepeat(templateTasks.getTaskRepeat());
 			templateDTO.setTaskReminder(templateTasks.getTaskReminder());
 			templateDTO.setTaskEmail(templateTasks.getTaskEmail());
 			templateDTO.setDueAfterMonths(templateTasks.getDueAfterMonths());
-			templateDTO.setDueAfterDays(templateTasks.getDueAfterDays());*/
+			templateDTO.setDueAfterDays(templateTasks.getDueAfterDays());
 			if(templateTasks.getAssignToUsers()!=null) {
+				//User user = userDao.getUserById(Long.parseLong(templateTasks.getAssignToUsers()));
+				//templateDTO.setPetitionAssignedTo(user.getFullName());
 				templateDTO.setPetitionAssignedTo(templateTasks.getAssignToUsers());
 			}else if(templateTasks.getAssignToCandidate() != null) {
-				templateDTO.setAssignedTo(Constants.YES);
+				templateDTO.setAssignedTo(Constants.CANDIDATE);
 			}
 			templateDTO.setTaskDescription(templateTasks.getDescription());
 		}
