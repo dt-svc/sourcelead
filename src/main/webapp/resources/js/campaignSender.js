@@ -4,7 +4,7 @@ function campaignSender(ele,senderId, fromType) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
 		$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
-			$(".popUpOut").fadeIn(100);
+			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
 			// save sender details
 			 $("#saveCampaignSender").click(function () {
@@ -18,7 +18,7 @@ function campaignSender(ele,senderId, fromType) {
 								senderClose();
 								if(fromType == "hotList" || fromType == "jobList"){
 					            	$(".popMask").fadeOut(200);
-				            		$(".popUpOut").fadeOut(100);
+				            		$("#campaignSender").fadeOut(100);
 					             }else{
 					            	 getSendersList("success");
 //								     location.replace(sourceleadUrl+ "/campaignSendersList?&msg=success");
@@ -27,6 +27,10 @@ function campaignSender(ele,senderId, fromType) {
 //					  			$("#senderLoading").removeAttr("style");
 					 			 $(".project_inn_mask").fadeOut(200);
 					             	
+							}else{
+								$("#senderLoading").removeAttr("style");
+								$('#nickNameDiv').find('p.jquery_form_error_message').remove();
+								$("input#cpnNickName").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same nickname.</span>");
 							}
 						});
 						return true;
@@ -57,7 +61,7 @@ $('body').on('blur', '#capn_add_sender', function() {
 
 function senderClose() {
 	$(".popMask").fadeOut(200);
-	$(".popUpOut").fadeOut(100);
+	$("#campaignSender").fadeOut(100);
 };
 
 
@@ -75,11 +79,13 @@ function validateNickName(senderId){
 					$("input#cpnNickName").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same nickname.</span>");
 					document.getElementById("cpnNickName").setAttribute( 'record-exist', 'yes');
 					document.getElementById("cpnNickName").setAttribute( 'record-exist-errorMsg',"You already have a sender identity with the same nickname.");
+					$('#saveCampaignSender').attr("disabled","disabled");
 					
 				}else if(result == false) {
 					$('input#cpnNickName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#cpnNickName').attr('class','valid form-control');
 					$('#nickNameDiv').find('p.jquery_form_error_message').remove();
+					$("#saveCampaignSender").removeAttr("disabled", "disabled");
 					
 				}
 			},

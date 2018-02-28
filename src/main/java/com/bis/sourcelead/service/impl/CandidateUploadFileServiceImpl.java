@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,7 +21,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -523,7 +521,12 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				}
 			}
 			
-			if("C2C".equalsIgnoreCase(row.getCell(9).getStringCellValue()) || "C2C-1099".equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
+			if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+				candidateImport.setReason("Employment Type is Required");
+				return false;
+			}
+			
+			if("C2C".equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
 				
 			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
 				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
@@ -567,15 +570,18 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					candidateImport.setReason("vendor is mandatory if you have entered contact");
 					return false;
+				}else {
+					candidateImport.setReason("vendor details are mandatory.");
+					return false;
 				}
 			}
 		}else {
 			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
-					candidateImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
+					candidateImport.setReason("Employment type should be C2C if you have entered vendor details");
 					return false;
 				}else {
-					candidateImport.setReason("Employment type should be C2C or C2C-1099 if you have entered vendor details");
+					candidateImport.setReason("Employment type should be C2C if you have entered vendor details");
 					return false;
 				}
 			}

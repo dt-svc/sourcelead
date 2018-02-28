@@ -136,7 +136,7 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
 							<div class="col-md-9 " id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date"

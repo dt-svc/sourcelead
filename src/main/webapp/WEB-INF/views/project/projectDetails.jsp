@@ -190,10 +190,12 @@
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 						
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Manager 1:</strong><span>';
-						result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
-						result = result + '	</div>';
+						if(json.manager1Name != null && json.manager1Name != "" && json.manager1Name !="undefined"){
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Manager 1:</strong><span>';
+							result = result + '	<span title="'+json.manager1Name+'">'+json.manager1Name+'</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Invoice Frequency:</strong><span>';
@@ -298,7 +300,7 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
-						result = result + '<div class="project_details_cta project_details_cta_100">';
+						result = result + '<div class="project_details_cta project_description project_details_cta_100">';
 						result = result	+ '<strong>Description:</strong>';
 						result = result + '<div class="descriptionStyle">'+description+' </div>';
 						result = result + '</div>';
@@ -682,9 +684,12 @@
 						
 						result = result + '</select>';
 						result = result + '</div>';
-						
 						result = result + '<div class="col-md-7 paddingLeft">';
-						result = result + '<input type="text" id="flatPercentage" name="flatPercentage" class="form-control input-sm" data-validation-optional="true" value='+json.flatPercent+' >';
+						if(json.flatPercent == null){
+							result = result + '<input type="text" id="flatPercentage" name="flatPercentage" class="form-control input-sm" data-validation-optional="true">';
+						}else{
+							result = result + '<input type="text" id="flatPercentage" name="flatPercentage" class="form-control input-sm" data-validation-optional="true" value='+json.flatPercent+' >';
+						}
 						result = result + '</div>';
 						
 						result = result + '</div>';
@@ -701,7 +706,7 @@
 						result = result + '<label>&nbsp;</label>';
 							
 					    result = result + '<div class="checkBox">';
-					    result = result + '<label> <input type="checkbox" value="Y" '+(isTimesheetAttachmentRequired == "Y" ? "checked" : '')+'  name="isTimesheetAttachmentRequired"> Timesheet Attachment Required</label>';
+					    result = result + '<label> <input type="checkbox" value="Y" '+(isTimesheetAttachmentRequired == "Y" ? "checked" : '')+'  name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired"> Timesheet Attachment Required</label>';
 						result = result + '</div>';
 
 						result = result + '<div class="checkBox">';

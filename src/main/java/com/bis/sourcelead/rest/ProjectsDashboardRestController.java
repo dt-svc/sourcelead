@@ -257,7 +257,7 @@ public class ProjectsDashboardRestController {
 				projectsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				projectsDTO.setSortOrder(sortColumnOrder);
 				ResponseList<ProjectsDTO> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), clients, values,loginOrgLocations.getId(),userRole,candidateId);
-			    
+			   
 				return projectsList;
 			}
 	
@@ -447,7 +447,7 @@ public class ProjectsDashboardRestController {
 		 
 		 @RequestMapping(value = "/getAllProjectTasks", method = RequestMethod.POST)
 		 public @ResponseBody   ResponseList<ProjectTasksDTO> getAllProjectTasks(ProjectTasksDTO projectTasksDTO,HttpServletRequest request) throws Exception {
-			 
+			  
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				String[] tableColumns = {"taskName", "taskType", "priority", "assignedTo","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
@@ -470,9 +470,9 @@ public class ProjectsDashboardRestController {
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES','ROLE_CREATE_PROJECT_TASKS')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
 	 public @ResponseBody List<ProjectMembers>  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
-			 @RequestParam(value="roleIds", required=false) String roleIds, HttpServletRequest request) throws Exception{ 
+			 @RequestParam(value="roleIds", required=false) String roleIds,@RequestParam(value="teamIds", required=false) String teamIds, HttpServletRequest request) throws Exception{ 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds);
+		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds,teamIds);
 		 return employeeList;
 	  }
 	 

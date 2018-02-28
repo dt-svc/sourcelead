@@ -867,7 +867,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 		 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant")) && (!"Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
 			 if(jsonObj.getString("notifyToApplicant").equals("Y")){
-				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
+				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations,"");
 			 }
 		 }
 		 
@@ -967,7 +967,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 
-	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
+	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations, String submissionType) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1077,7 +1077,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String subject = "";
+		 if(submissionType.equalsIgnoreCase("EditSubmission")) {
+			 subject = "Application details are updated";
+		}else {
+			subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		}
+		 
+		 
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 		 String url = sourceleadUrl;
@@ -4916,12 +4923,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		RequirementSubmission requirementSubmission = null;
 		 if(jsonObj.has("submissionId") && !isNullOrEmpty(jsonObj.getString("submissionId"))){
 			 requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(Long.valueOf(jsonObj.getString("submissionId")));
-			 
+			 CandidateResumes candidateResumes = new CandidateResumes();
 			 if(requirementSubmission != null){
 				 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
-					 CandidateResumes candidateResumes = new CandidateResumes();;
 					 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
 					 requirementSubmission.setCandidateResumes(candidateResumes);
+				 }
+				 
+				 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
+					 if(jsonObj.getString("notifyToApplicant").equals("Y")){
+						 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirementSubmission.getRequirement(),candidateResumes.getCandidateId(),user,orgLocations,"EditSubmission");
+					 }
 				 }
 				 
 				 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
@@ -5064,5 +5076,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception {
 		return requirementSubmissionDao.getSubmmisionsForIsClientJob(submissionIds);
+	}
+
+	@Override
+	public RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(
+			Long requirementId, Long candidateId) throws Exception {
+		return requirementSubmissionDao.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementId, candidateId);
 	}
 }

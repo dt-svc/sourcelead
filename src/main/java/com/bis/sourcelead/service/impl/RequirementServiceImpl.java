@@ -965,7 +965,7 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		if(requirementDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:requirementDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
 					JobCustomFieldData jobCustomFields = null;
 					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
 						jobCustomFields = jobCustomFieldDataService.getJobCustomFieldDataById(customFields.getEntityId());
@@ -3173,6 +3173,13 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			reqTemplate.setMinExp(null);
 		}
+		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationYears())) {
+			reqTemplate.setProjectDurationYears(requirementDTO.getProjectDurationYears());
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
+			reqTemplate.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
+		}
+	
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
 			reqTemplate.setRate(requirementDTO.getRate());
 		}
@@ -3719,7 +3726,7 @@ public class RequirementServiceImpl implements RequirementService {
 			else {
 				globalVarsMap.put("jobName", requirement.getJobTitle());
 			}
-		}
+		} 
 		 
 		StringBuilder sb = new StringBuilder();
 		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))

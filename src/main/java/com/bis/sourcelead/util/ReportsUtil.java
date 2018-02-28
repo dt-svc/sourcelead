@@ -63,7 +63,7 @@ public class ReportsUtil {
 			BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 			boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			
-			if(userRole != null&& !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
+			if(userRole != null && !("ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 				BoolQueryBuilder assignedBoolQueryBuilder = QueryBuilders.boolQuery();
 				
 				//For Level1 Approver
@@ -114,7 +114,7 @@ public class ReportsUtil {
 			
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -14);    
+			cal.add(Calendar.DATE, -60);    
 		    String updatedOn = dateFormat.format(cal.getTime());
 		    RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(updatedOn);
 			boolQueryBuilder.must(qb);

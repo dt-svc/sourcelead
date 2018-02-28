@@ -75,7 +75,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
           
-<div class="input-group positionRelative col-md-12 noPad">
+<div class="input-group positionRelative col-md-12 noPad" onclick="manuallyEnterHotlistToEmail();">
 <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList"  data-validation="required" name="Toemails"></select>
 
 
@@ -310,6 +310,11 @@ $(function() {
   
   
   <script type="text/javascript">
+  function manuallyEnterHotlistToEmail(){
+	  $('#emailsList_chosen ul li input').attr('readonly', true);
+  }
+  
+  
 	function sendHotListCampaign() {
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
 		nicEditors.findEditor('bodytext').saveContent();

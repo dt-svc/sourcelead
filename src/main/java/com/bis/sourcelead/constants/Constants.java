@@ -38,7 +38,7 @@ public class Constants {
 	public static final String DATEOFJOIN = "Date of Join";
 	public static final String ROLE = "Role*";
 	public static final String MANAGER = "Manager*";
-	public static final String EMPLOYMENT_TYPE ="Employment Type";
+	public static final String EMPLOYMENT_TYPE ="Employment Type*";
 	public static final String ASSOCIATE_VENDOR="Vendor";
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
@@ -171,6 +171,9 @@ public class Constants {
 	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
 	
 	public static final String MAIL_SEND_PROJECT_DOCUMENTS = "SendProjectDocuments";
+	
+	public static final String ORGREQUEST_EMAIL = "orgRequestEmail";
+	public static final String ORGREQUEST_NOTIFICATION = "orgRequestNotification";
 	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
@@ -478,6 +481,7 @@ public class Constants {
 	
 	public static final String TASKTYPE = "TaskType";
 	public static final String TASKSEVERITY = "TaskSeverity";
+	public static final String REQUEST_ORG = "Request_Org";
 	public static final String TASKPRIORITY = "TaskPriority";
 	public static final String TASKSTATUS = "TaskStatus";
 	public static final String COMPANY_ONBOARD_BUSINESS_TYPE = "Company Onboard Business type";
@@ -527,7 +531,7 @@ public class Constants {
 			"United Kingdom", "United States" };
 	public static final String[] LEVEL_DROPDOWN = { "Tier-1", "Tier-2", "Tier-3", "Tier-4", "Tier-5" };
 	public static final String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name",
-			"Email-id", "Phone Number", "Date Of Join", "Rate", "Location", "Role", "Manager",
+			"Email-id", "Phone Number", "Date Of Join", "Rate", "Role", "Manager",
 			"status" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",

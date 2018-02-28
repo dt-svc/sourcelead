@@ -8,7 +8,7 @@
 	margin: 0px;
     margin-bottom: 15px !important;
 	}
-</style>
+</style> 
  
    <!-- <!--   Popup Code  -->
   <!-- <div class="popMaskCustom popMask-zindex"></div> -->
@@ -18,7 +18,7 @@
 	    <input type="hidden" value="${customFormPopDetails.customDependentField}" id="customDependndentFieldId">
 	    <input type="hidden" value="${customFormPopDetails.slDependedntField}" id="slDependedntFieldId">
 		<div class="popupHead">
-			<h2>Add New Field</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+			<h2>${customFormPopDetails.customEditType eq 'Edit' ? 'Edit New Field':'Add New Field'} </h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
 		<div class="cuspopHead clearfix">
 			<div class="col-md-6 padding_left">
@@ -50,9 +50,9 @@
 				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();" ${disableFields}>
 				  <option value="">--Select Field Type--</option>
 				  <option value ="textfield" ${customFormPopDetails.fieldType =='textfield' ? 'selected':''} selected>Text field</option>
-				  <%-- <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option> --%>
+				  <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
 				  <option value ="selectfield" ${customFormPopDetails.fieldType =='selectfield' ? 'selected':''} >Select field</option>
-				  <%-- <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option> --%>
+				  <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
 				  <%-- <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option> --%>
 				</select>				
 			</div>	
@@ -75,13 +75,13 @@
 				<div  id="dateFieldDiv" style="display: none">
 					<div class="col-sm-12 noPad mt clearfix">
 					   <div class="col-md-3 noPad labHeight">Min Date</div>
-						<div class="col-md-6"><input name="minDate" id="minDate" value="${customFormPopDetails.minDate}" id = "minDate" class="field-label form-control input-sm calendar" type="text"> </div>
+						<div class="col-md-6"><input name="minDate" readonly id="minDate" value="${customFormPopDetails.minDate}" id = "minDate" class="field-label form-control input-sm calendar" type="text"> </div>
 						<div class="col-md-3 lblHeight"><span>&nbsp;</span></div>
 					</div>
 					
 					<div class="col-sm-12 noPad mt clearfix">
 						   <div class="col-md-3 noPad labHeight">Max Date</div>
-							<div class="col-md-6"><input name="maxDate" id="maxDate" value="${customFormPopDetails.maxDate}" id = "maxDate" class="field-label form-control input-sm calendar" type="text"> </div>
+							<div class="col-md-6"><input name="maxDate" readonly id="maxDate" value="${customFormPopDetails.maxDate}" id = "maxDate" class="field-label form-control input-sm calendar" type="text"> </div>
 							<div class="col-md-3 lblHeight"><span>&nbsp;</span></div>
 					</div>
 			  </div>
@@ -94,12 +94,12 @@
 							<div class="col-md-6">
 							<c:forEach var="options" items="${customFormPopDetails.optionData}" varStatus="optionStatus">
 								<input name="optionData[${optionStatus.index}].id" value="${options.id}" id ="selectOptionId" type="hidden">
-								<input name="optionData[${optionStatus.index}].option" value="${options.option}" id ="selectOptionId" class="field-label form-control input-sm mb" type="text">
+								<input name="optionData[${optionStatus.index}].option" value="${options.option}" id ="selectOptionId" field-name="Data" class="field-label form-control input-sm mb" type="text" data-validation="required">
 							</c:forEach>
 							 </div>	
 						</c:if>
 						<c:if test="${empty customFormPopDetails.optionData}">
-							<div class="col-md-6"><input name="optionData[0].option" value="" id ="selectOptionId" class="field-label form-control input-sm" type="text"> </div>
+							<div class="col-md-6"><input name="optionData[0].option" field-name="Data" value="" id ="selectOptionId" class="field-label form-control input-sm" type="text" data-validation="required"> </div>
 						</c:if>
 						<div class="col-md-3 lblHeight"><span>&nbsp;</span>
 					</div>

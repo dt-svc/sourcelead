@@ -6,8 +6,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
@@ -31,14 +30,6 @@
 }
 </style>
 
-<script>
-	$(document).ready(function() {
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		  var sectionId = '${section.id}';
-		  getCustomDependentField(sectionId);
-		 </c:forEach>
-	});
-</script>
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
@@ -328,7 +319,7 @@ function validateShortCode(){
 						
 						<div class="form-group" id="shortCodeDivId">
 							<label class="col-md-3"> Project Short Code <span
-								class="text-danger">*</span>
+								class="text-danger">* </span><i class='fa fa-info-circle' title='The internal unique code for the project'></i>
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
@@ -447,7 +438,7 @@ function validateShortCode(){
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-3">Budget Approver</label>
+							<label class="col-md-3">Budget Approver <i class='fa fa-info-circle' title='The person who approves the budget for the project'></i></label>
 							<div class="col-md-9" id="chosen-budgetapprover">
 								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onchange="getBudgetApprover();">
 								<option value="">-- Select Budget Approver --</option>
@@ -473,7 +464,7 @@ function validateShortCode(){
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="row mt mb10">
-						<h5 class="col-md-1 paddingRight">Documents</h5>
+						<h5 class="col-md-1 paddingRight">Documents <i class='fa fa-info-circle' title='The project documents'></i></h5>
 						<div class="col-md-10 paddingLeft">
 						<input id="Button1" type="button" value="Add Document" onclick="addFileUpload()" class="btn btn-sm btn-primary" />
 						</div>

@@ -80,7 +80,7 @@
                <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
                 <p><strong>Employee Details</strong></p>
                 <div class="form-group" id="onboardCandidatesDiv">
-                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger">*</span></label>
+                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
                     <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
                     </select>
@@ -2177,9 +2177,9 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Street Address 1 <span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">Street Address 1</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">';
+	 result = result +'<input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation-optional="true" data-validation="validate_Space">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
@@ -2228,7 +2228,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
+	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" field-name="Mobile Number" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2271,7 +2271,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="endDateDiv">';
-	 result = result +'<label class="col-md-3 control-label">End Date</label>';
+	 result = result +'<label class="col-md-3 control-label">End Date <i class="fa fa-info-circle" title="The employment end date for the contract employee"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">';
@@ -2296,14 +2296,14 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Manager<span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">Manager<span class="text-danger">* </span><i class="fa fa-info-circle" title="The person who is the reporting manager for the onboarded candidate in the organisation"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">';
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Team</label>';
+	 result = result +'<label class="col-md-3 control-label">Team <i class="fa fa-info-circle" title="The respective team of the onboarded candidate"></i></label>';
 	 result = result +'<div class="col-md-6 chooRadius">';
 	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Team" id="team" name="team">';
@@ -2367,7 +2367,7 @@ function addCandidateDetailsForOnboarding(){
      
      
 	 result = result +'<div class="form-group" id="dueDateDiv">';
-	 result = result +'<label class="col-md-3 control-label">Due Date</label>';
+	 result = result +'<label class="col-md-3 control-label">Due Date <i class="fa fa-info-circle" title="The due date for the onboarding process of the selected candidate"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">';
@@ -2377,13 +2377,13 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Special Conditions</label>';
+	 result = result +'<label class="col-md-3 control-label">Special Conditions <i class="fa fa-info-circle" title="Any special conditions laid by the company"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Onboard Template</label>';
+	 result = result +'<label class="col-md-3 control-label">Onboard Template <i class="fa fa-info-circle" title="The default template for the candidate onboarding process"></i></label>';
 	 result = result +'<div class="col-md-6 chooRadius">';
 	 result = result +'<div class="row">';
 	 result = result +'<div class="col-md-9 padding_right">';

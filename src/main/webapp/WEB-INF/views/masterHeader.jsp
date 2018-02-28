@@ -697,7 +697,7 @@ function preventTabkey(e){
 	                     <li><a href="<c:url value="/app/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="javascript:void(0)" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
+	                     <li><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
 	                     </sec:authorize>
 	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
@@ -728,7 +728,7 @@ function preventTabkey(e){
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
 						  </sec:authorize>
 						  
-						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-key" aria-hidden="true"></i>Custom Fields</a></li>
+						  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 						  	
 						 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="campsubMenuView">
@@ -1797,114 +1797,8 @@ $("#searchType").selectpicker('refresh');
     </div>
   </div> --%>
   
-  <div class="popMask"></div>
-  <div class="popUpOut" id="scheduleMPopDiv">
-		<div class="popupHead">
-			<h2>Schedule Maintenance</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
-		</div>
-		<form:form id="scheduleMaintenance_form" name="scheduleMaintenance_form" method="post">
-	<div class="popupMid popupMidHeight clearfix">
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Date<span class="text-danger paddingLeft">*</span></label>
-              	<div class="col-md-8 padding_right">
-              		<div class="input-group errorInptgroup">
-						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleMDate" field-name="Schedule Date" data-validation="required">
-	                    <span class="input-group-addon" onclick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-					</div>
-				</div>
-			</div>
-			 <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Start Time<span class="text-danger paddingLeft">*</span></label>
-              	<div class="col-md-8 padding_right">
-              		<input class="form-control" name="startTime" id="startTime" field-name="Start Time" data-validation="required"></input>
-				</div>
-			</div>
-			 <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">End Time<span class="text-danger paddingLeft">*</span></label>
-              	<div class="col-md-8 padding_right">
-              		<input class="form-control" name="endTime" id="endTime" field-name="End Time" data-validation="required"></input>
-				</div>
-			</div>	
-          <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Message<span class="text-danger paddingLeft">*</span></label>
-              	<div class="col-md-8 padding_right">
-              		<textarea class="form-control" name="scheduleMessage" id="scheduleMessage" maxlength="250" field-name="Schedule Message" rows="3" data-validation="required"></textarea>
-				</div>
-			</div>
-		</div>
-		
-		<div class="immiPopFoot">
-            <input value="Save" class="" onclick="saveScheduleMaintenance();" type="button">
-            <input value="Cancel" class="popCan" type="button">
-          </div>
-          </form:form>		
-	</div>
   <script>
-  $("#scheduleMPopup").click(function(){
-	  $("#scheduleMPopDiv").fadeIn();
-	  $(".popMask").fadeIn();
-	  clearDate();
-  });
-  function flushScheduleMaintenance(){
-	  document.getElementById("scheduleMaintenance_form").reset();
-	  $("scheduleMaintenance_form").validate().resetForm();
-  }
   
-  $(function() {
-	  
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  // written common method in slead-common.js for date formats start
-	  var finalDateFormat = getJSDateFormat(locationDate);
-	  $('#scheduleMDate').datepicker({
-		  minDate:new Date(),
-		  dateFormat: finalDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true,
-	  }).on('changeTime', function() {
-          $("#startTime").timepicker('option', 'minTime', $(this).val().getTime())
-	  });
-	  $("#startTime").timepicker({
-		  	timeFormat: 'g:ia',
-		  	'showDuration': true,
-			'disableTextInput': true
-		}).on('changeTime', function() {
-          $("#endTime").timepicker('option', 'minTime', $(this).val());
-      });
-		
-	 $("#endTime").timepicker({
-			'showDuration': true,
-			 'maxTime': '23:30:00',
-			'disableTextInput': true
-		}) 
-  });
-  function clearDate(){
-		$("#scheduleMDate").val("");
-  };
-  
-  $(".popCan").click(function(){
-	  $("#scheduleMPopDiv").fadeOut();
-	  $(".popMask").fadeOut();
-	  flushScheduleMaintenance();
- });
-  function saveScheduleMaintenance() {
-		if ($('#scheduleMaintenance_form').validate(false, validationSettings)) {
-				var formData = getFormData("scheduleMaintenance_form");
-				var sourceleadUrl = '${sourceleadUrl}';
-				$.ajax({
-						type : "POST",
-						 data: formData,
-						url : sourceleadUrl+"/storeScheduleMaintenance?${_csrf.parameterName}=${_csrf.token}",
-						success : function(result) {
-							$("#scheduleMPopDiv").fadeOut();
-							$(".popMask").fadeOut(); 
-   	        			    flushScheduleMaintenance();
-						},
-					}); 
-			return true;
-		} else {
-			return false;
-		}
-	}
 $(document).ready(function(){
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);

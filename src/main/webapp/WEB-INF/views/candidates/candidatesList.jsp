@@ -356,7 +356,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'</ul>';
 			             result = result+'</div>';
-			             result = result+'<div class="socialnetwork-details">';
+			             result = result+'<div class="socialnetwork-details socialnetworkIcons">';
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
 				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
@@ -1045,9 +1045,9 @@ function cancel(candidateId){
 							  <div class="clearfix">
 								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
 								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
+								        <%-- <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
+						                </c:forEach> --%>
                                  </select>
 							  </div>
 						  </div>

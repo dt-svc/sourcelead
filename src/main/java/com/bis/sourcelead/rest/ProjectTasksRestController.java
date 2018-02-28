@@ -13,9 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +54,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesService;
@@ -72,6 +72,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -150,6 +151,9 @@ public class ProjectTasksRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	/**
 	 * @author David sammeta
@@ -1087,10 +1091,9 @@ public class ProjectTasksRestController {
 		}else {
 			searchDates = reportsUtil.getProjectFilterDate(reportType,loginOrgLocation);
 		}
-		
 		BudgetReportDTO report = new BudgetReportDTO();
 		//project budget
-		List<ProjectBudget> budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projectId, loginOrgLocation.getId());
+		List<ProjectBudget> budgetList = projectBudgetService.getProjectBudgetByProjectTaskIdAndApprovedStatus(projectId, loginOrgLocation.getId());
 		double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
 		double estimatehoursSum = budgetList.stream().filter(p->p.getEstimatedHours() !=null).mapToDouble(p->p.getEstimatedHours()).sum();
 		if(budgetList.size() >=1) {
@@ -1168,6 +1171,7 @@ public class ProjectTasksRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
+		Long projectMemberId = null;
 		List<TimeSheetDayEntriesDTOList> timeSheetDayEntriesDtoListData = new ArrayList<>();
 		
 		int start = timeSheetDayEntriesDto.getStart();
@@ -1193,6 +1197,7 @@ public class ProjectTasksRestController {
 			timeSheetDayEntriesDtoList.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), timeDayEntries.getTimesheetDate()));
 			timeSheetDayEntriesDtoList.setHours(timeDayEntries.getTotalHours());
 			timeSheetDayEntriesDtoList.setComments(timeDayEntries.getComments());
+			timeSheetDayEntriesDtoList.setProjectMemberId(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getId());
 			timeSheetDayEntriesDtoListData.add(timeSheetDayEntriesDtoList);
 		}
 		
@@ -1351,5 +1356,42 @@ public class ProjectTasksRestController {
 		
 	}
 	
+	@RequestMapping(value = "/calculateTotalTaskHoursForADay", method = RequestMethod.POST)
+	public String calculateTotalTaskHoursForADay(@RequestParam(value = "timeDate", required = false) String timeDate,
+			@RequestParam(value = "projectMember", required = false) Long projectMember,
+			@RequestParam(value = "timesheetHour", required = false) String timesheetHour,HttpServletRequest request) throws Exception {
+			String falg = "false";
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    ProjectMembers proMember =projectMembersService.getProjectMemberById(projectMember);
+		    if(timeDate != null && StringUtils.isNotBlank(timeDate)) {
+			    if(proMember != null && proMember.getProjects() != null && proMember.getMasterCandidateId().getId()!= null) {
+			    	Float totalHours = timeSheetDayEntriesService.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate));
+			    	 totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")), totalHours);
+					if(totalHours!= null &&  totalHours >= 24) {
+			    		falg =  "false";
+			    	}else {
+			    		falg =  "true";
+			    	}	
+			    }
+		    }else {
+		    	falg =  "noDate";
+		    }
+			return falg;
+	}
+	
+	@RequestMapping(value = "/editProjectTaskTimesheetDayEntry", method = RequestMethod.POST)
+	public TimeSheetDayEntries editProjectTaskTimesheetDayEntry(@RequestParam(value = "timeDate", required = false) String timeDate,
+			@RequestParam(value = "projectMember", required = false) Long projectMember,@RequestParam(value = "taskUUID", required = false) String taskUUID, HttpServletRequest request) throws Exception {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			TimeSheetDayEntries totalHours = null;
+			ProjectMembers proMember =projectMembersService.getProjectMemberById(projectMember);
+			ProjectTasks projectTask = projectTasksService.getProjectTasksByUUID(taskUUID);
+		    if(timeDate != null && StringUtils.isNotBlank(timeDate)) {
+			    if(proMember != null && proMember.getProjects() != null && proMember.getMasterCandidateId().getId()!= null) {
+			    	totalHours = timeSheetDayEntriesService.getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate),projectTask.getId());
+			    }
+		    }
+			return totalHours;
+	}
 	
 }

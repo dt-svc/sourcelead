@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -84,6 +85,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Value("${sourceleadUrl}")
     String sourceleadUrl;
@@ -347,7 +351,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     }else{
 				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
 				     }
-				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
 			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 				     float monthTotalHours            = 0f;
 					 float monthBillableTotalHours    = 0f;
@@ -644,9 +648,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        }
             table.completeRow();
             ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(), 0, timesheetReportsDTO.getTotalRows(),"reports");
+            
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
-            	reportList.add(prepareTimesheetReportData(promembers,header,displayWeeksList,loginUser,startDate,endDate));
+            	reportList.add(prepareTimesheetReportData(promembers,orgLocations.getId(),header,displayWeeksList,loginUser,startDate,endDate));
             }
             for (String[] tsreportList: reportList) {
                 for (int i = 0; i < tsreportList.length; i++) {
@@ -668,7 +673,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		return file;
 	}
 	
-	private String[] prepareTimesheetReportData(ProjectMembers projectMember, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
+	private String[] prepareTimesheetReportData(ProjectMembers projectMember,Long locationId, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
 		String timeSheetReportsArray[] = new String[header.length];
 		
 		StringBuilder nameAndId = new StringBuilder();
@@ -711,19 +716,23 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				 timeSheetReportsArray[5] = "--";
 			 }
 			
-			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId().getClientName()){
-				//OrgRelations orgRelation =  projectMember.getProjectMemberCandidteId().getOrgRelationId();
-				 timeSheetReportsArray[6] = projectMember.getProjectMemberCandidteId().getOrgRelationId().getClientName(); 
-			 }else{
-				 timeSheetReportsArray[6] = "--";
-			 }
-			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+			 
+			 if(projectMember.getProjectClientsId() != null ){
+				 OrgRelations orgRelation = projectMember.getProjectClientsId().getOrgRelationId();
+				 if(projectMember.getProjectClientsId().getOrgRelationId() != null) { 
+				 OrgLocations orglocations = orgLocationService.getOrgLocations(orgRelation.getResponderLocationId().getId());
+						timeSheetReportsArray[6] =orglocations.getOrg().getOrgName();
+				 	}else {
+						timeSheetReportsArray[6] = " ";
+					}
+				}else {
+					timeSheetReportsArray[6] = " ";
+				}
+			 
+			if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 				OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName();
-				
-			 }else{
-				 timeSheetReportsArray[7] = "--";
-			 }
+				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName(); 
+			}
 			
 			if(projectMember.getProjects().getInvoiceFrequency() !=null){
 				timeSheetReportsArray[8] = projectMember.getProjects().getInvoiceFrequency();
@@ -736,7 +745,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 float  monthBillableTotalHours = 0f;
 			 float monthNonBillableTotalHours = 0f;
 			 Submission_ApprovalStatus combinedApprovalStatus = null; 
-			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),locationId,projectMember.getId(),startDate,endDate);
 			if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 	    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 	    	    	 //String approvalClass = "class='draft'";
@@ -978,9 +987,30 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId()){
 			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-			 writeRow.createCell(7).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
-			 createExcelsheet.autoSizeColumn(7);
+				if(orgRelation.getLocationId().getId().longValue()  == orgLocations.getId().longValue()) {
+					writeRow.createCell(7).setCellValue(" "); 
+					 createExcelsheet.autoSizeColumn(7);
+				}else {
+					writeRow.createCell(7).setCellValue(orgRelation.getLocationId().getOrgLocationName()); 
+					 createExcelsheet.autoSizeColumn(7);
+				} 
+			
 		}
+		
+		if(projectMember.getProjectClientsId() != null ){
+			 OrgRelations orgRelation = projectMember.getProjectClientsId().getOrgRelationId();
+			 if(projectMember.getProjectClientsId().getOrgRelationId() != null) { 
+			 OrgLocations orglocations = orgLocationService.getOrgLocations(orgRelation.getResponderLocationId().getId());
+			 writeRow.createCell(7).setCellValue(orglocations.getOrg().getOrgName());
+			 createExcelsheet.autoSizeColumn(7);
+			 	}else {
+			 		 writeRow.createCell(7).setCellValue(" ");
+				}
+			}else {
+				 writeRow.createCell(7).setCellValue(" ");
+			}
+		
+		
 		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 			writeRow.createCell(8).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
@@ -998,7 +1028,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 float  monthBillableTotalHours = 0f;
 		 float monthNonBillableTotalHours = 0f;
 		 Submission_ApprovalStatus combinedApprovalStatus = null;
-    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
 		if(displayWeeksList != null && !displayWeeksList.isEmpty()){
     	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
     	     float weekTotalHours = 0f;

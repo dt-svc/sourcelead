@@ -80,7 +80,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
             
-			<div class="input-group  col-md-12 noPad">
+			<div class="input-group  col-md-12 noPad" onclick="manuallyEnterJoblistToEmail();">
   				<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
             	
 <!--             	<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipients();"><i class="fa fa-refresh "></i></span>	 -->
@@ -248,6 +248,9 @@ display: none;
   <script src="/resources/js/nicEdit.js"></script> 
   
    <script type="text/javascript">
+   function manuallyEnterJoblistToEmail(){
+		  $('#emailsList_chosen ul li input').attr('readonly', true);
+	  }
 	function sendJobListCampaign() {
 		
 		if ($('#joblistCampaign_form').validate(false, validationSettings)){ 
@@ -1365,11 +1368,14 @@ function getRecipantsContacts(){
 	
 	
 	var internalOutput = "";
-	
-	var internalOutput = "";
 	 for(var e in recepiantscontactsList) {
 		 var checkbox_value = recepiantscontactsList[e].split(",");
+		 var elist=$("#emailsList").chosen().find("option:selected" ).text();
+		 var searchString=elist.search(checkbox_value[1]);
+		 if(searchString==-1)
+			{
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
+			}
 	  }
 	
 	

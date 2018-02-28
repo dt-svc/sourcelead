@@ -90,16 +90,16 @@ function getInterviewsDates(){
 		var date = $("#eventCalendar").val();
 		if(date == null || date == '' || date == 'undefined'){
 			date = new Date(); 
-			
+			var month = parseInt(date.getMonth())+parseInt(1);
 			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 			  if(locationDate.match("yyyy-MM-dd")){
-			      date = date.getFullYear()+"-"+date.getMonth()+1+"-"+date.getDate();
+			      date = date.getFullYear()+"-"+month+"-"+date.getDate();
 			  }if(locationDate.match("dd-MM-yyyy")){
-				  date = date.getDate()+"-"+date.getMonth()+1+"-"+date.getFullYear();
+				  date = date.getDate()+"-"+month+"-"+date.getFullYear();
 			  }if(locationDate.match("MM-dd-yyyy")){
-				  date = date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+				  date = month+"-"+date.getDate()+"-"+date.getFullYear();
 			  }if(locationDate.match("yyyy-dd-MM")){
-				  date = date.getFullYear()+"-"+date.getDate()+"-"+date.getMonth()+1;
+				  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
 			  }
 		}
 		

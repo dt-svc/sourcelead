@@ -97,7 +97,7 @@ public interface ProjectMembersDao {
 
 	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
 	
-	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status,String roleIds) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status,String roleIds,String teamIds) throws Exception;
 	
 	public ProjectMembers getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(Long candidateId,Long projectId,Long orgLocationId) throws Exception;
 	
@@ -110,6 +110,8 @@ public interface ProjectMembersDao {
 	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 	
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
+	
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
 	
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 

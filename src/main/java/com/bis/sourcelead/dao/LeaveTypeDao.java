@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.ProjectTasks;
 
 public interface LeaveTypeDao {
 	LeaveType addLeaveType(LeaveType leaveType) throws Exception;
@@ -14,4 +15,6 @@ public interface LeaveTypeDao {
 	List<LeaveType> getLeaveTypeListByLocationIdAndStatus(String orgLocationId);
 
 	LeaveType getLeaveTypeByUUID(String leaveTypeUUID);
+
+	List<ProjectTasks> getProjectTaskByorgLocationIdAndLeaveTypeId(Long orgLocationId, Long leaveTypeId);
 }

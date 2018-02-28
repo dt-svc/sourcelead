@@ -16,6 +16,13 @@ right: 15px;
 }
 </style>
 
+<!--success msg -->
+
+<div class="success_pop" id="mailMsg" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+</div>
+
+
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
@@ -158,6 +165,10 @@ function cancelOrgImg(){
       <div id="regLoading"></div>
       <div id="popUp"></div>  
       <div id="signatureLoading"></div>
+      
+        <div class="success_pop" id="resendOrg" style="display: none;">
+			<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
+		</div>
         <!-- Tab Pills navbar -->
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
@@ -311,7 +322,7 @@ function cancelOrgImg(){
 							</div>
 							
 							<div class="form-group mt" id="generatedUserIdDiv">
-							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
@@ -1938,8 +1949,8 @@ function resendInvitation(userId){
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
-			        	$("#mailMsg").fadeIn(200);
-		   		        $('#mailMsg').delay(2000).fadeOut('slow');
+			        	$("#resendOrg").fadeIn(200);
+		   		        $('#resendOrg').delay(2000).fadeOut('slow');
 			        },
 			    });
 		 }
@@ -2048,7 +2059,7 @@ function createOrg(){
 				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
@@ -2057,7 +2068,7 @@ function createOrg(){
 			    result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Street Address</label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter your Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'<input type="text" name="address" id="addressId" field-name="Street Address" data-validation-optional="true" placeholder="Enter Street Addres" data-validation="validate_length length5-5000" class="form-control"/>';
 	            result = result +'</div>';
 	            result = result +'</div>';
 		            
@@ -2733,6 +2744,7 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'orgList')){
+			        		$("#regLoading").removeAttr('style');
 			        		loadRegisteredOrgs();
 			        	}
 			        	else if((result == 'Invalid Sub Modules')){

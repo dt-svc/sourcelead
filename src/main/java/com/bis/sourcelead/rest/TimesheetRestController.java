@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -69,6 +71,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -178,6 +181,9 @@ public class TimesheetRestController {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	private LeaveTypeService leaveTypeService;
 	
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -1046,31 +1052,31 @@ public class TimesheetRestController {
 		    currentCal.setTime(actualWeekStartDate);
 			 
 			
-			if( (!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+			if( (!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 				disbleCondition1.setLength(0);
 				disbleCondition1.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition2.setLength(0);
 	       	disbleCondition2.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition3.setLength(0);
 	       	disbleCondition3.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition4.setLength(0);
 	       	disbleCondition4.append("disabled");
 			} 
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition5.setLength(0);
 	       	disbleCondition5.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition6.setLength(0);
 	       	disbleCondition6.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
 	       	disbleCondition7.setLength(0);
 	       	disbleCondition7.append("disabled");
 			} 
@@ -1223,7 +1229,7 @@ public class TimesheetRestController {
 			tsDTO.setFileInfo(fileInfoList);
 		}
 		 if( isFillMyTimeSheet) {
-		    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+		    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())  && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
 		    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)))
 		    	  tsDTO.setSaveButtonVisible(true);
 				
@@ -1650,6 +1656,9 @@ public class TimesheetRestController {
 	    	ProjectMembers projectMember = null;
 			if(tedDTO != null && tedDTO.getProjectMemberId() != null){
 				  projectMember = projectMembersService.getProjectMemberById(tedDTO.getProjectMemberId());
+				  tedDTO.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
+				  tedDTO.setEmployeeName(projectMember.getProjectMemberCandidteId().getFullName());
+				  tedDTO.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			}
 			Date frequencyStartDate = null;
 			Date frequencyEndDate = null;
@@ -1852,6 +1861,7 @@ public class TimesheetRestController {
 								
 								timesheetDayEntries.setComments(teDTO.getComments());
 								timesheetDayEntries.setTimesheetDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),teDTO.getDate()));
+								timesheetDayEntries.setStatus(1);
 								timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 								timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 								timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
@@ -2311,7 +2321,7 @@ public class TimesheetRestController {
 			HashMap<String,Long> totalMap = new HashMap<>();
 			/*while(actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)){*/
 					  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(taskUUID);
-					  TimeSheetDayEntries timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), actualStartDate);
+					  TimeSheetDayEntries timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), timesheetDate);
 					  if(timesheetDayEntries == null){
 						 timesheetDayEntries = new TimeSheetDayEntries();
 						 timesheetDayEntries.setBillableHours("00:00");
@@ -2487,5 +2497,21 @@ public class TimesheetRestController {
 	            timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
 	            return "success";
 	    }
+
+		public void linkLeaveTypeWithTimeSheet(User leaveApproverUserId, OrgLocations orgLocations, Long leaveTypeId, Leave leave) throws Exception {
+			List<ProjectTasks> projectTaskList = leaveTypeService.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocations.getId(),leaveTypeId);
+			if(projectTaskList != null && !projectTaskList.isEmpty()) {
+			for(ProjectTasks projectTask: projectTaskList) {
+				ProjectMembers projectMember = projectMembersService.getProjectMemberByUserIdAndProjectId(leave.getUser().getId(), projectTask.getProjectId().getId());
+				if(projectMember!= null) {
+					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
+					String leaveDate[] = dateList.split(",");
+					for(int i=0;i<leaveDate.length;i++) {
+						addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(), projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"), leave.getReason(), leaveApproverUserId, orgLocations);
+						}
+					}
+				}
+			}
+		}
 		
 }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -665,7 +666,7 @@ public class UsersListRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
-	public @ResponseBody String getUserDetailsById(HttpServletRequest request,
+	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
 		String resultJson = null;
 
@@ -751,20 +752,23 @@ public class UsersListRestController {
 				 }
 			 }
 			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
-			 List<UserCustomFieldData> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(userId,formFieldId);
-			 Map<String,String> dataMap = new HashMap<>();
+			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,userId);
+			 Map<Long,String> dataMap = new HashMap<>();
 			 if(userData!= null && !userData.isEmpty()) {
-				 for(UserCustomFieldData userCustomData:userData) {
-					 String labelName = userCustomData.getOrglocationsFormFields().getLabelName();
-					 String labelData = userCustomData.getCustomFormFieldData();
-					 dataMap.put(labelName, labelData);
+				 for(Entry<Long, String[]> userCustomData:userData.entrySet()) {
+					String labelName = userCustomData.getValue()[0];
+					 String labelData = userCustomData.getValue()[1];
+					 Long id = userCustomData.getKey();
+					 StringBuilder keyValue =  new StringBuilder();
+					 keyValue.append(labelName).append("$").append(labelData);
+					 dataMap.put(id, keyValue.toString());
 					 userRole.setUserCustomFieldlabelNameAndValue(dataMap);
 				 	}
 			 	}
 			 }
 		 }
-		resultJson = toJSON(userRole);
-		return resultJson;
+		//resultJson = toJSON(userRole);
+		return userRole;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
@@ -1038,7 +1042,6 @@ public class UsersListRestController {
 				}
 
 			}
-
 			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
@@ -1161,7 +1164,7 @@ public class UsersListRestController {
 
 			List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByUserIdAndLocationId(userId,
 					orgLocations.getId());
-			if (null != teamMembersList) {
+			if (null != teamMembersList && !teamMembersList.isEmpty()) {
 				for (TeamMembers teamMembers : teamMembersList) {
 					teamMembers.setStatus("0");
 					teamMembers.setUpdatedBy(user.getUserCode());
@@ -1951,18 +1954,23 @@ public class UsersListRestController {
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			User updatedUser = userService.addUser(user);
 			
-			if(addUserDTO.getCustomFormData() != null){
+			if(addUserDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-					UserCustomFieldData userCustomFields = new UserCustomFieldData();
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0 ) {
+						UserCustomFieldData userCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							userCustomFields = userCustomFieldDataService.getUserCustomFieldDataById(customFields.getEntityId());
+						}else {
+							userCustomFields = new UserCustomFieldData();
+						}
 					userCustomFields.setUser(updatedUser);
-					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-					 userCustomFields.setOrglocationsFormFields(orgFormField);
-					 userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-					 userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					userCustomFields.setOrglocationsFormFields(orgFormField);
+					userCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					userCustomFieldDataService.saveUserCustomFieldData(userCustomFields);
 					}
 					
-				}
+				}	
 			}
 			
 			userRoleService.addUserRole(userRole);
@@ -2057,6 +2065,12 @@ public class UsersListRestController {
 			}else{
 				candidate.setSpocId(null);
 			}
+			
+			candidate.setFirstName(addUserDTO.getFirstName());
+			if(StringUtils.isNotBlank(addUserDTO.getLastName())){
+				candidate.setLastName(addUserDTO.getLastName());
+			}
+			
 			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
