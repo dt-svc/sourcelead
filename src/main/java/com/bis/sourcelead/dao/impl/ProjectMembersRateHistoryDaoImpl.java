@@ -82,7 +82,7 @@ public class ProjectMembersRateHistoryDaoImpl implements ProjectMembersRateHisto
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembersRateHistory pmrh left join fetch pmrh.projectMemberId projectMember left join fetch pmrh.candidateId candidate "
-				+ " left join fetch pmrh.createdBy where pmrh.projectMemberId.id = :projectMemberId)" ;
+				+ " left join fetch pmrh.createdBy where pmrh.projectMemberId.id = :projectMemberId order by pmrh.id ASC )" ;
 		List<ProjectMembersRateHistory> pmrhList = session.createQuery(query)
 											.setLong("projectMemberId", projectMemberId)
 										    .list(); 

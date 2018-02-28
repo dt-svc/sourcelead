@@ -2174,8 +2174,30 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 }	
 	       	 
 	       	 
-	       	 ProjectMembersRateHistory pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(pm.getId());
-	       	 if(pmrh != null) {
+	       	 List<ProjectMembersRateHistory> pmrhList = projectMembersRateHistoryService.getProjectMembersRateHistoryListByProjectMemberId(pm.getId());
+	       	 if(pmrhList != null && !pmrhList.isEmpty()) {
+	       		Date date = commonUtil.orgLocationCommonDate(new Date(), loginOrgLocation);
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getPayRateEndDate() != null && date.before((pmrh.getPayRateEndDate()))) {
+	       				pm.setPayRate(pmrh.getPayRate());
+	       				pm.setPayRateCurrency(pmrh.getPayRateCurrency());
+	       				pm.setPayRateType(pmrh.getPayRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		
+	       		
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getBillRateEndDate() != null && date.before((pmrh.getBillRateEndDate()))) {
+	       				pm.setCurrentBillRate(pmrh.getBillRate());
+	       				pm.setBillRateCurrency(pmrh.getBillRateCurrency());
+	       				pm.setRateType(pmrh.getBillRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		 
 	       		pm.setRateHistroyList(Constants.YES);
 	       	 }else {
 	       		pm.setRateHistroyList(Constants.NO);
