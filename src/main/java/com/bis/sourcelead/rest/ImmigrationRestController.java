@@ -204,7 +204,10 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 			templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			templateListDTO.setSortOrder(sortColumnOrder);
 			System.out.println("searchValue in controller ---> "+searchValue);
-			templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue);
+			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue, orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -250,6 +253,7 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
 			immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user,orgLocations, templateId);
 		}
 		catch (Exception e) {

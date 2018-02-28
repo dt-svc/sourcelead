@@ -28,7 +28,7 @@ public interface ImmigrationTemplateDao {
 	
 	void deletePetitionTemplateFormDetails(String remainingFormIds);
 	
-	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue);
+	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue,Long orgLocationId);
 	
 	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
 

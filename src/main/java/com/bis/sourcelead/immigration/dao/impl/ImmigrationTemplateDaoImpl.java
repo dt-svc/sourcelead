@@ -30,10 +30,12 @@ import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ScheduleMaintenance;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 /**
@@ -191,7 +193,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue) {
+	public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
@@ -200,9 +202,9 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
 		StringBuilder query1 = new StringBuilder("");
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-			query1.append(" where (tempView.name like '%" + searchValue + "%' )");
+			query1.append(" or (tempView.name like '%" + searchValue + "%' )");
 			query1.append(" or (tempView.description like '%" + searchValue + "%' )");
-			query1.append(" or (tempView.status like '%" + searchValue + "%' )");
+			//query1.append(" or (tempView.status like '%" + searchValue + "%' )");
 		}
 		// usertList sorting order
 		String sortingQry = "";
@@ -211,10 +213,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		} else {
 			sortingQry = " order by tempView.name ";
 		}
-		String listQuery = "from ImmigrationTemplateView tempView";
+		
+		
+		
+		String listQuery = "from ImmigrationTemplateView tempView  where tempView.orgLocationId="+orgLocationId;
+		
 		ImmigrationTemplateViewLst = session.createQuery(listQuery + query1 + sortingQry).list();
 		String listQueryCount = "select count(*) from ImmigrationTemplateView tempView";
 		countlist = session.createQuery(listQueryCount + query1).setFirstResult(templateListDTO.getStart())
+		//countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocationId).setFirstResult(templateListDTO.getStart())
 				.setMaxResults(templateListDTO.getLength()).list();
 		int totalCount = 0;
 		if (templateListDTO != null) {
@@ -308,7 +315,9 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		String query = "from ImmigrationTemplateTasks itt where itt.id=:taskId";
 		return (ImmigrationTemplateTasks) session.createQuery(query).setParameter("taskId", id).uniqueResult();
 	}
-
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public  ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		ImmigrationTemplateDTO templateDto= null;

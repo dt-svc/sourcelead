@@ -31,6 +31,9 @@ public class ImmigrationTemplateView implements Serializable {
 	@Column(name = "DESCRIPTION")
 	@Type(type = "text")
 	private String description;
+	
+	@Column(name="ORG_LOCATION_ID") 
+	private Long orgLocationId;
 
 	@Column(name = "STATUS")
 	private Integer status;
@@ -66,6 +69,14 @@ public class ImmigrationTemplateView implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public Integer getStatus() {
