@@ -30,11 +30,8 @@ import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
-<<<<<<< HEAD
 import com.bis.sourcelead.entity.ScheduleMaintenance;
-=======
 import com.bis.sourcelead.entity.User;
->>>>>>> b3080c12ee9ce250e6ad95650410b8a749899950
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 
