@@ -64,12 +64,15 @@ public class RequirementSubmissionHistory implements Serializable{
 	@Column(name = "CREATED_USER")
 	private String createdUser;
 	
+	@JsonProperty
     @Transient
     private String fileName;
+	
     @JsonProperty
     @Transient
     private String fileUrl;
     
+    @JsonProperty
     @Transient
     private String contentType;
 	 
@@ -137,6 +140,50 @@ public class RequirementSubmissionHistory implements Serializable{
     @Transient
 	List<RequirementOfferHistory> requirementOfferHistoryList;
     
+    @Transient
+    @JsonProperty
+    private String candidateName;
+    
+    @Transient
+	@JsonProperty
+	private String requirementUUID;
+    
+    @Transient
+	@JsonProperty
+	private String jobTitle;
+	
+	@Transient
+	@JsonProperty
+	private String orgLocationName;
+	
+	@Transient
+	@JsonProperty
+	private String email;
+	
+	@Transient
+	@JsonProperty
+	private String mobilePhone;
+	
+	@Transient
+	@JsonProperty
+	private String resumeUUID;
+	
+	@Transient
+	@JsonProperty
+	private String primarySkill;
+	
+	@Transient
+	@JsonProperty
+	private String candidateScore;
+	
+	@Transient
+	@JsonProperty
+	private String submissionStatus;
+	
+	@Transient
+	@JsonProperty
+	private String candidateUUID;
+	
 	public Long getId() {
 		return id;
 	}
@@ -417,7 +464,117 @@ public class RequirementSubmissionHistory implements Serializable{
 	{
 		this.fileContentType = fileContentType;
 	}
-	
+
+	public String getCandidateName()
+	{
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName)
+	{
+		this.candidateName = candidateName;
+	}
+
+	public String getRequirementUUID()
+	{
+		return requirementUUID;
+	}
+
+	public void setRequirementUUID(String requirementUUID)
+	{
+		this.requirementUUID = requirementUUID;
+	}
+
+	public String getJobTitle()
+	{
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle)
+	{
+		this.jobTitle = jobTitle;
+	}
+
+	public String getOrgLocationName()
+	{
+		return orgLocationName;
+	}
+
+	public void setOrgLocationName(String orgLocationName)
+	{
+		this.orgLocationName = orgLocationName;
+	}
+
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail(String email)
+	{
+		this.email = email;
+	}
+
+	public String getMobilePhone()
+	{
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone)
+	{
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getResumeUUID()
+	{
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID)
+	{
+		this.resumeUUID = resumeUUID;
+	}
+
+	public String getPrimarySkill()
+	{
+		return primarySkill;
+	}
+
+	public void setPrimarySkill(String primarySkill)
+	{
+		this.primarySkill = primarySkill;
+	}
+
+	public String getCandidateScore()
+	{
+		return candidateScore;
+	}
+
+	public void setCandidateScore(String candidateScore)
+	{
+		this.candidateScore = candidateScore;
+	}
+
+	public String getSubmissionStatus()
+	{
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus)
+	{
+		this.submissionStatus = submissionStatus;
+	}
+
+	public String getCandidateUUID()
+	{
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID)
+	{
+		this.candidateUUID = candidateUUID;
+	}
+
 
 	
 }

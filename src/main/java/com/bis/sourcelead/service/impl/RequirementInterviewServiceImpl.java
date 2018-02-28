@@ -1059,6 +1059,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewType",interviewTypeValue);
 			 globalVarsMap.put("applicantName",candidateName);
 			 globalVarsMap.put("Details",requirementInterview.getLocation());
+			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
 			 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
