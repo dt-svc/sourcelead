@@ -47,7 +47,9 @@ public class CareerController {
     private String sourceleadUrl;
 
     @RequestMapping("/careers-page.html")
-    public String ats() {
+    public String cph(HttpServletRequest request, String key) {
+    	request.getSession().setAttribute("sourceleadUrl", sourceleadUrl.replace("/app", ""));
+    	request.setAttribute("key", key);
         return "static-web/careers-test";
     }
 

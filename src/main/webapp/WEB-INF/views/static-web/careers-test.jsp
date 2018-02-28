@@ -9,6 +9,6 @@
         <div id='jobList'>
 
         </div>
-        <script type="text/javascript" src="http://localhost:9000/resources/careers.js?key=QnVzaW5lc3MgSW50ZWxsaSBzb2x1dGlvbnMgcHZ0IGx0ZGU4NzNlZmE4LTEwMGUtZTY3My1iNTczLTQ5NTdlYTFlYzM3Zg&theme=hello"></script>
+        <script type="text/javascript" src="${sourceleadUrl}/resources/careers.js?key=${key}"></script>
     </body>
 </html>
