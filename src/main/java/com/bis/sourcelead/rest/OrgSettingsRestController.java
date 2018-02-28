@@ -35,6 +35,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
@@ -669,6 +670,24 @@ public class OrgSettingsRestController {
 			orgLocations.setEndMonth(endMonth);
 			orgLocationService.updateOrgLocations(orgLocations);
 		}
+		return "Success";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/app/saveCustomRecommendation", method = RequestMethod.POST)
+	public String saveCustomRecommendation(OrgLocationDTO locationDto, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		orgLocations.setRecommendedSkillPercent(locationDto.getRecommSkill());
+		orgLocations.setRecommendedEducationPercent(locationDto.getRecommEducation());
+		orgLocations.setRecommendedLocationPercent(locationDto.getRecommLocation());
+		orgLocations.setRecommendedNoticePercent(locationDto.getRecommNoticePeriod());
+		orgLocations.setRecommendedExpPercent(locationDto.getRecommExp());
+		orgLocations.setRecommendedVisatypePercent(locationDto.getRecommVisaType());
+		orgLocations.setRecommendedRatePercent(locationDto.getRecommRate());
+		orgLocations.setRecommendedKeywordsPercent(locationDto.getRecommKeywords());
+		orgLocationService.updateOrgLocations(orgLocations);
+		
 		return "Success";
 	}
 }
