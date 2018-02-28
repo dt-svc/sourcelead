@@ -27,11 +27,16 @@ public interface ImmigrationTemplateService {
 	
 	void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user);
 	
-	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue);
+	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue, Long orgLocationId);
 	
 	List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
 
 	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
 
 	ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception;
+	
+	List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
+	
+	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
+	
 }
