@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
@@ -320,15 +321,80 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		ImmigrationTemplateDTO templateDto= null;
 		logger.debug(" DAO IMPL  templateId  check value is -->" + templateId);
 		try {
+			// loading template information.
 			ImmigrationTemplate entityObj = (ImmigrationTemplate) session.get(ImmigrationTemplate.class, templateId);
 			templateDto = new ImmigrationTemplateDTO();
 			templateDto.setId(entityObj.getId());
 			templateDto.setTemplateName(entityObj.getName());
 			templateDto.setTemplateDescription(entityObj.getDescription());
+			// 
+			
+			
 		} catch (Exception e) {
 			logger.error("Exception caught in while getting tempalte details with templateId -->"+templateId+" Mesaage is "+e.getMessage());
 			e.printStackTrace();
 		}
 		return templateDto;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateDocDTO> immiDocsDtoLst = new ArrayList<ImmigrationTemplateDocDTO>();
+		String queryString = "from ImmigrationTemplateDocs docs where docs.immigrationTempId = :templateId";
+		//System.out.println("template docs list templateId"+templateId);
+		logger.debug("template docs list templateId"+templateId);
+		try {
+			List<ImmigrationTemplateDocs> docsList = session.createQuery(queryString).setLong("templateId",templateId).list();
+					for(ImmigrationTemplateDocs entityObj : docsList ) {
+						ImmigrationTemplateDocDTO docDto = new ImmigrationTemplateDocDTO();
+						docDto.setId(entityObj.getId());
+						docDto.setDocumentType(entityObj.getDocumentType());
+						docDto.setDescription(entityObj.getDescription());
+						docDto.setIsRequired(entityObj.getIsRequired());
+						docDto.setMultiple(entityObj.getIsMultipleRequired());
+						immiDocsDtoLst.add(docDto);
+					}
+			
+		}catch(Exception e) {
+		//s	System.out.println("extption caught while getting template docs list"+e.getMessage());
+			logger.error("extption caught while getting template docs list"+e.getMessage());
+			e.printStackTrace();
+		}
+		//System.out.println("immiDocsDtoLst size is -->"+immiDocsDtoLst.size());
+		logger.debug("immiDocsDtoLst size is -->"+immiDocsDtoLst.size());
+		return immiDocsDtoLst;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationTemplateFormDTO> immiFormsDtoLst = new ArrayList<ImmigrationTemplateFormDTO>();
+		String queryString = "from ImmigrationTemplateForms f where f.immigrationTempId = :templateId";
+		//System.out.println("template froms list templateId"+templateId);
+		logger.debug("template froms list templateId"+templateId);
+		try {
+			List<ImmigrationTemplateForms> formsList = session.createQuery(queryString).setLong("templateId", templateId).list();
+			for (ImmigrationTemplateForms entityObj : formsList) {
+				ImmigrationTemplateFormDTO formDto = new ImmigrationTemplateFormDTO();
+				formDto.setId(entityObj.getId());
+				formDto.setFormName(entityObj.getFormName());
+				formDto.setFormDescription(entityObj.getDescription());
+				formDto.setFileName(entityObj.getFileName());
+				formDto.setFileUrl(entityObj.getFileUrl());
+				formDto.setIsRequired(entityObj.getIsRequired());
+				immiFormsDtoLst.add(formDto);
+			}
+
+		} catch (Exception e) {
+			//System.out.println("extption caught while getting template forms list" + e.getMessage());
+			logger.error("extption caught while getting template forms list" + e.getMessage());
+			e.printStackTrace();
+		}
+		//sSystem.out.println("immiDocsDtoLst size is -->"+immiFormsDtoLst.size());
+		logger.debug("immiFormsDtoLsts size is -->"+immiFormsDtoLst.size());
+		return immiFormsDtoLst;
 	}
 }

@@ -157,12 +157,19 @@ public class ImmigrationRestController {
 		request.getSession().removeAttribute("templateDocList");
 		request.getSession().removeAttribute("templateFormsList");
 		model.setViewName("/immigration/addPetitionTemplate");
-		Long templateId= ServletRequestUtils.getLongParameter(request, "templateId");
-		if(templateId != null) {
+		Long templateId= ServletRequestUtils.getLongParameter(request, "templateId");// sending parameter edit mode.
+		if(templateId != null) { // below code is used for edit template name, docs, forms when opened in edit mode.
 			try {
 				System.out.println(" Edit mode templateId templateId -->" + templateId);
 				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
+				 List<ImmigrationTemplateDocDTO> docsList= immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
+				 logger.debug(" Edit mode templateId templateId -->" + templateId +", docsList size is "+docsList.size());
+				 List<ImmigrationTemplateFormDTO> formsList= immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
+				 logger.debug(" Edit mode templateId templateId -->" + templateId +", formsList size i "+formsList.size());
+				 // templateDTO.setImmigrationDocList(docsList);
 				request.getSession().setAttribute("templateDTO", templateDTO);
+				request.getSession().setAttribute("templateDocList",docsList);
+				request.getSession().setAttribute("templateFormsList",formsList);
 			} catch (Exception e) {
 				logger.error(" Exception caught in edit mode in controller -->" + templateId);
 				e.printStackTrace();

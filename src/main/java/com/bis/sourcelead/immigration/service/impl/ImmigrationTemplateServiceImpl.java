@@ -255,4 +255,14 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	public ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
 		return immigrationTemplateDao.getPetitionTemplateDetails(templateId);
 	}
+
+	@Override
+	public List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId) {
+		return immigrationTemplateDao.getImmigrationTemplateDocsListById(templateId);
+	}
+
+	@Override
+	public List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId) {
+		return immigrationTemplateDao.getImmigrationTemplateformsListById(templateId);
+	}
 }

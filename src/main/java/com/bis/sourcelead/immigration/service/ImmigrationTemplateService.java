@@ -34,4 +34,9 @@ public interface ImmigrationTemplateService {
 	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
 
 	ImmigrationTemplateDTO editImmigrationTaskList(String id);
+	
+	List<ImmigrationTemplateDocDTO> getImmigrationTemplateDocsListById(Long templateId);
+	
+	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
+	
 }
