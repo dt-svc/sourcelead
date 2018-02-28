@@ -234,7 +234,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 					}
 					tasks.setProjectId(projects);
 					tasks.setTaskType(taskType);
-					
+					tasks.setLeaveType(leaveType);
 					LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
 					tasks.setTaskStatus(taskStatus);
 					tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
@@ -316,5 +316,10 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	public LeaveType getLeaveTypeByUUID(String leaveTypeUUID)
 	{
 		return leaveTypeDao.getLeaveTypeByUUID(leaveTypeUUID);
+	}
+
+	@Override
+	public List<ProjectTasks> getProjectTaskByorgLocationIdAndLeaveTypeId(Long orgLocationId, Long leaveTypeId) {
+		return leaveTypeDao.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocationId,leaveTypeId);		
 	}
 }

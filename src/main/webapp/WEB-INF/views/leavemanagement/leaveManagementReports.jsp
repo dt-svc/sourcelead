@@ -150,6 +150,7 @@
                  <div class="clearfix mt5">
                    <h4 class="heading col-md-4">Top leave Takers</h4>
                     <div class="timesheet_head clearfix col-md-8">
+                    <i class="fa fa-download cursorPointer  pull-left mt10 text-primary pull-left" onclick="leaveExport();" title="Download Excel File"></i>
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
@@ -1180,4 +1181,29 @@ function topLeaveTakersPagination(url){
 	  
 	});
 </script>
+
+<script>
+function leaveExport(){
+	
+	var reportYear = "";
+	var reportMonth = "";
+	var reportFromDate = "";
+	var reportEndDate = "";
+	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+		reportYear = $("#topLeaveTakersreportYear").val();
+	}
+	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+		reportMonth = $("#reportMonth").val();	
+	}
+	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+		 reportFromDate = $("#reportFromDate").val();	
+	}
+	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+		 reportEndDate = $("#reportEndDate").val();	
+	}
+
+	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />

@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -1233,7 +1239,7 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
 			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 			leaveDto.setApproverUsers(String.join(",", aphlist)); 
-			Map<String,Integer> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+			Map<String,Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			
 			float leavesTaken = (float) (nuberOfLeavestaken.get("numberOfLeavsTaken") - (nuberOfLeavestaken.get("halfdayLeavesCount") * 0.5));
 			leaveDto.setActualLeavesTaken(leavesTaken);
@@ -1804,6 +1810,34 @@ public class LeaveManagementRestController {
 		
 		return isvalidate;
 		
+	}
+	
+	@RequestMapping(value = "/getLeaveExportList")
+	public void getLeaveExportList(LeaveDTO leaveDTO, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+
+		File file = leaveService.getLeaveExport(orgLocations,leaveDTO);
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
 	}
 	
 }

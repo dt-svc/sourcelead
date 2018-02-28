@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +17,11 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,6 +50,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveManagementHistoryService;
@@ -110,6 +119,8 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     EmployeesService employeesService;
     
+    @Autowired
+    private TimesheetRestController timesheetRestController;
     
 	@Override
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
@@ -172,7 +183,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		Leave savedLeave =  leaveDao.saveLeave(leave);
 		
-		Map<String,Integer> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
+		Map<String,Float> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
 		saveMonthlyLeaves(monthlyLeaves,leave,user);
 		
 		if(savedLeave !=null) {
@@ -272,7 +283,7 @@ public class LeaveServiceImpl implements LeaveService{
 		
 	}
 
-	private void saveMonthlyLeaves(Map<String, Integer> monthlyLeaves, Leave leave, User user)
+	private void saveMonthlyLeaves(Map<String, Float> monthlyLeaves, Leave leave, User user)
 	{
 		MonthlyLeaves leaves = new MonthlyLeaves();
 		leaves.setLeaveId(leave);
@@ -349,7 +360,7 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder sb = new StringBuilder();
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
-				Map<String,Integer> nuberOfLeavestaken = null;
+				Map<String,Float> nuberOfLeavestaken = null;
 				float leavesTaken = 0;
 				if (leave.getUser() != null) {
 					try {
@@ -473,6 +484,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 		boolean isApproved = false;
 		Employees emp = null;
+		Leave updaetedLeave = null;
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveDao.getLeaveByLeaveUUId(leaveUUID);
 		
@@ -483,7 +495,7 @@ public class LeaveServiceImpl implements LeaveService{
         
 		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),user.getId(),yearStartDate,fromDate);
 //		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocations.getId(),Constants.APPROVED,user.getId());
-		int carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
+		float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
 		
 		leaveManagementHistory.setFromStage(leave.getStatus());
 		if (leave != null) {
@@ -494,16 +506,17 @@ public class LeaveServiceImpl implements LeaveService{
 					emp = employeesService.getEmployeeByUserId(leave.getUser().getId());
 					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
 					
-					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
+//					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
+					float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod())){
-						leave.setExtraLeavesTaken(Math.abs(numberOfDays - carryForwardLeaves));
+						leave.setExtraLeavesTaken(appliedLeaves - carryForwardLeaves);
 					}else{
 						leave.setExtraLeavesTaken(0);
 					}
 					
 					
-					int numberOfLeavesPerYear = totalLeaves - numberOfDays + leave.getExtraLeavesTaken();
+					float numberOfLeavesPerYear = totalLeaves - appliedLeaves + leave.getExtraLeavesTaken();
 					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
 			} else {
 				leave.setStatus(Constants.LEAVE_REJECTED);
@@ -512,7 +525,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
-			Leave updaetedLeave = leaveDao.saveLeave(leave);
+			updaetedLeave =  leaveDao.saveLeave(leave);
 			if(updaetedLeave != null) {
 				isApproved = true;
 			}
@@ -527,12 +540,15 @@ public class LeaveServiceImpl implements LeaveService{
 		leaveManagementHistory.setUpdatedDate(new Date());
 		leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 		sendApprovedAndRejectedLeaveMailToEmployee(orgLocations, user, leaveManagementHistory);
+		if(isApproved = true) {
+			timesheetRestController.linkLeaveTypeWithTimeSheet(user, orgLocations, leaveTypeId, updaetedLeave);
+		}
 		return isApproved;
 	}
 
 	
 
-	private int calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate, LeaveType leaveType)
+	private float calculateCarryForwardLeaves(List<Leave> leaveList, Date fromDate, Date yearStartDate, LeaveType leaveType)
 	{
 		Calendar sDate = Calendar.getInstance();
         Calendar eDate = Calendar.getInstance();
@@ -541,19 +557,19 @@ public class LeaveServiceImpl implements LeaveService{
         int difInMonths = eDate.get(Calendar.MONTH) - sDate.get(Calendar.MONTH) + 1;
         int fromMonth = sDate.get(Calendar.MONTH);
 		
-		int carryForwardLeaves = 0;
-		int janLeaves = 0;
-		int febLeaves = 0;
-		int marLeaves = 0;
-		int aprLeaves = 0;
-		int mayLeaves = 0;
-		int junLeaves = 0;
-		int julLeaves = 0;
-		int augLeaves = 0;
-		int sepLeaves = 0;
-		int octLeaves = 0;
-		int novLeaves = 0;
-		int decLeaves = 0;
+		float carryForwardLeaves = 0;
+		float janLeaves = 0;
+		float febLeaves = 0;
+		float marLeaves = 0;
+		float aprLeaves = 0;
+		float mayLeaves = 0;
+		float junLeaves = 0;
+		float julLeaves = 0;
+		float augLeaves = 0;
+		float sepLeaves = 0;
+		float octLeaves = 0;
+		float novLeaves = 0;
+		float decLeaves = 0;
 		int monthlyAllowedLeaves = leaveType.getNoOfDays();
 		if("Monthly".equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
 			for(Leave userLeave : leaveList){
@@ -1162,7 +1178,8 @@ public class LeaveServiceImpl implements LeaveService{
 			 globalVarsMap.put("noOfDays",String.valueOf(leaveDTO.getNoOfDays()));
 			 
 			 if(null != leaveDTO.getLeaveType()){
-				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
+				 LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+//				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
 				 globalVarsMap.put("leaveType",leaveType.getName());
 				 }
 			 
@@ -1508,5 +1525,127 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		return leaveDao.getLeaveByLeaveUUId(leaveUUID);
 	}
+	
+	@Override
+	public File getLeaveExport(OrgLocations orgLocations,LeaveDTO leaveDTO) throws Exception {
+		
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_"
+				+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+		
+		ResponseList<Leave> leaveResponse = getTopLeavetakers(orgLocations, leaveDTO);
+		
+		List<Leave> leaveList = leaveResponse.getData();
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
+		int totalLeaves = 0;
+		int column = 0;
+		LeaveDTO leaveDto = null;
+		float totalbalanceLeaveCounts = 0;
+		
+		for (Leave leave : leaveList) {
+			leaveDto = reportMap.get(leave.getUser().getId());
+			if (leaveDto == null) {
+				leaveDto = new LeaveDTO();
+				totalLeaves = 0;
+				totalbalanceLeaveCounts = leave.getLeaveType().getNoOfDays();
+			}
+			StringBuilder sb = new StringBuilder();
+			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+				sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			} else {
+				sb.append(leave.getUser().getFirstName());
+			}
+			
+			StringBuilder date = new StringBuilder();
+			if(null != leave.getFromDate() && null != leave.getToDate()) {
+				String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getFromDate());
+				String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getFromDate());
+				date.append(startDate).append(" - ").append(toDate);
+			} 
+			
+			
+			float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+				totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
+			}
+			
+			leaveDto.setDuration(date.toString());
+			leaveDto.setUserId(String.valueOf(leave.getUser().getId()));
+			leaveDto.setEmpName(sb.toString());
+			leaveDto.setEmpEmail(leave.getUser().getEmail());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setStatus(leave.getStatus());
+			leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
+			leaveDto.setBalanceleaves(String.valueOf(totalbalanceLeaveCounts));
+			totalLeaves = totalLeaves + leave.getNumberOfDays();
+			leaveDto.setNoOfDays(totalLeaves);
+			reportMap.put(leave.getUser().getId(), leaveDto);
+			
+		}
+
+		for (Map.Entry<Long, LeaveDTO> entry : reportMap.entrySet()) {
+			leaveDtoList.add(entry.getValue());
+		}
+		
+		for (LeaveDTO leaveDTO2 : leaveDtoList) {
+			writeRow = createExcelsheet.createRow(column + 2);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow,leaveDTO2);
+			column++;
+		}
+		
+		file = File.createTempFile(orgLocations.getOrgLocationName() + Constants.LEAVE_DATA
+				+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()), ".xls");
+		file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers  = Constants.TOP_TAKERS_LEAVE_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+		return createExcelsheet;
+	}
+	
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, LeaveDTO leaveDto) {
+		
+		
+		if(null != leaveDto.getUserId()){
+			writeRow.createCell(0).setCellValue(leaveDto.getUserId());
+		}
+		
+		if(null != leaveDto.getEmpName()  && !"".equalsIgnoreCase(leaveDto.getEmpName())){
+			writeRow.createCell(1).setCellValue(leaveDto.getEmpName());
+		}
+		
+		if(null != leaveDto.getEmpEmail()  && !"".equalsIgnoreCase(leaveDto.getEmpEmail())){
+			writeRow.createCell(2).setCellValue(leaveDto.getEmpEmail());
+		}
+		
+		if(null != leaveDto.getLeaveType()){
+			writeRow.createCell(3).setCellValue(leaveDto.getLeaveType());
+		}
+		
+		if(null != leaveDto.getDuration() && null != leaveDto.getDuration()){
+			writeRow.createCell(4).setCellValue(leaveDto.getDuration());
+		}
+		
+			writeRow.createCell(5).setCellValue(leaveDto.getNoOfDays());
+		
+			writeRow.createCell(6).setCellValue(leaveDto.getExtraLeavesTaken());
+		
+			writeRow.createCell(7).setCellValue(leaveDto.getBalanceleaves());
+	return createExcelsheet;
+}
 
 }

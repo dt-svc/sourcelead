@@ -316,7 +316,8 @@ function cancel(){
  <script>
 function saveProposeTime(){
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadUrl ='${sourceleadUrl}';
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
 		var frm = $('#proposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
