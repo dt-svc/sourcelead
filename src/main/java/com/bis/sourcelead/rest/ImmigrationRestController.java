@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -287,6 +289,31 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 			e.printStackTrace();
 		}
 		return "success";
+	}
+	
+	
+	@RequestMapping(value={"/getTemplateTaskList"},method = RequestMethod.POST)
+	public @ResponseBody ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,HttpServletRequest request,
+			@RequestParam(value = "searchValue", required = false) String searchValue) {
+		ResponseList<ImmigrationTemplateDTO> immiTemplateList = new ResponseList<>();
+    	String[] tableColumns = {"taskName", "assignedTo", "priority","taskRepeat"};
+		int sortColumnIndex = 3; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(templateDTO.getOrder() != null && !templateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(templateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = templateDTO.getOrder().get(0).get("dir");
+		}
+		templateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		templateDTO.setSortOrder(sortColumnOrder);
+		immiTemplateList = immigrationTemplateService.getTemplateTaskList(templateDTO, searchValue);
+		return immiTemplateList;
+	}
+	
+	@RequestMapping(value={"/editImmigrationTaskList"},method = RequestMethod.POST)
+	public ImmigrationTemplateDTO editImmigrationTaskList(HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id) {
+		ImmigrationTemplateDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
+		return templateDTO;
 	}
 	
 }

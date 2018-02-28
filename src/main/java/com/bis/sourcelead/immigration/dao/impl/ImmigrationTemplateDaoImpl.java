@@ -1,6 +1,8 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +20,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+import com.bis.sourcelead.entity.ScheduleMaintenance;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 
@@ -240,6 +245,67 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		ImmigrationTemplateForms immigrationTemplateForms = (ImmigrationTemplateForms) session.get(ImmigrationTemplateForms.class, immigrationId);
 		return immigrationTemplateForms;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
+			String searchValue) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		List<ImmigrationTemplateTasks> immigrationTemplateTasks = null;
+		ResponseList<ImmigrationTemplateDTO> response = new ResponseList<>();
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
+		 query1.append(" where (itt.taskName like '%" + searchValue + "%' )")
+		 	.append("OR (itt.priority like '%" + searchValue + "%')")
+			.append("OR (itt.taskRepeat like '" + searchValue + "%')");
+			
+		}
+		//usertList sorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(templateDTO.getSortColumn())) {
+				sortingQry = " order by itt."+ templateDTO.getSortColumn() +" "+templateDTO.getSortOrder();
+		}
+		String listQuery = "from ImmigrationTemplateTasks itt";
+		immigrationTemplateTasks = session.createQuery(listQuery+query1+sortingQry).list();
+		String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt";
+		countlist = session.createQuery(listQueryCount+query1).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
+		int totalCount = 0;
+		if (templateDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		List<ImmigrationTemplateDTO> maintenanceDTOs = new ArrayList<ImmigrationTemplateDTO>();
+		for(ImmigrationTemplateTasks source : immigrationTemplateTasks) {
+			ImmigrationTemplateDTO target = new ImmigrationTemplateDTO();
+			BeanUtils.copyProperties(source, target);
+			if(source.getAssignToCandidate() != null) {
+				target.setAssignedTo(source.getAssignToCandidate());
+			}else if(source.getAssignToUsers() != null) {
+				target.setAssignedTo(source.getAssignToUsers());
+			}
+			maintenanceDTOs.add(target);
+		}
+		response.setData(maintenanceDTOs);
+		return response;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationTemplateTasks editImmigrationTaskList(String id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationTemplateTasks itt where itt.id=:taskId";
+		return (ImmigrationTemplateTasks) session.createQuery(query).setParameter("taskId", id).uniqueResult();
 	}
 
 }

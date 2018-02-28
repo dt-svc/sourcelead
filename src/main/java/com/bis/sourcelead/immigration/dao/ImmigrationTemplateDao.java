@@ -2,6 +2,7 @@ package com.bis.sourcelead.immigration.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -29,6 +30,10 @@ public interface ImmigrationTemplateDao {
 	ImmigrationTemplateForms savePetitionTemplateFormDetails(ImmigrationTemplateForms immigrationTemplateForms);
 
 	ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId);
+
+	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
+
+	ImmigrationTemplateTasks editImmigrationTaskList(String id);
 
 	
 	

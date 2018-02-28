@@ -28,4 +28,8 @@ public interface ImmigrationTemplateService {
 	ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO, String searchValue);
 	
 	List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
+
+	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
+
+	ImmigrationTemplateDTO editImmigrationTaskList(String id);
 }

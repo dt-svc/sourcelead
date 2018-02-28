@@ -1,61 +1,62 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author 
+ * @author
  *
  */
-public class ImmigrationTemplateDTO {
+public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 
 	private Long id;
-	
+
 	private String templateName;
-	
+
 	private String templateDescription;
 
 	private String immigrationDocDeletedListIds;
-	
+
 	private String immigrationFormDeletedListIds;
-	
+
 	private List<ImmigrationTemplateDocDTO> immigrationDocList;
-	
+
 	private List<ImmigrationTemplateFormDTO> immigrationFormList;
-	
+
 	// add form form list property here
-	private String taskName;  //  Immigration task related properties
-	
+	private String taskName; // Immigration task related properties
+
 	private String priority;
-	
+
 	private Integer dueAfterMonths;
-	
+
 	private Integer dueAfterDays;
-	
+
 	private String taskRepeat;
-	
+
 	private String taskEmail;
-	
+
 	private String taskNotification;
-	
+
 	private String taskDescription;
-	
+
 	private String formFileName;
-	
+
 	private String formFileUrl;
-	
+
 	private String formFileContentType;
-	
+
 	private String formName;
-	
+
 	private String formDescription;
-	
+
 	private String staticPath;
-	
+
 	private String petitionAssignedTo;
-	
+
 	private String taskReminder;
-	
-	
+
+	private String assignedTo;
 
 	public Long getId() {
 		return id;
@@ -193,7 +194,6 @@ public class ImmigrationTemplateDTO {
 		this.formFileContentType = formFileContentType;
 	}
 
-
 	public String getFormName() {
 		return formName;
 	}
@@ -240,6 +240,14 @@ public class ImmigrationTemplateDTO {
 
 	public void setImmigrationFormDeletedListIds(String immigrationFormDeletedListIds) {
 		this.immigrationFormDeletedListIds = immigrationFormDeletedListIds;
+	}
+
+	public String getAssignedTo() {
+		return assignedTo;
+	}
+
+	public void setAssignedTo(String assignedTo) {
+		this.assignedTo = assignedTo;
 	}
 
 }
