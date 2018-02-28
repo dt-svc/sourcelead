@@ -122,15 +122,16 @@ function ApplicantAuthorization(status){
                                     		  
                                     	  resultToday  = resultToday + '           <td><div class="tblminwidth-100"><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
+
                                       if(status == 'requestSent'){ 
                                     	    resultToday  = resultToday + '<td><div>Received</div></td>';
                                     	    resultToday = resultToday +"<td>";
-                                    	    if(report.submissionRateStatus == 'REQUEST' && report.createdUser != loginUser){
+                                    	     if(report.submissionRateStatus == 'REQUEST' && report.createdUser.trim() != loginUser.trim()){
                                     	    	resultToday = resultToday + '<a  class="paddingRight"  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
                                     	    	resultToday = resultToday + '<a class="paddingLeft" href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
                                     	    }else{
                                     	    resultToday = resultToday + '---';
-                                    	    }
+                                    	    } 
                                     	    resultToday = resultToday +"</td>";
                                       }
                                       resultToday = resultToday+'     </tr>';

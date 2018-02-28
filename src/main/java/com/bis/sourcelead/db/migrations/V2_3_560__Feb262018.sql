@@ -1,10 +1,6 @@
-ALTER TABLE `sourcelead`.`ORG_LOCATIONS` 
-ADD COLUMN `RECOMMENDED_SKILL_PERCENT` INT(10) NULL DEFAULT NULL AFTER `FINANCIAL_YEAR_END_MONTH`,
-ADD COLUMN `RECOMMENDED_LOCATION_PERCENT` INT(10) NULL DEFAULT NULL AFTER `RECOMMENDED_SKILL_PERCENT`,
-ADD COLUMN `RECOMMENDED_NOTICE_PERCENT` INT(10) NULL DEFAULT NULL AFTER `RECOMMENDED_LOCATION_PERCENT`,
-ADD COLUMN `RECOMMENDED_EXP_PERCENT` INT(10) NULL DEFAULT NULL AFTER `RECOMMENDED_NOTICE_PERCENT`,
-ADD COLUMN `RECOMMENDED_VISATYPE_PERCENT` INT(10) NULL DEFAULT NULL AFTER `RECOMMENDED_EXP_PERCENT`,
-ADD COLUMN `RECOMMENDED_EDUCATION_PERCENT` INT(10) NULL DEFAULT NULL AFTER `RECOMMENDED_VISATYPE_PERCENT`,
-ADD COLUMN `RECOMMENDED_RATE_PERCENT` INT(10) NULL DEFAULT NULL AFTER `RECOMMENDED_EDUCATION_PERCENT`,
-ADD COLUMN `RECOMMENDED_KEYWORDS_PERCENT` INT(10) NULL DEFAULT NULL AFTER `RECOMMENDED_RATE_PERCENT`;
-;
+
+set sql_safe_updates=0;
+
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{InterviewerInvitation.InterviewerFirstName}} {{InterviewerInvitation.InterviewerLastName}},\n\nInterview scheduled on the {{InterviewerInvitation.InterviewDate}} for the job.\n\nJob name : {{InterviewerInvitation.RequirementTitle}} \nInterview date : {{InterviewerInvitation.InterviewDate}} \nDetails : {{InterviewerInvitation.Details}} \nInterview Type : {{InterviewerInvitation.InterviewType}} \nApplicants : {{InterviewerInvitation.ApplicantName}} \n\nFor clear details login into the system.' WHERE `UNIQUE_SCENARIO_NAME`='Interviewer Invitation' and `ENTITY_TYPE`='Email';
+set sql_safe_updates=1;
