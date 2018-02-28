@@ -47,13 +47,16 @@ function loadOffers(flag) {
         var text = "";
         var d = data.data;
         for (var e in d) {
+        	 var description = (d[e].description === null ? '--' : d[e].description); 
+        	 var minExp = (d[e].minExp === null ? '0' : d[e].minExp);
+        	 var maxExp = (d[e].maxExp === null ? '0' : d[e].maxExp);
             text += '<div class="srchresulwidget mt">';
             text += ' <p><a target="_blank" href="' + surl + "/" + d[e].url + "-" + d[e].id + '">' + d[e].jobTitle + '</a></p>';
-            text += '<p><span class="width85">Experience :</span> ' + d[e].minExp + ' - ' + d[e].maxExp + ' years</p>';
+            text += '<p><span class="width85">Experience :</span> ' + minExp + ' - ' + maxExp + ' years</p>';
             text += '<p><span class="width85">Positions :</span> ' + d[e].positions + '</p>';
             text += '<p><span class="width85">Posted on :</span> ' + d[e].createdDate + '</p>';
             text += '<p><span class="width85">Location :</span>' + d[e].city + ', ' + d[e].state + ', ' + d[e].country + '</p>';
-            text += '<p>Job Description : <div class="desc">' + d[e].description + '</div></p>';
+            text += '<p>Job Description : <div class="desc">' +description + '</div></p>';
             text += '<div class="clearfix mt"><div class="pull-right"><a href="javascript:void(0)" class="btn btn-default mr">View</a><a href="javascript:void(0)" class="btn btn-primary">Apply</a></div></div></div>';
         }
         text += "<div id='searchFoooterActions' class='clearfix mt'>";

@@ -1965,7 +1965,7 @@ Session session = this.sessionFactory.getCurrentSession();
                 query += " and (req.jobTitle like :search1 or req.skills like :search2 or req.description like :search3)";
             }
             if(employmentType != null && !employmentType.isEmpty()) {
-                query += " and l.jobType =:jobType";
+                query += " and req.jobType =:jobType";
             }
             Query queryObj = session.createQuery(query);
             queryObj.setLong("id", id);
