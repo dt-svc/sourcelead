@@ -39,4 +39,6 @@ public interface ImmigrationTemplateService {
 	
 	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 	
+	void deleteAllPetitionTemplateDetailsById(Long templateId);
+	
 }

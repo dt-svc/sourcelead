@@ -398,4 +398,37 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		logger.debug("immiFormsDtoLsts size is -->"+immiFormsDtoLst.size());
 		return immiFormsDtoLst;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllPetitionTemplateDetailsById(Long templateId) {
+		// only Soft delete operation, just status change in the Database.
+		Session session = this.sessionFactory.getCurrentSession();
+		if (templateId != null) {
+			// update ImmigrationTemplate
+			//System.out.println(" updated template id -->: " + templateId);
+			logger.debug(" updated template id -->: " + templateId);
+
+			String queryString = "UPDATE ImmigrationTemplate SET status = 0 where id =:templateId";
+			Query query = session.createQuery(queryString);
+			query.setLong("templateId", templateId);
+			int result = query.executeUpdate();
+			//System.out.println(" updated ImmigrationTemplate records count : " + result);
+			logger.debug(" updated ImmigrationTemplate records count : " + result);
+			// update ImmigrationTemplateDocs
+			queryString = "UPDATE ImmigrationTemplateDocs SET status = 0  where immigrationTempId = :templateId";
+			query = session.createQuery(queryString);
+			query.setLong("templateId", templateId);
+			result = query.executeUpdate();
+			//System.out.println(" updated ImmigrationTemplateDocs records count : " + result);
+			logger.debug(" updated ImmigrationTemplateDocs records count : " + result);
+			// update ImmigrationTemplateForms
+			queryString = "UPDATE ImmigrationTemplateForms SET status = 0  where immigrationTempId = :templateId";
+			query = session.createQuery(queryString);
+			query.setLong("templateId", templateId);
+			result = query.executeUpdate();
+			//System.out.println(" updated ImmigrationTemplateForms records count : " + result);
+			logger.debug(" updated ImmigrationTemplateForms records count : " + result);
+		}
+	}
 }

@@ -186,21 +186,14 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationTemplateList");
-	/*	try {
-	//	List<ImmigrationTemplateView> templateList= immigrationTemplateService.getAllTemplateDetails();
-		System.out.println("template list size is "+templateList.size());
-		model.addObject("templateList", templateList);
-		}
-		catch (Exception e) {
-			logger.error("Exception occured while getting template list-->"+e.getMessage());
-			e.printStackTrace();
-		}*/
 		return model;
 	}
 	
 
 @RequestMapping(value="/getImmigrationTemplateList")
-public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(ImmigrationTemplateListDTO templateListDTO,@RequestParam(value = "searchValue", required = false) String searchValue,HttpServletRequest request) {
+public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(ImmigrationTemplateListDTO templateListDTO,
+		@RequestParam(value = "searchValue", required = false) String searchValue,
+							HttpServletRequest request) {
 		ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
 		try {
 			String[] tableColumns = { "name", "description", "docsCount", "formsCount", "tasksCount" };//should be entity names 
@@ -212,7 +205,7 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 			}
 			templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			templateListDTO.setSortOrder(sortColumnOrder);
-			System.out.println("searchValue in controller ---> "+searchValue);
+			System.out.println("searchValue in controller searchValue---> "+searchValue);
 			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
@@ -224,7 +217,21 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		System.out.println("After getAlltemplateList in controller ---> "+templateListDTOList.getData().get(0).getDocsCount());
 		return templateListDTOList;
 }
-	
+
+	@RequestMapping(value = "/deleteImmigrationTemplateDetatils")
+	public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
+			HttpServletRequest request) {
+		try {
+			immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId);// only soft delete operation in Database.
+			//System.out.println("inside delete controller method calling ----->>>>>>>: "+deleteId);
+			logger.debug("inside delete controller method calling ----->>>>>>>: "+deleteId);
+		} catch (Exception e) {
+			logger.error(" Exception while deleting template deitails in controller -->" + deleteId);
+			e.printStackTrace();
+		}
+		return "success";
+	}
+
 	@RequestMapping(value={"/addPetitionTemplate"})
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
 			@RequestParam(value = "forwardTo", required = false) String forwardTo) {

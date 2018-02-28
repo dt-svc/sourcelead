@@ -142,7 +142,21 @@ function Immigration(){
 		immTemplId = templateId; //updating global variable "immTemplId" with templateId.
 	    window.location.href =sourceleadUrl+immiModulePath+"/addNewPetitionTemplate?templateId="+immTemplId; // for editing mode  
   }
-	
+
+  this.deleteTempalteDetailsByRowId = function(templateId){
+	  
+	  $.ajax({
+	       url: sourceleadUrl+immiModulePath+"/deleteImmigrationTemplateDetatils?deleteId="+templateId,
+	       type : "GET",
+	       data: templateId,
+	       success: function(data) {
+	    	  if(data == 'success'){
+	    		  window.location.href =sourceleadUrl+immiModulePath+"/viewImmigrationTemplateList"; // redirect to tempalte list.
+	    	   }
+	       }
+	});
+	  
+  }
 	// immigration view navigation if don't required comment below code start here.
 	this. savePageOneContinue = function (status){
 		$("#newPetitionTemplateDiv").empty();
