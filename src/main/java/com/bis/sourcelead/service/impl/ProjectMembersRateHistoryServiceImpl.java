@@ -32,4 +32,9 @@ public class ProjectMembersRateHistoryServiceImpl implements ProjectMembersRateH
 		return projectMembersRateHistoryDao.getProjectMembersRateHistoryListByProjectMemberId(projectMemberId);
 	}
 
+	@Override
+	public ProjectMembersRateHistory getProjectMembersRateHistoryById(Long Id) throws Exception {
+		return projectMembersRateHistoryDao.getProjectMembersRateHistoryById(Id);
+	}
+
 }

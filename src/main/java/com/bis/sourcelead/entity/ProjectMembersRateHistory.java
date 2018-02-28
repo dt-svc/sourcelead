@@ -58,12 +58,16 @@ public class ProjectMembersRateHistory {
 	@Column(name = "PAY_RATE_END_DATE")
 	private Date payRateEndDate;
 	
-	
 	@Column(name = "BILL_RATE_START_DATE")
 	private Date billRateStartDate;
 	
 	@Column(name = "BILL_RATE_END_DATE")
 	private Date billRateEndDate;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "RATE_HISTORY_ID", nullable = false)
+	@JsonBackReference
+	private ProjectMembersRateHistory rateHistoryId;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -214,6 +218,14 @@ public class ProjectMembersRateHistory {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public ProjectMembersRateHistory getRateHistoryId() {
+		return rateHistoryId;
+	}
+
+	public void setRateHistoryId(ProjectMembersRateHistory rateHistoryId) {
+		this.rateHistoryId = rateHistoryId;
 	}
 	
 }

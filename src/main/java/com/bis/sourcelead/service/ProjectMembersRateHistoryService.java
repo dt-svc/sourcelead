@@ -12,5 +12,7 @@ public interface ProjectMembersRateHistoryService {
 	
 	List<ProjectMembersRateHistory> getProjectMembersRateHistoryListByProjectMemberId(Long projectMemberId) throws Exception;
 	
+	ProjectMembersRateHistory getProjectMembersRateHistoryById(Long Id) throws Exception;
+	
 	
 }

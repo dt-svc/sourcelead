@@ -11,4 +11,6 @@ public interface ProjectMembersRateHistoryDao {
 	ProjectMembersRateHistory getProjectMembersRateHistoryByMemberIdAndStatus(Long Id) throws Exception;
 	
 	List<ProjectMembersRateHistory> getProjectMembersRateHistoryListByProjectMemberId(Long projectMemberId) throws Exception;
+	
+	ProjectMembersRateHistory getProjectMembersRateHistoryById(Long Id) throws Exception;
 }

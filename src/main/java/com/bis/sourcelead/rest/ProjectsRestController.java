@@ -548,36 +548,37 @@ public class ProjectsRestController {
 	    	boolean flag = projectMembersService.getPayRateOrBillRateChanges(projectMembers, projectMembersDTO);
 	    	
 	    	ProjectMembersRateHistory projectMembersRateHistory = null;
+	    	
 	    	if(projectMembers != null) {
 	    		
 	    		
 	    		if(flag == true) {
 		         pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMembers.getId());
 		    		if(pmrh == null) {
-		    			projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
+		    			pmrh = getProjectMembersRateHistoryDetails(projectMembers, user);
 		    			if(projectMembers.getProjectAssignedDate() != null) {
-		    				projectMembersRateHistory.setPayRateStartDate(projectMembers.getProjectAssignedDate());
-		    				projectMembersRateHistory.setBillRateStartDate(projectMembers.getProjectAssignedDate());
+		    				pmrh.setPayRateStartDate(projectMembers.getProjectAssignedDate());
+		    				pmrh.setBillRateStartDate(projectMembers.getProjectAssignedDate());
 		    			}else {
 		    				Date projectAssignedStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberStartDate());
-		    				projectMembersRateHistory.setPayRateStartDate(projectAssignedStartDate);
-		    				projectMembersRateHistory.setBillRateStartDate(projectAssignedStartDate);
+		    				pmrh.setPayRateStartDate(projectAssignedStartDate);
+		    				pmrh.setBillRateStartDate(projectAssignedStartDate);
 		    			}
 		    			
 		    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
 		    			Calendar cal = Calendar.getInstance();
 		    			cal.setTime(payRateEstimatedDate);
 		    			cal.add( Calendar.DAY_OF_YEAR, -1);
-		    			projectMembersRateHistory.setPayRateEndDate(cal.getTime());
+		    			pmrh.setPayRateEndDate(cal.getTime());
 		    			
 		    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
 		    			Calendar cal1 = Calendar.getInstance();
 		    			cal1.setTime(billRateEstimatedDate);
 		    			cal1.add( Calendar.DAY_OF_YEAR, -1);
-		    			projectMembersRateHistory.setBillRateEndDate(cal1.getTime());
+		    			pmrh.setBillRateEndDate(cal1.getTime());
 		    			
-		    			projectMembersRateHistory.setStatus(0);
-		    			projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
+		    			pmrh.setStatus(0);
+		    			pmrh = projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
 		    		}
 	    		}
 	    		
@@ -632,31 +633,49 @@ public class ProjectsRestController {
 	    		
 	    		if(flag == true) {
 		    		projectMembersRateHistory = getProjectMembersRateHistoryDetails(projectMembers, user);
-		    		if(pmrh != null) {
-		    			projectMembersRateHistory.setPayRateStartDate(pmrh.getPayRateEndDate());
-		    			projectMembersRateHistory.setBillRateStartDate(pmrh.getBillRateEndDate());
-		    			pmrh.setPayRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-		    			pmrh.setBillRateEndDate(commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date()));
-		    			pmrh.setStatus(0);
-		    			projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
-		    		}
-		    		
 		    		Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
 		    		projectMembersRateHistory.setPayRateStartDate(payRateEstimatedDate);
 		    		Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
 	    			projectMembersRateHistory.setBillRateStartDate(billRateEstimatedDate);
-	    			
 	    			projectMembersRateHistory.setStatus(1);
+	    			projectMembersRateHistory.setRateHistoryId(pmrh);
 		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(projectMembersRateHistory);
 	    		}
 	    		
-	    		/*if(flag == false) {
-	    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
-	    			pmrh.setPayRateStartDate(payRateEstimatedDate);
-		    		Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
-		    		pmrh.setBillRateStartDate(billRateEstimatedDate);
-		    		projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
-	    		}*/
+	    		if(flag == false) {
+	    			
+	    			pmrh = projectMembersRateHistoryService.getProjectMembersRateHistoryByMemberIdAndStatus(projectMembers.getId());
+	    			if(pmrh != null && pmrh.getRateHistoryId() != null) {
+	    				
+	    				ProjectMembersRateHistory parentRateHistory = projectMembersRateHistoryService.getProjectMembersRateHistoryById(pmrh.getRateHistoryId().getId());
+	    				
+	    				Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+	    				Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    				
+	    				if(!pmrh.getPayRateStartDate().equals(payRateEstimatedDate)) {
+	    					pmrh.setPayRateStartDate(payRateEstimatedDate);
+	    					Calendar cal1 = Calendar.getInstance();
+			    			cal1.setTime(payRateEstimatedDate);
+			    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+			    			parentRateHistory.setPayRateEndDate(cal1.getTime());
+	    				}
+	    				
+	    				if(!pmrh.getBillRateStartDate().equals(billRateEstimatedDate)) {
+	    					pmrh.setBillRateStartDate(billRateEstimatedDate);
+	    					Calendar cal1 = Calendar.getInstance();
+			    			cal1.setTime(billRateEstimatedDate);
+			    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+			    			parentRateHistory.setBillRateEndDate(cal1.getTime());
+	    				}
+			    		
+			    		projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
+			    		projectMembersRateHistoryService.saveProjectMembersRateHistory(parentRateHistory);
+			    		
+	    				
+	    			}
+	    			
+	    			
+	    		}
 	    		
 	    	}
 	    	

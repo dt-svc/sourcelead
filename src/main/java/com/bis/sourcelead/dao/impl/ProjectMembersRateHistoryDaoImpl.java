@@ -66,7 +66,7 @@ public class ProjectMembersRateHistoryDaoImpl implements ProjectMembersRateHisto
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		String query = " from ProjectMembersRateHistory pmrh left join fetch pmrh.projectMemberId projectMember left join fetch pmrh.candidateId candidate "
-				+ "where pmrh.projectMemberId.id = :Id and pmrh.status = '1' " ;
+				+ " left join fetch pmrh.rateHistoryId where pmrh.projectMemberId.id = :Id and pmrh.status = '1' " ;
 		List<ProjectMembersRateHistory> pmrhList = session.createQuery(query).setLong("Id", Id).list(); 
 		ProjectMembersRateHistory pmrh = null;
 		if(pmrhList != null && !pmrhList.isEmpty())  {
@@ -88,5 +88,21 @@ public class ProjectMembersRateHistoryDaoImpl implements ProjectMembersRateHisto
 										    .list(); 
 		return pmrhList;  
 		
+	}
+
+	@Override
+	@Transactional
+	public ProjectMembersRateHistory getProjectMembersRateHistoryById(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
+		String query = " from ProjectMembersRateHistory pmrh left join fetch pmrh.projectMemberId projectMember left join fetch pmrh.candidateId candidate "
+				+ " left join fetch pmrh.rateHistoryId where pmrh.id = :Id " ;
+		List<ProjectMembersRateHistory> pmrhList = session.createQuery(query).setLong("Id", Id).list(); 
+		ProjectMembersRateHistory pmrh = null;
+		if(pmrhList != null && !pmrhList.isEmpty())  {
+			pmrh  = pmrhList.iterator().next();
+		}
+		return pmrh; 
 	}
 }
