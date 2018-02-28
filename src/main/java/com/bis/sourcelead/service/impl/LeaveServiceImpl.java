@@ -1186,7 +1186,8 @@ public class LeaveServiceImpl implements LeaveService{
 			 globalVarsMap.put("noOfDays",String.valueOf(leaveDTO.getNoOfDays()));
 			 
 			 if(null != leaveDTO.getLeaveType()){
-				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
+				 LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+//				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
 				 globalVarsMap.put("leaveType",leaveType.getName());
 				 }
 			 
