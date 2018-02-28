@@ -1230,8 +1230,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 }else{
 		 onBoardingUUID = document.getElementById("candidateOnBoardUUID").value;
 	 }
-	 
-	 alert("helo")
 	 if(onBoardingUUID){
 		 
 	 addCandidateDetailsForOnboarding();
