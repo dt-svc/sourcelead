@@ -148,7 +148,7 @@ public class RequirementInterviewController {
 				
 				if(requirementInterview.getStartTime() != null && requirementInterview.getEndTime() == null){
 					  if(dateDateFormat != null){
-					    if(dateDateFormatCurrentDate.equals(dateDateFormat)){
+					    if(dateDateFormatCurrentDate.equals(dateDateFormat) || dateDateFormatCurrentDate.before(dateDateFormat)){
 					    		 requirementInterview.setStartTimeStr("interviewStartTime");
 					      }
 					  }
@@ -282,7 +282,7 @@ public class RequirementInterviewController {
 				
 				if(requirementInterview.getStartTime() != null && requirementInterview.getEndTime() == null) {
 					if(convertedDateStart != null){
-				    	 if(dateFormatCurrentDate.equals(dateFormatstartDate)){
+				    	 if(dateFormatCurrentDate.equals(dateFormatstartDate) || dateFormatCurrentDate.before(dateFormatstartDate)){
 				    		 requirementInterview.setStartTimeStr("interviewStartTime");
 				      }
 				     }
