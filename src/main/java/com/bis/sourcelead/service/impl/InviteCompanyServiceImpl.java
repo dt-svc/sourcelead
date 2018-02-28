@@ -14,12 +14,14 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InviteCompanyDao;
 import com.bis.sourcelead.dto.InviteCompanyDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -183,15 +185,13 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 	@Override
 	public void storeScheduleMaintenance(ScheduleMaintenanceDTO maintenanceDTO) throws ParseException {
 		ScheduleMaintenance maintenance = new ScheduleMaintenance();
+		if(maintenanceDTO.getId() != null) {
+			maintenance.setId(maintenanceDTO.getId());
+		}
 		maintenance.setScheduleMessage(maintenanceDTO.getScheduleMessage());
-		DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
-		DateFormat dateFormat1 = new SimpleDateFormat ("yyyy-MM-dd");
-		DateFormat dateFormat2 = new SimpleDateFormat ("hh:mma");
-		Calendar calender = Calendar.getInstance();
-		calender.setTime(dateFormat.parse(maintenanceDTO.getScheduleDate()));
-		maintenance.setScheduleDate(dateFormat1.parse(dateFormat1.format(calender.getTime())));
-		maintenance.setStartTime(dateFormat2.parse(maintenanceDTO.getStartTime()));
-		maintenance.setEndTime(dateFormat2.parse(maintenanceDTO.getEndTime()));
+		DateFormat dateFormat = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
+		maintenance.setStartDate(dateFormat.parse(maintenanceDTO.getStartDate()));
+		maintenance.setEndDate(dateFormat.parse(maintenanceDTO.getEndDate()));
 		maintenance.setCreatedDate(new Date());
 		inviteCompanyDao.storeScheduleMaintenance(maintenance);
 	}
@@ -202,12 +202,21 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 		ScheduleMaintenanceDTO maintenanceDTO = null;
 		if(scheduleMaintenance != null) {
 			maintenanceDTO = new ScheduleMaintenanceDTO();
-			maintenanceDTO.setScheduleDate(scheduleMaintenance.getScheduleDate().toString());
+			maintenanceDTO.setStartDate(scheduleMaintenance.getStartDate().toString());
 			maintenanceDTO.setScheduleMessage(scheduleMaintenance.getScheduleMessage());
-			maintenanceDTO.setStartTime(scheduleMaintenance.getStartTime().toString());
-			maintenanceDTO.setEndTime(scheduleMaintenance.getEndTime().toString());
+			maintenanceDTO.setEndDate(scheduleMaintenance.getEndDate().toString());
 		}
 		return maintenanceDTO;
+	}
+
+	@Override
+	public ResponseList<ScheduleMaintenanceDTO> getScheduleMaintenanceList(ScheduleMaintenanceDTO scheduleMaintenanceDTO, String searchValue) throws ParseException{
+		return inviteCompanyDao.getScheduleMaintenanceList(scheduleMaintenanceDTO, searchValue);
+	}
+
+	@Override
+	public void deleteScheduleMaintenance(String id) {
+		inviteCompanyDao.deleteScheduleMaintenance(id);
 	}
 
 }

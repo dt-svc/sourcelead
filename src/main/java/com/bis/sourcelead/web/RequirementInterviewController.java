@@ -81,8 +81,8 @@ public class RequirementInterviewController {
 		    	 requirementInterview.setInterviewStatus(null);	 
 		     }else{
 		    	 requirementInterview.setInterviewStatus(interviewStatus);
-		     }
-			 
+		     } 
+			  
 			 requirementInterviewService.saveRequirementInterview(requirementInterview);
 			 DateFormat DATE_TIME = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			 //bellow dates are convert to sql dates to current date
@@ -101,7 +101,7 @@ public class RequirementInterviewController {
 		    	 Date convertedDateEnd = null;
 		    	 Date dateDateFormatEnd = null;
 		    	 Date dateDateFormatTimeEnd = null;
-		    	 Timezone timezone = timeZoneService.getTimezone(requirementInterview.getSubmissionId().getOrgLocations().getTimezone().getId());
+		    	 Timezone timezone = timeZoneService.getTimezone(requirementInterview.getTimezone().getId());
 					if(requirementInterview.getStartTime() != null){
 				    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 						String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
@@ -146,17 +146,25 @@ public class RequirementInterviewController {
 				dateDateFormatTimeEnd =  DATE_TIME.parse(stringDateFormatTimeEnd);
 				}
 				
-			     if(dateDateFormat != null){
-			    	 if((dateDateFormatCurrentDate.equals(dateDateFormat) && dateDateFormatTimeStart.after(dateDateFormatCurTime))|| dateDateFormatTimeStart.after(dateDateFormatCurTime)){
-			    		 requirementInterview.setStartTimeStr("interviewStartTime");
-			      }
-			     }
-			     if(dateDateFormatEnd != null){
-			    	 if(dateDateFormatCurrentDate.equals(dateDateFormatEnd) &&  dateDateFormatCurTime.before(dateDateFormatTimeEnd)|| dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
-			    		 requirementInterview.setEndTimeStr("interviewEndTime");
-			    	 }
-	    	     }
-			     
+				if(requirementInterview.getStartTime() != null && requirementInterview.getEndTime() == null){
+					  if(dateDateFormat != null){
+					    if(dateDateFormatCurrentDate.equals(dateDateFormat)){
+					    		 requirementInterview.setStartTimeStr("interviewStartTime");
+					      }
+					  }
+				}
+				 if(requirementInterview.getEndTime() != null){
+				     if(dateDateFormat != null){
+				    	 if((dateDateFormatCurrentDate.equals(dateDateFormat) && dateDateFormatTimeStart.after(dateDateFormatCurTime))|| dateDateFormatTimeStart.after(dateDateFormatCurTime)){
+				    		 requirementInterview.setStartTimeStr("interviewStartTime");
+				      }
+				     }
+				     if(dateDateFormatEnd != null){
+				    	 if(dateDateFormatCurrentDate.equals(dateDateFormatEnd) &&  dateDateFormatCurTime.before(dateDateFormatTimeEnd)|| dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
+				    		 requirementInterview.setEndTimeStr("interviewEndTime");
+				    	 }
+		    	     }
+				 }
 			     //stroe  requirementSubmissionHistoryService 
 			     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			     RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());

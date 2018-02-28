@@ -2769,6 +2769,188 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projectsDao.getAllProjectByOrgLocationsId(orgLocationId);
 			}
 
+			@Override
+			public Projects getClientProjectApproversUpdate(String projectClientUUID, User user,
+					ProjectsDTO projectDTO) throws Exception {
+				
+				ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID); 
+				Projects projects = getProjectById(projectClients.getProjectId().getId());
+				
+				if(StringUtils.isNotBlank(projectDTO.getLevel1Manager()) && projectClients != null){
+		    		HashSet<Long> oldlist = new HashSet<>();
+		    		HashSet<Long> freshlist = new HashSet<>();
+		    		HashSet<Long> templist = null;
+		    		List<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectClientId(projectClients.getId());
+		    		ProjectClients pc = null;
+		    		Boolean isLevel2ManagerExists = false;
+		    		Long level1HierarchyId = null;
+		    		Long level2HierarchyId = null;
+		    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+			    			 if(prHierarchy.getLevel() == 1){
+					    		 level1HierarchyId = prHierarchy.getId();
+					    	 }else {
+					    		 level2HierarchyId = prHierarchy.getId();
+					    	 }
+		    			     pc = prHierarchy.getProjectClientsId();
+							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+							 Long fieldValuelong = null;
+							     String level1UserDetails[] = projectDTO.getLevel1Manager().split(",");
+							     if(prHierarchy.getLevel() == 1 || (prHierarchy.getLevel() == 2 && projectApproverHierarchies.size() == 1))
+							     {
+							    	 fieldValuelong = Long.valueOf(level1UserDetails[0]);
+							     }
+							     if(prHierarchy.getLevel() == 2 &&  StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
+							    	 if(!"".equalsIgnoreCase(projectDTO.getLevel2Manager())){
+							    		 isLevel2ManagerExists = true;
+							    		 fieldValuelong = Long.valueOf(projectDTO.getLevel2Manager());
+							    	 }
+							    	 
+							     }
+							      if(prHierarchy.getLevel() == 2 && (StringUtils.isEmpty(projectDTO.getLevel2Manager()))){
+							    	 oldlist.add(pah.getApproverUserId().getId());
+							    	 pah.setStatus("0");
+							    	 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							     }
+							     
+							     if(fieldValuelong != null){
+							    	 User usr = userService.getUserById(fieldValuelong);
+									 oldlist.add(pah.getApproverUserId().getId());
+									 freshlist.add(usr.getId());
+									 pah.setApproverUserId(usr);
+									 pah.setStatus("1");
+									 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							     }
+							    
+		    	    }
+		    		
+		    		// if   we  are adding new  level 2 manager while editing
+		    		if(projectApproverHierarchies.size()== 1){ 	
+						if(StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
+							Long[] ids = new Long[10];
+							User approverUserId2 = new User();
+							ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+							pah2.setProjectId(projects);
+							approverUserId2.setId(Long.parseLong(projectDTO.getLevel2Manager()));
+							pah2.setApproverUserId(approverUserId2);
+							pah2.setLevel(2);
+							pah2.setProjectClientsId(pc);
+							pah2.setStatus("1");
+							ids[1] = approverUserId2.getId();
+							projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+							freshlist.add(Long.parseLong(projectDTO.getLevel2Manager()));
+							
+						}
+					 }
+		    		if(oldlist != null && !oldlist.isEmpty()){
+		    			templist = (HashSet<Long>) oldlist.clone();
+		    		}
+		    		//getting projectmember userId's who are terminated or who are dropped from project
+		    		oldlist.removeAll(freshlist);
+		    		if(oldlist != null && !oldlist.isEmpty()){
+		    			for(Long terminatedUserId : oldlist){
+		    				if(projects != null && projects.getId() != null){
+		    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
+			    				if(null != pm && pm.getId() != null){
+			    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+			    					if(projectMembersHistory != null){
+			    						projectMembersHistory.setProjectTerminationDate(commonUtil.currentDate());
+				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+			    					}
+				    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
+			    				}
+			    				 
+		    				}
+		    			}
+		    		}
+		    		
+		    		if(templist != null && !templist.isEmpty()){
+		    			//getting projectmember userId's who are added to the project
+		    			freshlist.removeAll(templist);
+		    			if(freshlist != null && !freshlist.isEmpty()){
+		    				for(Long freshlyaddedUserId : freshlist){
+		    					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(freshlyaddedUserId,projects.getOrgLocationsId().getId());
+		    					if(userRole != null && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
+		    						storeProjectMemberByMemberUserIdAndLoginUser(freshlyaddedUserId, user, projects, commonUtil.currentDate());
+		    					}
+		    				}
+		    			}
+		    			
+		    		}
+		    		 /**
+		    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
+		    		  */
+		    		 LinkedList<SubmissionApproverHierarchy> saHierarchyList = new LinkedList<SubmissionApproverHierarchy>();
+		    		 if(isLevel2ManagerExists){
+		    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level1HierarchyId);
+			    	     if(sahList != null && !sahList.isEmpty()){
+			    	    	 for(SubmissionApproverHierarchy sah :sahList){
+			    	    		 SubmissionApproverHierarchy subSah =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(level2HierarchyId, sah.getSubmissionId().getId());
+			    	    		 if(subSah != null && (StringUtils.isEmpty(subSah.getStatus())  || (StringUtils.isNotEmpty(subSah.getStatus()) && subSah.getStatus().equalsIgnoreCase("0")))){
+			    	    			    subSah.setSubmissionStatus(sah.getSubmissionStatus());
+			    	    			    subSah.setBillingStatus(sah.getBillingStatus());
+			    	    			    subSah.setInvoiceStatus(sah.getInvoiceStatus());
+			    	    			    subSah.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+										subSah.setCreatedDate(commonUtil.currentDate());
+										subSah.setCreatedBy(user.getUserCode());
+										subSah.setUpdatedDate(commonUtil.currentDate());
+										subSah.setUpdatedBy(user.getUserCode());
+										subSah.setRejectedReason(sah.getRejectedReason());
+										subSah.setActionPerformedBy(sah.getActionPerformedBy());
+										subSah.setReopenedUser(sah.getReopenedUser());
+										subSah.setReopenReason(sah.getReopenReason());
+										subSah.setReopenRejectedReason(sah.getReopenRejectedReason());
+										subSah.setStatus("1");
+										saHierarchyList.add(subSah);
+			    	    		 }
+			    	    		 else{
+			    	    			    SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+			    	    			    ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			    	    			    pah.setId(level2HierarchyId);
+										saHierarchy.setHeirarchyId(pah);
+										saHierarchy.setSubmissionId(sah.getSubmissionId());
+										saHierarchy.setSubmissionStatus(sah.getSubmissionStatus());
+										saHierarchy.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+										saHierarchy.setFrequencyStartDate(sah.getFrequencyStartDate());
+										saHierarchy.setFrequencyEndDate(sah.getFrequencyEndDate());
+										saHierarchy.setCreatedDate(commonUtil.currentDate());
+										saHierarchy.setCreatedBy(user.getUserCode());
+										saHierarchy.setUpdatedDate(commonUtil.currentDate());
+										saHierarchy.setBillingStatus(sah.getBillingStatus());
+										saHierarchy.setInvoiceStatus(sah.getInvoiceStatus());
+										saHierarchy.setRejectedReason(sah.getRejectedReason());
+										saHierarchy.setActionPerformedBy(sah.getActionPerformedBy());
+										saHierarchy.setReopenedUser(sah.getReopenedUser());
+										saHierarchy.setReopenReason(sah.getReopenReason());
+										saHierarchy.setReopenRejectedReason(sah.getReopenRejectedReason());
+										saHierarchy.setUpdatedBy(user.getUserCode());
+										saHierarchy.setStatus("1");
+										saHierarchyList.add(saHierarchy);
+			    	    		 }
+			    	    	 }
+			    	     }
+					 }
+		    		 else{
+		    			if(level2HierarchyId != null) {
+		    				 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level2HierarchyId);
+				    	     if(sahList != null && !sahList.isEmpty()){
+				    	    	 for(SubmissionApproverHierarchy sah :sahList){
+				    	    		 sah.setStatus("0");
+									 saHierarchyList.add(sah);
+				    	    	 }
+				    	     }
+		    			}
+		    		
+		    		 }
+		    		 if(saHierarchyList != null && !saHierarchyList.isEmpty()){
+		    			 for(SubmissionApproverHierarchy sah : saHierarchyList){
+		    				 submissionApproverHierarchyService.updateSubmissionApproverHierarchy(sah);
+		    			 }
+		    			 
+		    		 }
+	    	}
+				return projects;
+			}
+
 
 
 }
