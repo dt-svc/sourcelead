@@ -202,7 +202,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
 		StringBuilder query1 = new StringBuilder("");
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-			query1.append(" or (tempView.name like '%" + searchValue + "%' )");
+			query1.append(" and (tempView.name like '%" + searchValue + "%' )");
 			query1.append(" or (tempView.description like '%" + searchValue + "%' )");
 			//query1.append(" or (tempView.status like '%" + searchValue + "%' )");
 		}
@@ -214,14 +214,11 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			sortingQry = " order by tempView.name ";
 		}
 		
+		String listQuery = "from ImmigrationTemplateView tempView  where tempView.orgLocationId=:orgLocationId ";
 		
-		
-		String listQuery = "from ImmigrationTemplateView tempView  where tempView.orgLocationId="+orgLocationId;
-		
-		ImmigrationTemplateViewLst = session.createQuery(listQuery + query1 + sortingQry).list();
-		String listQueryCount = "select count(*) from ImmigrationTemplateView tempView";
-		countlist = session.createQuery(listQueryCount + query1).setFirstResult(templateListDTO.getStart())
-		//countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocationId).setFirstResult(templateListDTO.getStart())
+		ImmigrationTemplateViewLst = session.createQuery(listQuery + query1 + sortingQry).setLong("orgLocationId", orgLocationId).list();
+		String listQueryCount = "select count(*) from ImmigrationTemplateView tempView where tempView.orgLocationId=:orgLocationId"; 
+		countlist = session.createQuery(listQueryCount + query1).setLong("orgLocationId", orgLocationId).setFirstResult(templateListDTO.getStart())
 				.setMaxResults(templateListDTO.getLength()).list();
 		int totalCount = 0;
 		if (templateListDTO != null) {
