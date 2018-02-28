@@ -122,4 +122,6 @@ public interface CandidateDao {
 	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,List<Long> associatesIds,Long loginOrgLocationId)throws Exception ;
 	
 	Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception;
+	
+	public Candidate getCandidateByEmail(String email) throws Exception;
 }

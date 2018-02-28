@@ -845,7 +845,11 @@ public class RequirementController {
 						 for(Entry<Long, String[]> jobCustomData:jobData.entrySet()) {
 							 String labelName = jobCustomData.getValue()[0];
 							 String labelData = jobCustomData.getValue()[1];
-							 dataMap.put(labelName, labelData);
+							 String labelId = jobCustomData.getValue()[2];
+							 Long id = jobCustomData.getKey();
+							 StringBuilder keyValue =  new StringBuilder();
+							 keyValue.append(labelName).append("$").append(labelData);
+							 dataMap.put(id.toString(), keyValue.toString());
 							 model.addObject("dataMapListJobs", dataMap);
 						 	}
 					 	}

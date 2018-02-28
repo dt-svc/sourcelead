@@ -22,4 +22,6 @@ public interface OrglocationFormFieldsDao {
 
 	List<OrglocationFormSubFields> getAllCustomFormSubFieldsBySectionIdandOrgLocationId(Long formFieldID);
 
+	List<OrglocationFormFields> getAllCustomFormFieldsBySectionIdandOrgLocationIdForCustomList(Long sectionId,Long orgLocation);
+
 }

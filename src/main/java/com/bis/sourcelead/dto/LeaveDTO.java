@@ -81,7 +81,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String isBillable;
 	private int selfBalancedCounts;
 	private String topLeaveTakersreportYear;
-	private int extraLeavesTaken;
+	private float extraLeavesTaken;
 	private String leaveUUID;
 	private float appliedNoOfDays;
 	private float actualLeavesTaken;
@@ -575,12 +575,10 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	public void setTopLeaveTakersreportYear(String topLeaveTakersreportYear) {
 		this.topLeaveTakersreportYear = topLeaveTakersreportYear;
 	}
-	public int getExtraLeavesTaken()
-	{
+	public float getExtraLeavesTaken() {
 		return extraLeavesTaken;
 	}
-	public void setExtraLeavesTaken(int extraLeavesTaken)
-	{
+	public void setExtraLeavesTaken(float extraLeavesTaken) {
 		this.extraLeavesTaken = extraLeavesTaken;
 	}
 	public String getLeaveUUID()

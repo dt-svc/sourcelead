@@ -358,6 +358,13 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 		userDTO.setFirstName(user.getFirstName());
 			 	userDTO.setLastName(user.getLastName());
 			 	userDTO.setMobilePhone(user.getMobilePhone());
+		 	}else {
+		 		Candidate candidate = candidateService.getCandidateByEmail(EmailId);
+		 		if(candidate != null) {
+		 			userDTO.setFirstName(candidate.getFirstName());
+				 	userDTO.setLastName(candidate.getLastName());
+				 	userDTO.setMobilePhone(candidate.getMobilePhone());
+		 		}
 		 	}
 			return userDTO;
 	   }
@@ -679,10 +686,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 									  }else{
 										  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
 									  }
-									  
+									  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId,new Date());
 									  sendEmailCount = sendEmailCount+1;
 								  }
 							  }
+							  
 							  
 							  
 							 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());

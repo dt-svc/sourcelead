@@ -965,7 +965,7 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		if(requirementDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:requirementDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
 					JobCustomFieldData jobCustomFields = null;
 					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
 						jobCustomFields = jobCustomFieldDataService.getJobCustomFieldDataById(customFields.getEntityId());
