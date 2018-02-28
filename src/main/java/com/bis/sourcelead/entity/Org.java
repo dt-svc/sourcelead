@@ -137,7 +137,7 @@ public class Org implements Serializable{
     private String careerPageKey;
     
     @Column(name = "IS_CAREER_PAGE_KEY_ACTIVE")
-    private boolean careerPageKeyActive;
+    private Boolean careerPageKeyActive;
 	
 	@Transient
 	private String email;
@@ -443,13 +443,13 @@ public class Org implements Serializable{
 		this.careerPageKey = careerPageKey;
 	}
 
-	public boolean isCareerPageKeyActive()
-	{
+	public Boolean getCareerPageKeyActive() {
 		return careerPageKeyActive;
 	}
 
-	public void setCareerPageKeyActive(boolean careerPageKeyActive)
-	{
+	public void setCareerPageKeyActive(Boolean careerPageKeyActive) {
 		this.careerPageKeyActive = careerPageKeyActive;
 	}
+
+	
 }

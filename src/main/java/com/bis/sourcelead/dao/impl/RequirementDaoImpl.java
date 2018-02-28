@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import com.bis.sourcelead.constants.Constants;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -26,24 +25,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.RequirementLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
-import org.aspectj.apache.bcel.classfile.Constant;
 
 /**
  * 
@@ -83,6 +82,8 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	@Autowired
+	private RequirementLocationsDao requirementLocationsDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1984,16 +1985,22 @@ Session session = this.sessionFactory.getCurrentSession();
             SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_DD_MM_YYYY);
             if (requirementList != null && !requirementList.isEmpty()) {
                 for (Requirement req : requirementList) {
+                	List<RequirementLocations> reqLocationsList = requirementLocationsDao.getRequirementLocationsListByRequirementId(req.getId());
                     RequirementDTO dto = new RequirementDTO();
+                    for(RequirementLocations rloc : reqLocationsList){
+                    	dto.setCity(rloc.getCity());
+                    	dto.setState(rloc.getState());
+                    	dto.setCountry(rloc.getCountry());
+                    }
                     dto.setId(req.getId());
                     dto.setJobTitle(req.getJobTitle());
                     dto.setMinExp(req.getMinExp());
                     dto.setMaxExp(req.getMaxExp());
                     dto.setCreatedDate(format.format(req.getCreatedDate()));
-                    dto.setCity(req.getCity());
-                    dto.setState(req.getState());
+                    //dto.setCity(req.getCity());
+                    //dto.setState(req.getState());
                     dto.setDescription(req.getDescription());
-                    dto.setCountry(req.getCountry());
+                    //dto.setCountry(req.getCountry());
                     dto.setPositions(req.getPositions());
                     dto.setUrl(req.getUrl());
                     reqList.add(dto);

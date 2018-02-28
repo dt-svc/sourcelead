@@ -60,7 +60,7 @@ public class CareerController {
             Org org = orgService.getOrgByCareerPageKey(key);
             if (org == null) {
                 return "forward:/ws/careers-error?msg=Invalid Key";
-            } else if (!org.isCareerPageKeyActive()) {
+            } else if (!org.getCareerPageKeyActive()) {
                 return "forward:/ws/careers-error?msg=Key is not active";
             } else {
                 request.getSession().setAttribute("sourceleadUrl", sourceleadUrl.replace("/app", ""));
@@ -76,7 +76,7 @@ public class CareerController {
     @ResponseBody
     @RequestMapping(value = "/ws/jobs", method = RequestMethod.POST)
     public ResponseList<RequirementDTO> requirementList(HttpServletRequest request, String key,
-            String search, @RequestParam(defaultValue = "0") long location,
+            String search, @RequestParam(defaultValue = "0") Long location,
             String employmentType,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
@@ -88,7 +88,7 @@ public class CareerController {
                 Org org = orgService.getOrgByCareerPageKey(key);
                 if (org == null) {
                     response.setError("Invalid Key");
-                } else if (!org.isCareerPageKeyActive()) {
+                } else if (!org.getCareerPageKeyActive()) {
                     response.setError("Key is not active");
                 } else {
                     response = requirementService.getRequirementList(org.getId(), search, location, employmentType, pageNo, pageSize);

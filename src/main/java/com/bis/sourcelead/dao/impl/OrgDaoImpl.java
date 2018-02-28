@@ -440,9 +440,9 @@ public class OrgDaoImpl implements OrgDao {
         public int changeCareerPageKeyStatus(Long id) throws Exception {
             Session session = this.sessionFactory.getCurrentSession();
             Org org = session.get(Org.class, id);
-            org.setCareerPageKeyActive(!org.isCareerPageKeyActive());
+            org.setCareerPageKeyActive(!org.getCareerPageKeyActive());
             session.saveOrUpdate(org);
-            return org.isCareerPageKeyActive() ? 1 : 0;
+            return org.getCareerPageKeyActive() ? 1 : 0;
         }
 
 	@Override

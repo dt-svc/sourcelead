@@ -705,7 +705,7 @@ function preventTabkey(e){
 		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
 	                     	</div>
 	                     </li>
-	                     <li><a href="<c:url value="/app/license" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>License</a></li>
+<%-- 	                     <li><a href="<c:url value="/app/license" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>License</a></li> --%>
 						 
 	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
