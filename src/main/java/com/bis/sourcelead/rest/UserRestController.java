@@ -686,10 +686,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 									  }else{
 										  employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
 									  }
-									  
+									  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId,new Date());
 									  sendEmailCount = sendEmailCount+1;
 								  }
 							  }
+							  
 							  
 							  
 							 /* ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
