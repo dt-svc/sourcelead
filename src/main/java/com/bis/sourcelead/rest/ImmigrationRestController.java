@@ -213,8 +213,8 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(templateListDTOList.getRecordsTotal()>0)
-		System.out.println("After getAlltemplateList in controller ---> "+templateListDTOList.getData().get(0).getDocsCount());
+		//if(templateListDTOList.getRecordsTotal()>0)
+		//System.out.println("After getAlltemplateList in controller ---> "+templateListDTOList.getData().get(0).getDocsCount());
 		return templateListDTOList;
 }
 
