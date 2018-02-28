@@ -495,7 +495,7 @@ public class LeaveServiceImpl implements LeaveService{
         Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
         Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
         
-		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),user.getId(),yearStartDate,fromDate);
+		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
 //		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocations.getId(),Constants.APPROVED,user.getId());
 		float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
 		
@@ -511,11 +511,17 @@ public class LeaveServiceImpl implements LeaveService{
 //					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
 					float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
-					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod())){
-						leave.setExtraLeavesTaken(appliedLeaves - carryForwardLeaves);
-					}else{
-						leave.setExtraLeavesTaken(0);
-					}
+                    if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+                        float extraLeaves = appliedLeaves - carryForwardLeaves;
+                        if(extraLeaves > 0)
+                            leave.setExtraLeavesTaken(extraLeaves);
+                        else
+                            leave.setExtraLeavesTaken(0);
+                    }else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+                        leave.setExtraLeavesTaken(leave.getLeaveType().getNoOfDays() - appliedLeaves);
+                    }else{
+                        leave.setExtraLeavesTaken(0);
+                    }
 					
 					
 					float numberOfLeavesPerYear = totalLeaves - appliedLeaves + leave.getExtraLeavesTaken();
