@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -493,7 +495,7 @@ public class LeaveServiceImpl implements LeaveService{
         Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
         Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
         
-		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),user.getId(),yearStartDate,fromDate);
+		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
 //		List<Leave> leaveList = leaveDao.getLeavesListByLocationIdAndStatus(orgLocations.getId(),Constants.APPROVED,user.getId());
 		float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType());
 		
@@ -509,11 +511,17 @@ public class LeaveServiceImpl implements LeaveService{
 //					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
 					
 					float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
-					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod())){
-						leave.setExtraLeavesTaken(appliedLeaves - carryForwardLeaves);
-					}else{
-						leave.setExtraLeavesTaken(0);
-					}
+                    if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+                        float extraLeaves = appliedLeaves - carryForwardLeaves;
+                        if(extraLeaves > 0)
+                            leave.setExtraLeavesTaken(extraLeaves);
+                        else
+                            leave.setExtraLeavesTaken(0);
+                    }else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+                        leave.setExtraLeavesTaken(leave.getLeaveType().getNoOfDays() - appliedLeaves);
+                    }else{
+                        leave.setExtraLeavesTaken(0);
+                    }
 					
 					
 					float numberOfLeavesPerYear = totalLeaves - appliedLeaves + leave.getExtraLeavesTaken();
@@ -1526,6 +1534,7 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getLeaveByLeaveUUId(leaveUUID);
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	public File getLeaveExport(OrgLocations orgLocations,LeaveDTO leaveDTO) throws Exception {
 		
@@ -1540,19 +1549,20 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		List<Leave> leaveList = leaveResponse.getData();
 		List<LeaveDTO> leaveDtoList = new ArrayList<>();
-		HashMap<Long, LeaveDTO> reportMap = new HashMap<>();
-		int totalLeaves = 0;
+		HashMap<Long, Float> reportMap = new HashMap<>();
 		int column = 0;
-		LeaveDTO leaveDto = null;
 		float totalbalanceLeaveCounts = 0;
 		
 		for (Leave leave : leaveList) {
-			leaveDto = reportMap.get(leave.getUser().getId());
-			if (leaveDto == null) {
-				leaveDto = new LeaveDTO();
-				totalLeaves = 0;
+			LeaveDTO leaveDto  = new LeaveDTO();
+			int totalLeaves = 0;
+			
+			if(reportMap.containsKey(leave.getUser().getId())){
+				totalbalanceLeaveCounts = reportMap.get(leave.getUser().getId());
+			}else {
 				totalbalanceLeaveCounts = leave.getLeaveType().getNoOfDays();
 			}
+			
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
 				sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
@@ -1563,7 +1573,7 @@ public class LeaveServiceImpl implements LeaveService{
 			StringBuilder date = new StringBuilder();
 			if(null != leave.getFromDate() && null != leave.getToDate()) {
 				String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getFromDate());
-				String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getFromDate());
+				String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getToDate());
 				date.append(startDate).append(" - ").append(toDate);
 			} 
 			
@@ -1583,13 +1593,12 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setBalanceleaves(String.valueOf(totalbalanceLeaveCounts));
 			totalLeaves = totalLeaves + leave.getNumberOfDays();
 			leaveDto.setNoOfDays(totalLeaves);
-			reportMap.put(leave.getUser().getId(), leaveDto);
+			
+			reportMap.put(leave.getUser().getId(), totalbalanceLeaveCounts);
+			leaveDtoList.add(leaveDto);
 			
 		}
 
-		for (Map.Entry<Long, LeaveDTO> entry : reportMap.entrySet()) {
-			leaveDtoList.add(entry.getValue());
-		}
 		
 		for (LeaveDTO leaveDTO2 : leaveDtoList) {
 			writeRow = createExcelsheet.createRow(column + 2);
