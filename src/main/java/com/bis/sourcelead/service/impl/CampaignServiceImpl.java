@@ -56,9 +56,9 @@ public class CampaignServiceImpl implements CampaignService{
 	ReferContactsService referContactsService;
 	
 	@Override
-	public boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
+	public String createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation) throws Exception
 	{
-		boolean isSenderCreated = false;
+		String isSenderCreated = "failure";
 		String senderCreated = null;
 		CreateSender createSender = null;
 		if(StringUtils.isNotBlank(createSenderDTO.getSenderId())) {
@@ -70,7 +70,13 @@ public class CampaignServiceImpl implements CampaignService{
 			 createSender = new CreateSender();
 		}
 		
-		if (senderCreated != null && !senderCreated.contains("400Body")) {
+		if(senderCreated.contains("400Body")) {
+			isSenderCreated = "400Body";
+		}else if(senderCreated.contains("403Body")) {
+			isSenderCreated = "403Body";
+		}
+		
+		if (senderCreated != null && !senderCreated.contains("400Body") && !senderCreated.contains("403Body")) {
 			
 			createSender.setFromName(createSenderDTO.getCpnSenderName().trim());
 			createSender.setFromMail(createSenderDTO.getCpnSenderFromMail().trim());
@@ -108,7 +114,7 @@ public class CampaignServiceImpl implements CampaignService{
 			createSender.setSelectedSender("false");
 			CreateSender sender = campaignDao.createSender(createSender);
 			if(sender !=null) {
-				isSenderCreated = true;
+				isSenderCreated = "success";
 			}
 		}
 		return isSenderCreated;
@@ -168,9 +174,9 @@ public class CampaignServiceImpl implements CampaignService{
 	}
 
 	@Override
-	public boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
+	public String saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO,User user) throws Exception
 	{
-		boolean isListInserted = false;
+		String isListInserted = "failure";
 		if(StringUtils.isNotBlank(campaignListDTO.getContactListId())){
 			CampaignList campaignList = campaignDao.getCampaignListById(Long.parseLong(campaignListDTO.getContactListId()));
 			String listResponse = campaignUtil.updaeteList(campaignList,campaignListDTO);
@@ -190,18 +196,23 @@ public class CampaignServiceImpl implements CampaignService{
 						
 						String res =  campaignUtil.addRecipientsToList(list);
 						if(res !=null) {
-							isListInserted = true;
+							isListInserted = "success";
 						}	
 					}
 					
 				}else {
-					isListInserted = false;
+					isListInserted = "failure";
 				}
 			}
 			return isListInserted;
 		}
 		String listResponse = campaignUtil.createList(campaignListDTO);
-		if(StringUtils.isNotBlank(listResponse) && !listResponse.contains("400Body")) {
+		if(listResponse.contains("400Body")) {
+			isListInserted = "400Body";
+		}else if(listResponse.contains("403Body")) {
+			isListInserted = "403Body";
+		}
+		if(StringUtils.isNotBlank(listResponse) && !listResponse.contains("400Body") && (!listResponse.contains("403Body"))) {
 			JSONObject jObject  = new JSONObject(listResponse); 
 			String listId = jObject.getString("id");
 			CampaignList  campaignList = new CampaignList();
@@ -226,7 +237,7 @@ public class CampaignServiceImpl implements CampaignService{
 			
 			String res =  campaignUtil.addRecipientsToList(list);
 			if(res !=null) {
-				isListInserted = true;
+				isListInserted = "success";
 			}
 			return isListInserted;
 		}
