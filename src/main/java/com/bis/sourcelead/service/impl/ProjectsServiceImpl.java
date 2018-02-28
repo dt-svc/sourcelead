@@ -924,7 +924,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
-		UserRole userStatus = userRoleService.getUserByUserId(user.getId());
+		UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),locationsId);
 		if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())) {
 		Set<Projects> projectsSet = new HashSet<>();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1145,7 +1145,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    List<UserDTO> userDTOList = new ArrayList<>();
 	    if(userList != null && userList.size() > 0) {
 	    	for(User mrguser : userList) {
-	    		UserRole roleType = userRoleService.getUserByUserId(mrguser.getId());
+	    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
 	    		UserDTO userDTO = new UserDTO();
 	    		userDTO.setId(mrguser.getId());
 	    		userDTO.setUserType(roleType.getUserType());
@@ -1160,7 +1160,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  List<UserDTO> mrguserDTOList = new ArrayList<>();
 			    if(userList != null && userList.size() > 0) {
 			    	for(User mrguser2 : userListwithoutmaneger1) {
-			    		UserRole roleType = userRoleService.getUserByUserId(mrguser2.getId());
+			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
 			    		UserDTO userDTO = new UserDTO();
 			    		userDTO.setId(mrguser2.getId());
 			    		userDTO.setUserType(roleType.getUserType());
@@ -2186,7 +2186,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	    	 user = orgLocations.getUser();
 	     }
 	     if(user != null){
-	    	 UserRole userStatus = userRoleService.getUserByUserId(user.getId());
+	    	 UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
 	    	 if(userStatus.getUserState().toString().equalsIgnoreCase("ACTIVE")) {
 	    	 StringBuilder fNameStringBuilder=new StringBuilder();
 			 EmailMessage emailMessage = new EmailMessage();
