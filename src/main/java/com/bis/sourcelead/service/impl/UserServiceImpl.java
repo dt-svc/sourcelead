@@ -356,6 +356,7 @@ public class UserServiceImpl implements UserService {
 				
 			}else{
 				candidate.setConsultantUser(user);
+				candidate.setIsAssociate(Constants.YES);
 				candidateService.addCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}

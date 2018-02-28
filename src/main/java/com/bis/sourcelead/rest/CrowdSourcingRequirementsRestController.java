@@ -2029,6 +2029,16 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrgLocationName());
 						rr.setRequirementJobType(rr.getRequirementId().getJobType());
+						
+						 List<String> requirementLocationsList = new ArrayList<>();
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rr.getRequirementId().getId());
+						 if(locationsList != null && !locationsList.isEmpty()) {
+						 for(RequirementLocations location : locationsList) {
+						 requirementLocationsList.add(location.getLocation());
+						 }
+						 }
+						 rr.setLocationsList(requirementLocationsList);
+						 
 						rr.setRequirementCountry(rr.getRequirementId().getCountry());
 						rr.setRequirementState(rr.getRequirementId().getState());
 						rr.setRequirementCity(rr.getRequirementId().getCity());
@@ -2063,6 +2073,16 @@ public class CrowdSourcingRequirementsRestController {
 						rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
 						rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrgLocationName());
 						rs.setEmployeeType(rs.getRequirement().getJobType());
+						
+						List<String> requirementLocationsList = new ArrayList<>();
+						 List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rs.getId());
+						 if(locationsList != null && !locationsList.isEmpty()) {
+						 for(RequirementLocations location : locationsList) {
+						 requirementLocationsList.add(location.getLocation());
+						 }
+						 }
+						 rs.setLocationsList(requirementLocationsList);
+						
 						rs.setCountry(rs.getRequirement().getCountry());
 						rs.setState(rs.getRequirement().getState());
 						rs.setCity(rs.getRequirement().getCity());

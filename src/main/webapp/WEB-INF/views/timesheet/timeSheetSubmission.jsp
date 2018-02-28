@@ -144,7 +144,14 @@
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 														       <c:if test="${pt.id == entry.key}">
-														         <c:set var="taskType" value="${pt.taskType}" />
+														        <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+																	       <c:forEach var="ted" items="${entry.value}">
+																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+																           </c:forEach>
+															       </c:if>
+															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
+															             <c:set var="taskType" value="${pt.taskType}" />
+															        </c:if>
 														          <c:set var="taskId" value="${pt.id}" />
 														          <c:set var="taskName" value="${pt.taskName}" />
 														         <option value='${pt.id}' selected>${pt.taskName}</option>
@@ -166,10 +173,17 @@
 											         <c:if test="${entry.key != 0}">
 											             <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 															       <c:if test="${pt.id == entry.key}">
-															           <c:set var="taskType" value="${pt.taskType}" />
-															           <c:set var="taskId" value="${pt.id}" />
-															           <c:set var="taskName" value="${pt.taskName}" />
-															          <p>${!empty pt.taskName ? pt.taskName : '--'}</p>
+															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+																	       <c:forEach var="ted" items="${entry.value}">
+																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+																           </c:forEach>
+															       </c:if>
+															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
+															             <c:set var="taskType" value="${pt.taskType}" />
+															        </c:if> 
+														           <c:set var="taskId" value="${pt.id}" />
+														           <c:set var="taskName" value="${pt.taskName}" />
+														          <p>${!empty pt.taskName ? pt.taskName : '--'}</p>
 															       </c:if>
 												         </c:forEach>
 												       </c:if>

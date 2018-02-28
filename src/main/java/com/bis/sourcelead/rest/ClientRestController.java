@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -860,7 +861,8 @@ public class ClientRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CLIENT','ROLE_VIEW_CLIENT','ROLE_VIEW_VENDOR','ROLE_VIEW_EDIT_VENDOR')")
 	@RequestMapping(value = {"/getClientAndVendorOrgDeatilsById","/rest/getClientAndVendorOrgDeatilsById"}, method = RequestMethod.POST)
 	@ResponseBody ClientVendorDTO getClientAndVendorOrgDeatilsById(@RequestParam(value = "vendorLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "requestType", required = false) String requestType) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -996,12 +998,16 @@ public class ClientRestController {
 		if(msg != null && msg != ""){
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editClient");
-			 action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
 		}else{
 			msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editVendor");
-			action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
 			orgRelation.setMsg(msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "editVendor");
+		}
+		
+		if(requestType != null && StringUtils.isNotBlank(requestType) && requestType.equalsIgnoreCase("Client")) {
+			action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+		}else if(requestType != null && StringUtils.isNotBlank(requestType) && requestType.equalsIgnoreCase("Vendor")){
+			action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
 		}
 		
 		if(action != null && action.getId()!= null){
@@ -1015,18 +1021,29 @@ public class ClientRestController {
 					 formFieldId.add(custom);
 				 }
 			 }
-			 if(formFieldId != null && !formFieldId.isEmpty() && orgLocationId != null) {
-				OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
-			 List<ClientCustomFieldData> clientData = clientCustomFieldDataService.getClientCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId);
+			 if(formFieldId != null && !formFieldId.isEmpty() && orgLocation != null) {
+				
+				Map<Long, String[]> clientData = null;
+				if(orgRelation.getResponderLocationId().getId().longValue() != orgLocation.getId().longValue()) {
+		 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLocation.getOrg().getId());
+		 			}else if(orgRelation.getLocationId().getId().longValue() != orgLocation.getId().longValue()) {
+		 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLocation.getOrg().getId());
+		 			}
 			 Map<String,String> dataMap = new HashMap<>();
 			 if(clientData!= null && !clientData.isEmpty()) {
-				 for(ClientCustomFieldData clientCustomData:clientData) {
-					 String labelName = clientCustomData.getOrglocationsFormFields().getLabelName();
-					 String labelData = clientCustomData.getCustomFormFieldData();
-					 dataMap.put(labelName, labelData);
+				 for(Entry<Long, String[]> userCustomData:clientData.entrySet()) {
+					String labelName = userCustomData.getValue()[0];
+					 String labelData = userCustomData.getValue()[1];
+					 String labelId = userCustomData.getValue()[2];
+					 Long id = userCustomData.getKey();
+					 StringBuilder keyValue =  new StringBuilder();
+					 keyValue.append(labelName).append("$").append(labelData);
+					 dataMap.put(id.toString(), keyValue.toString());
 					 clientVendorDTO.setClientCustomFieldlabelNameAndValue(dataMap);
 				 	}
 			 	}
+			 
+			 
 			 }
 		 }
 		}

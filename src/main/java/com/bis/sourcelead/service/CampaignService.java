@@ -19,7 +19,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface CampaignService {
 
-	boolean createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation)throws Exception;
+	String createSender(CreateSenderDTO createSenderDTO, User user, OrgLocations orgLocation)throws Exception;
 
 	boolean validateNickName(String nickName, OrgLocations orgLocation, String senderId)throws Exception;
 
@@ -29,7 +29,7 @@ public interface CampaignService {
 	
 	CreateSender findSenderIdentityById(Long senderId) throws Exception;
 
-	boolean saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO, User user) throws Exception;
+	String saveRecipientList(OrgLocations orgLocation, CampaignListDTO campaignListDTO, User user) throws Exception;
 
 	List<CreateSenderDTO> getSenderIdentityByUserChoice(User user, OrgLocations orgLocations) throws Exception;
 
