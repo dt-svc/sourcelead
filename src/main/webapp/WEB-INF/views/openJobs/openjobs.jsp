@@ -99,8 +99,12 @@
         </div>
         <div class="modal-body">
           <div class="clearfix"></div>
-          <div class="clearfix mt">
+          <div class="clearfix mt" id="signinDiv">
           	<jsp:include page="../SignIn.jsp"></jsp:include>
+          </div>
+          
+          <div class="clearfix mt" id="forgotPasswordDiv" style="display:none">
+          	<jsp:include page="../forgotPasswords.jsp"></jsp:include>
           </div>
         </div>
         <div class="modal-footer">
@@ -3008,17 +3012,16 @@ Please mail us at </p>
 
 <script>
 function applyJob(requirementUUID){
-
-	
-	$(".modal.modalApplyjob").fadeIn();
-	$(".comMask").fadeIn();
 	$("#requirementUUID").val(requirementUUID);
-	loginPopup(requirementUUID)
-
+	/*  if('${SourceLeadWeb_user.id}' == null && '${SourceLeadWeb_user.id}' == ''){
+		 $(".modal.modalApplyjob").fadeIn();
+		$(".comMask").fadeIn();
+		loginPopup(requirementUUID)
+	 } */	
     if('${SourceLeadWeb_user.id}' != null && '${SourceLeadWeb_user.id}' != ''){
-        location.replace(sourceleadUrl+"/dashboard");  
+    	location.replace(sourceleadUrl+"/dashboard"+"?requirementUUID="+requirementUUID);  
     }else{
-        $(".modal.modalApplyjob").fadeIn();
+    	$(".modal.modalApplyjob").fadeIn();
         $(".comMask").fadeIn();
         loginPopup(requirementUUID)
     }

@@ -410,7 +410,13 @@ public class LoginSessionController {
 						}else{
 							model.setViewName("dashboard");
 						}
-					}else{
+					}
+					if(requirementUUID !=null && requirementUUID != ""){
+						StringBuilder redirectUrl = new StringBuilder();
+						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
+						model.setViewName("professional/professionalRequirements");
+					}
+					else{
 						model.setViewName("dashboard");
 					}
 				}
@@ -518,6 +524,7 @@ public class LoginSessionController {
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
 					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}else{
 					model.setViewName("recruiter/recruiterDashboard");
 				}
@@ -1174,7 +1181,7 @@ public class LoginSessionController {
   
   
   @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
-  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password) throws Exception {
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);
 		List<UserRole> userSpocRolesList = null;
@@ -1184,6 +1191,7 @@ public class LoginSessionController {
 	  model.addObject("password", password);
 	  model.addObject("sourceleadUrl", sourceleadUrl);
 	  model.addObject("roleList", userSpocRolesList);
+	  model.addObject("requirementUUID", requirementUUID);
 	  model.setViewName("userEnrolledLocations");
 	  return model;
   }

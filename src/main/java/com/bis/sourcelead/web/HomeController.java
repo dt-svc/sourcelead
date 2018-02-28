@@ -115,7 +115,7 @@ public class HomeController {
 		logger.debug(" *** HomeController init with: ");
 	}
 
-	@RequestMapping(value = {"/app", "/app/**"}, method = { RequestMethod.GET, RequestMethod.POST })
+/*	@RequestMapping(value = {"/app", "/app/**"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public String defaultPage(HttpServletRequest request) {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -128,7 +128,7 @@ public class HomeController {
 			ex.printStackTrace();
 		}
 		return "redirect:/login";
-	}
+	}*/
 	 
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)

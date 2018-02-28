@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -601,13 +602,13 @@ public class RegistrationRestController {
 	
 	
 	@RequestMapping(value = "/app/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
-	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
+	public RestResponsetUtil resetPasswordWithUserName(RegistrationDTO registrationDTO,HttpServletRequest request) throws Exception {
 		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
-		String json1 = IOUtils.toString(request.getInputStream());
-		if(StringUtils.isNotEmpty(json1)){
-			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-			Registration registration = gson.fromJson(json1, Registration.class);
-			User user = userService.findByUserName(registration.getEmail());
+//		String json1 = IOUtils.toString(request.getInputStream());
+		if(!registrationDTO.getEmail().isEmpty()){
+//			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+//			Registration registration = gson.fromJson(json1, Registration.class);
+			User user = userService.findByUserName(registrationDTO.getEmail());
 			if (null != user) {
 				UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 				if (null != userRole) {

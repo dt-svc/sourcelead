@@ -268,7 +268,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 CandidateResumes candidateResumes = null;
 		 Date date = new Date();
 		 OrgLocations guestOrglocation=null;
+		 String submissionstatus=null;
 		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		 if(jsonObj.has("guestApplicant")){
+			 submissionstatus="guestApplicant";
+			 
+		 }
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
@@ -586,14 +591,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
  
  				 }
 				 candidateResumes.setUpdatedDate(new Date());
-				 if(orgLocations != null){
+				 if(orgLocations != null && submissionstatus != "guestApplicant"){
 					 candidateResumes.setOrgLocationId(orgLocations);
 
 				 }
 				 else{
 				 candidateResumes.setOrgLocationId(guestOrglocation);
 				 }
-				 if(orgLocations != null){
+				 if(orgLocations != null && submissionstatus != "guestApplicant"){
 				 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
 				 }
