@@ -738,6 +738,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 submissionTemplate.setUpdatedBy(user.getUserCode());
 		 submissionTemplate.setTemplateType("Feedback");
 		 submissionTemplate.setUpdatedDate(new Date());
+		 submissionTemplate.setIsDefault(Constants.YES);
 		 submissionTemplate.setCreatedBy(user.getUserCode());
 		 submissionTemplate.setCreatedDate(new Date());
 		 submissionTemplateService.addSubmissionTemplate(submissionTemplate);

@@ -504,9 +504,9 @@
 						 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
 								 (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" 
 								 &&  json.managerLevel1UserType == "Admin")) {  
-							result = result + '<div class="col-md-12" id="levelone-select">';
+							result = result + '<div class="col-md-12" id="levelone-select-manager">';
 						 }else{
-							result = result + '<div class="col-md-8 paddingRight" id="levelone-select">';	
+							result = result + '<div class="col-md-8 paddingRight" id="levelone-select-manager">';	
 						} 
 						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
@@ -1072,16 +1072,16 @@ function showLevel2Div(){
 		if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType != 'Admin'){
 		    if(manager2 == null || manager2 == "" || manager2 == "undefined"){
 		    	$("#level2Toggle").show();
-		    	$("#levelone-select").removeClass('col-md-12');
-			    $("#levelone-select").addClass('col-md-8');  
+		    	$("#levelone-select-manager").removeClass('col-md-12');
+			    $("#levelone-select-manager").addClass('col-md-8');  
 		    }else{
 		    	$("#demo").show();
 		    }
 		    getChildLevel1Approvers(currentUserId, manager2);
 		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 		    $("#level2Toggle").hide();   
-		    $("#levelone-select").removeClass('col-md-8');
-		    $("#levelone-select").addClass('col-md-12');  
+		    $("#levelone-select-manager").removeClass('col-md-8');
+		    $("#levelone-select-manager").addClass('col-md-12');  
 		    $("#demo").hide();  
 		}
 	}
