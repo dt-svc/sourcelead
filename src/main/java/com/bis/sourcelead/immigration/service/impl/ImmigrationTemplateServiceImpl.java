@@ -252,4 +252,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		return templateDTO;
 	}
 
+	public ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
+		return immigrationTemplateDao.getPetitionTemplateDetails(templateId);
+	}
 }

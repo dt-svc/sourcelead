@@ -30,7 +30,11 @@ import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
+<<<<<<< HEAD
 import com.bis.sourcelead.entity.ScheduleMaintenance;
+=======
+import com.bis.sourcelead.entity.User;
+>>>>>>> b3080c12ee9ce250e6ad95650410b8a749899950
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 
@@ -229,10 +233,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		}
 		List<ImmigrationTemplateListDTO> tempalteDTOList = new ArrayList<ImmigrationTemplateListDTO>();
 		for (ImmigrationTemplateView source : ImmigrationTemplateViewLst) {
-			System.out.println(" DocsCount"+source.getDocsCount());
+			//System.out.println(" DocsCount"+source.getDocsCount());
 			ImmigrationTemplateListDTO target = new ImmigrationTemplateListDTO();
 			BeanUtils.copyProperties(source, target);
-			System.out.println(" DocsCount target"+target.getDocsCount());
+			//System.out.println(" DocsCount target"+target.getDocsCount());
 			tempalteDTOList.add(target);
 		}
 		responseList.setData(tempalteDTOList);
@@ -308,4 +312,20 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		return (ImmigrationTemplateTasks) session.createQuery(query).setParameter("taskId", id).uniqueResult();
 	}
 
+	public  ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationTemplateDTO templateDto= null;
+		logger.debug(" DAO IMPL  templateId  check value is -->" + templateId);
+		try {
+			ImmigrationTemplate entityObj = (ImmigrationTemplate) session.get(ImmigrationTemplate.class, templateId);
+			templateDto = new ImmigrationTemplateDTO();
+			templateDto.setId(entityObj.getId());
+			templateDto.setTemplateName(entityObj.getName());
+			templateDto.setTemplateDescription(entityObj.getDescription());
+		} catch (Exception e) {
+			logger.error("Exception caught in while getting tempalte details with templateId -->"+templateId+" Mesaage is "+e.getMessage());
+			e.printStackTrace();
+		}
+		return templateDto;
+	}
 }

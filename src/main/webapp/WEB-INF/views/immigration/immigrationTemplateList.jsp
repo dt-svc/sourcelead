@@ -51,7 +51,7 @@
 		result = result + '<th>No. of Docs</th>';
 		result = result + '<th>No. of Forms</th>';
 		result = result + '<th>No. of Tasks</th>';
-		result = result + '<th>&nbsp;</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>';
 		result = result + '</table>';
@@ -154,7 +154,7 @@
 				   /*"data": "formsCount",*/
 				  "render": function ( data, type, opt, meta ) {
 				  var result = "";
-				   result = result + '<td class="immigraAction"><i class="fa fa-ellipsis-v" aria-hidden="true"></i><div class="mmigraActionInn"><span><a href="javascript:void(0)" class="fa fa-trash"></a><a href="javascript:void(0)" class="fa fa-pencil"></a></span></div></td>';
+				  result = result + '<td><div><i id="edit'+opt.id+'" onclick="immigration.editTemplateDetailsByRowId('+opt.id+');" class="glyphicon glyphicon-pencil"></i><i id="delete'+opt.id+'" onclick="deleteTemplateRow('+opt.id+');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
 				  return result;
 				  }
 				  },
@@ -184,41 +184,5 @@
 	  });
   } 
   </script>
-  
-  <script>
-// Error pop addSen
-	$(document).ready(function() {
-		$("#addField").click(function(){
-			$(".popMask").fadeIn(200);
-			$(".cusFielPopup").fadeIn(100);
-		});
-		$(".popCan").click(function(){
-			$(".popMask").fadeOut(200);
-			$(".cusFielPopup").fadeOut(100);
-		});
-	});	
-</script>
-
-<script type="text/javascript">
-        var config = {
-        '.chosen-select'           : {},
-        '.chosen-select-deselect'  : {allow_single_deselect:true},
-        '.chosen-select-no-single' : {disable_search_threshold:10},
-        '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-        '.chosen-select-width'     : {width:"95%"}
-        }
-        for (var selector in config) {
-        $(selector).chosen(config[selector]);
-        }
-        $('.chosen-select').each(function() {
-        var $this = $(this);
-        $this.next().css({'width': '100%'});
-        })
-        $(document).ready(function(){
-        $("#cd").click(function(){
-        $(".clientDetails").toggleClass('hidden', 500);
-        });
-
-        });
-    </script> 
+ 
   
