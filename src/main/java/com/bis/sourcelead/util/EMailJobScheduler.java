@@ -2087,8 +2087,7 @@ public class EMailJobScheduler {
 	  */
 	@Scheduled(cron = "0 0 9 1/1 * ?")
 	@Async
-	public void holidayNotificationToUsers() throws Exception
-	{
+	public void holidayNotificationToUsers() throws Exception {
 		DateTime zoned = new DateTime();
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
@@ -2106,7 +2105,8 @@ public class EMailJobScheduler {
 		 * OrgLocations orgLocations = orgLocationsList.get(1);..for single org
 		 */
 		for (OrgLocations orgLocations : orgLocationsList) {
-			List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate, holidayEndDate, orgLocations.getId());
+			List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate,
+					holidayEndDate, orgLocations.getId());
 			String holidayNames = "";
 			int i = 0;
 			if (holidayList != null && !holidayList.isEmpty()) {
@@ -2131,32 +2131,43 @@ public class EMailJobScheduler {
 					Map<String, String> globalVarsMap = new HashMap<String, String>();
 					globalVarsMap.put("loginUser", emailMessage.getFromName());
 					StringBuilder name = new StringBuilder();
-					if (user.getLastName() != null && user.getLastName() != ""
-							&& user.getLastName() != "undefined") {
-						globalVarsMap.put("UserName", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-					}
-					else {
+					if (user.getLastName() != null && user.getLastName() != "" && user.getLastName() != "undefined") {
+						globalVarsMap.put("UserName",
+								name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					} else {
 						globalVarsMap.put("UserName", user.getFirstName());
 					}
 					globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
-					globalVarsMap.put("date", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
+					globalVarsMap.put("date",
+							commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
 					globalVarsMap.put("holidayname", holidayNames);
 					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 					// getting the current EmailScenario by EmailScenario unique
 					// name and entity type
-					EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+					EmailScenario emailScenario = emailScenarioService
+							.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+					EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+							Constants.HOLIDAY_REMAINDER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 					// covert subject,body and signature
 					String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 					String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 					String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
 					String url = sourceleadUrl;
 					// construct HTML template using required data
-					String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
+					String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject,
+							body, signature, url, orgLocations.getOrg(), orgLocations);
 					emailMessage.setSubject(subject);
 					emailMessage.setMessageBody(emailTemplate);
 					// calling the sendEmail method of emailScenerioUtil
-					emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-					String actionLink = "";
+					emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray,
+							new ArrayList<EmailAttachment>());
+					String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),
+							globalVarsMap);
+					notificationScenario.setBody(notificationBody);
+					StringBuilder actionLinkBuilder = new StringBuilder();
+					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewHoliday").toString();
+					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario);
+
 				}
 			}
 		}

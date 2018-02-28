@@ -10,7 +10,6 @@
 		timesheetApprovalDetils('month');
 		if ('${notifyLink}' == "notifyLink") 
 			{
-			alert("shiva")
 			var currentTimeFrequency = '${currentTimeFrequency}';
 			var projectId = '${projectId}';
 			var projectMemberId = '${projectMemberId}';
