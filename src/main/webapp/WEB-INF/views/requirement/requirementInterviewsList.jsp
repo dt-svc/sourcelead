@@ -41,7 +41,8 @@
  <script type="text/javascript">
        function requirementInterviewList(){
 		var sourceleadUrl ='${sourceleadUrl}';
-		 var tab = "previous";
+		// var tab = "previous";
+		var tab = '${tab}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";

@@ -819,9 +819,27 @@ function validateUploadFile(id)
 			        	}
 			    	 
 			    	 $("#personalEmail").val(json['email']);
-			    	 getOnBoardCandidateCountry(json['country'])
-			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    	 if(json['country'] != null && json['country'] != "" && json['country'] != "undefined"){
+				    	 $("#country").val(json['country']);
+			    	 }else{
+				    	 $("#country").removeAttr('readonly');
+			    	 }
+			    	 if(json['state'] != null && json['state'] != "" && json['state'] != "undefined"){
+				    	 $("#state").val(json['state']);
+			    	 }else{
+				    	 $("#state").removeAttr('readonly');
+			    	 }
+			    	 if(json['city'] != null && json['city'] != "" && json['city'] != "undefined"){
+				    	 $("#city").val(json['city']);
+			    	 }else{
+				    	 $("#city").removeAttr('readonly');
+			    	 }
+			    	 if(json['location'] != null && json['location'] != "" && json['location'] != "undefined"){
+				    	 $("#offBoardLocation").val(json['location']);
+			    	 } 
+			    	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != "undefined"){
+				    	 $("#zipCode").val(json['zipCode']);
+			    	 } 
 			    	 
 			    }
 		   });
@@ -1212,8 +1230,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 }else{
 		 onBoardingUUID = document.getElementById("candidateOnBoardUUID").value;
 	 }
-	 
-	 
 	 if(onBoardingUUID){
 		 
 	 addCandidateDetailsForOnboarding();

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -374,8 +375,8 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
         globalVarsMap.put("approverName", projectPlanningRequest.getApproverName());
         globalVarsMap.put("loginUserName", loginUser.getFullName());
         globalVarsMap.put("loginOrgName", orgLocations.getOrgLocationName());
-        globalVarsMap.put("estimatedHours", String.valueOf(projectPlanningRequest.getEstimatedHours()));
-        globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+projectPlanningRequest.getEstimatedBudget());
+        globalVarsMap.put("estimatedHours", String.valueOf(BigDecimal.valueOf(projectPlanningRequest.getEstimatedHours())));
+        globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+BigDecimal.valueOf(projectPlanningRequest.getEstimatedBudget()));
         StringBuilder linkBuild = new StringBuilder();
         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
@@ -460,7 +461,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 		}else{
 			payRate = "--";
 		}
-		
+	 
 	 tempHTML = tempHTML+" <tr align='center'>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top; vertical-align:top;'>"+planningResourceRequest.getRoleName()+"</td>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getNoOfResource()+"</td>";
@@ -485,8 +486,18 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 tempHTML = tempHTML+"			<div style='width:65px; text-align:center;'>"+endDate+"</div>";
 	 tempHTML = tempHTML+"	</td>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getConsultingType()+"</td>";
-	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getEstimatedHours()+"</td>";
-	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getEstimatedBudget()+"</td>";
+	 if(planningResourceRequest.getEstimatedHours() != null) {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+BigDecimal.valueOf(planningResourceRequest.getEstimatedHours())+"</td>";
+	 }else {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>--</td>";
+
+	 }
+	 if(planningResourceRequest.getEstimatedBudget() != null) {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+BigDecimal.valueOf(planningResourceRequest.getEstimatedBudget())+"</td>";
+	 }else {
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>--</td>";
+
+	 }
 	 tempHTML = tempHTML+"	</tr>";
 	 }
 	 tempHTML = tempHTML+"</tbody>";
