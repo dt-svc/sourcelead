@@ -53,6 +53,8 @@ public class LeaveTypeDTO {
 	private float totalRejectedCount;
 	private float totalCancelCount;
 	private float totalNoOfDays;
+	private String createdUser;
+	private String updatedUser;
 	
 	
 	public String getLeaveTypeUUID()
@@ -451,5 +453,22 @@ public class LeaveTypeDTO {
 	{
 		this.totalNoOfDays = totalNoOfDays;
 	}
+	public String getCreatedUser()
+	{
+		return createdUser;
+	}
+	public void setCreatedUser(String createdUser)
+	{
+		this.createdUser = createdUser;
+	}
+	public String getUpdatedUser()
+	{
+		return updatedUser;
+	}
+	public void setUpdatedUser(String updatedUser)
+	{
+		this.updatedUser = updatedUser;
+	}
+	
 	
 }

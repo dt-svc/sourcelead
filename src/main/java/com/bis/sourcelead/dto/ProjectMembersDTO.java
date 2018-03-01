@@ -41,6 +41,10 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private String memberEndDate;
 	
+	private String billRateEstimatedDate;
+	
+	private String payRateEstimatedDate;
+	
 	private Double estHours;
 	
 	private Double estBudget;
@@ -240,6 +244,22 @@ public class ProjectMembersDTO implements Serializable {
 	public void setOrgRelationUUID(String orgRelationUUID)
 	{
 		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getBillRateEstimatedDate() {
+		return billRateEstimatedDate;
+	}
+
+	public void setBillRateEstimatedDate(String billRateEstimatedDate) {
+		this.billRateEstimatedDate = billRateEstimatedDate;
+	}
+
+	public String getPayRateEstimatedDate() {
+		return payRateEstimatedDate;
+	}
+
+	public void setPayRateEstimatedDate(String payRateEstimatedDate) {
+		this.payRateEstimatedDate = payRateEstimatedDate;
 	}
 	
 	
