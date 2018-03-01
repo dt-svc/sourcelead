@@ -27,6 +27,8 @@ public interface AssetService {
 	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
 	
 	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception;
 
 	
 	/**
