@@ -2003,6 +2003,7 @@ Session session = this.sessionFactory.getCurrentSession();
                     //dto.setCountry(req.getCountry());
                     dto.setPositions(req.getPositions());
                     dto.setUrl(req.getUrl());
+                    dto.setRequirementUUID(req.getRequirementUUID());
                     reqList.add(dto);
                 }
             }
