@@ -1,7 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
-
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 
 public interface ProjectAssignTasksService {
@@ -18,5 +18,5 @@ public interface ProjectAssignTasksService {
 	
 	 ProjectAssignTask deleteProjectAssignTask(ProjectAssignTask ProjectAssignTask) throws Exception;
 
-	void inlineUpdateAssignTaskUsers(String assignValue, String projectTaskId, Long userId)throws Exception;
+	void inlineUpdateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,String assignValue, String projectTaskId, Long userId)throws Exception;
 }
