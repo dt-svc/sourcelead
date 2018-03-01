@@ -155,6 +155,8 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private String rejectedHrs;
+	
+	
 	@Transient
 	private String openHrs;
 	
@@ -165,9 +167,11 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private String submittedHrs;
+	
 	@Transient
 	@JsonProperty
 	private String projectAssignedDateStr;
+	
 	@Transient
 	@JsonProperty
 	private String projectEndDateStr;
@@ -187,6 +191,10 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@Enumerated(EnumType.STRING)
 	private Status userState;
+	
+	@JsonProperty
+	@Transient
+	private String rateHistroyList;
     
 	@Transient
 	private String employeeIdForExpenses;
@@ -1526,6 +1534,14 @@ public class ProjectMembers implements Serializable {
 
 	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
 		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
+	}
+
+	public String getRateHistroyList() {
+		return rateHistroyList;
+	}
+
+	public void setRateHistroyList(String rateHistroyList) {
+		this.rateHistroyList = rateHistroyList;
 	}
 
 }
