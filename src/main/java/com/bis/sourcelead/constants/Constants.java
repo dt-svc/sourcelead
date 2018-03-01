@@ -1025,8 +1025,12 @@ public class Constants {
 
 	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
 	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
+
+	public static final String MAIL_ASSIGNEMPLOYEE_PROJECTTASK = "MailtoAssignEmployeeinProjecttask";
 	
+
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leave";
 	
+
 }
