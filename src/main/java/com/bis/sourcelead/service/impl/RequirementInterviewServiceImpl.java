@@ -1923,7 +1923,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			 OrgSpoc spoc= null;
 	    				if(null != requirementSubmission.getVendorLocationId()){
 	    					emailMessage.setFirstName(interviewrUser.getFirstName());
-	    					 emailMessage.setLastName(interviewrUser.getLastName());
+	    					if(interviewrUser.getLastName()!=null){
+	    						 emailMessage.setLastName(interviewrUser.getLastName());
+	    					}
 	    					 emailMessage.setToEmail(interviewrUser.getEmail());
 	    					
 	    					 if(null != requirementinterview.getSubmissionId().getSourceSubmission()){
@@ -1945,7 +1947,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    					 emailMessage.setLastName(interviewrUser.getLastName());
 	    					 emailMessage.setToEmail(interviewrUser.getEmail());
 	    					 emailMessage.setFromEmail(candidate.getEmail());
-	    					 emailMessage.setCreatedBy(user.getUserCode());
+	    					 if(user!=null){
+	    						 emailMessage.setCreatedBy(user.getUserCode());
+	    					 }
+	    					 
 	    					 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 	    				}
 	    			 
@@ -1991,7 +1996,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			 
 	    			//setting the class filed values
 	    			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-	    				 if(emailMessage.getLastName() != null){
+	    				 if(candidate.getLastName() != null){
 	    					 globalVarsMap.put("applicantName", candidate.getFirstName() +" "+candidate.getLastName());
 	    				 }else{
 	    					 globalVarsMap.put("applicantName", candidate.getFirstName());
