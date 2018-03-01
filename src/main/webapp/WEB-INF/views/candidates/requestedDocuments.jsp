@@ -88,7 +88,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 							        <td>
 							        <div class="tbldata-dotdot-sm">${docs.documentType}
 							        <c:if test="${docs.requestedDocStatus == 'Rejected' && !empty docs.requestedDocRejectedReason}">
-							        	<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>${docs.requestedDocRejectedReason}cccccccccccc</p></div></i>
+							        	<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>${docs.requestedDocRejectedReason}</p></div></i>
 							        </c:if>
 							        </div>
 							        </td>
