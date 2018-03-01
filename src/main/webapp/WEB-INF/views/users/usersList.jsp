@@ -740,7 +740,6 @@ function prepareDynamicUserList(url){
 	 	var result = "";
 		result = result	+ '<div class="clearfix minHeight35 hidden">';
 	    result = result	+ '<div class="remove_search">';
-	    result = result +" <input type='text' placeholder='Search' id='dynamicUserDataTableSearch1234123'/>";
 		result = result	+ '</div>';
 		result = result	+ '</div>';
 		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
