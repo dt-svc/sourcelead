@@ -882,7 +882,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			}
 			  
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			filterCount = countlist.size();
+			filterCount = countlist.iterator().next().intValue();
 		}
 			
 		 
