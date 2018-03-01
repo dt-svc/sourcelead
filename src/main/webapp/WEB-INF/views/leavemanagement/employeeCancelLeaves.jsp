@@ -403,8 +403,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Approved by:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.rejectedBy !=null && data.rejectedBy !='' && data.rejectedBy !='undefined'){
-				 result = result +'  <span>'+data.rejectedBy+'</span>';	 
+             if(data.approvedBy !=null && data.approvedBy !='' && data.approvedBy !='undefined'){
+				 result = result +'  <span>'+data.approvedBy+'</span>';	 
 			 }else{
 				 result = result +'  <span>--</span>';
 			 }

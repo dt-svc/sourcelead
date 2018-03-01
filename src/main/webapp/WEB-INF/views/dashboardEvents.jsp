@@ -656,6 +656,7 @@ function getRequirements(){
 
 <script>
 function selectAndGetApplicantsForRequirement(){
+	$("#reqDiv").find('p.text-primary').empty();
 		$('#isClientInterview').attr('checked', false);
 		$("#isClientInterviewDiv").hide();
 		getApplicantsForRequirement();

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -132,4 +133,6 @@ public interface ProjectMembersService {
 	List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId,Long projectId) throws Exception;
 	
 	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
+	
+	public Boolean getPayRateOrBillRateChanges(ProjectMembers projectMembers,ProjectMembersDTO projectMembersDTO) throws Exception;
 }

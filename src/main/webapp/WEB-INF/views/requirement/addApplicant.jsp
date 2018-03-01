@@ -1217,15 +1217,13 @@ function addRequirementRecommendations(){
 	 	        dataType : 'json',
 	 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 		        success: function(result) {
-		        	requirementRecommendations(requirementId)
 		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
 		    		$(".side_mask").fadeOut(200);
 		    		$("body").css('overflow-y', 'auto');
-		    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
+		    		$("#recCandidate"+candidateId).html("Added");
+		    		$("#recSumbmitbtn"+candidateId).removeAttr("onclick");
 		    		$(".sideMask").fadeOut(200);
-		    		if(redirectTo == "compare"){
-		    			compareRecommendedUsers(requirementId);
-		    		}
+		    		
 		        },
 		    }); 
 	  }else {

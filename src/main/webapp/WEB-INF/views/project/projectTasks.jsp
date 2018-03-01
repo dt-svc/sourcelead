@@ -942,7 +942,8 @@ function saveTasks(){
 		var formData = new FormData(form);
 		var projectId = $("#projectId").val();
 		var userId = '${SourceLeadWeb_userId}';
-	  	
+		var projectClientUUID = '${projectClientUUID}';
+		
 	  	$("#save_task").attr("disabled", "disabled");
 		$("#save_task").addClass('button').val('Processing..');
 		$.ajax({
@@ -950,7 +951,7 @@ function saveTasks(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-    	     url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId,
+	         url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
 			  success : function(data) {
 				var status = $("#projectStatus").val();
 				projectTask(projectId, status);
