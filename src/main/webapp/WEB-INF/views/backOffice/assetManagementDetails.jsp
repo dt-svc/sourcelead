@@ -158,7 +158,33 @@ function assetNotesList(assetId){
       });
 }
 </script>
-
+<script type="text/javascript">
+ function validateAssetSno() {
+	 var assetSno = document.getElementById("sno").value; 
+	 if(assetSno != null && assetSno != ""){
+		 $("#add_asset").attr("disabled", "disabled");
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#SnoEditDiv').find('p.jquery_form_error_message').remove();
+						  $("input#sno").after("<p class='jquery_form_error_message'>"+assetSno+" is Already Existed</span>");
+						  document.getElementById("sno").setAttribute('record-exist','yes');
+						  document.getElementById("sno").setAttribute('record-exist-errorMsg',assetSno+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#sno').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#SnoEditDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_asset" ).addClass('us-btn').val('Add');
+                         $("#add_asset").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>
 
 <script type="text/javascript">
 	function storeReqNotes(assetId){
@@ -485,8 +511,8 @@ function editAssetManagement(assetId){
 			result = result + '<div class="clearfix" id="laptop-edit">';
 			result = result + '<div class="form-horizontal clearfix">';
 			
-			result = result + '<div class="col-md-3 minHeight50">';
-			result = result + ' <input type="text" class="form-control input-sm" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length2-200" placeholder="Serial / Port Number *">';
+			result = result + '<div class="col-md-3 minHeight50" id="SnoEditDiv">';
+			result = result + ' <input type="text" class="form-control input-sm" id = "sno" name="sno" value="'+json.sno+'" field-name="Serial / Port Number" onkeyup = "validateAssetSno();" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" placeholder="Serial / Port Number *">';
 			result = result + '</div>';
 			
 			result = result + '<div class="assetaddpop-ul col-md-3 minHeight50" id="workingStatusDiv">';
