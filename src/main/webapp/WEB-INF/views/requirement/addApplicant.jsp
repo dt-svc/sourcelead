@@ -1224,7 +1224,8 @@ function addRequirementRecommendations(){
 		    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
 		    		$(".sideMask").fadeOut(200);
 		    		if(redirectTo == "compare"){
-		    			compareRecommendedUsers(requirementId);
+		    			//compareRecommendedUsers(requirementId);
+		    			requirementRecommendations(requirementId)
 		    		}
 		        },
 		    }); 

@@ -384,6 +384,7 @@ public class LeaveDaoImpl implements LeaveDao{
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception {
@@ -424,19 +425,17 @@ public class LeaveDaoImpl implements LeaveDao{
 		if (leaveDTO != null && leaveDTO.getLength() > 0) {
 			queryObj.setFirstResult(leaveDTO.getStart());
 			queryObj.setMaxResults(leaveDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+//			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
-		leaveList = queryObj.list();
+		leaveList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		int count = 0;
 		int filteredCount = 0;
-		@SuppressWarnings("unchecked")
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if (countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (leaveDTO != null) {
-			@SuppressWarnings("unchecked")
 			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery)
 					.setLong("orgLocationId", orgLocation.getId()).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
