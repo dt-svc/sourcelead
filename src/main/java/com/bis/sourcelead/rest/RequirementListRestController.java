@@ -1759,7 +1759,7 @@ public class RequirementListRestController {
 			
 
 		  //requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+			/*	if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 					String priority = "";
 					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 						priority = search.getRequirementStatus();
@@ -1802,7 +1802,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 						}
 					} 
-				}
+				}*/
 				
 			
 		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
