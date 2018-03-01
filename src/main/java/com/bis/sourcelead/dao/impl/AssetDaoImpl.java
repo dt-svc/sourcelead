@@ -144,7 +144,7 @@ public class AssetDaoImpl implements AssetDao{
 	@Transactional
 	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Asset asset where asset.slno = :assetSno and asset.orgLocations.id = :orgLocationsId and asset.id = :assetId asset.status = '1'";
+		String query = "from Asset asset where asset.slno = :assetSno and asset.orgLocations.id = :orgLocationsId and asset.id = :assetId and asset.status = '1'";
 		List<Asset> assetList =  session.createQuery(query) .setString("assetSno", assetSno).setLong("assetId", assetId).setLong("orgLocationsId", orgLocationsId).list();
 		Asset asset = null;
 		if(assetList != null && !assetList.isEmpty())
@@ -166,6 +166,22 @@ public class AssetDaoImpl implements AssetDao{
 					return assetList.get(0);
 				} else {
 					return null;
+				}
+		 
+	}
+	
+	@Override
+	@Transactional
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+				String query = "from Asset asset where asset.orgLocations.id = :orgLocationsId and asset.slno = :assetSno ";
+				List<Asset> assetList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("assetSno", assetSno).list();
+
+				if (assetList.size() > 0) {
+					return true;
+				} else {
+					return false;
 				}
 		 
 	}

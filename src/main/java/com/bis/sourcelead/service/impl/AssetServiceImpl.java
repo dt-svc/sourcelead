@@ -271,12 +271,19 @@ public class AssetServiceImpl implements AssetService{
 		
 		return assetDao.getAssetByAssetSnoAndId(assetSno,assetId,orgLocationsId);
 	}
+	
 
 
 	@Override
 	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception {
 		return assetDao.validateAssetSno(assetSno,orgLocationsId);
 	}
+	
+	@Override
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
+		return assetDao.validateAssetId(assetSno,orgLocationsId);
+	}
+	
 	
 
 }
