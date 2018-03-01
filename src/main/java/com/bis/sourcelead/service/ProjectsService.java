@@ -128,6 +128,8 @@ public interface ProjectsService {
 		
 		Projects makeInternalProjectAsClientProject(Projects projects,Long orgRelationId,Long clientOrgLocationId,OrgLocations loginOrgLocation) throws Exception;
 		
+		Projects getClientProjectApproversUpdate(String projectClientUUID,User user,ProjectsDTO projectsDTO) throws Exception ;
+		
 //		public String getProjectId(OrgLocations orgLocations);
 		
 }

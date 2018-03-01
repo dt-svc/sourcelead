@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -120,7 +121,8 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
 		List<AssetCategory> assetCategoryList = null;
-		if(name.equals("Laptop") || name.equals("Desktop") || name.equals("Others")){
+		name=	WordUtils.capitalizeFully(name);
+		if(name.equals("Laptop") || name.equals("Desktop") || name.equals("Others") ){
 		 query = "from AssetCategory ac where ac.status = '1' and ac.categoryName =:name";
 		 assetCategoryList = session.createQuery(query.toString()).setString("name", name).list();
 		}else{
