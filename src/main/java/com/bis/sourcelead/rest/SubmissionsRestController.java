@@ -32,6 +32,7 @@ import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -143,7 +145,8 @@ public class SubmissionsRestController {
 	@Autowired
 	CandidateEmployersService candidateEmployersService;
 	
-	
+	@Autowired
+	CandidateCommentsService candidateCommentsService;
 
 	@RequestMapping(value = "/app/getCandidateResumes")
 	public String getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -710,6 +713,10 @@ public class SubmissionsRestController {
 				"orgLocations");
 		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
 		submission.setProfilePercentage(percentage);
+		
+		List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(submission.getCandidate().getId(), orgLocations);
+		submission.setCandidateCommentsCount(String.valueOf(candidateCommentsList.size()));
+		
 		resultJson = toJSON(submission);
 		return resultJson;
 
