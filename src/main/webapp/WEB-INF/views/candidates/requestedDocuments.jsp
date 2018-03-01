@@ -88,14 +88,14 @@ var sourceleadUrl ='${sourceleadUrl}';
 							        <td>
 							        <div class="tbldata-dotdot-sm">${docs.documentType}
 							        <c:if test="${docs.requestedDocStatus == 'Rejected' && !empty docs.requestedDocRejectedReason}">
-							        	<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>${docs.requestedDocRejectedReason}</p></div></i>
+							        	<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>${docs.requestedDocRejectedReason}cccccccccccc</p></div></i>
 							        </c:if>
 							        </div>
 							        </td>
 					   				
 					   				<td>
 					   				<c:if test="${!empty docs.description}">
-					   				<div class="tbldata-dotdot-big" title="${docs.description}">${docs.description}</div>
+					   				<div class="tbldata-dotdot-big" title='${docs.description}'>${docs.description}</div>
 					   				</c:if>
 					   				<c:if test="${empty docs.description}">
 					   				<div class="tbldata-dotdot-big">-------</div>
