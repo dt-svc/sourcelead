@@ -365,7 +365,7 @@ public class OrgDaoImpl implements OrgDao {
 		try{
 			String query = "SELECT U.ID, U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
 					" FROM USER U, USER_ROLE UR, ROLES R, ORG O, ORG_LOCATIONS OL " + 
-					" WHERE R.ID = UR.ROLE_ID AND U.ID = UR.USER_ID AND UR.ORG_LOCATIONS_ID = :orgLocationId"+ 
+					" WHERE R.ID = UR.ROLE_ID AND U.ID = UR.USER_ID AND UR.ORG_LOCATIONS_ID = :orgLocationId AND R.ID NOT IN (95,96) "+ 
 					" AND O.ID = OL.ORG_ID AND OL.ID = UR.ORG_LOCATIONS_ID ORDER BY UR.REPORTING_MANAGER_ID;";
 			
 			List<Object[]> result = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
