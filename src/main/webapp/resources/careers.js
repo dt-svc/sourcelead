@@ -57,7 +57,7 @@ function loadOffers(flag) {
             text += '<p><span class="width85">Posted on :</span> ' + d[e].createdDate + '</p>';
             text += '<p><span class="width85">Location :</span>' + d[e].city + ', ' + d[e].state + ', ' + d[e].country + '</p>';
             text += '<p>Job Description : <div class="desc">' +description + '</div></p>';
-            text += '<div class="clearfix mt"><div class="pull-right"><a target="_blank" href="' + surl + "/" +"job"+ "/" + d[e].url + "-" + d[e].id + '" class="btn btn-default mr">View</a><a href="javascript:void(0)" onclick = "applyJob('+d[e].requirementUUID+')"class="btn btn-primary">Apply</a></div></div></div>';
+            text += '<div class="clearfix mt"><div class="pull-right"><a target="_blank" href="' + surl + "/" +"job"+ "/" + d[e].url + "-" + d[e].id + '" class="btn btn-default mr">View</a><a target="_blank" onclick = "guestUserRest(\''+d[e].requirementUUID+'\')" class="btn btn-primary">Apply</a></div></div></div>';
         }
         text += "<div id='searchFoooterActions' class='clearfix mt'>";
         if (searchPageNo+1 > 1) {
@@ -82,6 +82,11 @@ function loadOffers(flag) {
         $("#resultTitle").html("Showing "+(searchPageNo*searchPageSize+1)+" - "+(((searchPageNo+1)*searchPageSize) > data.recordsTotal ? data.recordsTotal : ((searchPageNo+1)*searchPageSize))+" of "+data.recordsTotal + " results");
 
     });
+}
+
+
+function guestUserRest(requirementUUID){
+		window.location.href = "/guestApplyToJob?&requirementUUID="+requirementUUID;
 }
 
 loadPage();
