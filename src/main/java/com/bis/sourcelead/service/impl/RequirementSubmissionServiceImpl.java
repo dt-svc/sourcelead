@@ -4396,7 +4396,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		notificationScenario.setBody(notificationBody);
-		String actionLink = "";
+		/*StringBuilder notificationLink = new StringBuilder();
+		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&submissionStatus=REJECTED").toString();
+*/
+		String actionLink="";
 		if(null != submission.getVendorLocationId()){
 		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario);
 		}
@@ -4528,7 +4532,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 
 								String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 								notificationScenario.setBody(notificationBody);
-								String actionLink = "";
+								StringBuilder notificationLink = new StringBuilder();
+								 String actionLink="";
+							     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()).toString();
+
 								if(null != reqsub.getVendorLocationId()){
 								emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, reqsub.getVendorLocationId(), notificationScenario);
 								}
