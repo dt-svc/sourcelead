@@ -482,6 +482,20 @@ function sideBar(requirementId,type){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
 					tabEnable('','offerMadeli');
+			 }else if(type == 'APPLICANTS'){
+				    
+				    requirementPipeline(requirementId,'all');
+					requirementStatusBar(requirementId,type);
+					
+					 var candidateId = '${candidateId}';
+					 var submissionId = '${submissionId}';
+					 
+					 if(candidateId != null && candidateId != '' && candidateId != 'undefined' && 
+							 submissionId != null && submissionId != '' && submissionId != 'undefined'){
+						 applicantQuickViewProfile(submissionId,candidateId); 
+						 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId); 
+						 document.getElementById('detailedView').click();
+					 }
 			 }
 			 else{
 				    requirementPipeline(requirementId,'all');

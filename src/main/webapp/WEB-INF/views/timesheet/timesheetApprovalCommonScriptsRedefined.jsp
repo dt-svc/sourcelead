@@ -41,8 +41,12 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 });	
 </script> 
 <script>
-function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from){
-	  var tableFor = $("#tableFor").val();
+function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom){
+	if(requestFrom == "notifyLink"){
+		  tableFor = from;
+	 }else{
+		  tableFor = $("#tableFor").val();
+	 }
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 $("#projectMemberId").val('');
 	 $("#projectMemberId").val(projectMemberId);
@@ -60,7 +64,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	 $("#totalHours").val(totalHours);
      $.ajax({
 	          type : "POST",
-	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor=approver",		
+	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&redirectionRequestFrom="+requestFrom+"&timeSheetsFor=approver",		
 		      success :function(data) {
 		    	  $("#timesheetDivByFrequency").empty();
 	 	    	     var closeElement = $('.proj_close');

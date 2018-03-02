@@ -601,7 +601,6 @@ function validateMaxLeave(data){
 
 <script>
 function validateCarryForwardLeaves(){
-	alert("sdasdsadsa")
 	$('.jquery_form_error_message cOrange').hide();
 	var behalf = $("#checkbox-1");
 	var userId = "";
@@ -616,7 +615,6 @@ function validateCarryForwardLeaves(){
 	var leaveTypeId = $("#leaveType").val();
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
-		alert("asdas")
 		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
 				$('.jquery_form_error_message').remove();

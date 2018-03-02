@@ -6,6 +6,12 @@
 <script>
 $(document).ready(function(){
    getRequestedEmployeesList();
+   if ('${notifyLink}' == "notifyLink") 
+	{
+	var leaveUUID = '${leaveUUID}';
+	var orgLocationId = '${orgLocationId}';
+    getRequestedAproveSummary(leaveUUID,orgLocationId);
+	}
 });
 </script>
  
