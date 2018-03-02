@@ -42,7 +42,6 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 </script> 
 <script>
 function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom){
-	alert("pradeep")
 	if(requestFrom == "notifyLink"){
 		  tableFor = from;
 	 }else{
