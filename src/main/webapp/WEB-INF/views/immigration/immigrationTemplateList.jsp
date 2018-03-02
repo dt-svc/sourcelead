@@ -7,8 +7,19 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"> 
 <script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+
+
+<style type="text/css">
+.active {
+color: red !important;
+}
+
+</style>
 <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix cusFieldHead">
@@ -19,29 +30,54 @@
     
     
 <section class="immigraTabsWrap">
-	  
 	  <div class="cusFielInn">
 
-		<div class="immigraTabsHead">
+	<div class="dropdown">
+		<strong>Column Chooser </strong>
+		<button class="glyphicon glyphicon-plus" type="button" id="menu1"
+			data-toggle="dropdown"></button>
+
+		<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+			<li><a class="toggle-vis " data-column="0">Name</a></li>
+			<li><a class="toggle-vis" data-column="1">Description</a></li>
+			<li><a class="toggle-vis" data-column="2">No. of Docs</a></li>
+			<li><a class="toggle-vis" data-column="3">No. of Forms</a></li>
+			<li><a class="toggle-vis" data-column="4">No. of Tasks</a></li>
+			<li><a class="toggle-vis" data-column="5">Action</a></li>
+		</ul>
+	</div>
+	<div class="immigraTabsHead">
 		  	<a href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>"><i class="glyphicon glyphicon-plus"></i> Add Template</a> 
-		  	<span><input class="immigraTabSerach" id ="immiTemplateSerach" placeholder="search" type="text"></span>
+		  	<span><input class="immigraTabSerach" id ="immiTemplateSerach" placeholder="Name/Description" type="text"></span>
 		</div>
 		
 	  	<div id ="dynamicImmigrationListViewDiv" class="project_wrap_table datatable_filter">
 		</div>
 	  </div>
-	    
 	</section>    
   </section>
   <jsp:include page="../masterFooter.jsp" />
   <script>
+  var table ="";
+  var inlineSearch='';
    $( document ).ready(function() {
-	  getDynamicTemplateList();
+	 
+	   getDynamicTemplateList();
+	 
+	    $('a.toggle-vis').on( 'click', function (e) {
+	        e.preventDefault();
+	        // Get the column API object
+	        var column = table.column( $(this).attr('data-column') );
+	        $(this).toggleClass("active");
+	        // Toggle the visibility
+	        column.visible( ! column.visible() );
+	    } );
+	    
   });
   
   
   function getDynamicTemplateList(){
-	 // alert("hi");
+	 
 	  var result = "";
 		result = result + '<table id="dynamicTemplateListTbl">';
 		result = result + '<thead>';
@@ -54,6 +90,8 @@
 		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>';
+		
+		
 		result = result + '</table>';
 		$("#dynamicImmigrationListViewDiv").empty();
 		$("#dynamicImmigrationListViewDiv").append(result);
@@ -61,16 +99,21 @@
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#immiTemplateSerach").val();
 		searchValue = searchValue ? searchValue : "";
+		
+		
 		var url = sourceleadUrl+"/immigration/getImmigrationTemplateList?searchValue="+searchValue;
 		dynamicImmigrationListPagination(url);
   } 
   
   function dynamicImmigrationListPagination(url){
 	  var colIndex = 0;
-	  $('#dynamicTemplateListTbl').DataTable( { 
+	  table =   $('#dynamicTemplateListTbl').DataTable( { 
 	  "processing": true,
 	  "serverSide": true,
 	  "searching": false,
+	  "colReorder": true,
+	  //'dom': 'Rlfrtip',
+	 // "stateSave": true, // used to save the page state local or server side.
 	  "ajax": $.fn.dataTable.pipeline( {
 	  url: url,
 	  method: 'POST',
@@ -167,21 +210,24 @@
 	  "bDestroy": true,
 	  "ordering": true,
 	  "initComplete": function( settings, json ) {
-		 
 	  },
+	  
 	  "oLanguage": {
 	  "sSearch": "",
 	  "sZeroRecords": "", "sEmptyTable": "", 
 	  "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	  }
 	  });
+	  
 	  $("#dynamicTemplateListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-	  /* $("input[type=search]").hide(); */
+	  
 	  $("#immiTemplateSerach").keyup(function(e) {
 	  if(e.which === 13) {
 		  getDynamicTemplateList();
 	  }
 	  });
+	 
+	 $("table").colResizable(); // for resizing columns in tables.
   } 
   </script>
  
