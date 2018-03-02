@@ -1,9 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.OrgRequestDao;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
@@ -33,6 +37,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
 @Repository
 public class OrgRequestDaoImpl implements OrgRequestDao{
@@ -47,6 +52,9 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
     @Autowired
     LookUpDataDao lookUpDataDao;
 	
+    @Autowired
+	ReportsUtil reportsUtil;
+    
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -119,12 +127,13 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 		String approverQuery = "";
 		String projectModeQuery = "";
 		String query = null;
+		String dateFilterQuery = "";
 		List<Long> countlist = null;
 		Integer filterCount = 0;
 		ResponseList<EmployerRegistrationDTO> response = new ResponseList<>();
 		Query queryObj = null;
 		List<OrgRequest> orgDemoRequestsList = null;
-		
+		Date[] searchDates = null;
 		
 	   Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
 	   Matcher matcher = pattern.matcher(employerRegistrationDTO.getSearchValue());
@@ -155,7 +164,22 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 			}
 		
 		
-		 query = "from OrgRequest orgReq where orgReq.orgType = :orgType and orgReq.status = '1' ";
+		if(employerRegistrationDTO.getRequestedStatus() != null && !employerRegistrationDTO.getRequestedStatus().isEmpty()) {
+			if(!employerRegistrationDTO.getRequestedStatus().equalsIgnoreCase(Constants.ORG_REQUEST_FILTER_TODAY)) {
+				searchDates = reportsUtil.requestedOrgFilterDate(employerRegistrationDTO.getRequestedStatus(),orgLocations); 
+				dateFilterQuery = " and date(orgReq.createdDate) BETWEEN '"+searchDates[0]+"' and '"+searchDates[1]+"' ";
+			}else{
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				Date today = Calendar.getInstance().getTime();        
+				String reportDate = df.format(today);
+				
+				dateFilterQuery = " and orgReq.createdDate = '"+reportDate+"' ";
+			}
+			
+		}
+		
+		
+		 query = "from OrgRequest orgReq where orgReq.orgType = :orgType and orgReq.status = '1' "+dateFilterQuery+" ";
 	     
 	     if(query1.toString() != null && !query1.toString().isEmpty()){
 			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY orgReq.id DESC");
