@@ -2356,7 +2356,7 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTimesheetDate(timesheetDate);
 						timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 						timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
-					
+						timesheetDayEntries.setStatus(1);
 						timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 						timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
 						timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);

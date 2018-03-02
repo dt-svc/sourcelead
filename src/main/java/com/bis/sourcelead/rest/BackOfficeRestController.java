@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
@@ -599,6 +600,23 @@ public class BackOfficeRestController {
 		   return "home";
 	    
 	   }
+	
+	@RequestMapping(value = "/validateAssetSno",  method = RequestMethod.POST)
+    public @ResponseBody Boolean validateAssetSno(@RequestParam(value="assetSno", required=false) String assetSno, @RequestParam(value="assetId", required=false) Long assetId,
+    		HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       Asset asset=null;
+	       if(null != assetId){
+	        asset = assetService.getAssetByAssetSnoAndId(assetSno, assetId, orgLocation.getId());
+	       }
+	       Boolean flag = false;
+		    if(asset == null){
+		    	flag =  assetService.validateAssetId(assetSno, orgLocation.getId());
+		    	
+		    }
+			return flag;
+		 
+	    }
 	
 	@RequestMapping(value = "/validateCategoryName" , method = RequestMethod.GET)
 	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,HttpServletRequest request) throws Exception {

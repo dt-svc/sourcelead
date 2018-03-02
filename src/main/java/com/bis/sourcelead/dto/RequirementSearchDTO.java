@@ -19,6 +19,7 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String generatedId;
 	private String filterPriority;
 	private String filterJobType;
+	private String filterAssignTo;
 	private String visaType;
 	private String requirementSkills;
 	
@@ -107,6 +108,14 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	}
 	public void setFilterJobType(String filterJobType) {
 		this.filterJobType = filterJobType;
+	}
+	public String getFilterAssignTo()
+	{
+		return filterAssignTo;
+	}
+	public void setFilterAssignTo(String filterAssignTo)
+	{
+		this.filterAssignTo = filterAssignTo;
 	}
 	public String getVisaType() {
 		return visaType;
