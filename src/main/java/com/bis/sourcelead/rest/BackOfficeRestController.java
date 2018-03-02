@@ -602,18 +602,20 @@ public class BackOfficeRestController {
 	   }
 	
 	@RequestMapping(value = "/validateAssetSno",  method = RequestMethod.POST)
-    public @ResponseBody String validateAssetSno(@RequestParam(value="assetSno", required=false) String assetSno,
+    public @ResponseBody Boolean validateAssetSno(@RequestParam(value="assetSno", required=false) String assetSno, @RequestParam(value="assetId", required=false) Long assetId,
     		HttpServletRequest request) throws Exception {
 	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       String result = null;
-	       Asset asset = assetService.validateAssetSno(assetSno, orgLocation.getId());
-		 	
-		 	if (asset != null) {
-				result = "true";
-			}else{
-				result = "false";
-			}
-			return result;
+	       Asset asset=null;
+	       if(null != assetId){
+	        asset = assetService.getAssetByAssetSnoAndId(assetSno, assetId, orgLocation.getId());
+	       }
+	       Boolean flag = false;
+		    if(asset == null){
+		    	flag =  assetService.validateAssetId(assetSno, orgLocation.getId());
+		    	
+		    }
+			return flag;
+		 
 	    }
 	
 	@RequestMapping(value = "/validateCategoryName" , method = RequestMethod.GET)
