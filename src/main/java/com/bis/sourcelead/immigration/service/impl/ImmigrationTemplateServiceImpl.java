@@ -268,4 +268,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	public List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId) {
 		return immigrationTemplateDao.getImmigrationTemplateformsListById(templateId);
 	}
+
+	@Override
+	public void deleteAllPetitionTemplateDetailsById(Long templateId) {
+		immigrationTemplateDao.deleteAllPetitionTemplateDetailsById(templateId);
+	}
 }
