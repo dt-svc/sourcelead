@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -2088,12 +2090,33 @@ public class RegistrationServiceImpl implements RegistrationService{
 			orgRequest.setCompanyAddress(employerRegistrationDTO.getCompanyAddress());
 		}
 		
+		
+		orgRequest.setOrgType(employerRegistrationDTO.getOrgType());
+		if(employerRegistrationDTO.getOrgType().equalsIgnoreCase("Demo")) {
+			Timezone timezone=timeZoneService.getTimezone(Long.valueOf(employerRegistrationDTO.getTimeZone()));
+			 
+			 if(employerRegistrationDTO.getDemoDate() != null && !employerRegistrationDTO.getDemoDate().isEmpty()) {
+				 String demoDateString=employerRegistrationDTO.getDemoDate();  
+				 DateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
+				 Date demoDate = dt.parse(demoDateString); 
+				 orgRequest.setDemoDate(demoDate);
+			 }
+			
+			if(employerRegistrationDTO.getDemoTime() != null && !employerRegistrationDTO.getDemoTime().isEmpty()) {
+				orgRequest.setDemoTime(employerRegistrationDTO.getDemoTime());
+			}
+			orgRequest.setTimezone(timezone);
+		}
 		orgRequest.setModules(employerRegistrationDTO.getModulesList().toString());
 		orgRequest.setStatus(Constants.RECORD_ACTIVE);
 		orgRequest.setCreatedDate(new Date());
 		orgRequestService.saveOrgRequest(orgRequest);
+		if(employerRegistrationDTO.getOrgType().equalsIgnoreCase("Demo")) {
+			
+		}else {
+			orgRequestService.senEmailOrgRequestToSourcelead(orgRequest);
+		}
 		
-		orgRequestService.senEmailOrgRequestToSourcelead(orgRequest);
 		return "success";
 	}
 

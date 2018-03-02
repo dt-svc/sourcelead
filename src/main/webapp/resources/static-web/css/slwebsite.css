@@ -942,16 +942,44 @@ a.btn-demo:hover{
 	line-height: 30px;
 }
 .freeTrialPop {
-	position:fixed; right:-600px; width:550px; height:100%; top:0px; z-index:20000; box-shadow:0px 0px 10px rgba(0,0,0,0.4);
-	background:url(../images/demo-bg.jpg) no-repeat center; background-size:cover; overflow: auto;
-	transition:0.2s all; -webkit-transition:0.2s all; -moz-transition:0.2s all; text-align: center;
-	}
+	position:fixed; right:-600px; height:100%; top:0px; z-index:20000; box-shadow:0px 0px 10px rgba(0,0,0,0.4);
+	overflow: auto; transition:0.2s all; -webkit-transition:0.2s all; -moz-transition:0.2s all; text-align: center;
+	background-color:#ededed; width:550px !important;
+}
+.getAdemo .col-md-6 {
+	min-height: 60px;
+}
+.pac-container {
+	z-index: 999999;
+}
+.getDemo .modal-title {
+	background: #ccc8c8; padding: 10px; text-transform: uppercase; color: #333;
+}
+.calendar {
+    background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
+ }
+.timeicon {
+    background-image:url("../images/time.png"); background-repeat:no-repeat; background-position:94% center; background-size:18px;
+ }
+ .ui-timepicker-wrapper {
+ z-index: 99999; width: 87px;
+ }
+ .pdRight {
+ padding-right: 5px;
+ }
+ .pdLeft {
+ padding-left: 5px;
+ }
+ .getAdemo p.jquery_form_error_message {
+ 	padding: 5px 0 0 0; margin: 0px 0px; font-size: 12px; text-align: left;
+    font-weight: 400; color: red; line-height: normal;
+ }
 .freeTrialPop.freeTrialPop_a {
 	background:#368ee0;
-	}	
+}	
 .freeTrialPop.activePop {
 	right:0px;
-	}
+}
 .clPop {
     position: fixed; width: 60px; height: 60px;
     background-color: #fe4949; border-radius: 7px 0px 0px 7px; right: -600px;
@@ -965,25 +993,28 @@ a.btn-demo:hover{
 .clPop.clPopA {
     right: 550px;
 }
-.Rdemo img {
+.selectpicker-dropdowndDemo .dropdown-menu {
+	width: 100px;
+}
+Rdemo img {
     width: 78%; display: inline-block; padding: 60px 0px 25px 0px;
 }
 .Rdemo {
     /*padding-bottom: 50px;*/
 	padding: 25px;
 }
-.Rdemo h3 {
+Rdemo h3 {
     padding: 0px 0px; margin: 0px 0px; font-size: 36px; font-weight: 400;
     color: #fff; text-transform: uppercase;
 }
-.Rdemo p {
+Rdemo p {
     padding: 20px 60px 15px; margin: 0px 0px; font-size: 18px; font-weight: 400; color: #fff; line-height: 28px;
 }
-.Rdemo span {
+Rdemo span {
     padding: 15px 50px; margin: 0px 0px; font-size: 16px; font-weight: 400; color: #fff;
     display: block;
 }
-.Rdemo a {
+Rdemo a {
     margin: 0px 0px; font-size: 22px; font-weight: 400; color: #fff; display: block;
 }
 .owl-nav {
@@ -1101,7 +1132,8 @@ a.btn-demo:hover{
     padding: 0px;
 }
 .getDemo.Rdemo .btn-danger {
-	border-radius: 2px;padding: 5px 25px; margin: 0 auto; display: block;
+	border-radius: 2px;padding: 8px 35px; margin: 0 auto; display: block;  border-radius: 3px;
+    font-size: 18px;
 }
 /* checkbox styles */
 .getdemo-mask {

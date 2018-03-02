@@ -12,6 +12,10 @@ public class EmployerRegistrationDTO {
      private String companyAddress;
      private String country;
      private String modulesList;
+     private String demoDate;
+     private String demoTime;
+     private String timeZone;
+     private String orgType;
      
 		public String getFirstName() {
 			return firstName;
@@ -67,5 +71,29 @@ public class EmployerRegistrationDTO {
 		}
 		public void setModulesList(String modulesList) {
 			this.modulesList = modulesList;
+		}
+		public String getTimeZone() {
+			return timeZone;
+		}
+		public void setTimeZone(String timeZone) {
+			this.timeZone = timeZone;
+		}
+		public String getOrgType() {
+			return orgType;
+		}
+		public void setOrgType(String orgType) {
+			this.orgType = orgType;
+		}
+		public String getDemoDate() {
+			return demoDate;
+		}
+		public String getDemoTime() {
+			return demoTime;
+		}
+		public void setDemoDate(String demoDate) {
+			this.demoDate = demoDate;
+		}
+		public void setDemoTime(String demoTime) {
+			this.demoTime = demoTime;
 		}
 }

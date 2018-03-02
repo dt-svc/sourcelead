@@ -590,7 +590,7 @@ window.onload = function () {
        <form:form   id="employerRegistration_form"  name="employerRegistration_form" method="post" >     
         <div class="row mt10">
             <div class="form-group clearfix noMar">
-            
+            <input type="hidden" id="orgType" name="orgType" value="Request">
             <div class="col-md-6 paddRight" >
                 <div class="col-xs-12 col-md-12 mb" id="firstNameDiv">
                     <i class="fa fa-user-circle"></i>
@@ -608,14 +608,14 @@ window.onload = function () {
                 <div class="col-xs-12 col-md-12 mb" id="emailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
-                    <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+                    <input type="text" name="email" field-name="Email" value='${email}'  id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
                 
                 <div class="col-xs-12 col-md-12 mb">
                     <i class="fa fa-mobile fa-2x"></i>
                     <label>Phone Number</label>
-                    <input type="text" name="phoneNumber" field-name="Phone Number"  id="mobileNumber"  data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" name="phoneNumber" field-name="Phone Number"  id="mobileNumber"  data-validation="required validate_Space validate_phone validate_length length9-20">
                     <b></b>
                 </div>
                 </div>
@@ -663,13 +663,6 @@ window.onload = function () {
 				  <label class="checkbox-area">${requestOrg.name} <input type="checkbox" value="${requestOrg.id}" name="modules" onblur="moduleCheckValidation(this)"> <span class="checkmark"></span> </label>
 				 </c:forEach>   
 			
-				<!-- <label class="checkbox-area">ATS <input type="checkbox" value="ATS" name="modules" onblur="moduleCheckValidation(this)"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">VMS <input type="checkbox" name="modules" value="VMS" onblur="moduleCheckValidation(this)"><span class="checkmark"></span> </label>
-				<label class="checkbox-area">TIMESHEETS<input type="checkbox" value="TIMESHEETS" name="modules" onblur="moduleCheckValidation(this)"><span class="checkmark"></span> </label> -->
-				<!-- <label class="checkbox-area">HRMS <input type="checkbox"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">PMS <input type="checkbox"> <span class="checkmark"></span> </label>
-				<label class="checkbox-area">IMS <input type="checkbox"> <span class="checkmark"></span> </label> -->
-				
 				<input type="hidden"  id="moduleValue" name="module"  field-name="Module" data-validation="required"/> 			    
 				
 				 <div class="clear"></div>           	
@@ -684,7 +677,7 @@ window.onload = function () {
 	            </div>
 	            <div class="col-md-12 mt10">
 	                  <button type="submit" id="employerRegister_button"  class="btn btn-primary btn_styles btn-block" title="Register" onclick="saveEmployer();">
-	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Register</span></button>
+	                  <span class="text-center"><i class="fa fa-paper-plane" ></i>Request</span></button>
 	            </div>
 	            </div>
                 <div class="col-md-12 text-center mt bg-info">
