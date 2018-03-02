@@ -247,7 +247,7 @@ public class UsersListRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
-	    int sortColumnIndex = 1; //by default sorting using updated date
+	    int sortColumnIndex = 5; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(userRoleDto.getOrder() != null && !userRoleDto.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(userRoleDto.getOrder().get(0).get("column"));
