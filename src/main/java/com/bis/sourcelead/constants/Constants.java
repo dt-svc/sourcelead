@@ -523,7 +523,7 @@ public class Constants {
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
-			"Serial Number/Port Number", "Make", "Model", "Memory", "CPU",	"Hard Disk", "Description", "ShiftA Employee","ShiftB Employee"};
+			"Serial Number/Port Number", "Make", "Model", "Memory", "CPU", "Monitor", "Hard Disk", "Description", "ShiftA Employee","ShiftB Employee"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
@@ -1028,6 +1028,11 @@ public class Constants {
 	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
 	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
 
+	public static final String MAIL_ASSIGNEMPLOYEE_PROJECTTASK = "MailtoAssignEmployeeinProjecttask";
+	
 
+	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
+	public static final String LEAVE_DATA =  "Leave";
+	
 
 }

@@ -122,6 +122,22 @@ public class RequirementHelper {
 			if (null != requirement.getMaxExp()) {
 				requirementIndex.setMaxExperience(requirement.getMaxExp());
 			}
+			if(null != requirement.getCurrencyCode() && !"".equalsIgnoreCase(requirement.getCurrencyCode())){
+				requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
+			}
+			if(null != requirement.getClientCurrencyCode() && !"".equalsIgnoreCase(requirement.getClientCurrencyCode())){
+				requirementIndex.setClientCurrencyCode(requirement.getClientCurrencyCode());
+			}
+			if(null != requirement.getClientMaxRate() && !"".equalsIgnoreCase(requirement.getClientMaxRate())){
+				requirementIndex.setClientMaxRate(Float.parseFloat(requirement.getClientMaxRate()));
+			}
+			if(null != requirement.getClientRate() && !"".equalsIgnoreCase(requirement.getClientRate())){
+				requirementIndex.setClientRate(Float.parseFloat(requirement.getClientRate()));
+			}
+			if(null != requirement.getClientRateType() && !"".equalsIgnoreCase(requirement.getClientRateType())){
+				requirementIndex.setClientRateType(requirement.getClientRateType());
+			}
+			
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
 			

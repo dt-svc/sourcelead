@@ -39,6 +39,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -117,6 +119,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private AssetService assetService;
 	
 	/*@Autowired
 	private CalendarUtil calendarUtil;*/
@@ -1388,7 +1393,16 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				
 				if(!dataMigrationDTOJsonCopy.getString("sno").equals("sno") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
 					String serialNo = dataMigrationDTOJsonCopy.getString("sno");
-						dataMigrationDTOJsonCopy.put("sno", serialNo);
+				       Asset asset = assetService.validateAssetSno(dataMigrationDTOJsonCopy.getString("sno"), orgLocation.getId());
+					 	if (asset != null) {
+					 		errorSet.put("sno", dataMigrationDTOJsonCopy.getString("sno")+" is Already Existed");
+						}else{
+							dataMigrationDTOJsonCopy.put("sno", serialNo);
+
+						}
+					
+					
+						
 				}
 				
 			}
