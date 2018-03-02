@@ -163,7 +163,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getPrimaryRole By UserId start");
 		userRole = session
-				.createQuery("from UserRole userRole left join fetch userRole.orgLocations where userRole.user.id=:userId and userRole.isPrimary = '1' ")
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org where userRole.user.id=:userId and userRole.isPrimary = '1' ")
 				.setLong("userId", userId).list();
 		logger.debug("getPrimaryRole By UserId start");
 		if (userRole.size() > 0) {
@@ -603,7 +603,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserByUserId By UserId start");
 		userRole = session
-				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles where userRole.id = :id  ")
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles where userRole.id = :id  ")
 				.setLong("id", id).list();
 		logger.debug("getUserByUserId By UserId start");
 		if (userRole.size() > 0) {
@@ -630,7 +630,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserDetailsByEmailAndLocationId method  start");
 		userRole = session
-				.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles  "
 						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
 				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");

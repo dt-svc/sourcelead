@@ -418,6 +418,9 @@ public class Constants {
 	public static final String TimeSheet = "TimeSheet";
 	public static final String TimeSheetApproval = "TimeSheetApproval";
 	public static final String OrgSettings = "OrgSettings";
+	public static final String Blogs = "Blogs";
+	public static final String UserManuals = "UserManuals";
+	public static final String Support = "Support";
 	public static final String BackOffice = "BackOffice";
 	public static final String Finance = "Finance";
 	public static final String AssetManagement = "AssetManagement";
