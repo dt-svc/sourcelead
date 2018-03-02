@@ -37,10 +37,12 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -56,6 +58,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
 	private UserDao userDao;
@@ -1761,12 +1766,20 @@ public class RequirementDaoImpl implements RequirementDao {
 		    for(Requirement req : requirementList){
 		    	
 		    	RequirementDTO reqDTO = new RequirementDTO();
+		    	List<String> requirementLocationsList = new ArrayList<>();
+				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(req.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+						requirementLocationsList.add(location.getLocation());
+					}
+				}
 		    	reqDTO.setRequirementId(req.getId().toString());
 		    	reqDTO.setJobId(req.getJobId());
 		    	reqDTO.setJobTitle(req.getJobTitle());
 		    	reqDTO.setJobType(req.getJobType());
 		    	reqDTO.setRate(req.getRate());
-		    	reqDTO.setLocation(req.getLocation());
+		    	reqDTO.setLocationsList(requirementLocationsList);
+		    	//reqDTO.setLocation(req.getLocation());
 		    	reqDTO.setPriority(req.getPriority());
 		    	if(StringUtils.isNotBlank(dateFormat)){
 		    		reqDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, req.getCreatedDate()));
