@@ -14,127 +14,10 @@
 		
 		<div class="addImmiContent clearfix">
 			<div class="immigraTabsHead">
-				<a href="javascript:void(0)"  onclick="getAssignToUsersList();" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
-				<span><input class="immigraTabSerach" type="text"></span>
+				<a href="javascript:void(0)"  onclick="getAssignToUsersList(null);" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
+				<span><input id="immigraListTabSerach" type="text"></span>
 			</div>	
-			<div class="immigraTable">
-			  <table>
-				<tbody>
-				  <tr>
-					<th>Subject</th>
-					<th>Assign To</th>
-					<th>Priority</th>
-					<th>Repeat</th>
-					<th>&nbsp;</th>
-				  </tr>
-				  <tr>
-					<td><div class="tbldata-dotdot-big">Task subject text here</div></td>
-					<td><div class="tbldata-dotdot-sm">Candidate</div></td>
-					<td><div class="tbldata-dotdot-sm">High</div></td>
-					<td><div class="tbldata-dotdot-sm">Daily</div></td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn">
-							<span>
-								<a href="javascript:void(0)" class="fa fa-trash"></a>
-								<a href="javascript:void(0)" class="fa fa-pencil"></a>
-							</span>
-						</div>
-					</td>
-				  </tr>  			  			  
-				  <tr>
-					<td><div class="tbldata-dotdot-big">Task subject text here</div></td>
-					<td><div class="tbldata-dotdot-sm">Candidate</div></td>
-					<td><div class="tbldata-dotdot-sm">High</div></td>
-					<td><div class="tbldata-dotdot-sm">Daily</div></td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn">
-							<span>
-								<a href="javascript:void(0)" class="fa fa-trash"></a>
-								<a href="javascript:void(0)" class="fa fa-pencil"></a>
-							</span>
-						</div>
-					</td>
-				  </tr>  
-				  <tr>
-					<td><div class="tbldata-dotdot-big">Task subject text here</div></td>
-					<td><div class="tbldata-dotdot-sm">Candidate</div></td>
-					<td><div class="tbldata-dotdot-sm">High</div></td>
-					<td><div class="tbldata-dotdot-sm">Daily</div></td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn">
-							<span>
-								<a href="javascript:void(0)" class="fa fa-trash"></a>
-								<a href="javascript:void(0)" class="fa fa-pencil"></a>
-							</span>
-						</div>
-					</td>
-				  </tr>    
-				  <tr>
-					<td><div class="tbldata-dotdot-big">Task subject text here</div></td>
-					<td><div class="tbldata-dotdot-sm">Candidate</div></td>
-					<td><div class="tbldata-dotdot-sm">High</div></td>
-					<td><div class="tbldata-dotdot-sm">Daily</div></td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn">
-							<span>
-								<a href="javascript:void(0)" class="fa fa-trash"></a>
-								<a href="javascript:void(0)" class="fa fa-pencil"></a>
-							</span>
-						</div>
-					</td>
-				  </tr>    
-				  <tr>
-					<td><div class="tbldata-dotdot-big">Task subject text here</div></td>
-					<td><div class="tbldata-dotdot-sm">Candidate</div></td>
-					<td><div class="tbldata-dotdot-sm">High</div></td>
-					<td><div class="tbldata-dotdot-sm">Daily</div></td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn">
-							<span>
-								<a href="javascript:void(0)" class="fa fa-trash"></a>
-								<a href="javascript:void(0)" class="fa fa-pencil"></a>
-							</span>
-						</div>
-					</td>
-				  </tr>    
-				  <tr>
-					<td><div class="tbldata-dotdot-big">Task subject text here</div></td>
-					<td><div class="tbldata-dotdot-sm">Candidate</div></td>
-					<td><div class="tbldata-dotdot-sm">High</div></td>
-					<td><div class="tbldata-dotdot-sm">Daily</div></td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn">
-							<span>
-								<a href="javascript:void(0)" class="fa fa-trash"></a>
-								<a href="javascript:void(0)" class="fa fa-pencil"></a>
-							</span>
-						</div>
-					</td>
-				  </tr>   
-				  <tr>
-					<td><div class="tbldata-dotdot-big">Task subject text here</div></td>
-					<td><div class="tbldata-dotdot-sm">Candidate</div></td>
-					<td><div class="tbldata-dotdot-sm">High</div></td>
-					<td><div class="tbldata-dotdot-sm">Daily</div></td>
-					<td class="immigraAction">
-						<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-						<div class="mmigraActionInn">
-							<span>
-								<a href="javascript:void(0)" class="fa fa-trash"></a>
-								<a href="javascript:void(0)" class="fa fa-pencil"></a>
-							</span>
-						</div>
-					</td>
-				  </tr>    
-
-				</tbody>
-			  </table>
+			<div id="immigrationTempDynamicTaskList" class="project_wrap_table datatable_filter">
 			</div>
  		</div>
    
@@ -164,7 +47,7 @@
 					</div>
 					<div class="col-md-12 mb10">
 					  <label>Priority</label>
-						<select id ="priority" name="priority" class="form-control">
+						<select class="form-control input-sm valid" id="priority1" name="priority">
 							<option selected="" disabled="">-- Select Priority --</option>
 							<option>High</option>
 							<option>Low</option>
@@ -188,7 +71,7 @@
 						<label class="paddingRight checkBox"><input id="reminder" name="Reminder" type="checkbox">Reminder</label>
 					  </div>
 					   <div class="mt5" id="reminderdropdown" style="display:none;">
-						<select class="chosen-select" name="taskReminder"  multiple>
+						<select class="chosen-select" id="taskReminder" name="taskReminder"  multiple>
 						<option>1 days</option><option>1 Week</option><option>15 days</option><option>1 Month</option><option>90 days</option><option>180 days</option>
 						</select>
 					  </div>
@@ -208,13 +91,13 @@
 					      <div class="clearfix">
 						  <label>Assign To<span class="text-danger">*</span></label>
 						  <div class="clearfix">
-							<label class="paddingRight"> <input type="radio"  name="assignToType" checked="checked" onclick="validateAssignToType('assingToCandidate');"> Beneficiary </label>
-							<label class="paddingLeft"> <input type="radio"  name="assignToType"  onclick="validateAssignToType('assingToUser');"> User </label>
+							<label class="paddingRight"> <input type="radio"  name="assignToType" id="assignedToB" checked="checked" onclick="validateAssignToType('assingToCandidate');"> Beneficiary </label>
+							<label class="paddingLeft"> <input type="radio"  name="assignToType" id="assignedToU"  onclick="validateAssignToType('assingToUser');"> User </label>
 						  </div>
 						  </div>
 						  
 						  <div class="clearfix" id="assignToUserDiv" style="display:none;">
-							<select class="chosen-select" multiple data-placeholder="Select User"  id="petitionAssignedTo" name="petitionAssignedTo"  field-name="AssignTo"  data-validation-optional="true">
+							<select class="chosen-select" multiple data-placeholder="Select User"  id="petitionAssignedTo1" name="petitionAssignedTo"  field-name="AssignTo"  data-validation-optional="true">
 							  </select>
 						  </div>
 						  
@@ -306,11 +189,132 @@
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div>	
+
+
+<!-- Template List code -->	
+<script type="text/javascript">
+function immigrationDataTableList(){
+	var result = "";
+ 	result = result +"<table id='templateTaskListTable'><thead><tr><th>Subject</th><th>Assign To</th><th>Priority</th><th>Repeat</th><th>Action</th></tr></thead></table>";
+    $("#immigrationTempDynamicTaskList").empty();
+    $("#immigrationTempDynamicTaskList").append(result);
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#immigraListTabSerach").val();
+	 searchValue = searchValue ? searchValue : "";
+	 var url = sourceleadUrl+immiModulePath+"/getTemplateTaskList?searchValue="+searchValue;
+	 immigrationPagination(url);
+}
+	
+function immigrationPagination(url){
+	var colIndex = 0;
+    $('#templateTaskListTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        "columns": [
+            { "data": "taskName" },
+            { "data": "assignedTo"},
+            { "data": "priority"},
+            { "data": "taskRepeat"}
+            /*{ "data": "id"},*/
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "taskName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  if(opt.taskName !=null && opt.taskName !='' && opt.taskName !='undefined'){
+			        		result = result + '<td>'+opt.taskName+'</td><input type="hidden" id="startDate'+opt.id+'" value="'+opt.taskName+'"/>';
+			        	}else{
+			        	  	result = result + '<td>---</td>';
+			        	}
+		             	return result;
+	    	  		}
+	      		},
+	      	{
+	    	  "targets": colIndex++,
+              "data": "assignedTo",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+    	  		  if(opt.assignedTo !=null && opt.assignedTo !='' && opt.assignedTo !='undefined'){
+		        		result = result + '<td>'+opt.assignedTo+'</td><input type="hidden" id="endDate'+opt.id+'" value="'+opt.assignedTo+'"/>';
+		        		}else{
+		        		  	result = result + '<td>---</td>';
+		        		}
+	             return result;
+              }
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "priority",
+	              "render": function ( data, type, opt, meta ) {
+	              		var result = "";
+	        	  		if(opt.priority !=null && opt.priority !='' && opt.priority !='undefined'){
+	    		        	result = result + '<td>'+opt.priority+'</td><input type="hidden" id="scheduleMessage'+opt.id+'" value="'+opt.priority+'"/>';
+	    		        }else{
+	    		          	result = result + '<td>---</td>';
+	    		        }
+	    	     	 return result;
+	             	 }
+	              },
+	              {
+			    	  "targets": colIndex++,
+		              "data": "taskRepeat",
+		              "render": function ( data, type, opt, meta ) {
+		              		var result = "";
+		        	  		if(opt.taskRepeat !=null && opt.taskRepeat !='' && opt.taskRepeat !='undefined'){
+		    		        	result = result + '<td>'+opt.taskRepeat+'</td><input type="hidden" id="scheduleMessage'+opt.id+'" value="'+opt.taskRepeat+'"/>';
+		    		        }else{
+		    		          	result = result + '<td>---</td>';
+		    		        }
+		    	     	 return result;
+		             	 }
+		              },
+				{
+			    	"targets": colIndex++,
+		          	/* "data": "id", */
+		          	"render": function ( data, type, opt, meta ) {
+		            	var result = "";
+		        	  	if(opt.id !=null && opt.id !='' && opt.id !='undefined'){
+		    		       	result = result + '<td><div><i id="edit'+opt.id+'" onclick="editImmiTaskList('+opt.id+');" class="glyphicon glyphicon-pencil"></i><i id="delete'+opt.id+'" onclick="deleteImmiTaskList('+opt.id+');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+		    		    }
+		    	 return result;
+		        }
+		     }],
+		     "scrollCollapse": false,
+		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"aaSorting": [[3,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": true,
+		    	"initComplete": function( settings, json ) {
+		    		 $('#immigraListTabSerach').removeAttr('disabled');
+		    	  },
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": "", 
+		     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+		     }
+    });
+    $("#templateTaskListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#immigraListTabSerach").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   immigrationDataTableList();
+    	   }
+    });
+}
+</script>
 <!--   Popup Code  --> 
 <script>
 // Error pop addSen
 	$(document).ready(function() {
+		immigrationDataTableList();
 		$("#addTask").click(function(){
+			document.getElementById("petitionTemplateTaskDetails").reset();
 			$(".popMask").fadeIn(200);
 			$("#taskViewPopup").fadeIn(100);
 		});
@@ -356,42 +360,76 @@
         });
     });
     
-  /*   $(function() {
-        $("#assignToUsers").click(function () {
-            if ($(this).is(":checked")) {
-            	$("#selectUsertextBox").show();
-            } else {
-            	$("#selectUsertextBox").hide();
-            }
-        });
-    });
-    
-    $(function () {
-        $("#assignToCandidate").click(function () {
-            if ($(this).is(":checked")) {
-            	$("#selectUsertextBox").hide();
-            } else {
-            	$("#selectUsertextBox").hide();
-            }
-        });
-    });
-     */
+    function editImmiTaskList(id){
+    	$.ajax({
+    	   	type: "GET",
+    	    url: sourceleadUrl+immiModulePath+"/editImmigrationTaskList?id="+id,	    	   
+    	    success: function(data) {
+    	    	console.log(data);
+    	    	document.getElementById("petitionTemplateTaskDetails").reset();
+    	    	$(".popMask").fadeIn(200);
+    			$("#taskViewPopup").fadeIn(100);
+    			$("#taskName").val(data.taskName);
+    			$("#priority1").val(data.priority);
+    			$("#taskRepeat").val(data.taskRepeat);
+    			if(data.taskReminder != null){
+    				$("#reminder").prop('checked', true);
+    				$("#taskReminder").val(data.taskReminder);
+    			}
+    			if(data.taskEmail != null){
+    				$("#taskEmail").prop('checked', true);
+    			}
+    			if(data.taskNotification != null){
+    				$("#taskNotification").prop('checked', true);
+    			}
+    			$("#taskEmail").val(data.taskEmail);
+    			$("#taskNotification").val(data.taskNotification);
+    			if(data.petitionAssignedTo != null){
+    				$("#assignedToU").prop('checked', true);
+    				getAssignToUsersList(data.petitionAssignedTo);
+    				document.getElementById("assignToUserDiv").style.display="";
+    				$("#petitionAssignedTo1").removeAttr('data-validation-optional');
+    				$("#petitionAssignedTo1").attr("data-validation", "required"); 
+    			}else if(data.petitionAssignedTo == null){
+    				$("#assignedToB").prop('checked', true);
+    				document.getElementById("assignToUserDiv").style.display="none";
+    				$("#petitionAssignedTo1").removeAttr('data-validation');
+    				$("#petitionAssignedTo1").attr("data-validation-optional", "true");
+    			}
+    			$("#dueAfterMonths").val(data.dueAfterMonths);
+    			$("#dueAfterDays").val(data.dueAfterDays);
+    			$("#taskDescription").val(data.taskDescription);
+    	    }
+    	});
+    }
     </script>
     <script>
-function getAssignToUsersList(){
+function getAssignToUsersList(id){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(json) {
 	    	 var result = "";
-        	 for (var i=0; i<json.length; i++)
- 			{
+        	 for (var i=0; i<json.length; i++){
         		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+        		if(id != null){
+        			var ids = id.split(',');
+	        		for (j=0;j<ids.length;j++){
+	        		     if(ids[j] == report.userId){
+	         				result = result +'<option selected value="'+report.userId+'" >'+report.userName+'</option>';
+	         			}
+	        		}
+        			
+        		}else{
+        			result = result +'<option value="'+report.userId+'" >'+report.userName+'</option>';
+        		}
 			}
-        	 $("#petitionAssignedTo").empty();
-           	 $("#petitionAssignedTo").append(result); 
-           	 $('#petitionAssignedTo').trigger("chosen:updated");
+        	 /* if(id!=null){
+        		 $("#petitionAssignedTo1 :selected").val(id); 
+        	 } */
+        	 $("#petitionAssignedTo1").empty();
+           	 $("#petitionAssignedTo1").append(result); 
+           	 $('#petitionAssignedTo1').trigger("chosen:updated");
 	    }
    }); 
 }
@@ -436,7 +474,7 @@ function validateDueAfter(){
 		  document.getElementById("assignToUserDiv").style.display="none";
 		  $("#petitionAssignedTo").removeAttr('data-validation');
 		  $("#petitionAssignedTo").attr("data-validation-optional", "true");
-		  getAssignToUsersList();
+		  getAssignToUsersList(null);
 	  }
   }
   </script>

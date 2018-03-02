@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,9 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,10 +22,15 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -142,7 +151,7 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value={"/addNewPetitionTemplate"})
-	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) {
+	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request ) throws ServletRequestBindingException {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -150,6 +159,24 @@ public class ImmigrationRestController {
 		request.getSession().removeAttribute("templateDocList");
 		request.getSession().removeAttribute("templateFormsList");
 		model.setViewName("/immigration/addPetitionTemplate");
+		Long templateId= ServletRequestUtils.getLongParameter(request, "templateId");// sending parameter edit mode.
+		if(templateId != null) { // below code is used for edit template name, docs, forms when opened in edit mode.
+			try {
+				System.out.println(" Edit mode templateId templateId -->" + templateId);
+				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
+				 List<ImmigrationTemplateDocDTO> docsList= immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
+				 logger.debug(" Edit mode templateId templateId -->" + templateId +", docsList size is "+docsList.size());
+				 List<ImmigrationTemplateFormDTO> formsList= immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
+				 logger.debug(" Edit mode templateId templateId -->" + templateId +", formsList size i "+formsList.size());
+				 // templateDTO.setImmigrationDocList(docsList);
+				request.getSession().setAttribute("templateDTO", templateDTO);
+				request.getSession().setAttribute("templateDocList",docsList);
+				request.getSession().setAttribute("templateFormsList",formsList);
+			} catch (Exception e) {
+				logger.error(" Exception caught in edit mode in controller -->" + templateId);
+				e.printStackTrace();
+			}
+		}
 		return model;
 	}
 	
@@ -159,24 +186,57 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationTemplateList");
-		try {
-		List<ImmigrationTemplateView> templateList= immigrationTemplateService.getAllTemplateDetails();
-		System.out.println("template list size is "+templateList.size());
-		model.addObject("templateList", templateList);
-		}
-		catch (Exception e) {
-			logger.error("Exception occured while getting template list-->"+e.getMessage());
-			e.printStackTrace();
-		}
 		return model;
 	}
 	
+
+@RequestMapping(value="/getImmigrationTemplateList")
+public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(ImmigrationTemplateListDTO templateListDTO,
+		@RequestParam(value = "searchValue", required = false) String searchValue,
+							HttpServletRequest request) {
+		ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
+		try {
+			String[] tableColumns = { "name", "description", "docsCount", "formsCount", "tasksCount" };//should be entity names 
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "asc"; // by default ascending order
+			if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction of the sorting.
+			}
+			templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			templateListDTO.setSortOrder(sortColumnOrder);
+			System.out.println("searchValue in controller searchValue---> "+searchValue);
+			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue, orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//if(templateListDTOList.getRecordsTotal()>0)
+		//System.out.println("After getAlltemplateList in controller ---> "+templateListDTOList.getData().get(0).getDocsCount());
+		return templateListDTOList;
+}
+
+	@RequestMapping(value = "/deleteImmigrationTemplateDetatils")
+	public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
+			HttpServletRequest request) {
+		try {
+			immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId);// only soft delete operation in Database.
+			//System.out.println("inside delete controller method calling ----->>>>>>>: "+deleteId);
+			logger.debug("inside delete controller method calling ----->>>>>>>: "+deleteId);
+		} catch (Exception e) {
+			logger.error(" Exception while deleting template deitails in controller -->" + deleteId);
+			e.printStackTrace();
+		}
+		return "success";
+	}
+
 	@RequestMapping(value={"/addPetitionTemplate"})
 	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
 			@RequestParam(value = "forwardTo", required = false) String forwardTo) {
 		ModelAndView model = new ModelAndView();
 		try {
-
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			if (forwardTo.equalsIgnoreCase("tempDetails")) {
 				model.setViewName("/immigration/petitionTemplateDetails");
@@ -209,6 +269,7 @@ public class ImmigrationRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
 			immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user,orgLocations, templateId);
 		}
 		catch (Exception e) {
@@ -218,6 +279,7 @@ public class ImmigrationRestController {
 		request.getSession().setAttribute("templateDTO", templateDTO);
 		return "{status:'success', id:"+immigrationId+ "}";
 	}
+	
 	@RequestMapping(value={"/savePetitionTemplateDocDetails"},method = RequestMethod.POST)
 	public String savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,@RequestParam(value = "templateId", required = false) String templateId) {
 		ModelAndView model = new ModelAndView();
@@ -260,6 +322,45 @@ public class ImmigrationRestController {
 			e.printStackTrace();
 		}
 		return "success";
+	}
+	
+	
+	@RequestMapping(value={"/getTemplateTaskList"},method = RequestMethod.POST)
+	public @ResponseBody ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,HttpServletRequest request,
+			@RequestParam(value = "searchValue", required = false) String searchValue) {
+		ResponseList<ImmigrationTemplateDTO> immiTemplateList = new ResponseList<>();
+    	String[] tableColumns = {"taskName", "assignedTo", "priority","taskRepeat"};
+		int sortColumnIndex = 3; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(templateDTO.getOrder() != null && !templateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(templateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = templateDTO.getOrder().get(0).get("dir");
+		}
+		templateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		templateDTO.setSortOrder(sortColumnOrder);
+		immiTemplateList = immigrationTemplateService.getTemplateTaskList(templateDTO, searchValue);
+		return immiTemplateList;
+	}
+	
+	@RequestMapping(value={"/editImmigrationTaskList"})
+	public ImmigrationTemplateDTO editImmigrationTaskList(HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id) throws NumberFormatException, Exception {
+		ImmigrationTemplateDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
+		/*List<UserRole> userRoleList = userRoleService.getAllActiveUsersListByOrgLocationId(Long.parseLong(templateDTO.getPetitionAssignedTo()));
+		for(UserRole ur :userRoleList){
+			
+			UserRoleDTO userRoleDTO = new UserRoleDTO();
+			StringBuilder userName = new StringBuilder();
+			userRoleDTO.setUserId(ur.getUser().getId());
+			
+			if(null != ur.getUser().getLastName()){
+				userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
+			}else{
+				userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).toString());
+			}
+			
+		}*/
+		return templateDTO;
 	}
 	
 }

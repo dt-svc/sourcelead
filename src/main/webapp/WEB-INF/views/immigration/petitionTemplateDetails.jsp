@@ -1,3 +1,5 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var = "templateDTO" scope = "page" value = '<%= session.getAttribute("templateDTO") %>'/>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -38,3 +40,9 @@
 		</div>   
    </div>
    </section>  
+   
+    <script type="text/javascript">
+  	$( document ).ready(function() {
+  		immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+  	});
+  </script>

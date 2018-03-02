@@ -251,11 +251,14 @@ public class LeaveManagementUtil {
 		return dates;
 	}
 	
-	public Map<String,Integer> getMonthlyAppliedLeaves(Leave leave, LeaveDTO leaveDTO, User user) throws Exception{
-		Map<String,Integer> monthlyLeaves = new HashMap<>();
+	public Map<String,Float> getMonthlyAppliedLeaves(Leave leave, LeaveDTO leaveDTO, User user) throws Exception{
+		Map<String,Float> monthlyLeaves = new HashMap<>();
 		String months[] = Constants.MONTHS;
 		Date fromDate = commonUtil.getDateFormat(leaveDTO.getFromDate());
 		Date toDate = commonUtil.getDateFormat(leaveDTO.getToDate());
+		
+		String fromHalfday = leave.getFromHalfDay();
+		String toHalfday = leave.getToHalfDay();
 		
 		Calendar fromCal = Calendar.getInstance();
 		Calendar toCal = Calendar.getInstance();
@@ -264,9 +267,11 @@ public class LeaveManagementUtil {
 		toCal.setTime(toDate);
 		int toMonth = toCal.get(Calendar.MONTH);
 		int noOfDays = 0;
+		float actualNoOfDays = 0;
 		if(fromMonth == toMonth){
 			noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate,toDate);
-			monthlyLeaves.put(months[fromMonth], noOfDays);
+			actualNoOfDays = getTotalAppliedLeaves(noOfDays,fromHalfday,toHalfday);
+			monthlyLeaves.put(months[fromMonth], actualNoOfDays);
 		}else{
 			for(int i=1; i < toMonth;i++){
 				if(fromMonth+i == toMonth){
@@ -274,17 +279,19 @@ public class LeaveManagementUtil {
 					fromCal.set(Calendar.DATE, fromCal.getActualMaximum(Calendar.DAY_OF_MONTH));
 					dates[0] = fromCal.getTime();
 					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate,dates[0]);
-					monthlyLeaves.put(months[fromMonth], noOfDays);
+					actualNoOfDays = getTotalAppliedLeaves(noOfDays,fromHalfday,null);
+					monthlyLeaves.put(months[fromMonth], actualNoOfDays);
 					
 					toCal.set(Calendar.DATE, toCal.getActualMinimum(Calendar.DAY_OF_MONTH));
 					dates[1] = toCal.getTime();
 					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(dates[1],toDate);
-					monthlyLeaves.put(months[toMonth], noOfDays);
+					actualNoOfDays = getTotalAppliedLeaves(noOfDays,null,toHalfday);
+					monthlyLeaves.put(months[toMonth], actualNoOfDays);
 				}else if(fromMonth+i < toMonth){
 					Calendar cal = Calendar.getInstance();
 					cal.set(Calendar.MONTH,fromMonth+i);
 					noOfDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-					monthlyLeaves.put(months[toMonth-i], noOfDays);
+					monthlyLeaves.put(months[toMonth-i], (float)noOfDays);
 				}
 			}
 			
@@ -292,6 +299,29 @@ public class LeaveManagementUtil {
 		return monthlyLeaves;
 	}
 		
+	private float getTotalAppliedLeaves(int days, String fromHalfday, String toHalfday)
+	{
+		float halfday = 0 ;
+		float actualApplied = 0;
+		
+		if("YES".equalsIgnoreCase(fromHalfday)){
+			halfday += 0.5f;
+		}
+		if("YES".equalsIgnoreCase(toHalfday)){
+			halfday += 0.5f;
+		}
+		if("YES".equalsIgnoreCase(fromHalfday) && "YES".equalsIgnoreCase(toHalfday)){
+			if(days > 1){
+				actualApplied = days - halfday;
+			}else{
+				actualApplied = halfday;
+			}
+		}else{
+			actualApplied = days - halfday;
+		}
+		return actualApplied;
+	}
+
 	public float calculateAppliedLeavesCountWithHalfDays(Leave leave)
 	{
 		float halfday = 0 ;
