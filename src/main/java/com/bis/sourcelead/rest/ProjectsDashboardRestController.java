@@ -306,7 +306,7 @@ public class ProjectsDashboardRestController {
 			    List<UserDTO> userDTOList = new ArrayList<>();
 			    if(userList != null && userList.size() > 0) {
 			    	for(User mrguser : userList) {
-			    		UserRole roleType = userRoleService.getUserByUserId(mrguser.getId());
+			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
 			    		UserDTO userDTO = new UserDTO();
 			    		userDTO.setId(mrguser.getId());
 			    		userDTO.setUserType(roleType.getUserType());
@@ -321,7 +321,7 @@ public class ProjectsDashboardRestController {
 					  List<UserDTO> mrguserDTOList = new ArrayList<>();
 					    if(userList != null && userList.size() > 0) {
 					    	for(User mrguser2 : userListwithoutmaneger1) {
-					    		UserRole roleType = userRoleService.getUserByUserId(mrguser2.getId());
+					    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
 					    		UserDTO userDTO = new UserDTO();
 					    		userDTO.setId(mrguser2.getId());
 					    		userDTO.setUserType(roleType.getUserType());
@@ -1123,7 +1123,8 @@ public class ProjectsDashboardRestController {
 		   @RequestMapping(value = "/getProjectDocumentsFolderList",method = RequestMethod.POST)
 			public List<ProjectDocumentFolder> getProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 			{
-			    UserRole userRole = userRoleService.getUserByUserId(userId);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
 			    Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				List<ProjectDocumentFolder> projectDocumentFolderList = projectDocumentsFolderService.getProjectDocumentFolderByProjectId(projectId,userRole.getRoles().getId(),userRole.getRoles().getRoleName(),candidateId);
 				return projectDocumentFolderList;
@@ -1140,7 +1141,8 @@ public class ProjectsDashboardRestController {
 			public List<ProjectDocuments> getEachProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
 			{
 			   
-			   UserRole userRoel = userRoleService.getUserByUserId(userId);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
 			   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, userRoel.getRoles().getId(),userRoel.getRoles().getRoleName(),folderId,candidateId);
 				return projectDocumentsList;
@@ -1218,7 +1220,8 @@ public class ProjectsDashboardRestController {
 		   @RequestMapping(value = "/deleteProjectDcoumentFolder",method = RequestMethod.POST)
 			public @ResponseBody String deleteProjectDcoumentFolder(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
 			{
-			   UserRole userRoel = userRoleService.getUserByUserId(userId);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
 			   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 			   List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId,userRoel.getId(),userRoel.getRoles().getRoleName(), folderId,candidateId);
 			   for(ProjectDocuments pd:projectDocumentsList) {

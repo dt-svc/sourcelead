@@ -68,6 +68,7 @@ import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
@@ -93,6 +94,7 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectCustomFieldDataService;
 import com.bis.sourcelead.service.ProjectDocumentFolderService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -229,6 +231,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 ExpensesApprovalService expensesApprovalService;
+	 
+	 @Autowired
+	 ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
 	private UserDTO userStatus;
 	 
@@ -924,7 +929,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
-		UserRole userStatus = userRoleService.getUserByUserId(user.getId());
+		UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),locationsId);
 		if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())) {
 		Set<Projects> projectsSet = new HashSet<>();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1145,7 +1150,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    List<UserDTO> userDTOList = new ArrayList<>();
 	    if(userList != null && userList.size() > 0) {
 	    	for(User mrguser : userList) {
-	    		UserRole roleType = userRoleService.getUserByUserId(mrguser.getId());
+	    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
 	    		UserDTO userDTO = new UserDTO();
 	    		userDTO.setId(mrguser.getId());
 	    		userDTO.setUserType(roleType.getUserType());
@@ -1160,7 +1165,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  List<UserDTO> mrguserDTOList = new ArrayList<>();
 			    if(userList != null && userList.size() > 0) {
 			    	for(User mrguser2 : userListwithoutmaneger1) {
-			    		UserRole roleType = userRoleService.getUserByUserId(mrguser2.getId());
+			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
 			    		UserDTO userDTO = new UserDTO();
 			    		userDTO.setId(mrguser2.getId());
 			    		userDTO.setUserType(roleType.getUserType());
@@ -2167,6 +2172,38 @@ public class ProjectsServiceImpl implements ProjectsService{
 	                
 	                
 	       	 }	
+	       	 
+	       	 
+	       	 List<ProjectMembersRateHistory> pmrhList = projectMembersRateHistoryService.getProjectMembersRateHistoryListByProjectMemberId(pm.getId());
+	       	 if(pmrhList != null && !pmrhList.isEmpty()) {
+	       		Date date = commonUtil.orgLocationCommonDate(new Date(), loginOrgLocation);
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getPayRateEndDate() != null && date.before((pmrh.getPayRateEndDate()))) {
+	       				pm.setPayRate(pmrh.getPayRate());
+	       				pm.setPayRateCurrency(pmrh.getPayRateCurrency());
+	       				pm.setPayRateType(pmrh.getPayRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		
+	       		
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getBillRateEndDate() != null && date.before((pmrh.getBillRateEndDate()))) {
+	       				pm.setCurrentBillRate(pmrh.getBillRate());
+	       				pm.setBillRateCurrency(pmrh.getBillRateCurrency());
+	       				pm.setRateType(pmrh.getBillRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		 
+	       		pm.setRateHistroyList(Constants.YES);
+	       	 }else {
+	       		pm.setRateHistroyList(Constants.NO);
+	       	 }
+	       	 
+	       	 
 			 projectMembersArrList.add(pm);
 		 }
 		}
@@ -2186,7 +2223,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	    	 user = orgLocations.getUser();
 	     }
 	     if(user != null){
-	    	 UserRole userStatus = userRoleService.getUserByUserId(user.getId());
+	    	 UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
 	    	 if(userStatus.getUserState().toString().equalsIgnoreCase("ACTIVE")) {
 	    	 StringBuilder fNameStringBuilder=new StringBuilder();
 			 EmailMessage emailMessage = new EmailMessage();
