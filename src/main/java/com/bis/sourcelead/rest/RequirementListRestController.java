@@ -1757,9 +1757,21 @@ public class RequirementListRestController {
 			} 
 		}
 			
-
+		
+		//requirementAssignTo
+		if(StringUtils.isNotEmpty(search.getFilterAssignTo()) && "Myjobs".equalsIgnoreCase(search.getFilterAssignTo())){
+			String assignTo = user.getId().toString();
+			BoolQueryBuilder reqAssignToBoolQueryBuilder = new BoolQueryBuilder();
+			reqAssignToBoolQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", assignTo));
+			boolQueryBuilder.must(reqAssignToBoolQueryBuilder);
+			if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
+				boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
+			}
+		}
+		
 		  //requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+
+			/*	if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 					String priority = "";
 					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 						priority = search.getRequirementStatus();
@@ -1782,7 +1794,7 @@ public class RequirementListRestController {
 				}
 				
 				//requirementPriority
-				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+				if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
 					String jobType = "";
 					if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 						jobType = search.getRequirementStatus();
@@ -1802,7 +1814,7 @@ public class RequirementListRestController {
 							boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 						}
 					} 
-				}
+				}*/
 				
 			
 		if(StringUtils.isNotEmpty(search.getUpdatedOn())){
@@ -2010,6 +2022,32 @@ public class RequirementListRestController {
       	String convertedStirng = requirementIndex.getCreatedDate();
       	requirement.setOrgRelationId(requirementIndex.getOrgRelationId());
       	
+      	if(null != requirementIndex.getCurrentRateCurrency() && !"".equalsIgnoreCase(requirementIndex.getCurrentRateCurrency())){
+      		requirement.setCurrencyCode(requirementIndex.getCurrentRateCurrency());
+		}
+      	if (null != requirementIndex.getMaxRate()) {
+      		requirement.setMaxRate(requirementIndex.getMaxRate().toString());
+		}
+		if (null != requirementIndex.getRate()) {
+			requirement.setRate(requirementIndex.getRate().toString());
+		}
+		if (null != requirementIndex.getRateType() && !"".equals(requirementIndex.getRateType())) {
+			requirement.setRateType(requirementIndex.getRateType());
+		}
+		
+		if(null != requirementIndex.getClientCurrencyCode() && !"".equalsIgnoreCase(requirementIndex.getClientCurrencyCode())){
+			requirement.setClientCurrencyCode(requirementIndex.getClientCurrencyCode());
+		}
+		if(null != requirementIndex.getClientMaxRate()){
+			requirement.setClientMaxRate(requirementIndex.getClientMaxRate().toString());
+		}
+		if(null != requirementIndex.getClientRate()){
+			requirement.setClientRate(requirementIndex.getClientRate().toString());
+		}
+		if(null != requirementIndex.getClientRateType() && !"".equalsIgnoreCase(requirementIndex.getClientRateType())){
+			requirement.setClientRateType(requirementIndex.getClientRateType());
+		}
+      	
       	
       	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
       	Date elkDate = elkFormat.parse(convertedStirng);
@@ -2026,6 +2064,7 @@ public class RequirementListRestController {
       	}
       	requirement.setPostedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),elkDate));
       	requirement.setClientName(requirementIndex.getClient());
+      	requirement.setClientContactName(requirementIndex.getClientContactName());
       	requirement.setCountry(requirementIndex.getCountry());
       	requirement.setState(requirementIndex.getState());
       	requirement.setCity(requirementIndex.getCity());

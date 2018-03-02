@@ -23,7 +23,7 @@
 
 <script>
  window.onload = function() {
-	 getContractTemplates();
+// 	 getContractTemplates();
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
 	 var spocUserCode = '${spocUserCode}';
@@ -2187,7 +2187,6 @@ function flush(){
 	document.getElementById("submissionOffersList").value="";
 	document.getElementById("startDate").value="";
 	document.getElementById("endDate").value="";
-	
 	document.getElementById("orgRelationId").value="";
 	
 	document.getElementById("vendorContact").value="";

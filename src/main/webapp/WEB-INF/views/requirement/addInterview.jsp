@@ -48,6 +48,7 @@ function addInterview(requirementId){
 	result = result + '<div class="add_inter">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
+	result = result + '<input type="hidden" id="changeMaxTsRowNum" name="changeMaxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
@@ -385,6 +386,10 @@ function validateTimeZone(){
 		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 		
+		var changeMaxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
+		$("input[name = 'changeMaxTsRowNum']").val(changeMaxRowNum + 1);
+		
+		
 		var row = tbl.insertRow(maxRowNum);
 		row.setAttribute("id", "divTsRow" + maxRowNum);
 		var cell0 = row.insertCell(0);
@@ -563,6 +568,9 @@ function removeInterviewvalidation(){
 <script type="text/javascript">
 	function removeInterviewRow(rowId) {
 		var rowNum = $("#divTsRow"+rowId).val();
+		var changeMaxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
+		$("input[name = 'changeMaxTsRowNum']").val(changeMaxRowNum - 1);
+		
 		var maxRowNum = parseInt(rowNum);
 		 document.getElementById("divTsRow"+rowId).style.display = 'none';
 		 document.getElementById("divTsRow"+rowId).value= '';
@@ -645,13 +653,12 @@ function getNotifyToOtersValInterview(){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var requirementId = '${requirementId}';
-        var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val()) - 1;
-        //var rowNum = maxRowNum - 1;
-       // var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
+
+        var maxRowNum = parseInt($("input[name = 'changeMaxTsRowNum']").val());
+//         var rowNum = maxRowNum - 1;
+//         var selectedInterviewApplicants = $('#'+rowNum+'applicant_chosen span').size();
         
-        var selectedInterviewApplicants =maxRowNum;
-        
-        if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
+        if(maxRowNum >= 2){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
 	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -668,12 +675,12 @@ function getNotifyToOtersValInterview(){
 		        },
 		    });     
         }
-        else if(selectedInterviewApplicants == 0){
+        else if(maxRowNum < 2){
         	alertInterviewMessage("<b>Select an applicant before submission</b>");
         }
-        else{
+        /* else{
         	alertInterviewMessage("<b>Selected Applicants should not more than 50</b>");
-        }
+        } */
    	    
    	    
         return true;

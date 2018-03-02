@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -137,6 +138,52 @@ public class AssetDaoImpl implements AssetDao{
 		String query = "from Asset asset left join fetch asset.shiftAEmployee.user left join fetch asset.shiftBEmployee.user  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "; 
 		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return assetList;
+	}
+
+	@Override
+	@Transactional
+	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Asset asset where asset.slno = :assetSno and asset.orgLocations.id = :orgLocationsId and asset.id = :assetId and asset.status = '1'";
+		List<Asset> assetList =  session.createQuery(query) .setString("assetSno", assetSno).setLong("assetId", assetId).setLong("orgLocationsId", orgLocationsId).list();
+		Asset asset = null;
+		if(assetList != null && !assetList.isEmpty())
+		{
+			asset = (Asset) assetList.iterator().next();
+		}
+		return asset;
+	}
+
+	@Override
+	@Transactional
+	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+				String query = "from Asset asset where asset.orgLocations.id = :orgLocationsId and asset.slno = :assetSno ";
+				List<Asset> assetList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("assetSno", assetSno).list();
+
+				if (assetList.size() > 0) {
+					return assetList.get(0);
+				} else {
+					return null;
+				}
+		 
+	}
+	
+	@Override
+	@Transactional
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+				String query = "from Asset asset where asset.orgLocations.id = :orgLocationsId and asset.slno = :assetSno ";
+				List<Asset> assetList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("assetSno", assetSno).list();
+
+				if (assetList.size() > 0) {
+					return true;
+				} else {
+					return false;
+				}
+		 
 	}
 
 }
