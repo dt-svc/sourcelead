@@ -12,9 +12,9 @@
 <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Requested Orgs</h2>
+            <h2>Requested Companies</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Blog </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requested Companies </div>
            <div class="clearfix"></div> 
 		      <div class="reportsCount req_Crowd clearfix">
 		          <ul class="clearfix">
