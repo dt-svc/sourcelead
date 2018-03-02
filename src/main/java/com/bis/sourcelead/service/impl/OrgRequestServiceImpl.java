@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,14 +13,14 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRequestDao;
+import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRequest;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.service.UserService;
@@ -107,6 +106,12 @@ public class OrgRequestServiceImpl implements OrgRequestService{
 		 
 		 emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin, null, new OrgLocations(), noificationEmailScenario);*/
 		
+	}
+
+	@Override
+	public ResponseList<EmployerRegistrationDTO> getDemoRequestsList(EmployerRegistrationDTO employerRegistrationDTO, OrgLocations orgLocations, String orgType)
+			throws Exception {
+		return orgRequestDao.getDemoRequestsList(employerRegistrationDTO, orgLocations, orgType);
 	}
 
 	
