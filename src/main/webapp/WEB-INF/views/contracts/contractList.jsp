@@ -19,6 +19,11 @@ $(document).ready(function(){
 			getTemplateList();
 			Check('Vendors');
 		}
+	   if(contractType == "Vendor NDA" || contractType == "Vendor NSA"){
+		   $("#Vendor1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
 		if(contractType == "Client MSA" || contractType == "Client SOW"){
 			$("#Vendor1").removeClass("active"); 
 			$("#Client1").addClass("active"); 
@@ -44,6 +49,11 @@ $(document).ready(function(){
         $("#contractStage").val("REJECTED");
         if(contractType == "Vendor MSA" || contractType == "Vendor SOW"){
 			$("#Vendor1").addClass("active"); 
+			getTemplateList();
+			Check('Vendors');
+		}
+        if(contractType == "Vendor NDA" || contractType == "Vendor NSA"){
+        	$("#Vendor1").addClass("active"); 
 			getTemplateList();
 			Check('Vendors');
 		}
@@ -77,6 +87,12 @@ $(document).ready(function(){
 			Check('Vendors');
 		}
 		if(contractType == "Client MSA" || contractType == "Client SOW"){
+			$("#Vendor1").removeClass("active"); 
+			$("#Client1").addClass("active"); 
+			getTemplateList();
+			Check('Clients');
+		}
+		if(contractType == "Vendor NDA" || contractType == "Vendor NSA"){
 			$("#Vendor1").removeClass("active"); 
 			$("#Client1").addClass("active"); 
 			getTemplateList();
