@@ -327,7 +327,7 @@ function jpagination(url,sourceleadUrl){
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') || (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
-           				result = result +"<div class='tbldata-dotdot-big'>"+opt.currencyCode+" ";
+           				result = result +"<div class='tbldata-dotdot'>"+opt.currencyCode+" ";
            				if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
            					result = result + opt.rate;
            				}
@@ -350,7 +350,7 @@ function jpagination(url,sourceleadUrl){
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') || (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
-	           				result = result +"<div class='tbldata-dotdot-big'>"+opt.clientCurrencyCode+" ";
+	           				result = result +"<div class='tbldata-dotdot'>"+opt.clientCurrencyCode+" ";
 	           				if(opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined'){
 	           					result = result + opt.clientRate;
 	           				}
