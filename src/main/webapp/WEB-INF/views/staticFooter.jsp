@@ -105,14 +105,102 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 <!-- Free trail and demo -->
 <div class="clPop"><img src="/resources/static-web/images/menu-close.png" alt=""/></div> 
 <section class="freeTrialPop" id="freeTrial">
-	<div class="Rdemo">
-    	<img src="/resources/static-web/images/demo-1.png" alt=""/>
-    	<h3>REQUEST A DEMO</h3>
-    	<p>We are so glad for your interest in SourceLead.
-Please mail us at </p>
-		<a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a>
-		<span>We will get back to you As soon as possible</span>
-    </div>    
+
+   <div class="Rdemo getDemo">
+		<div class="clearfix">
+			<div class="clearfix">
+				<h4 class="modal-title mb">Get A Demo</h4>
+			</div>
+		    <div class="clearfix mt">
+				<div class="freeTrialTop getAdemo">
+				<form id="requestDemo_form" name="requestDemo_form" action="" method="post">
+				<input type="hidden" id="orgType" name="orgType" value="Demo">
+			        <div class="freeTrialfields">
+			           <div class="row">
+				           <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="First Name" id="firstName" name="firstName" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+				            	</div>
+				            </div>
+				           <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Last Name" id="lastName" name="lastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Email id" name="email" field-name="Email"  id="email"  data-validation="required validate_Space validate_length length2-100 validate_email">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Mobile Number" id="phoneNumber" field-name="Mobile Number"  name="phoneNumber" data-validation="required validate_Space validate_phone validate_length length9-20">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Company Name" id="companyName" name="companyName" field-name="Company Name"  data-validation="required validate_Space validate_length length2-250">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Company Website" id="companyWebsite" name="companyWebsite"  field-name="Company Website"  data-validation="required validate_Space validate_domain validate_length length2-100">
+				            	</div>
+				            </div>
+				            <div class="col-md-6">
+				            	<div class="clearfix">
+				            	<input type="text" class="form-control" placeholder="Location" id="companyAddress" name="companyAddress" field-name="Location"  data-validation="required">
+				            	</div>
+				            </div>
+				            <div class="col-md-6 selectpicker-dropdowndDemo">
+				                 <select class="form-control selectpicker" name="country" id="country" field-name="Country" data-validation="required" onchange="getTimezonesList();" data-live-search="true" title="Select Coountry">
+			                        <option disabled selected>Select Country</option>
+			                        <option value="Australia">Australia</option>
+					                <option value="France">France</option>
+					                <option value="India">India</option>
+					                <option value="Singapore">Singapore</option>
+					                <option value="United Kingdom">United Kingdom</option>
+					                <option value="United States">United States</option>
+			                    </select>
+				            </div>
+				            
+				              <div class="clearfix"></div>
+				             <div class="clearfix mb">
+				             <div class="col-md-6">
+				             <div class="row">
+				             <div class="col-md-7 pdRight">
+				             	<input type="text" class="form-control calendar" placeholder="Date" id="demoDate" name="demoDate" readonly>
+				             </div>
+				             <div class="col-md-5 pdLeft">
+				             	<input type="text" class="form-control timeicon" placeholder="Time" id="demoTime" name="demoTime" readonly>
+				             </div>
+				             </div>
+				              </div>
+				             <div class="col-md-6 selectpicker-dropdowndDemo">
+				                  <select class="form-control selectpicker" name="timeZone" id="demoTimeZone" field-name="TimeZone" data-live-search="true" title="Select Timezone">
+			                    </select>
+				             </div>
+			             
+			             </div>
+			        	
+			        	<div class="col-md-12 mt mb">
+			               <lable><strong>Interested In</strong></lable>
+			               <div class="clearfix"></div>
+				            <div class="clearfix">
+				            <div id="moduleList"></div>
+				            <input type="hidden"  id="demoModuleValue" name="demoModule"  field-name="Module" data-validation="required"/> 		
+				            </div>
+			            </div>
+			            <div class="clearfix mt">
+			            <input type="button" value="Reauest Demo" class="btn btn-danger" onclick="saveRequestDemo();"> 
+			            </div>                                           
+			        </div>
+			        </div> 
+					</form>
+			    </div>
+		</div>
+		</div>
+    </div>
 </section>  
  <!--   Free trial pop   -->    
 <section class="asMask"></section>     
@@ -124,6 +212,7 @@ Please mail us at </p>
 <div class="backtotop" style="display: none;"><img src="/resources/static-web/images/backtotop.png" alt="" style="max-height: 45px;"></div>
 <div class="backshadow" onclick="closeNav();"></div>
 <script src="/resources/static-web/js/jquery-1.11.3.min.js"></script>
+<script src="/resources/js/bootstrap-select.min.js"></script>
 <script src="/resources/static-web/js/owl.carousel.js"></script>
 <script src="/resources/static-web/js/bootstrap.min.js"></script> 
 <script src="/resources/static-web/js/jquery.prettyPhoto.js" type="text/javascript"></script>
@@ -155,5 +244,173 @@ $(document).ready(function(){
 });
 </script>
 
+	<script src="/resources/js/jquery-ui.js"></script>
+    <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+	<script src="/resources/js/formvalidator.js"></script>
+	<script src="/resources/js/jquery.timepicker.js"></script>
+<script>
+$(document).ready(function(){
+	getDemoModules();
+	googleApiLocation('companyAddress','country');
+// 	$("#demoTimeZone").val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+});
+</script>
+<script>
+$("#demoDate").datepicker();
+
+$("#demoTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true
+});
+</script>
+<jsp:include page="googleApiLocation.jsp" />
+<script>
+function getTimezonesList(){
+	var sourceleadUrl ='http://localhost:8080/app';
+	var country = $('#country').val();
+	if(country){
+		if(country == "India"){
+			$("select[name = 'dateFormat']").val('dd-MM-yyyy');
+		}else{
+			$("select[name = 'dateFormat']").val('MM-dd-yyyy');
+		}
+		 $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getDemoTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        var json = JSON.parse(data);
+		        var output = "";
+		        output = output + "<option value=''>--Select--</option>";
+		        if(country == 'India'){
+	    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
+	    		}else if(country == 'United States'){
+	    			output = output + "<option value='132' selected> America/Chicago </option>";
+	    		}else if(country == 'United Kingdom'){
+	    			output = output + "<option value='333' selected> Europe/London </option>";
+	    		}else if(country == 'Singapore'){
+	    			output = output + "<option value='272' selected> Asia/Singapore </option>";
+	    		}else if(country == 'France'){
+	    			output = output + "<option value='342' selected> Europe/Paris </option>";
+	    		}else if(country == 'Australia'){
+	    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
+	    		}
+		        	for (var i=0; i<json.length; i++){
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+					}
+		        	$("#demoTimeZone").empty();
+		        	$("#demoTimeZone").append(output);
+		        	$("#demoTimeZone").selectpicker('refresh');
+		        }
+		 });
+	}else{
+		 $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getDemoTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        var json = JSON.parse(data);
+		        var output = "";
+		    	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+				}
+	        	$("#demoTimeZone").empty();
+	        	$("#demoTimeZone").append(output);
+	        	$("#demoTimeZone").selectpicker('refresh');
+		        }
+		 });
+	}
+
+}
+
+function getDemoModules(){
+	var sourceleadUrl ='http://localhost:8080/app';
+	$.ajax({
+    	type: "POST",
+    	url : sourceleadUrl+"/getDemoModulesList?${_csrf.parameterName}=${_csrf.token}", 
+        success: function(json) {
+        	var result = "";
+        	for (var i=0; i<json.length; i++){
+        		var report = json[i];
+            	result = result + "<label class='checkbox-area'>"+report.name+"<input type='checkbox' value="+report.name+" name='demoModules' onblur='moduleCheckValidation(this)'>  <span class='checkmark'></span> </label>";
+        	}
+        	$("#moduleList").empty();
+			$("#moduleList").append(result); 
+        }
+	});
+}
+</script>
+ <script type="text/javascript">
+	function moduleCheckValidation(id){
+		 var modulesList = [];
+ 		 $("input[name='demoModules']:checked").each( function (i) {
+ 			modulesList[i] = $(this).val();
+ 		});
+ 		 
+		if (modulesList.length > 0) { 
+		document.getElementById("demoModuleValue").value = id.value;
+		}else{
+			$('#demoModuleValue').val(''); 
+		}
+	} 
+</script>
+<script>
+function saveRequestDemo(){
+	if ($('#requestDemo_form').validate(false, validationSettings)) {
+		 var sourceleadUrl ='http://localhost:8080';
+		 	$("#recruiter_register").attr("disabled", "disabled");
+		 	var modulesList =  $("input[name='demoModules']:checked").map(function(){
+	            return this.value;
+	        }).get();
+		 	var formData = getFormData("requestDemo_form");
+		 	$.ajax({
+	 	      type: "POST",
+	 	      data: formData,
+	        	  url: "app/ws/demoRequest?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList,
+	         	success: function(result) {
+	         		location.reload();
+		        },  
+	     }); 
+		 	return true;
+	}else {
+		return false;
+	}
+}
+   
+$('body').on('blur', '#requestDemo_form', function() {
+	$("#requestDemo_form").showHelpOnFocus();
+	$("#requestDemo_form").validateOnBlur(false, validationSettings);
+});
+</script>
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   }; 
+</script>
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+<script src="/resources/js/slead-common.js"></script>
 </body>
 </html>

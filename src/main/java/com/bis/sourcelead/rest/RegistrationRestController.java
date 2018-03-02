@@ -337,6 +337,11 @@ public class RegistrationRestController {
 		 return "success";
 	   }
 	 
+	 @RequestMapping(value = "/app/ws/demoRequest" , method = RequestMethod.POST)
+	 public  String demoRequest(EmployerRegistrationDTO employerRegistrationDTO, HttpServletRequest request) throws Exception {
+		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
+		 return "success";
+	   }
 	 
 	 @RequestMapping(value = "/app/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
 	 public  String validateOrgRequestCompanyNameByName(@RequestParam(value="companyNames", required=false) String companyNames) throws Exception {
