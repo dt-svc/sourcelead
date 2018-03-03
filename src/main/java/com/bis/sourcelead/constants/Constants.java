@@ -175,6 +175,9 @@ public class Constants {
 	public static final String ORGREQUEST_EMAIL = "orgRequestEmail";
 	public static final String ORGREQUEST_NOTIFICATION = "orgRequestNotification";
 	
+	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
+	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";

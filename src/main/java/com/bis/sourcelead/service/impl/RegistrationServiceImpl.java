@@ -2097,7 +2097,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 
 			 if(employerRegistrationDTO.getDemoDate() != null && !employerRegistrationDTO.getDemoDate().isEmpty()) {
 				 String demoDateString=employerRegistrationDTO.getDemoDate();  
-				 DateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
+				 DateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
 				 Date demoDate = dt.parse(demoDateString); 
 				 orgRequest.setDemoDate(demoDate);
 			 }

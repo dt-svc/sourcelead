@@ -1,6 +1,6 @@
  <script>
 function googleApiLocation(locationId,countryId) {
-    initialize(locationId,countryId);
+	initialize(locationId,countryId);
 }
 function initialize(locationId,countryId) {
     	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
