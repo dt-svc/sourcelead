@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.util.List;
+import java.util.Map;
 
 public class EmployerRegistrationDTO {
      private String firstName;
@@ -16,6 +17,15 @@ public class EmployerRegistrationDTO {
      private String demoTime;
      private String timeZone;
      private String orgType;
+     private String searchValue;
+     private String sortColumn;
+ 	 private String sortOrder;
+ 	 private List<Map<String, String>> order;
+ 	 private String requestedStatus;
+ 	 private int start;
+	 private int length;
+	 private String requestedBy;
+	 private String requestedModules;
      
 		public String getFirstName() {
 			return firstName;
@@ -95,5 +105,59 @@ public class EmployerRegistrationDTO {
 		}
 		public void setDemoTime(String demoTime) {
 			this.demoTime = demoTime;
+		}
+		public String getSearchValue() {
+			return searchValue;
+		}
+		public void setSearchValue(String searchValue) {
+			this.searchValue = searchValue;
+		}
+		public String getSortColumn() {
+			return sortColumn;
+		}
+		public void setSortColumn(String sortColumn) {
+			this.sortColumn = sortColumn;
+		}
+		public String getSortOrder() {
+			return sortOrder;
+		}
+		public void setSortOrder(String sortOrder) {
+			this.sortOrder = sortOrder;
+		}
+		public List<Map<String, String>> getOrder() {
+			return order;
+		}
+		public void setOrder(List<Map<String, String>> order) {
+			this.order = order;
+		}
+		public String getRequestedStatus() {
+			return requestedStatus;
+		}
+		public void setRequestedStatus(String requestedStatus) {
+			this.requestedStatus = requestedStatus;
+		}
+		public int getStart() {
+			return start;
+		}
+		public void setStart(int start) {
+			this.start = start;
+		}
+		public int getLength() {
+			return length;
+		}
+		public void setLength(int length) {
+			this.length = length;
+		}
+		public String getRequestedBy() {
+			return requestedBy;
+		}
+		public void setRequestedBy(String requestedBy) {
+			this.requestedBy = requestedBy;
+		}
+		public String getRequestedModules() {
+			return requestedModules;
+		}
+		public void setRequestedModules(String requestedModules) {
+			this.requestedModules = requestedModules;
 		}
 }

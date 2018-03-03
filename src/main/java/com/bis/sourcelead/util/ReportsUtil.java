@@ -435,6 +435,32 @@ public class ReportsUtil {
 	
 	return dates;
 }
-
+	
+	
+	
+	public Date[] requestedOrgFilterDate(String dateSelection,OrgLocations orgLocations) throws Exception {
+		Date[] dates = new Date[2];
+		Date[] searchDates = null;
+		Date startDate = null;
+		Date endDate = null;
+		
+		if(dateSelection.equalsIgnoreCase(Constants.ORG_REQUEST_FILTER_ONE_WEEK_AGO)) {
+			searchDates = last7Days(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.ORG_REQUEST_FILTER_TWO_WEEK_AGO)) {
+			searchDates = last15DaysDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.ORG_REQUEST_FILTER_ONE_MONTH_AGO)) {
+			searchDates = last1MonthDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.ORG_REQUEST_FILTER_THREE_MONTHS_AGO)) {
+			searchDates = last3MonthDates(orgLocations);
+		}
+		
+		startDate = new java.sql.Date(searchDates[0].getTime());
+		endDate = new java.sql.Date(searchDates[1].getTime());
+		dates[0] = startDate;
+		dates[1] = endDate;
+		return dates;
+	}
+	
+	
 	
 }

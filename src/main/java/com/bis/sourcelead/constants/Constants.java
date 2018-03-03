@@ -1038,5 +1038,12 @@ public class Constants {
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leave";
 	
+	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
+	public static final String ORG_REQUEST_FILTER_ONE_WEEK_AGO = "1 Week Ago";
+	public static final String ORG_REQUEST_FILTER_TWO_WEEK_AGO = "2 Weeks Ago";
+	public static final String ORG_REQUEST_FILTER_ONE_MONTH_AGO = "1 month ago";
+	public static final String ORG_REQUEST_FILTER_THREE_MONTHS_AGO = "3 months ago";
+	
+	
 
 }
