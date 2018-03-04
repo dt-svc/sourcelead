@@ -171,7 +171,7 @@ function requestOrgsListPagination(url,sourceleadUrl){
 	    	  	"data": "companyName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + '<td data-title="Company Name"><div class="tblminwidth-75">'+opt.companyName+'</div></td>';
+	    	  		  result = result + '<td data-title="Company Name"><div class="tbldata-dotdot" title="'+opt.companyName+'">'+opt.companyName+'</div></td>';
 		             return result;
 	    	  	}
 	      },{
@@ -179,7 +179,7 @@ function requestOrgsListPagination(url,sourceleadUrl){
               "data": "requestedBy",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td data-title="Requested By"><div class="tblminwidth-75">'+opt.requestedBy+'</div></td>';
+            	  result = result + '<td data-title="Requested By"><div class="tbldata-dotdot-sm" title="'+opt.requestedBy+'">'+opt.requestedBy+'</div></td>';
 	              return result;
               }
           },{
@@ -187,7 +187,7 @@ function requestOrgsListPagination(url,sourceleadUrl){
               "data": "country",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td data-title="Country"><div class="tblminwidth-75">'+opt.country+'</div></td>';
+            	  result = result + '<td data-title="Country"><div class="tbldata-dotdot" title="'+opt.companyAddress+'">'+opt.companyAddress+'</div></td>';
 	              return result;
               }
           },{
@@ -196,7 +196,7 @@ function requestOrgsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  
-	            	    result = result + '<td data-title="Email"><div class="tblminwidth-75">'+opt.email+'</div></td>';
+	            	    result = result + '<td data-title="Email"><div class="tbldata-dotdot-sm" title="'+opt.email+'">'+opt.email+'</div></td>';
 	            		return result;
 	              }
 		     },{
