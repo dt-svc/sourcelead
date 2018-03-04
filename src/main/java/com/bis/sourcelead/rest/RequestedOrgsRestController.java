@@ -26,17 +26,34 @@ public class RequestedOrgsRestController {
 	 @ResponseBody  ResponseList<EmployerRegistrationDTO> getDemoOrgsList(EmployerRegistrationDTO employerRegistrationDTO,HttpServletRequest request) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				    String[] tableColumns = {"companyName", "requestedBy", "country", "email", "phoneno", "modules", "demodate"};
+				    int sortColumnIndex = 1; //by default sorting using updated date
+					String sortColumnOrder = "desc"; //by default descending order
+					if(employerRegistrationDTO.getOrder() != null && !employerRegistrationDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(employerRegistrationDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = employerRegistrationDTO.getOrder().get(0).get("dir");
+					}
+					employerRegistrationDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					employerRegistrationDTO.setSortOrder(sortColumnOrder);
+			ResponseList<EmployerRegistrationDTO> demoOrgsList = orgRequestService.getDemoRequestsList(employerRegistrationDTO,orgLocations,employerRegistrationDTO.getOrgType());
+			return demoOrgsList;
+		   
+	   }
+	 
+	 @RequestMapping(value = {"/getRequestOrgsList", "/rest/getRequestOrgsList"}, method = RequestMethod.GET)
+	 @ResponseBody  ResponseList<EmployerRegistrationDTO> getRequestOrgsList(EmployerRegistrationDTO employerRegistrationDTO,HttpServletRequest request) throws Exception {
 		 
-		    String[] tableColumns = {"companyName", "requestedBy", "country", "email", "phoneno", "modules", "demodate"};
-		    int sortColumnIndex = 1; //by default sorting using updated date
-			String sortColumnOrder = "desc"; //by default descending order
-			if(employerRegistrationDTO.getOrder() != null && !employerRegistrationDTO.getOrder().isEmpty()) {
-				sortColumnIndex = Integer.parseInt(employerRegistrationDTO.getOrder().get(0).get("column"));
-				sortColumnOrder = employerRegistrationDTO.getOrder().get(0).get("dir");
-			}
-			employerRegistrationDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			employerRegistrationDTO.setSortOrder(sortColumnOrder);
-			ResponseList<EmployerRegistrationDTO> demoOrgsList = orgRequestService.getDemoRequestsList(employerRegistrationDTO,orgLocations,"Demo");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				    String[] tableColumns = {"companyName", "requestedBy", "country", "email", "phoneno", "modules"};
+				    int sortColumnIndex = 1; //by default sorting using updated date
+					String sortColumnOrder = "desc"; //by default descending order
+					if(employerRegistrationDTO.getOrder() != null && !employerRegistrationDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(employerRegistrationDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = employerRegistrationDTO.getOrder().get(0).get("dir");
+					}
+					employerRegistrationDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					employerRegistrationDTO.setSortOrder(sortColumnOrder);
+			ResponseList<EmployerRegistrationDTO> demoOrgsList = orgRequestService.getDemoRequestsList(employerRegistrationDTO,orgLocations,employerRegistrationDTO.getOrgType());
 			return demoOrgsList;
 		   
 	   }

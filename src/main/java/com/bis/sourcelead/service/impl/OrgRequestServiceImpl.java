@@ -1,6 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,7 +82,7 @@ public class OrgRequestServiceImpl implements OrgRequestService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("companyName",orgRequest.getCompanyName());
 		 globalVarsMap.put("companyWebsite", orgRequest.getCompanywebsite());
-		 globalVarsMap.put("companyLocation",orgRequest.getCountry());
+		 globalVarsMap.put("companyLocation",orgRequest.getCompanyAddress());
 		 globalVarsMap.put("companyEmail",orgRequest.getEmail());
 		  
 		 
@@ -90,7 +93,10 @@ public class OrgRequestServiceImpl implements OrgRequestService{
 		 EmailScenario  emailScenario = null;
 		 if(orgRequest.getOrgType().equalsIgnoreCase("Demo")) {
 			 if(orgRequest.getDemoDate() != null) {
-				 globalVarsMap.put("demoDate",orgRequest.getDemoDate().toString());
+		         Date date = orgRequest.getDemoDate();  
+	             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");  
+	             String strDate = dateFormat.format(date);  
+				 globalVarsMap.put("demoDate",strDate);
 			 }
 			 if(orgRequest.getDemoTime() != null) {
 				 globalVarsMap.put("demoTime",orgRequest.getDemoTime());

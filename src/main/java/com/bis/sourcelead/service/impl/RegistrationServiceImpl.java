@@ -2111,11 +2111,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgRequest.setStatus(Constants.RECORD_ACTIVE);
 		orgRequest.setCreatedDate(new Date());
 		orgRequestService.saveOrgRequest(orgRequest);
-		if(employerRegistrationDTO.getOrgType().equalsIgnoreCase("Demo")) {
-			
-		}else {
-			orgRequestService.senEmailOrgRequestToSourcelead(orgRequest);
-		}
+	    orgRequestService.senEmailOrgRequestToSourcelead(orgRequest);
 		
 		return "success";
 	}

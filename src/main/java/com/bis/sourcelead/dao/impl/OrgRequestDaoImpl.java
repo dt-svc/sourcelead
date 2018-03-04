@@ -135,6 +135,7 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 		List<OrgRequest> orgDemoRequestsList = null;
 		Date[] searchDates = null;
 		
+	
 	   Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
 	   Matcher matcher = pattern.matcher(employerRegistrationDTO.getSearchValue());
 	   java.sql.Date sqlDate = null;
@@ -156,11 +157,11 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 					.append("OR orgReq.firstName like '%" + employerRegistrationDTO.getSearchValue() + "%' ")
 					.append("OR orgReq.lastName like '%" + employerRegistrationDTO.getSearchValue() + "%' ")
 					.append("OR orgReq.country like '%" + employerRegistrationDTO.getSearchValue() + "%' ");
-			 
-			     if(sqlDate != null) {
-			    	query1.append("OR orgReq.demoDate like '%" + sqlDate + "%' ");
-				 }
-						
+					 if(orgType.equalsIgnoreCase("Demo")) {
+					    if(sqlDate != null) {
+					    	query1.append("OR orgReq.demoDate like '%" + sqlDate + "%' ");
+						 } 
+					 }
 			}
 		
 		

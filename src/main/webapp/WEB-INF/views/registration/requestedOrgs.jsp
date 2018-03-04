@@ -1,17 +1,30 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 
 <style>
 .reportsCount.req_Crowd ul li {
     width: 25% !important;
 }
+.approvedPop {
+    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop ul li {
+ clear: both; width: 100%; margin: 0;
+ }
 </style>
 
 <script type="text/javascript">
 		window.onload = function () {
-			getRequestedOrgsList();
+			getRequestOrgsList();
 		 };
 	</script>
 
@@ -22,7 +35,7 @@
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requested Companies </div>
            <div class="clearfix"></div> 
-		      <div class="reportsCount req_Crowd clearfix">
+           <div class="reportsCount req_Crowd clearfix">
 		          <ul class="clearfix">
 		          <li id="crowd"><label class="mr10"><span><i class="fa fa-registered"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio"  name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/enrolledOrgsList'/>'" >&nbsp;Registered Companies</label></b></li>
 		          <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" checked name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/requestedOrgs'/>'" >&nbsp;Requested Companies</label></b></li>
@@ -37,14 +50,14 @@
 			<div class="timesheet_head topfilters">
         	<ul>
 				
-                <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter1ApprovePop" class="approved_pop">
+                <li id="filterDropDown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
+                	<div id="filter1ApprovePop" class="approvedPop">
                     	<ul>
-                        	<li><input id="c7"  type="radio" name="requestedStatus" value ="Today"  onclick="filter();"><label for="c7">Today</label></li>
-							<li><input id="c9" type="radio" name="requestedStatus" value ="1 Week Ago"  onclick="filter();"><label for="c9">1 Week Ago</label></li>
-							<li><input id="c8" type="radio"  name="requestedStatus"   value ="2 Weeks Ago"  onclick="filter();"><label for="c8">2 Weeks Ago</label></li>
-               				<li><input id="c6" type="radio"  name="requestedStatus"  value ="1 month ago"  onclick="filter();"><label for="c6">1 month ago</label></li>
-               				<li><input id="c10" type="radio"  name="requestedStatus"   value ="3 Months Ago"  onclick="filter();"><label for="c10">3 Months Ago</label></li>
+                        	<li><input id="c7"  type="radio" name="requestedStatus" value ="Today"  onclick="getRequestOrgsList();"><label for="c7">&nbsp;Today</label></li>
+							<li><input id="c9" type="radio" name="requestedStatus" value ="1 Week Ago"  onclick="getRequestOrgsList();"><label for="c9">&nbsp;1 Week Ago</label></li>
+							<li><input id="c8" type="radio"  name="requestedStatus"   value ="2 Weeks Ago"  onclick="getRequestOrgsList();"><label for="c8">&nbsp;2 Weeks Ago</label></li>
+               				<li><input id="c6" type="radio"  name="requestedStatus"  value ="1 month ago"  onclick="getRequestOrgsList();"><label for="c6">&nbsp;1 month ago</label></li>
+               				<li><input id="c10" type="radio"  name="requestedStatus"   value ="3 Months Ago"  onclick="getRequestOrgsList();"><label for="c10">&nbsp;3 Months Ago</label></li>
                				
                         </ul>
                     </div>                	
@@ -65,15 +78,15 @@
 
 <script>
 $(document).ready(function() {
-    $("#filter1ApprovePop").click(function(){
-		$("#filter1ApprovedPop").slideToggle(200);
+    $("#filterDropDown").click(function(){
+		$(".approvedPop").slideToggle(200);
 	});
     $("html").click(function() {
-        $("#filter1ApprovedPop").slideUp(200);
+        $(".approvedPop").slideUp(200);
     });
-    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
+    $("#filterDropDown, .approvedPop").click(function(e) {  
         e.stopPropagation();
-    });	
+    });
     
 }); 
 
@@ -81,7 +94,7 @@ $(document).ready(function() {
 
 
 <script>
-function getRequestedOrgsList(){
+function getRequestOrgsList(){
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	 if(locationList.match("yyyy-MM-dd")){
 		  projectListDate = 'YYYY-MM-DD';
@@ -103,10 +116,10 @@ function getRequestedOrgsList(){
 		result = result + '<tr>';
 	   	result = result +' <th>Company Name</th>'; 
 	   	result = result +' <th>Requested By</th>';
+		result = result +' <th>Location</th>';
 	   	result = result +' <th>Email</th>';
 	   	result = result +' <th>Phone No</th>';
 	   	result = result +' <th>Modules</th>';
-	   	result = result +' <th>Demo Date/Time</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -121,10 +134,108 @@ function requestedOrgsDataTableList(){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#reqOrgDataTableSearch").val();
+	 
+	 var requestedStatus = [];
+		$('input:radio[name=requestedStatus]:checked').each(function() 
+	    {
+			requestedStatus.push($(this).val());
+	    });
+		
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRequestedOrgsList?searchValue="+searchValue;
-	 projectsPagination(url,sourceleadUrl);
+	 var url = sourceleadUrl+"/getRequestOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus+"&orgType=Request";
+	 requestOrgsListPagination(url,sourceleadUrl);
 }
 
-
+function requestOrgsListPagination(url,sourceleadUrl){
+	
+	var colIndex = 0;
+    $('#reqOrgListTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 1
+        }),
+        "columns": [
+            { "data": "companyName" },
+            { "data": "requestedBy"},
+            { "data": "country"},
+            { "data": "email"},
+            { "data": "phoneno" },
+            { "data": "modules" },
+        ],
+         "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "companyName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		  result = result + '<td data-title="Company Name"><div class="tblminwidth-75">'+opt.companyName+'</div></td>';
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "requestedBy",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + '<td data-title="Requested By"><div class="tblminwidth-75">'+opt.requestedBy+'</div></td>';
+	              return result;
+              }
+          },{
+	    	  "targets": colIndex++,
+              "data": "country",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + '<td data-title="Country"><div class="tblminwidth-75">'+opt.country+'</div></td>';
+	              return result;
+              }
+          },{
+		    	  "targets": colIndex++,
+	              "data": "email",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  
+	            	    result = result + '<td data-title="Email"><div class="tblminwidth-75">'+opt.email+'</div></td>';
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "phoneno",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            		result = result + '<td><div class="tblminwidth-75">'+opt.phoneNumber+'</div></td>';
+	            		return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "modules",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result + '<td><div class="tblminwidth-75">'+opt.requestedModules+'</div></td>';
+	            		return result;
+	              }
+		     } ], 
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#reqOrgListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#reqOrgDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   requestedOrgsDataTableList();
+    	   }
+    	});
+	
+}
 </script>

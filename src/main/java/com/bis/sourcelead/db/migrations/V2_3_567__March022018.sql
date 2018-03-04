@@ -20,7 +20,7 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 
 #email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
-			('orgDemoEmail','Email', 'orgDemoEmail', 'orgDemoEmail mail to Sourcelead', ' New demo request from {{orgDemo.companyName}}','org', 'Best Regards,\n SourceLead Team.', 'Dear Sourcelead ,\n We have new demo request from {{orgDemo.companyName}} organization, kindly go through brief details \n Website : {{orgDemo.companyWebsite}} \n Location : {{orgDemo.companyLocation}} \n Email id : {{orgDemo.companyEmail}} \n Date & Time : {{orgDemo.demoDate}} {{orgDemo.demoTime}} \n Timezone  : {{orgDemo.demoTimeZone}} \n Verify the Organization details and generate.','N', 'SLADMIN', 'slead', 'sleadIN');
+			('orgDemoEmail','Email', 'orgDemoEmail', 'orgDemoEmail mail to Sourcelead', ' New demo request from {{orgDemo.companyName}}','org', 'Best Regards,\nSourceLead Team.', 'Dear Sourcelead ,\n We have new demo request from {{orgDemo.companyName}} organization, kindly go through brief details \n Website : {{orgDemo.companyWebsite}} \n Location : {{orgDemo.companyLocation}} \n Email id : {{orgDemo.companyEmail}} \n Date & Time : {{orgDemo.demoDate}} {{orgDemo.demoTime}} \n Timezone  : {{orgDemo.demoTimeZone}} \n Verify the Organization details and generate.','N', 'SLADMIN', 'slead', 'sleadIN');
 			
 			
 #Notification
