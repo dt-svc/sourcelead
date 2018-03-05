@@ -706,4 +706,24 @@ public class FinanceDaoImpl implements FinanceDao{
 		return paymentDate;
 	}
 
+	@Override
+	@Transactional
+	public List<Invoice> getInvoicesByOrgRelationId(Long orgRelationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId";
+		Query queryObj = session.createQuery(query);
+		List<Invoice> invoicePayList = queryObj.setLong("orgRelationId", orgRelationId).list();
+		return invoicePayList;
+	}
+
+	@Override
+	@Transactional
+	public List<InvoicePayment> getInvoicePaidAmountByInvoiceIds(List<Long> invoiceIds) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from InvoicePayment ip where ip.invoiceId.id IN (:invoiceIds)";
+		Query queryObj = session.createQuery(query);
+		List<InvoicePayment> invoicePayList = queryObj.setParameterList("invoiceIds", invoiceIds).list();
+		return invoicePayList;
+	}
+
 }

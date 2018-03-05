@@ -6,6 +6,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -28,6 +29,10 @@ public interface FinanceDao {
    ResponseList<Invoice> getPaidBillDetailReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
 
    Date getPaymentDateByInvoiceId(Long invoiceId);
+
+   List<Invoice> getInvoicesByOrgRelationId(Long orgRelationId);
+
+List<InvoicePayment> getInvoicePaidAmountByInvoiceIds(List<Long> invoiceIds);
    
 
 }
