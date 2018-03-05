@@ -116,6 +116,8 @@ public class SecurityConfig  {
     			.antMatchers("/getGuestUserRequirmentOrgSubmissionTemplate/**").permitAll()
     			.antMatchers("/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/parseResume/**").permitAll()
+    			.antMatchers("/app/getDemoTimezonesList/**").permitAll()
+    			.antMatchers("/app/getDemoModulesList/**").permitAll()
     			.antMatchers("/app/getActionHistoryList/**").permitAll()
     			.antMatchers("/app/jobCampaignSummary/**").permitAll()
     			.antMatchers("/app/getRequirementProfessionalProfileDetails/**").permitAll()

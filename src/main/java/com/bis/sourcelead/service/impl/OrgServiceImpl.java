@@ -10,6 +10,8 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.form.OrgSettings;
@@ -137,5 +139,10 @@ public class OrgServiceImpl implements OrgService {
 	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet)
 	{
 		return orgDao.getAllOpenJobsOrgsStartsWithAlphabet(alphabet);
+	}
+
+	@Override
+	public ResponseList<Org> getDynamicEnrolledOrgs(Long orgId, OrgDTO orgDTO) throws Exception {
+		return orgDao.getDynamicEnrolledOrgs(orgId, orgDTO);
 	}
 }

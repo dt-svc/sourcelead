@@ -176,6 +176,9 @@ public class Constants {
 	public static final String ORGREQUEST_EMAIL = "orgRequestEmail";
 	public static final String ORGREQUEST_NOTIFICATION = "orgRequestNotification";
 	
+	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
+	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -423,6 +426,9 @@ public class Constants {
 	public static final String TimeSheet = "TimeSheet";
 	public static final String TimeSheetApproval = "TimeSheetApproval";
 	public static final String OrgSettings = "OrgSettings";
+	public static final String Blogs = "Blogs";
+	public static final String UserManuals = "UserManuals";
+	public static final String Support = "Support";
 	public static final String BackOffice = "BackOffice";
 	public static final String Finance = "Finance";
 	public static final String AssetManagement = "AssetManagement";
@@ -1036,6 +1042,13 @@ public class Constants {
 
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leave";
+	
+	public static final String ORG_REQUEST_FILTER_TODAY = "Today";
+	public static final String ORG_REQUEST_FILTER_ONE_WEEK_AGO = "1 Week Ago";
+	public static final String ORG_REQUEST_FILTER_TWO_WEEK_AGO = "2 Weeks Ago";
+	public static final String ORG_REQUEST_FILTER_ONE_MONTH_AGO = "1 month ago";
+	public static final String ORG_REQUEST_FILTER_THREE_MONTHS_AGO = "3 months ago";
+	
 	
 
 }
