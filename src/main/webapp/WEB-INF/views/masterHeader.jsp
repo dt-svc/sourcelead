@@ -97,7 +97,7 @@
 	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport"}'>
+<c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph"}'>
 	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
 	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
 	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
