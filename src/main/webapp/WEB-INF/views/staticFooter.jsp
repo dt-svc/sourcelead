@@ -280,7 +280,7 @@ function removeValidationDate(){
 <jsp:include page="googleApiLocation.jsp" />
 <script>
 function getTimezonesList(){
-	var sourceleadUrl ='http://localhost:8080/app';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var country = $('#country').val();
 	if(country){
 		if(country == "India"){
@@ -338,7 +338,7 @@ function getTimezonesList(){
 }
 
 function getDemoModules(){
-	var sourceleadUrl ='http://localhost:8080/app';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
     	type: "POST",
     	url : sourceleadUrl+"/getDemoModulesList?${_csrf.parameterName}=${_csrf.token}", 
