@@ -163,7 +163,7 @@ function getNotificationtLists(){
 				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm" title="'+report.calDays+'">'+report.calDays+' </div></td>';
 				    
 				    result = result +'   <td><div class="notiRej">';
-				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"){
+				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"  && report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined"){
 				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept" onclick="loadingDiv();"><i class="text-muted fa fa-check-circle"></i></a></span>';
 				     }
 				  
