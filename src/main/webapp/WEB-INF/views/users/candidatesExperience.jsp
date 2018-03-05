@@ -97,7 +97,21 @@ function closeCertificatePopup(){
 			var formData = getFormData("employers_form");
 			var startYear = document.getElementById("startYear").value;
 			var endYear = document.getElementById("endYear").value;
-			if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+			var startMonth= document.getElementById("startMonth").value;
+			var endMonth= document.getElementById("endMonth").value;
+			
+			var SMdata = startMonth.split('&');
+			var sMonthNumber = SMdata[0];
+			
+			var EMdata = endMonth.split('&');
+			var eMonthNumber = EMdata[0];
+			
+			 if( (startMonth > endMonth) && (startYear == endYear) ){
+					 
+				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+		
+			}
+			 else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
 				
@@ -436,7 +450,7 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="clearfix mb10 endDate">';
 								result = result	+ '<p class="ml">End Date</p>';
 								result = result	+ '<div class="col-md-6 id = "endMR"">';
-								result = result	+ '<select class="newSelect" selected  class="required" field-name="End Month" name="endMonth" id="endMonthEdit" onchange="monthIfYearRequired();">';
+								result = result	+ '<select class="newSelect" selected  class="required" field-name="End Month" name="endMonth" id="endMonth" onchange="monthIfYearRequired();">';
 								result = result	+ '<option value="">Select Month</option>';
 								
 								
@@ -512,9 +526,9 @@ function closeCertificatePopup(){
 								result = result	+ '<div class="col-md-6">';
 								
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control input-sm" value="'+json.endYear+'" id="empEditEndDate" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control input-sm" value="'+json.endYear+'" id="endYear" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required validate_Space validate_extno validate_length length4-4" data-validation-optional="true" >';
 								}else{
-									result = result	+ '<input type="text" max class="form-control input-sm" value="" id="empEditEndDate" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control input-sm" value="" id="endYear" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
 								}
 								result = result + '	                <div><p id="endYearValidation" class="small text-danger" style="display: none"></p>';
 								result = result + '</div>';
@@ -822,8 +836,23 @@ function removeEmployer(candidateemployerId, candidateId){
 
 			var formData = getFormData("candidateExperianceEdit_form");
 			var startYear = document.getElementById("startYear").value;
-			var endYear = document.getElementById("empEditEndDate").value;
-			if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+			var endYear = document.getElementById("endYear").value;
+			var startMonth= document.getElementById("startMonth").value;
+			var endMonth= document.getElementById("endMonth").value;
+			
+			var SMdata = startMonth.split('&');
+			var sMonthNumber = SMdata[0];
+			
+			var EMdata = endMonth.split('&');
+			var eMonthNumber = EMdata[0];
+			
+			 if( (startMonth > endMonth) && (startYear == endYear) ){
+					 
+				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+		
+			}
+			
+			 else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
 				
@@ -902,7 +931,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			$("#urrentPositionEdit" ).val( 'Y' );
 			document.getElementById("endDateEditDiv").style.display = 'none';
 			$('#endYearEdit').removeAttr('data-validation');
-			$('#endMonthEdit').removeAttr('data-validation');
+			$('#endMonth').removeAttr('data-validation');
 		}else {
 			
 			document.getElementById("endDateEditDiv").style.display = '';
@@ -950,6 +979,29 @@ function monthIfYearRequired(){
 			 $('#endYear').removeAttr('data-validation');
 			 $('#endYear').attr("data-validation-optional","true"); 
 		}
+	
+	var startYear= document.getElementById("startYear").value;
+	var endYear= document.getElementById("endYear").value;
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	
+	
+	if((startYear != '' && startYear != null && startYear != 'undefined' )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+	
+	 if((sMonthNumber> eMonthNumber) && (startYear==endYear) ){
+		$("#err").empty();
+		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+			 
+		}
+	 if(sMonthNumber< eMonthNumber)
+		 {
+		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+		 }
+
+	}
 	
 	
 }

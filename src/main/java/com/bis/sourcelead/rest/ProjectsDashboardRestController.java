@@ -55,6 +55,7 @@ import com.bis.sourcelead.dto.ProjectsDocumentFolderDTO;
 import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -268,6 +269,78 @@ public class ProjectsDashboardRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
+			
+			
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')") 
+	 @RequestMapping(value = "/getClientProjectApprovers", method = RequestMethod.POST)
+	 public @ResponseBody ProjectsDTO getClientProjectApprovers(@RequestParam(value="projectClientUUID", required=false) String projectClientUUID,HttpServletRequest request) throws Exception{
+		 
+		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ProjectsDTO projectsDTO = new ProjectsDTO();
+		 ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+		 if(projectClients != null) {
+			 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectClientId(projectClients.getId());
+			    if(approverList != null && !approverList.isEmpty()) {
+				 	for(ProjectApproverHierarchy approverHierarchy : approverList){
+				    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
+				    		projectsDTO.setManager1(approverHierarchy.getApproverUserId().getId().intValue());
+				    		projectsDTO.setManager1Name(approverHierarchy.getApproverUserId().getFullName());
+				    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
+				    		if(null != userRole){
+				    			projectsDTO.setManagerLevel1UserType(userRole.getUserType());
+				    		}
+				    		StringBuilder projectApprover = new StringBuilder();
+				    		projectsDTO.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+				    	}
+				    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
+				    		projectsDTO.setManager2(approverHierarchy.getApproverUserId().getId().intValue());
+				    		projectsDTO.setManager2Name(approverHierarchy.getApproverUserId().getFullName());
+				    		StringBuilder projectApprover = new StringBuilder();
+				    		projectsDTO.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+				    	}
+				    	
+				    }
+			    }
+			    
+			    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			    List<UserDTO> userDTOList = new ArrayList<>();
+			    if(userList != null && userList.size() > 0) {
+			    	for(User mrguser : userList) {
+			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
+			    		UserDTO userDTO = new UserDTO();
+			    		userDTO.setId(mrguser.getId());
+			    		userDTO.setUserType(roleType.getUserType());
+			    		userDTO.setName(mrguser.getFullName());
+			    		userDTOList.add(userDTO);
+			    	}
+			    }
+			    projectsDTO.setManagersList(userDTOList);
+			    
+			    if(projectsDTO.getManager1() != 0){
+			    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+					  List<UserDTO> mrguserDTOList = new ArrayList<>();
+					    if(userList != null && userList.size() > 0) {
+					    	for(User mrguser2 : userListwithoutmaneger1) {
+					    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
+					    		UserDTO userDTO = new UserDTO();
+					    		userDTO.setId(mrguser2.getId());
+					    		userDTO.setUserType(roleType.getUserType());
+					    		userDTO.setName(mrguser2.getFullName());
+					    		mrguserDTOList.add(userDTO);
+					    	}
+					    }
+					    projectsDTO.setManagersListwithoutManager1(mrguserDTOList);
+			    }
+			    
+		 }
+		 
+		 return projectsDTO;
+	}
+			
+			
+			
+			
+			
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')") 
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
 	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
@@ -425,6 +498,19 @@ public class ProjectsDashboardRestController {
 		 String resultJson;
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		 Projects projects = projectsService.getProjectDetailsUpdateByProjectId(projectId, user, projectsDTO);
+	
+		 resultJson = commonUtil.toJSON(projects);
+		 return resultJson;
+	 }
+	 
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")
+	 @RequestMapping(value = "/updateClientProjectApprovers", method = RequestMethod.POST)
+	 public String updateClientProjectApprovers(ProjectsDTO projectsDTO,@RequestParam(value="projectClientUUID", required=false) String projectClientUUID,HttpServletRequest request) throws Exception{ 
+		 String resultJson;
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
+		 Projects projects = projectsService.getClientProjectApproversUpdate(projectClientUUID, user, projectsDTO);
 	
 		 resultJson = commonUtil.toJSON(projects);
 		 return resultJson;
@@ -1037,7 +1123,8 @@ public class ProjectsDashboardRestController {
 		   @RequestMapping(value = "/getProjectDocumentsFolderList",method = RequestMethod.POST)
 			public List<ProjectDocumentFolder> getProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 			{
-			    UserRole userRole = userRoleService.getUserByUserId(userId);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
 			    Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				List<ProjectDocumentFolder> projectDocumentFolderList = projectDocumentsFolderService.getProjectDocumentFolderByProjectId(projectId,userRole.getRoles().getId(),userRole.getRoles().getRoleName(),candidateId);
 				return projectDocumentFolderList;
@@ -1054,7 +1141,8 @@ public class ProjectsDashboardRestController {
 			public List<ProjectDocuments> getEachProjectDocumentsFolderList(@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
 			{
 			   
-			   UserRole userRoel = userRoleService.getUserByUserId(userId);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
 			   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId, userRoel.getRoles().getId(),userRoel.getRoles().getRoleName(),folderId,candidateId);
 				return projectDocumentsList;
@@ -1132,7 +1220,8 @@ public class ProjectsDashboardRestController {
 		   @RequestMapping(value = "/deleteProjectDcoumentFolder",method = RequestMethod.POST)
 			public @ResponseBody String deleteProjectDcoumentFolder(@RequestParam(value = "folderId", required = false) Long folderId,@RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "userId", required = false) Long userId) throws Exception
 			{
-			   UserRole userRoel = userRoleService.getUserByUserId(userId);
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
 			   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 			   List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId,userRoel.getId(),userRoel.getRoles().getRoleName(), folderId,candidateId);
 			   for(ProjectDocuments pd:projectDocumentsList) {

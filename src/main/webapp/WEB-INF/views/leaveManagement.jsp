@@ -38,7 +38,7 @@ $(document).ready(function(){
             <div id="self" class="tab-pane fade in active">
               <div class="col-md-4 padding_left" style="position:absolute; top:16px; left:140px;">
                         <label class="pull-left mr">Balance Leaves</label>
-                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
+                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-left" id="selfBalancedCounts"></span></div>
               </div>
               <div class="db-widget-sm clearfix row">
                 <div class="width100percnt clearfix">

@@ -1,4 +1,4 @@
-<meta http-equiv="Pragma" content="private">
+	<meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -868,7 +868,7 @@ function editCancel(){
 		$(".tasks_side_wrap").removeClass("tasks_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		$("#txtEditor").val($('.Editor-editor').text('')); 
+		$("#txtEditor").val($('.Editor-editor').html('')); 
 		$("div.row-fluid .Editor-container").remove();
 		document.getElementById("projectTask_form").reset();
 		$("projectTask_form").validate().resetForm();
@@ -936,13 +936,14 @@ function tasksAssignList(projectId){
 
 <script>
 function saveTasks(){
-	var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
 		var projectId = $("#projectId").val();
 		var userId = '${SourceLeadWeb_userId}';
-	  	
+		var projectClientUUID = '${projectClientUUID}';
+		
 	  	$("#save_task").attr("disabled", "disabled");
 		$("#save_task").addClass('button').val('Processing..');
 		$.ajax({
@@ -950,7 +951,7 @@ function saveTasks(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-    	     url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId,
+	         url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
 			  success : function(data) {
 				var status = $("#projectStatus").val();
 				projectTask(projectId, status);
