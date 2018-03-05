@@ -29,6 +29,7 @@
 			<div class="timesheet_appr_wrap">
 			 
 			<div class="timesheet_head">
+			<div class="pull-left ml mt5" id="hedderAcceptRejectButton" style="display: none"><input class="btn btn-success btn-sm" type="button" value="Approve" onclick="acceptTimeSheetSubmissionBySubmissionId('dashboard');"><input class="btn btn-danger btn-sm ml10" type="button" value="Reject" onclick="rejectTimeSheetSubmissionBySubmissionId('dashboard');"></div>
 	        	 <ul>
 	        	 	<li>&nbsp;</li>
 	            </ul> 
@@ -36,12 +37,18 @@
        					<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses123">
         			</div>	            
 	            <div class="clearfix"></div>
-	        </div> 
-			
+	        </div>
+	        <div id="rejectedPopup"></div> 
 			<div class="timesheet_appr_table datatable_filter pt5" id="tableDivId">
 					<table id='example'  style='width:100%' >
 						 <thead id="timesheetApprHead">                                
-						    <tr>                               
+						    <tr> 
+						        <c:if test="${status eq 'SUBMITTED'}">
+						        	<th><input type="checkbox" id="selectAllTimeSheetCheckBoxForSubmitForApproval"></th>
+						        </c:if>
+						        <c:if test="${status ne 'SUBMITTED'}">
+						        	<th><input type="checkbox" disabled="disabled"></th>
+						        </c:if>                          
 						        <th>Employee</th>              
 						        <th>Project</th>               
 						        <th>Client</th>                
@@ -100,7 +107,7 @@ window.onload = function () {
 	    	$('#dataTableSearchExpenses123').val(searchData);
 	    }
 	});
-	</script>
+</script>
  <script type="text/javascript">
 function filter(){
 	var status = '${status}';
@@ -198,11 +205,32 @@ function filter(){
 				  $('#dataTableSearchExpenses123').val(searchData);
 				  $('#paginationDiv').hide();
 				  
+				  
 			}
 			    $('#pageMsg').html('');
 			    $('#pageMsg').html(pageMsg);
 			}
 
+</script>
+
+
+ <script>
+  $(document).ready(function () {
+	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
+	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        displayAcceptRejectButtonOnHedder();
+	    });
+	});
+ </script>
+ <script type="text/javascript">
+function displayAcceptRejectButtonOnHedder() {
+	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){
+		$('#hedderAcceptRejectButton').removeAttr('style');
+	}else{
+		$('#hedderAcceptRejectButton').attr('style','display:none');
+	}
+	
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

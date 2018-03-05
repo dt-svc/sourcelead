@@ -1,3 +1,4 @@
+<input type="hidden" id="timesheetApproverCurrentPageNumber">
 <script>
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
@@ -41,8 +42,12 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 });	
 </script> 
 <script>
-function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from){
-	  var tableFor = $("#tableFor").val();
+function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom){
+	if(requestFrom == "notifyLink"){
+		  tableFor = from;
+	 }else{
+		  tableFor = $("#tableFor").val();
+	 }
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 $("#projectMemberId").val('');
 	 $("#projectMemberId").val(projectMemberId);
@@ -60,7 +65,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	 $("#totalHours").val(totalHours);
      $.ajax({
 	          type : "POST",
-	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor=approver",		
+	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&redirectionRequestFrom="+requestFrom+"&timeSheetsFor=approver",		
 		      success :function(data) {
 		    	  $("#timesheetDivByFrequency").empty();
 	 	    	     var closeElement = $('.proj_close');
@@ -197,3 +202,127 @@ function cancelRejectSubmission(projectMemberId){
 	 $("#reject"+projectMemberId+"panel").slideUp(200);
 	}
 </script>
+
+
+<script>
+function acceptTimeSheetSubmissionBySubmissionId(tableFor){
+	var submissionIDs = $('input[name="checkBoxForSubmitForApproval"]:checked').map(function() {
+	    return this.value;
+	}).get();
+	var data = submissionIDs.toString().split(',');
+	for(var i=0; i<=data.length;i++){
+		var data2 = data[i].toString().split('!');
+		var projectMemberId = data2[0];
+		var startDate = data2[1];
+		var endDate = data2[2];
+		var rejectedReason = '';
+		var rowHtmlContent =  $("#row"+projectMemberId).html();
+		var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
+		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 locationName = '';
+		 }
+		 $("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		     $.ajax({
+		    type: "POST",
+		    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+			    success: function(data) {
+			    	if(data != null && data !='' && data !='undefined'){
+		    			if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
+		    				 var currentPageNumber =  $("#currentPageNumber").val();
+		    				 getStatusListData(""+currentPageNumber+"","");
+		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
+		    			 }else{
+		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
+		    				 getTableData(currentPageNumberApprover);
+		    			   	$("#loadingCotentDiv").removeAttr('style');
+		    			   	$('#hedderAcceptRejectButton').attr('style','display:none');
+			    		}
+			    	}
+			    }
+		    });  
+		
+	}
+}
+</script>
+
+<script>
+function rejectTimeSheetSubmissionBySubmissionId(tableFor){
+	
+	$("#rejectReasonDiv").empty();
+    $("#rejectmessage").val(''); 
+    var result = "";
+    result = result +'<div class="time_appr_rejct_pop" id="rejectpanel" style="top:25%">';
+	result = result +'<textarea placeholder="Enter comment here" id="rejectmessage"></textarea>';
+	result = result +'<div id="rejectReasonDiv"/>';
+	result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberIdDashboard(\''+tableFor+'\');" >Submit</a><a class="close_color" href="#" onClick="closepopUpRejectReason();">Cancel</a>';
+	result = result +'</div>';
+	result = result +'</div>';
+	$("#rejectedPopup").append(result);
+    $(".mask_time").fadeIn(200); 
+	$("#rejectpanel").show();
+	
+}
+
+function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
+	var submissionIDs = $('input[name="checkBoxForSubmitForApproval"]:checked').map(function() {
+	    return this.value;
+	}).get();
+	var dataOne = submissionIDs.toString().split(',');
+	for(var i=0; i<=dataOne.length;i++){
+		var dataTwo = dataOne[i].split('!');
+		var projectMemberId = dataTwo[0];
+		var startDate = dataTwo[1];
+		var endDate = dataTwo[2];
+		var tdSpanSize =dataTwo[3];
+		var from =dataTwo[4];
+	 	var msg = $("#rejectmessage").val(); 
+		var encodeMsg = msg;
+	 	if(encodeMsg !== ""){
+		var encodeMsg = encodeURIComponent(msg);
+		$("#rejectReasonDiv").empty();
+		var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	    var rowHtmlContent =  $("#row"+projectMemberId).html();
+	    var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
+		if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 locationName = '';
+		}
+		$("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;'); 
+	    $.ajax({
+	    type: "POST",
+	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
+	    success: function(data) { 
+		       if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
+		    	     var currentPageNumber =  $("#currentPageNumber").val();
+	      		     getStatusListData(""+currentPageNumber+"","");
+	      		   	 $(".mask_time").fadeOut(200);
+	      		     $("#rejectpanel").hide();
+	      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');
+	      		   	 
+			   }else{
+					  var currentPageNumberApproverReject =  $("#timesheetApproverCurrentPageNumber").val();
+					  getTableData(currentPageNumberApproverReject);
+	    			  $("#loadingCotentDiv").removeAttr('style');
+		 	    	  $(".mask_time").fadeOut(200);
+	      		      $("#rejectpanel").hide();
+	      		      $('#hedderAcceptRejectButton').attr('style','display:none');
+		   	   }
+	      }
+	    }); 
+	 }else{
+		 if(msg){
+				$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+		}
+	}
+}
+</script>
+<script>
+function closepopUpRejectReason(){
+	$("#rejectmessage").val('');
+	$("#rejectpanel").hide();
+	$(".mask_time").fadeOut(200);
+}
+</script>
+
