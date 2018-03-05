@@ -165,7 +165,7 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 			}
 		
 		
-		if(employerRegistrationDTO.getRequestedStatus() != null && !employerRegistrationDTO.getRequestedStatus().isEmpty()) {
+		if(employerRegistrationDTO.getRequestedStatus() != null  && !employerRegistrationDTO.getRequestedStatus().equalsIgnoreCase("All") && !employerRegistrationDTO.getRequestedStatus().isEmpty()) {
 			if(!employerRegistrationDTO.getRequestedStatus().equalsIgnoreCase(Constants.ORG_REQUEST_FILTER_TODAY)) {
 				searchDates = reportsUtil.requestedOrgFilterDate(employerRegistrationDTO.getRequestedStatus(),orgLocations); 
 				dateFilterQuery = " and date(orgReq.createdDate) BETWEEN '"+searchDates[0]+"' and '"+searchDates[1]+"' ";

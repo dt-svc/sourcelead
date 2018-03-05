@@ -195,7 +195,12 @@ function dynamicOrgListPagination(url){
 			  	"data": "",
 			  	"render": function(data, type, org, meta) {
 			  		var result = "";
-					result = result + ' <td><div class="tbldata-dotdot-big" title = "'+org.location+'">'+org.location+'</div></td>';
+			  		if(org.location != null && org.location != '' && org.location != 'undefined'){
+			  			result = result + ' <td><div class="tbldata-dotdot-big" title = "'+org.location+'">'+org.location+'</div></td>';
+			  		}else{
+			  			result = result + ' <td><div class="tbldata-dotdot-big">--</div></td>';
+			  		}
+					
 
 		             return result;
 			  	}

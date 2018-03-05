@@ -53,6 +53,7 @@
                 <li id="filterDropDown"><i class="fa fa-filter"></i><span>Requested</span><i class="glyphicon glyphicon-play" ></i>|
                 	<div id="filter1ApprovePop" class="approvedPop">
                     	<ul>
+                    	    <li><input id="c6"  type="radio" name="requestedStatus" value ="All"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;All</label></li>
                         	<li><input id="c7"  type="radio" name="requestedStatus" value ="Today"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Today</label></li>
 							<li><input id="c9" type="radio" name="requestedStatus" value ="1 Week Ago"  onclick="getDemoOrgsList();"><label for="c9">&nbsp;1 Week Ago</label></li>
 							<li><input id="c8" type="radio"  name="requestedStatus"   value ="2 Weeks Ago"  onclick="getDemoOrgsList();"><label for="c8">&nbsp;2 Weeks Ago</label></li>

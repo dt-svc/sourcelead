@@ -203,11 +203,14 @@ public class RegistrationRestController {
 							orgDto.setUser(regOrg.getUser());
 							orgDto.setId(regOrg.getId());
 							orgDto.setOrgName(regOrg.getOrgName());
-							if(orglocations.getLocation() != null) {
+							if(orglocations.getLocation() != null && !(orglocations.getLocation().isEmpty())) {
 								orgDto.setLocation(orglocations.getLocation());
+							}else {
+								if(orglocations.getCountry() != null && !(orglocations.getCountry().isEmpty())) {
+									orgDto.setLocation(orglocations.getCountry());
+								}
 							}
 							orgDto.setPrimaryOrgLocationId(orglocations.getId());
-//							orgDto.setUserExistingStatus(Constants.NO);
 						}
 						orgDTOList.add(orgDto);
 					}

@@ -257,7 +257,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-	      String query = ("from OrgLocations orgLocations where  orgLocations.org.id IN (select org.id from Org org where org.id = :orgId) and "
+	      String query = ("from OrgLocations orgLocations left join fetch orgLocations.user where  orgLocations.org.id IN (select org.id from Org org where org.id = :orgId) and "
 	      		+ " orgLocations.isPrimary = 'Y' ");
 		  
 	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("orgId", orgId).list();

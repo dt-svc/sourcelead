@@ -441,7 +441,8 @@ public class OrgDaoImpl implements OrgDao {
 			String userStateSubQuery = "";
 			if (!orgDTO.getUserState().isEmpty()  && !orgDTO.getUserState().equalsIgnoreCase("ALL")) {
 				userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
-						+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + orgDTO.getUserState() + "' ))";
+						+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + orgDTO.getUserState() + "' ) and "
+								+ " orgLoactions.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.userState = '" + orgDTO.getUserState() + "' ))";
 			}
 			
 			//org list query
