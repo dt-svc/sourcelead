@@ -128,12 +128,14 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 		String projectModeQuery = "";
 		String query = null;
 		String dateFilterQuery = "";
+		String filterStatusQuery = "";
 		List<Long> countlist = null;
 		Integer filterCount = 0;
 		ResponseList<EmployerRegistrationDTO> response = new ResponseList<>();
 		Query queryObj = null;
 		List<OrgRequest> orgDemoRequestsList = null;
 		Date[] searchDates = null;
+		List<String> filterStatusList = null;
 		
 	
 	   Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
@@ -179,8 +181,21 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 			
 		}
 		
+		if(employerRegistrationDTO.getFilterStatus() != null && !employerRegistrationDTO.getFilterStatus().isEmpty()) {
+			String[] filterStatus = employerRegistrationDTO.getFilterStatus().split(",");
+			filterStatusList = new ArrayList<>();
+			for(int i=0 ; i < filterStatus.length ; i++) {
+				filterStatusList.add(filterStatus[i]);
+			}
+			filterStatusQuery = " and orgReq.requestStatus IN (:filterStatusList)";
+			query = "from OrgRequest orgReq where orgReq.orgType = :orgType and orgReq.status = '1' "+dateFilterQuery+"  "+filterStatusQuery+" ";
+			
+		}else {
+			query = "from OrgRequest orgReq where orgReq.orgType = :orgType and orgReq.status = '1' "+dateFilterQuery+" ";
+		}
 		
-		 query = "from OrgRequest orgReq where orgReq.orgType = :orgType and orgReq.status = '1' "+dateFilterQuery+" ";
+		
+		 
 	     
 	     if(query1.toString() != null && !query1.toString().isEmpty()){
 			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" ORDER BY orgReq.id DESC");
@@ -190,14 +205,30 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 		
 		queryObj.setFirstResult(employerRegistrationDTO.getStart());
 		queryObj.setMaxResults(employerRegistrationDTO.getLength());
-		queryObj.setString("orgType", orgType).list();
+		if(employerRegistrationDTO.getFilterStatus() != null && !employerRegistrationDTO.getFilterStatus().isEmpty()) {
+			queryObj.setString("orgType", orgType).setParameterList("filterStatusList", filterStatusList).list();
+		}else {
+			queryObj.setString("orgType", orgType).list();
+		}
+		
 		orgDemoRequestsList = queryObj.list();
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setString("orgType", orgType).list();
+			
+			if(employerRegistrationDTO.getFilterStatus() != null && !employerRegistrationDTO.getFilterStatus().isEmpty()) {
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setString("orgType", orgType).setParameterList("filterStatusList", filterStatusList).list();
+			}else {
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setString("orgType", orgType).list();
+			}
+			
 			filterCount = countlist.iterator().next().intValue();
 		}else {
-			countlist = session.createQuery("select count(*) " + query).setString("orgType", orgType).list();
+			if(employerRegistrationDTO.getFilterStatus() != null && !employerRegistrationDTO.getFilterStatus().isEmpty()) {
+				countlist = session.createQuery("select count(*) " + query).setString("orgType", orgType).setParameterList("filterStatusList", filterStatusList).list();
+			}else {
+				countlist = session.createQuery("select count(*) " + query).setString("orgType", orgType).list();
+			}
+			
 			filterCount = countlist.iterator().next().intValue();
 		}
 		

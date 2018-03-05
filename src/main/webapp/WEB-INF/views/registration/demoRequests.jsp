@@ -20,6 +20,17 @@
  .approvedPop ul li {
  clear: both; width: 100%; margin: 0;
  }
+ 
+ 
+ .approvedPop1 {
+    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop1 ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop1 ul li {
+ clear: both; width: 100%; margin: 0;
+ }
 </style>
 
 <script type="text/javascript">
@@ -63,6 +74,18 @@
                         </ul>
                     </div>                	
                 </li>
+                
+                
+                <li id="filterDropDown1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
+                	<div id="filter1ApprovePop1" class="approvedPop1">
+                    	<ul>
+                    	    <li><input id="c6"  type="checkbox" name="filterStatus" value ="Requested"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Requested</label></li>
+                        	<li><input id="c7"  type="checkbox" name="filterStatus" value ="Onhold"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Onhold</label></li>
+							<li><input id="c9" type="checkbox" name="filterStatus" value ="Completed"  onclick="getDemoOrgsList();"><label for="c9">&nbsp;Completed</label></li>
+               				
+                        </ul>
+                    </div>                	
+                </li>
 	             
                 <div class="clearfix"></div>
             </ul>
@@ -81,12 +104,24 @@
 $(document).ready(function() {
     $("#filterDropDown").click(function(){
 		$(".approvedPop").slideToggle(200);
+		$(".approvedPop1").slideUp(200);
 	});
-    $("html").click(function() {
-        $(".approvedPop").slideUp(200);
-    });
-    $("#filterDropDown, .approvedPop").click(function(e) {  
+    
+    $("#filterDropDown, .approvedPop, .approvedPop1").click(function(e) {  
         e.stopPropagation();
+    });
+    
+    
+    $("#filterDropDown1").click(function(){
+		$(".approvedPop1").slideToggle(200);
+		$(".approvedPop").slideUp(200);
+	});
+    $("#filterDropDown1, .approvedPop1, .approvedPop").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    $("html").click(function() {
+        $(".approvedPop, .approvedPop1").slideUp(200);
     });
     
 }); 
@@ -144,8 +179,16 @@ function requestedOrgsDataTableList(){
 			requestedStatus.push($(this).val());
 	    });
 		
+		
+		var filterStatus = [];
+		$('input:checkbox[name=filterStatus]:checked').each(function() 
+	    {
+			filterStatus.push($(this).val());
+	    });
+		
+		
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getDemoOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus;
+	 var url = sourceleadUrl+"/getDemoOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus+"&filterStatus="+filterStatus;
 	 demoOrgsListPagination(url,sourceleadUrl);
 }
 
