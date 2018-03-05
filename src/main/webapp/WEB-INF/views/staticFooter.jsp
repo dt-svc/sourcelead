@@ -113,7 +113,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			</div>
 		    <div class="clearfix mt">
 				<div class="freeTrialTop getAdemo">
-				<form id="requestDemo_form" name="requestDemo_form" action="" method="post">
+				<form id="requestDemo_form" name="requestDemo_form" method="post">
 				<input type="hidden" id="orgType" name="orgType" value="Demo">
 			        <div class="freeTrialfields">
 			           <div class="row">
@@ -169,10 +169,10 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				             <div class="col-md-6">
 				             <div class="row">
 				             <div class="col-md-7 pdRight">
-				             	<input type="text" class="form-control calendar" placeholder="Date" id="demoDate" name="demoDate" readonly>
+				             	<input type="text" class="form-control calendar" placeholder="Date" id="demoDate" name="demoDate" field-name="Date" readonly >
 				             </div>
 				             <div class="col-md-5 pdLeft">
-				             	<input type="text" class="form-control timeicon" placeholder="Time" id="demoTime" name="demoTime" readonly>
+				             	<input type="text" class="form-control timeicon" placeholder="Time" id="demoTime" name="demoTime">
 				             </div>
 				             </div>
 				              </div>
@@ -187,7 +187,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			               <lable><strong>Interested In</strong></lable>
 			               <div class="clearfix"></div>
 				            <div class="clearfix">
-				            <div id="moduleList"></div>
+				            <div id="moduleList" class="text-left"></div>
 				            <input type="hidden"  id="demoModuleValue" name="demoModule"  field-name="Module" data-validation="required"/> 		
 				            </div>
 			            </div>
@@ -251,16 +251,33 @@ $(document).ready(function(){
 <script>
 $(document).ready(function(){
 	getDemoModules();
+	getTimezonesList();
 	googleApiLocation('companyAddress','country');
 // 	$("#demoTimeZone").val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+	
 });
 </script>
+
 <script>
-$("#demoDate").datepicker();
+$("#demoDate").datepicker({
+	dateFormat : "dd-mm-yy",
+});
 
 $("#demoTime").timepicker({
 	'showDuration': true,
 	'disableTextInput': true
+}).on('changeTime', function() {
+	 var date = $("#demoDate").val();
+	 if(date == ''){
+		 $('#demoDate').attr("data-validation","required"); 
+	 }else{
+		 $('#demoDate').removeAttr("data-validation","required"); 
+	 }
+});
+
+$(".clPop").click(function(){
+	 document.getElementById("requestDemo_form").reset();
+	 /*$("requestDemo_form").validate().resetForm(); */
 });
 </script>
 <jsp:include page="googleApiLocation.jsp" />
@@ -332,10 +349,11 @@ function getDemoModules(){
         	var result = "";
         	for (var i=0; i<json.length; i++){
         		var report = json[i];
-            	result = result + "<label class='checkbox-area'>"+report.name+"<input type='checkbox' value="+report.name+" name='demoModules' onblur='moduleCheckValidation(this)'>  <span class='checkmark'></span> </label>";
+            	result = result + "<label class='checkbox-area'>"+report.name+"<input type='checkbox' value="+report.id+" name='demoModules' onblur='moduleCheckValidation(this)'>  <span class='checkmark'></span> </label>";
         	}
         	$("#moduleList").empty();
 			$("#moduleList").append(result); 
+			$("#moduleList").find(".checkbox-area").css({"minWidth":"86px"})
         }
 	});
 }
@@ -411,6 +429,8 @@ var validationSettings = {
 		};
 	})(jQuery);
 </script>
+
+
 <script src="/resources/js/slead-common.js"></script>
 </body>
 </html>

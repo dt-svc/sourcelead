@@ -2097,7 +2097,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 
 			 if(employerRegistrationDTO.getDemoDate() != null && !employerRegistrationDTO.getDemoDate().isEmpty()) {
 				 String demoDateString=employerRegistrationDTO.getDemoDate();  
-				 DateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
+				 DateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
 				 Date demoDate = dt.parse(demoDateString); 
 				 orgRequest.setDemoDate(demoDate);
 			 }
@@ -2111,11 +2111,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgRequest.setStatus(Constants.RECORD_ACTIVE);
 		orgRequest.setCreatedDate(new Date());
 		orgRequestService.saveOrgRequest(orgRequest);
-		if(employerRegistrationDTO.getOrgType().equalsIgnoreCase("Demo")) {
-			
-		}else {
-			orgRequestService.senEmailOrgRequestToSourcelead(orgRequest);
-		}
+	    orgRequestService.senEmailOrgRequestToSourcelead(orgRequest);
 		
 		return "success";
 	}
