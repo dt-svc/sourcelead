@@ -399,11 +399,21 @@ window.onload = function () {
                 </div>
                 
                 <div id="pwdDiv">
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-12 mb10 posiRela">
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <input type="password" class="registePassword"  id="jsPassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('jsPassword','js_letter','js_capital','js_number','js_special','js_length');" >
 	                    <b></b>
+	                    
+						<div id="js_message" class="passHint">
+				 			<h3>Password must contain the following:</h3>
+				  			<p  id="js_letter" class="invalid">A lowercase letter</p>
+				  			<p  id="js_capital" class="invalid">A capital (uppercase) letter</p>
+				  			<p  id="js_number" class="invalid">A number</p>
+				  			<p  id="js_special" class="invalid">A special</p>
+				  			<p  id="js_length" class="invalid">Minimum 8 characters</p>
+						</div>      
+	                    
 	                </div>
 	                <div class="col-xs-12 col-md-12 mb10" id="passwordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
@@ -436,6 +446,7 @@ window.onload = function () {
             </div>
             </form:form>
         </div>
+
         <div id="recruiter" class="tab-pane fade">
         
         <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >     
@@ -495,11 +506,22 @@ window.onload = function () {
                 </div>
                 
                 <div id="recpwdDiv">
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-12 mb10 posiRela" >
 	                    <i class="fa fa-unlock-alt"></i>
 	                    <label>Password <span class="text-danger">*</span></label>
-	                    <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <!-- <input type="password" id="recpassword" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    -->
+	                     <input type="password" class="registePassword"  id="recpassword" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" filed-name="Password" field-name="Password" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100" onkeyup="passwordValidation('recpassword','fr_letter','fr_capital','fr_number','fr_special','fr_length');" >
+	                   
 	                    <b></b>
+	                    <div id="fr_message" class="passHint">
+ 							<h3>Password must contain the following:</h3>
+  							<p  id="fr_letter" class="invalid">A lowercase letter</p>
+  							<p  id="fr_capital" class="invalid">A capital (uppercase) letter</p>
+  							<p  id="fr_number" class="invalid">A number</p>
+  							<p  id="fr_special" class="invalid">A special</p>
+  							<p  id="fr_length" class="invalid">Minimum 8 characters</p>
+						</div> 
 	                </div>
 	                <div class="col-xs-12 col-md-12 mb10" id="recpasswordDiv">
 	                    <i class="fa fa-unlock-alt"></i>
@@ -720,6 +742,17 @@ window.onload = function () {
 </body>
 
 <script>
+$(document).ready(function(){
+	$(".posiRela input").focus(function(){
+		$(".passHint").show();
+	});
+	$(".posiRela input").blur(function(){
+		$(".passHint").hide();
+	});	
+});
+</script>
+
+<script>
 function removeValidation(){
 	$('#locationCountryDiv').find('p.jquery_form_error_message').remove(); 
 }
@@ -762,12 +795,15 @@ function removeValidationNameRecPop(){
 function resetCredentials(type){
 	//Write by laxman start
 	if(type == "Professional"){
+		$(".actTe").removeClass("actTe");
 		document.getElementById("professionalRegistration_form").reset();
 		$("professionalRegistration_form").validate().resetForm();
 	}else if(type == "Recruiter"){
+		$(".actTe").removeClass("actTe");
 		document.getElementById("recruiterRegistration_form").reset();
 		$("recruiterRegistration_form").validate().resetForm();
 	}else if(type == "Employer"){
+		$(".actTe").removeClass("actTe");
 		$("#employerRegister_button").removeAttr("disabled");
 		document.getElementById("employerRegistration_form").reset();
 		$("employerRegistration_form").validate().resetForm();
@@ -1608,6 +1644,53 @@ function validateOrgRequestCompanyName(){
 	}
 }
 
+
+</script>
+
+<script>
+function passwordValidation(idValue,letter,capital,number,special,length){
+	var myInput = $("#"+idValue).val();
+	 
+	if(myInput.match(/[a-z]/g)){
+		$("#"+letter).removeClass("invalid");
+		$("#"+letter).addClass("actTe");
+	}else{
+		$("#"+letter).removeClass("actTe");
+		$("#"+letter).addClass("invalid");
+	} 
+	if(myInput.match(/[A-Z]/g)){
+		$("#"+capital).removeClass("invalid");
+		$("#"+capital).addClass("actTe");
+	}else{
+		$("#"+capital).removeClass("actTe");
+		$("#"+capital).addClass("invalid");
+	}
+	if(myInput.match(/[0-9]/g)){
+		$("#"+number).removeClass("invalid");
+		$("#"+number).addClass("actTe");
+	}else{
+		$("#"+number).removeClass("actTe");
+		$("#"+number).addClass("invalid");
+	}
+	if(myInput.match(/[$&+,:;=?@#|'<>.^*()%!-]/g)){
+		$("#"+special).removeClass("invalid");
+		$("#"+special).addClass("actTe");
+	}else{
+		$("#"+special).removeClass("actTe");
+		$("#"+special).addClass("invalid");
+	}
+	if(myInput.length >= 8){
+		$("#"+length).removeClass("invalid");
+		$("#"+length).addClass("actTe");
+	}else{
+		$("#"+length).removeClass("actTe");
+		$("#"+length).addClass("invalid");
+	}
+	
+}
+
+
+// When the user starts to type something inside the password field
 
 </script>
 <jsp:include page="socialinviterscripts.jsp" />
