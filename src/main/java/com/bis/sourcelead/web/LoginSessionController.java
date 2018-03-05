@@ -411,7 +411,7 @@ public class LoginSessionController {
 							model.setViewName("dashboard");
 						}
 					}
-					if(requirementUUID !=null && requirementUUID != ""){
+					else if(requirementUUID !=null && requirementUUID != "" && candidateOnBoarding == null ){
 						StringBuilder redirectUrl = new StringBuilder();
 						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
 						model.setViewName("professional/professionalRequirements");
@@ -419,6 +419,7 @@ public class LoginSessionController {
 					else{
 						model.setViewName("dashboard");
 					}
+					
 				}
 			}
 			
