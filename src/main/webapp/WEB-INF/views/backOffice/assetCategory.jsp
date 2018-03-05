@@ -102,7 +102,7 @@ $(document).ready(function(){
 					   		else{
 					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>';
 					   		}
-					   		result = result +'&nbsp;|&nbsp;<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc();editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   		result = result +'&nbsp;|&nbsp;<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc('+report.id+');editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
 					   	}else{
 					   		result = result +'---';
 					   	}
@@ -269,7 +269,7 @@ function editCategory(catLocationId,categoryId){
           
 
 <script>
-function addCategoryDoc(){
+function addCategoryDoc(categoryId){
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'	<form role="form"  id="addCategory_form" name="addCategory_form" method="post" > ';
@@ -288,7 +288,8 @@ function addCategoryDoc(){
 	result = result  +'	                    <textarea class="form-control" rows="2" data-validation-optional="true" placeholder="Description"  data-validation="validate_length length5-500" id="description" name="description"></textarea>';
 	result = result  +'	                  </div>';
 	result = result  +'	                </div>';
-		
+	result = result  +'	                    <input type="hidden" id= "catId" value ="'+categoryId+'" >';
+
 	result = result  +'	                <div class="clearfix mr">';
 	result = result  +'	                  <div class="pull-right">';
 	result = result  +'		                 <button type="button" id="update_button" style="display: none;" class="btn btn-sm btn-primary ">Update</button>';
@@ -309,36 +310,30 @@ function addCategoryDoc(){
 function validateCategoryName(){
 	var categoryName = document.getElementById("categoryName").value;
 	$("#save_button").removeAttr("disabled");
-	$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
-	$('input#categoryName').attr('class','valid form-control');
-	$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
+	
+	var categoryId = document.getElementById("catId").value;
+	if(categoryId == 'undefined' || categoryId == null){
+		categoryId = '';
+	}
 	if (categoryName != null && categoryName != '') {
 		//$("#save_client").attr("disabled", "disabled");
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
+			url : sourceleadUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName+"&categoryId="+categoryId,
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("#save_button").removeAttr("disabled");
-			        $("#save_button").attr("disabled", "disabled");
+					$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
 					$("input#categoryName").after( "<p class='jquery_form_error_message'>" + categoryName + " is already existed </span>");
-					document.getElementById("categoryName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("categoryName").setAttribute( 'record-exist-errorMsg', categoryName +"  already existed ");
-					$('input#categoryName').removeAttr( "record-exist record-exist-errorMsg");
+					  document.getElementById("categoryName").setAttribute('record-exist','yes');
+					  document.getElementById("categoryName").setAttribute('record-exist-errorMsg',categoryName+' is Already Existed'); 
 					
 				}else {
-					//New WebSite class="form-control"
-					//$("#save_client").removeAttr("disabled");
-					$("#save_button").removeAttr("disabled");
-					$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#categoryName').attr('class','valid form-control');
-					$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_button").click(function() {
-						
-					});
+					
+					$('input#categoryName').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#categoryNameDiv').find('p.jquery_form_error_message').remove(); 
 				}
 			},
 

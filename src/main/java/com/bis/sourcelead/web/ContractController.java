@@ -679,16 +679,13 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		model.addObject("contract", contract);
-		if(contract.getContactUser().getLastName() != null) {
+		if(StringUtils.isNotBlank(contract.getContactUser().getLastName())) {
 			StringBuilder sb = new StringBuilder();
-			model.addObject("signatory",sb.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()));
-		}else {
-			model.addObject("signatory",contract.getContactUser().getFirstName());
-		}
-		if(contract.getContactUser().getLastName() != null) {
 			StringBuilder sbn = new StringBuilder();
+			model.addObject("signatory",sb.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()));
 			model.addObject("initial",sbn.append(contract.getContactUser().getFirstName().charAt(0)).append(contract.getContactUser().getLastName().charAt(0)));
 		}else {
+			model.addObject("signatory",contract.getContactUser().getFirstName());
 			model.addObject("initial",contract.getContactUser().getFirstName().charAt(0));
 		}
 

@@ -376,7 +376,7 @@ function jobsDataTableList(type){
 	 var searchValue = $("#jobsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var url = sourceleadUrl+"/getJobsForCampaign?searchValue="+searchValue+"&jobCampaignType="+type;
-	 jobsPagination(url,type);
+   jobsPagination(url,type);
 }
 </script>
 
@@ -427,7 +427,7 @@ function jobsPagination(url,type){
 	    	  		  var result = "";
 	    	  		  var jobId = "";
 	    	  	 	 if(opt.jobId != null && opt.jobId != 'undefined' && opt.jobId != ""){
-		           		 jobId = opt.jobId+" "+opt.jobId ;
+		           		 jobId = opt.jobId ;
 		           	 }else{
 		           		 jobId = "----";
 		           	 }
@@ -464,13 +464,37 @@ function jobsPagination(url,type){
 	              "data": "location",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    var location="";
-	            	    if(opt.location != null && opt.location !='' && opt.location != 'undefined'){
-	            	    	location = opt.location;
-	            	    }else{
+	            	    result = result +'<td>';
+	   		        	result = result +'<div class="positionRelative">';
+		   		         for(var k=0; k<1; k++){
+		   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+		   		         }
+	   		    	
+		   		        result = result +'<div class="show_Empdetails showjoblist">';
+	   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+	   		        	result = result +'<div class="emailvalues emailvaluesNew">';
+	   		        	
+							for(var k=0; k<opt.locationsList.length; k++){
+								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+			   		        	
+	   		    	 	}
+	   		        	result = result +'</div>';
+	   		        	result = result +'</div>';
+	   
+
+   		        	result = result +'</div>';
+   		        	result = result +'</td>';
+            		
+	            	   /* var location="";
+	            	    if(opt.locationsList != null && opt.locationsList !='' && opt.locationsList != 'undefined'){
+	            	    	
+	            	      location = opt.locationsList;
+							
+	            	     }else{
 	            	    	location = "----";
 	            	    }
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+location+'">'+location+'</span></div></td>';
+	            		result = result + '<td><div class="tblminwidth-75"><span title="'+location+'">'+location+'</span></div></td>';*/
 	            		return result;
 	              }
 		     },{
@@ -1479,7 +1503,7 @@ function getSenders(){
 
 <script>
 function getRecipients(){
-	alert("hai")
+
 		$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getRecipients?"+tokenParamName+"="+tokenValue,

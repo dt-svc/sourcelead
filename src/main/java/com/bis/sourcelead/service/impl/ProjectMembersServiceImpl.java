@@ -878,7 +878,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			User user, OrgLocations orgLocations) throws Exception {
 		
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-		List<Long> savedProjectMemberIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projects.getId(),orgLocations.getId());
+		//List<Long> savedProjectMemberIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projects.getId(),orgLocations.getId());
 		ProjectClients projectClients = null;
 		List<Long> updatedProjectMembers = new ArrayList<Long>();
 		if(projectAssignedMembersDTO.getProjectMembers() != null && projectAssignedMembersDTO.getProjectMembers().size() > 0){
@@ -1059,7 +1059,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		projects.setIsProjectMembersFilled(Constants.YES);
 		projectsService.saveProject(projects);
 		
-		updatedProjectMembers.retainAll(savedProjectMemberIds);
+		/*updatedProjectMembers.retainAll(savedProjectMemberIds);
 		savedProjectMemberIds.removeAll(updatedProjectMembers);
 		
 		if(savedProjectMemberIds != null && savedProjectMemberIds.size() > 0){
@@ -1085,7 +1085,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	    			}
 	    		}
 			}
-		}
+		}*/
 	}
 	
 	private void saveProjectMembersHistory(ProjectMembers projectMembers,User user,ProjectClients projectClients) throws Exception{
@@ -1619,6 +1619,86 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId, Long projectId) throws Exception {
 		return projectMembersDao.getAllProjectMembersByMasterCandidateId(masterCandidateId, projectId);
+	}
+
+	@Override
+	public Boolean getPayRateOrBillRateChanges(ProjectMembers projectMembers, ProjectMembersDTO projectMembersDTO)
+			throws Exception {
+		
+		boolean flag = false;
+		Integer count = 0;
+		if(projectMembersDTO.getBillRate() != null || projectMembers.getCurrentBillRate() != null) {
+			if(projectMembers.getCurrentBillRate() == null) {
+				if(projectMembersDTO.getBillRate() != null) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getCurrentBillRate().equals(projectMembersDTO.getBillRate())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isBlank(projectMembers.getBillRateCurrency())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getBillRateCurrency())){
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getBillRateCurrency().equalsIgnoreCase(projectMembersDTO.getBillRateCurrency())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isBlank(projectMembers.getRateType())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getBillRateRateType())) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getRateType().equalsIgnoreCase(projectMembersDTO.getBillRateRateType())) {
+					count = count+1;
+				}
+			}
+			
+		}
+		
+		if(projectMembersDTO.getPayRate() != null || projectMembers.getPayRate() != null) {
+			
+			if(projectMembers.getPayRate() == null) {
+				if(projectMembersDTO.getPayRate() != null) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getPayRate().equals(projectMembersDTO.getPayRate())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isBlank(projectMembers.getPayRateCurrency())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getPayRateCurrency())) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getPayRateCurrency().equalsIgnoreCase(projectMembersDTO.getPayRateCurrency())) {
+					count = count+1;
+				}
+			}
+			
+			if(StringUtils.isBlank(projectMembers.getPayRateType())) {
+				if(StringUtils.isNotBlank(projectMembersDTO.getPayRateRateType())) {
+					count = count+1;
+				}
+			}else {
+				if(!projectMembers.getPayRateType().equalsIgnoreCase(projectMembersDTO.getPayRateRateType())) {
+					count = count+1;
+				}
+			}
+			
+			
+		}
+		
+		if(count > 0) {
+			flag = true;
+		}
+		return flag;
 	}
 
 }

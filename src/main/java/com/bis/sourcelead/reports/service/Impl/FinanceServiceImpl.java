@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -501,7 +502,8 @@ public class FinanceServiceImpl implements FinanceService{
 				}
 				paidBill.setNumberOfAssociates(getNumberOfAssociates(invoiceList));
 				paidBill.setNumberOfprojects(getNumberOfProjects(invoiceList));
-				double total = invoiceList.stream().mapToDouble(i -> Double.parseDouble(i.getTotal())).sum();
+				double total = getPaidAmount(entry.getKey());
+//				double total = invoiceList.stream().mapToDouble(i -> Double.parseDouble(i.getTotal())).sum();
 				paidBill.setTotalAmount(total);
 				paidBillList.add(paidBill);
 			}
@@ -510,9 +512,22 @@ public class FinanceServiceImpl implements FinanceService{
 			response.setRecordsFiltered(paidBillList.size());
 			response.setRecordsTotal(paidBillList.size());
 		}catch (Exception e) {
-			ExceptionUtils.getFullStackTrace(e);
+			logger.info(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
+	}
+
+	private double getPaidAmount(Long orgRelationId) {
+		double amount = 0;
+		List<Invoice> invoicePaymentList = financeDao.getInvoicesByOrgRelationId(orgRelationId);
+		if (invoicePaymentList != null) {
+			List<Long> invoiceIds = invoicePaymentList.stream().map(Invoice::getId).collect(Collectors.toList());
+			List<InvoicePayment> paymentList = financeDao.getInvoicePaidAmountByInvoiceIds(invoiceIds);
+			if (paymentList != null && paymentList.size() > 0) {
+				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
+			}
+		}
+		return amount;
 	}
 
 	/**
@@ -566,7 +581,8 @@ public class FinanceServiceImpl implements FinanceService{
 					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
 				}
 				paidBill.setAmount(invoice.getTotal());
-				totalAmount = totalAmount + Double.parseDouble(invoice.getTotal());
+				double total = getPaidAmountByInvoiceId(invoice.getId());
+				totalAmount = totalAmount + total;
 				paidBill.setTotalAmount(totalAmount);
 				paidBillList.add(paidBill);
 			}
@@ -578,6 +594,17 @@ public class FinanceServiceImpl implements FinanceService{
 	}
 
 	
+	private double getPaidAmountByInvoiceId(Long invoiceId) {
+		double amount = 0;
+			List<Long> invoiceIds = new ArrayList();
+			invoiceIds.add(invoiceId);
+			List<InvoicePayment> paymentList = financeDao.getInvoicePaidAmountByInvoiceIds(invoiceIds);
+			if (paymentList != null && paymentList.size() > 0) {
+				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
+			}
+		return amount;
+	}
+
 	@Override
 	public ResponseList<PaidBillDTO> getPaidBillGraphReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
 	{

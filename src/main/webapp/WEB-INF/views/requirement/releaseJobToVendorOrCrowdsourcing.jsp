@@ -42,10 +42,11 @@
                   </li>
                   <li id="vendorSelected" style="display:none" class="zIndex"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
                     <div class="approved_pop">
-                      <ul id="vendorReleaseCheckList">
-                      	  <%-- <c:forEach var="venReport" items="${vendor_list}">  
+                       <ul>
+<!--                       <ul id="vendorReleaseCheckList"> -->
+                      	  <c:forEach var="venReport" items="${vendor_list}">  
 	                      	<li id="VN${venReport.id}"><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
-						  </c:forEach> --%>
+						  </c:forEach> 
                       </ul>
                     </div>
                   </li>
@@ -854,11 +855,11 @@ function vendorPaginationUrl(url){
 	    	  	"data": "",
 	    	  	"render": function(data, type, report, meta) {
 	    	  		
-	    	  		 if(report.noOfContatcs != 0){
+	    	  		 /* if(report.noOfContatcs != 0){
    	        			vendorCheckListResult = vendorCheckListResult + '<li><input id="vendorName'+report.orgRelationId+'" name="vendorSelected" value ="'+report.orgRelationId+'" onclick="getContactsLists();" type="checkbox"><label title="'+report.orgName+'">&nbsp;&nbsp; '+report.orgName+'</label></li>';
    	        		}
 	    	  		 $("#vendorReleaseCheckList").empty();
-           	    	 $("#vendorReleaseCheckList").append(vendorCheckListResult); 
+           	    	 $("#vendorReleaseCheckList").append(vendorCheckListResult);  */
            	     
            	    	$("#vendorStatus").show();
            	     	$("#vendorSelected").hide();
