@@ -314,6 +314,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 function closepopUpRejectReason(){
 	$("#rejectmessage").val('');
 	$("#rejectpanel").hide();
+	$(".mask_time").fadeOut(200);
 }
 </script>
 
