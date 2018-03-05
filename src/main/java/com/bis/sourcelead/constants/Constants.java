@@ -1035,7 +1035,7 @@ public class Constants {
 	
 
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
-	public static final String LEAVE_DATA =  "Leave";
+	public static final String LEAVE_DATA =  "Leaves";
 	
 
 }

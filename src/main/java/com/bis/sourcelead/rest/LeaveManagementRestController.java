@@ -1362,6 +1362,8 @@ public class LeaveManagementRestController {
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();
 				totalLeaves = 0;
+			}else {
+				totalLeaves = leaveDto.getNoOfDays();
 			}
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
@@ -1849,8 +1851,7 @@ public class LeaveManagementRestController {
 	public void getLeaveExportList(LeaveDTO leaveDTO, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 
 		File file = leaveService.getLeaveExport(orgLocations,leaveDTO);
 		
