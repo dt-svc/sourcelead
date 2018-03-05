@@ -1224,6 +1224,12 @@ z-index: 100; border-radius: 3px; color: #fff; text-align: center;
 .bgGReen {
 background-color: #1ab394 !important; color: #fff;
 }
+.activeGren {
+background-color: #28a745 !important; color: #fff;
+}
+.activeGray {
+	background-color: #ddd !important; color: #909090 !important;
+}
 .bg-orange {
 	background: #FF8F00; color: #fff;
 }

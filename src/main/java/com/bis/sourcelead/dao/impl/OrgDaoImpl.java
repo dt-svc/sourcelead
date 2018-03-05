@@ -19,8 +19,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgDao;
+import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -416,7 +419,95 @@ public class OrgDaoImpl implements OrgDao {
 		List<Org> locationList = session.createQuery(query.toString()).list();
 		return locationList;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<Org> getDynamicEnrolledOrgs(Long orgId, OrgDTO orgDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+        ResponseList<Org> response = new ResponseList<>();
+        
+           StringBuilder query1 = new StringBuilder("");
+			if(orgDTO.getSearchValue() !=null && !"".equalsIgnoreCase(orgDTO.getSearchValue())) {
+			 query1.append("and (org.orgName like '%" + orgDTO.getSearchValue() + "%' ")
+			       .append("OR (user.email like '%" + orgDTO.getSearchValue() + "%' )")
+				   .append("OR user.mobilePhone like '%" + orgDTO.getSearchValue() + "%' )");
+			}
+		
+		
+			List<Org> orgsList = null;
+			String userStateSubQuery = "";
+			if (!orgDTO.getUserState().isEmpty()  && !orgDTO.getUserState().equalsIgnoreCase("ALL")) {
+				userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
+						+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + orgDTO.getUserState() + "' ))";
+			}
+			
+			//org list query
+			String query = "from Org org left join fetch org.user user where org.id <> :orgId " + userStateSubQuery + " "+query1+"";
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setFirstResult(orgDTO.getStart()).setMaxResults(orgDTO.getLength()).list();
+		    
+		    //org count query
+			 String queryCount = "Select count (*) from Org org where org.id <> :orgId " + userStateSubQuery + " "+query1+"" ;
+			 countlist = session.createQuery(queryCount.toString()).setLong( "orgId", orgId).list();
+				
+			 int totalCount = 0;
+				if (orgDTO != null) {
+					if(countlist != null && !countlist.isEmpty()) {
+						totalCount = countlist.iterator().next().intValue();
+					}
+				} 
+				response.setRecordsTotal(totalCount);
+				
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					response.setRecordsFiltered(filterCount);
+				}else {
+					response.setRecordsFiltered(totalCount);
+				}
+				
+				response.setData(orgsList);
+				return response;
+	}
 	
 
+	
+	
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName,Integer offset) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Org> orgsList = null;
+		String userStateSubQuery = "";
+		if (!isNullOrEmpty(userState) && !userState.equalsIgnoreCase("ALL")) {
+			userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
+					+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + userState + "' ))";
+		}
+		
+		// trim the spaces between words (escape spaces)
+		String s1 = searchByName;
+		String withoutWhitespace = s1.trim();
+		String orgNameSubQuery = "";
+		
+		if (!isNullOrEmpty(withoutWhitespace)) {
+			orgNameSubQuery = "and org.orgName LIKE :orgName";
+			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setString("orgName", withoutWhitespace + "%").list();
+		}else{
+			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).list();
+		}
+		
+		if(orgsList.size() >= offset){
+			if(orgsList.size() > offset + 20){
+				return   orgsList.subList(offset, (offset+20));
+			}else{
+				return   orgsList.subList(offset, (  offset + (orgsList.size() - offset)));
+			}
+		}else{
+			return  null;
+		}
+	}*/
 }
 
