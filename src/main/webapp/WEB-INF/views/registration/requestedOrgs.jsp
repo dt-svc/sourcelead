@@ -142,7 +142,7 @@ function requestedOrgsDataTableList(){
 	    });
 		
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRequestOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus+"&orgType=Request";
+	 var url = sourceleadUrl+"/getRequestOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus;
 	 requestOrgsListPagination(url,sourceleadUrl);
 }
 

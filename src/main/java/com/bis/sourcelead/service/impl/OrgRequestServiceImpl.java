@@ -142,5 +142,10 @@ public class OrgRequestServiceImpl implements OrgRequestService{
 		return orgRequestDao.getDemoRequestsList(employerRegistrationDTO, orgLocations, orgType);
 	}
 
+	@Override
+	public OrgRequest getOrgRequestById(Long id) throws Exception {
+		return orgRequestDao.getOrgRequestById(id);
+	}
+
 	
 }

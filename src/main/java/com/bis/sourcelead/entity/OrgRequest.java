@@ -73,6 +73,9 @@ private static final long serialVersionUID = 1L;
 		
     @Column(name = "STATUS")
    	private Integer status;
+    
+    @Column(name = "REQUEST_STATUS")
+   	private String requestStatus;
    		
    	@Column(name = "CREATED_DATE")
    	private Date createdDate;
@@ -207,5 +210,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setOrgType(String orgType) {
 		this.orgType = orgType;
+	}
+
+	public String getRequestStatus() {
+		return requestStatus;
+	}
+
+	public void setRequestStatus(String requestStatus) {
+		this.requestStatus = requestStatus;
 	}
 }

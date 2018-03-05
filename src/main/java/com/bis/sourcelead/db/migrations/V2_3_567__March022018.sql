@@ -4,6 +4,7 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_REQUEST','DEMO_TIME','VAR
 CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_REQUEST','DEMO_TIME_ZONE','BIGINT NULL AFTER `DEMO_TIME`');
 ALTER TABLE `sourcelead`.`ORG_REQUEST` ADD CONSTRAINT `FK1_TIME_ZONE_ID`  FOREIGN KEY  (`DEMO_TIME_ZONE`)  REFERENCES  `sourcelead`.`TIMEZONE` (`ID`);
 
+CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_REQUEST','REQUEST_STATUS','VARCHAR(50) NULL AFTER `STATUS`');
 
 
 #CLASS_FIELD

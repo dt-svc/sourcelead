@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EmployerRegistrationDTO {
+	 private long id;
      private String firstName;
      private String lastName;
      private String phoneNumber;
@@ -26,7 +27,15 @@ public class EmployerRegistrationDTO {
 	 private int length;
 	 private String requestedBy;
 	 private String requestedModules;
+	 private String orgRequestStatus;
      
+		public long getId() {
+		  return id;
+		}
+		
+		public void setId(long id) {
+			this.id = id;
+		}
 		public String getFirstName() {
 			return firstName;
 		}
@@ -159,5 +168,11 @@ public class EmployerRegistrationDTO {
 		}
 		public void setRequestedModules(String requestedModules) {
 			this.requestedModules = requestedModules;
+		}
+		public String getOrgRequestStatus() {
+			return orgRequestStatus;
+		}
+		public void setOrgRequestStatus(String orgRequestStatus) {
+			this.orgRequestStatus = orgRequestStatus;
 		}
 }

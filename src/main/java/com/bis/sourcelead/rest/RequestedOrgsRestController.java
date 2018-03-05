@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRequest;
 import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -35,7 +36,7 @@ public class RequestedOrgsRestController {
 					}
 					employerRegistrationDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					employerRegistrationDTO.setSortOrder(sortColumnOrder);
-			ResponseList<EmployerRegistrationDTO> demoOrgsList = orgRequestService.getDemoRequestsList(employerRegistrationDTO,orgLocations,employerRegistrationDTO.getOrgType());
+			ResponseList<EmployerRegistrationDTO> demoOrgsList = orgRequestService.getDemoRequestsList(employerRegistrationDTO,orgLocations,"Demo");
 			return demoOrgsList;
 		   
 	   }
@@ -53,8 +54,24 @@ public class RequestedOrgsRestController {
 					}
 					employerRegistrationDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					employerRegistrationDTO.setSortOrder(sortColumnOrder);
-			ResponseList<EmployerRegistrationDTO> demoOrgsList = orgRequestService.getDemoRequestsList(employerRegistrationDTO,orgLocations,employerRegistrationDTO.getOrgType());
+			ResponseList<EmployerRegistrationDTO> demoOrgsList = orgRequestService.getDemoRequestsList(employerRegistrationDTO,orgLocations,"Request");
 			return demoOrgsList;
 		   
+	   }
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = {"/changeOrgDemoRequestStatus", "/rest/changeOrgDemoRequestStatus"}, method = RequestMethod.GET)
+	 @ResponseBody  String changeOrgDemoRequestStatus(EmployerRegistrationDTO employerRegistrationDTO,HttpServletRequest request) throws Exception {
+		 
+		 OrgRequest orgRequest = orgRequestService.getOrgRequestById(employerRegistrationDTO.getId());
+		 if(orgRequest != null) {
+			 orgRequest.setRequestStatus(employerRegistrationDTO.getOrgRequestStatus());
+			 orgRequestService.saveOrgRequest(orgRequest);
+		 }
+		
+		 return "success";
+		 
 	   }
 }

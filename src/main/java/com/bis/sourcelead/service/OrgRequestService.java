@@ -14,4 +14,6 @@ public interface OrgRequestService {
 	void senEmailOrgRequestToSourcelead(OrgRequest orgRequest)throws Exception;
 	
 	ResponseList<EmployerRegistrationDTO> getDemoRequestsList(EmployerRegistrationDTO employerRegistrationDTO,OrgLocations orgLocations,String orgType) throws Exception;
+	
+	OrgRequest getOrgRequestById(Long id) throws Exception;
 }

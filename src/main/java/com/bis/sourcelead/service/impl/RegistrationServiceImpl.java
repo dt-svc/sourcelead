@@ -2093,6 +2093,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		orgRequest.setOrgType(employerRegistrationDTO.getOrgType());
 		if(employerRegistrationDTO.getOrgType().equalsIgnoreCase("Demo")) {
+			orgRequest.setRequestStatus("Requested");
 			Timezone timezone=timeZoneService.getTimezone(Long.valueOf(employerRegistrationDTO.getTimeZone()));
 			 
 			 if(employerRegistrationDTO.getDemoDate() != null && !employerRegistrationDTO.getDemoDate().isEmpty()) {

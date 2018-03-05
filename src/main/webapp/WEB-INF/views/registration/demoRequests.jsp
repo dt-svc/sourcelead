@@ -50,7 +50,7 @@
 			<div class="timesheet_head topfilters">
         	<ul>
 				
-                <li id="filterDropDown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
+                <li id="filterDropDown"><i class="fa fa-filter"></i><span>Requested</span><i class="glyphicon glyphicon-play" ></i>|
                 	<div id="filter1ApprovePop" class="approvedPop">
                     	<ul>
                         	<li><input id="c7"  type="radio" name="requestedStatus" value ="Today"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Today</label></li>
@@ -121,6 +121,7 @@ function getDemoOrgsList(){
 	   	result = result +' <th>Phone No</th>';
 	   	result = result +' <th>Modules</th>';
 	   	result = result +' <th>Demo Date/Time</th>';
+	   	result = result +' <th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -143,7 +144,7 @@ function requestedOrgsDataTableList(){
 	    });
 		
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getDemoOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus+"&orgType=Demo";
+	 var url = sourceleadUrl+"/getDemoOrgsList?searchValue="+searchValue+"&requestedStatus="+requestedStatus;
 	 demoOrgsListPagination(url,sourceleadUrl);
 }
 
@@ -167,6 +168,7 @@ function demoOrgsListPagination(url,sourceleadUrl){
             { "data": "phoneno" },
             { "data": "modules" },
             { "data": "demodate" },
+            { "data": "action" },
         ],
          "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -222,7 +224,35 @@ function demoOrgsListPagination(url,sourceleadUrl){
 	              "data": "demodate",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result + '<td><div class="tblminwidth-75">'+opt.demoDate+'</div></td>';
+	            	  
+	            	  if(opt.demoTime != null){
+	            		  var demo = opt.demoDate+" ("+opt.demoTime+")";
+	            		  result = result + '<td><div class="tblminwidth-75">'+demo+'</div></td>';
+	            	  }else{
+	            		  result = result + '<td><div class="tblminwidth-75">'+opt.demoDate+'</div></td>';
+	            	  }
+	            	 
+	            		return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "demodate",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  
+	            		  result = result +"<select name='changeStatusId"+opt.id+"'   value= '' onchange='changeRequestedStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
+	            		  if(opt.orgRequestStatus == "Requested"){
+	            			  result = result +"<option disabled selected>"+opt.orgRequestStatus+"</option>";
+	            			  result = result +"<option value='Onhold'>Onhold</option>";
+	            			  result = result +"<option value='Completed'>Completed</option>";
+	            		  }else if(opt.orgRequestStatus == "Onhold"){
+	            			  result = result +"<option disabled selected>"+opt.orgRequestStatus+"</option>";
+	            			  result = result +"<option value='Completed'>Completed</option>";
+	            		  }
+	            		  else if(opt.orgRequestStatus == "Completed"){
+	            			  result = result + '<td><div class="tblminwidth-75">'+opt.orgRequestStatus+'</div></td>';
+	            		  }
+	            	 
 	            		return result;
 	              }
 		     }], 
@@ -247,5 +277,20 @@ function demoOrgsListPagination(url,sourceleadUrl){
     	   }
     	});
 	
+}
+</script>
+
+<script>
+function changeRequestedStatus(id){
+	var orgRequestStatus = $("#changeStatusId"+id).val();
+	
+	 $.ajax({
+		    type: "GET",
+	        url: sourceleadUrl+"/changeOrgDemoRequestStatus?orgRequestStatus="+orgRequestStatus+"&id="+id,  
+	        success: function(data) {
+	        	getDemoOrgsList();
+	        }
+	 });
+	 
 }
 </script>

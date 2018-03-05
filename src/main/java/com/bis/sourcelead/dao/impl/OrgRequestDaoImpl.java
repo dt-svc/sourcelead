@@ -229,6 +229,7 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 			OrgRequest orgReq = getOrgRequestById(orgRequest.getId());
 			if(orgReq != null) {
 				EmployerRegistrationDTO companyDTO = new EmployerRegistrationDTO();
+				companyDTO.setId(orgRequest.getId());
 				companyDTO.setCompanyName(orgRequest.getCompanyName());
 				companyDTO.setFirstName(orgRequest.getFirstName());
 				companyDTO.setLastName(orgRequest.getLastName());
@@ -245,6 +246,11 @@ public class OrgRequestDaoImpl implements OrgRequestDao{
 				if(orgRequest.getDemoTime() != null) {
 					companyDTO.setDemoTime(orgRequest.getDemoTime());
 				}
+				
+				if(orgRequest.getRequestStatus() != null && !orgRequest.getRequestStatus().isEmpty()) {
+					companyDTO.setOrgRequestStatus(orgRequest.getRequestStatus());
+				}
+				
 				
 				StringBuilder requestedBy = new StringBuilder();
 				if(StringUtils.isNotBlank(orgRequest.getLastName())) {
