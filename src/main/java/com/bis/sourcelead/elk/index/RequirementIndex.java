@@ -34,6 +34,14 @@ public class RequirementIndex implements Serializable {
 	
 	private String rateType;
 	
+	private String clientCurrencyCode;
+	
+	private Float clientRate;
+	
+	private Float clientMaxRate;
+	
+	private String clientRateType;
+	
 	private String minExperience;
 	
 	private String maxExperience;
@@ -318,6 +326,46 @@ public class RequirementIndex implements Serializable {
 		this.rateType = rateType;
 	}
 	
+	public String getClientCurrencyCode()
+	{
+		return clientCurrencyCode;
+	}
+
+	public void setClientCurrencyCode(String clientCurrencyCode)
+	{
+		this.clientCurrencyCode = clientCurrencyCode;
+	}
+
+	public Float getClientRate()
+	{
+		return clientRate;
+	}
+
+	public void setClientRate(Float clientRate)
+	{
+		this.clientRate = clientRate;
+	}
+
+	public Float getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(Float clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	public String getClientRateType()
+	{
+		return clientRateType;
+	}
+
+	public void setClientRateType(String clientRateType)
+	{
+		this.clientRateType = clientRateType;
+	}
+
 	public String getMinExperience() {
 		return minExperience;
 	}

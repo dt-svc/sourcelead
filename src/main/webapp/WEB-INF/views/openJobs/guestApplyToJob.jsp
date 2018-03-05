@@ -438,7 +438,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 function importAddApplicantDoc(){
-	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form", '${orgId}', '${orgLocationId}');
+	fileUpload("uploadBtn", "guestAddApplicants", "guestApplicant_form",'', '${orgId}', '${locationId}');
 	var uploadfiles = $("#uploadBtn").val();
 	$('#uploadFile').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }

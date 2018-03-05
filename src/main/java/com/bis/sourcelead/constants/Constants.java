@@ -118,6 +118,7 @@ public class Constants {
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
 	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
+	public static final String MODIFY_CONTRACT_ENDDATE_NOTIFICATION = "ModifyContractEndDateNotification";
 	public static final String MODIFY_SOW_CONTRACT_ENDDATE = "ModifySowContractEndDate";
 	public static final String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static final String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
@@ -220,6 +221,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
+	public static final String SHARE_RECOMENDED_APPLICANT_NOTIFICATION = "Share Recommended Applicant Notification";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
 	public static final String APPROVE_CONTRACT = "Approve Contract";
 	public static final String REJECT_CONTRACT = "Reject Contract";
@@ -227,7 +229,9 @@ public class Constants {
 	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
 	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
 	public static final String MSA_CONTRACT_FINALIZED = "MSAFinalizeEmail";
+	public static final String MSA_FINALIZED_NOTIFICATION = "MsaFinalizedNotification";
 	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
+	public static final String SOW_FINALIZED_NOTIFICATION = "SowFinalizedNotification";
 	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
@@ -256,7 +260,8 @@ public class Constants {
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
 	
 	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
-		
+	public static final String HOLIDAY_REMAINDER_NOTIFICATION="HolidayRemainderNotification";
+	
 	public static final String LEAVE_APPROVER_EMAIL = "Approver Leave";
 	public static final String LEAVE_APPROVER_NOTIFICATION = "ApproverLeaveNotification";
 	
@@ -521,7 +526,7 @@ public class Constants {
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
-			"Serial Number/Port Number", "Make", "Model", "Memory", "CPU",	"Hard Disk", "Description", "ShiftA Employee","ShiftB Employee"};
+			"Serial Number/Port Number", "Make", "Model", "Memory", "CPU", "Monitor", "Hard Disk", "Description", "ShiftA Employee","ShiftB Employee"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
@@ -1025,8 +1030,12 @@ public class Constants {
 
 	public static final String SYSTEM_TASK_NONBILLABE = "System Task NonBillable";
 	public static final String SYSTEM_TASK_BILLABE = "System Task Billable";
+
+	public static final String MAIL_ASSIGNEMPLOYEE_PROJECTTASK = "MailtoAssignEmployeeinProjecttask";
 	
+
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
 	public static final String LEAVE_DATA =  "Leave";
 	
+
 }

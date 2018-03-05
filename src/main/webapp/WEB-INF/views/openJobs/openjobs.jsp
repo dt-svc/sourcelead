@@ -1555,7 +1555,7 @@ function openPopup(){
 	$("#all").toggleClass("actL");
 };
 </script>
-<script type="text/javascript" src='resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <script>
 
 /* if("${uuid}"!=null){

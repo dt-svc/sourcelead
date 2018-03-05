@@ -10,11 +10,20 @@
  
 <script>
 $(document).ready(function() {
-	 var requirementId = '${requirementId}'; 
+	 var requirementId = '${requirementId}';
+	 var submissionId = '${submissionId}';
+	 var candidateId = '${candidateId}';
 	 var type = '${type}';
 	 if(type != null && type != '' && type != 'undefined'){
-			sideBar(requirementId,type);
+		 sideBar(requirementId,type);
 	 }
+	 
+ if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
+	 requirementPipeline(requirementId,type);
+	 }
+ if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+		 requirementPipeline(requirementId,type);
+		 }
 });	
 </script>
 <script>
@@ -473,6 +482,20 @@ function sideBar(requirementId,type){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
 					tabEnable('','offerMadeli');
+			 }else if(type == 'APPLICANTS'){
+				    
+				    requirementPipeline(requirementId,'all');
+					requirementStatusBar(requirementId,type);
+					
+					 var candidateId = '${candidateId}';
+					 var submissionId = '${submissionId}';
+					 
+					 if(candidateId != null && candidateId != '' && candidateId != 'undefined' && 
+							 submissionId != null && submissionId != '' && submissionId != 'undefined'){
+						 applicantQuickViewProfile(submissionId,candidateId); 
+						 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId); 
+						 document.getElementById('detailedView').click();
+					 }
 			 }
 			 else{
 				    requirementPipeline(requirementId,'all');
@@ -705,7 +728,6 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -2886,7 +2908,7 @@ function customizeScore(requirementId){
 		        
 		        result = result +'		                  <div class="col-md-5 lblup">   ';
 		        result = result +'		                   <label>Rate</label>';
-		        result = result +'		                    <input type="text" placeholder="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
+		        result = result +'		                    <input type="text" placeholder="Rate" field-name="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
 		        result = result +'		                    </div>   ';
 		        
 		        result = result +' <div class="col-md-5 paddingRight">   ';
@@ -3047,6 +3069,26 @@ function minMaxExperience(){
 <script>
 function updateCutomize(requirementId){
 	minMaxExperience();
+	
+	var RatePer = document.getElementById("currentRateType").value; 
+	if(RatePer != null && RatePer != ""){
+		$('#customizeRate').removeAttr('data-validation-optional');
+		$('#customizeRate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+	}else{
+		$('#customizeRate').removeAttr('data-validation');
+		$('#customizeRate').attr("data-validation-optional","true"); 
+	}
+	 
+	var Rate = document.getElementById("customizeRate").value; 
+	if(Rate != null && Rate != ""){
+		$('#currentRateType').removeAttr('data-validation-optional');
+		$('#currentRateType').attr("data-validation","required");
+		$('#customizeRate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+	}else{
+		$('#currentRateType').removeAttr('data-validation');
+		$('#currentRateType').attr("data-validation-optional","true"); 
+	}
+	
     var skillPerc = parseInt($("#skillScore").val());
     var expPerc = parseInt($("#experienceScore").val());
     var ratePerc = parseInt($("#rateScore").val());
