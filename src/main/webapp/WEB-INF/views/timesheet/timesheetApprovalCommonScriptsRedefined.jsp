@@ -226,10 +226,12 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    			if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 		    				 var currentPageNumber =  $("#currentPageNumber").val();
 		    				 getStatusListData(""+currentPageNumber+"","");
+		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
 		    				 getTableData(currentPageNumberApprover);
 		    			   	$("#loadingCotentDiv").removeAttr('style');
+		    			   	$('#hedderAcceptRejectButton').attr('style','display:none');
 			    		}
 			    	}
 			    }
@@ -290,6 +292,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	      		     getStatusListData(""+currentPageNumber+"","");
 	      		   	 $(".mask_time").fadeOut(200);
 	      		     $("#rejectpanel").hide();
+	      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');
 	      		   	 
 			   }else{
 					  var currentPageNumberApproverReject =  $("#timesheetApproverCurrentPageNumber").val();
@@ -297,6 +300,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	    			  $("#loadingCotentDiv").removeAttr('style');
 		 	    	  $(".mask_time").fadeOut(200);
 	      		      $("#rejectpanel").hide();
+	      		      $('#hedderAcceptRejectButton').attr('style','display:none');
 		   	   }
 	      }
 	    }); 
