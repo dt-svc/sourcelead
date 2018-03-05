@@ -119,7 +119,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			           <div class="row">
 				           <div class="col-md-6">
 				            	<div class="clearfix">
-				            	<input type="text" class="form-control" placeholder="First Name" id="firstName" name="firstName" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+				            	<input type="text" class="form-control" placeholder="First Name *" id="firstName" name="firstName" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 				            	</div>
 				            </div>
 				           <div class="col-md-6">
@@ -129,32 +129,32 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				            </div>
 				            <div class="col-md-6">
 				            	<div class="clearfix">
-				            	<input type="text" class="form-control" placeholder="Email id" name="email" field-name="Email"  id="email"  data-validation="required validate_Space validate_length length2-100 validate_email">
+				            	<input type="text" class="form-control" placeholder="Email id *" name="email" field-name="Email"  id="email"  data-validation="required validate_Space validate_length length2-100 validate_email">
 				            	</div>
 				            </div>
 				            <div class="col-md-6">
 				            	<div class="clearfix">
-				            	<input type="text" class="form-control" placeholder="Mobile Number" id="phoneNumber" field-name="Mobile Number"  name="phoneNumber" data-validation="required validate_Space validate_phone validate_length length9-20">
+				            	<input type="text" class="form-control" placeholder="Mobile Number *" id="phoneNumber" field-name="Mobile Number"  name="phoneNumber" data-validation="required validate_Space validate_phone validate_length length9-20">
 				            	</div>
 				            </div>
 				            <div class="col-md-6">
 				            	<div class="clearfix">
-				            	<input type="text" class="form-control" placeholder="Company Name" id="companyName" name="companyName" field-name="Company Name"  data-validation="required validate_Space validate_length length2-250">
+				            	<input type="text" class="form-control" placeholder="Company Name *" id="companyName" name="companyName" field-name="Company Name"  data-validation="required validate_Space validate_length length2-250">
 				            	</div>
 				            </div>
 				            <div class="col-md-6">
 				            	<div class="clearfix">
-				            	<input type="text" class="form-control" placeholder="Company Website" id="companyWebsite" name="companyWebsite"  field-name="Company Website"  data-validation="required validate_Space validate_domain validate_length length2-100">
+				            	<input type="text" class="form-control" placeholder="Company Website *" id="companyWebsite" name="companyWebsite"  field-name="Company Website"  data-validation="required validate_Space validate_domain validate_length length2-100">
 				            	</div>
 				            </div>
 				            <div class="col-md-6">
 				            	<div class="clearfix">
-				            	<input type="text" class="form-control" placeholder="Location" id="companyAddress" name="companyAddress" field-name="Location"  data-validation="required">
+				            	<input type="text" class="form-control" placeholder="Location *" id="companyAddress" name="companyAddress" field-name="Location"  data-validation="required">
 				            	</div>
 				            </div>
 				            <div class="col-md-6 selectpicker-dropdowndDemo">
 				                 <select class="form-control selectpicker" name="country" id="country" field-name="Country" data-validation="required" onchange="getTimezonesList();" data-live-search="true" title="Select Coountry">
-			                        <option disabled selected>Select Country</option>
+			                        <option disabled selected>Select Country *</option>
 			                        <option value="Australia">Australia</option>
 					                <option value="France">France</option>
 					                <option value="India">India</option>
@@ -168,8 +168,8 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				             <div class="clearfix mb">
 				             <div class="col-md-6">
 				             <div class="row">
-				             <div class="col-md-7 pdRight">
-				             	<input type="text" class="form-control calendar" placeholder="Date" id="demoDate" name="demoDate" field-name="Date" readonly >
+				             <div class="col-md-7 pdRight" id="errMsgDate">
+				             	<input type="text" class="form-control calendar" placeholder="Date *" id="demoDate" name="demoDate" field-name="Date" readonly data-validation="required" >
 				             </div>
 				             <div class="col-md-5 pdLeft">
 				             	<input type="text" class="form-control timeicon" placeholder="Time" id="demoTime" name="demoTime">
@@ -205,9 +205,6 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
  <!--   Free trial pop   -->    
 <section class="asMask"></section>     
 <!-- Free trail and demo -->
-
-
-
 
 <div class="backtotop" style="display: none;"><img src="/resources/static-web/images/backtotop.png" alt="" style="max-height: 45px;"></div>
 <div class="backshadow" onclick="closeNav();"></div>
@@ -253,7 +250,6 @@ $(document).ready(function(){
 	getDemoModules();
 	getTimezonesList();
 	googleApiLocation('companyAddress','country');
-// 	$("#demoTimeZone").val(Intl.DateTimeFormat().resolvedOptions().timeZone);
 	
 });
 </script>
@@ -261,24 +257,25 @@ $(document).ready(function(){
 <script>
 $("#demoDate").datepicker({
 	dateFormat : "dd-mm-yy",
+	minDate: 0,
+	onSelect : function(selected) {
+		  removeValidationDate();
+	}
 });
 
 $("#demoTime").timepicker({
 	'showDuration': true,
 	'disableTextInput': true
-}).on('changeTime', function() {
-	 var date = $("#demoDate").val();
-	 if(date == ''){
-		 $('#demoDate').attr("data-validation","required"); 
-	 }else{
-		 $('#demoDate').removeAttr("data-validation","required"); 
-	 }
 });
 
 $(".clPop").click(function(){
 	 document.getElementById("requestDemo_form").reset();
-	 /*$("requestDemo_form").validate().resetForm(); */
+	 $("#requestDemo_form").find("p.jquery_form_error_message").fadeOut();
 });
+function removeValidationDate(){
+	$("#errMsgDate").find('p.jquery_form_error_message').remove();
+}
+
 </script>
 <jsp:include page="googleApiLocation.jsp" />
 <script>
