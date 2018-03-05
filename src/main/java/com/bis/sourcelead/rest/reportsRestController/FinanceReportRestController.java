@@ -427,27 +427,25 @@ public class FinanceReportRestController {
 	@RequestMapping(value = "/paidBillReport")
 	public ModelAndView paidBillReportjSP(HttpServletRequest request) throws Exception
 	{
-		 ModelAndView model = new ModelAndView();
-		 
-//		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-//			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-//			if(null != vendorList){
-//				for (OrgRelations orgRelations : vendorList) {
-//					String orgName = "";
-//					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-//						orgName = orgRelations.getLocationId().getOrgLocationName();
-//					}
-//					if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-//						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
-//					}
-//					orgRelations.setOrgName(orgName);
-//				}
-//			}
-//			
-//		 model.addObject("vendorList", vendorList);
-		 model.setViewName("reports/paidBillReport");
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 return model;
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+		if (null != vendorList) {
+			for (OrgRelations orgRelations : vendorList) {
+				String orgName = "";
+				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+					orgName = orgRelations.getLocationId().getOrgLocationName();
+				}
+				if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+				}
+				orgRelations.setOrgName(orgName);
+			}
+		}
+		model.addObject("vendorList", vendorList);
+		model.setViewName("reports/paidBillReport");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
 	}
 	
 	
@@ -464,8 +462,133 @@ public class FinanceReportRestController {
 	public @ResponseBody ResponseList<PaidBillDTO> getPaidBillreport(PaidBillDTO paidBillDTO,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
 		ResponseList<PaidBillDTO> res = financeService.getPaidVendorsList(paidBillDTO, orgLocation);
 		return res;
 	}
+	
+	
+	/**
+	 * returns paid Bill report details jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/paidBillDetails")
+	public ModelAndView paidBillDetails(@RequestParam(value = "orgRelationId",required = false) Long orgRelationId,HttpServletRequest request) throws Exception
+	{
+		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+		 String orgName = "";	
+		 if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+			 orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+			}
+			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				orgName = orgRelations.getLocationId().getOrgLocationName();
+			}
+		 model.addObject("orgRelationId",orgRelationId);
+		 model.addObject("orgName",orgName);
+		 model.setViewName("reports/paidBillReportDetails");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	/**
+	 * Get paid bill report details by vendor
+	 * @param paidBillDTO
+	 * @param request
+	 * @param response
+	 * @return ResponseList<PaidBillDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPaidBillDetailReport", "/rest/getPaidBillDetailReport" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<PaidBillDTO> getPaidBillDetailReport(PaidBillDTO paidBillDTO,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		ResponseList<PaidBillDTO> res = financeService.getPaidBillDetailReport(paidBillDTO, orgLocation);
+		return res; 
+	}
+	
+	
+	
+	/**
+	 * returns Recieved Invoice Report Bill report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/receivedInvoiceReport")
+	public ModelAndView recievedInvoiceReportjSP(HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+			if(null != clientList){
+				for (OrgRelations orgRelations : clientList) {
+					String orgName = "";
+					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getLocationId().getOrgLocationName();
+					}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					}
+					orgRelations.setOrgName(orgName);
+				}
+			}
+		 model.addObject("clientList", clientList);
+		model.setViewName("reports/receivedInvoiceReport");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	/**
+	 * returns paid Bill graph report jsp
+	 * @param request
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/paidBillReportGraph")
+	public ModelAndView paidBillReportGraphJsp(HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			if (null != vendorList) {
+				for (OrgRelations orgRelations : vendorList) {
+					String orgName = "";
+					if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+						orgName = orgRelations.getLocationId().getOrgLocationName();
+					}
+					if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					}
+					orgRelations.setOrgName(orgName);
+				}
+			}
+		model.addObject("vendorList", vendorList);
+		model.setViewName("reports/paidBillReportGraph");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	/**
+	 * Get paid bill graph report details by vendor
+	 * @param paidBillDTO
+	 * @param request
+	 * @param response
+	 * @return ResponseList<PaidBillDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPaidBillGraphReport", "/rest/getPaidBillGraphReport" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<PaidBillDTO> getPaidBillGraphReport(PaidBillDTO paidBillDTO,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		ResponseList<PaidBillDTO> res = financeService.getPaidBillGraphReport(paidBillDTO, orgLocation);
+		return res; 
+	}
+	
+	
 }

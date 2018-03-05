@@ -25,6 +25,7 @@ import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -427,12 +428,11 @@ public class FinanceDaoImpl implements FinanceDao{
 				String query = "";
 				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
 					query = qry+dateQuery;
-				}else if(orgIds.size() > 0){
+				}if(orgIds.size() > 0 && StringUtils.isBlank(missingInvoiceDto.getFilterType()) || "undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())){
 					query = qry + inQuery;
-				}else if(orgIds.size() > 0 && StringUtils.isNotBlank(missingInvoiceDto.getFilterType())){
+				}if(orgIds.size() > 0 && StringUtils.isNotBlank(missingInvoiceDto.getFilterType())){
 					query = qry+dateQuery+inQuery;
-				}
-				else {
+				}if(orgIds.size() == 0 && (StringUtils.isBlank(missingInvoiceDto.getFilterType()) || "undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType()))) {
 					query = qry;
 				}
 				 groupQuery = " GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)";
@@ -442,14 +442,13 @@ public class FinanceDaoImpl implements FinanceDao{
 				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
 					response.setData(tslist);
-				}else if(orgIds.size() > 0){
+				}if(orgIds.size() > 0 && StringUtils.isBlank(missingInvoiceDto.getFilterType()) || "undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())){
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameterList("orgIds", orgIds).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
 						response.setData(tslist);
-				}else if(orgIds.size() > 0){
+				}if(orgIds.size() > 0 && StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())){
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameterList("orgIds", orgIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
 						response.setData(tslist);
-				}
-				else {
+				}if(orgIds.size() == 0 && (StringUtils.isBlank(missingInvoiceDto.getFilterType()) || "undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType()))) {
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
 					response.setData(tslist);
 				}
@@ -468,16 +467,11 @@ public class FinanceDaoImpl implements FinanceDao{
 					    		 totalNonBillableHours = CommonUtil.getCombinedHours(tempSah.getNonBillableHours(), totalNonBillableHours);
 					    	}
 					    }
-					/*    System.out.println("Project Id >>>>>>>>>"+sah.getSubmissionId().getProjects().getId()+"MasterCanddidate Id >>>>>>>>>>>"+ sah.getSubmissionId().getMasterCandidateId().getId());
-					    System.out.println("startDate>>>>>>>>>>>"+ sah.getFrequencyStartDate()+"  EndDate>>>>>>>>>"+sah.getFrequencyEndDate());
-					    System.out.println("totalHours>>>>>>>>>>>"+totalHours);
-					    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");*/
 					    sah.setTotalHours(totalHours);
 					    sah.setBillableHours(totalBillableHours);
 					    sah.setNonBillableHours(totalNonBillableHours);
 					}
 				}
-				/*submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate*/
 				
 				 Query countQ = session.createQuery(queryCount+" "+searchQuery+" "+groupQuery);
 				 countQ.setLong("orgLocationId", orgLocations.getId()).setCacheable(true);
@@ -533,26 +527,45 @@ public class FinanceDaoImpl implements FinanceDao{
 	
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<Invoice> getPaidVendorslist(PaidBillDTO paidBillDTO,OrgLocations orgLocations) {
-		   Session session = this.sessionFactory.getCurrentSession();
-		
+	public ResponseList<Invoice> getPaidVendorslist(PaidBillDTO paidBillDTO, OrgLocations orgLocations)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
-		if(paidBillDTO.getBillType().equalsIgnoreCase("Payables")){
-			subQuery = " and invoice.invoiceType = 'Payables' ";
-		}else{
-			subQuery = " and invoice.invoiceType = 'Receivable' ";
+		
+		List<Long> orgIds = new ArrayList<>();
+		if(!"null".equalsIgnoreCase(paidBillDTO.getOrgId()) && paidBillDTO.getOrgId() != null) {
+			String[] ids = paidBillDTO.getOrgId().split(",");
+			for(String id : ids) {
+				orgIds.add(Long.parseLong(id));
+			}
 		}
 		
+		if (paidBillDTO.getBillType().equalsIgnoreCase("Payables")) {
+			subQuery = " and invoice.invoiceType = 'Payables' ";
+		}
+		else {
+			subQuery = " and invoice.invoiceType = 'Receivable' ";
+		}
 		List<Invoice> invoiceList = null;
 		ResponseList<Invoice> response = new ResponseList<>();
 		
-//		String qry = "";
-//		if(StringUtils.isNotBlank(paidBillDTO.getSortColumn())) {
-//			qry = " order by invoice."+ paidBillDTO.getSortColumn() +" "+paidBillDTO.getSortOrder();
-//		}
-
+		String inQuery = "";
+		if(orgIds.size() >0) {
+			inQuery = "and invoice.orgRelationID.id IN (:orgIds)";
+		}
+		
+		java.sql.Date startDate = null;
+		java.sql.Date endDate = null;
+		String dateQuery = "";
+		if(StringUtils.isNotBlank(paidBillDTO.getFilterType()) && !"undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+			Date[] dates = getFilterDates(paidBillDTO,orgLocations);
+			startDate = new java.sql.Date(dates[0].getTime());
+			endDate = new java.sql.Date(dates[1].getTime());
+			dateQuery = " and invoice.invoiceDate >= :startDate and invoice.invoiceDate <= :endDate";
+		}
 		String query = "from Invoice invoice  left join fetch  invoice.orgRelationID left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
 		 		+ "left join fetch invoice.expensesId left join fetch invoice.projectID where  invoice.orgLocation.id = :orgLocationId and invoice.status = '1' and (invoice.paymentStatus = 'Paid' OR invoice.paymentStatus = 'Partial Paid') "+subQuery;// and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		String countQuery = "";
@@ -561,27 +574,40 @@ public class FinanceDaoImpl implements FinanceDao{
 		}else{
 		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Payables' and invoice.status = '1'"; // and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
-		
-		StringBuilder query1 = new StringBuilder("");
-		
-		Query queryObj = session.createQuery(query + query1.toString());
+		String qry = "";
+		if(orgIds.size() >0) {
+			qry = query + inQuery;
+		}if(StringUtils.isNotBlank(paidBillDTO.getFilterType()) && !"undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+			qry = query + dateQuery;
+		}if(orgIds.size() >0 && StringUtils.isNotBlank(paidBillDTO.getFilterType()) && !"undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+			qry = query + inQuery + dateQuery;
+		}if(orgIds.size() == 0 && StringUtils.isBlank(paidBillDTO.getFilterType()) || "undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+			qry = query;
+		}
+		Query queryObj = session.createQuery(qry);
 		if (paidBillDTO != null && paidBillDTO.getLength() > 0) {
 			queryObj.setFirstResult(paidBillDTO.getStart());
 			queryObj.setMaxResults(paidBillDTO.getLength());
 //			queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}
-		invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).list(); // .setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+		if(orgIds.size() > 0 && (StringUtils.isBlank(paidBillDTO.getFilterType()) || "undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) ) {
+			invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameterList("orgIds", orgIds).list();
+		}if(StringUtils.isNotBlank(paidBillDTO.getFilterType()) && !"undefined".equalsIgnoreCase(paidBillDTO.getFilterType()) && orgIds.size() == 0) {
+			invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+		}if(orgIds.size() >0 && StringUtils.isNotBlank(paidBillDTO.getFilterType()) && !"undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+			invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).setParameterList("orgIds", orgIds).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+		}if(orgIds.size() == 0 && StringUtils.isBlank(paidBillDTO.getFilterType()) || "undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+			invoiceList = queryObj.setLong("orgLocationId", orgLocations.getId()).list();
+		}
 		int count = 0;
 		int filteredCount = 0;
-
 		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).list(); // .setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
-
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
 		response.setRecordsTotal(count);
 		if (paidBillDTO != null) {
-			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).list(); //.setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).list(); //.setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
@@ -592,6 +618,92 @@ public class FinanceDaoImpl implements FinanceDao{
 		
 		
 	
+	}
+
+	/**
+	 * Get filter start date and end date
+	 * @param paidBillDTO
+	 * @param orgLocations
+	 * @return Date[]
+	 */
+	private Date[] getFilterDates(PaidBillDTO paidBillDTO, OrgLocations orgLocations)
+	{
+		try {
+			if ("last_7days".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+				return reportsUtil.last7Days(orgLocations);
+			}
+			else if ("last_15days".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+				return reportsUtil.last15DaysDates(orgLocations);
+			}
+			else if ("1month".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+				return reportsUtil.last1MonthDates(orgLocations);
+			}
+			else if ("3months".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+				return reportsUtil.last3MonthDates(orgLocations);
+			}
+			else if ("last_years".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+				return reportsUtil.lastYearDates();
+			}
+			else if ("custom".equalsIgnoreCase(paidBillDTO.getFilterType())) {
+				return reportsUtil.getCustomDates(paidBillDTO.getFromDate(), paidBillDTO.getToDate());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<Invoice> getPaidBillDetailReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> invoiceList = null;
+		ResponseList<Invoice> response = new ResponseList<>();
+		String query = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId";
+		String countQuery = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId";
+		StringBuilder query1 = new StringBuilder("");
+		Query queryObj = session.createQuery(query + query1.toString());
+		if (paidBillDTO != null && paidBillDTO.getLength() > 0) {
+			queryObj.setFirstResult(paidBillDTO.getStart());
+			queryObj.setMaxResults(paidBillDTO.getLength());
+		}
+		invoiceList = queryObj.setLong("orgRelationId", paidBillDTO.getOrgRelationId()).list();
+		int count = 0;
+		int filteredCount = 0;
+		List<Long> countlist = session.createQuery("select count(*) "
+				+ countQuery).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (paidBillDTO != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery
+					+ query1.toString()).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
+		response.setData(invoiceList);
+		return response;
+	}
+
+	@Override
+	@Transactional
+	public Date getPaymentDateByInvoiceId(Long invoiceId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from InvoicePayment ip where ip.id = (SELECT MAX(id) FROM InvoicePayment invoiocePayment where invoiocePayment.invoiceId =:invoiceId)";
+		Query queryObj = session.createQuery(query);
+		List<InvoicePayment> invoicePayList = queryObj.setLong("invoiceId", invoiceId).list();
+		Date paymentDate = null;
+		if (invoicePayList != null && invoicePayList.size() >0) {
+			InvoicePayment invoicePayment = invoicePayList.get(0);
+			paymentDate = invoicePayment.getPaymentDate();
+		}
+		return paymentDate;
 	}
 
 }

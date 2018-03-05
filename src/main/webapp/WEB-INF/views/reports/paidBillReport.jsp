@@ -11,9 +11,6 @@ $(document).ready(function(){
 
 </script>
 
-
-
-
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -24,66 +21,53 @@ $(document).ready(function(){
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
-        <div class="col-md-5 pull-left reqListBtn">
-        <a href="financial-paidbills.html" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="financial-paidbills-list.html" title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
+        <div class="col-md-2 pull-left reqListBtn">
+        <a href="${appPath}/paidBillReportGraph" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+        <a href="${appPath}/paidBillReport" title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
         </div>
         
-        <div class="col-md-2 dropdown-select noPad">
-          <select class="form-control">
-            <option>Select Vendor</option>
-            <option selected>Vendor 1</option>
-            <option>Vendor 2</option>
-            <option>Vendor 3</option>
-            <option>Vendor 4</option>
-            <option>Vendor 5</option>
-            <option>Vendor 6</option>
+        <div class="col-md-4 col-md-offset-1">
+          <select class="chosen-select form-control" multiple data-placeholder="Select Vendor" name="orgId" id="orgId">
+           <c:if test="${not empty vendorList}">
+               <c:forEach items="${vendorList}" var="vendor">
+   						<option value='${vendor.id }'>${vendor.orgName}</option>
+				</c:forEach>
+		  </c:if>
           </select>
           
         </div>         
         
-        
-        <div class="col-md-2 dropdown-select">
-          <select class="form-control">
-            <option>Select Year</option>
-            <option selected>2018</option>
-            <option>2019</option>
-            <option>1 month</option>
-            <option>3 months</option>
-            <option>YTD</option>
-            <option>Last Year</option>
-          </select>
-          
-        </div>          
-        
-        <div class="col-md-2 dropdown-select positionRelative noPad">
-          <select class="form-control" id="custom-dates">
-            <option>Select Date</option>
-            <option selected>Last 7 days</option>
-            <option>Last 15 days</option>
-            <option>1 month</option>
-            <option>3 months</option>
-            <option>YTD</option>
-            <option>Last Year</option>
-            <option value="custom">Custom</option>
+        <div class="col-md-2 dropdown-select positionRelative">
+          <select class="form-control" id="filterType" name="filterType" onChange="getPaidBillsCustomDates();">
+          <option value="">Select Date</option>
+          <option value="last_7days">Last 7 days</option> 
+          <option value="last_15days">Last 15 days</option>
+          <option value="1month">1 month</option>
+          <option value="3months">3 months</option>
+          <option value="last_years" >last year</option>
+          <option value="custom">Custom</option>
           </select>
           
           <!-- Top Leave Takers Custom Date -->
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customLeaves" style="display: none; width: 346px;">
+          <form:form id="paidbill_custom_form" name="paidbill_custom_form" method="post">
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
             <div class="pull-left">
               <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+                <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text" data-validation="required" field-name="From Date">
               </div>
               <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+                <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text" data-validation="required" field-name="ToDate Name">
               </div>
-              <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="getPaidBillCustomReport();"><i class="fa fa-search"></i></button>
             </div>
           </div>
+          </form:form>
           <!-- Top Leave Takers Custom Date --> 
           
         </div>              
-        
+         <div class="col-md-2" id="getPaidBillreport">
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPaidBillreport();">Customize</button>
+		</div>
         <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="glyphicon glyphicon-export"></i></button>
@@ -109,66 +93,8 @@ $(document).ready(function(){
            <div class='remove_search'>
  		 <input type='text' placeholder='Search' id='dataTableSearch'/>
  		</div> 
-      <div id="paidBillReportId" class="datatable_filter">
+      <div id="paidBillReportId" class="datatable_filter tableStyles mt5">
         </div>
-          
-         <!--  <h3 class="cliHead">Vendor 1<i class="fa fa-caret-down"></i><span class="pull-right mr">Total: <label>200000</label></span> </h3>
-          <div class="clearfix tableStyles">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th>Bill date</th>
-                  <th>Pay date</th>
-                  <th>Amount</th>
-                </tr>
-                </thead>
-                <tbody>
-                  <tr>
-					  <td><div>Business Intelli</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>546541</div></td>
-                  </tr>
-                  <tr>
-					  <td><div>Business Intelli</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>546541</div></td>
-                  </tr>                                  
-              </tbody>
-            </table>
-          </div> -->
-          
-          <!-- <h3 class="cliHead">Vendor 2<i class="fa fa-caret-down"></i><span class="pull-right mr">Total: <label>200000</label></span> </h3>
-          <div class="clearfix tableStyles">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th>Bill date</th>
-                  <th>Pay date</th>
-                  <th>Amount</th>
-                </tr>
-                </thead>
-                <tbody>
-                  <tr>
-					  <td><div>Business Intelli</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>546541</div></td>
-                  </tr>
-                  <tr>
-					  <td><div>Business Intelli</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>02/08/2018 - 02/08/2018</div></td>
-					  <td><div>546541</div></td>
-                  </tr>                                   
-              </tbody>
-            </table>
-            Pagenation
-
-          </div>   -->        
           
         </div>
         <!-- Pagenation Ends --> 
@@ -226,18 +152,33 @@ $(document).ready(function(){
 </script>
 
 
-<!-- <script>
-function getPaidBillreport(){
-	    var billType = 'Payables';
-		var sourceleadUrl ='${sourceleadUrl}';
-	    $.post(sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType, function(json) {
-	    	alert(json);
-		});  
-}
-</script> -->
-
-
-
+<script type="text/javascript">
+	function getPaidBillCustomReport() {
+		if ($('#paidbill_custom_form').validate(false, validationSettings)) {
+		  	var formData = $($('#paidbill_custom_form')[0]).serialize();
+		  	 var billType = 'Payables';
+				var sourceleadUrl ='${sourceleadUrl}';
+				var searchValue = $("#dataTableSearch").val();
+				var orgId = $("#orgId").val();
+				var filterType = ""; 
+				if($("#filterType").val() != 'undefined'){
+					filterType = $("#filterType").val();
+				}
+				var fromDate = $("#fromDate").val();
+				var toDate = $("#toDate").val();
+				searchValue = searchValue ? searchValue : "";
+				var url = sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType+"&orgId="+orgId+"&filterType="+filterType+"&fromDate="+fromDate+"&toDate="+toDate;
+				preparePaidBillReportList(url);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#paidbill_custom_form', function() {
+		$("#paidbill_custom_form").showHelpOnFocus();
+		$("#paidbill_custom_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 
 <script>
@@ -245,8 +186,13 @@ function getPaidBillreport(){
 	    var billType = 'Payables';
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
+		var orgId = $("#orgId").val();
+		var filterType = ""; 
+		if($("#filterType").val() != 'undefined'){
+			filterType = $("#filterType").val();
+		}
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType;
+		var url = sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType+"&orgId="+orgId+"&filterType="+filterType;
 		preparePaidBillReportList(url);
 }
 </script>
@@ -263,19 +209,19 @@ function preparePaidBillReportList(url){
         result = result + '<th>Vendor Name</th>';
 		result = result + '<th>No.Of Associates</th>';
 		result = result + '<th>No.Of Projects</th>';
-		result = result + '<th>Total Amount</th>';
+		result = result + '<th>Total</th>';
 		result = result + '</tr>';
         result = result +"</thead>";
         result = result +"<tbody>"; 
         result = result +" </tbody>";
         result = result +"</table>";
       $("#paidBillReportId").append(result);
-      apaging(url); 
+      prepareBill(url); 
 }
 </script>
 
 <script>
-function apaging(url){
+function prepareBill(url){
 	var colIndex = 0;
 	var apagingTotal = 0;
     $('#paidBillPagination').DataTable( { 
@@ -298,7 +244,8 @@ function apaging(url){
 	    	  	"data": "orgName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					 result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';  
+	    	  		result += '<td><div class="tbldata-dotdot"><a href="'+sourceleadUrl+'/paidBillDetails?&orgRelationId='+opt.orgRelationId+'">'+opt.orgName+'</a> </div></td>';
+					/*  result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';  */ 
 		             return result;
 	    	  	}
 	      },{
@@ -315,7 +262,7 @@ function apaging(url){
             "data": "numberOfprojects",
             "render": function ( data, type, opt, meta ) {
             	  var result = "";
-					 result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+					 result = result + ' <td><div class="tblminwidth-75">'+opt.numberOfprojects+'</div></td>';
                return result;
             }
           }, {
@@ -346,10 +293,67 @@ function apaging(url){
     		   getPaidBillreport();
     	   }
     	});
-    
-	
 }
 </script>
+
+<script>
+//custom search
+function getPaidBillsCustomDates() {
+	 var dateSelection = $("#filterType").val(); 
+	 if(dateSelection == 'custom'){
+		 document.getElementById("customSearch").style.display="block";
+		 document.getElementById("getPaidBillreport").style.display="none";
+		 //$("#jobReportList_custome").attr("disabled", "disabled");
+		 
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 document.getElementById("getPaidBillreport").style.display="block";
+		 //$("#jobReportList_custome").removeAttr("disabled");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+		 document.getElementById("fromDateDiv").style.display="none";
+		 document.getElementById("toDateDiv").style.display="none";
+	 }
+}
+</script>  
+
+<script>
+  $( function() {
+		/*  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  } */
+    
+	  $('#fromDate').datepicker({
+			dateFormat : "yy-mm-dd",
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : "yy-mm-dd",
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+  } );
+  </script>
 
 
 <jsp:include page="../masterFooter.jsp" />

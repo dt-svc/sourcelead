@@ -1,5 +1,6 @@
 package com.bis.sourcelead.reports.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
@@ -23,5 +24,10 @@ public interface FinanceDao {
    List<Contracts> getRecentSowcontractListByAssociateId(Long candidateId, OrgLocations orgLocation, OrgRelations orgRelationId,String contractType);
 
    ResponseList<Invoice> getPaidVendorslist(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
+
+   ResponseList<Invoice> getPaidBillDetailReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
+
+   Date getPaymentDateByInvoiceId(Long invoiceId);
+   
 
 }

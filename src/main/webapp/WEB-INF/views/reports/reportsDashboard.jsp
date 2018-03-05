@@ -68,7 +68,12 @@
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${appPath}/missingBillReport'>Missing Bill</a></li>
 				</c:if>
-				<li><a href='${appPath}/paidBillReport'>Paid Bill</a></li>
+				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+			    <li><a href='${appPath}/paidBillReport'>Paid Bill</a></li>
+			    </c:if>
+			    <c:if test="${SourceLeadWeb_ats == 'Y'}">
+			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoices</a></li>    
+			     </c:if>
 				<!-- <li><a href="#">Profit &amp; Loss</a></li>
 				<li><a href="#">Balance Sheet</a></li>
 				<li><a href="#">Client Balance</a></li>

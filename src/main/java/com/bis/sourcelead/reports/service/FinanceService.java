@@ -18,4 +18,8 @@ public interface FinanceService {
 
 	ResponseList<PaidBillDTO> getPaidVendorsList(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
 
+	ResponseList<PaidBillDTO> getPaidBillDetailReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
+
+	ResponseList<PaidBillDTO> getPaidBillGraphReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
+
 }

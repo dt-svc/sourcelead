@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +34,7 @@ import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.reportsDTO.PaidBillDTO;
+import com.bis.sourcelead.rest.reportsRestController.FinanceReportRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -38,7 +42,7 @@ import com.bis.sourcelead.util.CommonUtil;
 @Service
 public class FinanceServiceImpl implements FinanceService{
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(FinanceServiceImpl.class);
 	@Autowired
 	FinanceDao financeDao;
 	
@@ -457,12 +461,22 @@ public class FinanceServiceImpl implements FinanceService{
 
 	}
 
+	/**
+	 * Get Vendor paid bills 
+	 * @param PaidBillDTO
+	 */
 	@Override
-	public ResponseList<PaidBillDTO> getPaidVendorsList(PaidBillDTO paidBillDTO, OrgLocations orgLocation) {
+	public ResponseList<PaidBillDTO> getPaidVendorsList(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
+	{
+		ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+		return getPaidBillDTOResponse(paidInvoiceList,orgLocation);
+	}
 
+	
+	private ResponseList<PaidBillDTO> getPaidBillDTOResponse(ResponseList<Invoice> paidInvoiceList, OrgLocations orgLocation)
+	{
 		ResponseList<PaidBillDTO> response = new ResponseList<>();
 		try {
-			ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
 			Map<Long, List<Invoice>> map = new HashMap<>();
 			if (paidInvoiceList.getData() != null) {
 				for (Invoice invoice : paidInvoiceList.getData()) {
@@ -478,6 +492,7 @@ public class FinanceServiceImpl implements FinanceService{
 				PaidBillDTO paidBill = new PaidBillDTO();
 				List<Invoice> invoiceList = entry.getValue();
 				OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoiceList.get(0).getOrgRelationID().getId());
+				paidBill.setOrgRelationId(orgRelations.getId());
 				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 					paidBill.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
 				}
@@ -485,20 +500,36 @@ public class FinanceServiceImpl implements FinanceService{
 					paidBill.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 				}
 				paidBill.setNumberOfAssociates(getNumberOfAssociates(invoiceList));
+				paidBill.setNumberOfprojects(getNumberOfProjects(invoiceList));
 				double total = invoiceList.stream().mapToDouble(i -> Double.parseDouble(i.getTotal())).sum();
 				paidBill.setTotalAmount(total);
 				paidBillList.add(paidBill);
 			}
+			
 			response.setData(paidBillList);
 			response.setRecordsFiltered(paidBillList.size());
 			response.setRecordsTotal(paidBillList.size());
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch (Exception e) {
+			ExceptionUtils.getFullStackTrace(e);
 		}
 		return response;
 	}
 
-	
+	/**
+	 * Get Number of projects
+	 * @param key
+	 * @return int 
+	 */
+	private int getNumberOfProjects(List<Invoice> invoiceList)
+	{
+		Set<Long> set = new HashSet<>();
+		for(Invoice invoice : invoiceList ) {
+			if(invoice.getProjectID() != null) {
+				set.add(invoice.getProjectID().getId());
+			}
+		}
+		return set.size();
+	}
 
 	/**
 	 * Get Number Of Associates per invoice
@@ -506,7 +537,6 @@ public class FinanceServiceImpl implements FinanceService{
 	 * @return int
 	 */
 	private int getNumberOfAssociates(List<Invoice> invoiceList) {
-		
 		Set<Long> set = new HashSet<>();
 		for(Invoice invoice : invoiceList ) {
 			for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
@@ -515,6 +545,69 @@ public class FinanceServiceImpl implements FinanceService{
 			
 		}
 		return set.size();
+	}
+
+	@Override
+	public ResponseList<PaidBillDTO> getPaidBillDetailReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
+	{
+		ResponseList<Invoice> invoiceList = financeDao.getPaidBillDetailReport(paidBillDTO, orgLocation);
+		ResponseList<PaidBillDTO> res = new ResponseList<>();
+		if (invoiceList.getData() != null) {
+			List<PaidBillDTO> paidBillList = new ArrayList<>();
+			double totalAmount = 0;
+			for (Invoice invoice : invoiceList.getData()) {
+				PaidBillDTO paidBill = new PaidBillDTO();
+				if (invoice.getProjectID() != null) {
+					paidBill.setProjectName(invoice.getProjectID().getProjectName());
+				}
+				paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
+				Date paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+				if (paymentDate != null) {
+					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
+				}
+				paidBill.setAmount(invoice.getTotal());
+				totalAmount = totalAmount + Double.parseDouble(invoice.getTotal());
+				paidBill.setTotalAmount(totalAmount);
+				paidBillList.add(paidBill);
+			}
+			res.setData(paidBillList);
+			res.setRecordsFiltered(invoiceList.getRecordsFiltered());
+			res.setRecordsTotal(invoiceList.getRecordsTotal());
+		}
+		return res;
+	}
+
+	
+	@Override
+	public ResponseList<PaidBillDTO> getPaidBillGraphReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
+	{
+			ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+			ResponseList<PaidBillDTO> res = new ResponseList<>();
+			ResponseList<PaidBillDTO> paidList = getPaidBillDTOResponse(paidInvoiceList,orgLocation);
+			int i=0; 
+			List<PaidBillDTO> list = new ArrayList<>();
+			if(paidList.getData() != null) {
+				double otherAmount = 0;
+				for(PaidBillDTO paidBill : paidList.getData()) {
+					if(i <= 10) {
+						list.add(paidBill);
+					}else {
+						otherAmount = otherAmount + paidBill.getTotalAmount();
+					}
+					i++;
+				}
+				PaidBillDTO pb = new PaidBillDTO();
+				pb.setOrgName("others");
+				pb.setTotalAmount(otherAmount);
+				list.add(pb);
+			}
+			
+			
+			
+			
+			res.setData(list);
+			return res;
+//			return getPaidBillDTOResponse(paidInvoiceList,orgLocation);
 	}
 
 }
