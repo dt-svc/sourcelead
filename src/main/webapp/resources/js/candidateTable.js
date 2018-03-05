@@ -7,6 +7,11 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		candidateQuickViewProfile(candidateIdSearchId);
 		candidateList();
 		$("#upcandidateStatus").val('');
+	} else if(candidateKeyword == "requestedDocumentNotification"){
+		candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);
+		candidateList();
+		$("#upcandidateStatus").val('');
 	} else {
 		candidateList();
 		$("#upcandidateStatus").val('');
