@@ -709,7 +709,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			sqlTerminatedDate = new java.sql.Date(terminatedDate.getTime());
 		}
 		
-		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :memberId and ts.startDate > :terminatedDate ";  
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :memberId and ts.startDate >= :terminatedDate ";  
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("memberId", memberId).setParameter("terminatedDate", sqlTerminatedDate).list();
 		return timesheetSubmissionsList;
 	}

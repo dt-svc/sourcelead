@@ -183,9 +183,14 @@ function getSelectedFieldDetails(){
 			 $("#selectFieldDiv p:contains('Options')").html("Choices");
 			 $("#addOptionDiv p:contains('Add Option')").html("Add Choice");
 		 }
+		 $('#selectOptionId').removeAttr('data-validation-optional');
+		 $('#selectOptionId').attr("data-validation","required"); 
 	 }else{
 		 $('#selectFieldDiv').hide();
 		 $('#textBoxDiv').show();
+		 $('#selectFieldDiv').find('p.jquery_form_error_message').remove(); 
+		 $('#selectOptionId').removeAttr('data-validation');
+		 $('#selectOptionId').attr("data-validation-optional","true");
 	 }
 	 
 	 if(field == 'datefield'){
@@ -193,7 +198,8 @@ function getSelectedFieldDetails(){
 		 $('#dateFieldDiv').show();
 		 $( "#datepicker" ).datepicker();
 	 }else{
-		 $('#dateFieldDiv').hide(); 
+		 $('#dateFieldDiv').hide();
+		 $('#dateFieldDiv').find('p.jquery_form_error_message').remove(); 
 	 }
 	 
 	 
