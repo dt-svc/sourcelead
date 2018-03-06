@@ -619,14 +619,19 @@ public class BackOfficeRestController {
 	    }
 	
 	@RequestMapping(value = "/validateCategoryName" , method = RequestMethod.GET)
-	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,HttpServletRequest request) throws Exception {
+	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,
+			   @RequestParam(value="categoryId", required=false) String categoryId,
+			   HttpServletRequest request) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    
-			
-			Boolean flag = assetCategoryService.validateCategoryName(categoryName,orgLocations.getId());
-			
-		
+		    AssetCategory assetCategory = null ;
+			if(!categoryId.isEmpty()){
+				assetCategory = assetCategoryService.getAssetCategoryByCategoryIdAndLocationId(categoryName,Long.parseLong(categoryId),orgLocations.getId());
+			}
+			Boolean flag = false;
+			if(assetCategory == null){
+				 flag = assetCategoryService.validateCategoryName(categoryName,orgLocations.getId());	
+			}
 		   return flag;
 	    
 	   }
