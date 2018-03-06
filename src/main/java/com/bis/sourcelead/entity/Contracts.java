@@ -74,6 +74,7 @@ public class Contracts {
 	private String initiatorType;
 	
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
@@ -84,16 +85,19 @@ public class Contracts {
 	private Contracts parentContractId;
 	
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CONTRACT_ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations contractOrgLocationId;
 	
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTACT_USER_ID")
 	private User contactUser;
 	
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
@@ -102,6 +106,7 @@ public class Contracts {
 	private String stateOfJurisdiction;*/
 	
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
