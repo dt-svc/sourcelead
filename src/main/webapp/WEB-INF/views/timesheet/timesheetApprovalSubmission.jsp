@@ -4,10 +4,12 @@
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
+<div id="loadingCotentDiv"></div>
 <div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
  <table id='exampleApprover' class='display'>
 	<thead> 
-    <tr> 
+    <tr>
+    <th><input type="checkbox" id="selectAllTimeSheetCheckBoxForSubmitForApproval"></th>
     <th>Employee</th>
 	<th>Employment Type</th>
 	<th>Project</th>
@@ -128,6 +130,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 			  if(endingRecord > totalRows){
 				  endingRecord = totalRows;
 			  }
+			  $('#timesheetApproverCurrentPageNumber').val(pageNo);
 			  var options = {
 					      currentPage:pageNo,
 					      items: totalRows,
@@ -153,7 +156,10 @@ function exportTimeSheetToPdfOrExcel(exportType){
 	      $('#pageMsg').html('');
 	      $('#pageMsg').html(pageMsg);
 	 }
-  </script>  
+  </script> 
+  
+  
+   
  <jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp"></jsp:include>
 
 
