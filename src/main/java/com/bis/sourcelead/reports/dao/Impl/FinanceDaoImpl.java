@@ -574,6 +574,13 @@ public class FinanceDaoImpl implements FinanceDao{
 		}else{
 		    countQuery = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceType='Payables' and invoice.status = '1'"; // and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
 		}
+		
+		StringBuilder query1 = new StringBuilder("");
+				if(paidBillDTO.getSearchValue() !=null && !"".equalsIgnoreCase(paidBillDTO.getSearchValue())) {
+				query1.append(" and (invoice.responderLocationId.orgLocationName like '%" + paidBillDTO.getSearchValue() + "%' )");
+			}
+		
+		
 		String qry = "";
 		if(orgIds.size() >0) {
 			qry = query + inQuery;
@@ -584,7 +591,7 @@ public class FinanceDaoImpl implements FinanceDao{
 		}if(orgIds.size() == 0 && StringUtils.isBlank(paidBillDTO.getFilterType()) || "undefined".equalsIgnoreCase(paidBillDTO.getFilterType())) {
 			qry = query;
 		}
-		Query queryObj = session.createQuery(qry);
+		Query queryObj = session.createQuery(qry+query1.toString());
 		if (paidBillDTO != null && paidBillDTO.getLength() > 0) {
 			queryObj.setFirstResult(paidBillDTO.getStart());
 			queryObj.setMaxResults(paidBillDTO.getLength());
@@ -607,7 +614,7 @@ public class FinanceDaoImpl implements FinanceDao{
 		}
 		response.setRecordsTotal(count);
 		if (paidBillDTO != null) {
-			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocations.getId()).list(); //.setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).list(); //.setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
