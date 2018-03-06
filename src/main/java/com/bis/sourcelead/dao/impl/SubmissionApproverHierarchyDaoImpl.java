@@ -1178,10 +1178,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 						.append("OR  sah.submissionId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
 			 			.append("OR  sah.submissionId.projectMembers.projects.invoiceFrequency like '%" + searchValue + "%')");
 			}
+		  String fillingOptionQuery	= " and (sah.submissionApprovalStatus <> '"+Submission_ApprovalStatus.NEW+"' OR (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.NEW+"' and sah.hierarchyId.projectClientsId.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = sah.submissionId.projectMembers.projects.id and subPm.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"') and pc.projectId.id = sah.submissionId.projectMembers.projects.id)))";
 		//left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.projects left join fetch pm.employee emp left join fetch ts.projects project left join fetch ts.masterCandidateId mc
 		String query = "from  SubmissionApproverHierarchy sah "
-				+ " where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId and "
-				+ " ( "
+				+ " where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId  "
+				+fillingOptionQuery
+				+ " and ( "
 				    /*
 				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
 				    */
@@ -1201,8 +1203,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'" ;
 		
 		
-		String queryCount = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId and "
-				+ " ( "
+		String queryCount = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId  "
+				+fillingOptionQuery
+				+ " and ( "
 				    /*
 				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
 				    */
@@ -1298,9 +1301,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus) {
 		Session session = this.sessionFactory.getCurrentSession();		
-
-		
-		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId and "
+	    String fillingOptionQuery	= " and (sah.submissionApprovalStatus <> '"+Submission_ApprovalStatus.NEW+"' OR (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.NEW+"' and sah.hierarchyId.projectClientsId.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = sah.submissionId.projectMembers.projects.id and subPm.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"') and pc.projectId.id = sah.submissionId.projectMembers.projects.id)))";
+		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId "+fillingOptionQuery+" and "
 				+ " ( "
 				    /*
 				    *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
