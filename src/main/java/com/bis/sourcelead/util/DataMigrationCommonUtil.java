@@ -885,16 +885,23 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 						    	 //avgHours
 					    		  frequencyStartDate = subStartDate;
 								  frequencyEndDate = subEndDate;
+								  
+								  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+					    		  float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+						    		 
 							 } else if(project.getInvoiceFrequency().equalsIgnoreCase("Monthly")){
 								  frequencyStartDate = startDate;
 								  frequencyEndDate = endaDate;
+								  
+								   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+						    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+						    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+						    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 							 }
 							 
-							 int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
-							 
-				    		 float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
-				    		 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-				    		 System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+							
 				    		 count++;
 						}
 					}
