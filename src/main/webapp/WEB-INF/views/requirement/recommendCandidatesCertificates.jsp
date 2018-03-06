@@ -27,7 +27,10 @@ function candidateCertificate(candidateId){
 	 }else{
 		 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
 	 }
-	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
+	result  = result + '<div class="success_pop" id="selector5" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="cerMsgDiv"></span>';
+    result  = result + '</div>';
+    result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 	result  = result + '   <div id="candidateCertificateList" class="datatable_filter"></div>';
@@ -94,13 +97,21 @@ function storeCertificate(candidateId){
 							if (data != null && data != 'undefined'
 									&& data != "") {
 								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
+									location.replace(sourceleadLoginUrl);
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl+ "/errorPage");
 								}
 								else{
-				               			$("#popUpDivEmp").removeClass("edit-details-active");
+				               			closeCertificatePopup();
+				    		        	$("#selector5").removeAttr("style");
+				    	     			$("#selector5").css({ display: "block" });
+				    	     			$("#cerMsgDiv").html("Success!! New Certification added");
 				               			candidateCertificateList(candidateId);
+				               			cerMsgFadein();
+				               			recQwikCertificates(candidateId);
+				                   		setTimeout(function(){
+				    			 			candidateList();					 			
+				    			 		},100);
 							    	}
 							   }
 						},
@@ -116,8 +127,17 @@ function storeCertificate(candidateId){
 				$("#Candidate_certification_form").validateOnBlur(false,validationSettings);
 			});
 </script>
-
-
+<script>
+function closeCertificatePopup(){
+	 $("#popUpDivEmp").removeClass("edit-details-active");
+}
+</script>
+<script>
+	function cerMsgFadein() {
+		$("#selector5").fadeIn(200);
+        $('#selector5').delay(2000).fadeOut('slow');
+	}
+</script> 
 <!-- this script is for serializeFormJSON -->
 <script type="text/javascript">
 	(function($) {
@@ -166,15 +186,15 @@ function candidateCertificateList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
               /*  if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
+//              		 if( data.indexOf('Sign In') >= 0){
+// 			    		location.replace(sourceleadUrl);
+// 			    	 }
+//              		 else if (data.indexOf('exception') >= 0) {
+//              			 location.replace(sourceleadUrl+"/errorPage");
+//              		 }
+//              		 else{
 	                	 $("#candidateCertificateList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
@@ -191,9 +211,9 @@ function candidateCertificateList(candidateId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                      var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+// 	                      var json = JSON.parse(data);
+	                     for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 var score = "";
 	                    	 var scoreType ="";
 	                    	 var description ="";
@@ -249,14 +269,20 @@ function candidateCertificateList(candidateId){
 	                     result = result +"</table>";
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
-			    	} 
+	                     msgFadein();
+// 			    	} 
               
         },
           
      }); 
 }
 </script>
-
+<script>
+       function msgFadein() {
+           setTimeout(function(){
+                   $('#selector1').fadeOut('slow'); }, 1000);
+       }
+</script>     
 <script>
 function certificationPagination(){  
     $('#candidateCertificatePagination').DataTable( { 
@@ -303,7 +329,7 @@ function addCertification(candidateId) {
 		
 		result  = result + '                 <div class="clearfix mb10">';
 		result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative paddingRight">';
-		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+		result = result  +'	                     <select class="newSelect"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -324,12 +350,12 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-6 positionRelative">';
-		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
+		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From"';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
 		result  = result + '                   <div class="col-md-6 positionRelative">';
-		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To" ';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To"';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
@@ -436,7 +462,7 @@ function addCertification(candidateId) {
 								
 								result  = result + '                 <div class="clearfix mb10">';
 								result = result  +'	                     <div class="col-md-4" positionRelative>';
-								result = result  +'	                     <select class="chosen-select"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+								result = result  +'	                     <select class="newSelect"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 								result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 								if (json.scoreType == "Percentage") {
 									result = result + '<option selected>Percentage</option>';
@@ -595,7 +621,15 @@ function addCertification(candidateId) {
 						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
 						success : function(data) {
 							closeCertificatePopup();
-							candidateCertificateList(candidateId);
+							$("#selector5").removeAttr("style");
+			     			$("#selector5").css({ display: "block" });
+			     			$("#cerMsgDiv").html("Certification details updated");
+								candidateCertificateList(candidateId);
+								cerMsgFadein();
+								recQwikCertificates(candidateId);
+								setTimeout(function(){
+						 			candidateList();					 			
+						 		},100);
 						},
 					});
 			return true;
@@ -617,9 +651,30 @@ function addCertification(candidateId) {
      2.parameter : candidateId ,csrf.token,candidateemployerId
      3.ajax url implementation in CandidateCertificationRestController.
 --%>    
-      
 <script>
-function removeCertification(candidateCertificationId,candidateId){
+function removeCertification(candidateCertificationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_certificates' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Certification</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteCertificationPopUp").empty();
+	$("#deleteCertificationPopUp").append(result);
+	$("#remove_user_pop_certificates").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script> 
+<div id="deleteCertificationPopUp"></div> 
+<script type="text/javascript">
+function deleteCerPopup(){
+	$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+}
+</script>
+<script>
+function deleteSelectedCertification(candidateCertificationId,candidateId){
 	
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';	
@@ -627,17 +682,25 @@ function removeCertification(candidateCertificationId,candidateId){
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
+        if(data != null && data != 'undefined' && data != ""){
              		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(sourceleadLoginUrl);
 			    	}
              		else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}
              		else{
-             			 $("#popUpDivEmp").removeClass("edit-details-active");
-             			candidateCertificateList(candidateId);
+             			  $("#popUpDivEmp").removeClass("edit-details-active");
+             			 $("#selector5").removeAttr("style");
+              			 $("#selector5").css({ display: "block" });
+              			 $("#cerMsgDiv").html("Certification deleted");
+              			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+              			candidateCertificateList(candidateId);
+              			recQwikCertificates(candidateId);
+              			cerMsgFadein();
+              			setTimeout(function(){
+				 			candidateList();					 			
+				 	    },100);
 			    	}
                } 
         },
@@ -740,9 +803,13 @@ function scoreAndScoreType(){
 	 }
 	 if(candidateScore.match(grades)){
 		 $("#scoreType").val('GRADE'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#addCandidate").removeAttr("disabled");
 	 }
 	 if(candidateScore.match(cgpanum)){
 		 $("#scoreType").val('CGPA'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#addCandidate").removeAttr("disabled");
 	 }
 	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
 		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");

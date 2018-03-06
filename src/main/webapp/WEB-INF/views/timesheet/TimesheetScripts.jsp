@@ -2,14 +2,14 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="resources/js/jquery.min.js"></script>
-<script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
+<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+<script src="/resources/js/jquery.min.js"></script>
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script>
+<script src="/resources/js/jquery-fun.js"></script>
+<link rel="stylesheet" href="/resources/css/timesheet.css" type="text/css" >
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 
 <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->

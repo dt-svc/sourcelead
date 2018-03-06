@@ -37,6 +37,10 @@ public class AddUserProfileDTO{
 	private String googlePlus;
 	
 	private String designation;
+	private Long userId;
+	private String orgLocationId;
+	
+	private String loginSecurity;
 
 	public String getId() {
 		return id;
@@ -165,7 +169,33 @@ public class AddUserProfileDTO{
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
 	}
+
 	
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
 	
 }

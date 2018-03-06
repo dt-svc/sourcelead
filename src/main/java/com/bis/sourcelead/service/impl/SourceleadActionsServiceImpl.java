@@ -65,4 +65,9 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getAllSourceleadActionsByOrgLocationId(orgLocations);
 	}
 
+	@Override
+	public SourceleadActions getSourceleadActionsByActionRole(String actionRole) {
+		return sourceleadActionsDao.getSourceleadActionsByActionRole(actionRole);
+	}
+
 }

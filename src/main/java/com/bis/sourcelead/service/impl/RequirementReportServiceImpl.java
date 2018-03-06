@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -73,51 +74,58 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		//SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date endDateUTC = null;
 		String filterDate = null;
 		Date startDateUTC = null;
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
 			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
+			endDateUTC = TZ_DF_TS.parse(endDate);
 		}
 		if (null != reportType && !"".equals(reportType)) {
 			if (Constants.TO_DAY.equals(reportType)) {
 				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
+				filterDate = startDate;
+				startDateUTC = TZ_DF_TS.parse(startDate);
 			}
 			else if (Constants.YESTER_DAY.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
+				DateTime yesterDayZoned = zoned.minusDays(1);
+				String yesterDayDate = outputFormatter.print(yesterDayZoned);
+				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 			}
 			else if (Constants.ONE_WEEK.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
+				DateTime yesterDayZoned = zoned.minusDays(7);
+				String yesterDayDate = outputFormatter.print(yesterDayZoned);
+				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 			}
 			else if (Constants.TWO_WEEKS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
+				DateTime yesterDayZoned = zoned.minusDays(14);
+				String yesterDayDate = outputFormatter.print(yesterDayZoned);
+				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 			}
 			else if (Constants.ONE_MONTH.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				DateTime yesterDayZoned = zoned.minusDays(30);
+				String yesterDayDate = outputFormatter.print(yesterDayZoned);
+				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 			}
 			else if (Constants.TWO_MONTHS.equals(reportType)) {
-				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+				DateTime yesterDayZoned = zoned.minusDays(60);
+				String yesterDayDate = outputFormatter.print(yesterDayZoned);
+				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 			}
 			else {
 				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
-					Date endTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
+					
+					DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 				}
 			}
 		}
@@ -465,8 +473,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
@@ -474,37 +482,46 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&& !"".equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endDateUTC = TZ_DF_TS.parse(endDateString);
+			// String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+			 endDateUTC = TZ_DF_TS.parse(endDate);
 		 }
 			
 			if(null != reportType && !"".equals(reportType)){
 				if("today".equals(reportType)){
 					String startDate = outputFormatter.print(zoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					//Date startDateString = TZ_DF_TS.parse(startDate);
+					startDateUTC = TZ_DF_TS.parse(startDate);
 				}else if(Constants.YESTER_DAY.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
+					DateTime yesterDayZoned = zoned.minusDays(1);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					//String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.ONE_WEEK.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
+					DateTime yesterDayZoned = zoned.minusDays(7);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.TWO_WEEKS.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
+					DateTime yesterDayZoned = zoned.minusDays(14);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.ONE_MONTH.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+					DateTime yesterDayZoned = zoned.minusDays(30);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.TWO_MONTHS.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+					DateTime yesterDayZoned = zoned.minusDays(60);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else{
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
-						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
-						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-						String customEndTimeStr = TZ_DF_CED.format(endTime);  
-						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
-						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
-						startDateUTC = TZ_DF_TS.parse(startDateString);
-						endDateUTC = TZ_DF_TS.parse(endDateString);
+						 	DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+							Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+							Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
+							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							String customEndTimeStr = TZ_DF_CED.format(endTime);  
+							startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 					 }
 					
 				}

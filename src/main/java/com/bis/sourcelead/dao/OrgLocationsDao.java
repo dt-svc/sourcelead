@@ -19,6 +19,8 @@ public interface OrgLocationsDao {
 	public Boolean deleteOrgLocations(Long id)throws Exception;
     
 	public Boolean isLoginUserIsSuperUser(Long userId,Long orgLocationId) throws Exception;
+	
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception;
     
 	public List<OrgLocations> getAllOrgLocations()throws Exception; 
     
@@ -32,6 +34,8 @@ public interface OrgLocationsDao {
     
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
 	
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception;
+	
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
 	
 	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception;
@@ -43,4 +47,10 @@ public interface OrgLocationsDao {
 	public boolean validateOrgShortCode(String orgShortId);
     
 	public List<OrgLocations> userList(Long orgId) throws Exception;
+
+	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long userId);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception;
+	
+	Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception;
 }

@@ -6,13 +6,15 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class ExpensesListUtilDTO implements Serializable{
+public class ExpensesListUtilDTO  extends SearchDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	private Long userId;
 	
 	private String locationCode;
+	
+	private String expenseLocationCode;
 	
 	private List<String> expenseStatus;
 	
@@ -73,6 +75,14 @@ public class ExpensesListUtilDTO implements Serializable{
 
 	public void setExpenseId(String expenseId) {
 		this.expenseId = expenseId;
+	}
+
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
 	}
 	
 }

@@ -23,6 +23,8 @@ public interface OrgDao {
 
 	public List<Org> getOrgs() throws Exception;
 	
+	public List<Org> getOpenJobsOrgs() throws Exception;
+	
 	String websiteValidation(String website,String sourceleadBLockedwebsites);
 	
 	public Org getOrgByOrgCode(String orgCode) throws Exception;
@@ -36,7 +38,7 @@ public interface OrgDao {
 	 */
 	public boolean isClientNameValid(String clientName ,Long orgLocationId,String responderType) throws Exception;
 	
-	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception;
+	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName,Integer offSet) throws Exception;
 	
 	public boolean isOrgNameExisted(String orgName) throws Exception;
 	
@@ -47,5 +49,6 @@ public interface OrgDao {
 	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception;
 
 	public List<UserDTO> getuserListForOrgChart(Long orgLocationId) throws Exception;
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet);
 	
 }

@@ -42,5 +42,12 @@ public class WebgeocitiesServiceImpl implements WebgeocitiesService{
 	}
 
 
+	@Override
+	public List<Webgeocities> getAllCitiesByCountryCode(String countryCode) throws Exception {
+		return webgeocitiesDao.getAllCitiesByCountryCode(countryCode);
+		
+	}
+
+
 
 }

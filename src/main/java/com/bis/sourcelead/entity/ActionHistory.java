@@ -43,12 +43,16 @@ public class ActionHistory implements Serializable{
 	@Column(name = "ACTION_TIME")
     private Date actionTime;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	private OrgLocations orgLocations;
+	
 	@Transient
 	@JsonProperty
 	private String actionTimeStr;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_LOGIN_LOGOUT_SESSION_ID")
     private UserLoginLogoutSession userLoginLogoutSessionId;
 
@@ -91,6 +95,14 @@ public class ActionHistory implements Serializable{
 
 	public void setActionTime(Date actionTime) {
 		this.actionTime = actionTime;
+	}
+	
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
 	}
 
 	public String getActionTimeStr() {

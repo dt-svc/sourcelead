@@ -13,7 +13,9 @@ height: 225px;
 }
 .profile_details h4 {width: 68%;}
 ul.can-perdt li span { max-width: 80%;}
-
+ul.can-perdt li {
+clear:both;
+}
  </style>
 
 <script>
@@ -29,11 +31,11 @@ $(document).ready(function() {
       <h2>Job Details</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Jobs List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List </a> &raquo; <a href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>
@@ -182,7 +184,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.fileUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
 				 result = result +'                 </div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -202,8 +204,21 @@ function requirementProfile(requirementUUID){
 						 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
 					 }
 				 
-				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' - '+maxRate+' '+rateType+' '+currencyCode+'</span></li>';
+				 
+				 
+				 if(json.locationsList != null){
+					 result = result +'<li><i class="fa fa-map-marker pull-left"></i>';
+					 result = result +'<ul class="list-unstyled list-inline joblocations pull-left">';
+	 					for(var k=0; k<json.locationsList.length; k++){
+	 						result = result +'<li>'+json.locationsList[k]+'</li>';
+	 					}
+	 					result = result +'</ul>';
+	 					result = result +'</li>';
+	 				}
+				 
+				 
+// 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 				 result = result +'                      </ul>';
@@ -312,8 +327,50 @@ function requirementDetails(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 
+				 if(json.backgroundCheck != null && json.backgroundCheck != '' && json.backgroundCheck != 'undefined'){
+					 if(json.backgroundCheck == "Y"){
+						 backgroundCheck = "Yes" 
+					 }else{
+						 backgroundCheck = "No" 
+					 }
+				 }else{
+					 backgroundCheck = "--";
+				 }
+				 
+				 if(json.overTime != null && json.overTime != '' && json.overTime != 'undefined') {
+					 if(json.overTime == "Y"){
+						 overTime = "Yes";
+					 }else{
+						 overTime = "No"
+					 }
+				}else{
+					overTime = "--";
+				}
+				 
+				 if(json.medicalClearence != null && json.medicalClearence != '' && json.medicalClearence != 'undefined') {
+					 if(json.medicalClearence == "Y"){
+						 medicalClearence = "Yes";
+					 }else{
+						 medicalClearence = "No";
+					 }
+				 }else{
+					 medicalClearence = "--";
+				 }
+				 
+				 if(json.securityClearance != null && json.securityClearance != '' && json.securityClearance != 'undefined') {
+					 if(json.securityClearance == "Y"){
+						 securityClearance = "Yes";
+					 }else{
+						 securityClearance = "No";
+					 }
+				}else{
+						securityClearance = "--";
+				}
+				 
+				
+				 
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
 		            	result = result +'                  <div class="clearfix"></div>';
 						 result = result +'                </div>';   
 				 }
@@ -333,7 +390,48 @@ function requirementDetails(requirementUUID){
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 				 }
+				  
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Medical Clearence:</b> <span title="'+medicalClearence+'">'+medicalClearence+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
 				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Security Clearance:</b> <span title="'+securityClearance+'">'+securityClearance+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Over Time:</b> <span title="'+overTime+'">'+overTime+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Background Check:</b> <span title="'+backgroundCheck+'">'+backgroundCheck+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 if(json.gender != null && json.gender != '' && json.gender != 'undefined')
+					{
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Gender:</b> <span title="'+json.gender+'">'+json.gender+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Gender:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>'; 
+				 }
+				 if(json.experienceLevel != null && json.experienceLevel != '' && json.experienceLevel != 'undefined')
+					{
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="'+json.experienceLevel.name+'">'+json.experienceLevel.name+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>'; 
+				 }
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                  <div class="clearfix"></div>';
@@ -718,15 +816,17 @@ function clearRatediv(){
 
 function proposeNewRate(submissionId, candidateId) {
 	 if ($('#rate_form').validate(false, validationSettings)){
-			var type = "Candidate";
-			var frm = $('#rate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-		    var jsonData = encodeURIComponent(con);
+		 
+		    var type = "Candidate";
+		    var formData = getFormData1("rate_form");
 		    $("#add_rate").attr("disabled", "disabled");
+		    
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&type="+type,
+			processData: false,
+		    contentType:false, 
+			data: formData,
+			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
 				success: function(data) {
 					getRateNegotiationDetails(submissionId, candidateId);
 				},
@@ -742,7 +842,7 @@ function proposeNewRate(submissionId, candidateId) {
 	function acceptRejectRate(submissionId, status, candidateId) {
 		$("#rateActionDiv").empty();
 		$("#rateActionDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
@@ -927,26 +1027,22 @@ function getContactsCount(){
 </script>
 
 
-
 <script type="text/javascript">
 $('body').on('submit', '#referToContacts', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
+      var formData = $($('#referToContacts')[0]).serialize();
      
-      var frm = $('#referToContacts').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
-	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	
 	 	  $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	data: formData,
+		    	processData :false,
+		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	cancelReferPopUp();
 		        },
@@ -970,24 +1066,22 @@ $('body').on('submit', '#referToContacts', function(e){
 $('body').on('submit', '#referToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
-     
-      var frm = $('#referToJob_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	      $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(result) {
-		        	cancelReferPopUp();
-		        },
-		    });  
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var formData = getFormData1("referToJob_form");
+    		
+		       $.ajax({
+    					type : "POST",
+    					 data: formData,
+    	  		         processData: false,
+    	  		         contentType:false, 
+    					url : sourceleadUrl+"/submitReferToJob?"+tokenParamName+"="+tokenValue+"",
+    					success : function(result) {
+    						cancelReferPopUp();
+    					},
+    				});
       return true; 
     }
     else{
@@ -1064,7 +1158,7 @@ function cancelReferPopUp(){
 </script>
 <script>
 	function predefineOrgProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 

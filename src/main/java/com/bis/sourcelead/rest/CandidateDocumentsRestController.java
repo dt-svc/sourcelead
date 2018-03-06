@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -48,6 +54,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
+@RequestMapping("/app")
 public class CandidateDocumentsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateDocumentsRestController.class);
 	@Value("${sourceleadUrl}")
@@ -72,6 +79,9 @@ public class CandidateDocumentsRestController {
 	OrgLocationService orgLocationService;
 	@Autowired
 	CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	
 	/**
 	 * @author Prasad K
@@ -116,18 +126,12 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getCandidateDocumentsListByCandidateId")
-	public String getCandidateDocumentsListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/getCandidateDocumentsListByCandidateId","rest/getCandidateDocumentsListByCandidateId"},method = RequestMethod.POST)
+	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String resultJson;
-		List<CandidateDocuments> CandidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
-		for (CandidateDocuments canDoc : CandidateDocumentsList) {
-			canDoc.setUserIdStr(user.getId());
-		}
-		resultJson = commonUtil.toJSON(CandidateDocumentsList);
-		return resultJson;
+		ResponseList<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
+		return candidateDocumentsList;
 	}
 	
 	/**
@@ -166,7 +170,7 @@ public class CandidateDocumentsRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/downloadDoc", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/downloadDoc", method = RequestMethod.GET)
 	public void downloadDoc(@RequestParam(value = "documentUUID", required = false) String documentUUID, HttpServletResponse response) throws Exception
 	{
 		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);
@@ -188,7 +192,7 @@ public class CandidateDocumentsRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * @author Prasad K
@@ -228,6 +232,13 @@ public class CandidateDocumentsRestController {
 
 		}
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		 if (null != candidate && null != candidate.getId()) {
+			 CandidateIndex candidateIndex = new CandidateIndex();
+			 candidateIndex.setCandidateId(candidate.getId());
+			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+		}	
 		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
 		return percentage.toString();
@@ -242,16 +253,11 @@ public class CandidateDocumentsRestController {
 		return "success";
 	}
 	
-	@RequestMapping(value = "/uploadRequestedDocuments", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/uploadRequestedDocuments", method = RequestMethod.POST)
 	public @ResponseBody String uploadRequestedDocuments(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request) throws Exception
 	{
-		/*String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);*/
 		
 		candidateDocumentsDTO.setStaticPath(staticPath);
-		//FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO, candidateDocumentsDTO.getFileInfo());
-		
-		//RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(jsonObj.getString("requestDocUUID"));
 		RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(candidateDocumentsDTO.getRequestDocUUID());
 		if (null != requestedDocuments) {
 			List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());

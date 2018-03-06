@@ -63,7 +63,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from CandidateOnBoarding onboarding left join fetch onboarding.orgLocationId where onboarding.orgLocationId.id =:orgLocationId ";
-	    List<CandidateOnBoarding> candidateOnBoardingList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<CandidateOnBoarding> candidateOnBoardingList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
         return candidateOnBoardingList;
 	}
 
@@ -74,7 +74,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.candidateId left join fetch onboarding.offerId offer "
-				+ " left join fetch offer.submissionId submission left join fetch submission.requirement left join fetch onboarding.departmentId left join fetch onboarding.roleId left join fetch onboarding.managerUserId left join fetch onboarding.teamId where onboarding.onboardCandidateUUID =:onboardCandidateUUID" ).setString( "onboardCandidateUUID", onboardCandidateUUID ).setCacheable(true).list();
+				+ " left join fetch offer.submissionId submission left join fetch submission.requirement left join fetch onboarding.departmentId left join fetch onboarding.roleId left join fetch onboarding.managerUserId left join fetch onboarding.teamId where onboarding.onboardCandidateUUID =:onboardCandidateUUID" ).setString( "onboardCandidateUUID", onboardCandidateUUID ).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
@@ -104,7 +104,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.roleId left join fetch onboarding.managerUserId "
-				+ " left join fetch onboarding.teamId where onboarding.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+				+ " left join fetch onboarding.teamId where onboarding.id =:id" ).setLong( "id", Id ).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
@@ -120,7 +120,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.orgLocationId  "
-				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.companyEmail = :email" ).setString("email", email).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.companyEmail = :email" ).setString("email", email).setLong( "orgLocationId", orgLocationId ).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
@@ -136,7 +136,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.onboardingUser left join fetch onboarding.orgLocationId left join fetch onboarding.teamId  "
-				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.onboardingUser.id = :onboardingUser" ).setLong("onboardingUser", onboardingUser).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.onboardingUser.id = :onboardingUser" ).setLong("onboardingUser", onboardingUser).setLong( "orgLocationId", orgLocationId ).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
@@ -151,7 +151,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.candidateId left join fetch onboarding.offerId offer "
-				+ "  where onboarding.candidateId.id = :candidateId and onboarding.offerId.id = :offerId" ).setLong( "candidateId", candidateId ).setLong("offerId", offerId).setCacheable(true).list();
+				+ "  where onboarding.candidateId.id = :candidateId and onboarding.offerId.id = :offerId" ).setLong( "candidateId", candidateId ).setLong("offerId", offerId).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
@@ -167,7 +167,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.orgLocationId  "
-				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.personalEmail = :personalEmail" ).setString("personalEmail", personalEmail).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.personalEmail = :personalEmail" ).setString("personalEmail", personalEmail).setLong( "orgLocationId", orgLocationId ).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {
@@ -183,7 +183,7 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOnBoarding> candidateOnBoarding = session.createQuery("from CandidateOnBoarding onboarding left join fetch onboarding.orgLocationId left join fetch onboarding.candidateId "
-				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.candidateId.id = :candidateId " ).setLong("candidateId", candidateId).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " where onboarding.orgLocationId.id =:orgLocationId and onboarding.candidateId.id = :candidateId " ).setLong("candidateId", candidateId).setLong( "orgLocationId", orgLocationId ).list();
 		if (candidateOnBoarding.size() > 0) {
 			return candidateOnBoarding.get(0);
 		} else {

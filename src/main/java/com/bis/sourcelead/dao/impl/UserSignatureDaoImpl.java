@@ -64,7 +64,7 @@ public class UserSignatureDaoImpl implements UserSignatureDao{
 		
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String query = "from UserSignature signature where signature.userId.id = :userId and signature.orgLocationId.id = :orgLocationId  ";
-		 List<UserSignature> signaturesList = session.createQuery(query.toString()).setLong( "userId", userId).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		 List<UserSignature> signaturesList = session.createQuery(query.toString()).setLong( "userId", userId).setLong( "orgLocationId", orgLocationId).list();
 		 return signaturesList;
 	}
 
@@ -75,7 +75,7 @@ public class UserSignatureDaoImpl implements UserSignatureDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserSignature> userSignature = new ArrayList<UserSignature>();
 		logger.debug("getUserSignatureById start");
-		userSignature = session.createQuery("from UserSignature signature where signature.id = :id" ).setLong("id", Id).setCacheable(true).list();
+		userSignature = session.createQuery("from UserSignature signature where signature.id = :id" ).setLong("id", Id).list();
 		logger.debug("findByEmailAndOrgLocationsId end");
 		if (userSignature.size() > 0) {
 			return userSignature.get(0);

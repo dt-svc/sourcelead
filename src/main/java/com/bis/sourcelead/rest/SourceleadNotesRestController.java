@@ -40,6 +40,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class SourceleadNotesRestController {
 	
 	@Value("${sourceleadUrl}")
@@ -129,6 +130,16 @@ public class SourceleadNotesRestController {
 		String notesList;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByRequirementId(requirementId,orgLocation.getId());
+		notesList = commonUtil.toJSON(list);
+		return notesList;
+	}
+	
+	@RequestMapping(value = "/getAssetNotes", method = RequestMethod.POST)
+	public @ResponseBody String getAssetNotes(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception
+	{
+		String notesList;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByAssetId(assetId,orgLocation.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}

@@ -26,6 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +88,7 @@ import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 /**
  * Handles contract related functionalities
@@ -93,6 +98,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class ContractRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ContractRestController.class);
@@ -146,7 +152,7 @@ public class ContractRestController {
 	CandidateService candidateService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(ContractTemplateDTO contractTemplateDTO,
+	public @ResponseBody String saveContractTemplate(ContractTemplateDTO contractTemplateDTO,
 			HttpServletRequest request) throws Exception {
 
 		/*String json1 = "{" + json + "}";
@@ -181,23 +187,33 @@ public class ContractRestController {
 	{
 		//ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));	
 		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(id);	
-		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
-		String totalBody = header + contractsTemplate.getTemplateContent();
-    	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-  	    Document document = new Document();
-  	    PdfWriter.getInstance(document, byteArray);
-  	    document.open();
-  	    HTMLWorker htmlWorker = new HTMLWorker(document);
-  	    htmlWorker.parse(new StringReader(totalBody));
-  	    document.close();
-  	    byte[] pdfBytes = byteArray.toByteArray();
-  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-  	    response.setContentType("application/pdf");
-  	    response.setContentLength(pdfBytes.length);
-          ServletOutputStream sos = response.getOutputStream();
-          sos.write(pdfBytes);
-          sos.flush();
-          sos.close();
+		
+		try {
+			String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
+			String totalBody =header+ contractsTemplate.getTemplateContent();
+		     org.jsoup.nodes.Document doc = Jsoup.parse(totalBody);
+		     doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);    
+	         String finalString=doc.html();
+		    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		   
+		    Document document = new Document();
+		    PdfWriter writer = PdfWriter.getInstance(document, byteArray);
+		    document.open();
+		    XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(finalString));
+		    document.close();
+		    byte[] pdfBytes = byteArray.toByteArray();
+	  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    response.setContentLength(pdfBytes.length);
+	          ServletOutputStream sos = response.getOutputStream();
+	          sos.write(pdfBytes);
+	          sos.flush();
+	          sos.close();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+		
+    	
 	}
 	
 	@RequestMapping(value = "/viewContractPdf/{uuid}/{templateName}", method = RequestMethod.GET)
@@ -220,6 +236,9 @@ public class ContractRestController {
 			}
 			
 		}
+		
+		
+		
 		/*if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){*/
 		if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
@@ -227,11 +246,13 @@ public class ContractRestController {
 
 		if((Constants.CUSTOM_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
 		//if(Constants.CUSTOM_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
-			  pdfBytes = CommonUtil.readBytesFromFile(staticPath+contract.getFileURL());
+			String path = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			  pdfBytes = CommonUtil.readBytesFromFile(path+contract.getFileURL());
 		}
 		
 		if(Constants.EXISTING_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
-			  pdfBytes = CommonUtil.readBytesFromFile(staticPath+contract.getFileURL());
+			String path = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			  pdfBytes = CommonUtil.readBytesFromFile(path+contract.getFileURL());
 		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
@@ -291,6 +312,7 @@ public class ContractRestController {
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+			orgSpoc.setSpocUserCode(orgSpoc.getVendorUser().getUserCode());
 			orgSpoc.setOwnerName(clientSb.toString());
 			if("Vendor".equalsIgnoreCase(listName)){
 				orgSpoc.setOwnerUserName(clientSb.toString());
@@ -372,7 +394,7 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,
+	public @ResponseBody ContractsDTO getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,
 			@RequestParam(value = "tabType", required = false) String tabType,
 			@RequestParam(value = "contractsType", required = false) String contractsType,
 			@RequestParam(value = "contractStatus", required = false) String contractStatus, HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -381,8 +403,8 @@ public class ContractRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus,user,userRoleName);
-		return commonUtil.toJSON(contracts);
+		ContractsDTO contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus,user,userRoleName);
+		return contracts;
 	} 
 	
 	@RequestMapping(value = "/getEditContractTemplateDetails", method = RequestMethod.GET)
@@ -495,11 +517,11 @@ public class ContractRestController {
 		List<Requirement> requirementList = requirementService.getRequirementsForSOWByOrgLocationId(loginOrgLocation.getId(), sowType);
 		if(requirementList.size() > 0){
 			for(Requirement requirement : requirementList){
-				if(null != requirement.getSpocId() && (requirement.getSpocId().getClientUser().getFirstName() != null && requirement.getSpocId().getClientUser().getFirstName() != "" && requirement.getSpocId().getClientUser().getLastName() != null && requirement.getSpocId().getClientUser().getLastName() != "" )){
+				if(null != requirement.getSpocId() && (requirement.getManagerUserId().getFirstName() != null && requirement.getManagerUserId().getFirstName() != "" && requirement.getManagerUserId().getLastName() != null && requirement.getManagerUserId().getLastName() != "" )){
 					StringBuilder spocSB = new StringBuilder();
-					requirement.setSpocName(spocSB.append(" (").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).append(")").toString());
+					requirement.setSpocName(spocSB.append(" (").append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).append(")").toString());
 				}else if(null != requirement.getSpocId()){
-					requirement.setSpocName(" ("+requirement.getSpocId().getClientUser().getFirstName()+")");
+					requirement.setSpocName(" ("+requirement.getManagerUserId().getFirstName()+")");
 				}else{
 					requirement.setSpocName("");
 				}
@@ -516,47 +538,61 @@ public class ContractRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 		List<RequirementSubmission> requirementSubmissionsList = new ArrayList<>();
-		
 		if(!"".equalsIgnoreCase(requirementId)){
-			requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
-		}
-		else{
-			 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
-		}
-		
-		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
-		if(requirementSubmissionsList.size() > 0){
-			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
-				StringBuffer candidateName = new StringBuffer(); 
-				if(null != requirementSubmission.getCandidate() && StringUtils.isNotBlank(requirementSubmission.getCandidate().getLastName())){
-					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString());
-				}else{
-					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
-				}
-				if(null != requirementSubmission.getVendorLocationId()){
-					requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
-				}
-				if(null != requirementSubmission.getRequirement()){
-					requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			Requirement req = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+			if(!"".equalsIgnoreCase(requirementId)){
+				requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
+			}
+			else{
+				 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+			}
+			
+			//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+			if(requirementSubmissionsList.size() > 0){
+				for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
+					StringBuffer candidateName = new StringBuffer(); 
+					if(null != requirementSubmission.getCandidate() && StringUtils.isNotBlank(requirementSubmission.getCandidate().getLastName())){
+						requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).append(" ").append(requirementSubmission.getCandidate().getLastName()).toString());
+					}else{
+						requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
+					}
+					if(null != requirementSubmission.getVendorLocationId()){
+						requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+					}
+					if(null != requirementSubmission.getRequirement()){
+						requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+					}
+					if (req.getClientId() != null) 
+					requirementSubmission.setOrgRelationId(req.getClientId().getId());
+					
 				}
 			}
+			
 		}
+		
 		
 		return commonUtil.toJSON(requirementSubmissionsList);
 	}
 	
 	
 	@RequestMapping(value = "/getVendorForSOWByRequirementSubmissionId", method = RequestMethod.GET)
-	public @ResponseBody String getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody RequirementSubmission getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(reqSubId));
 		if(requirementSubmission != null){
 			if(null != requirementSubmission.getVendorLocationId()){
 				requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+			}else{
+				Candidate candi = requirementSubmission.getCandidate();
+				if(candi != null){
+					if(candi.getParentCandidateId() != null){
+						OrgLocations location = candi.getParentCandidateId().getOrgLocationId();
+						requirementSubmission.setVendorLocationCode(location.getLocationCode());
+					}
+				}
 			}
 		}
-		
-		return commonUtil.toJSON(requirementSubmission);
+		return requirementSubmission;
 	}
 	
 	
@@ -694,8 +730,10 @@ public class ContractRestController {
 		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 				}
 		 	}
-		 	
+		 	contract.setOrgRelationUUID(contract.getOrgRelations().getUUID());
 		 	}
+		 	
+		 	
 		 	
 		 	if(null != contract.getApproverUser()){
 		 		StringBuilder approver = new StringBuilder();
@@ -713,7 +751,7 @@ public class ContractRestController {
 					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).toString());
 				}
 		 	}
-		 	if(null != contract.getRequirementSubmission()){
+		 	if(null != contract.getRequirementSubmission() && contract.getRequirementSubmission().getRequirement() != null){
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
 		 	
@@ -926,7 +964,7 @@ public class ContractRestController {
 		}
 	 
 
-	 @RequestMapping(value = "/downloadContractDocument",method = RequestMethod.GET)
+	/* @RequestMapping(value = "/downloadContractDocument",method = RequestMethod.GET)
 	 public void downloadContractDocument(@RequestParam(value="contractUUID", required=false) String contractUUID, HttpServletResponse response) throws Exception {
 			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsByContractUUID(contractUUID);
 			if(null != contractRequestDocuments){
@@ -953,7 +991,7 @@ public class ContractRestController {
 				} 
 			}
 
-	 }
+	 }*/
 	 
 	 @RequestMapping(value = "/updateContractEndDate", method = RequestMethod.POST)
 	 public @ResponseBody String updateContractEndDate(@RequestParam(value = "contractId", required = false) String contractId,@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) throws Exception {
@@ -1028,7 +1066,51 @@ public class ContractRestController {
 		 	}
 			
 			return "success";
+			
+			
+			
+			
+			
+			
 		}
+	 
+	 @RequestMapping(value = "/refreshClientList" , method = RequestMethod.POST)
+		 public @ResponseBody List<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+		 for (OrgRelations orgRelations : clientList) {
+				String orgName = "";
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					orgName = orgRelations.getLocationId().getOrgLocationName();
+				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+				}
+				orgRelations.setOrgName(orgName);
+			}
+		return clientList;	 
+			 
+	 }
+	 
+	 @RequestMapping(value = "/refreshVendorList" , method = RequestMethod.GET)
+	 public @ResponseBody List<OrgRelations> refreshVendorList(HttpServletRequest request) throws Exception {
+	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+	 for (OrgRelations orgRelations : orgRelationsList) {
+			String orgName = "";
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getLocationId().getOrgLocationName();
+			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+			}
+			orgRelations.setOrgName(orgName);
+ }
+	return orgRelationsList;
+	 
+	 }
+	 
+	 
+	 
+	 
 	 
 	 
 	 @RequestMapping(value = "/rest/getContractRequestDocumentsById")

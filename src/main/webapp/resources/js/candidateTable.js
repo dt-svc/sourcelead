@@ -3,8 +3,13 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		$("#dataTableSearch").val(searchValue);
 		candidateList();
 	} else if(candidateKeyword == "candidateSearch"){
-		/*candidateSideBar(candidateIdSearchId);
-		candidateQuickViewProfile(candidateIdSearchId);*/
+		candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);
+		candidateList();
+		$("#upcandidateStatus").val('');
+	} else if(candidateKeyword == "requestedDocumentNotification"){
+		candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);
 		candidateList();
 		$("#upcandidateStatus").val('');
 	} else {
@@ -33,7 +38,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  
 	 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 		  
-	 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 	 
 		
 		var minRate = $('#minRate').val(); 
@@ -90,6 +95,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
      	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
           result = result +"<thead>"; 
           result = result +"  <tr>"; 
+  	      result = result +'<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>'; 
           result = result +"    <th>&nbsp;</th>";
           result = result +"    <th>Generated ID</th>";
           result = result +"    <th>Name</th>"; 
@@ -107,6 +113,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           $("#noCandidates").val(1);
           $("#candidateList").append(result);
           cpagination(url); 
+          shareCandidates = {};
   }
 
 function cpagination(url){ 
@@ -122,6 +129,7 @@ function cpagination(url){
             pages: 10
         }),
         "columns": [
+        	{ "data": "id" },
             { "data": "isAssociate" },
             { "data": "generatedId"},
             { "data": "firstName"},
@@ -133,8 +141,30 @@ function cpagination(url){
             { "data": "updatedDate" }
         ],
         "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"sortable": false,
+    	  	"render": function(data, type, report, meta) {
+    	  		 var result = "";
+    	  		 var shareflag = false;
+	        		 for(var e in shareCandidates) {
+   	     	    	   if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+   	     				   continue;
+   	     	    	   if(e === report.candidateId+"") {
+   	     	    		    if(!$("#sharedcheckbox").is(":checked"))
+   	     	    		 	checkOrUncheckParent("candidatePagination",shareCandidates, "sharedcheckbox"); 
+   	     	    		    shareflag = true;
+   	     	    	   	break;
+   	     	    	   }
+   	        		 }
+	        		 if(!shareflag)
+   	        			$("#sharedcheckbox").removeAttr('checked');
+   	        		 
+	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onchange="checkShareCandidates(this)"/></td>';
+    	  		 return result; 
+    	  	}
+        	},{
 	    	  	"targets": colIndex++,
-	    	  	"className": "tbldata-dotdot_50",
+	    	  	//"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
@@ -148,6 +178,7 @@ function cpagination(url){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            	}
+	    	  		result = result +"<div class='tblminwidth-50 pull-left'>";
 	    	  		if(data == "Y" && isAssociate == 'N'){
 		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
 		             }
@@ -157,6 +188,7 @@ function cpagination(url){
 		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" onclick='addFavourite("+full.candidateId+")'></input>";
 		             
 		              result = result +" <label></label>";
+		              result = result +"</div>";
 		              result = result +"</div>";
 		              return  result;
 	    	  	}
@@ -185,7 +217,7 @@ function cpagination(url){
 	            		lastName = "";
 	            	}
             		if(name1Flag)
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+"); candidateSideBar("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              
 	              if(name2Flag)
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span></div></td>";
@@ -229,6 +261,7 @@ function cpagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "mobilePhone",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
 	    	  		var mobilePhone = "";
 	    	  		if(full.mobilePhone != null && full.mobilePhone != 'undefined' && full.mobilePhone != ""){
@@ -251,6 +284,8 @@ function cpagination(url){
 			            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
 			            			 location = opt.city+", "+location;
 				            	}
+		            		}else{
+		            			location = "------";
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
@@ -270,14 +305,14 @@ function cpagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
+	    	"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 

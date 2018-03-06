@@ -107,89 +107,28 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 			
 			
 			for( RequestDocumentList docList:candidateDocumentsDTO.getRequestDocumentList()){
-				RequestedDocumentsHistory requestedDocumentsHistory = new RequestedDocumentsHistory();
-				requestedDocumentsHistory.setRequestedDocumentsId(requestedDocuments);
-				if(StringUtils.isNotBlank(docList.getOtherDocType())){
-					requestedDocumentsHistory.setDocumentType(docList.getOtherDocType());
-					activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(docList.getOtherDocType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
-				}else{
-					requestedDocumentsHistory.setDocumentType(docList.getDocType());
-					activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(docList.getDocType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
-				}
 				
-				if(StringUtils.isNotBlank(docList.getDescription())){
-					requestedDocumentsHistory.setDescription(docList.getDescription());
-				}else{
-					requestedDocumentsHistory.setDescription(null);
-				}
-				
-				if(StringUtils.isNotBlank(docList.getChecked())&&"Y".equalsIgnoreCase(docList.getChecked())){
-					requestedDocumentsHistory.setIsRequestedDocRequired(docList.getChecked());
-				}else{
-					requestedDocumentsHistory.setIsRequestedDocRequired(Constants.NO);
-				}
-				
-				requestedDocumentsHistory.setStatus(Constants.RECORD_ACTIVE);
-				requestedDocumentsHistory.setCreatedBy(user.getUserCode());
-				requestedDocumentsHistory.setUpdatedBy(user.getUserCode());
-				requestedDocumentsHistory.setCreatedDate(new Date());
-				requestedDocumentsHistory.setUpdatedDate(new Date());
-				requestedDocumentsHistoryService.saveRequestedDocumentsHistory(requestedDocumentsHistory);
-				
-				CandidateDocuments candidateDocuments = new CandidateDocuments();	
-				candidateDocuments.setRequestedDocumentsId(requestedDocuments);
-				candidateDocuments.setCandidateId(candidate);
-				candidateDocuments.setDocUploadStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
-				candidateDocuments.setDocumentType(docList.getDocType());
-				
-				if(StringUtils.isNotBlank(docList.getOtherDocType())){
-					candidateDocuments.setDocumentOtherType(docList.getOtherDocType());
-				}
-				
-				if(StringUtils.isNotBlank(docList.getDescription())){
-					candidateDocuments.setDescription(docList.getDescription());
-				}
-				
-				if(StringUtils.isNotBlank(docList.getChecked())&&"Y".equalsIgnoreCase(docList.getChecked())){
-					candidateDocuments.setIsRequestedDocRequired(docList.getChecked());
-				}else{
-					candidateDocuments.setIsRequestedDocRequired(Constants.NO);
-				}
-				
-				candidateDocuments.setOrgLocationId(orgLocations);
-				candidateDocuments.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-				candidateDocuments.setStatus(Constants.RECORD_ACTIVE);
-				candidateDocuments.setCreatedBy(user.getUserCode());
-				candidateDocuments.setUpdatedBy(user.getUserCode());
-				candidateDocuments.setCreatedDate(new Date());
-				candidateDocuments.setUpdatedDate(new Date());
-				candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
-				
-			}
-			
-			/*for (int a = 0; a < docuemntMaxRowNumberCount; a++) {
-				
-				if(jsonObj.has(a+"docType")){
+				if(StringUtils.isNotBlank(docList.getDocType())){
 					
 					RequestedDocumentsHistory requestedDocumentsHistory = new RequestedDocumentsHistory();
 					requestedDocumentsHistory.setRequestedDocumentsId(requestedDocuments);
-					if(jsonObj.has(a+"otherDocType") && !isNullOrEmpty(a+"otherDocType") && !jsonObj.getString(a+"otherDocType").equalsIgnoreCase("")){
-						requestedDocumentsHistory.setDocumentType(jsonObj.getString(a+"otherDocType"));
-						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString(a+"otherDocType")).append(Constants.NEW_VALUE_TAG_END).append(", ");
+					
+					if(StringUtils.isNotBlank(docList.getOtherDocType())){
+						requestedDocumentsHistory.setDocumentType(docList.getOtherDocType());
+						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(docList.getOtherDocType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
 					}else{
-						requestedDocumentsHistory.setDocumentType(jsonObj.getString(a+"docType"));
-						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString(a+"docType")).append(Constants.NEW_VALUE_TAG_END).append(", ");
+						requestedDocumentsHistory.setDocumentType(docList.getDocType());
+						activitySummary.append(Constants.NEW_VALUE_TAG_INITIATION).append(docList.getDocType()).append(Constants.NEW_VALUE_TAG_END).append(", ");
 					}
 					
-					if(jsonObj.has(a+"description") && !isNullOrEmpty(a+"description")){
-						requestedDocumentsHistory.setDescription(jsonObj.getString(a+"description"));
+					if(StringUtils.isNotBlank(docList.getDescription())){
+						requestedDocumentsHistory.setDescription(docList.getDescription());
 					}else{
 						requestedDocumentsHistory.setDescription(null);
 					}
 					
-					if(jsonObj.has(a+"checked") && !isNullOrEmpty(a+"checked") && 
-							"Y".equalsIgnoreCase(jsonObj.getString(a+"checked"))){
-						requestedDocumentsHistory.setIsRequestedDocRequired(jsonObj.getString(a+"checked"));
+					if(StringUtils.isNotBlank(docList.getChecked())&&"Y".equalsIgnoreCase(docList.getChecked())){
+						requestedDocumentsHistory.setIsRequestedDocRequired(docList.getChecked());
 					}else{
 						requestedDocumentsHistory.setIsRequestedDocRequired(Constants.NO);
 					}
@@ -205,19 +144,18 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					candidateDocuments.setRequestedDocumentsId(requestedDocuments);
 					candidateDocuments.setCandidateId(candidate);
 					candidateDocuments.setDocUploadStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
-					candidateDocuments.setDocumentType(jsonObj.getString(a+"docType"));
+					candidateDocuments.setDocumentType(docList.getDocType());
 					
-					if(jsonObj.has(a+"otherDocType") && !isNullOrEmpty(a+"otherDocType")){
-						candidateDocuments.setDocumentOtherType(jsonObj.getString(a+"otherDocType"));
+					if(StringUtils.isNotBlank(docList.getOtherDocType())){
+						candidateDocuments.setDocumentOtherType(docList.getOtherDocType());
 					}
 					
-					if(jsonObj.has(a+"description") && !isNullOrEmpty(a+"description")){
-						candidateDocuments.setDescription(jsonObj.getString(a+"description"));
+					if(StringUtils.isNotBlank(docList.getDescription())){
+						candidateDocuments.setDescription(docList.getDescription());
 					}
 					
-					if(jsonObj.has(a+"checked") && !isNullOrEmpty(a+"checked") && 
-							"Y".equalsIgnoreCase(jsonObj.getString(a+"checked"))){
-						candidateDocuments.setIsRequestedDocRequired(jsonObj.getString(a+"checked"));
+					if(StringUtils.isNotBlank(docList.getChecked())&&"Y".equalsIgnoreCase(docList.getChecked())){
+						candidateDocuments.setIsRequestedDocRequired(docList.getChecked());
 					}else{
 						candidateDocuments.setIsRequestedDocRequired(Constants.NO);
 					}
@@ -230,8 +168,12 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					candidateDocuments.setCreatedDate(new Date());
 					candidateDocuments.setUpdatedDate(new Date());
 					candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
+					
 				}
-			}*/
+				
+			}
+			
+			
 			
 			sendEmailToCandidateForDocument(user,candidate,orgLocations,requestedDocuments.getRequestDocUUID());
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REQUEST_DOCUMENTS, activitySummary.toString().substring(0, activitySummary.toString().length() - 2), "CANDIDATE");
@@ -275,7 +217,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 StringBuilder loginBuilder = new StringBuilder();
 		 
 		 
-		 globalVarsMap.put("requestLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("requestedDocuments?").append("requestDocUUID=").append(requestDocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Upload Documents</div></a>").toString());
+		 globalVarsMap.put("requestLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/requestedDocuments?").append("requestDocUUID=").append(requestDocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Upload Documents</div></a>").toString());
 		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -356,7 +298,9 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,requestedDocuments.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();
 		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario);
 	}
 

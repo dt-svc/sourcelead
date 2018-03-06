@@ -38,6 +38,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateOnBoardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardController.class);
@@ -85,16 +86,16 @@ public class CandidateOnBoardController {
  			return model;
  	}
 	
-	@RequestMapping(value = "/onboardingCandidateSetp2")
-	public ModelAndView onboardingCandidateSetp2(HttpServletRequest request) {
+	@RequestMapping(value = "/onboardingCandidateStep2")
+	public ModelAndView onboardingCandidateStep2(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/welcomeStep2");
 		return model;
 	}
 	
-	@RequestMapping(value = "/onboardingCandidateSetp3")
-	public ModelAndView onboardingCandidateSetp3(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/onboardingCandidateStep3")
+	public ModelAndView onboardingCandidateStep3(HttpServletRequest request) throws Exception {
 		
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -125,8 +126,8 @@ public class CandidateOnBoardController {
 	
 	
 	
-	@RequestMapping(value = "/onboardingCandidateSetp4")
-	public ModelAndView onboardingCandidateSetp4(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/onboardingCandidateStep4")
+	public ModelAndView onboardingCandidateStep4(HttpServletRequest request) throws Exception {
 		
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -208,6 +209,11 @@ public class CandidateOnBoardController {
  			
  			model.setViewName("onboard/onboardingTemplatesList");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "OnboardCreateMsg"); 
+ 			if(!isNullOrEmpty(msg)){ 
+ 			model.addObject("msg", msg); 
+ 			SourceLeadSessionManager.removeSessionAttribute(request, "OnboardCreateMsg"); 
+ 			}
  			return model;
  	}
 	
@@ -285,7 +291,7 @@ public class CandidateOnBoardController {
 		return model;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_CREATE_ON_BOARD_USER')")
+//	@PreAuthorize("hasRole('ROLE_CREATE_ON_BOARD_USER')")
 	@RequestMapping(value = "/viewOnboardCandidateDetails")
  	public ModelAndView viewOnboardCandidateDetails(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
  			HttpServletRequest request) throws Exception {
@@ -310,24 +316,24 @@ public class CandidateOnBoardController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ON_BOARD_USER')")
-	@RequestMapping(value = "/viewOnboardCandidateSummary")
- 	public ModelAndView viewOnboardCandidateSummary(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
- 			HttpServletRequest request) throws Exception {
-		   
-		    ModelAndView model = new ModelAndView();
- 			
-		    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.OnAndOffboard);
- 			
- 			
- 			model.setViewName("onboard/viewOnboardCandidateSummary");
- 			model.addObject("sourceleadUrl", sourceleadUrl);
- 			model.addObject("onBoardingUUID", onboardUUID);
- 			return model;
- 	}
-	
+    @RequestMapping(value = "/viewOnboardCandidateSummary")
+     public ModelAndView viewOnboardCandidateSummary(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
+                     HttpServletRequest request) throws Exception {
+               
+                ModelAndView model = new ModelAndView();
+                     
+                SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+                    if(sessionData == null)
+                    {
+                            sessionData = new SessionMaintainanceData();
+                    }
+                    sessionData.setNav(Constants.OnAndOffboard);
+                     
+                     
+                     model.setViewName("onboard/viewOnboardCandidateSummary");
+                     model.addObject("sourceleadUrl", sourceleadUrl);
+                     model.addObject("onBoardingUUID", onboardUUID);
+                     return model;
+     }
+
 }

@@ -62,7 +62,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		
 		// Tihs for add applicant
-		/*if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
+		if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 			email = jsonObj.getString("EmailId");
 		}
 		
@@ -72,7 +72,7 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
 			phoneNumber = jsonObj.getString("AlternateNumber");
-		}*/
+		}
 		
 		MasterCandidate masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
 		
@@ -138,9 +138,15 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 		
 		
 		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
-		masterCandidate.setCreatedBy(user.getUserCode());
+		if(user != null){
+			masterCandidate.setCreatedBy(user.getUserCode());
+			masterCandidate.setUpdatedBy(user.getUserCode());
+		}
+		else{
+			masterCandidate.setCreatedBy(null);
+			masterCandidate.setUpdatedBy(null);
+		}
 		masterCandidate.setCreatedDate(commonUtil.currentDate());
-		masterCandidate.setUpdatedBy(user.getUserCode());
 		masterCandidate.setUpdatedDate(commonUtil.currentDate());
 		masterCandidate.setGeneratedId(getCandidateId(orgLocations));
 		masterCandidateDao.saveMasterCandidate(masterCandidate);

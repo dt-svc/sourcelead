@@ -40,7 +40,7 @@ public class CountriesDaoImpl implements CountriesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Countries> countires = new ArrayList<Countries>();
 		logger.debug("findByUserName start");
-		countires = session.createQuery("from Countries where name = :name" ).setString( "name", name ).setCacheable(true).list();
+		countires = session.createQuery("from Countries where name = :name" ).setString( "name", name ).list();
 		logger.debug("findByUserName end");
 		if (countires.size() > 0) {
 			return countires.get(0);
@@ -54,7 +54,7 @@ public class CountriesDaoImpl implements CountriesDao{
 	public List<Countries> getAllCountries() {
 		logger.debug("In Countries getAllCountries method");
         Session session = this.sessionFactory.getCurrentSession();
-        List<Countries> countriesList= session.createQuery("from Countries c order by c.name ASC " ).setCacheable(true).list();
+        List<Countries> countriesList= session.createQuery("from Countries c order by c.name ASC " ).list();
         return countriesList;
 	}
 	
@@ -63,7 +63,7 @@ public class CountriesDaoImpl implements CountriesDao{
 	public List<Countries> getAllSourceLeadCountries() {
 		logger.debug("In Countries getAllCountries method");
         Session session = this.sessionFactory.getCurrentSession();
-        List<Countries> countriesList= session.createQuery("from Countries c where c.name = 'Australia' OR c.name = 'France' OR c.name = 'India' OR c.name = 'Singapore' OR c.name = 'United Kingdom' OR c.name = 'United States' order by c.name ASC " ).setCacheable(true).list();
+        List<Countries> countriesList= session.createQuery("from Countries c where c.name = 'Australia' OR c.name = 'France' OR c.name = 'India' OR c.name = 'Singapore' OR c.name = 'United Kingdom' OR c.name = 'United States' order by c.name ASC " ).list();
         return countriesList;
 	}
 
@@ -95,7 +95,7 @@ public class CountriesDaoImpl implements CountriesDao{
 		
 		/*String query = "select s.stateName, c.cityName from States s, Webgeocities c where c.stateCode = s.stateCode and c.countryCode = '"+countryCode+"' and s.countryCode = '"+countryCode+"' ";
 		List<String> modulesIdList =  session.createQuery(query.toString())
-									.setCacheable(true).list();*/
+									.list();*/
 		
 		
 		return cityStatesList;

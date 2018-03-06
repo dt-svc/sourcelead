@@ -25,9 +25,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssetDao;
+import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoAmexTrans;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.entity.BoJmpcTrans;
 import com.bis.sourcelead.entity.BoUploadedFiles;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
@@ -53,12 +55,16 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class BackOfficeRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BackOfficeRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -86,6 +92,9 @@ public class BackOfficeRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private AssetDao assetDao;
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
@@ -225,7 +234,30 @@ public class BackOfficeRestController {
 		return resultJson;
 	}
 	
-	
+	@RequestMapping(value = "/deleteDoc", method = RequestMethod.POST)
+	public String deleteDoc(@RequestParam(value="assetId", required=false) String assetId,@RequestParam(value="url", required=false) String url,HttpServletRequest request) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	       Asset asset = assetService.getAssetById(Long.parseLong(assetId));
+	       if(url.equals(asset.getFileUrl())){
+	       asset.setFileUrl(null);
+	       asset.setFileContentType(null);
+	       asset.setFileName(null);
+	       }if(url .equals(asset.getShiftAFileUrl())){
+	    	  asset.setShiftAFileUrl(null);
+			  asset.setShiftAFileName(null);
+			  asset.setShiftAFileContentType(null); 
+	       }
+	       if(url.equals(asset.getShiftBFileUrl())){
+	    	   asset.setShiftBFileUrl(null);
+			   asset.setShiftBFileName(null);
+			   asset.setShiftBFileContentType(null);   
+	       }
+	       assetDao.saveAsset(asset);	
+
+		return "success";
+
+	}
 	
 	@RequestMapping(value = "/getComericaTransactions")
 	@ResponseBody
@@ -448,17 +480,57 @@ public class BackOfficeRestController {
 	 */
 	@RequestMapping(value = "/getAssetById")
 	@ResponseBody
-	public String getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
+	public AssetDTO getAssetById(HttpServletRequest request,@RequestParam(value="assetId", required=false) Long assetId) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String resultJson = null;
+		//String resultJson = null;
 		Asset asset = assetService.getAssetById(assetId);
-		
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
-		asset.setEmployeesList(employeesList);
-		resultJson = toJSON(asset);
-		return resultJson;
+		AssetDTO assetDTO = new AssetDTO();
+		
+		if(asset.getAssetCategory() != null){
+			assetDTO.setCategoryName(asset.getAssetCategory().getCategoryName());	
+			assetDTO.setCategoryId(asset.getAssetCategory().getId().toString());
+			
+			if(asset.getShiftAEmployee() != null){
+			assetDTO.setShiftAEmployee(asset.getShiftAEmployee().getId().toString());
+			}
+			if(asset.getShiftBEmployee() != null){
+			assetDTO.setShiftBEmployee(asset.getShiftBEmployee().getId().toString());
+			}
+		}
+		
+		assetDTO.setSno(asset.getSlno());
+		assetDTO.setMake(asset.getMake());
+		assetDTO.setMonitor(asset.getMonitor());
+		assetDTO.setCpu(asset.getCpu());
+	/*	assetDTO.setShiftAEmp(asset.getShiftAEmployee().toString());
+		assetDTO.setShiftBEmp(asset.getShiftBEmployee().toString());*/
+		assetDTO.setWorkingStatus(asset.getWorkingStatus());
+		assetDTO.setModel(asset.getModel());
+		assetDTO.setMemory(asset.getMemory());
+		assetDTO.setHarddisk(asset.getHardDisk());
+		assetDTO.setFileName(asset.getFileName());
+		assetDTO.setFileUrl(asset.getFileUrl());
+		assetDTO.setFileContentType(asset.getFileContentType());
+		assetDTO.setShiftAFileContentType(asset.getShiftAFileContentType());
+		assetDTO.setShiftAFileName(asset.getShiftAFileName());
+		assetDTO.setShiftAFileUrl(asset.getShiftAFileUrl());
+		assetDTO.setShiftBFileContentType(asset.getShiftBFileContentType());
+		assetDTO.setShiftBFileName(asset.getShiftBFileName());
+		assetDTO.setShiftBFileUrl(asset.getShiftBFileUrl());
+		assetDTO.setEmployeesList(employeesList);
+		assetDTO.setShiftAEmpName(asset.getShiftAEmpName());
+		assetDTO.setShiftBEmpName(asset.getShiftBEmpName());
+		assetDTO.setName(asset.getName());
+		assetDTO.setDescription(asset.getDescription());
+		if(asset.getIssueDate() != null){
+		assetDTO.setIssueDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),asset.getIssueDate()));
+		}else{
+			assetDTO.setIssueDate("");
+		}
+		return assetDTO;
 	}
 	
 	
@@ -469,9 +541,10 @@ public class BackOfficeRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson = null;
-		StringBuilder name = new StringBuilder();
+		
 		List<AssetCategory> assetCategoryList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
 		for(AssetCategory assetCategory : assetCategoryList){
+			StringBuilder name = new StringBuilder();
 			User user = userService.getUserByUserCode(assetCategory.getCreatedBy());
 			assetCategory.setCreatedUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			assetCategory.setOrgLocationId(assetCategory.getOrgLocations().getId());
@@ -513,30 +586,52 @@ public class BackOfficeRestController {
 		}
 
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
-	   public String addCategoryAssets(@RequestParam(value="json", required=false) String json,@RequestParam(value="assetId", required=false) String assetId,MultipartHttpServletRequest request) throws Exception {
+	   public String addCategoryAssets(AssetDTO assetDTO,@RequestParam(value="assetId", required=false) String assetId,HttpServletRequest request) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    
-		    String json1 = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(json1);
-			
-			assetService.saveAssetDetails(jsonObj, assetId, user, orgLocations, request);
+		    assetDTO.setStaticPath(staticPath);
+		    /*String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);*/
+		    assetDTO.setDateFormat(orgLocations.getDateFormat());
+			assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
 			
 		
 		   return "home";
 	    
 	   }
 	
+	@RequestMapping(value = "/validateAssetSno",  method = RequestMethod.POST)
+    public @ResponseBody Boolean validateAssetSno(@RequestParam(value="assetSno", required=false) String assetSno, @RequestParam(value="assetId", required=false) Long assetId,
+    		HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       Asset asset=null;
+	       if(null != assetId){
+	        asset = assetService.getAssetByAssetSnoAndId(assetSno, assetId, orgLocation.getId());
+	       }
+	       Boolean flag = false;
+		    if(asset == null){
+		    	flag =  assetService.validateAssetId(assetSno, orgLocation.getId());
+		    	
+		    }
+			return flag;
+		 
+	    }
+	
 	@RequestMapping(value = "/validateCategoryName" , method = RequestMethod.GET)
-	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,HttpServletRequest request) throws Exception {
+	   public Boolean validateCategoryName(@RequestParam(value="categoryName", required=false) String categoryName,
+			   @RequestParam(value="categoryId", required=false) String categoryId,
+			   HttpServletRequest request) throws Exception {
 			
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    
-			
-			Boolean flag = assetCategoryService.validateCategoryName(categoryName,orgLocations.getId());
-			
-		
+		    AssetCategory assetCategory = null ;
+			if(!categoryId.isEmpty()){
+				assetCategory = assetCategoryService.getAssetCategoryByCategoryIdAndLocationId(categoryName,Long.parseLong(categoryId),orgLocations.getId());
+			}
+			Boolean flag = false;
+			if(assetCategory == null){
+				 flag = assetCategoryService.validateCategoryName(categoryName,orgLocations.getId());	
+			}
 		   return flag;
 	    
 	   }

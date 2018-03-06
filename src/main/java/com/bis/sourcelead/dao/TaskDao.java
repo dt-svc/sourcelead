@@ -31,4 +31,5 @@ public interface TaskDao {
 	
 	List<Tasks> getTasksListOnboardingId(Long onboardingId)throws Exception;
 
+	List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(Long orgLocationId,Long userId,Long vendorOnboardingId)throws Exception;
 }
