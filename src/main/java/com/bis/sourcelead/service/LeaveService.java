@@ -73,4 +73,6 @@ public interface LeaveService {
 	Leave getLeaveByLeaveUUId(String leaveUUID);
 	
 	File getLeaveExport(OrgLocations orgLocations, LeaveDTO leaveDTO) throws Exception;
+	
+	List<Leave> getAllLeave();
 }

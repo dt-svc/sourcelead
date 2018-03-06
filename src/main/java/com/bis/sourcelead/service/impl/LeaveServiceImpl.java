@@ -3,11 +3,8 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -1656,5 +1653,10 @@ public class LeaveServiceImpl implements LeaveService{
 			writeRow.createCell(7).setCellValue(leaveDto.getBalanceleaves());
 	return createExcelsheet;
 }
+
+	@Override
+	public List<Leave> getAllLeave(){
+		return leaveDao.getAllLeave();
+	}
 
 }
