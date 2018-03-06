@@ -31,10 +31,12 @@ import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.SourceleadFormSections;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.ClientCustomFieldDataService;
+//import com.bis.sourcelead.service.ContractCustomFieldDataService;
 import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.ProjectCustomFieldDataService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormFieldsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -77,6 +79,12 @@ public class CustomFormRestController {
 	@Autowired
 	private ClientCustomFieldDataService clientCustomFieldDataService;
 	
+	@Autowired
+	private ProjectCustomFieldDataService projectCustomFieldDataService;
+	
+	/*@Autowired
+	private ContractCustomFieldDataService contractCustomFieldDataService;
+	*/
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
@@ -192,14 +200,22 @@ public class CustomFormRestController {
 		 		 				jobData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
 		 		 			}
 		 		 			
-		 		 			
 		 		 		}
+		 		 		break;
+		 		 	case "project" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getProjectId() != null){
+		 		 			jobData =  projectCustomFieldDataService.getProjectCustomFieldDataByProjectId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectId());
+		 		 		}
+		 		 		
+		 		 		/*break;
+		 		 	case "contract" :
+		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getContractId() != null){
+		 		 			jobData =  contractCustomFieldDataService.getContractCustomFieldDataByContractId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectId());
+		 		 		*/
+		 		 		
 		 		 	}
 		 		 }
-		 		 
-		 		 
-				 
-		return jobData;
+		 		
+		  return jobData;
+		 }
 	}
-    
-}
