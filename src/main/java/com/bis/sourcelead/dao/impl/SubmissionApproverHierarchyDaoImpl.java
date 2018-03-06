@@ -1460,6 +1460,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	   
 	    if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){int count = 0;
 	    	for(SubmissionApproverHierarchy sah : submissionApproverHierarchyList){
+	    		    if(sah.getSubmissionId().getEndDate().before(startDate))
+	    		    	continue;
 		    		if(count == 0){
 		    			submissionApproverHierarchy = sah;
 		    		}
@@ -2175,7 +2177,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ " left join fetch hierarchy.projectClientsId pc left join fetch sah.submissionId submission  "
 				+ "   left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc  "
 				+ "  where pj.id = :projectId and mc.id = :masterCandidateId and sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate"
-				+ "  and pc.orgLocationsId.id = :locationId and (pc.level IN(select max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = submission.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"') OR pc.level IN(select min(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.submissionId.id = submission.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"'))"
+				+ "  and pc.orgLocationsId.id = :locationId and (pc.level IN(select max(subpc.level) from ProjectClients subpc where subpc.projectId.id = :projectId and subpc.orgLocationsId.org.orgType <> '"+Constants.GUEST+"') OR pc.level IN(select min(subpc.level) from ProjectClients subpc where subpc.projectId.id = :projectId and subpc.orgLocationsId.org.orgType <> '"+Constants.GUEST+"'))"
 				+ " ");
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy>  sahList=submissionApproverHierarchyListQuery.setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setLong("locationId", locationId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).list();

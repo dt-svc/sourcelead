@@ -498,6 +498,8 @@ public class Constants {
     public static final String NOTES_CONTRACTS = "Contracts";
     public static final String NOTES_BILLING = "Billing";
     public static final String NOTES_CONTACTS = "Contacts";
+    
+    public static final String SOURCELEAD_ADMIN_UNIQUE = "Sourcelead";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
 	public static final String ADMIN = "Admin";
@@ -1035,7 +1037,7 @@ public class Constants {
 	
 
 	public static final String[] TOP_TAKERS_LEAVE_HEADERS = { "Emp id", "Employee Name","Email id"," Leave Type", "Duration ", "No. of Days", "No. of Extra Days","Balance Leaves"}; 
-	public static final String LEAVE_DATA =  "Leave";
+	public static final String LEAVE_DATA =  "Leaves";
 	
 
 }

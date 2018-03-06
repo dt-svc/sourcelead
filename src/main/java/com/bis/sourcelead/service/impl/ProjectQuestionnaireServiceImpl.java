@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectQuestionnaireService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -48,6 +50,9 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	
 	@Autowired
 	ProjectApproverHierarchyDao projectApproverHierarchyDao;
+	
+	@Autowired
+	ProjectClientService projectClientService;
 	
 	@Autowired
 	UserDao userDao;
@@ -415,6 +420,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	
 	  private void sendEmailToProjectManager(Projects projects, User loginUser, User projectManager, OrgLocations loginOrgLocation, String loginOrgCode,String teamMembersTable) throws Exception {
 		  	 
+		     ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(),projects.getOrgLocationsId().getId());
 		  	 StringBuilder fromNameBuilder=new StringBuilder();
 		     EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(projectManager.getFirstName());
@@ -464,7 +470,8 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgCode);
 			//String url = null;
-			String actionLink = "";
+			StringBuilder actionLinkBuilder = new StringBuilder();
+			String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+pc.getUuid()).toString();
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
 		}
 }

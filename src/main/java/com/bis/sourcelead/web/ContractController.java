@@ -160,28 +160,31 @@ public class ContractController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_CONTRACT','ROLE_ADD_NEW_CONTRACT','ROLE_ADD_EXISTING_CONTRACT')")
 	@RequestMapping(value = "/contractListbyStatus")
-	public ModelAndView contractListbyStatus(HttpServletRequest request, @RequestParam(value="status", required=false)String status, @RequestParam(value="contractType", required=false)String contractType) throws Exception {
+	public ModelAndView contractListbyStatus(HttpServletRequest request,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "contractType", required = false) String contractType) throws Exception {
 		logger.debug("display contract template page");
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
+
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+				.getAttribute("sessionData");
+		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Contract);
-		
+
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
-		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "",
+				"", "", "", user, userRoleName);
 		ModelAndView model = new ModelAndView();
-		if(!isNullOrEmpty(status)){
+		if (!isNullOrEmpty(status)) {
 			model.addObject("status", status);
 		}
-		if(!isNullOrEmpty(contractType)){
+		if (!isNullOrEmpty(contractType)) {
 			model.addObject("contractType", contractType);
 		}
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);
@@ -190,8 +193,7 @@ public class ContractController {
 	}
 	
 	
-	private boolean isNullOrEmpty(String status)
-	{
+	private boolean isNullOrEmpty(String status) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -689,17 +691,13 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		model.addObject("contract", contract);
-		if(StringUtils.isNotEmpty(contract.getContactUser().getLastName()) ) {
+		if(StringUtils.isNotBlank(contract.getContactUser().getLastName())) {
 			StringBuilder sb = new StringBuilder();
-			model.addObject("signatory",sb.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()));
-		}else {
-			model.addObject("signatory",contract.getContactUser().getFirstName());
-		}
-		if(StringUtils.isNotEmpty(contract.getContactUser().getLastName())) {
 			StringBuilder sbn = new StringBuilder();
-
+			model.addObject("signatory",sb.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()));
 			model.addObject("initial",sbn.append(contract.getContactUser().getFirstName().charAt(0)).append(contract.getContactUser().getLastName().charAt(0)));
 		}else {
+			model.addObject("signatory",contract.getContactUser().getFirstName());
 			model.addObject("initial",contract.getContactUser().getFirstName().charAt(0));
 		}
 
