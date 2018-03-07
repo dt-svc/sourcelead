@@ -10,11 +10,20 @@
  
 <script>
 $(document).ready(function() {
-	 var requirementId = '${requirementId}'; 
+	 var requirementId = '${requirementId}';
+	 var submissionId = '${submissionId}';
+	 var candidateId = '${candidateId}';
 	 var type = '${type}';
 	 if(type != null && type != '' && type != 'undefined'){
-			sideBar(requirementId,type);
+		 sideBar(requirementId,type);
 	 }
+	 
+ if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
+	 requirementPipeline(requirementId,type);
+	 }
+ if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+		 requirementPipeline(requirementId,type);
+		 }
 });	
 </script>
 <script>
@@ -473,6 +482,20 @@ function sideBar(requirementId,type){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
 					tabEnable('','offerMadeli');
+			 }else if(type == 'APPLICANTS'){
+				    
+				    requirementPipeline(requirementId,'all');
+					requirementStatusBar(requirementId,type);
+					
+					 var candidateId = '${candidateId}';
+					 var submissionId = '${submissionId}';
+					 
+					 if(candidateId != null && candidateId != '' && candidateId != 'undefined' && 
+							 submissionId != null && submissionId != '' && submissionId != 'undefined'){
+						 applicantQuickViewProfile(submissionId,candidateId); 
+						 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId); 
+						 document.getElementById('detailedView').click();
+					 }
 			 }
 			 else{
 				    requirementPipeline(requirementId,'all');
@@ -705,7 +728,6 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';

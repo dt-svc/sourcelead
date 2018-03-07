@@ -89,7 +89,7 @@ public class DataMigrationCommonRestController {
 			switch(dataMigrationCommonDTO.getTimesheetMode()){
 		    case "BiMonthly": noOfUnits=15;break;  
 		    case "Monthly": noOfUnits=31;break;
-		    case "MonthlyWeekWise": noOfUnits=5;break;  
+		    case "MonthlyWeekWise": noOfUnits=6;break;  
 		    case "Weekly": noOfUnits=7;break;
 		    }
 			formFields = new ArrayList<SourceleadFormFields>();

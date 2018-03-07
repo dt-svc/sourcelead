@@ -885,7 +885,8 @@ public class SubmissionsRestController {
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), iAdressArray,
 				new ArrayList<EmailAttachment>());
-		String actionLink="";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario);
 
 	}

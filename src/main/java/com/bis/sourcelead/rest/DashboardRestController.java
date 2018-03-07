@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.dto.DashboardCountsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
@@ -186,8 +187,8 @@ public class DashboardRestController {
 	
 	
 	
-	@RequestMapping(value = "/rest/getexpensesAndTimeSheetCount")
-	public ExpensesAndTimesheetDashBordCountDTO getExpensesAndTimeSheetCount(@RequestBody TimesheetExpenseEntryDetailsUtilDTO tedDTO,HttpServletRequest request) throws Exception {
+	//@RequestMapping(value = "/rest/getexpensesAndTimeSheetCount")
+	public ExpensesAndTimesheetDashBordCountDTO getExpensesAndTimeSheetCount(TimesheetExpenseEntryDetailsUtilDTO tedDTO,HttpServletRequest request) throws Exception {
 
 		ExpensesAndTimesheetDashBordCountDTO expensesAndTimesheetDashBordCountDTO = new ExpensesAndTimesheetDashBordCountDTO();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1078,6 +1079,57 @@ public class DashboardRestController {
 		}
 		
 		
+		/**
+		   * @author Venkat Kesav
+		   * @since  March 06 2018
+		   * @version 0.0.1
+		   * 
+		   * This method is used for getting Dashboard Counts By login User for mobile App
+		   *  
+		   * @return DashboardDTO 
+		   * 
+		   * @throws NullPointer
+		   */
+		@RequestMapping(value = "/rest/getDashboardCompact", method = RequestMethod.POST )
+		public DashboardCountsDTO getDashboardCompact(DashboardCountsDTO dashboardDTO, HttpServletRequest request) throws Exception {
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			long interviewCount = 0;
+			long taskCount = 0;
+			String userType = null;
+			
+			if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				userType = Constants.ADMIN;
+			}
+			Long totalInterviewCount = requirementInterviewHistoryService.getCountOfAllInterviewAssignedToLoginUser(loginOrgLocations, userType, user.getId(), user.getUserCode());
+			if(totalInterviewCount != null) {
+				interviewCount = totalInterviewCount;
+			}
+			
+			String status =  "myTask";
+			Long totalTaskCount = taskService.taskCountByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(), user.getId(), status);
+			if(totalTaskCount != null) {
+				taskCount = totalTaskCount;
+			}
+			dashboardDTO.setInterviewCount(interviewCount);
+			dashboardDTO.setTaskCount(taskCount);
+			TimesheetExpenseEntryDetailsUtilDTO tedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
+			ExpensesAndTimesheetDashBordCountDTO timesheetExpenses = getExpensesAndTimeSheetCount(tedDTO, request);			
+			dashboardDTO.setApprovedTimesheetCount(timesheetExpenses.getApprovedTimesheetCount());
+			dashboardDTO.setRejectedTimesheetCount(timesheetExpenses.getRejectedTimesheetCount());
+			dashboardDTO.setSavedTimesheetCount(timesheetExpenses.getSavedTimesheetCount());
+			dashboardDTO.setWaitingForApprovalTimesheetCount(timesheetExpenses.getWaitingForApprovalTimesheetCount());
+			dashboardDTO.setExpensesApprovedCount(timesheetExpenses.getExpensesApprovedCount());
+			dashboardDTO.setEmpExpensesReopenCount(timesheetExpenses.getEmpExpensesReopenCount());
+			dashboardDTO.setExpensesDraftCount(timesheetExpenses.getExpensesDraftCount());
+			dashboardDTO.setExpensesRejectCount(timesheetExpenses.getExpensesRejectCount());
+			dashboardDTO.setExpensesSubmittedForApprovalCount(timesheetExpenses.getExpensesSubmittedForApprovalCount());
+			return dashboardDTO;
+		}
+		
+		
 		@RequestMapping(value = "/getInterviewsandTasks")
 		public String getInterviewsandTasks(String dateRange, HttpServletRequest request) throws Exception {
 			
@@ -1162,13 +1214,13 @@ public class DashboardRestController {
 			int Days;
 			 switch (postedDateRange) {
 			 	 case "today" :
-			 		 numberOfDays = "1";
+			 		 numberOfDays = "0";
 			 		 break;
 			 	 case "yesterday" :
-			 		 numberOfDays = "2";
+			 		 numberOfDays = "1";
 			 		 break;
 			 	 case "week" :
-					 numberOfDays = "7";
+					 numberOfDays = "6";
 				      break;
 				 case "twoweeks" :
 					 Days  = (2 * 7);
@@ -1182,7 +1234,7 @@ public class DashboardRestController {
 					 numberOfDays = Integer.toString(Days);
 				     break;
 				 default:
-					 numberOfDays = "1";
+					 numberOfDays = "0";
 			 }
 			 
 			String resultJson;
