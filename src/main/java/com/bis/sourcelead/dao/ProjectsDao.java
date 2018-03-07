@@ -95,4 +95,6 @@ public interface ProjectsDao {
 	
 	List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
 
+	Projects getProjectByProjectName(String projectName) throws Exception;
+
 }
