@@ -110,6 +110,7 @@ function Immigration(){
 	         }; 
 		
 		if ($('#petitionTemplateTaskDetails').validate(false, validationSettings)) {
+		$("#immiTempId").val(immTemplId);
 		var formData = getFormData1("petitionTemplateTaskDetails");
 		$.ajax({
 		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateTaskDetails",
@@ -176,4 +177,19 @@ function Immigration(){
 			$("#newPetitionTemplateDiv").load("/app"+immiModulePath+"/loadNewPetitionPage?status=seven");
 		}
 	}// immigration end if don't required comment above code end here.
+	
+	this.savePetitionTemplateDetailsValues = function(){
+		 $.ajax({
+		       url: sourceleadUrl+immiModulePath+"/savePetitionTemplateDetailsValues?templateId="+immTemplId,
+		       type : "GET",
+		       /*data: templateId,*/
+		       success: function(data) {
+		    	  if(data == 'success'){
+		    		  if(data == "success"){
+		    			  window.location.href =sourceleadUrl+immiModulePath+"/viewImmigrationTemplateList"; // redirect to tempalte list.
+		    		  }
+		    	   }
+		       }
+		});
+	}
 }

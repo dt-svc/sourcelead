@@ -36,7 +36,7 @@ public interface ImmigrationTemplateDao {
 
 	ImmigrationTemplateForms getImmigrationTemplateFormsById(Long immigrationId);
 
-	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
+	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
 
 	ImmigrationTemplateTasks editImmigrationTaskList(String id);
 	
@@ -45,6 +45,12 @@ public interface ImmigrationTemplateDao {
 	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 	
 	void deleteAllPetitionTemplateDetailsById(Long templateId);
+
+	User getUserById(Long Id) throws Exception;
+
+	void deleteImmigrationTaskList(String id);
+
+	int savePetitionTemplateDetailsValues(String templateId);
 	
 	
 }

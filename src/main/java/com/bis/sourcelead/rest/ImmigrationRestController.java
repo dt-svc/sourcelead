@@ -353,7 +353,7 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 
 	@RequestMapping(value = { "/getTemplateTaskList" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
-			HttpServletRequest request, @RequestParam(value = "searchValue", required = false) String searchValue) {
+			HttpServletRequest request, @RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
 		ResponseList<ImmigrationTemplateDTO> immiTemplateList = new ResponseList<>();
 		String[] tableColumns = { "taskName", "assignedTo", "priority", "taskRepeat" };
 		int sortColumnIndex = 3; // by default sorting using updated date
@@ -372,23 +372,25 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 	public ImmigrationTemplateDTO editImmigrationTaskList(HttpServletRequest request,
 			@RequestParam(value = "id", required = false) String id) throws NumberFormatException, Exception {
 		ImmigrationTemplateDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
-		/*
-		 * List<UserRole> userRoleList =
-		 * userRoleService.getAllActiveUsersListByOrgLocationId(Long.parseLong(
-		 * templateDTO.getPetitionAssignedTo())); for(UserRole ur :userRoleList){
-		 * 
-		 * UserRoleDTO userRoleDTO = new UserRoleDTO(); StringBuilder userName = new
-		 * StringBuilder(); userRoleDTO.setUserId(ur.getUser().getId());
-		 * 
-		 * if(null != ur.getUser().getLastName()){
-		 * userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).append(
-		 * "").append(ur.getUser().getLastName()).toString()); }else{
-		 * userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).toString
-		 * ()); }
-		 * 
-		 * }
-		 */
 		return templateDTO;
+	}
+	
+	@RequestMapping(value = { "/deleteImmigrationTaskList" })
+	public void deleteImmigrationTaskList(HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id){
+		immigrationTemplateService.deleteImmigrationTaskList(id);
+	}
+	
+	@RequestMapping(value = { "/savePetitionTemplateDetailsValues" })
+	public String savePetitionTemplateDetailsValues(HttpServletRequest request,
+			@RequestParam(value = "templateId", required = false) String templateId){
+		int value = immigrationTemplateService.savePetitionTemplateDetailsValues(templateId);
+		String message = "failed";
+		if(value != 0) {
+			message = "success";
+			request.getSession().setAttribute("success", message);
+		}
+		return message;
 	}
 
 }
