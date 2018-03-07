@@ -20,10 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -250,5 +252,35 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCountOfAllInterviewAssignedToLoginUser(Long orgLocationsId, String userType, Long userId, String userCode) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = "";
+		Map<String, Object> params = new HashMap<String,Object>();
+		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+			subQuery = "and ((rih.submissionId.requirement.managerUserId.id =:userId OR rih.createdBy =:userCode) OR (rih.interviewId.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id = :userId  ))) ";
+			params.put("userId",userId);
+			params.put("userCode",userCode);
+			params.put("orgLocationsId",orgLocationsId);
+		}else{
+			params.put("orgLocationsId",orgLocationsId);
+		}
+		String subQueryCommon = "select count(*) from RequirementInterviewHistory rih  where rih.orgLocationId = :orgLocationsId and rih.submissionId.status = 1 ";
+		
+		String query = subQueryCommon + subQuery;
+		
+        Query queryExe = session.createQuery(query);
+        for (String str : queryExe.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationsId") || str.equalsIgnoreCase("userId")){
+				queryExe.setLong(str, (long) params.get( str ));
+			}
+			else{
+				queryExe.setParameter( str, params.get( str ) );
+			}
+        }
+		return (Long)queryExe.uniqueResult();
+	}
 }
