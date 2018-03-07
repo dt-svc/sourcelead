@@ -541,7 +541,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				invoiceDocument.setOrgLocation(orgLocation);
 				invoiceDocument.setInvoice(invoice);
 				if(fileInfo != null){
-					FileUploadUtil.moveFile(invoiceDTO.getStaticPath(), fileInfo, "invoiceDocuments");
+					FileUploadUtil.moveFile(staticPath, fileInfo, "invoiceDocuments");
 				}
 				invoiceDocumentSet.add(invoiceDocument);
 			}

@@ -51,7 +51,7 @@ function checkBox(){
 	}
 }
 </script>
-
+<div id="popUp"></div>
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -672,19 +672,19 @@ function populateInlineItemsGrid(){
 
 <div id="divInvoiceExpTd1" style="display: none; float: left;">
 	<div class="tbldata-dotdot-big">        
-	 <textarea placeholder="Description" class="form-control" rows="1" name="expenseInvoice[REPLACEROWID].description" id='REPLACEROWIDdescription'></textarea>     
+	 <textarea placeholder="Description" class="form-control" rows="1" name="expenseInvoice[REPLACEROWID].description" id='REPLACEROWIDdescription' data-validation="required validate_length length1-100" field-name="Description"></textarea>     
 	</div>
 </div>
 
 <div id="divInvoiceExpTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid" placeholder="Quantity" name="expenseInvoice[REPLACEROWID].quantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
+	   <input type="text" class="form-control input-sm valid" placeholder="Quantity" name="expenseInvoice[REPLACEROWID].quantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Quantity">  
 	 </div>
 </div>
 
 <div id="divInvoiceExpTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid allownumericwithdecimal" placeholder="Rate" name="expenseInvoice[REPLACEROWID].rate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
+	   <input type="text" class="form-control input-sm valid allownumericwithdecimal" placeholder="Rate" name="expenseInvoice[REPLACEROWID].rate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">  
 	 </div>
 </div>
 
@@ -767,8 +767,14 @@ function populateInlineItemsGrid(){
 <!-- Remove attachment Div Ids -->
 <script type="text/javascript">
 	function removeExpenseInvoiceRow(rowId) {
+	
+		if(rowId!=0)
+			{
+		$("input[name = 'invoiceExpMaxRowNumber']").val(rowId-1);
+			}
 		
 		 var rate = $("#"+rowId+"rate").val();
+		 
 		 var quantity = $("#"+rowId+"quantity").val();
 		 var subTotal = $("#inoviceTotal").val();
 		 if(quantity != ''){
@@ -1219,8 +1225,23 @@ function saveInvoice(saveType){
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	var maxTsRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
+	
+	
          if ($('#project_invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData("project_invoice_form");
+ 	 	  if(maxTsRowNum==0){
+	        	var result = "";
+	     		result = result +"	<div class='project_inn_mask'></div>";
+	     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+	     		result = result +"		<p>At least one Add column Receivables Line Item</p>";
+	     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	     		result = result +"	</div>";
+	     		$("#popUp").append(result);
+	     		$("#invoice_pop").slideDown(200);
+	     		$(".project_inn_mask").fadeIn(200);
+		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
 			  				if(data == "success"){
@@ -1233,9 +1254,12 @@ function saveInvoice(saveType){
 			  				}
 			  			   }); 
 		    	         return true; 
+		        }
          }else{
 	    		return false;
 	    	  } 
+         
+         
 	   
 }
 
@@ -1664,6 +1688,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 	
 	<script type="text/javascript">
 function cancel(){
+	$("#popUp").empty();
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
