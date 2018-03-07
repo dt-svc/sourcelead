@@ -1099,15 +1099,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus) {
+	public Integer getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus,Long orgLocationId) {
 		
         Session session = this.sessionFactory.getCurrentSession();
 		
 		//Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.projectClientsId.level = '1' ";
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
 		
-		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("+subQueryForMaxLevel+")) and  sah.submissionApprovalStatus = :submissionStatus and sah.hierarchyId.projectClientsId.level = '1' GROUP BY sah.submissionId.id" ;
-		List<Long> tslist =session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setString("submissionStatus", submissionStatus).list(); 
+		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("+subQueryForMaxLevel+")) and  sah.submissionApprovalStatus = :submissionStatus and sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId GROUP BY sah.submissionId.id" ;
+		List<Long> tslist =session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).list(); 
 		Integer count = 0;
 		if(tslist != null && !tslist.isEmpty()){
 			count = tslist.size();
@@ -1137,14 +1137,14 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus) {
+	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		//Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.projectClientsId.level = '1' ";
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
 				
-		String query = "Select Count(*) from  SubmissionApproverHierarchy sah where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("+subQueryForMaxLevel+")) and  sah.submissionStatus = :submissionStatus  and sah.hierarchyId.projectClientsId.level = '1' GROUP BY sah.submissionId.id" ;
-		List<Long> tslist =session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setString("submissionStatus", submissionStatus).list(); 
+		String query = "Select Count(*) from  SubmissionApproverHierarchy sah where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("+subQueryForMaxLevel+")) and  sah.submissionStatus = :submissionStatus  and sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId GROUP BY sah.submissionId.id" ;
+		List<Long> tslist =session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).list(); 
 		Integer count = 0;
 		if(tslist != null && !tslist.isEmpty()){
 			count = tslist.size();
