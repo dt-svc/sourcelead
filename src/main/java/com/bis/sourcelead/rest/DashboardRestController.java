@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
-import com.bis.sourcelead.dto.DashboardDTO;
+import com.bis.sourcelead.dto.DashboardCountsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
@@ -187,8 +187,8 @@ public class DashboardRestController {
 	
 	
 	
-	@RequestMapping(value = "/rest/getexpensesAndTimeSheetCount")
-	public ExpensesAndTimesheetDashBordCountDTO getExpensesAndTimeSheetCount(@RequestBody TimesheetExpenseEntryDetailsUtilDTO tedDTO,HttpServletRequest request) throws Exception {
+	//@RequestMapping(value = "/rest/getexpensesAndTimeSheetCount")
+	public ExpensesAndTimesheetDashBordCountDTO getExpensesAndTimeSheetCount(TimesheetExpenseEntryDetailsUtilDTO tedDTO,HttpServletRequest request) throws Exception {
 
 		ExpensesAndTimesheetDashBordCountDTO expensesAndTimesheetDashBordCountDTO = new ExpensesAndTimesheetDashBordCountDTO();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1091,7 +1091,7 @@ public class DashboardRestController {
 		   * @throws NullPointer
 		   */
 		@RequestMapping(value = "/rest/getDashboardCompact", method = RequestMethod.POST )
-		public DashboardDTO getInterviewsAndTasksList(DashboardDTO dashboardDTO, HttpServletRequest request) throws Exception {
+		public DashboardCountsDTO getDashboardCompact(DashboardCountsDTO dashboardDTO, HttpServletRequest request) throws Exception {
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1115,6 +1115,17 @@ public class DashboardRestController {
 			}
 			dashboardDTO.setInterviewCount(interviewCount);
 			dashboardDTO.setTaskCount(taskCount);
+			TimesheetExpenseEntryDetailsUtilDTO tedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
+			ExpensesAndTimesheetDashBordCountDTO timesheetExpenses = getExpensesAndTimeSheetCount(tedDTO, request);			
+			dashboardDTO.setApprovedTimesheetCount(timesheetExpenses.getApprovedTimesheetCount());
+			dashboardDTO.setRejectedTimesheetCount(timesheetExpenses.getRejectedTimesheetCount());
+			dashboardDTO.setSavedTimesheetCount(timesheetExpenses.getSavedTimesheetCount());
+			dashboardDTO.setWaitingForApprovalTimesheetCount(timesheetExpenses.getWaitingForApprovalTimesheetCount());
+			dashboardDTO.setExpensesApprovedCount(timesheetExpenses.getExpensesApprovedCount());
+			dashboardDTO.setEmpExpensesReopenCount(timesheetExpenses.getEmpExpensesReopenCount());
+			dashboardDTO.setExpensesDraftCount(timesheetExpenses.getExpensesDraftCount());
+			dashboardDTO.setExpensesRejectCount(timesheetExpenses.getExpensesRejectCount());
+			dashboardDTO.setExpensesSubmittedForApprovalCount(timesheetExpenses.getExpensesSubmittedForApprovalCount());
 			return dashboardDTO;
 		}
 		
