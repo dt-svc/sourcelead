@@ -10,7 +10,6 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -31,7 +30,7 @@ public interface ImmigrationTemplateService {
 	
 	List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
+	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
 
 	ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception;
 	
@@ -40,5 +39,9 @@ public interface ImmigrationTemplateService {
 	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 	
 	void deleteAllPetitionTemplateDetailsById(Long templateId);
+
+	void deleteImmigrationTaskList(String id);
+
+	int savePetitionTemplateDetailsValues(String templateId);
 	
 }

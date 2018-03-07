@@ -11,6 +11,8 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 
 	private Long id;
 
+	private Long templateId;
+	
 	private String templateName;
 
 	private String templateDescription;
@@ -66,6 +68,14 @@ public class ImmigrationTemplateDTO extends SearchDTO implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		this.templateId = templateId;
 	}
 
 	public String getTemplateName() {

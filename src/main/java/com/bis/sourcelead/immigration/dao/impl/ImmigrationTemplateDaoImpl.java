@@ -1,13 +1,10 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
-import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.h2.engine.SysProperties;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,18 +23,14 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplateView;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ScheduleMaintenance;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 /**
@@ -253,11 +246,27 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		ImmigrationTemplateForms immigrationTemplateForms = (ImmigrationTemplateForms) session.get(ImmigrationTemplateForms.class, immigrationId);
 		return immigrationTemplateForms;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getUserById(Long Id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> users = new ArrayList<User>();
+		logger.debug("getUserById start");
+		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		logger.debug("getUserById end");
+		if (users.size() > 0) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+   	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
-			String searchValue) {
+			String searchValue) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
@@ -266,9 +275,9 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
-		 query1.append(" where (itt.taskName like '%" + searchValue + "%' )")
+		 query1.append(" AND ((itt.taskName like '%" + searchValue + "%' )")
 		 	.append("OR (itt.priority like '%" + searchValue + "%')")
-			.append("OR (itt.taskRepeat like '" + searchValue + "%')");
+			.append("OR (itt.taskRepeat like '" + searchValue + "%'))");
 			
 		}
 		//usertList sorting order
@@ -276,10 +285,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		if(StringUtils.isNotBlank(templateDTO.getSortColumn())) {
 				sortingQry = " order by itt."+ templateDTO.getSortColumn() +" "+templateDTO.getSortOrder();
 		}
-		String listQuery = "from ImmigrationTemplateTasks itt";
+		String listQuery = "from ImmigrationTemplateTasks itt where status = 1 ";
 		immigrationTemplateTasks = session.createQuery(listQuery+query1+sortingQry).list();
 		String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt";
-		countlist = session.createQuery(listQueryCount+query1).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
+		countlist = session.createQuery(listQueryCount).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
 		int totalCount = 0;
 		if (templateDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {
@@ -296,10 +305,21 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		for(ImmigrationTemplateTasks source : immigrationTemplateTasks) {
 			ImmigrationTemplateDTO target = new ImmigrationTemplateDTO();
 			BeanUtils.copyProperties(source, target);
+			target.setTemplateId(source.getImmigrationTempId().getId());
 			if(source.getAssignToCandidate() != null) {
 				target.setAssignedTo(Constants.CANDIDATE);
 			}else if(source.getAssignToUsers() != null) {
-				target.setAssignedTo(source.getAssignToUsers());
+				String userIds[] = source.getAssignToUsers().split(",");
+				StringBuilder userNames = new StringBuilder();
+				for(int i=0;i<userIds.length;i++) {
+					
+					User user = getUserById(Long.parseLong(userIds[i]));
+					userNames.append(user.getFullName());
+					if(!(i==(userIds.length-1))) {
+						userNames.append(", ");
+					}
+				}
+				target.setAssignedTo(userNames.toString());
 			}
 			maintenanceDTOs.add(target);
 		}
@@ -430,5 +450,26 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			//System.out.println(" updated ImmigrationTemplateForms records count : " + result);
 			logger.debug(" updated ImmigrationTemplateForms records count : " + result);
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteImmigrationTaskList(String id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryString = "UPDATE ImmigrationTemplateTasks SET status = 0 where id= :templateId";
+		Query query = session.createQuery(queryString);
+		query.setLong("templateId", Long.parseLong(id.trim()));
+		int result = query.executeUpdate();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int savePetitionTemplateDetailsValues(String templateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryString = "UPDATE ImmigrationTemplate SET status = 1 where id= :templateId";
+		Query query = session.createQuery(queryString);
+		query.setLong("templateId", Long.parseLong(templateId));
+		int result = query.executeUpdate();
+		return result;
 	}
 }
