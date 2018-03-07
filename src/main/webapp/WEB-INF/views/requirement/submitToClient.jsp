@@ -40,7 +40,7 @@ function submitToClient(requirementId){
 		        
 	           result = result + '     <div class="clearfix"></div>';
 	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table scroll_table mt40">';
+	           result = result + '   <div class="require_wrap_table scroll_table mt40 tableData">';
 	           result = result + '     <table id="SCPagination"  class="display" cellspacing="0" width="100%">';
 	           result = result + '       <thead>';
 	           result = result + '         <tr>';
@@ -207,7 +207,6 @@ function validateRate(evt, rateId) {
 function SCpagination(){  
     $('#SCPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"bPaginate": false,
     	"bLengthChange": false,
     	"bDestroy": true,

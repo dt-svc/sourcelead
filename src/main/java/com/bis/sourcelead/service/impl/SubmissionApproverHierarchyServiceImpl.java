@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -47,7 +48,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
     ProjectApproverHierarchyDao projectApproverHierarchyDao;
 	
 	@Autowired
-	TimesheetSubmissionsService timesheetSubmissionsService;
+	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -222,7 +223,10 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
-				String actionLink = "";
+				StringBuilder actionLinkBuilder = new StringBuilder();
+				//timesheetApprovalPopUpByProjectMemberId('19-02-2018To25-02-2018','20','8','64','16.0','approver');
+				//timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from)  
+				String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?notifyLink=notifyLink&currentTimeFrequency="+timesheetFrequency+"&projectId="+clientProjectMember.getProjects().getId()+"&projectMemberId="+clientProjectMember.getId()+"&masterCandidateId="+clientProjectMember.getMasterCandidateId().getId()+"&totalHours="+totalHours+"&from=approver").toString();
 				emailScenerioUtil.sendNotification(actionLink, loginUser, pah.getApproverUserId(), orgLocations, notificationScenario);
 			 }
 	}
@@ -245,6 +249,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
 				 ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
+				 
+				 String[] frequency = timesheetFrequency.split("To");
+			 	 String weekStartDate = frequency[0].trim();
+				 
+				 TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissionsByMemberIdAndStartDate(projectMemberId,commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), weekStartDate));
 				 
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -274,17 +283,22 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				 }
 				 
 				 
-				 
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-				 
+				 String actionLink = "";
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 if(null != type && "accept".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+					 StringBuilder actionLinkBuilder = new StringBuilder();
+					 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?notifyLink=notifyLink&currentTimeFrequency="+timesheetFrequency+"&projectId="+projectMembers.getProjects().getId()+"&projectMemberId="+projectMemberId+"&masterCandidateId="+projectMembers.getMasterCandidateId().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver").toString();
+						
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION); 
+					 StringBuilder actionLinkBuilder = new StringBuilder();
+					 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?notifyLink=notifyLink&currentTimeFrequency="+timesheetFrequency+"&projectId="+projectMembers.getProjects().getId()+"&projectMemberId="+projectMemberId+"&masterCandidateId="+projectMembers.getMasterCandidateId().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver").toString();
+					
 				 }
 				 
 				
@@ -305,7 +319,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
-				String actionLink = "";
 				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLocations, notificationScenario);
 	}
 
