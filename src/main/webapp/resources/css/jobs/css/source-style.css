@@ -1714,3 +1714,13 @@ label.test{
 } 
 
 
+.jobAddSear {
+}
+.jobAddSear input {
+	width:60% !important; float: left !important;
+}
+.jobAddSear select {
+	width:40% !important; float: left !important;
+}
+
+
