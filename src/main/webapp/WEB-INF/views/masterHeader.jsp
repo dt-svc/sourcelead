@@ -258,7 +258,7 @@ function getNotificationsByuserId(){
 				}
 				result = result + ' </span> </div>';
 				result = result + '<div class="msg-content">';
-				result = result + ' <a href="#"><p>'+opt.body+'</p>';
+				result = result + ' <a href="<c:url value="/app/notificationsList"/>"><p>'+opt.body+'</p>';
 				/* result = result + ' <c:out value='+userId+' />'; */
 				result = result + ' <span>'+opt.calDays+'</span></a> ';
 				result = result + '</div>';

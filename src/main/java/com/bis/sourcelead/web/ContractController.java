@@ -160,24 +160,31 @@ public class ContractController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_CONTRACT','ROLE_ADD_NEW_CONTRACT','ROLE_ADD_EXISTING_CONTRACT')")
 	@RequestMapping(value = "/contractListbyStatus")
-	public ModelAndView contractListbyStatus(HttpServletRequest request) throws Exception {
+	public ModelAndView contractListbyStatus(HttpServletRequest request,
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "contractType", required = false) String contractType) throws Exception {
 		logger.debug("display contract template page");
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
+
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+				.getAttribute("sessionData");
+		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Contract);
-		
+
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
-		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "",
+				"", "", "", user, userRoleName);
 		ModelAndView model = new ModelAndView();
-		
-		
+		if (!isNullOrEmpty(status)) {
+			model.addObject("status", status);
+		}
+		if (!isNullOrEmpty(contractType)) {
+			model.addObject("contractType", contractType);
+		}
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);
@@ -186,6 +193,11 @@ public class ContractController {
 	}
 	
 	
+	private boolean isNullOrEmpty(String status) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/**
 	 * display add new contract  page
 	 * @return model
