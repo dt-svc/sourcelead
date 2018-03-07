@@ -1192,7 +1192,7 @@ $(document).ready(function () {
                <c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	              <c:if test="${sectionOrder.index == 1}">
-	                  <div id="customDiv${section.id}"   ${section.isDefaultVisible}></div>
+	                  <div id="customDiv${section.id}" name="fieldVisible" data-visible="${section.isDefaultVisible}"></div>
 	               </c:if>
 	            </c:forEach>
 	         </c:if>
@@ -1528,6 +1528,24 @@ $(document).ready(function () {
 </div> 
 
 <script>
+function changeValidationType() {
+	var isVisible	= $("div[name=fieldVisible]").attr("data-visible");
+	
+	if(isVisible == 'N'){
+		$("div[name=fieldVisible] input").each(function() {
+			if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
+				$(this).attr('data-validation-optional', 'true');
+				$(this).removeAttr('data-validation');
+			} else if($(this).attr('data-validation-optional')) {
+				$(this).attr('data-validation', 'required');
+				$(this).removeAttr('data-validation-optional');
+			}
+		});
+	}
+}
+</script>
+
+<script>
 function getCustomDependentField(sectionId){
 	var requirementId = '${requirement.id}';
 	 $.ajax({
@@ -1536,6 +1554,7 @@ function getCustomDependentField(sectionId){
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
+		        	changeValidationType();
 				 }
 		  });
 }
@@ -2402,7 +2421,8 @@ $("#clientSubmissionForm").empty().trigger('chosen:updated'); */
 var existingValue = document.getElementById('isClientJob').value;
 
 	if (document.getElementById('isClientJob').checked){
-		 $("#isClientJob").val('Y');
+		changeValidationType();
+		$("#isClientJob").val('Y');
 		 
 		// $("#addClientId").val('');
 		 $('#addClientId').trigger("chosen:updated");
@@ -2433,6 +2453,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $('#clientSubmissionForm').trigger("chosen:updated");
 		 existingValue = document.getElementById('isClientJob').value;
 	}else {
+		changeValidationType();
 		 $("#isClientJob").val('N');
 		 
 		 $("#addClientId").val('');

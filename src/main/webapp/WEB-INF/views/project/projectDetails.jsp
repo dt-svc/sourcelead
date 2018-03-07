@@ -481,7 +481,6 @@ function editClientProjectDetails(projectId){
                         var allowOffShore  = "";
                         var allowTimeEntryAfterDeadLine = "";
                         var allowBidding = "";
-                        
                         <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	              		  var sectionId = '${section.id}';
 	              		  preapareCustomFieldDetails(projectId,sectionId);
@@ -836,7 +835,7 @@ function editClientProjectDetails(projectId){
 						result = result + '</div>';
 						
 						result = result + '</div>';
-						
+						result = result + '<div class="clearfix"></div>';
 						result = result + '<div id="customFieldDataId"></div>';
 						
 						result = result + '<div class="clearfix"></div>';

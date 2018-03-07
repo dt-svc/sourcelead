@@ -1745,6 +1745,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    }
 				
 			    
+			    if(projectDTO.getCustomFormData() !=null) {
+					for( CustomFormFieldDTO customFields:projectDTO.getCustomFormData()) {
+						if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+							ProjectCustomFieldData projectsCustomFields = null;
+							if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+								projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+							}else {
+								projectsCustomFields = new ProjectCustomFieldData();
+							}
+						projectsCustomFields.setProjects(projects);
+						OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+						projectsCustomFields.setOrglocationsFormFields(orgFormField);
+						projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+						projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
+						}
+						
+					}	
+				}
+			    
+			    
 			  /*  Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 				projects.setProjectMembers(projectMemberList);*/
 				 /*
