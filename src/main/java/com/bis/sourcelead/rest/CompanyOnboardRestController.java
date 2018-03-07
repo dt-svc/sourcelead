@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
+import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
@@ -191,7 +194,8 @@ public class CompanyOnboardRestController {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String result = orglocationSignatoryService.addOrglocationSignatory(orglocationSignatoryDTO, user, loginOrgLocation);
-		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,loginOrgLocation);
+		if(!"orgSettings".equalsIgnoreCase(orglocationSignatoryDTO.getSignatoryFromType()))
+			commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,loginOrgLocation);
 		return result;
 	}
 	
@@ -207,7 +211,36 @@ public class CompanyOnboardRestController {
 		return "success";
 	}
 	
+	@RequestMapping(value = "/getAllSignatoriesByLocationId", method = RequestMethod.GET)
+	public @ResponseBody List<OrglocationSignatoryDTO> getAllSignatoriesByLocationId(HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrglocationSignatoryDTO> signatoryList = orglocationSignatoryService.getAllSignatoriesByLocationId(loginOrgLocation.getId());
+		return signatoryList;
+	}
 	
+	@RequestMapping(value = "/getSignatoriesByUUID", method = RequestMethod.GET)
+	public @ResponseBody OrglocationSignatoryDTO getSignatoriesByUUID(OrglocationSignatoryDTO orglocationSignatoryDTO,HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByUUID(orglocationSignatoryDTO.getUuid());
+		OrglocationSignatoryDTO signDto = new OrglocationSignatoryDTO();
+		signDto.setUuid(signatory.getUuid());
+		signDto.setAssociateId(signatory.getUserId().getId());
+		signDto.setAuthorizedType(Arrays.asList(signatory.getAuthorizedType().split("\\s*,\\s*")));
+		signDto.setAuthorizedAmount(signatory.getAuthorizedAmount().toString());
+		return signDto;
+	}
 	
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
+	@RequestMapping(value = "/deactivateSignatory", method = RequestMethod.POST)
+	public String deactivateSignatory(@RequestParam(value = "uuid", required = true) String uuid,
+			@RequestParam(value = "status", required = true) int status,HttpServletRequest request) throws Exception
+	{
+		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByUUID(uuid);
+		signatory.setStatus(Constants.RECORD_INACTIVE);
+		orglocationSignatoryService.saveOrglocationSignatory(signatory);
+		return "success";
+	}
 	
 }
