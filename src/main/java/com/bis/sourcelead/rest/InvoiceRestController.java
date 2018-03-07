@@ -1095,7 +1095,16 @@ public class InvoiceRestController {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+//		Invoice invoice2=getInvoicetByParentId(invoice.getId());
+		 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+invoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
+			 }else{
+				 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+invoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
+				 
+			 }
+
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		}
 	
@@ -1182,7 +1191,14 @@ public class InvoiceRestController {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+		 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+invoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
+			 }else{
+				 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+invoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
+				 
+			 }
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		}
 	

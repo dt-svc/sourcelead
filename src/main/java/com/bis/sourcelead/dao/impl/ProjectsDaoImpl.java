@@ -639,9 +639,12 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setMaxResults(projectsDTO.getLength());
 			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				filterCount = projectsList.size();
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).list();
+				filterCount = countlist.iterator().next().intValue();
 			}
 		}
 		else if(clientIdsList.size() > 0 && projectStatusList.size() == 0){
@@ -656,9 +659,12 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setMaxResults(projectsDTO.getLength());
 			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				filterCount = projectsList.size();
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).list();
+				filterCount = countlist.iterator().next().intValue();;
 			}
 		}
 		else if(projectStatusList.size() > 0 && clientIdsList.size() > 0){
@@ -673,9 +679,12 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setMaxResults(projectsDTO.getLength());
 			queryObj.setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				filterCount = projectsList.size();
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+")").setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).list();
+				filterCount = countlist.iterator().next().intValue();
 			}
 		}else{
 			query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+approverQuery+") "+projectModeQuery+" ";
@@ -689,9 +698,12 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			queryObj.setMaxResults(projectsDTO.getLength());
 			queryObj.setLong("orgLocationsId", orgLocationsId).list();
 			projectsList = queryObj.list();
-			countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).list();
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				filterCount = projectsList.size();
+				countlist = session.createQuery("select count(*) " + query+ "and "+"("+query1.toString()+")").setLong("orgLocationsId", orgLocationsId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query).setLong("orgLocationsId", orgLocationsId).list();
+				filterCount = countlist.iterator().next().intValue();
 			}
 		}
 		
@@ -1138,6 +1150,20 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectName = :projectName ";
 		Collection<Projects> projectsList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setString("projectName", projectName).list();
 
+		Projects projects = null;
+		if (projectsList != null && projectsList.size() > 0) {
+			projects = (Projects) projectsList.iterator().next();
+		}
+		return projects;
+	}
+	
+	
+	@Override
+	@Transactional
+	public Projects getProjectByProjectName(String projectName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.projectName = :projectName ";
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setString("projectName", projectName).list();
 		Projects projects = null;
 		if (projectsList != null && projectsList.size() > 0) {
 			projects = (Projects) projectsList.iterator().next();

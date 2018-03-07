@@ -39,7 +39,9 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -56,6 +58,8 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AssetCategoryService;
+import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -118,6 +122,9 @@ public class DataMigrationCommonUtil {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private AssetService assetService;
+	
 	/*@Autowired
 	private CalendarUtil calendarUtil;*/
 	
@@ -139,6 +146,8 @@ public class DataMigrationCommonUtil {
 	@Autowired
 	private TimeSheetDayEntriesDao timesheetDayEntriesDao;
 	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -529,7 +538,7 @@ public class DataMigrationCommonUtil {
 				Projects project = null;
 					try {
 						if (!dataMigrationDTOJsonCopy.get("project").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("project").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("project").toString().equalsIgnoreCase("undefined")) {
-							project = projectsService.getProjectByOrgLocationsIdAndProjectName(orgLocation.getId(),dataMigrationDTOJsonCopy.get("project").toString());
+							project = projectsService.getProjectByProjectName(dataMigrationDTOJsonCopy.get("project").toString());
 							if(project != null) {
 								dataMigrationDTOJsonCopy.put((String) dataMigrationDTOJsonCopy.get("project").toString(), project.getProjectName());
 							}else {
@@ -605,7 +614,8 @@ public class DataMigrationCommonUtil {
 						 if(projectTask != null) {
 							 User employeeUser =  userService.findByEmail(importTimeSheet.getEmployeeEmail());
 							if(employeeUser != null) {
-							 ProjectMembers projectMember = projectMembersService.getProjectMemberByEmpIdAndProjectId(employeeUser.getId(), project.getId());
+							  Employees employee = employeesService.getEmployeeByUserId(employeeUser.getId());
+							 ProjectMembers projectMember = projectMembersService.getProjectMemberByEmpIdAndProjectId(employee.getId(), project.getId());
 							 if(projectMember != null && projectMember.getProjectMemberCandidteId().getEmail().equalsIgnoreCase(importTimeSheet.getEmployeeEmail())) {
 								 HashMap<String,Date> memberFrequency = projectMembersHistoryService.getAssignDateandEndDateByProjectMemberId(projectMember.getId());
 								 Date assignDate = memberFrequency.get("STARTDATE");
@@ -639,17 +649,15 @@ public class DataMigrationCommonUtil {
 										errorSet.put("actualStartDate","please provide proper month and Year to add records."); 
 									}
 							 }else {
-								 errorSet.put(dataMigrationDTOJsonCopy.getString("employeeEmail"),"not a valid peoject member.");
+								 errorSet.put(dataMigrationDTOJsonCopy.getString("employeeEmail"),"not a valid project member.");
 							 }
 						  }else {
 							  errorSet.put("employeeEmail","not record exists with "+dataMigrationDTOJsonCopy.getString("employeeEmail"));
 						  }
 						}
 					}else {
-						
+						errorSet.put("taskName", "required task name not found");
 					}
-				}else {
-						
 				}
 			}
 			
@@ -816,6 +824,14 @@ private void validateTimesheetMonthWeeklyFrequency(JSONObject dataMigrationDTOJs
 			errorSet.put("week5","week5 hours cannot be more then 120Hrs");
 		}
 	}
+	if (!dataMigrationDTOJsonCopy.get("week6").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("week6").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("week5").toString().equalsIgnoreCase("undefined")) {
+		Matcher matcherWeek = patternWeekCheck.matcher(dataMigrationDTOJsonCopy.get("week6").toString());
+		if(matcherWeek.matches() == true && (Float.parseFloat(dataMigrationDTOJsonCopy.get("week6").toString()) < 120L)) {
+			dataMigrationDTOJsonCopy.put("week6",dataMigrationDTOJsonCopy.get("week5").toString());
+		}else {
+			errorSet.put("week6","week6 hours cannot be more then 120Hrs");
+		}
+	}
 	
 }
 
@@ -845,18 +861,52 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 						for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 							 Date  key = format.parse(entry.getKey());
 							 Date  value = format.parse(entry.getValue());
-				    		 int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
-				    		  //avgHours
-				    		 Date frequencyStartDate = monthStartDate;
-							 Date frequencyEndDate = monthEndDate;
-				    		 float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
-				    		 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-				    		 System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+							 Date subStartDate = key;
+							 Date subEndDate = value;
+							 Date frequencyStartDate = null;
+							 Date frequencyEndDate =  null;
+							 if(project.getInvoiceFrequency().equalsIgnoreCase("Weekly")){
+								 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
+						    	 String day_Of_Date = simpleDateformat.format(key);
+						    	 if(!day_Of_Date.equalsIgnoreCase("MON")) {
+						    		  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
+									  tsCal.setLenient(false);
+									  tsCal.setTime(key);
+									  subStartDate= CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON",orgLocation.getDateFormat()).getTime();
+						    	 }
+						    	 
+						    	 String last_day_Of_Date = simpleDateformat.format(value);
+						    	 if(!last_day_Of_Date.equalsIgnoreCase("SUN")) {
+						    		  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
+									  tsCal.setLenient(false);
+									  tsCal.setTime(value);
+									  subEndDate= CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN",orgLocation.getDateFormat()).getTime();
+						    	 }
+						    	 //avgHours
+					    		  frequencyStartDate = subStartDate;
+								  frequencyEndDate = subEndDate;
+								  
+								  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+					    		  float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+						    		 
+							 } else if(project.getInvoiceFrequency().equalsIgnoreCase("Monthly")){
+								  frequencyStartDate = startDate;
+								  frequencyEndDate = endaDate;
+								  
+								   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+						    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+						    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+						    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+							 }
+							 
+							
 				    		 count++;
 						}
 					}
 			 }else if(timeFrequency.equalsIgnoreCase("Weekly")) {
-		    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,startDate,endaDate,0f,user,orgLocation,startDate,endaDate,importTimeSheet,timeFrequency);
+		    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,startDate,endaDate,startDate,endaDate,0f,user,orgLocation,startDate,endaDate,importTimeSheet,timeFrequency);
 			 }else if(timeFrequency.equalsIgnoreCase("Monthly") || timeFrequency.equalsIgnoreCase("BiMonthly")) {
 				 int flag = 0;
 				 if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
@@ -889,7 +939,7 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								 weekStartDate = CalendarUtil.getNextDate(weekStartDate);
 								 flag++;
 							 }
-							 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,0f,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+							 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,key,value,0f,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
 				    		 System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 						}
 					}
@@ -902,12 +952,12 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 
 		
 
-private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUID,ProjectMembers projectMember, Date actualStartDate, Date actualEndDate,float averageHours, User loginUser, OrgLocations orgLocation, Date frequencyStartDate, Date frequencyEndDate, ImportTimesheetDTO importTimeSheet, String timeFrequency) throws Exception {
-	 TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate,actualEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
+private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUID,ProjectMembers projectMember, Date subStartDate, Date subEndDate,Date actualStartDate, Date actualEndDate,float averageHours, User loginUser, OrgLocations orgLocation, Date frequencyStartDate, Date frequencyEndDate, ImportTimesheetDTO importTimeSheet, String timeFrequency) throws Exception {
+	 TimesheetSubmissions timesheetSubmissions  = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(subStartDate,subEndDate,projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
  	if(timesheetSubmissions == null){
  		timesheetSubmissions =  new TimesheetSubmissions();
-	    	timesheetSubmissions.setStartDate(actualStartDate);
-	    	timesheetSubmissions.setEndDate(actualEndDate);
+	    	timesheetSubmissions.setStartDate(subStartDate);
+	    	timesheetSubmissions.setEndDate(subEndDate);
 	    	timesheetSubmissions.setProjectMembers(projectMember);
 	    	timesheetSubmissions.setProjects(projectMember.getProjects());
 	    	timesheetSubmissions.setMasterCandidateId(projectMember.getMasterCandidateId());
@@ -1029,7 +1079,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						timesheetDayEntries.setTotalHours("00:00");
 					}
 					
-					
+					timesheetDayEntries.setStatus(1);
 					timesheetDayEntries.setTaskType(taskType);
 					timesheetDayEntries.setTimesheetSubmissions(timesheetSubmissions);
 					timesheetDayEntries.setTimesheetDate(weekStartDate);
@@ -1388,7 +1438,16 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				
 				if(!dataMigrationDTOJsonCopy.getString("sno").equals("sno") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
 					String serialNo = dataMigrationDTOJsonCopy.getString("sno");
-						dataMigrationDTOJsonCopy.put("sno", serialNo);
+				       Asset asset = assetService.validateAssetSno(dataMigrationDTOJsonCopy.getString("sno"), orgLocation.getId());
+					 	if (asset != null) {
+					 		errorSet.put("sno", dataMigrationDTOJsonCopy.getString("sno")+" is Already Existed");
+						}else{
+							dataMigrationDTOJsonCopy.put("sno", serialNo);
+
+						}
+					
+					
+						
 				}
 				
 			}

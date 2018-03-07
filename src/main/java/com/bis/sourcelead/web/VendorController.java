@@ -109,7 +109,8 @@ public class VendorController {
 			@RequestParam(value="orgRelationId", required=false)String orgRelationId,
 			@RequestParam(value="orgRelationUUID", required=false)String orgRelationUUID,
 			@RequestParam(value="orgName", required=false)String orgName,
-			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword) throws Exception {
+			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword,
+			@RequestParam(value="contactsTab", required=false)String contactsTab) throws Exception {
 		
 		
 		ModelAndView model = new ModelAndView();
@@ -132,6 +133,7 @@ public class VendorController {
 		model.addObject("userList", userList);
 	
 		model.addObject("loginOrgLocId",orgLoc.getId());
+		model.addObject("contactsTab",contactsTab);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		List<Countries> countryList = countriesService.getAllCountries();

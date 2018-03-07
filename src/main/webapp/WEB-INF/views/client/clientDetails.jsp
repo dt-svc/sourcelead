@@ -425,7 +425,7 @@
 									appendComa2=' , ';
 								}
 								
-								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" readonly="readonly" value="'+city+appendComa1+state+appendComa2+country+'" field-name="Address" placeholder="Address" data-validation="required">';
+								result = result + ' <input type="text" class="form-control" name="location" id="clientLocation" value="'+city+appendComa1+state+appendComa2+country+'" field-name="Address" placeholder="Address" data-validation="required">';
 
 // 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
@@ -433,7 +433,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="errCountryMsg">';
 								result = result + '<label>Country</label>';
-								result = result + ' <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" disabled data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+								result = result + ' <select class="form-control chosen-select" name="country" id="clientCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
 								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
 								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
 								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';

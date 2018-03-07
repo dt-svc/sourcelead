@@ -138,7 +138,7 @@ public class RequirementReleaseRestController {
 		    		 contactList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(orgSpocDTO,user.getId(),orgLocations.getId(), "Client","Active,New,Contracted", vendorOrgLocationsIds);
 		    	}
 		    	List<OrgSpocDTO> orgSpoclist = new ArrayList<>();
-		      if(contactList.getData() != null){
+		      if(contactList != null && contactList.getData() != null){
 		    	for(OrgSpoc contact : contactList.getData()){
 		    		OrgSpocDTO orgSpocDto = new OrgSpocDTO();
 			    	List<Requirement>  reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(orgSpocDTO.getRequirementId()), contact.getId());
@@ -173,11 +173,10 @@ public class RequirementReleaseRestController {
 					}
 			    	orgSpoclist.add(orgSpocDto);
 				}
-		   }
-		    
-		    response.setRecordsFiltered(contactList.getRecordsFiltered());
-			response.setRecordsTotal(contactList.getRecordsTotal());
-			response.setData(orgSpoclist);
+		    	response.setRecordsFiltered(contactList.getRecordsFiltered());
+				response.setRecordsTotal(contactList.getRecordsTotal());
+		 }
+		   response.setData(orgSpoclist);
 			return response;
 	}
 	
