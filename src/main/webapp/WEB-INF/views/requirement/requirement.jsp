@@ -1192,7 +1192,7 @@ $(document).ready(function () {
                <c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	              <c:if test="${sectionOrder.index == 1}">
-	                  <div id="customDiv${section.id}"></div>
+	                  <div id="customDiv${section.id}"   ${section.isDefaultVisible}></div>
 	               </c:if>
 	            </c:forEach>
 	         </c:if>

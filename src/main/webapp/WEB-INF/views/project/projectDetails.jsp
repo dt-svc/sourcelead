@@ -462,7 +462,6 @@ function editClientProjectDetails(projectId){
 
 <script type="text/javascript">
 	function editProjectDetails(projectId) {
-		alert("projectId "+projectId);
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -927,7 +926,6 @@ function preapareCustomFieldDetails(projectId,sectionId){
         type : "POST",
          url: sourceleadUrl+"/getAllASectionCustomFields?&projectId="+projectId+"&requestFrom=project"+"&sectionId="+sectionId,        
          success :function(data) {
-        	 alert(data);
         	 $('#customFieldDataId').empty();
         	 $('#customFieldDataId').append(data);
            },

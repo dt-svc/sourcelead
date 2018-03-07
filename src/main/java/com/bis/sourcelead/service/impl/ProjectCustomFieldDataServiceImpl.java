@@ -26,5 +26,9 @@ public class ProjectCustomFieldDataServiceImpl implements ProjectCustomFieldData
 	public Map<Long, String[]> getProjectCustomFieldDataByProjectId(Long orgId, List<CustomFormFieldDTO> formFieldId, Long projectId) {
 		return projectCustomFieldDataDao.getProjectCustomFieldDataByProjectId(orgId,formFieldId,projectId);
 	}
+	@Override
+	public ProjectCustomFieldData getprojectFieldDataById(Long projectId) {
+		return projectCustomFieldDataDao.getprojectFieldDataById(projectId);
+	}
 
 }

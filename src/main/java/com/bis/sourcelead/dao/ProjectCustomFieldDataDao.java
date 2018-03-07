@@ -11,4 +11,6 @@ public interface ProjectCustomFieldDataDao {
 	ProjectCustomFieldData saveProjectCustomFieldData(ProjectCustomFieldData projectCustomFields);
 
 	Map<Long, String[]> getProjectCustomFieldDataByProjectId(Long orgId,List<CustomFormFieldDTO> formFieldId, Long projectId);
+
+	ProjectCustomFieldData getprojectFieldDataById(Long projectId);
 }

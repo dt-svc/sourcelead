@@ -12,5 +12,7 @@ public interface ProjectCustomFieldDataService {
 	
 	ProjectCustomFieldData saveProjectCustomFieldData(ProjectCustomFieldData projectCustomFields);
 
+	ProjectCustomFieldData getprojectFieldDataById(Long projectId);
+
 }
  

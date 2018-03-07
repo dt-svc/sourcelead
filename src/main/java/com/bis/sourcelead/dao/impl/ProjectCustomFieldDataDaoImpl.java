@@ -41,20 +41,6 @@ public class ProjectCustomFieldDataDaoImpl implements ProjectCustomFieldDataDao 
 		return projectCustomFields;
 	}
 	
-	
-	/*@Override
-	@Transactional
-	public List<ProjectCustomFieldData> getProjectCustomFieldDataByProjectId(Long projectId,List<CustomFormFieldDTO> formFieldId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		List<Long> formIds = new ArrayList<>();
-		for(CustomFormFieldDTO form:formFieldId) {
-			formIds.add(form.getCustomFormFieldId());
-		}
-		String query = "from ProjectCustomFieldData projectData left join fetch projectData.orglocationsFormFields formField left join fetch projectData.projects proj where proj.id =:projectId and formField.id IN(:formFieldId)";
-		List<ProjectCustomFieldData> projectFieldData  = session.createQuery(query).setLong("projectId", projectId).setParameterList("formFieldId", formIds).list();
-		return projectFieldData;
-	}
-*/
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -78,6 +64,20 @@ public class ProjectCustomFieldDataDaoImpl implements ProjectCustomFieldDataDao 
 			}
 		}
 		return projectCustomFieldDataMap;
+	}
+
+
+	@Override
+	@Transactional
+	public ProjectCustomFieldData getprojectFieldDataById(Long projectId) {
+		Session session = sessionFactory.getCurrentSession();
+		ProjectCustomFieldData projectsCustomFields = null;
+		try {
+			projectsCustomFields = (ProjectCustomFieldData) session.get(ProjectCustomFieldData.class, projectId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectsCustomFields;
 	}
 
 }

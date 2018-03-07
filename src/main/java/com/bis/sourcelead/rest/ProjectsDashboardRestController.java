@@ -350,6 +350,7 @@ public class ProjectsDashboardRestController {
 		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
+		   
 		   SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT);
 			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocations.getId());
 			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
