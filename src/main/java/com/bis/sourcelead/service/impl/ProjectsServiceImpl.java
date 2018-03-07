@@ -3012,6 +3012,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projects;
 			}
 
+			@Override
+			public Projects getProjectByProjectName(String projectName) throws Exception {
+				return projectsDao.getProjectByProjectName(projectName);
+			}
 
 
 }

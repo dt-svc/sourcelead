@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -239,6 +240,27 @@ public class TaskDaoImpl implements TaskDao{
 	}
 
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long taskCountByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String taskStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = null;
+		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
+			query = "from Tasks tasks where tasks.assignedUserId =:userId and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) and  tasks.taskStatus = 'Open' ";
+		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(taskStatus)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId and  tasks.taskStatus = 'Open' ";
+		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(taskStatus)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' ";
+		}
+		
+		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
+			return (Long)session.createQuery(query).setLong( "userId", userId).setLong( "OrgLocationId", OrgLocationId).uniqueResult();
+		}else{
+			return (Long)session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).uniqueResult();
+		}
+	}
 
 }
 

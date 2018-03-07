@@ -746,4 +746,15 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		return leave;
 	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Leave> getAllLeave() {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Leave leave";
+		List<Leave> leaveList = session.createQuery(query).list();
+		return leaveList;
+	}
 }

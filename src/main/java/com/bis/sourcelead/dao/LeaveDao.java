@@ -73,4 +73,6 @@ public interface LeaveDao {
 
 	Leave getLeaveByLeaveUUId(String leaveUUID);
 
+	List<Leave> getAllLeave();
+
 }
