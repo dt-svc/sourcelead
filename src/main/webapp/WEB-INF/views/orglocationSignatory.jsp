@@ -428,9 +428,9 @@ function saveSignatory(){
 		         result += '        <div class="tblminwidth-100">';
 		         result += '            <span title="Edit" class="paddingRight"><a onclick="editSignatory(\''+report.uuid+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
 		         if(report.status == 1){
-		        	 result += '<label class="switch"><input type="checkbox" checked onclick="deactivateSignatory(\''+report.uuid+'\');"> <div class="slider round"></div> </label>';
+		        	 result += '<label class="switch"><input type="checkbox" checked onclick="deactivateSignatory(\''+report.uuid+'\',\'inactive\');"> <div class="slider round"></div> </label>';
 		         }else{
-		        	 result += '<label class="switch"><input type="checkbox" onclick="deactivateSignatory(\''+report.uuid+'\');"> <div class="slider round"></div> </label>';
+		        	 result += '<label class="switch"><input type="checkbox" onclick="deactivateSignatory(\''+report.uuid+'\',\'active\');"> <div class="slider round"></div> </label>';
 		         }
 		         
 		         result += '        </div>';
@@ -493,10 +493,9 @@ function saveSignatory(){
 	  });
   }
   
-  function deactivateSignatory(signatoryUUID){
-	  alert(sourceleadUrl+ "/deactivateSignatory?${_csrf.parameterName}=${_csrf.token}&uuid="+signatoryUUID+"&status=0")
+  function deactivateSignatory(signatoryUUID,status){
 	  
-	  $.post( sourceleadUrl+ "/deactivateSignatory?uuid="+signatoryUUID+"&status=0", function(data) {
+	  $.post( sourceleadUrl+ "/deactivateSignatory?uuid="+signatoryUUID+"&status="+status, function(data) {
 		  if(data != "success"){
 			  getAllSignatory();
 		  }

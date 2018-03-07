@@ -235,10 +235,13 @@ public class CompanyOnboardRestController {
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/deactivateSignatory", method = RequestMethod.POST)
 	public String deactivateSignatory(@RequestParam(value = "uuid", required = true) String uuid,
-			@RequestParam(value = "status", required = true) int status,HttpServletRequest request) throws Exception
+			@RequestParam(value = "status", required = true) String status,HttpServletRequest request) throws Exception
 	{
 		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByUUID(uuid);
-		signatory.setStatus(Constants.RECORD_INACTIVE);
+		if("active".equalsIgnoreCase(status))
+			signatory.setStatus(Constants.RECORD_ACTIVE);
+		else
+			signatory.setStatus(Constants.RECORD_INACTIVE);
 		orglocationSignatoryService.saveOrglocationSignatory(signatory);
 		return "success";
 	}
