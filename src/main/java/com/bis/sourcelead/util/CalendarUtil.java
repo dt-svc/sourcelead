@@ -815,6 +815,10 @@ public  class CalendarUtil {
 		}
 		return flag;
 	}
+	
+	public static boolean isGivenDateBetweenDateRange(Date startDate,Date endDate,Date currentDate) {
+		return	 ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
+	}
 	public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
 		Calendar calendar = Calendar.getInstance();   

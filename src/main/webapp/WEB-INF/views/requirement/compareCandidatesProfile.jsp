@@ -400,7 +400,7 @@ function prepareCandidateGrid(data,requirementId){
 	    	    		opt = opt +'<button type="button" onClick="viewFile(\''+report.fileUrl+'\',\''+report.currentResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';
 	    	    	}
 	    	    	if(report.isCandidateSubmitted == 'N'){
-	    	    		opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	    	    		opt = opt +'<button type="button" id="recSumbmitbtn'+report.candidateId+'" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success"><span id="recCandidate'+report.candidateId+'">Add</button>';
 	    	    	}else{
 	    	    		opt = opt +'<button type="button" class="btn btn-sm btn-success">Added</button>';
 	    	    	}

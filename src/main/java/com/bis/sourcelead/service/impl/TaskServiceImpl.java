@@ -430,6 +430,11 @@ public List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(
 	return taskDao.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(orgLocationId, userId, vendorOnboardingId);
 }
 
+@Override
+public Long taskCountByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String status) throws Exception{
+	
+	return taskDao.taskCountByIdAndOrgLocationIdAssignedUserId(OrgLocationId, userId, status);
+}
 }
 	
 

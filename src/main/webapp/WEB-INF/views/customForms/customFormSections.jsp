@@ -183,9 +183,14 @@ function getSelectedFieldDetails(){
 			 $("#selectFieldDiv p:contains('Options')").html("Choices");
 			 $("#addOptionDiv p:contains('Add Option')").html("Add Choice");
 		 }
+		 $('#selectOptionId').removeAttr('data-validation-optional');
+		 $('#selectOptionId').attr("data-validation","required"); 
 	 }else{
 		 $('#selectFieldDiv').hide();
 		 $('#textBoxDiv').show();
+		 $('#selectFieldDiv').find('p.jquery_form_error_message').remove(); 
+		 $('#selectOptionId').removeAttr('data-validation');
+		 $('#selectOptionId').attr("data-validation-optional","true");
 	 }
 	 
 	 if(field == 'datefield'){
@@ -193,7 +198,8 @@ function getSelectedFieldDetails(){
 		 $('#dateFieldDiv').show();
 		 $( "#datepicker" ).datepicker();
 	 }else{
-		 $('#dateFieldDiv').hide(); 
+		 $('#dateFieldDiv').hide();
+		 $('#dateFieldDiv').find('p.jquery_form_error_message').remove(); 
 	 }
 	 
 	 
@@ -304,7 +310,17 @@ var validationSettings = {
 		 url : sourceleadUrl+"/deleteCustomField?&customID="+customRowId+"&status="+status,
 		 	 	success : function(data) {
 		 	 		$("#deletFildRow"+customRowId).removeAttr("class");
-		 	 		$("#deletFildRow"+customRowId).attr("class","fa fa-check");
+		 	 		if(status == 'activate'){
+		 	 			$("#deletFildRow"+customRowId).prop('title', 'De-Activate');
+		 	 			$("#deletFildRow"+customRowId).attr("class","fa fa-trash");
+		 	 			$("#deletFildRow"+customRowId).removeAttr("onclick");
+		 	 			$("#deletFildRow"+customRowId).attr("onclick","activateOrDeactivateCustomField('"+customRowId+"', 'deactivate')");
+		 	 		}if(status == 'deactivate'){
+		 	 			$("#deletFildRow"+customRowId).prop('title', 'Activate');
+		 	 			$("#deletFildRow"+customRowId).attr("class","fa fa-check");
+		 	 			$("#deletFildRow"+customRowId).removeAttr("onclick");
+		 	 			$("#deletFildRow"+customRowId).attr("onclick","activateOrDeactivateCustomField('"+customRowId+"', 'activate')");
+		 	 		}
 		},
 	});
  }

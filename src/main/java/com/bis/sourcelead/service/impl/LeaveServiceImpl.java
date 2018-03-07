@@ -1,6 +1,9 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.ParseException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +17,14 @@ import java.util.Set;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,6 +43,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
@@ -56,8 +68,24 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -113,6 +141,8 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     private TimesheetRestController timesheetRestController;
+    
+    private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
 	@Override
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
@@ -196,83 +226,97 @@ public class LeaveServiceImpl implements LeaveService{
 		return savedLeave;
 	}
 
-	private void sendOnBehalfEmailToEmployee(Leave savedLeave, User applyUser, User loginUser, OrgLocations orgLocations) throws Exception {
-		
+	private void sendOnBehalfEmailToEmployee(Leave savedLeave, User applyUser, User loginUser,
+			OrgLocations orgLocations) throws Exception {
+
 		EmailMessage emailMessage = new EmailMessage();
-		
-			 emailMessage.setFirstName(applyUser.getFirstName());
-			 emailMessage.setToEmail(applyUser.getEmail());
-			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 
-			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			 emailMessage.setOrgLocationId(orgLocations.getId());
-			 
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-				 StringBuilder employee =new StringBuilder();
-				 globalVarsMap.put("loginUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("loginUser",loginUser.getFirstName());
-			 }
-			 
-			 if(null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
-				 StringBuilder leaveUser =new StringBuilder();
-				 globalVarsMap.put("leaveTakenEmployee", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("leaveTakenEmployee",applyUser.getFirstName());
-			 }
-			 
-			 
-			 if(null != savedLeave.getLeaveType()){
-				 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(savedLeave.getLeaveType().getId());
-				 globalVarsMap.put("leaveType",leaveType.getName());
-			 }
-			 
-			 if(null != savedLeave.getFromDate() && null != savedLeave.getToDate()){
-				 StringBuilder date = new StringBuilder();
-				 globalVarsMap.put("leaveDuration",date.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), savedLeave.getFromDate())).append("-").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), savedLeave.getToDate())).toString());
-			 }
-			 
-			 if(null != savedLeave.getReason()){
-				 globalVarsMap.put("leaveReason",savedLeave.getReason());
-			 }
+		emailMessage.setFirstName(applyUser.getFirstName());
+		emailMessage.setToEmail(applyUser.getEmail());
+		emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 
-			 
-			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setOrgLocationId(orgLocations.getId());
 
-			 
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 
-			 EmailScenario  emailScenario = null;
-			 EmailScenario  notificationScenario = null;
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-		     emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-//		     notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-			 
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLocations.getOrg(),orgLocations);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			//calling the sendNotification method of emailScenerioUtil
-//				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
-//				notificationScenario.setBody(notificationBody);
-//				emailScenerioUtil.sendNotification(null,loginUser, approverUser, orgLoc, notificationScenario);
-//		}
-//}
-		
-		
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder employee = new StringBuilder();
+			globalVarsMap.put("loginUser",
+					employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("loginUser", loginUser.getFirstName());
+		}
+
+		if (null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
+			StringBuilder leaveUser = new StringBuilder();
+			globalVarsMap.put("leaveTakenEmployee",
+					leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("leaveTakenEmployee", applyUser.getFirstName());
+		}
+
+		if (null != savedLeave.getLeaveType()) {
+			LeaveType leaveType = leaveTypeService.getLeaveTypeById(savedLeave.getLeaveType().getId());
+			globalVarsMap.put("leaveType", leaveType.getName());
+		}
+
+		if (null != savedLeave.getFromDate() && null != savedLeave.getToDate()) {
+			StringBuilder date = new StringBuilder();
+			globalVarsMap.put("leaveDuration",
+					date.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+							savedLeave.getFromDate())).append("-")
+							.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+									savedLeave.getToDate()))
+							.toString());
+		}
+
+		if (null != savedLeave.getReason()) {
+			globalVarsMap.put("leaveReason", savedLeave.getReason());
+		}
+
+		StringBuilder stringBuildforLink = new StringBuilder();
+		globalVarsMap.put("loginLink",
+				stringBuildforLink.append("<a href='").append(sourceleadLoginUrl)
+						.append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+						.toString());
+
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+
+		EmailScenario emailScenario = null;
+		EmailScenario notificationScenario = null;
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_EMAIL,
+				Constants.ENTITY_TYPE_EMAIL);
+		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_NOTIFICATION,
+				Constants.ENTITY_TYPE_NOTIFICATION);
+
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
+				signature, url, orgLocations.getOrg(), orgLocations);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+
+		// calling the sendEmail method of emailScenerioUtil
+		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		// calling the sendNotification method of emailScenerioUtil
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("")
+				.append(sourceleadUrl).append("/").append("pendingLeaves?notifyLink=notifyLink&leaveUUID="
+						+ savedLeave.getLeaveUUID() + "&orgLocationId=" + orgLocations.getId() + "&status=PENDING")
+				.toString();
+		emailScenerioUtil.sendNotification(actionLink, loginUser, applyUser, orgLocations, notificationScenario);
+
 	}
 
 	private void saveMonthlyLeaves(Map<String, Float> monthlyLeaves, Leave leave, User user)
@@ -714,14 +758,17 @@ public class LeaveServiceImpl implements LeaveService{
 		EmailScenario emailScenario = null;
 		
 		EmailScenario notificationScenario = null;
-		
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = "";
 		if (leaveManagementHistory.getLeaveid().getRejectedReason() != null && !"".equalsIgnoreCase(leaveManagementHistory.getLeaveid().getRejectedReason())) {
 			globalVarsMap.put("reason", leaveManagementHistory.getLeaveid().getRejectedReason());
 			  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_REJECTED_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			   actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("rejectedLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
 		}else{
 			  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_APPROVER_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_APPROVER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			   actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("approvedLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
 		}
 		
 		  
@@ -740,7 +787,6 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = null;
 		emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(), orgLocations, notificationScenario);
 		
 	}
@@ -1199,6 +1245,8 @@ public class LeaveServiceImpl implements LeaveService{
 			 
 			 EmailScenario  emailScenario = null;
 			 EmailScenario  notificationScenario = null;
+			 StringBuilder actionLinkBuilder = new StringBuilder();
+			 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("employeeRequestedLeaves?notifyLink=notifyLink&leaveUUID="+leaveDTO.getLeaveUUID()+"&orgLocationId="+orgLoc.getId()).toString();	 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 if(applyUser != null){
 				   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
@@ -1224,7 +1272,7 @@ public class LeaveServiceImpl implements LeaveService{
 			//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
-				emailScenerioUtil.sendNotification(null,loginUser, approverUser, orgLoc, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink,loginUser, approverUser, orgLoc, notificationScenario);
 //		}
 //}
 }
@@ -1348,8 +1396,9 @@ public class LeaveServiceImpl implements LeaveService{
 				emailMessage.setMessageBody(emailTemplate);
 				// calling the sendEmail method of emailScenerioUtil
 				emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-				String actionLink = null;
-				emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(), orgLocations, notificationScenario);
+				//StringBuilder actionLinkBuilder = new StringBuilder();
+				//String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("approvedLeaves?notifyWithDrawLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
+				emailScenerioUtil.sendNotification(null, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario);
 				
 			}
 		}
@@ -1410,7 +1459,8 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		String actionLink = "";
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("cancelLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario);
 
 	}
@@ -1523,6 +1573,268 @@ public class LeaveServiceImpl implements LeaveService{
 	public Leave getLeaveByLeaveUUId(String leaveUUID)
 	{
 		return leaveDao.getLeaveByLeaveUUId(leaveUUID);
+	}
+	
+	@Override
+	public File getLeaveExport(OrgLocations orgLocations,LeaveDTO leaveDTO) throws Exception {
+		
+		File file = null;
+		List<LeaveDTO> leaveDtoList = new ArrayList<>();
+		
+		ResponseList<Leave> leaveResponse = getTopLeavetakers(orgLocations, leaveDTO);
+		
+		List<Leave> leaveList = leaveResponse.getData();
+		HashMap<Long, Float> reportMap = new HashMap<>();
+		int column = 0;
+		float totalbalanceLeaveCounts = 0;
+		
+		for (Leave leave : leaveList) {
+			LeaveDTO leaveDto  = new LeaveDTO();
+			int totalLeaves = 0;
+			
+			if(reportMap.containsKey(leave.getUser().getId())){
+				totalbalanceLeaveCounts = reportMap.get(leave.getUser().getId());
+			}else {
+				totalbalanceLeaveCounts = leave.getLeaveType().getNoOfDays();
+			}
+			
+			StringBuilder sb = new StringBuilder();
+			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
+				sb.append(leave.getUser().getFirstName()).append(" ").append(leave.getUser().getLastName());
+			} else {
+				sb.append(leave.getUser().getFirstName());
+			}
+			
+			StringBuilder date = new StringBuilder();
+			if(null != leave.getFromDate() && null != leave.getToDate()) {
+				String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getFromDate());
+				String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leave.getToDate());
+				date.append(startDate).append(" - ").append(toDate);
+			} 
+			
+			
+			float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			if(Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+				totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
+			}
+			
+			leaveDto.setDuration(date.toString());
+			leaveDto.setUserId(String.valueOf(leave.getUser().getId()));
+			leaveDto.setEmpName(sb.toString());
+			leaveDto.setEmpEmail(leave.getUser().getEmail());
+			leaveDto.setLeaveType(leave.getLeaveType().getName());
+			leaveDto.setStatus(leave.getStatus());
+			leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
+			leaveDto.setBalanceleaves(String.valueOf(totalbalanceLeaveCounts));
+			totalLeaves = totalLeaves + leave.getNumberOfDays();
+			leaveDto.setNoOfDays(totalLeaves);
+			
+			reportMap.put(leave.getUser().getId(), totalbalanceLeaveCounts);
+			leaveDtoList.add(leaveDto);
+			
+		}
+
+		if (!"pdf".equalsIgnoreCase(leaveDTO.getExportType())) {
+			
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_"
+					+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+		
+			for (LeaveDTO leaveExcel : leaveDtoList) {
+				writeRow = createExcelsheet.createRow(column + 2);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow,leaveExcel);
+				column++;
+			}
+		
+			file = File.createTempFile(orgLocations.getOrgLocationName() + Constants.LEAVE_DATA
+					+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()), ".xls");
+			file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		}else{
+			file = getBillingPdf(leaveDTO,orgLocations,leaveDtoList);
+		}
+		return file;
+	}
+	
+	private File getBillingPdf(LeaveDTO leaveDTO, OrgLocations orgLocations, List<LeaveDTO> leaveDtoList) throws Exception {
+		
+		String[] headers = Constants.TOP_TAKERS_LEAVE_HEADERS;
+		Document document = new Document(PageSize.LETTER.rotate());
+
+		StringBuilder fileSB = new StringBuilder();
+		File file = File.createTempFile(
+				fileSB.append(orgLocations.getOrgLocationName()).append(Constants.LEAVE_DATA).append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),
+				".pdf");
+
+		file.setReadable(true);
+		try {
+			// Get an instance of PdfWriter and create a Table.pdf file as an
+			// output.
+			PdfWriter.getInstance(document, new FileOutputStream(file));
+			document.open();
+			Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
+			BaseColor myBordColor = WebColors.getRGBColor("#000000");
+			boldFont.setColor(myBordColor);
+
+			StringBuilder orgNameSB = new StringBuilder();
+			Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append(" ").append(Constants.LEAVE_DATA).toString(),
+					boldFont);
+
+			para.setAlignment(Element.ALIGN_CENTER);
+			document.add(para);
+
+
+			PdfPTable table = new PdfPTable(headers.length);
+			Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+			PdfPCell cell1 = new PdfPCell(new Phrase(Constants.LEAVE_DATA, font));;
+			cell1.setColspan(8);
+			headerCellStyle(cell1);
+			table.setWidthPercentage(100);
+			table.setWidths(new int[] { 3, 5, 3, 5, 5, 3, 5, 3});
+			table.addCell(cell1);
+			for (int i = 0; i < headers.length; i++) {
+				String header = headers[i];
+				PdfPCell cell = new PdfPCell();
+				cell.setGrayFill(0.9f);
+				cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+				BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+				cell.setBackgroundColor(myColor);
+				table.addCell(cell);
+			}
+			table.completeRow();
+			java.util.List<String[]> leaves = new ArrayList<>();
+			for (LeaveDTO leavePdf : leaveDtoList) {
+				leaves.add(prepareBillingToArray(leavePdf,orgLocations));
+			}
+
+			for (String[] leaveArray : leaves) {
+				for (int i = 0; i < leaveArray.length; i++) {
+					String datum = leaveArray[i];
+					PdfPCell cell = new PdfPCell();
+					cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+					table.addCell(cell);
+				}
+				table.completeRow();
+			}
+
+			document.addTitle("Leaves List Table");
+			table.setSpacingBefore(15f);
+			document.add(table);
+			logger.info("Pdf table created !!");
+		} catch (DocumentException e) {
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+		} catch (FileNotFoundException e) {
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+		} finally {
+			document.close();
+		}
+		return file;
+	}
+	
+	private String[] prepareBillingToArray(LeaveDTO leavePdf, OrgLocations locations) throws Exception {
+
+		String billingArray[] = new String[Constants.BILLING_HEADERS.length];
+		
+		if(leavePdf.getUserId() != null && !"".equalsIgnoreCase(leavePdf.getUserId())){
+			billingArray[0] = leavePdf.getUserId();
+		}else{
+			billingArray[0] = "--";
+		}
+		
+		if(leavePdf.getEmpName() != null && !"".equalsIgnoreCase(leavePdf.getEmpName())){
+			billingArray[1] = leavePdf.getEmpName();
+		}else{
+			billingArray[1] = "--";
+		}
+		
+		if(leavePdf.getEmpEmail() != null && !"".equalsIgnoreCase(leavePdf.getEmpEmail())){
+			billingArray[2] = leavePdf.getEmpEmail();
+		}else{
+			billingArray[2] = "--";
+		}
+		
+		if(leavePdf.getLeaveType() != null && !"".equalsIgnoreCase(leavePdf.getLeaveType())){
+			billingArray[3] = leavePdf.getLeaveType();
+		}else{
+			billingArray[3] = "--";
+		}
+
+		if(leavePdf.getDuration() != null && !"".equalsIgnoreCase(leavePdf.getDuration())){
+			billingArray[4] = leavePdf.getDuration();
+		}else{
+			billingArray[4] = "--";
+		}
+		
+			billingArray[5] = String.valueOf(leavePdf.getNoOfDays());
+			
+			billingArray[6] = String.valueOf(leavePdf.getExtraLeavesTaken());
+			
+			billingArray[7] = String.valueOf(leavePdf.getBalanceleaves());
+		
+		return billingArray;
+
+	}
+	
+	private static void headerCellStyle(PdfPCell cell) {
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setPaddingTop(0f);
+		cell.setPaddingBottom(7f);
+		cell.setBackgroundColor(new BaseColor(0, 121, 182));
+		cell.setBorder(0);
+		cell.setBorderWidthBottom(2f);
+	}
+
+
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers  = Constants.TOP_TAKERS_LEAVE_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+		return createExcelsheet;
+	}
+	
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, LeaveDTO leaveDto) {
+		
+		
+		if(null != leaveDto.getUserId()){
+			writeRow.createCell(0).setCellValue(leaveDto.getUserId());
+		}
+		
+		if(null != leaveDto.getEmpName()  && !"".equalsIgnoreCase(leaveDto.getEmpName())){
+			writeRow.createCell(1).setCellValue(leaveDto.getEmpName());
+		}
+		
+		if(null != leaveDto.getEmpEmail()  && !"".equalsIgnoreCase(leaveDto.getEmpEmail())){
+			writeRow.createCell(2).setCellValue(leaveDto.getEmpEmail());
+		}
+		
+		if(null != leaveDto.getLeaveType() && !"".equalsIgnoreCase(leaveDto.getLeaveType())){
+			writeRow.createCell(3).setCellValue(leaveDto.getLeaveType());
+		}
+		
+		if(null != leaveDto.getDuration() && !"".equalsIgnoreCase(leaveDto.getDuration())){
+			writeRow.createCell(4).setCellValue(leaveDto.getDuration());
+		}
+		
+			writeRow.createCell(5).setCellValue(leaveDto.getNoOfDays());
+		
+			writeRow.createCell(6).setCellValue(leaveDto.getExtraLeavesTaken());
+		
+			writeRow.createCell(7).setCellValue(leaveDto.getBalanceleaves());
+	return createExcelsheet;
+}
+
+	@Override
+	public List<Leave> getAllLeave(){
+		return leaveDao.getAllLeave();
 	}
 
 }

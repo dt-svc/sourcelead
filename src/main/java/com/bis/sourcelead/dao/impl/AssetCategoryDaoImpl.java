@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AssetCategoryDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Projects;
@@ -120,7 +122,8 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
 		List<AssetCategory> assetCategoryList = null;
-		if(name.equals("Laptop") || name.equals("Desktop") || name.equals("Others")){
+		name=	WordUtils.capitalizeFully(name);
+		if(name.equals("Laptop") || name.equals("Desktop") || name.equals("Others") ){
 		 query = "from AssetCategory ac where ac.status = '1' and ac.categoryName =:name";
 		 assetCategoryList = session.createQuery(query.toString()).setString("name", name).list();
 		}else{
@@ -132,6 +135,23 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 			category = (AssetCategory) assetCategoryList.iterator().next();
 		}
 		return category;
+	}
+
+
+
+	@Override
+	@Transactional
+	public AssetCategory getAssetCategoryByCategoryIdAndLocationId(String categoryName, Long categoryId,
+			Long orglocationId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetCategory ac where ac.categoryName = :categoryName and ac.orgLocations.id = :orglocationId and ac.id = :categoryId and ac.status = '1'";
+		List<AssetCategory> assetCategoryList =  session.createQuery(query) .setString("categoryName", categoryName).setLong("categoryId", categoryId).setLong("orglocationId", orglocationId).list();
+		AssetCategory assetCategory = null;
+		if(assetCategoryList != null && !assetCategoryList.isEmpty())
+		{
+			assetCategory = (AssetCategory) assetCategoryList.iterator().next();
+		}
+		return assetCategory;
 	}
 
 
