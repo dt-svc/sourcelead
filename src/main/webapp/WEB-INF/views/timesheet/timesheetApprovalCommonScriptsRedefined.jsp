@@ -209,7 +209,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	var submissionIDs = $('input[name="checkBoxForSubmitForApproval"]:checked').map(function() {
 	    return this.value;
 	}).get();
-	alert("submissionIDs "+submissionIDs);
+	//alert("submissionIDs "+submissionIDs);
 	var data = submissionIDs.toString().split(',');
 	for(var i=0; i<=data.length;i++){
 		var data2 = data[i].toString().split('!');
