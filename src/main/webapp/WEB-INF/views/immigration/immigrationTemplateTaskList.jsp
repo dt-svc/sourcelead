@@ -1,7 +1,13 @@
+<script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var = "docStatus" scope = "page" value = '<%= session.getAttribute("success") %>'/>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
 			<h2>Task Details</h2>
+			<c:if test="${empty docStatus}">
 			<ul class="addImmiSteps">
 				<li class="active page-updated">1</li>
 				<li class="active page-updated">2</li>
@@ -10,12 +16,35 @@
 				<b></b>
 				<div class="clearfix"></div>
 			</ul>
+			</c:if>
+			<c:if test="${!empty docStatus}">
+			<ul class="addImmiSteps">
+				<li class="active page-updated">1</li>
+				<li class="active page-updated">2</li>
+				<li class="active page-updated">3</li>
+				<li class="active page-updated">4</li>
+				<b></b>
+				<div class="clearfix"></div>
+			</ul>
+			</c:if>
 		</div>
-		
+		<!-- <div class="dropdown">
+		<strong>Column Chooser </strong>
+		<button class="glyphicon glyphicon-plus" type="button" id="menu1"
+			data-toggle="dropdown"></button>
+
+		<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+			<li><a class="toggle-vis " data-column="0">Subject</a></li>
+			<li><a class="toggle-vis" data-column="1">Assign To</a></li>
+			<li><a class="toggle-vis" data-column="2">Priority</a></li>
+			<li><a class="toggle-vis" data-column="3">Repeat</a></li>
+			<li><a class="toggle-vis" data-column="4">Action</a></li>
+		</ul>
+	</div> -->
 		<div class="addImmiContent clearfix">
 			<div class="immigraTabsHead">
-				<a href="javascript:void(0)"  onclick="getAssignToUsersList(null);" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
-				<span><input id="immigraListTabSerach" type="text"></span>
+				<a href="javascript:void(0)"  onclick="getAssignToUsersList();" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Task</a> 
+				<span><input id="immigraListTabSerach" class="immigraTabSerach" placeholder="Subject/Priority/Repeat type="text"></span>
 			</div>	
 			<div id="immigrationTempDynamicTaskList" class="project_wrap_table datatable_filter">
 			</div>
@@ -23,7 +52,7 @@
    
 		<div class="addImmiFoot">
 			<a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('formDetails')" class="pull-left">Prev</a>
-			<a href="javascript:void(0)" class="nextBtn">Add Template</a>
+			<a href="javascript:void(0)" onclick="immigration.savePetitionTemplateDetailsValues()" class="nextBtn">Save Template</a>
 			<a href="javascript:void(0)">Reset</a>
 			<div class="clearfix"></div>
 		</div>   
@@ -37,6 +66,7 @@
 			<h2>Add Task</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
 		</div>
 		<form id="petitionTemplateTaskDetails" name="petitionTemplateTaskDetails">
+		<input type="hidden" name="templateId" id="immiTempId"/>
 		<input type="hidden" name="id" id="templateId"/>
 		<div class="popupMid popupMidOver clearfix mt">
 			<div class="row clearfix">
@@ -71,8 +101,13 @@
 						<label class="paddingRight checkBox"><input id="reminder" name="Reminder" type="checkbox">Reminder</label>
 					  </div>
 					   <div class="mt5" id="reminderdropdown" style="display:none;">
-						<select class="chosen-select" id="taskReminder" name="taskReminder"  multiple>
-						<option>1 days</option><option>1 Week</option><option>15 days</option><option>1 Month</option><option>90 days</option><option>180 days</option>
+						<select class="chosen-select" id="taskReminderSelect" name="taskReminder"  multiple>
+	                		 <option value="1-days">1 days</option>
+	               			  <option value="1-Week">1 Week</option>
+	                		 <option value="15-days">15 days</option>
+	                 		<option value="1-Month">1 Month</option>
+	                 		<option value="90-days">90 days</option>
+	                 		<option value="180-days">180 days</option>
 						</select>
 					  </div>
 					</div>
@@ -211,6 +246,8 @@ function immigrationPagination(url){
 	  "processing": true,
       "serverSide": true,
       "searching": false,
+      "colReorder": true,
+	  //'dom': 'Rlfrtip',
       "ajax": $.fn.dataTable.pipeline( {
           url: url,
           method: 'POST',
@@ -238,7 +275,7 @@ function immigrationPagination(url){
 	      		},
 	      	{
 	    	  "targets": colIndex++,
-              "data": "assignedTo",
+              /* "data": "assignedTo", */
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
     	  		  if(opt.assignedTo !=null && opt.assignedTo !='' && opt.assignedTo !='undefined'){
@@ -312,9 +349,14 @@ function immigrationPagination(url){
 <script>
 // Error pop addSen
 	$(document).ready(function() {
+		$("table").colResizable(); // for resizing columns in tables.
 		immigrationDataTableList();
 		$("#addTask").click(function(){
 			document.getElementById("petitionTemplateTaskDetails").reset();
+			 $("#assignToUserDiv").hide();
+			 $("#reminderdropdown").hide();
+			 $("#petitionAssignedTo1 option:selected").prop("selected", false);
+			 $('#taskReminderSelect').trigger("chosen:updated");
 			$(".popMask").fadeIn(200);
 			$("#taskViewPopup").fadeIn(100);
 		});
@@ -374,7 +416,13 @@ function immigrationPagination(url){
     			$("#taskRepeat").val(data.taskRepeat);
     			if(data.taskReminder != null){
     				$("#reminder").prop('checked', true);
-    				$("#taskReminder").val(data.taskReminder);
+    				$("#reminderdropdown").show();
+    				var id= data.taskReminder;
+        			var ids = id.split(',');
+        			for (j=0;j<ids.length;j++){
+       					$('#taskReminderSelect option[value="' + ids[j] +'"]').prop("selected", true);
+       	    			$('#taskReminderSelect').trigger("chosen:updated");
+        			}
     			}
     			if(data.taskEmail != null){
     				$("#taskEmail").prop('checked', true);
@@ -386,19 +434,28 @@ function immigrationPagination(url){
     			$("#taskNotification").val(data.taskNotification);
     			if(data.petitionAssignedTo != null){
     				$("#assignedToU").prop('checked', true);
+    				$("#assignToUserDiv").show();
     				getAssignToUsersList(data.petitionAssignedTo);
-    				document.getElementById("assignToUserDiv").style.display="";
-    				$("#petitionAssignedTo1").removeAttr('data-validation-optional');
-    				$("#petitionAssignedTo1").attr("data-validation", "required"); 
     			}else if(data.petitionAssignedTo == null){
+    				getAssignToUsersList(null);
     				$("#assignedToB").prop('checked', true);
-    				document.getElementById("assignToUserDiv").style.display="none";
-    				$("#petitionAssignedTo1").removeAttr('data-validation');
-    				$("#petitionAssignedTo1").attr("data-validation-optional", "true");
+    				$("#assignToUserDiv").hide();
     			}
     			$("#dueAfterMonths").val(data.dueAfterMonths);
     			$("#dueAfterDays").val(data.dueAfterDays);
     			$("#taskDescription").val(data.taskDescription);
+    			$("#immiTempId").val(data.templateId);
+    			$("#templateId").val(data.id);
+    	    }
+    	});
+    }
+    
+    function deleteImmiTaskList(id){
+    	$.ajax({
+    	   	type: "GET",
+    	    url: sourceleadUrl+immiModulePath+"/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id="+id,	    	   
+    	    success: function(json) {
+    	    	immigrationDataTableList();
     	    }
     	});
     }
@@ -411,45 +468,39 @@ function getAssignToUsersList(id){
 	    success: function(json) {
 	    	 var result = "";
         	 for (var i=0; i<json.length; i++){
-        		var report = json[i];
-        		if(id != null){
-        			var ids = id.split(',');
-	        		for (j=0;j<ids.length;j++){
-	        		     if(ids[j] == report.userId){
-	         				result = result +'<option selected value="'+report.userId+'" >'+report.userName+'</option>';
-	         			}
-	        		}
-        			
-        		}else{
-        			result = result +'<option value="'+report.userId+'" >'+report.userName+'</option>';
-        		}
+        		 var report = json[i];
+        		 $('#petitionAssignedTo1 option[value="' + report.userId +'"]').remove();
+        		 $('#petitionAssignedTo1')
+                 .append($("<option></option>")
+                            .attr("value",report.userId)
+                            .text(report.userName));
+        		 $('#petitionAssignedTo1').trigger("chosen:updated");
+        		 if(id != null){
+        				var ids = id.split(',');
+        				for (j=0;j<ids.length;j++){
+        					if(ids[j]==report.userId){
+        			    	 	$('#petitionAssignedTo1 option[value="'+ids[j]+'"]').prop("selected", true);
+        			    	 	$('#petitionAssignedTo1').trigger("chosen:updated");
+        					}
+        				}
+        			}
 			}
-        	 /* if(id!=null){
-        		 $("#petitionAssignedTo1 :selected").val(id); 
-        	 } */
-        	 $("#petitionAssignedTo1").empty();
-           	 $("#petitionAssignedTo1").append(result); 
-           	 $('#petitionAssignedTo1').trigger("chosen:updated");
 	    }
    }); 
 }
+
 </script>
 <script>
 function validateDueAfter(){
-	  
 	  var taskMonths = document.getElementById("dueAfterMonths").value;
 	  var taskDays = document.getElementById("dueAfterDays").value;
-	  
 	  if(taskMonths == '' && taskDays == '' ){
 			  $('#dueAfterMonths').removeAttr('data-validation-optional');
 			  $("#dueAfterMonths").attr("data-validation", "required");
-		    
 	  }else{
 		  $('#dueAfterDays').removeAttr('data-validation');
 		  $("#dueAfterMonths").attr("data-validation-optional", "true");
-		    
 	  }  
-	  
   }
 </script>  
  <script>
@@ -466,15 +517,10 @@ function validateDueAfter(){
   <script>
   function validateAssignToType(assignToType){
 	  if(assignToType == 'assingToUser'){
-		  document.getElementById("assignToUserDiv").style.display="";
-		  $("#petitionAssignedTo").removeAttr('data-validation-optional');
-		  $("#petitionAssignedTo").attr("data-validation", "required");
+		  $("#assignToUserDiv").show();
 		 
 	  }else{
-		  document.getElementById("assignToUserDiv").style.display="none";
-		  $("#petitionAssignedTo").removeAttr('data-validation');
-		  $("#petitionAssignedTo").attr("data-validation-optional", "true");
-		  getAssignToUsersList(null);
+		  $("#assignToUserDiv").hide();
 	  }
   }
   </script>
@@ -491,7 +537,7 @@ function validateDueAfter(){
   }
   </script>
   <script>
-$(document).ready(function(){
-	$("#templateId").val(jsonObj.id);
-});
+/* $(document).ready(function(){
+	//$("#templateId").val(jsonObj.id);
+}); */
 </script> 

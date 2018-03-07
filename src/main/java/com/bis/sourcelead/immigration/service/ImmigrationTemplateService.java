@@ -30,7 +30,7 @@ public interface ImmigrationTemplateService {
 	
 	List<ImmigrationTemplateFormDTO> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, User user);
 
-	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue);
+	ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO, String searchValue) throws Exception;
 
 	ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception;
 	
@@ -39,5 +39,9 @@ public interface ImmigrationTemplateService {
 	List<ImmigrationTemplateFormDTO> getImmigrationTemplateformsListById(Long templateId);
 	
 	void deleteAllPetitionTemplateDetailsById(Long templateId);
+
+	void deleteImmigrationTaskList(String id);
+
+	int savePetitionTemplateDetailsValues(String templateId);
 	
 }

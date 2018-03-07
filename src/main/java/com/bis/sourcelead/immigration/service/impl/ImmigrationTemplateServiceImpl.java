@@ -5,9 +5,11 @@ package com.bis.sourcelead.immigration.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +41,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 	@Autowired
 	ImmigrationTemplateDao immigrationTemplateDao;
-	
+
 	@Autowired
 	private UserDao userDao;
 
@@ -112,11 +114,12 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	public void savePetitionTemplateTaskDetails(ImmigrationTemplateDTO templateDTO, User user) {
 
 		ImmigrationTemplate immiTemplate = new ImmigrationTemplate();
-		immiTemplate.setId(templateDTO.getId());
-
+		immiTemplate.setId(templateDTO.getTemplateId());
 		ImmigrationTemplateTasks immigrationTemplateTask = new ImmigrationTemplateTasks();
 		immigrationTemplateTask.setImmigrationTempId(immiTemplate);
-
+		if (templateDTO.getId() != null) {
+			immigrationTemplateTask.setId(templateDTO.getId());
+		}
 		immigrationTemplateTask.setTaskName(templateDTO.getTaskName());
 		if (StringUtils.isNotBlank(templateDTO.getPetitionAssignedTo())) {
 			immigrationTemplateTask.setAssignToUsers(templateDTO.getPetitionAssignedTo());
@@ -131,7 +134,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		immigrationTemplateTask.setTaskEmail(templateDTO.getTaskEmail());
 		immigrationTemplateTask.setTaskNotification(templateDTO.getTaskNotification());
 		immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
-		immigrationTemplateTask.setStatus(1);// 1 for active
+		immigrationTemplateTask.setStatus(Constants.RECORD_ACTIVE);// 1 for active
 
 		immigrationTemplateTask.setCreatedDate(new Date());
 		immigrationTemplateTask.setCreatedBy(user);
@@ -143,9 +146,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 	@Override
 	public ResponseList<ImmigrationTemplateListDTO> getAllTemplateDetails(ImmigrationTemplateListDTO templateListDTO,
-			String searchValue,Long orgLocationId) {
+			String searchValue, Long orgLocationId) {
 		ResponseList<ImmigrationTemplateListDTO> templateList = immigrationTemplateDao
-				.getAllTemplateDetails(templateListDTO, searchValue,orgLocationId);
+				.getAllTemplateDetails(templateListDTO, searchValue, orgLocationId);
 		return templateList;
 	}
 
@@ -226,34 +229,42 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
 	@Override
 	public ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
-			String searchValue) {
-		return immigrationTemplateDao.getTemplateTaskList(templateDTO, searchValue);
+			String searchValue) throws Exception {
+		ResponseList<ImmigrationTemplateDTO> responseList = immigrationTemplateDao.getTemplateTaskList(templateDTO,
+				searchValue);
+		return responseList;
 	}
 
 	@Override
 	public ImmigrationTemplateDTO editImmigrationTaskList(String id) throws Exception {
 		ImmigrationTemplateTasks templateTasks = immigrationTemplateDao.editImmigrationTaskList(id);
 		ImmigrationTemplateDTO templateDTO = new ImmigrationTemplateDTO();
-		if(templateTasks != null) {
-			//BeanUtils.copyProperties(templateTasks, templateDTO);
-			templateDTO.setTaskName(templateTasks.getTaskName());
-			templateDTO.setPriority(templateTasks.getPriority().trim());
-			templateDTO.setTaskRepeat(templateTasks.getTaskRepeat());
-			templateDTO.setTaskReminder(templateTasks.getTaskReminder());
-			templateDTO.setTaskEmail(templateTasks.getTaskEmail());
-			templateDTO.setDueAfterMonths(templateTasks.getDueAfterMonths());
-			templateDTO.setDueAfterDays(templateTasks.getDueAfterDays());
-			if(templateTasks.getAssignToUsers()!=null) {
-				//User user = userDao.getUserById(Long.parseLong(templateTasks.getAssignToUsers()));
-				//templateDTO.setPetitionAssignedTo(user.getFullName());
+		if (templateTasks != null) {
+			BeanUtils.copyProperties(templateTasks, templateDTO);
+			templateDTO.setTemplateId(templateTasks.getImmigrationTempId().getId());
+			/*
+			 * templateDTO.setId(templateTasks.getId());
+			 * templateDTO.setTaskName(templateTasks.getTaskName());
+			 * templateDTO.setPriority(templateTasks.getPriority().trim());
+			 * templateDTO.setTaskRepeat(templateTasks.getTaskRepeat());
+			 * templateDTO.setTaskReminder(templateTasks.getTaskReminder());
+			 * templateDTO.setTaskEmail(templateTasks.getTaskEmail());
+			 * templateDTO.setDueAfterMonths(templateTasks.getDueAfterMonths());
+			 * templateDTO.setDueAfterDays(templateTasks.getDueAfterDays());
+			 */
+			if (templateTasks.getAssignToUsers() != null) {
+				// User user =
+				// userDao.getUserById(Long.parseLong(templateTasks.getAssignToUsers()));
+				// templateDTO.setPetitionAssignedTo(user.getFullName());
 				templateDTO.setPetitionAssignedTo(templateTasks.getAssignToUsers());
-			}else if(templateTasks.getAssignToCandidate() != null) {
+			} else if (templateTasks.getAssignToCandidate() != null) {
 				templateDTO.setAssignedTo(Constants.CANDIDATE);
 			}
 			templateDTO.setTaskDescription(templateTasks.getDescription());
 		}
 		return templateDTO;
 	}
+
 	@Override
 	public ImmigrationTemplateDTO getPetitionTemplateDetails(Long templateId) {
 		return immigrationTemplateDao.getPetitionTemplateDetails(templateId);
@@ -272,5 +283,16 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	@Override
 	public void deleteAllPetitionTemplateDetailsById(Long templateId) {
 		immigrationTemplateDao.deleteAllPetitionTemplateDetailsById(templateId);
+	}
+
+	@Override
+	public void deleteImmigrationTaskList(String id) {
+		immigrationTemplateDao.deleteImmigrationTaskList(id);
+
+	}
+
+	@Override
+	public int savePetitionTemplateDetailsValues(String templateId) {
+		return immigrationTemplateDao.savePetitionTemplateDetailsValues(templateId);
 	}
 }

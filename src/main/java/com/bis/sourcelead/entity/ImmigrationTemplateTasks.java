@@ -35,7 +35,7 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "TASK_NAME")
    	private String taskName;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID", nullable = false)
 	private ImmigrationTemplate immigrationTempId;
 	
