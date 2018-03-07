@@ -27,6 +27,7 @@ public class ImportTimesheetDTO {
 	private String week3;
 	private String week4;
 	private String week5;
+	private String week6;
 	private String sun;
 	private String mon;
 	private String tue;
@@ -146,6 +147,12 @@ public class ImportTimesheetDTO {
 	}
 	public void setWeek5(String week5) {
 		this.week5 = week5;
+	}
+	public String getWeek6() {
+		return week6;
+	}
+	public void setWeek6(String week6) {
+		this.week6 = week6;
 	}
 	public String getSun() {
 		return sun;

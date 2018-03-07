@@ -1206,7 +1206,13 @@ public class RequirementDaoImpl implements RequirementDao {
 		String from = "from Requirement requirement left join fetch requirement.parentRequirement "; 
 		String subQuery = "";
 		//String dateBetween = "(requirement.createdDate BETWEEN :sqlCurrentDate AND :endDate) and ";
-		String dateBetween = "requirement.createdDate >=:endDate and requirement.createdDate <= :sqlCurrentDate and ";
+		
+		String dateBetween = "" ;
+		if("0".equalsIgnoreCase(numberOfDays)) {
+			dateBetween = "DATE(requirement.createdDate) >=:endDate and ";
+		}else{
+			dateBetween = "DATE(requirement.createdDate) >=:endDate and DATE(requirement.createdDate) <= :sqlCurrentDate and ";
+		}
 		
 		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 			
