@@ -36,7 +36,7 @@ public class CandidatePassportVisa implements Serializable {
 	private String idType;
 
 	@Column(name = "VISA_ID")
-	private Date visaId;
+	private  String visaId;
 
 	@Column(name = "VISA_TYPE")
 	private String visaType;
@@ -99,11 +99,11 @@ public class CandidatePassportVisa implements Serializable {
 		this.idType = idType;
 	}
 
-	public Date getVisaId() {
+	public String getVisaId() {
 		return visaId;
 	}
 
-	public void setVisaId(Date visaId) {
+	public void setVisaId(String visaId) {
 		this.visaId = visaId;
 	}
 
