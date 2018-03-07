@@ -466,9 +466,13 @@ function remove(){
 		        	 $("#exchangeRate").html(json['exchangeRate']);
 		        	
 		        	$("#savedInvoiceId").val(json['id']);
-		        	if("Rejected" == json['invoiceStatus']){
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
 			   			 document.getElementById("sendInvoiceId").style.display="none";
 			   			 document.getElementById("saveInvoiceId").style.display="none";
+			       	}else{
+			       		document.getElementById("sendInvoiceId").style.display="block";
+			   			document.getElementById("saveInvoiceId").style.display="block";
 			       	}
 		        	
 		        	
