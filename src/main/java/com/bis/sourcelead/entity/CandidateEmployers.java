@@ -78,7 +78,19 @@ public class CandidateEmployers implements Serializable{
 	
 	@Column(name = " ENDDATE  ")
 	private Date endDate;
-	
+
+	// immigration column start
+	@Column(name = " TAX_ID")
+	private String taxId;
+
+	@Column(name = " EMPLOYMENT_TYPE")
+	private String employmentType;
+
+	@Column(name = " JOB_TITLE")
+	private String jobTitle;
+
+	// immigration column end
+
 	@Column(name = "STATUS ")
 	private Integer status;
 	
@@ -208,6 +220,30 @@ public class CandidateEmployers implements Serializable{
 	}
 
 	
+
+	public String getTaxId() {
+		return taxId;
+	}
+
+	public void setTaxId(String taxId) {
+		this.taxId = taxId;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
 
 	public Integer getStatus() {
 		return status;

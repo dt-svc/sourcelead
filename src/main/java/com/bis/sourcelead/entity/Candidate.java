@@ -258,6 +258,42 @@ public class Candidate implements Serializable{
 	@Column(name = "TWITTER_PROFILE_URL")
 	private String twitterUrl;
 	
+	// Immigration columns Start
+	@Column(name = "MIDDLE_NAME")
+	private String middelName ;
+	
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
+	
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "NATIONALITY")
+	private String nationality;
+	
+	@Column(name = "MARITAL_STATUS")
+	private String maritalStatus;
+	
+	@Column(name = "MILITARY_SERVICE_COUNTRY")
+	private String militaryServiceCountry;
+	
+	@Column(name = "SERVICE_START_DATE")
+	private Date serviceStartDate;
+	
+	@Column(name = "SERVICE_END_DATE")
+	private Date serviceEndDate;
+	
+	@Column(name = "I_94_NO")
+	private String i94No;
+	
+	@Column(name = "I_20_SEVIS_NO")
+	private String i20ServiceNo;
+	
+	@Column(name = "EAD_NO")
+	private String eadNo;
+	
+	
+	//  Immigration columns End
 	@JsonProperty
 	@Transient
     private String fullName;
@@ -1399,6 +1435,94 @@ public class Candidate implements Serializable{
 
 	public void setTwitterUrl(String twitterUrl) {
 		this.twitterUrl = twitterUrl;
+	}
+
+	public String getMiddelName() {
+		return middelName;
+	}
+
+	public void setMiddelName(String middelName) {
+		this.middelName = middelName;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getNationality() {
+		return nationality;
+	}
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getMilitaryServiceCountry() {
+		return militaryServiceCountry;
+	}
+
+	public void setMilitaryServiceCountry(String militaryServiceCountry) {
+		this.militaryServiceCountry = militaryServiceCountry;
+	}
+
+	public Date getServiceStartDate() {
+		return serviceStartDate;
+	}
+
+	public void setServiceStartDate(Date serviceStartDate) {
+		this.serviceStartDate = serviceStartDate;
+	}
+
+	public Date getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(Date serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
+	}
+
+	public String getI94No() {
+		return i94No;
+	}
+
+	public void setI94No(String i94No) {
+		this.i94No = i94No;
+	}
+
+	public String getI20ServiceNo() {
+		return i20ServiceNo;
+	}
+
+	public void setI20ServiceNo(String i20ServiceNo) {
+		this.i20ServiceNo = i20ServiceNo;
+	}
+
+	public String getEadNo() {
+		return eadNo;
+	}
+
+	public void setEadNo(String eadNo) {
+		this.eadNo = eadNo;
 	}
 
 	public String getFullName() {
