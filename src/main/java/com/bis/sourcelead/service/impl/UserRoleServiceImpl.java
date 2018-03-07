@@ -642,4 +642,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId);
 	}
 
+	@Override
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId2(UserDTO userDTO,
+			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode)
+			throws Exception {
+		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId2(userDTO, userRoleDTO, locationId, userId, loginUserRole, userCode);
+	}
+
 }

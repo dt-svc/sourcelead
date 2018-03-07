@@ -26,9 +26,65 @@ margin-right: 15px;
   position: relative !important; top: -60px !important;
 }
 </style>
+
+
+<style>
+.approvedPop {
+    position:absolute; z-index:100; width:200px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop ul li {
+ clear: both; width: 100%; margin: 0;
+ }
+ 
+ 
+ .approvedPop1 {
+    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop1 ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop1 ul li {
+ clear: both; width: 100%; margin: 0;
+ }
+</style>
+
+
+<script>
+$(document).ready(function() {
+    $("#filterDropDown").click(function(){
+		$(".approvedPop").slideToggle(200);
+		$(".approvedPop1").slideUp(200);
+	});
+    
+    $("#filterDropDown, .approvedPop, .approvedPop1").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    
+    $("#filterDropDown1").click(function(){
+		$(".approvedPop1").slideToggle(200);
+		$(".approvedPop").slideUp(200);
+	});
+    $("#filterDropDown1, .approvedPop1, .approvedPop").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    $("html").click(function() {
+        $(".approvedPop, .approvedPop1").slideUp(200);
+    });
+    
+}); 
+
+</script>
+
+
+
+
 <script type="text/javascript">
 window.onload = function () {
-//getUsersList('manual');
 	usersListCheck("${searchValue}","${searchResult}");
 	var view = $("#listView").val('GRIDVIEW');
  };
@@ -37,12 +93,6 @@ window.onload = function () {
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
 	getDynamciUserList();
-	/* if(searchResult == 'searchresult'){
-		alert("hello")
-		getUsersSearchResult(searchValue);
-	}else{
-		getDynamciUserList();
-	} */
 }
 </script>
 
@@ -126,7 +176,7 @@ function getUsersSearchResult(searchValue){
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           	
-          <li><i class="fa fa-filter"></i>&nbsp;
+          <%-- <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getDynamciUserList()">
 				<option value="ACTIVE" >Active</option>
 				<option value="">All</option>
@@ -144,7 +194,34 @@ function getUsersSearchResult(searchValue){
 	                 <option value="${roles.id}">${roles.displayName}</option>
                 </c:forEach>
 				</select>
-		   </li>
+		   </li> --%>
+		   
+		   
+		   
+		   <li id="filterDropDown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play" ></i>|
+                	<div id="filter1ApprovePop" class="approvedPop">
+                    	<ul>
+			               	<c:forEach var="roles" items="${rolesList}">
+				                  <li><input  type="checkbox" name="userRole" value ="${roles.id}"  onclick="getDynamciUserList();"><label>&nbsp;${roles.displayName}</label></li>
+			                </c:forEach>
+               				
+                        </ul>
+                    </div>                	
+                </li>
+		   
+          
+               <li id="filterDropDown1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
+                	<div id="filter1ApprovePop1" class="approvedPop1">
+                    	<ul>
+                    	    <li><input   type="checkbox" name="userState" value ="ACTIVE"  onclick="getDynamciUserList();"><label for="c7">&nbsp;Active</label></li>
+                        	<li><input   type="checkbox" name="userState" value ="INACTIVE"  checked onclick="getDynamciUserList();"><label for="c7">&nbsp;In Active</label></li>
+							<li><input   type="checkbox" name="userState" value ="NOT_LOGGEDIN" checked onclick="getDynamciUserList();"><label for="c9">&nbsp;Not Logged In</label></li>
+               				
+                        </ul>
+                    </div>                	
+                </li> 
+		   
+		   
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
 	                    
                   <c:if test="${orgLocationsCount > 1}">
@@ -724,11 +801,25 @@ function getUserSummary(userId){
 <script>
 function getDynamciUserList(){
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
-	var userState = document.getElementById("userState").value;
+	
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	
+	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/detDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);

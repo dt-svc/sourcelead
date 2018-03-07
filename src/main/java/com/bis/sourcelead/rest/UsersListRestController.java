@@ -240,8 +240,8 @@ public class UsersListRestController {
 
 
 	/* this method is used to display the users list onload */
-	@RequestMapping(value = "/detDynamicUserList", method = RequestMethod.POST)
-	public @ResponseBody   ResponseList<UserRoleDTO> detDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/getDynamicUserList", method = RequestMethod.POST)
+	public @ResponseBody   ResponseList<UserRoleDTO> getDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -258,13 +258,15 @@ public class UsersListRestController {
 		
 		ResponseList<UserRoleDTO> response = new ResponseList<UserRoleDTO>();
 		List<UserRoleDTO> userRolesList = new ArrayList<>();
-			Long userRoleType ;
+			/*Long userRoleType ;
 			if(!"".equalsIgnoreCase(userDTO.getUserRole())){
 				 userRoleType = Long.parseLong(userDTO.getUserRole());
 			}else{
 				 userRoleType = null;
-			}
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+			}*/
+			
+			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId2(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+			//ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();

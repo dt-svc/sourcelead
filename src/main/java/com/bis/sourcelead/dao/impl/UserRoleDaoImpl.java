@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -830,8 +831,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
 			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
 			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' ")
-			   /*.append("OR ((userRole.reportingManager IS NULL) OR (userRole.reportingManager IS NOT NULL and (userRole.reportingManager.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.reportingManager.lastName like '%" + userDTO.getSearchValue() + "'))) ")
-			   .append("OR ((userRole.reportingManager IS NULL) OR (userRole.reportingManager IS NOT NULL and concat(userRole.reportingManager.firstName,userRole.reportingManager.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%'))" )*/
 			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
 					
 		}
@@ -1028,6 +1027,148 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 	}*/
+
+	@Override
+	@Transactional
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId2(UserDTO userDTO,
+			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode)
+			throws Exception {
+		
+		
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<UserRole> response = new ResponseList<>();
+		List<String> userStateList = new ArrayList<>();
+		List<Long> userRolesList = new ArrayList<>();
+		
+		List userRoleList = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		String subQuery = "";
+		String subQuery2 ="";
+		Map<String, Object> params = new HashMap<String,Object>();
+		StringBuilder query1 = new StringBuilder("");
+		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+		 query1.append("and( (userRole.user.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.user.lastName like '%" + userDTO.getSearchValue() + "' )")
+			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
+			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
+			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' ")
+			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
+					
+		}
+		//usertList shorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userRoleDTO.getSortColumn())) {
+			if(userRoleDTO.getSortColumn().equalsIgnoreCase("displayName")) {
+				sortingQry = " order by userRole.roles."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
+			}else {
+				sortingQry = " order by userRole.user."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
+
+			}
+			
+		}
+		
+		
+		
+		if(userDTO.getUserRole() != null && !userDTO.getUserRole().isEmpty()) {
+			String[] userRoles = userDTO.getUserRole().split(",");
+			for(int i=0; i < userRoles.length; i++) {
+				userRolesList.add(Long.parseLong(userRoles[i]));
+			}
+		}else {
+			userRolesList.add(0L);
+		}
+		
+		
+		subQuery = " and ((:varZero  IN (:roleIds)) OR (:varZero NOT IN (:roleIds) and userRole.roles.id IN (:roleIds)))";
+		
+
+		if(userRoleDTO.getUserState() != null && !userRoleDTO.getUserState().isEmpty()) {
+			String[] userState = userRoleDTO.getUserState().split(",");
+			if (Arrays.asList(userState).contains("ACTIVE")) {
+				subQuery2 = subQuery2 + "userRole.userState = 'ACTIVE' or ";
+			}
+			
+			if (Arrays.asList(userState).contains("INACTIVE")) {
+				subQuery2 = subQuery2 + "userRole.userState = 'INACTIVE' or ";
+			}
+			
+			if (Arrays.asList(userState).contains("NOT_LOGGEDIN")) {
+				subQuery2 = subQuery2 + "userRole.userState = 'NOT_LOGGEDIN' or ";
+			}
+			
+			subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+		}
+		
+		
+		/*if(roleId != null) {
+			 subQuery = " and userRole.roles.id = :roleId ";
+			params.put("roleId",roleId);
+		}
+		if(!"".equalsIgnoreCase(userState)){
+			subQuery2 = " and userRole.userState =:userState ";
+			params.put("userState",userState);
+		} */
+		
+			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
+			Query query = session.createQuery(listQuery+query1+sortingQry);
+			
+			userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
+			
+			/*if(roleId != null && !"".equalsIgnoreCase(userState)) {
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
+			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
+			}  else if(!"".equalsIgnoreCase(userState)){
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+			}else {
+				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+			}*/
+			
+			
+			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
+			Query query2 = session.createQuery(queryCount+query1);
+			
+			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).list();
+			
+			
+	/*		if(roleId != null && !"".equalsIgnoreCase(userState)) {
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).list();
+			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).list();
+			} else if(!"".equalsIgnoreCase(userState)){
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).list();
+			}else {
+				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).list();
+			}*/
+			  
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			filterCount = countlist.iterator().next().intValue();
+		}
+			
+		 
+		int totalCount = 0;
+			if (userDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			response.setData(userRoleList);
+			return response;
+			
+	
+	}
 	
 	/*
      @SuppressWarnings("unchecked")

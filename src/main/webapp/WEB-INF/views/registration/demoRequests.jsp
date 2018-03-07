@@ -173,7 +173,7 @@ function requestedOrgsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#reqOrgDataTableSearch").val();
 	 
-	 var requestedStatus = [];
+	   var requestedStatus = [];
 		$('input:radio[name=requestedStatus]:checked').each(function() 
 	    {
 			requestedStatus.push($(this).val());
