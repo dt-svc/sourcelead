@@ -789,7 +789,6 @@ var config = {
 function blockActiveUser(userRoleId,locationId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.get(sourceleadUrl+"/blockActiveUser?"+tokenParamName+"="+tokenValue+"&orgLocationId="+locationId+"&userRoleId="+userRoleId,function(data) {
-		alert("hai");
 		if(data == "success"){
 		   usageReportList("ACTIVE");
 		}
