@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.dto.DashboardDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
@@ -1075,6 +1076,46 @@ public class DashboardRestController {
 			eventsDTO.setInterviewerList(requirementInterviewList);
 			eventsDTO.setTasksList(taklist);
 			return eventsDTO;
+		}
+		
+		
+		/**
+		   * @author Venkat Kesav
+		   * @since  March 06 2018
+		   * @version 0.0.1
+		   * 
+		   * This method is used for getting Dashboard Counts By login User for mobile App
+		   *  
+		   * @return DashboardDTO 
+		   * 
+		   * @throws NullPointer
+		   */
+		@RequestMapping(value = "/rest/getDashboardCompact", method = RequestMethod.POST )
+		public DashboardDTO getInterviewsAndTasksList(DashboardDTO dashboardDTO, HttpServletRequest request) throws Exception {
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			long interviewCount = 0;
+			long taskCount = 0;
+			String userType = null;
+			
+			if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				userType = Constants.ADMIN;
+			}
+			Long totalInterviewCount = requirementInterviewHistoryService.getCountOfAllInterviewAssignedToLoginUser(loginOrgLocations, userType, user.getId(), user.getUserCode());
+			if(totalInterviewCount != null) {
+				interviewCount = totalInterviewCount;
+			}
+			
+			String status =  "myTask";
+			Long totalTaskCount = taskService.taskCountByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(), user.getId(), status);
+			if(totalTaskCount != null) {
+				taskCount = totalTaskCount;
+			}
+			dashboardDTO.setInterviewCount(interviewCount);
+			dashboardDTO.setTaskCount(taskCount);
+			return dashboardDTO;
 		}
 		
 		

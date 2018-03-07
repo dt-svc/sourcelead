@@ -544,4 +544,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	}
 
 	
+	@Override
+	public Long getCountOfAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String userType, Long userId, String userCode) throws Exception {
+		return requirementInterviewHistoryDao.getCountOfAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), userType, userId, userCode);
+	}
 }
