@@ -1156,6 +1156,20 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 		return projects;
 	}
+	
+	
+	@Override
+	@Transactional
+	public Projects getProjectByProjectName(String projectName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.projectName = :projectName ";
+		Collection<Projects> projectsList = session.createQuery(query.toString()).setString("projectName", projectName).list();
+		Projects projects = null;
+		if (projectsList != null && projectsList.size() > 0) {
+			projects = (Projects) projectsList.iterator().next();
+		}
+		return projects;
+	}
 
 	@Override
 	@Transactional

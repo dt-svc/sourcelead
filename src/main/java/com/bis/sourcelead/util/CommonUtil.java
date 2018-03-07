@@ -376,7 +376,7 @@ public class CommonUtil {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions ts :timesheetSubmissionsList){
 					List<TimeSheetDayEntries> tdeList = null;
-					if(terminationDate.before(ts.getStartDate())) {
+					if(!CalendarUtil.isGivenDateBetweenDateRange(ts.getStartDate(), ts.getEndDate(), terminationDate)) {
 						ts.setStatus(Constants.MEMBER_IN_ACTIVE);
 					    tdeList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
 					}else {
@@ -385,6 +385,9 @@ public class CommonUtil {
 					if(tdeList != null && !tdeList.isEmpty()) {
 						for(TimeSheetDayEntries tde :tdeList) {
 							tde.setStatus(Integer.parseInt(Constants.MEMBER_IN_ACTIVE));
+							tde.setTotalHours("00:00");
+							tde.setBillableHours("00:00");
+							tde.setNonBillableHours("00:00");
 							timeSheetDayEntriesService.saveTimesheetDayEntries(tde);
 						}
 					}
