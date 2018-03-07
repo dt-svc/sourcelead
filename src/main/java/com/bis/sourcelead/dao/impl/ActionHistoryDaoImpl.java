@@ -1,9 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ActionHistoryDao;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -171,6 +176,32 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		List<ActionNames> actionNames = session.createQuery(query).setString("methodName", methodName).list();
 		logger.debug("getActionNameUsingMethodName end");
 			return actionNames;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserDTO getAllActionHistoryByUserId(Long userId)throws Exception
+	{
+		UserDTO countMap = new UserDTO();
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from ActionHistory  actHistory  where actHistory.userId =:userId ";
+		Query actionHistory = session.createQuery(query).setLong("userId", userId);
+		Long count = (Long) actionHistory.uniqueResult();
+		countMap.setNoOfActivities(count.toString());
+//		List<Long> countlist = actionHistory.list();
+		
+//		String query1 = "from ActionHistory actHistory where actHistory.userId = (SELECT MAX(id) FROM ActionHistory  where actHistory.userId = :userId)";
+//		List<ActionHistory> actionHistorylist = session.createQuery(query1).setLong("userId", userId).list();
+//		Date lastActivity = null ;
+//		if(actionHistorylist != null && actionHistorylist.size() > 0){
+//			lastActivity = actionHistorylist.get(0).getActionTime();
+//			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//			countMap.setLastActivity(df.format(lastActivity));
+//		}
+		
+		return countMap;
 	}
 
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -140,6 +141,10 @@ public interface UserRoleService {
 	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO, Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
 	List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
+
+	ResponseList<UserDTO> getUserRoleListByLocationIdAndUserType(UserDTO userDTO) throws Exception;
+	
+	Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId);
 
 
 }

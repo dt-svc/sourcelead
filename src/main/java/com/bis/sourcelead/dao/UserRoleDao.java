@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -120,5 +121,9 @@ public interface UserRoleDao {
 	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
 	List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception;
+
+	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UserDTO userDTO);
+	
+	Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId);
 
 }

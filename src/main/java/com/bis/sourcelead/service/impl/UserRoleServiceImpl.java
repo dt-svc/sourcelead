@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -31,12 +33,14 @@ import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -79,6 +83,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	OrgDocumentsDao orgDocumentsDao;
+	
+	@Autowired
+	ActionHistoryService actionHistoryService;
+	
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -640,6 +648,64 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId, Long locationId)
 			throws Exception {
 		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId);
+	}
+
+	@Override
+	public ResponseList<UserDTO> getUserRoleListByLocationIdAndUserType(UserDTO userDTO) throws Exception
+	{
+		
+		ResponseList<UserRole> userlist = userRoleDao.getUserRoleListByLocationIdAndUserType(userDTO);
+		ResponseList<UserDTO> responseList = new ResponseList<>();
+		List<UserDTO> userDtoList = new ArrayList<>();
+		for(UserRole userRole : userlist.getData()){
+			
+			User user = userRole.getUser();
+			Employees employee = employeesService.getEmployeeByUserId(user.getId());
+					
+			UserDTO userrDTO = new UserDTO();
+			StringBuilder sb = new StringBuilder();
+			
+			
+			userrDTO.setUserRoleId(userRole.getId());
+			userrDTO.setLocationId(userRole.getOrgLocations().getId());
+			if(StringUtils.isNotBlank(employee.getEmployeeId())){
+				sb.append(employee.getEmployeeId());
+			}
+			if(StringUtils.isNotBlank(user.getLastName())){
+				userrDTO.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			}else{
+				userrDTO.setUserName(sb.append(user.getFirstName()).toString());
+			}
+			
+			userrDTO.setUserEmail(user.getEmail());
+			userrDTO.setUserType(user.getUserType());
+			
+			List<UserRole> userRoleList =  userRoleDao.getUsersListByUserId(user.getId());
+			for(UserRole ur:userRoleList){
+				ur.setOrgName(ur.getOrgLocations().getOrgLocationName());
+			}
+			userrDTO.setEnrolledOrgs(userRoleList);
+			userrDTO.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
+			
+			UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+			userrDTO.setNoOfActivities(actionHistory.getNoOfActivities());
+			
+//			if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
+//			userrDTO.setLastActivity(actionHistory.getLastActivity());
+//			}
+			
+			userDtoList.add(userrDTO);
+		}
+		responseList.setRecordsFiltered(userlist.getRecordsFiltered());
+		responseList.setRecordsTotal(userlist.getRecordsTotal());
+		responseList.setData(userDtoList);
+		return responseList;
+	}
+
+	@Override
+	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId)
+	{
+		return userRoleDao.getUserCountListByOrgLocationId(orgLocationId, orgId);
 	}
 
 }

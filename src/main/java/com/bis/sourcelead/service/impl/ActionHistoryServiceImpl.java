@@ -1,11 +1,13 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ActionHistoryDao;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
@@ -45,6 +47,12 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public UserDTO getAllActionHistoryByUserId(Long userId)throws Exception
+	{
+		return actionHistoryDao.getAllActionHistoryByUserId(userId);
 	}
 	
 	

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,7 +26,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -35,9 +42,11 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -121,6 +130,9 @@ public class ReportRestController {
 	
 	@Autowired
 	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
+	
+	@Autowired
+	OrgService orgService;
 	
 	
 	/**
@@ -542,4 +554,48 @@ public class ReportRestController {
 		return (str == null || "".equals(str.trim()));
 	}
 
+	@RequestMapping(value ="/userUsageReportList")
+	public @ResponseBody ResponseList<UserDTO> userUsageReportList(UserDTO userDTO,@RequestParam (value = "orgLocationId", required = false)Long orgLocationId, HttpServletRequest request)throws Exception{
+	
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		userDTO.setId(loginUser.getId());
+	ResponseList<UserDTO> userCount = userRoleService.getUserRoleListByLocationIdAndUserType(userDTO);
+	
+	return userCount;
+	
+	}
+	
+	@RequestMapping(value ="/getCountList")
+	public @ResponseBody UserDTO getCountList(@RequestParam (value = "orgLocationId", required = false)Long orgLocationId,@RequestParam (value = "orgId", required = false)List<Long> orgId, HttpServletRequest request)throws Exception{
+		Map<String, Integer> count = userRoleService.getUserCountListByOrgLocationId(orgLocationId, orgId);
+		
+		UserDTO usDTO = new UserDTO();
+		
+		usDTO.setActiveCount(count.get("ACTIVE"));
+		usDTO.setInactiveCount(count.get("INACTIVE"));
+		usDTO.setNotLoggedinCount(count.get("NOT_LOGGEDIN"));
+		
+		
+		return usDTO;
+		
+	}
+	
+	@RequestMapping (value ="/getAllOrgs")
+	public @ResponseBody List<Org> getAllOrgs(HttpServletRequest request)throws Exception{
+		List<Org> orgList = orgService.getOrgs();
+		
+		return orgList;
+		
+	}
+	
+	@RequestMapping (value ="/blockActiveUser")
+	public @ResponseBody String blockActiveUser(@RequestParam (value = "orgLocationId", required = false)Long orgLocationId,@RequestParam (value = "userRoleId", required = false)Long userRoleId,HttpServletRequest request)throws Exception{
+		
+		UserRole userRole =  userRoleService.getUserRoleById(userRoleId);
+		userRole.setUserState(Status.INACTIVE);
+		userRoleService.addUserRole(userRole);
+		return "success";
+		
+	}
+	
 }

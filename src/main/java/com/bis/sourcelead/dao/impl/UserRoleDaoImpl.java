@@ -33,7 +33,10 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Connections;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.enums.Status;
@@ -1028,6 +1031,111 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 	}*/
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UserDTO userDTO)
+	{
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer filterCount = 0;
+        ResponseList<UserRole> response = new ResponseList<>();
+        
+        String userType = "";
+        if("ACTIVE".equalsIgnoreCase(userDTO.getUserType())){
+        	userType = " userRole.userState = 'ACTIVE'";
+		}else if("INACTIVE".equalsIgnoreCase(userDTO.getUserType())){
+			userType = " userRole.userState = 'INACTIVE'";
+		}else if("NOT_LOGGEDIN".equalsIgnoreCase(userDTO.getUserType())){
+			userType = " userRole.userState = 'NOT_LOGGEDIN'";
+		}
+        
+        StringBuilder query1 = new StringBuilder("");
+		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+		
+			query1.append("and( (uRole.user.firstName like '" + userDTO.getSearchValue() + "%' OR uRole.user.lastName like '%" + userDTO.getSearchValue() + "' )")
+			      .append("OR (concat(uRole.user.firstName,uRole.user.lastName) like '%" + userDTO.getSearchValue().trim() + "%')" )
+			      .append("OR uRole.user.email like '%" + userDTO.getSearchValue() + "%') ");
+		}
+       
+    		List<Long> countlist = null;
+    		List<UserRole> userList = null;
+    		String query = "";
+    		String countQuery = "";
+    		if(userDTO.getOrgId() != null && userDTO.getOrgId().size() > 0){
+    			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") "+query1+" and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+    			userList =   session.createQuery(query.toString()).setParameterList("orgList", userDTO.getOrgId()).list();
+    		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+    		    Query listCountQuery = session.createQuery(countQuery + query1);
+    		    countlist =listCountQuery.setParameterList("orgList", userDTO.getOrgId()).list();
+    		}else{
+    			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") "+query1+" group by uRole.user.id";
+    			userList =   session.createQuery(query.toString()).list();
+    		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") group by uRole.user.id";
+    		    Query listCountQuery = session.createQuery(countQuery + query1);
+    		    countlist =listCountQuery.list();
+    		}
+        	
+        	int totalCount = 0;
+    		if (userDTO != null) {
+    			if(countlist != null && !countlist.isEmpty()) {
+    				totalCount = countlist.size();
+    			}
+    		} 
+    		response.setRecordsTotal(totalCount);
+    		
+   		if(query1.toString() != null && !query1.toString().isEmpty()){
+    			response.setRecordsFiltered(filterCount);
+    		}else {
+    			response.setRecordsFiltered(totalCount);
+    		}
+    		
+    		response.setData(userList);
+    		return response;
+        
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId)
+	{
+		Map<String, Integer> countMap = new HashMap<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		if(orgId != null && orgId.size() > 0){
+			
+			
+			String query =" from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'ACTIVE') and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+	        List<User> activeUserList =   session.createQuery(query.toString()).setParameterList("orgList", orgId).list();
+			countMap.put("ACTIVE", activeUserList.size());
+			
+			String query1 =" from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'INACTIVE') and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+	        List<User> inactiveUserList =   session.createQuery(query1.toString()).setParameterList("orgList", orgId).list();
+			countMap.put("INACTIVE", inactiveUserList.size());
+			
+			String query2 =" from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'NOT_LOGGEDIN') and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+	        List<User> notLoggedinUserList =   session.createQuery(query2.toString()).setParameterList("orgList", orgId).list();
+			countMap.put("NOT_LOGGEDIN", notLoggedinUserList.size());
+		}else{
+			String query =" from User user where user.id <> 1 and user.id <> 2 and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = 'ACTIVE')";
+	        List<User> activeUserList =   session.createQuery(query.toString()).list();
+			countMap.put("ACTIVE", activeUserList.size());
+			
+			String query1 =" from User user where user.id <> 1 and user.id <> 2 and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = 'INACTIVE')";
+	        List<User> inactiveUserList =   session.createQuery(query1.toString()).list();
+			countMap.put("INACTIVE", inactiveUserList.size());
+			
+			String query2 =" from User user where user.id <> 1 and user.id <> 2 and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = 'NOT_LOGGEDIN')";
+	        List<User> notLoggedinUserList =   session.createQuery(query2.toString()).list();
+			countMap.put("NOT_LOGGEDIN", notLoggedinUserList.size());
+		}
+		
+		
+		
+		return countMap;
+	}
 	
 	/*
      @SuppressWarnings("unchecked")
