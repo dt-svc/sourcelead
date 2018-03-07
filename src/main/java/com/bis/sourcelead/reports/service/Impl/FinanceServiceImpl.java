@@ -656,9 +656,17 @@ public class FinanceServiceImpl implements FinanceService{
 		List<InvoicePayment> invoicePaymentList = null;
 		for (Invoice invoice : paidInvoiceList.getData()) {
 			if("Payables".equalsIgnoreCase(paidBillDTO.getBillType())) {
-				 invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
-			}else {
-				 invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+				if(null != invoice.getParentInvoiceId()) {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
+				}else {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+				}
+			}else if("Receivable".equalsIgnoreCase(paidBillDTO.getBillType())){
+				if(null != invoice.getParentInvoiceId()) {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
+				}else {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+				}
 			}
 			for (InvoicePayment invoicePayment : invoicePaymentList) {
 				
