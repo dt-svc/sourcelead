@@ -27,6 +27,9 @@
 </script>
 
 
+<input type="hidden" id="leaveEmptyMessage" name="leaveEmptyMessage" />
+<div id="popUp"></div>
+
  <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -150,6 +153,16 @@
                  <div class="clearfix mt5">
                    <h4 class="heading col-md-4">Top leave Takers</h4>
                     <div class="timesheet_head clearfix col-md-8">
+                    <ul class="list-unstyled noPad pull-left">
+                    	<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+					        	<div id="exportPop" class="ExpPop">
+					              <ul>
+					                <li onclick="leavePdfExport();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+					                <li onclick="leaveExcelExport();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+					              </ul>
+					            </div>
+					          </li>  
+                    </ul>
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
@@ -1038,6 +1051,7 @@ function topLeaveTakersPagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, report, meta) {
+		    	  		$("#leaveEmptyMessage").val(1);
 		    	  		var result = "";
 		    	  		result = result + '<td>';
 		    	  		result = result + '<div class="tbldata-dotdot-big" title="">';
@@ -1180,4 +1194,106 @@ function topLeaveTakersPagination(url){
 	  
 	});
 </script>
+
+
+<script>
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+ });
+ $("html").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ $(".billing_dashboard, .nav-tabs").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ 
+ $("#exportPop, #mypop, .nav-tabs, .billing_dashboard").click(function(e) {  
+     e.stopPropagation();
+ });
+</script>
+
+
+<script>
+function leavePdfExport(){
+	
+	var reportYear = "";
+	var reportMonth = "";
+	var reportFromDate = "";
+	var reportEndDate = "";
+	var leaveEmptyMessage = $("#leaveEmptyMessage").val();
+	
+	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+		reportYear = $("#topLeaveTakersreportYear").val();
+	}
+	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+		reportMonth = $("#reportMonth").val();	
+	}
+	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+		 reportFromDate = $("#reportFromDate").val();	
+	}
+	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+		 reportEndDate = $("#reportEndDate").val();	
+	}
+
+	if(leaveEmptyMessage > 0){
+	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Leaves List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_leave_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function leaveExcelExport(){
+	
+	var reportYear = "";
+	var reportMonth = "";
+	var reportFromDate = "";
+	var reportEndDate = "";
+	var leaveEmptyMessage = $("#leaveEmptyMessage").val();
+	
+	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+		reportYear = $("#topLeaveTakersreportYear").val();
+	}
+	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+		reportMonth = $("#reportMonth").val();	
+	}
+	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+		 reportFromDate = $("#reportFromDate").val();	
+	}
+	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+		 reportEndDate = $("#reportEndDate").val();	
+	}
+	if(leaveEmptyMessage > 0){
+	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=EXCEL";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Leaves List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_leave_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />

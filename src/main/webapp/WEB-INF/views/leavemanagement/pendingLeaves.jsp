@@ -6,6 +6,13 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	getPendingLeavesList();
+	if ('${notifyLink}' == "notifyLink") 
+	{
+	var leaveUUID = '${leaveUUID}';
+	var orgLocationId = '${orgLocationId}';
+	var status = '${status}';
+	getRequestedAproveSummary(leaveUUID,orgLocationId,status);
+	}
 });
 </script>
 

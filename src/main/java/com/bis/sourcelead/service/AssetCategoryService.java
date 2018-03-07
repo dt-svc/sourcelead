@@ -19,6 +19,8 @@ public interface AssetCategoryService {
 	AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId);
 	
 	AssetCategory getAssetCategoryByCategoryId(Long categoryId);
+	
+	AssetCategory getAssetCategoryByCategoryIdAndLocationId(String categoryName, Long categoryId, Long orglocationId);
 
 	Boolean validateCategoryName(String categoryName, Long orgLocationId);
 
