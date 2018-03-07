@@ -108,6 +108,20 @@ function exportTimeSheetToPdfOrExcel(exportType){
         		      success :function(data) {
         		    	  $("#approvalTableData").empty();
         		    	  $("#approvalTableData").append(data);
+        		    	  $("#selectAllTimeSheetCheckBoxForSubmitForApproval").removeProp('checked');
+		                     $(".checkBoxForSubmitForApproval").each(function() {
+		                    	 for(var e in selectedRecords) {
+		                    		 if($(this).val() === e) {
+		                    			 if(selectedRecords[e])
+		                    			 	$(this).prop('checked', selectedRecords[e]);
+		                    			 break;
+		                    		 }
+		                    	 }
+		         	        });
+
+		             	    $(".checkBoxForSubmitForApproval").click(function () {
+		             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+		             	    });
         		    	  var totalRows =  $('#totalRows').val();
         		    		  $("#loadTime").removeAttr('style');
             		    	  preparePagination(pageNo);
