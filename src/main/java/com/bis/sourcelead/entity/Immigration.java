@@ -50,12 +50,12 @@ public class Immigration implements Serializable {
 	private Candidate candidate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "JOB_REL_ID")
+	@JoinColumn(name = "JOB_ID")
 	private Requirement job;;
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORG_REL_ID")
+	@JoinColumn(name = "ORG_ID")
     private Org org;
 	
 	
