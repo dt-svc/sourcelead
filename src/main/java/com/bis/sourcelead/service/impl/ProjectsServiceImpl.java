@@ -56,6 +56,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -567,22 +568,24 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Projects updatedProjects = saveProject(projects);
 		
 		
-		
 		if(projectsDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:projectsDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				ProjectCustomFieldData projectCustomFields = new ProjectCustomFieldData();
-				projectCustomFields.setProjects(updatedProjects);
-				 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				 projectCustomFields.setOrglocationsFormFields(orgFormField);
-				 projectCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				 projectCustomFieldDataService.saveProjectCustomFieldData(projectCustomFields);
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+					ProjectCustomFieldData projectsCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+					}else {
+						projectsCustomFields = new ProjectCustomFieldData();
+					}
+				projectsCustomFields.setProjects(updatedProjects);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				projectsCustomFields.setOrglocationsFormFields(orgFormField);
+				projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
 				}
 				
 			}	
 		}
-		
-		
 		
 		/*
 		 * Saving Project DB data as ElasticSearch Documents
@@ -1741,6 +1744,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getEndDate()));
 			    }
 				
+			    
+			    if(projectDTO.getCustomFormData() !=null) {
+					for( CustomFormFieldDTO customFields:projectDTO.getCustomFormData()) {
+						if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+							ProjectCustomFieldData projectsCustomFields = null;
+							if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+								projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+							}else {
+								projectsCustomFields = new ProjectCustomFieldData();
+							}
+						projectsCustomFields.setProjects(projects);
+						OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+						projectsCustomFields.setOrglocationsFormFields(orgFormField);
+						projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+						projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
+						}
+						
+					}	
+				}
+			    
 			    
 			  /*  Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 				projects.setProjectMembers(projectMemberList);*/
