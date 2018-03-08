@@ -132,6 +132,12 @@ public class Org implements Serializable{
     
     @Column(name = "PAYMENT_TERM")
 	private String PaymentTerm;
+    
+    @Column(name = "CAREER_PAGE_KEY")
+    private String careerPageKey;
+    
+    @Column(name = "IS_CAREER_PAGE_KEY_ACTIVE")
+    private Boolean careerPageKeyActive;
 	
 	@Transient
 	private String email;
@@ -253,8 +259,7 @@ public class Org implements Serializable{
 	public void setDocFile(byte[] docFile) {
 		this.docFile = docFile;
 	}
-	
-	
+
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -427,5 +432,24 @@ public class Org implements Serializable{
 	{
 		this.noOfDays = noOfDays;
 	}
+	
+	public String getCareerPageKey()
+	{
+		return careerPageKey;
+	}
 
+	public void setCareerPageKey(String careerPageKey)
+	{
+		this.careerPageKey = careerPageKey;
+	}
+
+	public Boolean getCareerPageKeyActive() {
+		return careerPageKeyActive;
+	}
+
+	public void setCareerPageKeyActive(Boolean careerPageKeyActive) {
+		this.careerPageKeyActive = careerPageKeyActive;
+	}
+
+	
 }

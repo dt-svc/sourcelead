@@ -42,5 +42,11 @@ public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSession
 	public UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID) {
 		return userLoginLogoutSessionDao.getUserLoginLogoutSessionByActionUUID(actionUUID);
 	}
+
+	@Override
+	public boolean validatePreviouslyAuthenticatedByUserIdAndIpAddress(String ipAddress, Long userId)
+	{
+		return userLoginLogoutSessionDao.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userId);
+	}
 	
 }

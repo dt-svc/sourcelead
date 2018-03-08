@@ -35,8 +35,8 @@ import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.reportsDTO.PaidBillDTO;
-import com.bis.sourcelead.rest.reportsRestController.FinanceReportRestController;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -55,6 +55,9 @@ public class FinanceServiceImpl implements FinanceService{
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	InvoicePaymentService invoicePaymentService;
 	
 	@Override
 	public APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
@@ -635,6 +638,55 @@ public class FinanceServiceImpl implements FinanceService{
 			res.setData(list);
 			return res;
 //			return getPaidBillDTOResponse(paidInvoiceList,orgLocation);
+	}
+
+	@Override
+	public PaidBillDTO getTotalAmountPerYear(PaidBillDTO paidBillDTO, OrgLocations orgLocation) throws Exception {
+		
+		ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+		PaidBillDTO pbd = new PaidBillDTO();
+		Map<Long, Double> totalAmountMap = new HashMap<>();
+		double totalAmount = 0;
+		double finalAmount = 0;
+		
+		List<InvoicePayment> invoicePaymentList = null;
+		for (Invoice invoice : paidInvoiceList.getData()) {
+			if("Payables".equalsIgnoreCase(paidBillDTO.getBillType())) {
+				if(null != invoice.getParentInvoiceId()) {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
+				}else {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+				}
+			}else if("Receivable".equalsIgnoreCase(paidBillDTO.getBillType())){
+				if(null != invoice.getParentInvoiceId()) {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
+				}else {
+					invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+				}
+			}
+			for (InvoicePayment invoicePayment : invoicePaymentList) {
+				
+				Date date = invoicePayment.getPaymentDate();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				long year = cal.get(Calendar.YEAR);
+				
+				double amount = Double.valueOf(invoicePayment.getPaymentAmount());
+				if(totalAmountMap.containsKey(year)) {
+					totalAmount = totalAmountMap.get(year);
+				}else {
+					totalAmount = 0;
+				}
+				finalAmount = totalAmount+amount;
+				totalAmountMap.put(year, finalAmount);
+			}
+		}
+		
+		for (Map.Entry<Long, Double> entry : totalAmountMap.entrySet()) {
+			totalAmountMap.put(entry.getKey(), entry.getValue());
+			pbd.setTotalAmountMap(totalAmountMap);
+		}
+		return pbd;
 	}
 
 }
