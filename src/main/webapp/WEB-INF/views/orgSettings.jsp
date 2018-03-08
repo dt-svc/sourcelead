@@ -559,6 +559,40 @@ function cancelOrgImg(){
 	                   			</div>
 	               			</div>         
 	           			</div> 
+                                        <div class="tab-content panel-body">
+                                            <div class="clearfix mb">
+                                                <div class="pull-left">
+                                                    <h4 id="careerPageKeyHeading">Career Page Key</h4>
+                                                    <div id="careerPageKeyLoading"></div>
+                                                </div>
+                                                <div class="pull-right">
+                                                    <span title="Click to copy key to clipboard"><i id="copyCareerKey" class="fa fa-clipboard copy-icon hidden {SourceLeadWeb_org.careerPageKey == null ? 'hidden' : ''}" aria-hidden="true"></i></span>
+                                                    <input type="button" value="${SourceLeadWeb_org.careerPageKey == null ? 'Generate Key' : 'Regenerate Key'}" id="generateCareerPageKey" class="btn btn-primary"/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="careerPageInnerContent">
+                                                <c:if test="${SourceLeadWeb_org.careerPageKey != null}">
+                                                    <div class="clearfix">
+                                                        <div class="col-md-2">Career Page Key</div>
+                                                        <div class="col-md-9 break_all">${SourceLeadWeb_org.careerPageKey}</div>
+                                                        <div class="col-md-1">
+                                                            <div class="toggle-button">
+                                                                <label class="switch">
+                                                                    <input type="checkbox" ${SourceLeadWeb_org.careerPageKeyActive ? 'checked' : ''} id="changeCareerPageKeyStatus"/>
+                                                                    <div class="slider round"></div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:if>
+                                            </div>  
+                                                <div class='clearfix'>
+                                                    <span>Please copy & paste this in your career page</span>
+                                                    <textarea class='form-control' rows="3" readonly="readonly" id='careerPageCode'>
+                                                        
+                                                    </textarea>
+                                                </div>
+                                        </div> 
            			</c:if>
            			
            			<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
@@ -900,6 +934,64 @@ function switchLoginSecurity(){
 	      },
 	  }); 
 	
+}
+$(function() {
+    $("#generateCareerPageKey").click(function() {
+        $.post(sourceleadUrl+"/generate-career-page-key", {}, function(data) {
+            if(data && data.indexOf("key") === 0) {
+                $("#copyCareerKey").show();
+                $("#generateCareerPageKey").val("Regenerate Key");
+                var text = '<div class="clearfix">';
+                text += '<div class="col-md-2">Career Page Key</div>';
+                text += '<div class="col-md-9 break_all">'+(data.split(';')[1])+'</div>';
+                text += '<div class="col-md-1"><div class="toggle-button"><label class="switch"><input type="checkbox" checked id="changeCareerPageKeyStatus"/><div class="slider round"></div></label></div></div>';
+                text += '</div>';
+                $("#careerPageInnerContent").html(text);
+                applyCareerPageCode(data.split(';')[1]);
+                applyCareerPageStatusEvent();
+            } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
+                alert("Session timedout");
+                window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+            } else {
+                alert("Operation failed, please try again");
+            }
+        });
+    });
+    
+    applyCareerPageCode('${SourceLeadWeb_org.careerPageKey}')
+    applyCareerPageStatusEvent();
+});
+function applyCareerPageStatusEvent() {
+    $("#copyCareerKey").click(function() {
+        $("#careerKeyDummy").remove();
+       $("#copyCareerKey").append("<input type='text' style='display:none' id='careerKeyDummy'/>");
+       var copyText = document.getElementById("careerKeyDummy");
+       copyText.value = $(".col-md-9.break_all").html();
+       copyText.select();
+       document.execCommand("Copy");
+    });
+    
+    $("#changeCareerPageKeyStatus").click(function() {
+        $.post(sourceleadUrl+"/career-page-key-status", {}, function(data) {
+            if(data && data.indexOf("status") === 0) {
+                var status = data.split(";")[1];
+                if(parseInt(status) === 1)
+                    $("#changeCareerPageKeyStatus").prop('checked', 'checked');
+                else
+                    $("#changeCareerPageKeyStatus").removeProp('checked');
+            } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
+                alert("Session timedout");
+                window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+            } else {
+                alert("Operation failed, please try again");
+            }
+        });
+    });
+}
+
+function applyCareerPageCode(code) {
+    var url = '${sourceleadUrl}'.replace('app','');
+    $("#careerPageCode").text("<div id='jobList'></div>\n<script type='text/javascript' src='"+url+"resources/careers.js?key="+code+"'></script"+">");
 }
 </script>
 
