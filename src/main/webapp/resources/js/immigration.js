@@ -186,6 +186,7 @@ function Immigration(){
 		    	  if(data == 'success'){
 		    		  if(data == "success"){
 		    			  window.location.href =sourceleadUrl+immiModulePath+"/viewImmigrationTemplateList"; // redirect to tempalte list.
+		    			  immTemplId = "";
 		    		  }
 		    	   }
 		       }
