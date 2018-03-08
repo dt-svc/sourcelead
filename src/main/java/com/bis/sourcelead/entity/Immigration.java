@@ -36,32 +36,32 @@ public class Immigration implements Serializable {
 
 
 	@Column(name = "DATE_OF_ARRIVAL ")
-	private Date dateOf;
+	private Date dateOfArrival;
 	
 	@Column(name = "PLACE_OF_ENTRY ")
 	private String placeOfEntry;
 	
+	@ManyToOne
+	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID")
+	private ImmigrationTemplate immigrationTemplateId;
 	
-	@Column(name = "CHOOSE_TEMPLATE_ID")
-	private Long chooseTemplateId;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "JOB_ID")
-	private Requirement job;;
+	private Requirement job;
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "ORG_ID")
     private Org org;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name= "ORG_SPOC_ID")
-	private OrgSpoc orgSpoc;;
+	private OrgSpoc orgSpoc;
 	
 	
 	@Column(name = "COUNTRY ")
@@ -77,14 +77,14 @@ public class Immigration implements Serializable {
 	@Column(name = "CREATED_DATE ")
 	private Date createdDate;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CREATED_BY")
 	private User createdBy;
 
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 
@@ -119,14 +119,7 @@ public class Immigration implements Serializable {
 	public void setCurrUscisStauts(Long currUscisStauts) {
 		this.currUscisStauts = currUscisStauts;
 	}
-
-	public Date getDateOf() {
-		return dateOf;
-	}
-
-	public void setDateOf(Date dateOf) {
-		this.dateOf = dateOf;
-	}
+	
 
 	public String getPlaceOfEntry() {
 		return placeOfEntry;
@@ -136,12 +129,20 @@ public class Immigration implements Serializable {
 		this.placeOfEntry = placeOfEntry;
 	}
 
-	public Long getChooseTemplateId() {
-		return chooseTemplateId;
+	public Date getDateOfArrival() {
+		return dateOfArrival;
 	}
 
-	public void setChooseTemplateId(Long chooseTemplateId) {
-		this.chooseTemplateId = chooseTemplateId;
+	public void setDateOfArrival(Date dateOfArrival) {
+		this.dateOfArrival = dateOfArrival;
+	}
+
+	public ImmigrationTemplate getImmigrationTemplateId() {
+		return immigrationTemplateId;
+	}
+
+	public void setImmigrationTemplateId(ImmigrationTemplate immigrationTemplateId) {
+		this.immigrationTemplateId = immigrationTemplateId;
 	}
 
 	public Candidate getCandidate() {
