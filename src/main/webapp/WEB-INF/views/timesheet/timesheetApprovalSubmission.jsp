@@ -1,13 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
 
-<!-- <script>
-	$(document).ready(function() {
-		$("table").colResizable();
-	});
-</script> -->
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
