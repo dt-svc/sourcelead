@@ -177,14 +177,14 @@ function getUsersSearchResult(searchValue){
 			</button>
 			
 			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
-				title="Advanced Search"
+				title="Filter Search"
 				onClick="openPop();"> Filter
 				Search&nbsp;&nbsp; <i class="fa fa-filter"></i>
 			</a>
 	    </div>
 	    
-				<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
-				<h5 class="headerAdsrch">Advanced Search
+				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
@@ -192,6 +192,8 @@ function getUsersSearchResult(searchValue){
 					<div class="row">
 							
 						<div class="col-md-2">
+						<div class="row">
+						<div class="col-md-12 mb">
 							<label><strong>Status</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="statusFilter">
@@ -200,7 +202,23 @@ function getUsersSearchResult(searchValue){
 									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE"   onclick="getDynamciUserList();"><label>&nbsp;In Active</label></li>
 		               				
 		                        </ul>
+							 </div>
 							 </div> 
+							 
+							 
+							 <div class="col-md-12 mb">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked onclick="getDynamciUserList();"><label>&nbsp;Active</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked onclick="getDynamciUserList();"><label>&nbsp;Not Logged In</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE"   onclick="getDynamciUserList();"><label>&nbsp;In Active</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
+							 
+						  </div>
 						</div>
 						
 						<div class="col-md-3 positionRelative">
@@ -472,16 +490,7 @@ function exportToPdf(){
 }
 </script>
    
-   <script>
-	// Close Advanced Search
-		function closePop(){
-			$("div.cand-advsrch-popup").hide();
-		}
-		function openPop(){
-		  $("div.cand-advsrch-popup").toggle();
-		  
-		}
-	</script>
+  
 	<script type="text/javascript">	
 	function loadChosenScripts(){
 	    $('#search_user').removeAttr('disabled');
