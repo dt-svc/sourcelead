@@ -254,6 +254,8 @@ public class UsersListRestController {
 		List<Long> projectAssignedUserIds = new ArrayList<>();
 		List<Long> projectClientsList = new ArrayList<>();
 		List<Long> managerUserIds = new ArrayList<>();
+		List<Long> teamsList = new ArrayList<>();
+		List<Long> departmentsList = new ArrayList<>();
 		
 		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
 	    int sortColumnIndex = 5; //by default sorting using updated date
@@ -282,9 +284,23 @@ public class UsersListRestController {
 				managerUserIds.add(Long.parseLong(orgManagers[i]));
 			}
 		}
+		
+		if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+			String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+			for(int i=0; i < orgTeams.length; i++) {
+				teamsList.add(Long.parseLong(orgTeams[i]));
+			}
+		}
+		
+		if(userRoleDto.getOrgDepartments() != null && !userRoleDto.getOrgDepartments().isEmpty()) {
+			String[] orgDepts = userRoleDto.getOrgDepartments().split(",");
+			for(int i=0; i < orgDepts.length; i++) {
+				departmentsList.add(Long.parseLong(orgDepts[i]));
+			}
+		}
 			
 			
-			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId2(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds);
+			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId2(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();

@@ -1032,7 +1032,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Override
 	@Transactional
 	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId2(UserDTO userDTO,
-			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode,List<Long> orgRelationsList,List<Long> managerUserIds)
+			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList)
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -1047,6 +1047,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String subQuery2 ="";
 		String subQuery3 ="";
 		String subQuery4 = "";
+		String subQuery5 = "";
+		String subQuery6 = "";
 		
 		Map<String, Object> params = new HashMap<String,Object>();
 		StringBuilder query1 = new StringBuilder("");
@@ -1111,7 +1113,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			
 			subQuery3 = " and userRole.user.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm "
 					+ "where pm.projectClientsId.id IN (select pc.id from ProjectClients pc where pc.status = '1' and (pc.projectId.projectStatus = 'INPROGRESS' or pc.projectId.projectStatus = 'NOTSTARTED') "
-					+ "and pc.orgRelationId.id IN (:orgRelationsList) and pc.orgLocationsId = :locationId) and pm.status = '1'))";
+					+ "and pc.orgRelationId.id IN (:orgRelationsList) and pc.orgLocationsId = :locationId) and pm.status = '1')";
 		}
 		
 		
@@ -1122,20 +1124,38 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}else {
 			subQuery4 = " and userRole.reportingManager.id IN (:managerUserIds)";
 		}
-		 
+		
+		
+		if(teamsList.isEmpty()) {
+			teamsList.add(0L);
+			subQuery5 = " and ((:varZero  IN (:teamsList)) OR (:varZero NOT IN (:teamsList)))";
+			
+		}else {
+			
+			subQuery5 = " and userRole.user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.id IN (:teamsList) and tm.status = '1' )";
+		}
+		
+		if(departmentsList.isEmpty()) {
+			departmentsList.add(0L);
+			subQuery6 = " and ((:varZero  IN (:departmentsList)) OR (:varZero NOT IN (:departmentsList)))";
+			
+		}else {
+			
+			subQuery6 = " and userRole.user.id IN (select emp.user.id from Employees emp where emp.departmentId.id IN (:departmentsList))";
+		}
 		
 			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery4+" "+subQuery3+" " ;
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" " ;
 			Query query = session.createQuery(listQuery+query1+sortingQry);
 			
-			userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
+			userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
 			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery4+" "+subQuery3+" " ;
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" " ;
 			Query query2 = session.createQuery(queryCount+query1);
 			
-			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setLong("varZero", 0).list();
+			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
 			
 			
 

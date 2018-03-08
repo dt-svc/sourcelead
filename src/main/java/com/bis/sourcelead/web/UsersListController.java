@@ -34,15 +34,19 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -72,6 +76,11 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Autowired
 	OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	TeamService teamService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	
 	/**
@@ -146,8 +155,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
         model.addObject("reportingManagersList", reportingManagersList);
         model.addObject("reportingManagersListSize", reportingManagersList.size());
         
+        List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId());
+        model.addObject("teamsList", teamsList);
+        model.addObject("teamsListSize", teamsList.size());
         
-        
+        List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+        model.addObject("departmentList", departmentList);
+        model.addObject("departmentListSize", departmentList.size());
 		
 		return model;
 

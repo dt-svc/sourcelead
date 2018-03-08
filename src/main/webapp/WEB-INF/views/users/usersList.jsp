@@ -208,7 +208,7 @@ function getUsersSearchResult(searchValue){
 							 <c:if test="${reportingManagersListSize > 0}">
 							 <div class="col-md-12 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
-										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Manager" title="Type in a role">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 									 <div class="clearfix filterSearch-ul">
@@ -226,7 +226,7 @@ function getUsersSearchResult(searchValue){
 						
 						<div class="col-md-3 positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a role">
+								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
@@ -241,13 +241,47 @@ function getUsersSearchResult(searchValue){
 						<c:if test="${clientListSize > 0}">
 						<div class="col-md-3 positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a client">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
 									<c:forEach var="client" items="${clientsList}">
 									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.id}"  onclick="getDynamciUserList();"><label>${client.clientName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						
+						
+						<c:if test="${teamsListSize > 0}">
+						<div class="col-md-2 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+									<c:forEach var="team" items="${teamsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}"  onclick="getDynamciUserList();"><label>${team.name}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						<c:if test="${departmentListSize > 0}">
+						<div class="col-md-2 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+									<c:forEach var="dep" items="${departmentList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"  onclick="getDynamciUserList();"><label>${dep.departmentName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -397,6 +431,43 @@ function myManagersFunction() {
         }
     }
 }
+
+
+function myTeamsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myDepartmentFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myDepartmentInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myDepartmentUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
 </script>
 
 <script>
@@ -405,6 +476,8 @@ function resetFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
 	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
@@ -964,9 +1037,22 @@ function getDynamciUserList(){
      });
 	
 	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);
