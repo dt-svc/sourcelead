@@ -164,7 +164,9 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,requirementSubmission.getOrgLocations().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 String actionLink="";
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmission.getCandidate().getCandidateUUID()).toString();		 
+
 		 emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirement.getCreatedBy(), OrgLoc, notificationScenario);
 		}
 		 
