@@ -193,6 +193,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 List<UserRole> activeList = null;
 		 List<UserRole> inactiveList = null;
 		 List<UserRole> notLoggedInList = null;
+		 List<Long> managerUserIds = new ArrayList<>();
+		 List<Long> teamsList = new ArrayList<>();
+		 List<Long> departmentsList = new ArrayList<>();
+		 List<Long> orgRelationsList = new ArrayList<>();
 		
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
@@ -201,7 +205,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
-// 		List<UserRole> rolesList = new ArrayList<UserRole>();
  		Long userRoleType ;
 		if(!"".equalsIgnoreCase(userDTO.getUserRole())){
 			userRoleType = Long.parseLong(userDTO.getUserRole());
@@ -210,7 +213,37 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		}
  		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
  		try {
-			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,userRoleDTO,userRoleType, orgLocations.getId(), userDTO.getUserState(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode());
+ 			
+ 			if(userRoleDTO.getOrgClients() != null && !userRoleDTO.getOrgClients().isEmpty()) {
+ 				String[] orgClients = userRoleDTO.getOrgClients().split(",");
+ 				for(int i=0; i < orgClients.length; i++) {
+ 					orgRelationsList.add(Long.parseLong(orgClients[i]));
+ 				}
+ 			}
+ 			
+ 			if(userRoleDTO.getOrgManagers() != null && !userRoleDTO.getOrgManagers().isEmpty()) {
+ 				String[] orgManagers = userRoleDTO.getOrgManagers().split(",");
+ 				for(int i=0; i < orgManagers.length; i++) {
+ 					managerUserIds.add(Long.parseLong(orgManagers[i]));
+ 				}
+ 			}
+ 			
+ 			if(userRoleDTO.getOrgTeams() != null && !userRoleDTO.getOrgTeams().isEmpty()) {
+ 				String[] orgTeams = userRoleDTO.getOrgTeams().split(",");
+ 				for(int i=0; i < orgTeams.length; i++) {
+ 					teamsList.add(Long.parseLong(orgTeams[i]));
+ 				}
+ 			}
+ 			
+ 			if(userRoleDTO.getOrgDepartments() != null && !userRoleDTO.getOrgDepartments().isEmpty()) {
+ 				String[] orgDepts = userRoleDTO.getOrgDepartments().split(",");
+ 				for(int i=0; i < orgDepts.length; i++) {
+ 					departmentsList.add(Long.parseLong(orgDepts[i]));
+ 				}
+ 			}
+ 				
+ 			
+			ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDTO, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
  			if(null != rolesList){
  				for(UserRole role : rolesList.getData()){
  					role.setUserRoleName(role.getRoles().getDisplayName());

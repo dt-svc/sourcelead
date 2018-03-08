@@ -492,12 +492,50 @@ function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
+	
+	 var userRole = [];
+		$('input:checkbox[name=userRole]:checked').each(function() 
+	    {
+			userRole.push($(this).val());
+	    });
+		
+		
+		var userState = [];
+		$('input:checkbox[name=userState]:checked').each(function() 
+	    {
+			userState.push($(this).val());
+	    });
+		
+		var orgClients = [];
+		$('input:checkbox[name=orgClients]:checked').each(function() 
+			    {
+			orgClients.push($(this).val());
+	     });
+		
+		var orgManagers = [];
+		$('input:checkbox[name=orgManagers]:checked').each(function() 
+			    {
+			orgManagers.push($(this).val());
+	     });
+		
+		
+		var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+		
+		
+		var orgDepartments = [];
+		$('input:checkbox[name=orgDepartments]:checked').each(function() 
+			    {
+			orgDepartments.push($(this).val());
+	     });
+		
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
-	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -565,12 +603,52 @@ function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
+    
+    var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
+	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
+	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
+    
+    
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
-	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";

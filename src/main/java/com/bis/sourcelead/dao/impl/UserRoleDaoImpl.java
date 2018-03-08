@@ -813,96 +813,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		ResponseList<UserRole> response = new ResponseList<>();
-		List userRoleList = null;
-		List<Long> countlist = null;
-		Integer filterCount = 0;
-		String subQuery = "";
-		String subQuery2 ="";
-		Map<String, Object> params = new HashMap<String,Object>();
-		StringBuilder query1 = new StringBuilder("");
-		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-		 query1.append("and( (userRole.user.firstName like '" + userDTO.getSearchValue() + "%' OR userRole.user.lastName like '%" + userDTO.getSearchValue() + "' )")
-			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + userDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
-		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue() + "%' ")
-			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue() + "%') ) ");
-					
-		}
-		//usertList shorting order
-		String sortingQry = "";
-		if(StringUtils.isNotBlank(userRoleDTO.getSortColumn())) {
-			if(userRoleDTO.getSortColumn().equalsIgnoreCase("displayName")) {
-				sortingQry = " order by userRole.roles."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
-			}else {
-				sortingQry = " order by userRole.user."+ userRoleDTO.getSortColumn() +" "+userRoleDTO.getSortOrder();
-
-			}
-			
-		}
-		if(roleId != null) {
-			 subQuery = " and userRole.roles.id = :roleId ";
-			params.put("roleId",roleId);
-		}
-		if(!"".equalsIgnoreCase(userState)){
-			subQuery2 = " and userRole.userState =:userState ";
-			params.put("userState",userState);
-		} 
-			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
-			Query query = session.createQuery(listQuery+query1+sortingQry);
-			if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
-			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
-			}  else if(!"".equalsIgnoreCase(userState)){
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
-			}else {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
-			}
-			
-			
-			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
-			Query query2 = session.createQuery(queryCount+query1);
-			if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).list();
-			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).list();
-			} else if(!"".equalsIgnoreCase(userState)){
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).list();
-			}else {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).list();
-			}
-			  
-		if(query1.toString() != null && !query1.toString().isEmpty()){
-			filterCount = countlist.iterator().next().intValue();
-		}
-			
-		 
-		int totalCount = 0;
-			if (userDTO != null) {
-				if(countlist != null && !countlist.isEmpty()) {
-					totalCount = countlist.iterator().next().intValue();
-				}
-			} 
-			response.setRecordsTotal(totalCount);
-			
-			if(query1.toString() != null && !query1.toString().isEmpty()){
-				response.setRecordsFiltered(filterCount);
-			}else {
-				response.setRecordsFiltered(totalCount);
-			}
-			response.setData(userRoleList);
-			return response;
-			
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -1031,7 +941,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	@Override
 	@Transactional
-	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId2(UserDTO userDTO,
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,
 			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList)
 			throws Exception {
 

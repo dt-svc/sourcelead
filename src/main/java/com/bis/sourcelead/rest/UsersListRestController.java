@@ -300,7 +300,7 @@ public class UsersListRestController {
 		}
 			
 			
-			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId2(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
+			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds,teamsList,departmentsList);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
