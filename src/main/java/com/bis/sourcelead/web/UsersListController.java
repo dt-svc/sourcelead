@@ -131,6 +131,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		}
 		model.addObject("rolesList", rolesList);
 		
+		Integer orgLocationsCount = orgLocationService.getRegisteredOrgLoctionsCountByOrgId(org.getId());
+		model.addObject("orgLocationsCount", orgLocationsCount);
+		
 		
         List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
