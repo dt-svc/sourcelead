@@ -236,7 +236,7 @@ function immigrationDataTableList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#immigraListTabSerach").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+immiModulePath+"/getTemplateTaskList?searchValue="+searchValue;
+	 var url = sourceleadUrl+immiModulePath+"/getTemplateTaskList?templateId="+immTemplId+"&searchValue="+searchValue;
 	 immigrationPagination(url);
 }
 	

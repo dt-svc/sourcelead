@@ -353,11 +353,12 @@ public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList
 
 	@RequestMapping(value = { "/getTemplateTaskList" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<ImmigrationTemplateDTO> getTemplateTaskList(ImmigrationTemplateDTO templateDTO,
-			HttpServletRequest request, @RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
+			HttpServletRequest request, @RequestParam(value = "templateId", required = false) String templateId, @RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
 		ResponseList<ImmigrationTemplateDTO> immiTemplateList = new ResponseList<>();
 		String[] tableColumns = { "taskName", "assignedTo", "priority", "taskRepeat" };
 		int sortColumnIndex = 3; // by default sorting using updated date
 		String sortColumnOrder = "desc"; // by default descending order
+		templateDTO.setTemplateId(Long.parseLong(templateId));
 		if (templateDTO.getOrder() != null && !templateDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(templateDTO.getOrder().get(0).get("column"));
 			sortColumnOrder = templateDTO.getOrder().get(0).get("dir");
