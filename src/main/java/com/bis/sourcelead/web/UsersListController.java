@@ -125,7 +125,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		
         List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
-        	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
         	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				if(orgRelations.getResponderLocationId() != null){
 					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
@@ -141,6 +140,13 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
         }
         model.addObject("clientsList", orgClientList);
         model.addObject("clientListSize", orgClientList.size());
+        
+        
+        List<User> reportingManagersList = userRoleService.getAllReportingManagersAssignedToAssociates(orgLocations.getId());
+        model.addObject("reportingManagersList", reportingManagersList);
+        model.addObject("reportingManagersListSize", reportingManagersList.size());
+        
+        
         
 		
 		return model;

@@ -205,18 +205,21 @@ function getUsersSearchResult(searchValue){
 							 </div>
 							 </div> 
 							 
-							 
-							 <div class="col-md-12 mb">
-							<label><strong>Status</strong></label>
-							 <div class="clearfix">
-								<ul class="list-unstyled" id="statusFilter">
-		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked onclick="getDynamciUserList();"><label>&nbsp;Active</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked onclick="getDynamciUserList();"><label>&nbsp;Not Logged In</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE"   onclick="getDynamciUserList();"><label>&nbsp;In Active</label></li>
-		               				
-		                        </ul>
-							 </div>
+							 <c:if test="${reportingManagersListSize > 0}">
+							 <div class="col-md-12 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Manager" title="Type in a role">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+											<c:forEach var="manager" items="${reportingManagersList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.id}"  onclick="getDynamciUserList();"><label>${manager.fullName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
 							 </div> 
+							 </c:if>
 							 
 						  </div>
 						</div>
@@ -255,10 +258,12 @@ function getUsersSearchResult(searchValue){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Done" id="search_requiremet"
-								onclick="closePop()" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search"
+						<input type="button" value="Reset" id="clear_search"
 								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+								
+							<input type="button" value="Ok" id="search_requiremet"
+								onclick="closePop()" class="btn btn-sm btn-success" />
+							
 						</div>
 					</div>
 				</div>
@@ -374,6 +379,24 @@ function myClientsFunction() {
         }
     }
 }
+
+
+function myManagersFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myManagersInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myManagersUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
 </script>
 
 <script>
@@ -381,6 +404,7 @@ function resetFilter(){
 	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
@@ -933,10 +957,16 @@ function getDynamciUserList(){
 		orgClients.push($(this).val());
      });
 	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
 	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);

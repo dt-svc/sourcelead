@@ -253,6 +253,7 @@ public class UsersListRestController {
 		List<Long> orgRelationsList = new ArrayList<>();
 		List<Long> projectAssignedUserIds = new ArrayList<>();
 		List<Long> projectClientsList = new ArrayList<>();
+		List<Long> managerUserIds = new ArrayList<>();
 		
 		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
 	    int sortColumnIndex = 5; //by default sorting using updated date
@@ -274,9 +275,16 @@ public class UsersListRestController {
 				orgRelationsList.add(Long.parseLong(orgClients[i]));
 			}
 		}
+		
+		if(userRoleDto.getOrgManagers() != null && !userRoleDto.getOrgManagers().isEmpty()) {
+			String[] orgManagers = userRoleDto.getOrgManagers().split(",");
+			for(int i=0; i < orgManagers.length; i++) {
+				managerUserIds.add(Long.parseLong(orgManagers[i]));
+			}
+		}
 			
 			
-			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId2(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList);
+			    ResponseList<UserRole>  rolesList = userRoleService.getDynamicUsersListByRoleAndNameAndLocationId2(userDTO, userRoleDto, orgLocations.getId(), user.getId(), userDTO.getLoginUserRole(), user.getUserCode(),orgRelationsList,managerUserIds);
 				for(UserRole role : rolesList.getData()){
 					UserRoleDTO userRoleDTO = new UserRoleDTO();
 					StringBuilder userName = new StringBuilder();
