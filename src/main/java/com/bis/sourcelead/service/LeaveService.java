@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -70,4 +71,8 @@ public interface LeaveService {
 	MonthlyLeaves getMonthlyLeavesByLeaveId(Long leaveId);
 
 	Leave getLeaveByLeaveUUId(String leaveUUID);
+	
+	File getLeaveExport(OrgLocations orgLocations, LeaveDTO leaveDTO) throws Exception;
+	
+	List<Leave> getAllLeave();
 }

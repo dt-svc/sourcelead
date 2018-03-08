@@ -148,7 +148,7 @@ public class CandidateRestController {
 	
 	/**
 	 * @author prasad k
-	 * @since sep 1 2016
+         * @since sep 1 2016
 	 * @version 0.0.1
 	 * 
 	 *          This method is used to store/save candidate in candidate table.
@@ -158,21 +158,9 @@ public class CandidateRestController {
 	 *          store/save in candidateResumes in candidateResumes table .
 	 *          4.internalley store/save in candidateEmployers in
 	 *          candidateEmployers table .
-	 * 
-	 * 
-	 * 
-	 * @param jsonObj
-	 *            This is the first paramter to storeCandidate method
-	 * @param orgLocations
-	 *            This is the second paramter to storeCandidate method
-	 * @param user
-	 *            This is the third paramter to storeCandidate method
-	 * @param multiFile
-	 *            This is the fourth paramter to storeCandidate method
-	 * 
+	 * @param candidateDto
+         * @param request
 	 * @return Candidate
-	 * 
-	 * @throws NullPointer
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/storeCandidate", method = RequestMethod.POST)

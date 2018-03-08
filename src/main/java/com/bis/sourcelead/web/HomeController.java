@@ -386,42 +386,49 @@ public class HomeController {
 	public @ResponseBody ScheduleMaintenanceDTO getScheduleStatus(HttpServletRequest request, HttpServletResponse response) throws Exception{
     	ScheduleMaintenanceDTO dto = inviteCompanyService.getScheduleStatus();
     	if(dto != null) {
-    		String dateString = getConvertedStartEndDateString(dto.getScheduleDate(), dto.getStartTime(), dto.getEndTime());
-    		String maintenanceText = "Please note that we will be experiencing server downtime on the "+dateString+" due to "+dto.getScheduleMessage();
+    		String dateString = getConvertedStartEndDateString(dto.getStartDate(), dto.getEndDate());
+    		String maintenanceText = "Please note that we will be experiencing server downtime "+dateString+" due to "+dto.getScheduleMessage();
     		dto.setMainMessage(maintenanceText);
     	}
     	return dto;
 	}
     
     
-    public String getConvertedStartEndDateString(String scheduleDate, String scheduleStartTime, String scheduleEndTime) throws NumberFormatException, Exception {
-    	String startTime = getTime(scheduleDate, scheduleStartTime);
-    	String endTime = getTime(scheduleDate, scheduleEndTime);
-    	DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd");
+    public String getConvertedStartEndDateString(String startDate, String endDate) throws NumberFormatException, Exception {
+    	String startTime = getTime(startDate);
+    	String endTime = getTime(endDate);
+    	/*DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd");
 		String parsedDate = dateFormat.format(dateFormat.parse(scheduleDate));
-		String dateTime = parsedDate+" "+scheduleStartTime;
+		String dateTime = parsedDate+" "+scheduleStartTime;*/
 		DateFormat dateFormat1 = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Calendar now = Calendar.getInstance();
 		TimeZone timezone = now.getTimeZone();
-		Date startDateWithTime = dateFormat1.parse(dateTime);
+		Date startDateWithTime = dateFormat1.parse(startDate);
+		Date endDateWithTime = dateFormat1.parse(endDate);
 		DateFormat df1 = new SimpleDateFormat("dd MMM yyyy");
 		DateFormat df3 = new SimpleDateFormat("z");
         df1.setTimeZone(TimeZone.getTimeZone(timezone.getID()));
-        String IST1 = df1.format(startDateWithTime);
+        String startFormatedDate = df1.format(startDateWithTime);
+        String endFormatedDate = df1.format(endDateWithTime);
         df3.setTimeZone(TimeZone.getTimeZone(timezone.getID()));
         String IST3 = df3.format(startDateWithTime);
-        String convertedDateString = IST1+" from "+startTime+" to "+endTime+" "+IST3;
+        String convertedDateString = null;
+        if(startFormatedDate.equals(endFormatedDate)) {
+        	convertedDateString = "on the "+startFormatedDate+" from "+startTime+" to "+endTime+" "+IST3;
+        }else {
+        	convertedDateString = "from "+startFormatedDate+" "+startTime+" to "+endFormatedDate+" "+endTime+" "+IST3;
+        }
     	return convertedDateString;
     }
     
-    public String getTime(String scheduleDate, String scheduleTime) throws NumberFormatException, Exception {
-    	DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd");
-		String parsedDate = dateFormat.format(dateFormat.parse(scheduleDate));
-		String dateTime = parsedDate+" "+scheduleTime;
+    public String getTime(String scheduleDate) throws NumberFormatException, Exception {
+    	//DateFormat dateFormat = new SimpleDateFormat ("yyyy-MM-dd");
+		//String parsedDate = dateFormat.format(dateFormat.parse(scheduleDate));
+		//String dateTime = parsedDate+" "+scheduleTime;
 		DateFormat dateFormat1 = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Calendar now = Calendar.getInstance();
 		TimeZone timezone = now.getTimeZone();
-		Date dateWithTime = dateFormat1.parse(dateTime);
+		Date dateWithTime = dateFormat1.parse(scheduleDate);
 		DateFormat df = new SimpleDateFormat("hh:mm a");
         df.setTimeZone(TimeZone.getTimeZone(timezone.getID()));
         String time = df.format(dateWithTime);

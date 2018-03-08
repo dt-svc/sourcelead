@@ -477,7 +477,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "     ) ";
 	     
 	     
-		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient "
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation"
 				+ " where  candidate.orgLocationId.id = :locationsId"
 				    +frequencyQuery
 				    +fillingOptionQuery
@@ -1360,12 +1360,13 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return pm;  
 	}
 	
+	/*removed status to resolve reopen issue in time sheet*/
 	@Override
 	@Transactional
 	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception {
  		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm  left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.masterCandidateId mc  left join fetch pm.projectMemberCandidteId pmc left join fetch pm.projects projects where  "
-				+ " (projects.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )) and pc.level IN ( select MIN(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"' and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projects.id = pm.projects.id) and pm.status = '1' " ;
+				+ " (projects.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )) and pc.level IN ( select MIN(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projectClientsId.orgLocationsId.org.orgType <> '"+Constants.GUEST+"' and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projects.id = pm.projects.id) " ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectMemberId", projectMemberId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {

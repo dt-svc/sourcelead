@@ -469,13 +469,13 @@ $('.chosen-select').chosen().on('change', function() {
 	}else{
 		assignValue = "";
 	}
-	
+	var projectClientUUID = '${projectClientUUID}';
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId, 	   
-		    success: function(data) {
+		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID, 	   
+	 		    success: function(data) {
 		    }
 	 });  
 });
@@ -613,7 +613,7 @@ function inlineEditTaskSeverity(taskId){
 }
 
 function inlineEditDescription(taskId){
-	var desc = $(".Editor-editor").text(); 
+	var desc = $(".Editor-editor").html(); 
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 		   	type: "POST",
@@ -1508,7 +1508,7 @@ function cancelTask(){
 	$(".tasks_side_wrap").removeClass("tasks_side_wrap_active");
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');
-	$("#txtEditor").val($('.Editor-editor').text('')); 
+	$("#txtEditor").val($('.Editor-editor').html('')); 
 	$("div.row-fluid .Editor-container").remove();
 	document.getElementById("projectTask_form").reset();
 	$("projectTask_form").validate().resetForm();
@@ -1719,7 +1719,7 @@ function subTasksAssignList(projectId){
  </script>
  <script>
 function saveTasks(){
-	var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var frm = $('#projectTask_form').serializeFormJSON();
 		var form = $('#projectTask_form')[0];

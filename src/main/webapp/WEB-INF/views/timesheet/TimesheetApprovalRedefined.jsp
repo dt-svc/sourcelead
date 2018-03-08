@@ -8,13 +8,25 @@
 <script>
 	$(document).ready(function() {
 		timesheetApprovalDetils('month');
+		if ('${notifyLink}' == "notifyLink") 
+			{
+			var currentTimeFrequency = '${currentTimeFrequency}';
+			var projectId = '${projectId}';
+			var projectMemberId = '${projectMemberId}';
+			var masterCandidateId = '${masterCandidateId}';
+			var totalHours = '${totalHours}';
+			var from = '${from}';
+			var requestFrom = "notifyLink";
+			$("#notificationCurrentFrequency").attr("value",currentTimeFrequency);
+			timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom);
+			}
 	});
 </script>
 
 <section class="content-wraper">
 		  <section class="content-header clearfix">
 		       <div class="pull-left"><h2>Timesheet approval</h2></div>
-		            <div class="pull-right brud-crum"><a href="">Home</a> » Timesheet approval</div>
+		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheet approval</div>
 		       <div class="clearfix"></div>
 		   </section>
 		    <div  id="loadTimeHead"></div>
@@ -70,6 +82,9 @@
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
 	        		    	  $("#timeApprovaldiv").append(data);
+	        		    	  $(".checkBoxForSubmitForApproval").click(function () {
+			             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+			             	  });
 	        		    	  prepareChosenScripts();
 	        		    	  preparePagination(1);
 	        		      }

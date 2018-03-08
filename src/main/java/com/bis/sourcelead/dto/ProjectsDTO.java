@@ -167,7 +167,7 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String orgRelationId;
 	
-	private Map<String,String> projectCustomFieldlabelNameAndValue;
+	private Map<Long,String> projectCustomFieldlabelNameAndValue;
 	
 	private List<CustomFormFieldDTO> customFormData;
 	
@@ -744,11 +744,11 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 		this.orgRelationId = orgRelationId;
 	}
 
-	public Map<String, String> getProjectCustomFieldlabelNameAndValue() {
+	public Map<Long, String> getProjectCustomFieldlabelNameAndValue() {
 		return projectCustomFieldlabelNameAndValue;
 	}
 
-	public void setProjectCustomFieldlabelNameAndValue(Map<String, String> projectCustomFieldlabelNameAndValue) {
+	public void setProjectCustomFieldlabelNameAndValue(Map<Long, String> projectCustomFieldlabelNameAndValue) {
 		this.projectCustomFieldlabelNameAndValue = projectCustomFieldlabelNameAndValue;
 	}
 

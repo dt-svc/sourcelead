@@ -61,6 +61,8 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String teams;
 	
+	private String projectClientUUID;
+	
 	public Long getId() {
 		return id;
 	}
@@ -231,4 +233,14 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	public void setTeams(String teams) {
 		this.teams = teams;
 	}
+	public String getProjectClientUUID()
+	{
+		return projectClientUUID;
+	}
+	public void setProjectClientUUID(String projectClientUUID)
+	{
+		this.projectClientUUID = projectClientUUID;
+	}
+	
+	
 }

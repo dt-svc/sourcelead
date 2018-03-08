@@ -68,6 +68,8 @@
 
  <span class="mt5 pull-left" title="TImesheet Import"><a href="<c:url value='${appPath}/uploadTimesheet'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></span>
 
+<div class="pull-left ml newAccBtn" id="hedderAcceptRejectButton" style="display: none"><a href="javascript:void(0)" onclick="acceptTimeSheetSubmissionBySubmissionId('approver');" title="Accept"><i class="fa fa-check" ></i></a> <a href="javascript:void(0)" onclick="rejectTimeSheetSubmissionBySubmissionId('approver');"><i class="fa fa-times"></i></a></div>
+
 <div class="remove_search">
        		<input type="text" placeholder="Search..." value="" id="dataTableSearchExpenses">
 </div>
@@ -201,5 +203,29 @@ $("#dataTableSearchExpenses").keyup(function(event) {
     }
 });
 </script>
+
+<script>
+ var selectedRecords = {};
+  $(document).ready(function () {
+	    $("#selectAllTimeSheetCheckBoxForSubmitForApproval").click(function () {
+	        $(".checkBoxForSubmitForApproval").prop('checked', $(this).prop('checked'));
+	        $(".checkBoxForSubmitForApproval").each(function() {
+	        	selectedRecords[$(this).val()] = $(this).is(":checked");
+	        });
+	        displayAcceptRejectButtonOnHedder();
+	    });
+	});
+ </script>
+ 
+ 
+ <script type="text/javascript">
+function displayAcceptRejectButtonOnHedder() {
+	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){
+		$('#hedderAcceptRejectButton').removeAttr('style');
+	}else{
+		$('#hedderAcceptRejectButton').attr('style','display:none');
+	}
 	
+}
+</script>	
 

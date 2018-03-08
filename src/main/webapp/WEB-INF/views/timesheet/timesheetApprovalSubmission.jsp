@@ -1,13 +1,22 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+
+<!-- <script>
+	$(document).ready(function() {
+		$("table").colResizable();
+	});
+</script> -->
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
+<div id="loadingCotentDiv"></div>
 <div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
  <table id='exampleApprover' class='display'>
 	<thead> 
-    <tr> 
+    <tr>
+    <th><input type="checkbox" id="selectAllTimeSheetCheckBoxForSubmitForApproval"></th>
     <th>Employee</th>
 	<th>Employment Type</th>
 	<th>Project</th>
@@ -106,6 +115,20 @@ function exportTimeSheetToPdfOrExcel(exportType){
         		      success :function(data) {
         		    	  $("#approvalTableData").empty();
         		    	  $("#approvalTableData").append(data);
+        		    	  $("#selectAllTimeSheetCheckBoxForSubmitForApproval").removeProp('checked');
+		                     $(".checkBoxForSubmitForApproval").each(function() {
+		                    	 for(var e in selectedRecords) {
+		                    		 if($(this).val() === e) {
+		                    			 if(selectedRecords[e])
+		                    			 	$(this).prop('checked', selectedRecords[e]);
+		                    			 break;
+		                    		 }
+		                    	 }
+		         	        });
+
+		             	    $(".checkBoxForSubmitForApproval").click(function () {
+		             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+		             	    });
         		    	  var totalRows =  $('#totalRows').val();
         		    		  $("#loadTime").removeAttr('style');
             		    	  preparePagination(pageNo);
@@ -128,6 +151,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 			  if(endingRecord > totalRows){
 				  endingRecord = totalRows;
 			  }
+			  $('#timesheetApproverCurrentPageNumber').val(pageNo);
 			  var options = {
 					      currentPage:pageNo,
 					      items: totalRows,
@@ -153,7 +177,10 @@ function exportTimeSheetToPdfOrExcel(exportType){
 	      $('#pageMsg').html('');
 	      $('#pageMsg').html(pageMsg);
 	 }
-  </script>  
+  </script> 
+  
+  
+   
  <jsp:include page="timesheetApprovalCommonScriptsRedefined.jsp"></jsp:include>
 
 

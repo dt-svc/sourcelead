@@ -1,3 +1,4 @@
+
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
@@ -356,7 +357,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	            result = result+'            <div class="add-comment">';
 	            result = result+'            </div>';
 	            result = result+'          </span>';
-	            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">0</span></a>';
+	            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+json.candidateCommentsCount+'</span></a>';
 	 			result = result+'		</div>';
 	            result = result+'     </div>';
 	            result = result+'</div>';
@@ -405,7 +406,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   result = result + '</div>';
 		       
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
-
+		       if("${candidateKeyword}" == "rescheduleInterviewNotification"){
+		    	   $("#detailsTab").removeClass("current");
+		    	   $('li[name=applicantNotification]').addClass("current");
+// 		    	   $('testId').addClass("current");
+		    	   requirementPipeline(requirementId,'all');
+		    	   requirementStatusBar(requirementId);
+		    	   $("#quickview").removeClass("active in");
+			    	$("#timelineview").removeClass("active in");
+			    	$("#detailview").addClass("active in");
+			    	$("#pipelineQuickviewTabsqv").removeClass("active");
+			    	$("#candTimelineView").removeClass("active");
+			    	$("#pipelineQuickviewTabsdetails").addClass("active");
+			    }
 		       result = result + '<div class="require_wrap_details">';
 		       if(json.submissionStatus == 'REJECTED'){
 		    	   result = result + '<div class="clearfix" id="reactiveApplicantBtnDiv"><a class="pull-right btn btn-primary btn-sm color_white" id="reactiveApplicant" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
@@ -2091,7 +2104,7 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result + '						<div class="clearfix"></div> ';
 	result = result + '			<div class="clearfix mt5"> ';
 	result = result + '				<div class="pull-right"> ';
-	result = result + '				  <button type="button" class="btn btn-sm btn-primary" onclick="rescheduleInterviewUpdate('+submissionId+')">Reschedule</button> ';
+	result = result + '				  <button type="button" id="save_rescheduleIntervie" class="btn btn-sm btn-primary" onclick="rescheduleInterviewUpdate('+submissionId+')">Reschedule</button> ';
 	result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="rescheduleInterClose();">Cancel</button> ';
 	result = result + '				</div> ';
 	result = result + '			  </div> ';
@@ -2190,7 +2203,8 @@ function rescheduleInterClose(){
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-
+			$("#save_rescheduleIntervie").attr("disabled", "disabled");
+	        $("#save_rescheduleIntervie" ).addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
 						url: sourceleadUrl+"/updateRescheduleInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,

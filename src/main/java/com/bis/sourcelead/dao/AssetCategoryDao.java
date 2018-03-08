@@ -15,6 +15,8 @@ public interface AssetCategoryDao {
 
 	AssetCategory getAssetCategoryListByLocationIdAndCatId(Long catLocationId, Long categoryId);
 	
+	AssetCategory getAssetCategoryByCategoryIdAndLocationId(String categoryName, Long categoryId, Long orglocationId);
+	
 	AssetCategory getAssetCategoryByCategoryId(Long categoryId);
 
 	Boolean validateCategoryName(String categoryName, Long orgLocationId);
