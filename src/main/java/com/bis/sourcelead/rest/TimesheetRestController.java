@@ -23,8 +23,8 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -824,6 +824,11 @@ public class TimesheetRestController {
 			 model.addObject("entriesMap",entriesMap);
 			 model.addObject("projectsTasks",projectsTasks);
 		     model.addObject("timesheetEntryDetailsDTO",timesheetEntryDetailsDTO);
+		     if(eedDTO.getRedirectionRequestFrom()!= null && StringUtils.isNotBlank(eedDTO.getRedirectionRequestFrom()) && eedDTO.getRedirectionRequestFrom().equalsIgnoreCase("notifyLink")){
+		    	 model.addObject("notificationCurrentFrequency",eedDTO.getCurrentTimeFrequency());
+		    	 model.addObject("notificationProMemberId",eedDTO.getProjectMembersId());
+		    	 model.addObject("notificationCurrentSubTimeFrequency",eedDTO.getCurrentTimeSubFrequency());
+		     }
 	  }
 	 model.setViewName("timesheet/timeSheetSubmission");
 	 return model;
@@ -1052,31 +1057,31 @@ public class TimesheetRestController {
 		    currentCal.setTime(actualWeekStartDate);
 			 
 			
-			if( (!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+			if( (!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) ) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())  || (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))){
 				disbleCondition1.setLength(0);
 				disbleCondition1.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) ) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())|| (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))){
 	       	disbleCondition2.setLength(0);
 	       	disbleCondition2.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) ) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())|| (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))){
 	       	disbleCondition3.setLength(0);
 	       	disbleCondition3.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) ) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())|| (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))){
 	       	disbleCondition4.setLength(0);
 	       	disbleCondition4.append("disabled");
 			} 
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) ) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())|| (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))){
 	       	disbleCondition5.setLength(0);
 	       	disbleCondition5.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) ) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())|| (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))){
 	       	disbleCondition6.setLength(0);
 	       	disbleCondition6.append("disabled");
 			}
-	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+	       if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) ) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())|| (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))){
 	       	disbleCondition7.setLength(0);
 	       	disbleCondition7.append("disabled");
 			} 
@@ -1229,18 +1234,20 @@ public class TimesheetRestController {
 			tsDTO.setFileInfo(fileInfoList);
 		}
 		 if( isFillMyTimeSheet) {
-		    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())  && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
-		    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)))
-		    	  tsDTO.setSaveButtonVisible(true);
-				
-				if(StringUtils.isNotEmpty(currentFrequencyEndDate)){
-					Date frequencyEndDate = 	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentFrequencyEndDate.replaceAll("/", "-"));
-					if(frequencyEndDate.equals(actualEndDate))
-						tsDTO.setSubmitButtonVisible(true);
-				}
-				
-				if(!isNullOrEmpty(approvalStatus)  && approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("New").getValue()))
-					tsDTO.setCancelButtonVisible(true);	
+		    if(!isNullOrEmpty(approvalStatus)  && !(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())  && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)) && !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) ){
+		    	
+		    	if(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("draft").getValue()) || !((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))  && (timesheetFor.equalsIgnoreCase("user")||!reopenButtonIsVisible)) || approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()) && (timesheetFor.equalsIgnoreCase("user")))
+		    	{  
+		    		tsDTO.setSaveButtonVisible(true);
+					if(StringUtils.isNotEmpty(currentFrequencyEndDate)){
+						Date frequencyEndDate = 	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentFrequencyEndDate.replaceAll("/", "-"));
+						if(frequencyEndDate.equals(actualEndDate))
+							tsDTO.setSubmitButtonVisible(true);
+					}
+					
+					if(!isNullOrEmpty(approvalStatus)  && approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("New").getValue()))
+						tsDTO.setCancelButtonVisible(true);	
+		    	}
 		     }else{
 		    	 tsDTO.setSaveButtonVisible(false);
 		    	 tsDTO.setSubmitButtonVisible(false);
@@ -2351,7 +2358,7 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTimesheetDate(timesheetDate);
 						timesheetDayEntries.setCreatedDate(CommonUtil.currentDate());
 						timesheetDayEntries.setCreatedBy(loginUser.getCreatedBy());
-					
+						timesheetDayEntries.setStatus(1);
 						timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 						timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
 						timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);

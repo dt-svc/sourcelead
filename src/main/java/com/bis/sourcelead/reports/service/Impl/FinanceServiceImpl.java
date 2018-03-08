@@ -7,12 +7,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.boot.model.relational.Loggable;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,22 +25,29 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.reports.dao.FinanceDao;
 import com.bis.sourcelead.reports.service.FinanceService;
 import com.bis.sourcelead.reportsDTO.APAgingDTO;
-import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
+import com.bis.sourcelead.reportsDTO.PaidBillDTO;
+import com.bis.sourcelead.rest.reportsRestController.FinanceReportRestController;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
+
+import bsh.org.objectweb.asm.Constants;
+import io.netty.util.Constant;
 
 @Service
 public class FinanceServiceImpl implements FinanceService{
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(FinanceServiceImpl.class);
 	@Autowired
 	FinanceDao financeDao;
 	
@@ -47,6 +59,9 @@ public class FinanceServiceImpl implements FinanceService{
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	InvoicePaymentService invoicePaymentService;
 	
 	@Override
 	public APAgingDTO getApAgingListByLocation(OrgLocations orgLocation, APAgingDTO apAgingDTO) {
@@ -452,6 +467,222 @@ public class FinanceServiceImpl implements FinanceService{
 		Date monthStartDate = calendar.getTime();
 		return commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", monthStartDate);
 
+	}
+
+	/**
+	 * Get Vendor paid bills 
+	 * @param PaidBillDTO
+	 */
+	@Override
+	public ResponseList<PaidBillDTO> getPaidVendorsList(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
+	{
+		ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+		return getPaidBillDTOResponse(paidInvoiceList,orgLocation);
+	}
+
+	
+	private ResponseList<PaidBillDTO> getPaidBillDTOResponse(ResponseList<Invoice> paidInvoiceList, OrgLocations orgLocation)
+	{
+		ResponseList<PaidBillDTO> response = new ResponseList<>();
+		try {
+			Map<Long, List<Invoice>> map = new HashMap<>();
+			if (paidInvoiceList.getData() != null) {
+				for (Invoice invoice : paidInvoiceList.getData()) {
+					if (!map.containsKey(invoice.getOrgRelationID().getId())) {
+						List<Invoice> list = paidInvoiceList.getData().stream()
+								.filter(i -> i.getOrgRelationID().getId().longValue() == invoice.getOrgRelationID().getId()).collect(Collectors.toList());
+						map.put(invoice.getOrgRelationID().getId(), list);
+					}
+				}
+			}
+			List<PaidBillDTO> paidBillList = new ArrayList<>();
+			for (Map.Entry<Long, List<Invoice>> entry : map.entrySet()) {
+				PaidBillDTO paidBill = new PaidBillDTO();
+				List<Invoice> invoiceList = entry.getValue();
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoiceList.get(0).getOrgRelationID().getId());
+				paidBill.setOrgRelationId(orgRelations.getId());
+				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					paidBill.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+				}
+				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					paidBill.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+				}
+				paidBill.setNumberOfAssociates(getNumberOfAssociates(invoiceList));
+				paidBill.setNumberOfprojects(getNumberOfProjects(invoiceList));
+				double total = getPaidAmount(entry.getKey());
+//				double total = invoiceList.stream().mapToDouble(i -> Double.parseDouble(i.getTotal())).sum();
+				paidBill.setTotalAmount(total);
+				paidBillList.add(paidBill);
+			}
+			
+			response.setData(paidBillList);
+			response.setRecordsFiltered(paidBillList.size());
+			response.setRecordsTotal(paidBillList.size());
+		}catch (Exception e) {
+			logger.info(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	private double getPaidAmount(Long orgRelationId) {
+		double amount = 0;
+		List<Invoice> invoicePaymentList = financeDao.getInvoicesByOrgRelationId(orgRelationId);
+		if (invoicePaymentList != null) {
+			List<Long> invoiceIds = invoicePaymentList.stream().map(Invoice::getId).collect(Collectors.toList());
+			List<InvoicePayment> paymentList = financeDao.getInvoicePaidAmountByInvoiceIds(invoiceIds);
+			if (paymentList != null && paymentList.size() > 0) {
+				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
+			}
+		}
+		return amount;
+	}
+
+	/**
+	 * Get Number of projects
+	 * @param key
+	 * @return int 
+	 */
+	private int getNumberOfProjects(List<Invoice> invoiceList)
+	{
+		Set<Long> set = new HashSet<>();
+		for(Invoice invoice : invoiceList ) {
+			if(invoice.getProjectID() != null) {
+				set.add(invoice.getProjectID().getId());
+			}
+		}
+		return set.size();
+	}
+
+	/**
+	 * Get Number Of Associates per invoice
+	 * @param invoiceList
+	 * @return int
+	 */
+	private int getNumberOfAssociates(List<Invoice> invoiceList) {
+		Set<Long> set = new HashSet<>();
+		for(Invoice invoice : invoiceList ) {
+			for(InvoiceLineItems inlineItems : invoice.getInvoiceLineItems()) {
+				set.add(inlineItems.getCandidate().getId());
+			}
+			
+		}
+		return set.size();
+	}
+
+	@Override
+	public ResponseList<PaidBillDTO> getPaidBillDetailReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
+	{
+		ResponseList<Invoice> invoiceList = financeDao.getPaidBillDetailReport(paidBillDTO, orgLocation);
+		ResponseList<PaidBillDTO> res = new ResponseList<>();
+		if (invoiceList.getData() != null) {
+			List<PaidBillDTO> paidBillList = new ArrayList<>();
+			double totalAmount = 0;
+			for (Invoice invoice : invoiceList.getData()) {
+				PaidBillDTO paidBill = new PaidBillDTO();
+				if (invoice.getProjectID() != null) {
+					paidBill.setProjectName(invoice.getProjectID().getProjectName());
+				}
+				paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
+				Date paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+				if (paymentDate != null) {
+					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
+				}
+				paidBill.setAmount(invoice.getTotal());
+				double total = getPaidAmountByInvoiceId(invoice.getId());
+				totalAmount = totalAmount + total;
+				paidBill.setTotalAmount(totalAmount);
+				paidBillList.add(paidBill);
+			}
+			res.setData(paidBillList);
+			res.setRecordsFiltered(invoiceList.getRecordsFiltered());
+			res.setRecordsTotal(invoiceList.getRecordsTotal());
+		}
+		return res;
+	}
+
+	
+	private double getPaidAmountByInvoiceId(Long invoiceId) {
+		double amount = 0;
+			List<Long> invoiceIds = new ArrayList();
+			invoiceIds.add(invoiceId);
+			List<InvoicePayment> paymentList = financeDao.getInvoicePaidAmountByInvoiceIds(invoiceIds);
+			if (paymentList != null && paymentList.size() > 0) {
+				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
+			}
+		return amount;
+	}
+
+	@Override
+	public ResponseList<PaidBillDTO> getPaidBillGraphReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation)
+	{
+			ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+			ResponseList<PaidBillDTO> res = new ResponseList<>();
+			ResponseList<PaidBillDTO> paidList = getPaidBillDTOResponse(paidInvoiceList,orgLocation);
+			int i=0; 
+			List<PaidBillDTO> list = new ArrayList<>();
+			if(paidList.getData() != null) {
+				double otherAmount = 0;
+				for(PaidBillDTO paidBill : paidList.getData()) {
+					if(i <= 10) {
+						list.add(paidBill);
+					}else {
+						otherAmount = otherAmount + paidBill.getTotalAmount();
+					}
+					i++;
+				}
+				PaidBillDTO pb = new PaidBillDTO();
+				pb.setOrgName("others");
+				pb.setTotalAmount(otherAmount);
+				list.add(pb);
+			}
+			
+			
+			
+			
+			res.setData(list);
+			return res;
+//			return getPaidBillDTOResponse(paidInvoiceList,orgLocation);
+	}
+
+	@Override
+	public PaidBillDTO getTotalAmountPerYear(PaidBillDTO paidBillDTO, OrgLocations orgLocation) throws Exception {
+		
+		ResponseList<Invoice> paidInvoiceList = financeDao.getPaidVendorslist(paidBillDTO, orgLocation);
+		PaidBillDTO pbd = new PaidBillDTO();
+		Map<Long, Double> totalAmountMap = new HashMap<>();
+		double totalAmount = 0;
+		double finalAmount = 0;
+		
+		List<InvoicePayment> invoicePaymentList = null;
+		for (Invoice invoice : paidInvoiceList.getData()) {
+			if("Payables".equalsIgnoreCase(paidBillDTO.getBillType())) {
+				 invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getParentInvoiceId().getId());
+			}else {
+				 invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoice.getId());
+			}
+			for (InvoicePayment invoicePayment : invoicePaymentList) {
+				
+				Date date = invoicePayment.getPaymentDate();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				long year = cal.get(Calendar.YEAR);
+				
+				double amount = Double.valueOf(invoicePayment.getPaymentAmount());
+				if(totalAmountMap.containsKey(year)) {
+					totalAmount = totalAmountMap.get(year);
+				}else {
+					totalAmount = 0;
+				}
+				finalAmount = totalAmount+amount;
+				totalAmountMap.put(year, finalAmount);
+			}
+		}
+		
+		for (Map.Entry<Long, Double> entry : totalAmountMap.entrySet()) {
+			totalAmountMap.put(entry.getKey(), entry.getValue());
+			pbd.setTotalAmountMap(totalAmountMap);
+		}
+		return pbd;
 	}
 
 }

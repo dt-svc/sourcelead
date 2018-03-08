@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -171,11 +177,19 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/pendingLeaves")
-	public ModelAndView pendingLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/pendingLeaves");
-	       return model;
+	public ModelAndView pendingLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+			@RequestParam(value = "status", required = false) String status, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.addObject("status", status);
+		model.setViewName("leavemanagement/pendingLeaves");
+		return model;
 	}
 	
 	/**
@@ -185,11 +199,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/approvedLeaves")
-	public ModelAndView approvedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/approvedLeaves");
-	       return model;
+	public ModelAndView approvedLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/approvedLeaves");
+		return model;
 	}
 	
 	/**
@@ -199,11 +219,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/rejectedLeaves")
-	public ModelAndView rejectedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/rejectedLeaves");
-	       return model;
+	public ModelAndView rejectedLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/rejectedLeaves");
+		return model;
 	}
 	
 	/**
@@ -213,11 +239,17 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/cancelLeaves")
-	public ModelAndView cancelLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/cancelLeaves");
-	       return model;
+	public ModelAndView cancelLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.setViewName("leavemanagement/cancelLeaves");
+		return model;
 	}
 	
 	
@@ -995,11 +1027,18 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
 	@RequestMapping(value = "/employeeRequestedLeaves")
-	public ModelAndView employeeRequestedLeavesJsp(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("leavemanagement/employeeRequestedLeaves");
-	       return model;
+	public ModelAndView employeeRequestedLeavesJsp(
+			@RequestParam(value = "notifyLink", required = false) String notifyLink,
+			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
+			HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("notifyLink", notifyLink);
+		model.addObject("leaveUUID", leaveUUID);
+		model.addObject("orgLocationId", orgLocationId);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("leavemanagement/employeeRequestedLeaves");
+		return model;
 	}
 	
 	/**
@@ -1323,6 +1362,8 @@ public class LeaveManagementRestController {
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();
 				totalLeaves = 0;
+			}else {
+				totalLeaves = leaveDto.getNoOfDays();
 			}
 			StringBuilder sb = new StringBuilder();
 			if (StringUtils.isNotBlank(leave.getUser().getLastName())) {
@@ -1804,6 +1845,33 @@ public class LeaveManagementRestController {
 		
 		return isvalidate;
 		
+	}
+	
+	@RequestMapping(value = "/getLeaveExportList")
+	public void getLeaveExportList(LeaveDTO leaveDTO, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		File file = leaveService.getLeaveExport(orgLocations,leaveDTO);
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
 	}
 	
 }

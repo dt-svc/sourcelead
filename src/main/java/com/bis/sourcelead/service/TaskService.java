@@ -40,4 +40,5 @@ public interface TaskService {
 	
 	List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(Long orgLocationId,Long userId,Long vendorOnboardingId)throws Exception;
 	
+	Long taskCountByIdAndOrgLocationIdAssignedUserId(Long orgLocationId,Long userId,String Status)throws Exception;
 }

@@ -464,6 +464,10 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private Long venSpocId;
 	 
+	 @Transient
+	 @JsonProperty
+	 private String commentsCount;
+	 
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1719,6 +1723,16 @@ public class Candidate implements Serializable{
 		this.venSpocId = venSpocId;
 	}
 
+
+	public String getCommentsCount()
+	{
+		return commentsCount;
+	}
+
+	public void setCommentsCount(String commentsCount)
+	{
+		this.commentsCount = commentsCount;
+	}
 
 	public Candidate getParentCandidateId() {
 		return parentCandidateId;
