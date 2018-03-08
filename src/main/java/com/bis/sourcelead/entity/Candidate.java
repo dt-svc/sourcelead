@@ -292,6 +292,11 @@ public class Candidate implements Serializable{
 	@Column(name = "EAD_NO")
 	private String eadNo;
 	
+	@Column(name = "BRANCH")
+	private String branch;
+	
+	@Column(name = "RANK")
+	private String rank;
 	
 	//  Immigration columns End
 	@JsonProperty
@@ -1761,6 +1766,22 @@ public class Candidate implements Serializable{
 	public void setIsCandidateSubmitted(String isCandidateSubmitted)
 	{
 		this.isCandidateSubmitted = isCandidateSubmitted;
+	}
+
+	public String getBranch() {
+		return branch;
+	}
+
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
+
+	public String getRank() {
+		return rank;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
 	}
 
 }
