@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -349,6 +350,7 @@ public class ProjectsDashboardRestController {
 		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
+		   
 		   SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT);
 			 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),loginOrgLocations.getId());
 			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
@@ -361,13 +363,17 @@ public class ProjectsDashboardRestController {
 					 }
 				 }
 				 if(formFieldId != null && !formFieldId.isEmpty() && projectId != null) {
-				 List<ProjectCustomFieldData> projectData = projectCustomFieldDataService.getProjectCustomFieldDataByProjectId(projectId,formFieldId);
-				 Map<String,String> dataMap = new HashMap<>();
+				 Map<Long, String[]> projectData = projectCustomFieldDataService.getProjectCustomFieldDataByProjectId(loginOrgLocations.getOrg().getId(),formFieldId, projectId);
+				 Map<Long,String> dataMap = new HashMap<>();
+				 
 				 if(projectData!= null && !projectData.isEmpty()) {
-					 for(ProjectCustomFieldData projectCustomData:projectData) {
-						 String labelName = projectCustomData.getOrglocationsFormFields().getLabelName();
-						 String labelData = projectCustomData.getCustomFormFieldData();
-						 dataMap.put(labelName, labelData);
+					 for(Entry<Long, String[]> projectCustomData:projectData.entrySet()) {
+						String labelName = projectCustomData.getValue()[0];
+						 String labelData = projectCustomData.getValue()[1];
+						 Long id = projectCustomData.getKey();
+						 StringBuilder keyValue =  new StringBuilder();
+						 keyValue.append(labelName).append("$").append(labelData);
+						 dataMap.put(id, keyValue.toString());
 						 ProjectDetails.setProjectCustomFieldlabelNameAndValue(dataMap);
 					 	}
 				 	}

@@ -55,8 +55,7 @@ public class ExpensesDTOConverter {
 		if(eeDTOMap != null && !eeDTOMap.isEmpty()){
 			expensesDTO.setExpenseEntry(new LinkedList(eeDTOMap.values()));
 		}
-		
-		
+		expensesDTO.setExpensesRejectedReason(expenses.getExpensesRejectedReason());
 		expensesDTO.setExpenseStatus(expenses.getExpenseStatus().getValue().toUpperCase());
 		
 		return expensesDTO;

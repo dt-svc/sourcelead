@@ -1,6 +1,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script>
+
+<!-- <script>
+	$(document).ready(function() {
+		$("table").colResizable();
+	});
+</script> -->
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
@@ -108,6 +115,20 @@ function exportTimeSheetToPdfOrExcel(exportType){
         		      success :function(data) {
         		    	  $("#approvalTableData").empty();
         		    	  $("#approvalTableData").append(data);
+        		    	  $("#selectAllTimeSheetCheckBoxForSubmitForApproval").removeProp('checked');
+		                     $(".checkBoxForSubmitForApproval").each(function() {
+		                    	 for(var e in selectedRecords) {
+		                    		 if($(this).val() === e) {
+		                    			 if(selectedRecords[e])
+		                    			 	$(this).prop('checked', selectedRecords[e]);
+		                    			 break;
+		                    		 }
+		                    	 }
+		         	        });
+
+		             	    $(".checkBoxForSubmitForApproval").click(function () {
+		             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+		             	    });
         		    	  var totalRows =  $('#totalRows').val();
         		    		  $("#loadTime").removeAttr('style');
             		    	  preparePagination(pageNo);

@@ -8402,6 +8402,7 @@ z-index: -800;
 #divTsRow1 .chosen-container-active .chosen-choices {
  max-height: 100px !important; overflow-y:auto !important;
 }
+
 .remove_uservalidation p.jquery_form_error_message {
 	position: absolute; bottom: 32px;
 }

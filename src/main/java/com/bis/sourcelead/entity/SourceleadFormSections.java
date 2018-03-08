@@ -58,6 +58,8 @@ public class SourceleadFormSections implements Serializable{
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
+	@Column(name="IS_DEFAULT_VISIBLE")
+	private String isDefaultVisible;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CREATED_BY", nullable=false )
@@ -157,5 +159,13 @@ public class SourceleadFormSections implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
+	public String getIsDefaultVisible() {
+		return isDefaultVisible;
+	}
+
+	public void setIsDefaultVisible(String isDefaultVisible) {
+		this.isDefaultVisible = isDefaultVisible;
+	}
+	
 	
 }
