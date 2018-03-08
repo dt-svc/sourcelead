@@ -504,8 +504,9 @@
   <script type="text/javascript">
   $( document ).ready(function() {
 	  $("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?status=one");
-	  console.info("inside new petition template jsp------>")
+	  console.info("inside new petition template jsp------>");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
+	
 	});
   </script>
   <jsp:include page="../masterFooter.jsp" />
