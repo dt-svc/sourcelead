@@ -47,10 +47,10 @@
 					<div class="col-xs-3 col-md-3 paddingLeft">
 							<select class="selectpicker form-control" id="timesheetMode" name="timesheetMode" field-name="Upload mode" data-validation="required" >
 								<option value="" disabled selected>--- Select Mode ---</option>
-								<option value="BiMonthly">Bi-Monthly</option>
-								<option value="Monthly">Monthly</option> 
+								<!-- <option value="BiMonthly">Bi-Monthly</option>
+								<option value="Monthly">Monthly</option>  -->
 								<option value="MonthlyWeekWise">Monthly-Week wise</option>
-								<option value="Weekly">Weekly</option>
+								<!-- <option value="Weekly">Weekly</option> -->
 							</select>
 					</div>
 						<div class="col-xs-3 col-md-3 paddingLeft">
