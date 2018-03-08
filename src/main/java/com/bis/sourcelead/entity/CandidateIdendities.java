@@ -40,7 +40,7 @@ public class CandidateIdendities {
 	private String currentStatus;
 	
 	@Column(name = "STATUS")
-	private String status;
+	private Integer status;
 	
 	@Column(name = "FILE_URL")
 	private String fileUrl;
@@ -133,11 +133,11 @@ public class CandidateIdendities {
 		this.currentStatus = currentStatus;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
