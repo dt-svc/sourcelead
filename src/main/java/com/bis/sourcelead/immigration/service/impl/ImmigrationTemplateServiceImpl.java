@@ -123,8 +123,10 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		immigrationTemplateTask.setTaskName(templateDTO.getTaskName());
 		if (StringUtils.isNotBlank(templateDTO.getPetitionAssignedTo())) {
 			immigrationTemplateTask.setAssignToUsers(templateDTO.getPetitionAssignedTo());
+			immigrationTemplateTask.setAssignToCandidate(null);
 		} else {
 			immigrationTemplateTask.setAssignToCandidate(Constants.YES);
+			immigrationTemplateTask.setAssignToUsers(null);
 		}
 		immigrationTemplateTask.setTaskReminder(templateDTO.getTaskReminder());
 		immigrationTemplateTask.setPriority(templateDTO.getPriority());

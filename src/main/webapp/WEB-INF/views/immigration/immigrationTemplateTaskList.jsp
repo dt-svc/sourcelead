@@ -126,7 +126,7 @@
 					      <div class="clearfix">
 						  <label>Assign To<span class="text-danger">*</span></label>
 						  <div class="clearfix">
-							<label class="paddingRight"> <input type="radio"  name="assignToType" id="assignedToB" checked="checked" onclick="validateAssignToType('assingToCandidate');"> Beneficiary </label>
+							<label class="paddingRight"> <input type="radio"  name="assignToType" id="assignedToB" onclick="validateAssignToType('assingToCandidate');"> Beneficiary </label>
 							<label class="paddingLeft"> <input type="radio"  name="assignToType" id="assignedToU"  onclick="validateAssignToType('assingToUser');"> User </label>
 						  </div>
 						  </div>
@@ -397,6 +397,7 @@ function immigrationPagination(url){
             if ($(this).is(":checked")) {
             	$("#reminderdropdown").show();
             } else {
+            	$("#taskReminderSelect").val("")
             	$("#reminderdropdown").hide();
             }
         });
@@ -518,9 +519,13 @@ function validateDueAfter(){
   function validateAssignToType(assignToType){
 	  if(assignToType == 'assingToUser'){
 		  $("#assignToUserDiv").show();
+		  $("#petitionAssignedTo1 option:selected").prop("selected", false);
+		  $('#taskReminderSelect').trigger("chosen:updated");
 		 
 	  }else{
 		  $("#assignToUserDiv").hide();
+		  $("#petitionAssignedTo1 option:selected").prop("selected", false);
+		  $('#taskReminderSelect').trigger("chosen:updated");
 	  }
   }
   </script>

@@ -125,7 +125,6 @@ function Immigration(){
 		    	   if(data == 'success'){
 			    	   $("#addNewPetitionTemplateDiv").empty();
 			    	   $("#addNewPetitionTemplateDiv").load(sourceleadUrl+immiModulePath+"/gotoTemplatePreviousPage?status=taskList");
-			    	   
 		    	   }
 		       }
 		});
