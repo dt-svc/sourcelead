@@ -4,6 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 
 <style type="text/css">
 .chosen-container {
@@ -594,6 +595,19 @@ function displyContract(stage){
 			
 			result = result +	'</div>';
 			result = result +	'</div>';
+			
+			if(json.newContractCustomFieldlabelNameAndValue != null && json.newContractCustomFieldlabelNameAndValue != "" && json.newContractCustomFieldlabelNameAndValue != 'undefined'){
+				 $.each(json.newContractCustomFieldlabelNameAndValue, function(key, value) {
+					  var labelNameAndlabelData = value.toString().split("$");
+	            	  var labelName = labelNameAndlabelData[0].toString().split(",");
+					  result = result + '	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+	            	  result = result + '	<div class="col-md-4 col-sm-4">'+labelName[1]+'</div>';
+	            	  result = result + '   <div class="col-md-8 col-sm-8">:'+labelNameAndlabelData[1]+'</div>';
+	            	  result = result + '	</div>'; 
+	              }); 
+            }
+			
+			
 			
 			$("#viewPopupDiv").empty();
 			$("#viewPopupDiv").append(result);
