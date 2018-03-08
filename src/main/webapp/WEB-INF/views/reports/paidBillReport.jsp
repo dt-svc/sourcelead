@@ -16,7 +16,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Paid Bills</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Paid Bills</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Paid Bills</div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -84,16 +84,10 @@ $(document).ready(function(){
         <div class="clearfix dashboard-widget mt25 col-md-12">
           <div class="clearfix">
           <h4 class="pull-left">Paid Bills Lists</h4>
-          	<div class="remove_search pull-right">
-                  <input placeholder="Search" type="text">
-                </div>
           </div>
           
           
-           <div class='remove_search'>
- 		 <input type='text' placeholder='Search' id='dataTableSearch'/>
- 		</div> 
-      <div id="paidBillReportId" class="datatable_filter tableStyles mt5">
+      <div id="paidBillReportId" class="datatable_filter mt5">
         </div>
           
         </div>
@@ -158,7 +152,6 @@ $(document).ready(function(){
 		  	var formData = $($('#paidbill_custom_form')[0]).serialize();
 		  	 var billType = 'Payables';
 				var sourceleadUrl ='${sourceleadUrl}';
-				var searchValue = $("#dataTableSearch").val();
 				var orgId = $("#orgId").val();
 				var filterType = ""; 
 				if($("#filterType").val() != 'undefined'){
@@ -192,7 +185,7 @@ function getPaidBillreport(){
 			filterType = $("#filterType").val();
 		}
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType+"&orgId="+orgId+"&filterType="+filterType;
+		var url = sourceleadUrl+"/getPaidBillreport?"+tokenParamName+"="+tokenValue+"&billType="+billType+"&orgId="+orgId+"&filterType="+filterType+"&searchValue="+searchValue;
 		preparePaidBillReportList(url);
 }
 </script>
@@ -200,9 +193,11 @@ function getPaidBillreport(){
 function preparePaidBillReportList(url){
 	$("#paidBillReportId").empty();
  	    var result = "";
- 	    /* result = result +" <div class='remove_search'>";
+ 	    result = result +" <div class='remove_search'>";
  	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
- 	    result = result +"</div>"; */
+ 	    result = result +"</div>";
+ 	   
+ 	    result = result +" <div class='tableStyles clearfix'>";
  	    result = result +"<table id='paidBillPagination' class='display' cellspacing='0' width='100%' >"; 
         result = result +"<thead>"; 
         result = result + '<tr>';
@@ -215,6 +210,7 @@ function preparePaidBillReportList(url){
         result = result +"<tbody>"; 
         result = result +" </tbody>";
         result = result +"</table>";
+        result = result +"</div>";
       $("#paidBillReportId").append(result);
       prepareBill(url); 
 }
