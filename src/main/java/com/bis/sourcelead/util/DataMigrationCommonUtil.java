@@ -135,6 +135,9 @@ public class DataMigrationCommonUtil {
 	private TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
 	
 	@Autowired
+	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	
+	@Autowired
 	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired
@@ -609,7 +612,7 @@ public class DataMigrationCommonUtil {
 						mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 						mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 						importTimeSheet = mapper.readValue(dataMigrationDTOJsonCopy.toString(),ImportTimesheetDTO.class);
-						if(project != null && (project.getInvoiceFrequency().equalsIgnoreCase("Weekly") || project.getInvoiceFrequency().equalsIgnoreCase("Monthly"))){
+						if(project != null && (project.getInvoiceFrequency().equalsIgnoreCase("Weekly") || project.getInvoiceFrequency().equalsIgnoreCase("Monthly") || project.getInvoiceFrequency().equalsIgnoreCase("Semi-Monthly") || project.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly"))){
 						ProjectTasks projectTask = projectTasksService.getProjectTasksByProjectIdAndProjectIdAndTaskName(project.getId(),"System Task Billable");
 						 if(projectTask != null) {
 							 User employeeUser =  userService.findByEmail(importTimeSheet.getEmployeeEmail());
@@ -835,7 +838,7 @@ private void validateTimesheetMonthWeeklyFrequency(JSONObject dataMigrationDTOJs
 	
 }
 
-private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date assignDate, Date terminatedDate, String[] year, OrgLocations orgLocation, Projects project, ProjectMembers projectMember, ProjectTasks projectTask, HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, Date startDate, Date endaDate, Map<String, Date> dateList, String timeFrequency) throws Exception {
+private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date assignDate, Date terminatedDate, String[] year, OrgLocations orgLocation, Projects project, ProjectMembers projectMember, ProjectTasks projectTask, HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, Date startDate, Date endDate, Map<String, Date> dateList, String timeFrequency) throws Exception {
 		 Date monthStartDate = dateList.get("STARTDATE");
 		 Date monthEndDate = dateList.get("ENDDATE");
 		 Boolean vaidateProjectMemberStartDate = null;
@@ -891,9 +894,87 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
 					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 						    		 
-							 } else if(project.getInvoiceFrequency().equalsIgnoreCase("Monthly")){
-								  frequencyStartDate = startDate;
-								  frequencyEndDate = endaDate;
+							 }  else if(project.getInvoiceFrequency().equalsIgnoreCase("Semi-Monthly")){
+								   Date empMonth15thDate = CalendarUtil.getMonth15thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");
+								   if(!CalendarUtil.isDateBetweenTwoDates(key,value, empMonth15thDate)){
+									   if(value.before(empMonth15thDate)) {
+										   frequencyStartDate = startDate;
+										   frequencyEndDate = empMonth15thDate;
+									   }else {
+										   frequencyStartDate = CalendarUtil.getMonth16thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");
+										   frequencyEndDate = endDate;
+									   }
+									   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+							    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+							    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+								   }else {
+									   if(value.after(empMonth15thDate) || key.equals(empMonth15thDate)) {
+										   subStartDate = key;
+										   subEndDate = empMonth15thDate;
+										   frequencyStartDate = startDate;
+										   frequencyEndDate = empMonth15thDate;
+										  
+										   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+								    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+								    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,subStartDate,subEndDate,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+								    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+								    	   
+								    	   subStartDate = CalendarUtil.getMonth16thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");
+										   subEndDate = value;
+										   frequencyStartDate = CalendarUtil.getMonth16thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");;
+										   frequencyEndDate = endDate;
+										   
+								    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,subStartDate,subEndDate,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+									   }else {
+										   subStartDate = key;
+										   subEndDate = value;
+										   frequencyStartDate = startDate;
+										   frequencyEndDate = empMonth15thDate;
+										   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+								    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+								    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+								    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+									   }
+								   }
+								   
+						    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+							 }  
+							 else if(project.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly")) {
+								 
+									 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
+							    	 String day_Of_Date = simpleDateformat.format(key);
+							    	 if(!day_Of_Date.equalsIgnoreCase("MON")) {
+							    		  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
+										  tsCal.setLenient(false);
+										  tsCal.setTime(key);
+										  subStartDate= CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON",orgLocation.getDateFormat()).getTime();
+							    	 }
+							    	 
+							    	 String last_day_Of_Date = simpleDateformat.format(value);
+							    	 if(!last_day_Of_Date.equalsIgnoreCase("SUN")) {
+							    		  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
+										  tsCal.setLenient(false);
+										  tsCal.setTime(value);
+										  subEndDate= CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN",orgLocation.getDateFormat()).getTime();
+							    	 }
+							    	 //avgHours
+							    	 Date biWeeklyStartMondayDate = timesheetFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDateForTsImports(project,key);
+					    		    Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+									cal.setLenient(false);
+									cal.setTime(biWeeklyStartMondayDate);
+									Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocation.getDateFormat());
+									frequencyStartDate = startMonday.getTime();
+									Calendar endSunday = CalendarUtil.getDateIncrementByincrement(cal,13);
+									frequencyEndDate = endSunday.getTime();
+								  
+								  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
+					    		  float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
+					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
+					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
+							 }
+							 else if(project.getInvoiceFrequency().equalsIgnoreCase("Monthly")){
+								   frequencyStartDate = startDate;
+								   frequencyEndDate = endDate;
 								  
 								   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 						    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
@@ -906,7 +987,7 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 						}
 					}
 			 }else if(timeFrequency.equalsIgnoreCase("Weekly")) {
-		    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,startDate,endaDate,startDate,endaDate,0f,user,orgLocation,startDate,endaDate,importTimeSheet,timeFrequency);
+		    		   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,startDate,endDate,startDate,endDate,0f,user,orgLocation,startDate,endDate,importTimeSheet,timeFrequency);
 			 }else if(timeFrequency.equalsIgnoreCase("Monthly") || timeFrequency.equalsIgnoreCase("BiMonthly")) {
 				 int flag = 0;
 				 if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
@@ -1195,6 +1276,14 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						AverageHours = 0D;
 						break;
 					}
+				case 6:
+					if(importTimeSheet.getWeek6() != null && StringUtils.isNotEmpty(importTimeSheet.getWeek6())) {
+					 AverageHours = calculateHoursAndMin(Double.parseDouble(importTimeSheet.getWeek6()),noOfBillableHours);
+					 break;
+					}else {
+						AverageHours = 0D;
+						break;
+					}
 				}
 			}else if(type.equalsIgnoreCase("Weekly") || type.equalsIgnoreCase("Monthly") || type.equalsIgnoreCase("BiMonthly")) {
 				switch (count) {
@@ -1370,7 +1459,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 		private Double calculateHoursAndMin(double total,int days) {	
 			double res1 = getMinutes(total);
-			double res2 = new BigDecimal(res1).divide(new BigDecimal(days),2, RoundingMode.HALF_UP).doubleValue();
+			
+			double res2 = 0;
+			if(days > 0) {
+				res2 = new BigDecimal(res1).divide(new BigDecimal(days),2, RoundingMode.HALF_UP).doubleValue();
+			}
 			double res3 = new BigDecimal(res2).divide(new BigDecimal(60), 5, RoundingMode.HALF_UP).doubleValue();
 			double res4 = getMinutes1(res3);
 			return res4;

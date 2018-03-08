@@ -82,6 +82,9 @@
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
 	        		    	  $("#timeApprovaldiv").append(data);
+	        		    	  $(".checkBoxForSubmitForApproval").click(function () {
+			             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
+			             	  });
 	        		    	  prepareChosenScripts();
 	        		    	  preparePagination(1);
 	        		      }
