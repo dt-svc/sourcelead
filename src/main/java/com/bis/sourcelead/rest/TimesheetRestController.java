@@ -2086,7 +2086,14 @@ public class TimesheetRestController {
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgCode);
 			//String url = null;
+			
+			StringBuilder currentTimeFrequency = new StringBuilder();
+			currentTimeFrequency.append(startDateStr).append(" To ").append(endDateStr);
 			String actionLink = "";
+			
+			StringBuilder actionLinkBuilder = new StringBuilder();
+			TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
+			actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheetApproval?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectId="+projectId+"&masterCandidateId="+masterCanidateId+"&projectMemberId="+timesheetSubmissions.getProjectMembers().getId()+"&totalHours="+timesheetSubmissions.getTotalHours()+"&from=approver&notifyLink=notifyLink").toString();	
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
 			
 		}
