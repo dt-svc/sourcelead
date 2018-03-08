@@ -191,6 +191,10 @@ private static final long serialVersionUID = 1L;
 	@JsonProperty
 	private String orgRelationId;
 	
+	@Transient
+	@JsonProperty
+	private String expensesRejectedReason;
+	
 	public Long getId() {
 		return id;
 	}
@@ -504,6 +508,14 @@ private static final long serialVersionUID = 1L;
 	public void setOrgRelationId(String orgRelationId)
 	{
 		this.orgRelationId = orgRelationId;
+	}
+
+	public String getExpensesRejectedReason() {
+		return expensesRejectedReason;
+	}
+
+	public void setExpensesRejectedReason(String expensesRejectedReason) {
+		this.expensesRejectedReason = expensesRejectedReason;
 	}
 
 	

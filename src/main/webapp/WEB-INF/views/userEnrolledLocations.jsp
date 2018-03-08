@@ -95,23 +95,35 @@ function validateTwoStepAuth() {
 	});
 	var userLoginSecurity = $("#userLoginSecurity").val();
 	var isTwoStepEnabled = $("#isTwoStepEnabled"+userRoleId).val();
-	if((isTwoStepEnabled == null || isTwoStepEnabled == '' || isTwoStepEnabled == 'undefined' || isTwoStepEnabled  == 'N') && (userLoginSecurity == null || userLoginSecurity == '' || userLoginSecurity == 'undefined' || userLoginSecurity  == 'N')){
+	if('${alreadyVerifiedBefore}'){
 		$.ajax({
 		      type : "POST",
-		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&userRoleId="+userRoleId,        
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&userRoleId="+userRoleId+"&verfDone=Y",        
 		       success :function(result) {
 		    	 if(result == "true"){
 		    		 location.replace(sourceleadUrl+"/dashboard");   
 		    	 }
 		      },
-		  }); 
+		  });
 	}else{
-		$("#enrolledLocDiv").removeAttr("style");
-   	    $("#enrolledLocDiv").attr("style","display : none");
-		$("#twoStepVerfDiv").removeAttr("style");
- 	    $("#twoStepVerfDiv").attr("style","display : block");
- 	    $(".signWrap").addClass("orgOutWrap");
- 	    getUserDetailsByUserRoleId(userRoleId,userName,password);
+		if((isTwoStepEnabled == null || isTwoStepEnabled == '' || isTwoStepEnabled == 'undefined' || isTwoStepEnabled  == 'N') && (userLoginSecurity == null || userLoginSecurity == '' || userLoginSecurity == 'undefined' || userLoginSecurity  == 'N')){
+			$.ajax({
+			      type : "POST",
+			       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&userRoleId="+userRoleId,        
+			       success :function(result) {
+			    	 if(result == "true"){
+			    		 location.replace(sourceleadUrl+"/dashboard");   
+			    	 }
+			      },
+			  }); 
+		}else{
+			$("#enrolledLocDiv").removeAttr("style");
+	   	    $("#enrolledLocDiv").attr("style","display : none");
+			$("#twoStepVerfDiv").removeAttr("style");
+	 	    $("#twoStepVerfDiv").attr("style","display : block");
+	 	    $(".signWrap").addClass("orgOutWrap");
+	 	    getUserDetailsByUserRoleId(userRoleId,userName,password);
+		}
 	}
 }
 
