@@ -705,9 +705,8 @@ top: 21px;height: 32px; line-height: 18px;
 						<div class="row">
 							<div class="col-md-6">
 								<label>Rate</label>
-								<div class="input-group">
-									<div class="input-group-btn selp-custom-min custommin">
-										<select class="selectpicker" id="currencyCode"
+								<div class="clearfix jobAddSear">
+										<select class="form-control input-sm btn-primary" id="currencyCode"
 											name="currencyCode">
 											<option selected disabled>INR</option>
 											<option>AUD</option>
@@ -716,18 +715,16 @@ top: 21px;height: 32px; line-height: 18px;
 											<option>SGD</option>
 											<option>EUR</option>
 										</select>
-									</div>
 									<input type="text" class="form-control input-sm" name="minRate"
 										id="minRate" value="" placeholder="Min Rate">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<label>&nbsp;</label>
-								<div class="input-group">
+								<div class="input-group clearfix jobAddSear">
 									<input type="text" class="form-control input-sm" value=""
 										name="maxRate" id="maxRate" placeholder="Max Rate">
-									<div class="input-group-btn selp-custom-min custommin">
-										<select class="selectpicker">
+										<select class="form-control input-sm btn-primary">
 											<option selected disabled>Per</option>
 											<option>Hourly</option>
 											<option>Weekly</option>
@@ -737,7 +734,6 @@ top: 21px;height: 32px; line-height: 18px;
 											<option>Bi-Monthly</option>
 											<option>Yearly</option>
 										</select>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -3049,4 +3045,5 @@ function forgotPassword(){
  }
  </script>                                                                                     
    <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
+   <script src="/resources/js/formvalidator.js"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

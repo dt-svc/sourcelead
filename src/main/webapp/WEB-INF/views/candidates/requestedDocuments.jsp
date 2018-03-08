@@ -95,7 +95,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 					   				
 					   				<td>
 					   				<c:if test="${!empty docs.description}">
-					   				<div class="tbldata-dotdot-big" title="${docs.description}">${docs.description}</div>
+					   				<div class="tbldata-dotdot-big" title="'${docs.description}'">${docs.description}</div>
 					   				</c:if>
 					   				<c:if test="${empty docs.description}">
 					   				<div class="tbldata-dotdot-big">-------</div>
