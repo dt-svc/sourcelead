@@ -7,6 +7,7 @@
 <script>
 $(document).ready(function(){
   getPaidBillGraphReport();
+  getTotalAmountPerYear();
 });
 </script>
 
@@ -17,14 +18,14 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Paid Bills</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Paid Bills</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Paid Bills</div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-2 pull-left reqListBtn">
-        <a href="${appPath}/paidBillReportGraph" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="${appPath}/paidBillReport" title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
+        <a href="${appPath}/paidBillReportGraph" title="Graphical View" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
+        <a href="${appPath}/paidBillReport" title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
         </div>
         
         <div class="col-md-4 dropdown-select col-md-offset-1">
@@ -82,29 +83,16 @@ $(document).ready(function(){
       <!-- Decline Reasons -->
       <div class="row">
         <div class="col-md-12 mt">
-          <div class="clients_wrap_table dashboard-widget">
+          <div class="dashboard-widget">
             <h4>Paid Bills</h4>
 			  <div class="row mt">
 				  <div class="col-md-9">
 				  	<div id="backoutReason" style="width:100%; height: 250px; margin-bottom: 25px;" class="amchartAnchor-Hide"></div>
 				  </div>
 				  <div class="col-md-3 padding_left">
-					<div class="pyExpenses">
-					   <h5>Previous Years Expeneses</h5>
-						<ul class="clearfix mt">
-						  <li>
-						  <span>Year 2013</span>
-						  <span>2000</span>
-						  </li>
-						  <li>
-							  <span>Year 2014</span>
-							  <span>1500</span>
-						  </li>
-						   <li>
-						  <span>Year 2015</span>
-						  <span>500</span>
-						  </li>
-						   </ul>
+					<div class="pyexpenses-table">
+					   <h5>Amount Paid</h5>
+						<div id="abc"></div>
 					   </div>
 				  </div>
 			  </div>
@@ -407,7 +395,43 @@ function getPaidBillsCustomDates() {
   } );
   </script>
 
-
+<script>
+function getTotalAmountPerYear(){
+	  var billType = 'Payables';
+		var orgId = $("#orgId").val(); 
+		var filterType = ""; 
+		if($("#filterType").val() != 'undefined'){
+			filterType = $("#filterType").val();
+		}
+	    $.post(sourceleadUrl+"/getTotalAmountPerYear?"+tokenParamName+"="+tokenValue+"&billType="+billType+"&orgId="+orgId+"&filterType="+filterType, function(json) {
+	    	
+	    	if(json != null){
+	    		  if(json.totalAmountMap != null){
+	    			 var result = "";
+	    			 result = result+ ' <table class="clearfix mt tableFixed table">';
+	    			 result = result+ '<thead>';
+	    			 result = result+ '<tr>';
+	    			 result = result+ '<th class="col-xs-6">Year</th>';
+	    			 result = result+ '<th class="col-xs-6">Amount</th>';
+	    			 result = result+ '</tr>';
+	    			 result = result+ '</thead>';
+	    			 result = result+ '<tbody>';
+	    		    	 for(var k in json.totalAmountMap) {
+	    		    		 result = result+ '<tr>';
+	    		    		 result = result+ '<td class="col-xs-6">'+k+'</td>';
+	    		    		 result = result+ '<td class="col-xs-6">'+json.totalAmountMap[k].toFixed(2)+'</td>';
+	    		    		 result = result+ '</tr>';
+	    		    	    }
+	    		    	 result = result+ '</tbody>';
+	    		    	 result = result+ '</table>';
+	    		    	 $("#abc").empty();
+	    		    	 $("#abc").append(result);
+	    		    }
+	    		
+	    	}
+		});  
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />
