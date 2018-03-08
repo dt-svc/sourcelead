@@ -7994,6 +7994,21 @@ display: initial;
 .active.page-updated {
     background-color:#4CAF50 !important; position: relative;
 }
+.filterSearch li {
+	padding:3px 0;
+}
+.filterSearch li input[type="checkbox"] {
+	position: absolute; left: 0; top: 0; z-index: 99;
+}
+.filterSearch li label {
+	padding-left: 25px; position: relative; top:-1px;
+}
+ .filterSearch-ul  {
+ min-height: 100px; max-height: 250px; overflow-y:auto; 
+ }
+ .dynamic_search.filterDynamicsearch input {
+ width: 100% !important;
+  }
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

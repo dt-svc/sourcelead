@@ -36,10 +36,12 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -66,6 +68,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	
 	
 	
@@ -118,8 +123,25 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		model.addObject("rolesList", rolesList);
 		
 		
-		Integer orgLocationsCount = orgLocationService.getRegisteredOrgLoctionsCountByOrgId(org.getId());
-		model.addObject("orgLocationsCount", orgLocationsCount);
+        List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+        for(OrgRelations orgRelations:orgClientList){
+        	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+        	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(orgRelations.getResponderLocationId() != null){
+					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if(null != orgRelations.getResponderLocationId() && null != orgRelations.getResponderLocationId().getId() && orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(orgRelations.getLocationId() != null){
+					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
+				}
+			}
+			
+			
+        }
+        model.addObject("clientsList", orgClientList);
+        model.addObject("clientListSize", orgClientList.size());
+        
 		
 		return model;
 

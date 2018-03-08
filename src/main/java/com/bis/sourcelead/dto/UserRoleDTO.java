@@ -23,6 +23,7 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private Integer receivedCount;
 	private Integer connectedCount;
 	private String connectionUUID;
+	private String orgClients;
 	
 	
 	public Long getId() {
@@ -138,5 +139,11 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	}
 	public void setConnectionUUID(String connectionUUID) {
 		this.connectionUUID = connectionUUID;
+	}
+	public String getOrgClients() {
+		return orgClients;
+	}
+	public void setOrgClients(String orgClients) {
+		this.orgClients = orgClients;
 	}
 }

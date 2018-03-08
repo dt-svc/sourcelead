@@ -171,57 +171,87 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
       
+      	<div class="pull-left cand-advsrch advsrch_chosen">
+		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onClick="resetFilter();" title="Refresh">
+			    <span class="fa fa-refresh"></span>
+			</button>
+			
+			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
+				title="Advanced Search"
+				onClick="openPop();"> Filter
+				Search&nbsp;&nbsp; <i class="fa fa-filter"></i>
+			</a>
+	    </div>
+	    
+				<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
+				<h5 class="headerAdsrch">Advanced Search
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						<div class="col-md-2">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked onclick="getDynamciUserList();"><label>&nbsp;Active</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked onclick="getDynamciUserList();"><label>&nbsp;Not Logged In</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE"   onclick="getDynamciUserList();"><label>&nbsp;In Active</label></li>
+		               				
+		                        </ul>
+							 </div> 
+						</div>
+						
+						<div class="col-md-3 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a role">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}"  onclick="getDynamciUserList();"><label>${roles.displayName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+						<c:if test="${clientListSize > 0}">
+						<div class="col-md-3 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a client">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+									<c:forEach var="client" items="${clientsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.id}"  onclick="getDynamciUserList();"><label>${client.clientName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Done" id="search_requiremet"
+								onclick="closePop()" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+			
+			
+			
+      
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-          	
-          <%-- <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getDynamciUserList()">
-				<option value="ACTIVE" >Active</option>
-				<option value="">All</option>
-				<option value="INACTIVE" >In Active</option>
-				<option value="NOT_LOGGEDIN">Not Logged in</option>
-			   </select>
-          
-          </li>
-          
-		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getDynamciUserList();">
-				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
-				<!-- <option value="All" >All Roles</option> -->
-				<c:forEach var="roles" items="${rolesList}">
-	                 <option value="${roles.id}">${roles.displayName}</option>
-                </c:forEach>
-				</select>
-		   </li> --%>
-		   
-		   
-		   
-		   <li id="filterDropDown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter1ApprovePop" class="approvedPop">
-                    	<ul>
-			               	<c:forEach var="roles" items="${rolesList}">
-				                  <li><input  type="checkbox" name="userRole" value ="${roles.id}"  onclick="getDynamciUserList();"><label>&nbsp;${roles.displayName}</label></li>
-			                </c:forEach>
-               				
-                        </ul>
-                    </div>                	
-                </li>
-		   
-          
-               <li id="filterDropDown1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter1ApprovePop1" class="approvedPop1">
-                    	<ul>
-                    	    <li><input   type="checkbox" name="userState" value ="ACTIVE"  onclick="getDynamciUserList();"><label for="c7">&nbsp;Active</label></li>
-                        	<li><input   type="checkbox" name="userState" value ="INACTIVE"  checked onclick="getDynamciUserList();"><label for="c7">&nbsp;In Active</label></li>
-							<li><input   type="checkbox" name="userState" value ="NOT_LOGGEDIN" checked onclick="getDynamciUserList();"><label for="c9">&nbsp;Not Logged In</label></li>
-               				
-                        </ul>
-                    </div>                	
-                </li> 
-		   
-		   
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
 	                    
                   <c:if test="${orgLocationsCount > 1}">
@@ -284,12 +314,64 @@ function getUsersSearchResult(searchValue){
   </section>
   
       <!-- Content Area Ends--> 
-
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
+
+<script>
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myClientsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>
+
+<script>
+function resetFilter(){
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	
+	document.getElementById("activeStatus").checked = true;
+	document.getElementById("notloggedInStatus").checked = true;
+	
+	getDynamciUserList();
+}
+</script>
+
+
 <script>
 function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
@@ -317,6 +399,27 @@ function exportUserData(){
 
 }
 </script> 
+
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		}
+	</script>
+
+
+
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -815,11 +918,16 @@ function getDynamciUserList(){
 		userState.push($(this).val());
     });
 	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
 	
 	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);

@@ -1031,11 +1031,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Override
 	@Transactional
 	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId2(UserDTO userDTO,
-			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode)
+			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode,List<Long> orgRelationsList)
 			throws Exception {
-		
-		
-		
 
 		Session session = this.sessionFactory.getCurrentSession();
 		ResponseList<UserRole> response = new ResponseList<>();
@@ -1047,6 +1044,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Integer filterCount = 0;
 		String subQuery = "";
 		String subQuery2 ="";
+		String subQuery3 ="";
 		Map<String, Object> params = new HashMap<String,Object>();
 		StringBuilder query1 = new StringBuilder("");
 		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
@@ -1069,7 +1067,6 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			}
 			
 		}
-		
 		
 		
 		if(userDTO.getUserRole() != null && !userDTO.getUserRole().isEmpty()) {
@@ -1103,48 +1100,33 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 		
 		
-		/*if(roleId != null) {
-			 subQuery = " and userRole.roles.id = :roleId ";
-			params.put("roleId",roleId);
+		if(orgRelationsList.isEmpty()) {
+			orgRelationsList.add(0L);
+			subQuery3 = " and ((:varZero  IN (:orgRelationsList)) OR (:varZero NOT IN (:orgRelationsList)))";
+			
+		}else {
+			
+			subQuery3 = " and userRole.user.id IN (select pm.projectMemberCandidteId.consultantUser.id from ProjectMembers pm "
+					+ "where pm.projectClientsId.id IN (select pc.id from ProjectClients pc where pc.status = '1' and (pc.projectId.projectStatus = 'INPROGRESS' or pc.projectId.projectStatus = 'NOTSTARTED') "
+					+ "and pc.orgRelationId.id IN (:orgRelationsList) and pc.orgLocationsId = :locationId  ) and pm.status = '1') )";
 		}
-		if(!"".equalsIgnoreCase(userState)){
-			subQuery2 = " and userRole.userState =:userState ";
-			params.put("userState",userState);
-		} */
+		 
 		
 			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" " ;
 			Query query = session.createQuery(listQuery+query1+sortingQry);
 			
-			userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
-			
-			/*if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
-			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
-			}  else if(!"".equalsIgnoreCase(userState)){
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
-			}else {
-				userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
-			}*/
+			userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
 			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+"" ;
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" " ;
 			Query query2 = session.createQuery(queryCount+query1);
 			
-			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).list();
+			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setParameterList("orgRelationsList", orgRelationsList).setLong("varZero", 0).list();
 			
 			
-	/*		if(roleId != null && !"".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).setLong("roleId", roleId).list();
-			}else if(roleId != null && "".equalsIgnoreCase(userState)) {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setLong("roleId", roleId).list();
-			} else if(!"".equalsIgnoreCase(userState)){
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setString("userState", userState).list();
-			}else {
-				countlist =query2.setLong("locationId", locationId).setLong("userId", userId).list();
-			}*/
+
 			  
 		if(query1.toString() != null && !query1.toString().isEmpty()){
 			filterCount = countlist.iterator().next().intValue();
