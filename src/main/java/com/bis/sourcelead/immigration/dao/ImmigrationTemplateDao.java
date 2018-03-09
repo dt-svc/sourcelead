@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -51,6 +52,8 @@ public interface ImmigrationTemplateDao {
 	void deleteImmigrationTaskList(String id);
 
 	int savePetitionTemplateDetailsValues(String templateId);
+
+	List<CandidateEmployers> getPetitionTemplateEmployers(Long id);
 	
 	
 }

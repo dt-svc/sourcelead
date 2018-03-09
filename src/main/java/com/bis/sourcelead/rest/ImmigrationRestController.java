@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -104,6 +106,14 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
+	
+	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
+	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		List<CandidateEmployerDTO> caEmployerDTOs = immigrationTemplateService.getPetitionTemplateEmployers(candidate.getId());
+		return caEmployerDTOs;
+	}
+	
 
 	@RequestMapping(value = { "/viewImmigration" })
 	public ModelAndView viewImmigration(HttpServletRequest request) {
