@@ -301,7 +301,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 	public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId,Date timesheetDate) {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlDate = new java.sql.Date(timesheetDate.getTime());
-		String query = "from TimeSheetDayEntries timeDayEntry  left join fetch timeDayEntry.timesheetSubmissions timeSubmissions where timeDayEntry.timesheetDate = :timeDate and tde.status = '1' and timeSubmissions.projects.id = :projectId and timeSubmissions.masterCandidateId.id = :masterCandidateId  ";
+		String query = "from TimeSheetDayEntries timeDayEntry  left join fetch timeDayEntry.timesheetSubmissions timeSubmissions where timeDayEntry.timesheetDate = :timeDate and timeDayEntry.status = '1' and timeSubmissions.projects.id = :projectId and timeSubmissions.masterCandidateId.id = :masterCandidateId  ";
 		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setParameter("timeDate", sqlDate).list();
 		Float totalHours = 0.0F;
 	    if(tdeList != null && !tdeList.isEmpty()){
