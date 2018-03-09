@@ -467,6 +467,10 @@ public class Candidate implements Serializable{
 	 private Long relationId;
 	 
 	 @Transient
+	 @JsonProperty
+	 private String dateofBirthString;
+	 
+	 @Transient
 	 private Long venSpocId;
 	 
 	 @Transient
@@ -1783,6 +1787,16 @@ public class Candidate implements Serializable{
 	public void setRank(String rank) {
 		this.rank = rank;
 	}
+
+	public String getDateofBirthString() {
+		return dateofBirthString;
+	}
+
+	public void setDateofBirthString(String dateofBirthString) {
+		this.dateofBirthString = dateofBirthString;
+	}
+	
+	
 
 }
 
