@@ -99,7 +99,7 @@ public class ImmigrationRestController {
 			model.setViewName("/immigration/newPetitionPage1");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			List<ImmigrationTemplate>templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
+			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
 			System.out.println("templateList size in controller is-->"+templateList.size());
 			model.addObject("templateList",templateList);
 		} else if (status.equalsIgnoreCase("two")) {
