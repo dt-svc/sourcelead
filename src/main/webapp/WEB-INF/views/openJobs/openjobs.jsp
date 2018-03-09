@@ -1940,7 +1940,7 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 										result = result +'	<div class="skills">';
-										result = result +'	<strong>Skills :</strong>';
+										result = result +'	<strong>Skills22 :</strong>';
 										result = result +'  <span>'+skills+'</span>';
 										result = result +'	</div>';					
 										result = result +'	<span>';
@@ -1975,6 +1975,8 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										$("#openJobsRequirementsSummary").empty();
 										$("#openJobsRequirementsList").append(result); 
+										$('#loadMoreDiv').empty();
+						 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
 								}
 							}
 						   	else{
