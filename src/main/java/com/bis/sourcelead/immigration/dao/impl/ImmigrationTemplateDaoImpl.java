@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -471,5 +472,14 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		query.setLong("templateId", Long.parseLong(templateId));
 		int result = query.executeUpdate();
 		return result;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateEmployers> getPetitionTemplateEmployers(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers ce where ce.candidateId.id = :candidateId";
+		List<CandidateEmployers> candidateEmployers = session.createQuery(query).setLong("candidateId", id).list();
+		return candidateEmployers;
 	}
 }

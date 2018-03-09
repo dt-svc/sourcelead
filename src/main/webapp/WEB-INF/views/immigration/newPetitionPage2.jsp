@@ -15,9 +15,9 @@
 			</ul>
 		</div>
 		
-		<div class="EmplWrap clearfix">
+		<div id="employmentParentDiv" class="EmplWrap clearfix">
 		
-			<div class="EmplWrapCta">
+			<!-- <div class="EmplWrapCta">
 				<div class="immigration-head clearfix">
 					<h4 class="pull-left">Employer 1</h4>
 					<button type="button" class="btn btn-default pull-right mt2"><i class="fa fa-plus paddingRight"></i>Add Employer</button>
@@ -140,7 +140,7 @@
 							</div>
 					</div>
 					</div>
-			</div>       	      
+			</div> -->       	      
      	      
       	</div>			
 		
@@ -197,3 +197,97 @@
 		</div>
 	</div>
 </section> 
+<script type="text/javascript">
+	/* $(document).on('focus', '#startDate, #endDate', function(){
+		/* var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var finalDateFormat = getJSDateFormat(locationDate); 
+		$(this).datepicker({
+			dateFormat: finalDateFormat, 
+		    changeMonth: true,
+			changeYear: true, 
+		 	maxDate: '0'
+		});
+	}); */
+	function showEndDatePicker(id){
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var finalDateFormat = getJSDateFormat(locationDate);  
+		$('#endDate'+id).datepicker({
+			dateFormat: finalDateFormat,
+		    changeMonth: true,
+			changeYear: true, 
+		 	maxDate: '0'
+		}).datepicker("show");
+	}
+	
+	function showStartDatePicker(id){
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var finalDateFormat = getJSDateFormat(locationDate);  
+		$('#startDate'+id).datepicker({
+			dateFormat: finalDateFormat,
+		    changeMonth: true,
+			changeYear: true, 
+		 	maxDate: '0'
+		}).datepicker("show");
+	}
+	
+	 $(document).ready(function () {
+		$.ajax({
+		       url: sourceleadUrl+immiModulePath+"/getPetitionTemplateEmployers",
+		       type : "GET",
+		       success: function(data) {
+					for(var i=0;i<data.length;i++){
+						if(i>0){
+							$("#employmentParentDiv").append(addEmployment(i+1,data[i],'dynamic'));	
+						}else{
+							$("#employmentParentDiv").append(addEmployment(i+1,data[i],'default'));
+						}
+					}		    	   
+		       }
+		});
+	});
+	
+	function addEmployment(empCount,dataValues,dynamicStatus){
+		var dynamicStatusValue = "";
+		if(dynamicStatus == 'default'){
+			dynamicStatusValue = '<button type="button" onclick="addEmploymentDynamic('+empCount+')" class="btn btn-default pull-right mt2"><i class="fa fa-plus paddingRight"></i>Add Employer</button>';
+		}else if(dynamicStatus == 'dynamic'){
+			dynamicStatusValue = '<button type="button" onclick="removeEmploymentDynamic('+empCount+')" class="btn btn-default pull-right mt2"><i class="fa fa-remove text-danger"></i>Remove Employer</button>';
+		}
+		var name = (dataValues.name == null) ? "" : dataValues.name;
+		var address = (dataValues.address == null) ? "" : dataValues.address;
+		var taxId = (dataValues.taxId == null) ? "" : dataValues.taxId;
+		var jobTitle = (dataValues.jobTitle == null) ? "" : dataValues.jobTitle;
+		var employmentType = (dataValues.employmentType == null) ? "" : dataValues.employmentType;
+		var isCurrentPosition = (dataValues.isCurrentPosition == null) ? "" : dataValues.isCurrentPosition;
+		var startDate = (dataValues.startDate == null) ? "" : dataValues.startDate;
+		var endDate = (dataValues.endDate == null) ? "" : dataValues.endDate;
+		divValue = "";
+		divValue = divValue + '<div id="employeeChildDiv'+empCount+'" class="EmplWrapCta"><div class="immigration-head clearfix"><h4 class="pull-left">Employer '+empCount+'</h4>'+dynamicStatusValue+'</div>';
+		divValue = divValue + '<div class="clearfix"><div class="mt clearfix"></div><div class="col-md-4 minHeight80"><label>Employer Full Name</label><input type="text" class="form-control" value="'+name+'" placeholder="Employer Full Name"></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Address</label><input type="text" class="form-control" value="'+address+'" placeholder="Address"></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Tax Id</label><input type="text" class="form-control" value="'+taxId+'" placeholder="Tax Id"></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Job Title</label><input type="text" class="form-control" value="'+jobTitle+'" placeholder="Job Title"></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>Employment Type</label><div class="dropdown-select"><select class="form-control" value="'+employmentType+'"></select></div></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><label>&nbsp;</label><div class="checkBox"><input type="checkbox" value="'+isCurrentPosition+'">Is Current Job ?</div></div>';
+		divValue = divValue + '<div class="col-md-4 minHeight80"><div class="row"><div class="col-md-6 padding_right"><label>From</label><input type="text" id="startDate'+empCount+'" class="form-control calendar" onclick="showStartDatePicker('+empCount+');" value="'+startDate+'" placeholder="From"></div>';
+		divValue = divValue + '<div class="col-md-6 paddingLeft"><label>To</label><input type="text" id="endDate'+empCount+'" class="form-control calendar" value="'+endDate+'" onclick="showEndDatePicker('+empCount+');" placeholder="To"></div></div></div></div></div>';
+		return divValue;
+	}
+
+	var empCountValue = 1;
+	
+	function addEmploymentDynamic(){
+		$("#employmentParentDiv").append(addEmployment(++empCountValue,'dynamic'));
+	}
+	function removeEmploymentDynamic(empCount){
+		$("#employeeChildDiv"+empCount).remove();
+		empCountValue--;
+	}
+	
+	/* $( function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		// written common method in slead-common.js for date formats start
+		var finalDateFormat = getJSDateFormat(locationDate);
+		$("#startDate").datepicker();
+	}); */
+</script>

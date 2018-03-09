@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
@@ -296,5 +298,17 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	@Override
 	public int savePetitionTemplateDetailsValues(String templateId) {
 		return immigrationTemplateDao.savePetitionTemplateDetailsValues(templateId);
+	}
+
+	@Override
+	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id) {
+		List<CandidateEmployers> candidateEmployers = immigrationTemplateDao.getPetitionTemplateEmployers(id);
+		List<CandidateEmployerDTO> employerDTOs = new ArrayList<>();
+		for(CandidateEmployers source: candidateEmployers) {
+			CandidateEmployerDTO target = new CandidateEmployerDTO();
+			BeanUtils.copyProperties(source, target);
+			employerDTOs.add(target);
+		}
+		return employerDTOs;
 	}
 }

@@ -5,6 +5,7 @@ package com.bis.sourcelead.immigration.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -43,5 +44,7 @@ public interface ImmigrationTemplateService {
 	void deleteImmigrationTaskList(String id);
 
 	int savePetitionTemplateDetailsValues(String templateId);
+
+	List<CandidateEmployerDTO> getPetitionTemplateEmployers(Long id);
 	
 }
