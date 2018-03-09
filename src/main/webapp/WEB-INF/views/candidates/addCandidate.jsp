@@ -25,6 +25,21 @@
 		});
 	</script>
 
+ <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -210,10 +225,11 @@
 					
 					<div class="form-group">
 						<label class="col-md-3">Gender</label>
-						<div class="col-md-9">
-						<label class="paddingRight"><input type="radio"  value="Male" checked name="gender"><span class="mr5"></span>Male</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>
-						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>
+						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
 						</div>
 					</div>
 
@@ -659,9 +675,8 @@ function getCustomDependentField(sectionId){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd'
 			};
-		
+  		
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
-			
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
