@@ -1728,13 +1728,14 @@ function saveTasks(){
 	  	var sourceleadUrl = '${sourceleadUrl}';
 	  	$("#save_task").attr("disabled", "disabled");
 	  	var userId = '${SourceLeadWeb_userId}';
+	  	var projectClientUUID = '${projectClientUUID}';
 		$("#save_task").addClass('button').val('Processing..');
 		$.ajax({
 			 type : "POST",
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-			 url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId,
+			 url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
 			  success : function(data) {
 				  getSubTaskList();
 				  cancelTask();
