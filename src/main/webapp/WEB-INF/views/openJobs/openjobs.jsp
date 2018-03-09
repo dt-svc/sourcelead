@@ -153,8 +153,10 @@ window.onload = function () {
 
 $(document).scroll(function(e){
     // grab the scroll amount and the window height
+  
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
+    var searchType = $("#searchType").val();
     offset = $("#orgOffset").val();
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
@@ -163,8 +165,11 @@ $(document).scroll(function(e){
     	$("#openJobsOffset").val(avilableCount);
     	 //getConnectionsList("scroll");
     	 //requirementsFilter("scroll");
-	if('${requirementUUID}' == null || '${requirementUUID}' == '' || '${requirementUUID}' == 'undefined'){
+	if(('${requirementUUID}' == null || '${requirementUUID}' == '' || '${requirementUUID}' == 'undefined') &&(searchType !='advancesearch')){
     	 getOpenJobsELKList('',"scroll")
+	}
+	else if(searchType == 'mainsearch'){
+		getOpenJobsELKList('',"scroll")
 	}
     }
     
@@ -1311,6 +1316,7 @@ function prepareOpenJobsElkList(data,offset){
 				result = result +'	<div class="jobResultsCta job_container">';
 				result = result +'	<div class="jobResultsInn">';
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
+				result = result +'<input type="hidden" id="searchType" value="mainsearch"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
 				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
@@ -1432,9 +1438,10 @@ function prepareOpenJobsElkList(data,offset){
 	        }, 500);
 			
 			
-			$("#openJobsRequirementTitleId").val('');
-			$("#openJobsLocationId").val('');
-			$("#openJobsExperienceId").val('');
+			//commented by sathish -- due to populating the values in main search fields
+// 			$("#openJobsRequirementTitleId").val('');
+// 			$("#openJobsLocationId").val('');
+// 			$("#openJobsExperienceId").val('');
 			
 			}
 		}
@@ -1913,6 +1920,7 @@ function openJobSearchRequirement(){
 						 				var picture="";
 						 				var description='';
 						 				var comment='';
+						 				result = result +'<input type="hidden" id="searchType" value="advancesearch"/>';
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
 										result = result +'	<a target="_blank" class="block" href="'+sourceleadUrl+'/ws/'+requirements.url+'--'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
@@ -1969,6 +1977,10 @@ function openJobSearchRequirement(){
 										$("#openJobsRequirementsList").append(result); 
 								}
 							}
+						   	else{
+							   	$('#loadMoreDiv').empty();
+				 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
+							   	 }
 					}
 				});
 			}

@@ -258,14 +258,14 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '	 </div>';
 		result = result + '	 </div>';
 		
-	    result = result + '<div class="row">';
+	   /*  result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
 		result = result + '<label class="col-md-4">Primary Skill</label>';
 		result = result + '<div class="col-md-8">';
-		result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+		result = result + '<input type="text" class="form-control" id="primarySkill"   field-name="Primary Skill">';
 		result = result + '</div>';
 		result = result + '</div>';
-		result = result + '</div>'; 
+		result = result + '</div>';  */
 		
 	    result = result + '<div class="row">';
 	    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
