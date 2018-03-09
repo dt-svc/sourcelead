@@ -93,7 +93,11 @@ public class OrglocationSignatory implements Serializable{
     @Column(name = "UPDATED_DATE")
    	private Date updatedDate;
     
+    @Column(name = "AUTHORIZED_TYPE")
+	private String authorizedType;
     
+    @Column(name = "AUTHORIZED_AMOUNT")
+	private Long authorizedAmount;
 
 	public Long getId() {
 		return id;
@@ -231,7 +235,24 @@ public class OrglocationSignatory implements Serializable{
 		this.updatedDate = updatedDate;
 	}
 
-	
-	
+	public String getAuthorizedType()
+	{
+		return authorizedType;
+	}
+
+	public void setAuthorizedType(String authorizedType)
+	{
+		this.authorizedType = authorizedType;
+	}
+
+	public Long getAuthorizedAmount()
+	{
+		return authorizedAmount;
+	}
+
+	public void setAuthorizedAmount(Long authorizedAmount)
+	{
+		this.authorizedAmount = authorizedAmount;
+	}
 
 }

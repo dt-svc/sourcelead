@@ -181,7 +181,9 @@ $(function(){
 				     
 				    <div class="clearfix mt10"></div>
 				  <div id="legalUserFormDiv"></div>
-			     
+			     <div class="compSignatoryHelpMes mt">
+						You can add more signatories in Org Settings.
+					</div>
 			     <div class="welBtns welBtnsA">
 						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
 						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage('Skip');"></a>

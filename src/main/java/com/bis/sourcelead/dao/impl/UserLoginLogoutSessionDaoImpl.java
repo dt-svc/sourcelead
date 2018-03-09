@@ -95,6 +95,23 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
 			return null;
 		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean validatePreviouslyAuthenticatedByUserIdAndIpAddress(String ipAddress, Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
+		logger.debug("getLastLoginRecord start");
+		String query = "from UserLoginLogoutSession uls where uls.ipaddress =:ipAddress and uls.authenticated = 'Y' and uls.userId.id =:userId";
+		userLoginLogoutSessionList = session.createQuery(query).setString( "ipAddress", ipAddress).setLong("userId", userId).list();
+		logger.debug("getLastLoginRecord end");
+		if (userLoginLogoutSessionList.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	
 

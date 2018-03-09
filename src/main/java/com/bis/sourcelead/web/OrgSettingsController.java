@@ -150,14 +150,14 @@ public class OrgSettingsController {
 		List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 	    model.addObject("rolesList", rolesList);
 		
-		OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByOrglocationId(orgLocations.getId());
+		/*OrglocationSignatory signatory = orglocationSignatoryService.getOrglocationSignatoryByOrglocationId(orgLocations.getId());
 		if(signatory != null) {
 			model.addObject("signatoryUser", signatory.getUserId().getId());
 			if(!signatory.getUserId().getId().equals(user.getId())) {
 				model.addObject("signatory", signatory);
 				model.addObject("role",signatory.getUserRoleId().getRoles().getDisplayName());
 			}
-		}
+		}*/
 		
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
