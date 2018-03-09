@@ -1940,7 +1940,7 @@ function openJobSearchRequirement(){
 										result = result +'	</div>';
 										
 										result = result +'	<div class="skills">';
-										result = result +'	<strong>Skills22 :</strong>';
+										result = result +'	<strong>Skills :</strong>';
 										result = result +'  <span>'+skills+'</span>';
 										result = result +'	</div>';					
 										result = result +'	<span>';
