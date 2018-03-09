@@ -795,6 +795,10 @@ public class InvoiceRestController {
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
+				String status = sah.getSubmissionStatus().getValue();
+				if(!status.equalsIgnoreCase("APPROVED")){
+					continue;
+				}
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 //				Candidate candidate = candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();
