@@ -559,7 +559,9 @@
 	  $('#dateofBirth').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
-	  	  changeYear: true, 
+	  	  changeYear: true,
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
