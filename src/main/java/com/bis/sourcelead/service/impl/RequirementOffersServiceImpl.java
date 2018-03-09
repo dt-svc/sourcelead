@@ -1270,7 +1270,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();                          
-		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getRequirementUUID()).toString();	 
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
 		   }
 		  }

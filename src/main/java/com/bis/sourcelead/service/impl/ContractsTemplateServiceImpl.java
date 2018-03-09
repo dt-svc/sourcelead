@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -548,13 +549,18 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if(contractsDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:contractsDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-				NewContractCustomFieldData contractCustomFields = new NewContractCustomFieldData();
-				contractCustomFields.setContracts(savedContracts);
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+					NewContractCustomFieldData contractsCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						contractsCustomFields = newContractCustomFieldDataService.getNewContractCustomFieldDataById(customFields.getEntityId());
+					}else {
+						contractsCustomFields = new NewContractCustomFieldData();
+					}
+				contractsCustomFields.setContracts(savedContracts);
 				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				contractCustomFields.setOrglocationsFormFields(orgFormField);
-				contractCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				newContractCustomFieldDataService.saveNewContractCustomFieldData(contractCustomFields);
+				contractsCustomFields.setOrglocationsFormFields(orgFormField);
+				contractsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				newContractCustomFieldDataService.saveNewContractCustomFieldData(contractsCustomFields);
 				}
 				
 			}	

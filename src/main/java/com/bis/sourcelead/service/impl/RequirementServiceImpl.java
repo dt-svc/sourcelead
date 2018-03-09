@@ -3828,5 +3828,12 @@ public class RequirementServiceImpl implements RequirementService {
 	{
 		return requirementDao.getRequirementByAccessibleUserIdAndRequirementUUID(userId, requirementUUID);
 	}
+
+    @Override
+    public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize) {
+        return requirementDao.getRequirementList(id, search, location, employmentType, pageNo, pageSize);
+    }
+        
+        
 	
 }

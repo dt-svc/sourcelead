@@ -1,5 +1,7 @@
 package com.bis.sourcelead.reportsDTO;
 
+import java.util.Map;
+
 import com.bis.sourcelead.dto.SearchDTO;
 
 public class PaidBillDTO extends SearchDTO {
@@ -21,6 +23,8 @@ public class PaidBillDTO extends SearchDTO {
 	private String filterType;
 	private String fromDate;
 	private String toDate;
+	
+	private Map<Long,Double> totalAmountMap;
 	
 	public String getProjectName()
 	{
@@ -160,6 +164,14 @@ public class PaidBillDTO extends SearchDTO {
 	public void setToDate(String toDate)
 	{
 		this.toDate = toDate;
+	}
+
+	public Map<Long, Double> getTotalAmountMap() {
+		return totalAmountMap;
+	}
+
+	public void setTotalAmountMap(Map<Long, Double> totalAmountMap) {
+		this.totalAmountMap = totalAmountMap;
 	}
 	
 }
