@@ -53,7 +53,7 @@
 				  <option value ="datefield" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
 				  <option value ="selectfield" ${customFormPopDetails.fieldType =='selectfield' ? 'selected':''} >Select field</option>
 				  <option value ="checkBox" ${customFormPopDetails.fieldType =='checkBox' ? 'selected':''} >Check box</option>
-				  <%-- <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option> --%>
+				  <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option>
 				</select>				
 			</div>	
 				<input type="hidden" id="disableFieldsId" value="${disableFields == 'disabled' ? '1':'0'}">		

@@ -9,10 +9,16 @@
 .margin-down{
     margin-bottom: 100px;
 }
+.reportsH.profileanchor a {
+position: relative; top:-5px
+}
 </style>
 <script> 
 $(document).ready(function(){
 	getProfessionalInfo();
+	if('${candidateResumeCount}' < 1 ){
+		addCandidate();
+	}
 });
 </script>
 
@@ -37,9 +43,11 @@ $(document).ready(function(){
   <!-- Profile Content Start-->
     <div id="professionalInfoDiv"></div>
      <!-- Profile Content End -->
-     
+    
+     <!-- New jsp's added here -->
      
 </section>
+
 
 <script>
 function getProfessionalInfo(){ 
@@ -237,6 +245,11 @@ function getProfessionalInfo(){
 				 result = result +'	    </div>';
 				 
 				 result = result +'	    <div class="col-md-4">';
+				 
+				
+				 result = result +'	         <div class="reportsH profileanchor pull-right"><a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="fa fa-user-circle"></i></a>';
+				 result = result +'	            </div>';
+				 
 				 result = result +'	        <h5>Primary Skill</h5>';
 				 result = result +'	        <div class="skills mt10 mb10">';
 				 result = result +'	            <p><strong>';
@@ -259,8 +272,14 @@ function getProfessionalInfo(){
 				 result = result +'	            </div>';
 				 result = result +'	    </div>';
 				 
+				
+				 
 				 result = result +'	</section>';
+				 // account settings icon code
+				 
 				 result = result +'	</div>';
+				
+				 if('${candidateResumeCount}' > 0){
 				 result = result +' <section class="clearfix mt25 margin-down">';
 				 result = result +'<div class="project_side_wrap_inn_tabs">';
 			     result = result +'   <ul class="project-tabs-menu">';
@@ -274,7 +293,7 @@ function getProfessionalInfo(){
 			     
 			     result = result +'     <div class="clearfix"></div>';
 			     result = result +'   </ul>';
-			     
+			 
 			     result = result+'     <div class="project_tabs candiateInfo">';
 		         result = result + ' <div id="tab-1" class="project_tabs_inn">';
 				 result = result + '</div>';
@@ -304,8 +323,9 @@ function getProfessionalInfo(){
 				 result = result + '</div>';
 				 
 			     result = result +'	</div>';
+			    
 			     result = result +' </section>';
-				 
+				 }
 				 $("#professionalInfoDiv").empty();
 				 $("#professionalInfoDiv").append(result); 
 				 professionalProfile(candidateId);
@@ -316,7 +336,7 @@ function getProfessionalInfo(){
 
 </script>
 
-
+<jsp:include page="updateProfessionalProfile.jsp"></jsp:include>
 <jsp:include page="professionalCandidatesProfile.jsp"></jsp:include>
 <jsp:include page="professionalCandidateResumes.jsp"></jsp:include>
 <jsp:include page="professionalCandidateEmployers.jsp"></jsp:include>
@@ -324,5 +344,4 @@ function getProfessionalInfo(){
 <jsp:include page="professionalCandidateCertificates.jsp"></jsp:include>
 <jsp:include page="professionalCandidateDocuments.jsp"></jsp:include>
 <jsp:include page="professionalCandidateReferences.jsp"></jsp:include>
-
 <jsp:include page="../masterFooter.jsp" />

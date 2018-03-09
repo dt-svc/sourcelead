@@ -369,6 +369,11 @@ public class ProjectsController {
 					 
 					commonUtil.highLightMenu(Constants.Projects, request);
 					 
+					 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_PROJECT);
+				     model.addObject("actionId",action.getId());
+				     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+					 model.addObject("sourceleadSectionList",sections);
+					
 					model.setViewName("project/projectSummary");
 				}else {
 					model.setViewName("registration/persmissionDenied");

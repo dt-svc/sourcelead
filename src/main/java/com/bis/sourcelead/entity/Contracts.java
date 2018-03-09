@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,13 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -329,6 +327,10 @@ public class Contracts {
 	@Transient
 	@JsonProperty
 	private String spocUUID;
+	
+	@Transient
+	@JsonProperty
+	private Map<Long,String> newContractCustomFieldlabelNameAndValue;
 	
 	
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
@@ -1099,4 +1101,13 @@ public class Contracts {
 	public void setTemplateFileURL(String templateFileURL) {
 		this.templateFileURL = templateFileURL;
 	}
+
+	public Map<Long, String> getNewContractCustomFieldlabelNameAndValue() {
+		return newContractCustomFieldlabelNameAndValue;
+	}
+
+	public void setNewContractCustomFieldlabelNameAndValue(Map<Long, String> newContractCustomFieldlabelNameAndValue) {
+		this.newContractCustomFieldlabelNameAndValue = newContractCustomFieldlabelNameAndValue;
+	}
+	
 }

@@ -25,16 +25,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
@@ -1966,5 +1965,163 @@ Session session = this.sessionFactory.getCurrentSession();
 		}
 		return requirement;
 	}
-	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType,
+			int pageNo, int pageSize) {
+
+		ResponseList<RequirementDTO> response = new ResponseList<>();
+
+		try {
+
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "select distinct req from Requirement req join req.orgLocationId l where l.org.id=:id and req.closedDate is null and (req.isPublic is not null or req.isCrowdSourcing is not null)";
+
+			if (location != null && location > 0) {
+
+				query += " and l.id =:location";
+
+			}
+
+			if (search != null && !search.isEmpty()) {
+
+				query += " and (req.jobTitle like :search1 or req.skills like :search2 or req.description like :search3)";
+
+			}
+
+			if (employmentType != null && !employmentType.isEmpty()) {
+
+				query += " and req.jobType =:jobType";
+
+			}
+
+			Query queryObj = session.createQuery(query);
+
+			queryObj.setLong("id", id);
+
+			if (location != null && location > 0) {
+
+				queryObj.setLong("location", location);
+
+			}
+
+			if (search != null && !search.isEmpty()) {
+
+				queryObj.setString("search1", "%" + search + "%").setString("search2", "%" + search + "%")
+						.setString("search3", "%" + search + "%");
+
+			}
+
+			if (employmentType != null && !employmentType.isEmpty()) {
+
+				queryObj.setString("jobType", employmentType);
+
+			}
+
+			queryObj.setFirstResult(pageNo * pageSize);
+
+			queryObj.setMaxResults(pageSize);
+
+			List<Requirement> requirementList = queryObj.list();
+
+			List<RequirementDTO> reqList = new ArrayList<>();
+
+			SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_DD_MM_YYYY);
+
+			if (requirementList != null && !requirementList.isEmpty()) {
+
+				for (Requirement req : requirementList) {
+
+					List<RequirementLocations> reqLocationsList = requirementLocationsService
+							.getRequirementLocationsListByRequirementId(req.getId());
+
+					RequirementDTO dto = new RequirementDTO();
+
+					for (RequirementLocations rloc : reqLocationsList) {
+
+						dto.setCity(rloc.getCity());
+
+						dto.setState(rloc.getState());
+
+						dto.setCountry(rloc.getCountry());
+
+					}
+
+					dto.setId(req.getId());
+
+					dto.setJobTitle(req.getJobTitle());
+
+					dto.setMinExp(req.getMinExp());
+
+					dto.setMaxExp(req.getMaxExp());
+
+					dto.setCreatedDate(format.format(req.getCreatedDate()));
+
+					// dto.setCity(req.getCity());
+
+					// dto.setState(req.getState());
+
+					dto.setDescription(req.getDescription());
+
+					// dto.setCountry(req.getCountry());
+
+					dto.setPositions(req.getPositions());
+
+					dto.setUrl(req.getUrl());
+
+					dto.setRequirementUUID(req.getRequirementUUID());
+
+					reqList.add(dto);
+
+				}
+
+			}
+
+			int total = 0;
+
+			Query queryObj1 = session.createQuery(query.replace("distinct req", "count(distinct req)"));
+
+			queryObj1.setLong("id", id);
+
+			if (location != null && location > 0) {
+
+				queryObj1.setLong("location", location);
+
+			}
+
+			if (search != null && !search.isEmpty()) {
+
+				queryObj1.setString("search1", "%" + search + "%").setString("search2", "%" + search + "%")
+						.setString("search3", "%" + search + "%");
+
+			}
+
+			if (employmentType != null && !employmentType.isEmpty()) {
+
+				queryObj1.setString("jobType", employmentType);
+
+			}
+
+			total = Integer.parseInt(queryObj1.list().get(0).toString());
+
+			response.setData(reqList);
+
+			response.setStatusCode("200");
+
+			response.setRecordsTotal(total);
+
+		} catch (Exception ex) {
+
+			ex.printStackTrace();
+
+			response.setError("Operation failed, please try again");
+
+		}
+
+		return response;
+
+	}
+
 }
