@@ -7562,6 +7562,17 @@ font-weight: 500;
 	position: fixed !important; left: 100px !important; right: 0px !important; margin: 0px auto !important; top: 35% !important;
 }
 
+.text-primary, .text-primary a {
+	color: #337ab7 !important;
+}
 
-
+.newAccBtn {
+	padding: 2px 0px 0px 0px;
+}
+.newAccBtn a {
+	font-size: 19px; padding: 4px 5px; margin: 0px 2px; color: #30c453;
+}
+.newAccBtn a i.fa-times {
+	color: #f04d4d;
+}
 

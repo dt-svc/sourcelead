@@ -130,7 +130,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
 								 Date nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
 						   					    
-								 
+								
 								  /**
 								  *calculating previous month startDate,15thDate
 								  * 
