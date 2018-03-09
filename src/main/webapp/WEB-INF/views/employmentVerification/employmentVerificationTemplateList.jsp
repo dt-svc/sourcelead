@@ -15,7 +15,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Employment Verfication List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Employment Verfication List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo;  Employment Verfication List</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
@@ -103,6 +103,11 @@ function employmentTemplatePagination(url){
 	    	  	"data": "templateName",
 	    	  	"render": function(data, type, report, meta) {
 	    	  		  var result = "";
+	    	  		if(report.templateName != null && report.templateName != '' && report.templateName !='undefined'){
+ 	                   result = result + '<div><span title="'+report.templateName+'">'+report.templateName+'</span></div>';
+ 	     			} else{
+ 	    		       result = result + '<div><span>---</span></div>';
+ 	    		    }
 		             return result;
 	    	  	}
 	      },{
@@ -110,6 +115,11 @@ function employmentTemplatePagination(url){
               "data": "description",
               "render": function ( data, type, report, meta ) {
             	  var result = "";
+            	  if(report.description != null && report.description != '' && report.description !='undefined'){
+	                   result = result + '<div><span title="'+report.description+'">'+report.description+'</span></div>';
+     			  } else{
+    		       result = result + '<div><span>---</span></div>';
+    		      }
 	              return result;
               		
               }
@@ -118,7 +128,11 @@ function employmentTemplatePagination(url){
              "data": "signatory",
              "render": function ( data, type, report, meta ) {
              	var result = "";
-             	
+             	if(report.signatoryFullName != null && report.signatoryFullName != '' && report.signatoryFullName !='undefined'){
+	                   result = result + '<div><span title="'+report.signatoryFullName+'">'+report.signatoryFullName+'</span></div>';
+  			  } else{
+ 		       result = result + '<div><span>---</span></div>';
+ 		      }
              	return result;
              }
  	          
@@ -127,15 +141,29 @@ function employmentTemplatePagination(url){
               "data": "createdBy",
               "render": function ( data, type, report, meta ) {
               	var result = "";
-              	
+              	if(report.createdBy != null && report.createdBy != '' && report.createdBy !='undefined'){
+	                   result = result + '<div><span title="'+report.createdBy+'">'+report.createdBy+'</span></div>';
+			  } else{
+		       result = result + '<div><span>---</span></div>';
+		      }
               	return result;
               }
   	          
            }, {
              "targets": colIndex++,
              "data": "action",
+             "sortable": false,
              "render": function ( data, type, report, meta ) {
              	var result = "";
+				result = result + '    	<td>                                                                                                          '; 
+				result = result + '       <div class="tblminwidth-75">                                                                                '; 
+				result = result + '       		<ul class="list-unstyled list-inline actionIcons clearfix ml5">                                       '; 
+				result = result + '       			<li><a href="javascript:void(0)" title="View"><i class="fa fa-eye textView" onclick="previewEmpTemplate(\''+report.templateUUID+'\',\''+report.templateName+'\');"></i></a></li>         '; 
+				result = result + '       			<li><a href="'+sourceleadUrl+'/editEmpTemplate?templateUUID='+report.templateUUID+'" title="Edit"><i class="fa fa-pencil textEdit"></i></a></li>      '; 
+				result = result + '       			<li><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete"></i></a></li>   '; 
+				result = result + '       		</ul>                                                                                                 '; 
+				result = result + '       </div>                                                                                                      '; 
+				result = result + '     </td>  																										  '; 
              	return result;
                 }
              	
@@ -161,6 +189,14 @@ function employmentTemplatePagination(url){
     	   }
     	});
 }
+</script>
+
+
+<script>
+function previewEmpTemplate(templateUUID,templateName){
+	window.open(sourceleadUrl+'/previewEmpTemplate/'+templateUUID+'/'+templateName+'','_newtab');
+}
+
 </script>
 
 <!-- Footer Area -->

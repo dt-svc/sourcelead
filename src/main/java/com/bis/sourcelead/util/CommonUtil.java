@@ -1814,6 +1814,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 EmployeeVerificationTemplate employeeVerificationTemplate = new EmployeeVerificationTemplate();
 		 StringBuilder sb = new StringBuilder();
 		 employeeVerificationTemplate.setTemplateName(sb.append(orgLocations.getOrgLocationName()).append(" ").append(template).toString());
+		 employeeVerificationTemplate.setSignatory(org.getUser());
 		 employeeVerificationTemplate.setDescription(template);
 		 employeeVerificationTemplate.setTemplateContent(DefaultEmployeeVerificationTemplateUtil.getDefaultTemplates(template));
 		 employeeVerificationTemplate.setOrgLocationId(orgLocations);

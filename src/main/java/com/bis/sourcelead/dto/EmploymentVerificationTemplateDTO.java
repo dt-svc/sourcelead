@@ -6,7 +6,7 @@ public class EmploymentVerificationTemplateDTO extends SearchDTO implements Seri
 	
 	private String templateId;
 	private String templateName;
-	private String signatory;
+	private long signatory;
 	private String orgLocationId;
 	private String letterHead;
 	private String description;
@@ -15,6 +15,7 @@ public class EmploymentVerificationTemplateDTO extends SearchDTO implements Seri
 	private String templateStatus;
 	private String createdBy;
 	private String action;
+	private String signatoryFullName;
 	public String getTemplateId()
 	{
 		return templateId;
@@ -31,10 +32,10 @@ public class EmploymentVerificationTemplateDTO extends SearchDTO implements Seri
 	{
 		this.templateName = templateName;
 	}
-	public String getSignatory() {
+	public long getSignatory() {
 		return signatory;
 	}
-	public void setSignatory(String signatory) {
+	public void setSignatory(long signatory) {
 		this.signatory = signatory;
 	}
 	public String getOrgLocationId()
@@ -99,7 +100,12 @@ public class EmploymentVerificationTemplateDTO extends SearchDTO implements Seri
 	{
 		this.action = action;
 	}
-	
+	public String getSignatoryFullName() {
+		return signatoryFullName;
+	}
+	public void setSignatoryFullName(String signatoryFullName) {
+		this.signatoryFullName = signatoryFullName;
+	}
 	
 	
 }

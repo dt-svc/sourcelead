@@ -135,6 +135,7 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 		
 		for(OrglocationSignatory sign : signatoryList){
 			OrglocationSignatoryDTO signDto = new OrglocationSignatoryDTO();
+			signDto.setAssociateId(sign.getUserId().getId());
 			signDto.setFirstName(sign.getUserId().getFirstName());
 			if(StringUtils.isNotBlank(sign.getUserId().getLastName()))
 				signDto.setLastName(sign.getUserId().getLastName());

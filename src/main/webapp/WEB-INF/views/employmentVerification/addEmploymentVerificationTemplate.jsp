@@ -15,7 +15,7 @@
       <div class="pull-left">
         <h2>Employment Verfication Template</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Employment Verfication Template</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Employment Verfication Template</div>
     </section>
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
@@ -26,24 +26,29 @@
             <div class="form-group">
               <label class="col-md-4">Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="templateName" value="">
+                <input type="text" class="form-control" name="templateName" value="${empTemplate.templateName}">
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-md-4">Signatory<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control selectpicker" data-live-search="true" title="Select Signatory">
-                    <option>Signatory-1</option>
-                    <option>Signatory-2</option>
-                    <option>Signatory-3</option>
+                  <select class="form-control selectpicker" data-live-search="true" title="Select Signatory" name="signatory">
+                    <c:forEach var="title" items="${signatoryList}">
+					<c:if test = "${title.associateId == empTemplate.signatory.id}">
+				         <option selected value="${title.associateId}">${title.firstName} ${title.lastName}</option>
+				    </c:if>
+				    <c:if test = "${title.associateId != empTemplate.signatory.id}">
+				         <option value="${title.associateId}">${title.firstName} ${title.lastName}</option>
+				    </c:if>
+                     </c:forEach>   
                   </select>
             </div>
             </div>
              <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" name="description" ></textarea>
+					<textarea class="form-control" rows="3" name="description">${empTemplate.description}</textarea>
               </div>
             </div> 
             
@@ -82,7 +87,7 @@
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			<textarea name="templateContent" id="summernote" ></textarea>
+			<textarea name="templateContent" id="summernote">${empTemplate.templateContent}</textarea>
 		</div>  
 		
 		
@@ -106,29 +111,34 @@
 									<p class="copyText" id="text_element7">[Associate Name]</li>
 								<li onclick="copyToClipboard('text_element8')"><i></i>
 									<p class="copyText" id="text_element8">[Associate Designation/Role]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Associate Employment Type]${SourceLeadWeb_orgCode}</p></li>
-								<c:if test="${SourceLeadWeb_orgCode} = 'USA'"></c:if>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[SSN]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[PAN]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Pay Rate]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Start Date]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[End date]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Signatory Name]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Signatory Designation]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Signatory Email]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Signatory Contact]</p></li>
-								<li onclick="copyToClipboard('text_element8')"><i></i>
-								<p class="copyText" id="text_element8">[Signature]</p></li>
+								<li onclick="copyToClipboard('text_element9')"><i></i>
+									<p class="copyText" id="text_element9">[Associate Employment Type]</p></li>
+								<c:choose>
+								<c:when test="${SourceLeadWeb_currencyCode=='USD'}">
+								<li onclick="copyToClipboard('text_element10')"><i></i>
+								<p class="copyText" id="text_element10">[SSN]</p></li>
+								</c:when>
+								<c:otherwise>
+								<li onclick="copyToClipboard('text_element10')"><i></i>
+								<p class="copyText" id="text_element10">[PAN]</p></li>
+								</c:otherwise>
+								</c:choose>
+								<li onclick="copyToClipboard('text_element11')"><i></i>
+								<p class="copyText" id="text_element11">[Pay Rate]</p></li>
+								<li onclick="copyToClipboard('text_element12')"><i></i>
+								<p class="copyText" id="text_element12">[Start Date]</p></li>
+								<li onclick="copyToClipboard('text_element13')"><i></i>
+								<p class="copyText" id="text_element13">[End date]</p></li>
+								<li onclick="copyToClipboard('text_element14')"><i></i>
+								<p class="copyText" id="text_element14">[Signatory Name]</p></li>
+								<li onclick="copyToClipboard('text_element15')"><i></i>
+								<p class="copyText" id="text_element15">[Signatory Designation]</p></li>
+								<li onclick="copyToClipboard('text_element16')"><i></i>
+								<p class="copyText" id="text_element16">[Signatory Email]</p></li>
+								<li onclick="copyToClipboard('text_element17')"><i></i>
+								<p class="copyText" id="text_element17">[Signatory Contact]</p></li>
+								<li onclick="copyToClipboard('text_element18')"><i></i>
+								<p class="copyText" id="text_element18">[Signature]</p></li>
 							</ul>
             
             
@@ -140,7 +150,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" id="save_employment_template" value="Add" class="btn btn-primary" onclick="saveEmploymentVerificationTemplate();">
-			<input type="button" value="Cancel" class="btn btn-default ml10">
+			<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/employmentVerificationTemplateList'/>'">
           </div>
         </div>
       </div>
@@ -154,10 +164,12 @@
 
 <script>
 function saveEmploymentVerificationTemplate(){
+	var templateUUID = '${templateUUID}';
+	alert(templateUUID)
 	if ($('#employment_template_form').validate(false, validationSettings)) {
 		$("#save_employment_template").addClass('button').val('Processing..');
 		var formData = getFormData("employment_template_form");
-		$.post(sourceleadUrl+"/saveEmploymentverificationTemplate?${_csrf.parameterName}=${_csrf.token}",formData, function(data) {
+		$.post(sourceleadUrl+"/saveEmploymentverificationTemplate?${_csrf.parameterName}=${_csrf.token}&templateUUID="+templateUUID,formData, function(data) {
 					if (data != null) {
 						location.replace(sourceleadUrl+"/employmentVerificationTemplateList");
 					}

@@ -32,6 +32,7 @@ public class OrglocationSignatoryDTO {
 	
 	private int status;
 
+	
 	public String getFirstName() {
 		return firstName;
 	}

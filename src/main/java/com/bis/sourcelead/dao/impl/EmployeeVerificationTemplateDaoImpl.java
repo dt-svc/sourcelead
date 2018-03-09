@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.EmployeeVerificationTemplateDao;
 import com.bis.sourcelead.dto.EmploymentVerificationTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 
 @Repository
@@ -46,7 +47,7 @@ public class EmployeeVerificationTemplateDaoImpl implements EmployeeVerification
 	@Transactional
 	public ResponseList<EmployeeVerificationTemplate> getAllEmploymentVerificationListByOrgLocationId(Long orgLocationId,EmploymentVerificationTemplateDTO employmentVerificationTemplateDTO) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "From EmployeeVerificationTemplate evt where evt.orgLocationId.id =:orgLocationId";
+		String query = "from EmployeeVerificationTemplate evt where evt.orgLocationId.id =:orgLocationId";
 //		List<EmployeeVerificationTemplate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 		
@@ -89,5 +90,18 @@ public class EmployeeVerificationTemplateDaoImpl implements EmployeeVerification
 			response.setData(employmentVerificationTemplateList);
 			return response;
 }
+
+	@Override
+	@Transactional
+	public EmployeeVerificationTemplate getEmploymentVerificationtemplateByTemplateUUID(String tempUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		EmployeeVerificationTemplate  empVerificationTemp =  null;
+		String query ="from EmployeeVerificationTemplate evt where evt.templateUUID =:tempUUID";
+		List<EmployeeVerificationTemplate> list = session.createQuery(query).setString("tempUUID", tempUUID).list();
+		if(null != list && list.size() >0){
+			empVerificationTemp = list.get(0);
+		}
+		return empVerificationTemp;
+	}
 
 }

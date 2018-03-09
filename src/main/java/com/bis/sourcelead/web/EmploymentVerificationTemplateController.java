@@ -1,14 +1,27 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
+import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.OrglocationSignatoryService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @RequestMapping("/app")
@@ -19,13 +32,24 @@ public class EmploymentVerificationTemplateController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	OrglocationSignatoryService orglocationSignatoryService;
+	
+	@Autowired
+	EmployeeVerificationTemplateService employeeVerificationTemplateService;
+	
 	/**
 	 * 	Display add template page
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/addEmploymentVerificationTemplate")
-	public ModelAndView addEmploymentVerificationTemplates(HttpServletRequest request,HttpServletResponse response) {
+	public ModelAndView addEmploymentVerificationTemplates(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrglocationSignatoryDTO> signatoryList = orglocationSignatoryService.getAllSignatoriesByLocationId(orgLocation.getId());
 		ModelAndView model = new ModelAndView();
+		model.addObject("signatoryList",signatoryList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("employmentVerification/addEmploymentVerificationTemplate");
@@ -41,6 +65,22 @@ public class EmploymentVerificationTemplateController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("employmentVerification/employmentVerificationTemplateList");
+		return model;	
+	}
+	
+	@RequestMapping(value = "/editEmpTemplate")
+    public ModelAndView editTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID ,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<OrglocationSignatoryDTO> signatoryList = orglocationSignatoryService.getAllSignatoriesByLocationId(orgLocation.getId());
+		EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
+		ModelAndView model = new ModelAndView();
+		model.addObject("templateUUID", templateUUID);
+		model.addObject("signatoryList", signatoryList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("empTemplate", empTemplate);
+		model.setViewName("employmentVerification/addEmploymentVerificationTemplate");
 		return model;
 	}
 }

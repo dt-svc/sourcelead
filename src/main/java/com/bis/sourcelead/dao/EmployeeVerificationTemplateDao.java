@@ -10,4 +10,6 @@ public interface EmployeeVerificationTemplateDao {
 
 	ResponseList<EmployeeVerificationTemplate> getAllEmploymentVerificationListByOrgLocationId(Long orgLocationId, EmploymentVerificationTemplateDTO employmentVerificationTemplateDTO);
 
+	EmployeeVerificationTemplate getEmploymentVerificationtemplateByTemplateUUID(String tempUUID);
+
 }
