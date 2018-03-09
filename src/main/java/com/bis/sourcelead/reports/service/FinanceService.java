@@ -22,4 +22,6 @@ public interface FinanceService {
 
 	ResponseList<PaidBillDTO> getPaidBillGraphReport(PaidBillDTO paidBillDTO, OrgLocations orgLocation);
 
+	PaidBillDTO getTotalAmountPerYear(PaidBillDTO paidBillDTO, OrgLocations orgLocation) throws Exception;
+
 }

@@ -93,10 +93,11 @@ $(document).ready(function(){
 			Check('Clients');
 		}
 		if(contractType == "Vendor NDA" || contractType == "Vendor NSA"){
+			alert("1")
 			$("#Vendor1").removeClass("active"); 
 			$("#Client1").addClass("active"); 
 			getTemplateList();
-			Check('Clients');
+			Check('Vendors');
 		}
 		if(contractType == "Full time offer"){
 			$("#Vendor1").removeClass("active"); 
