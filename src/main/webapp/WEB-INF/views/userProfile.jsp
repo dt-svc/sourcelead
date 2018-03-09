@@ -12,6 +12,7 @@
 <meta charset="utf-8">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
  
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
@@ -47,6 +48,7 @@ function resetPassword(){
     $('#profile').show();
     $('#updatepassword').hide();
     $('#configure').hide();
+    $('#unsubscribe').hide();
     $("#save_button").removeAttr("disabled");
     
 }
@@ -55,6 +57,7 @@ function resetProfile(){
 	$('#profile').hide();
     $('#updatepassword').show();
     $('#configure').hide();
+    $('#unsubscribe').hide();
 	document.getElementById("profileSettings_form").reset();
 	
 	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
@@ -73,6 +76,14 @@ function getConfiguredList(){
 	$('#profile').hide();
     $('#updatepassword').hide();
     $('#configure').show();
+    $('#unsubscribe').hide();
+}
+
+function getUnsubscribeList(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').show();
 }
 </script>
 
@@ -109,6 +120,7 @@ function getConfiguredList(){
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Details</a></li>
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
+			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
 		  </ul>
 
 		  <div class="tab-content panel-body">
@@ -315,9 +327,110 @@ function getConfiguredList(){
 			</div>
 			</div>
 			</div>
-			
-			
 		   </div>
+		   
+		   <div id="unsubscribe" class="tab-pane fade">
+			  <div class="tab-content panel-body">
+                  <div class="clearfix mb">
+                      <div class="pull-left">
+                          <h4>Unsubscribe</h4>
+                      </div>
+                  </div>
+					<div class="col-xs-12 col-sm-9 col-md-9">
+						<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+							<c:if test="${userTabs.tabName == 'Jobs' || userTabs.tabName == 'Projects' || userTabs.tabName == 'Contracts' || userTabs.tabName == 'Campaigns'}">
+								<div class="form-group">
+									<label class="col-md-3">${userTabs.tabName}<i class="" title="${userTabs.tabName}"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${userTabs.id == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" ${disabled} id="${userTabs.tabName}" value="${userTabs.id}" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${userTabs.tabName == 'My Timesheets'}">
+								<div class="form-group">
+									<label class="col-md-3">Timesheets<i class="" title="Timesheets"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${4 == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" id="Timesheets" ${disabled} value="4" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${userTabs.tabName == 'My Expenses'}">
+								<div class="form-group">
+									<label class="col-md-3">Expenses<i class="" title="Expenses"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${23 == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" id="Expenses" ${disabled} value="23" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+							</c:if>
+						</c:forEach>
+						
+						<c:if test="${SourceLeadWeb_billingTabsCount > 1}">
+								<div class="form-group">
+									<label class="col-md-3">Invoice & Billing<i class="" title="Invoice & Billing"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${20 == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" id="Finance" ${disabled} value="20" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+						</c:if>
+						
+						<div class="form-group">
+							<label class="col-md-3">Others<i class="" title="Others"></i></label>
+							<div class="col-md-7 toggle-button">
+								<label class="switch">
+									<c:set var="disabled" value=""/>
+									<c:set var="othersId" value="0"/>
+									<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+								      	 <c:if test="${unsubscriptionTabId == othersId}">
+								      	 	<c:set var="disabled" value="checked"/>
+								      	 </c:if>
+	   								</c:forEach>
+									<input name="chkChangeSubscription" type="checkbox" id="Other" ${disabled} value="0" onclick="changeSubscription(this);">
+									<div class="slider round"></div>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+		   </div>
+		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->
 		  </div>
@@ -387,6 +500,26 @@ function switchLoginSecurity(){
 	       	} 
 	      },
 	  }); 
+}
+</script>
+
+<script>
+function changeSubscription(source){
+	var tabIds = [];
+	$('input:checkbox[name=chkChangeSubscription]:checked').each(function(){
+		tabIds.push($(this).val());
+	});
+	
+	$('#unsubscribe :input').attr('disabled', true);
+	$.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/updateUserEmailUnsubscription?tabIds="+tabIds,        
+	       success :function(data) {
+	       if(data == "Success"){
+	    	   $('#unsubscribe :input').removeAttr('disabled');
+	       	} 
+	      },
+	  });
 }
 </script>
 
