@@ -372,8 +372,10 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setMaritalStatus(candidateDto.getMaritalStatus());
 		}
 		
-		if(candidateDto.getDateofBirth() != null){
+		if(StringUtils.isNotBlank(candidateDto.getDateofBirth())){
 			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDto.getDateFormat(), candidateDto.getDateofBirth()));
+		}else{
+			candidate.setDateOfBirth(null);
 		}
 		
 		if(candidateDto.getCountry() != null){
@@ -1278,8 +1280,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setMaritalStatus(null);
 			}
 			
-			if(candidateDTO.getDateofBirth() != null){
+			if(StringUtils.isNotBlank(candidateDTO.getDateofBirth())){
 				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDTO.getDateFormat(), candidateDTO.getDateofBirth()));
+			}else{
+				candidate.setDateOfBirth(null);
 			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){

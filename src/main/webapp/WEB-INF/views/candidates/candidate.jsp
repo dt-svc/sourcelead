@@ -17,6 +17,21 @@
 			document.getElementById("candidate_form").reset();
 		});
 	</script>
+	
+	 <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -181,11 +196,12 @@
 					
 					<div class="form-group">
 						<label class="col-md-3">Gender</label>
-						
-						<label class="paddingRight"><input type="radio"  value="Male" checked name="gender"><span class="mr5"></span>Male</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>
-						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>
-						
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>
+						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
+						</div>
 					</div>
         
 		
