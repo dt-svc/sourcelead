@@ -94,25 +94,42 @@
             <div class="clearfix"></div>
             <h4 class="col-md-12 mb">2. Attorney Details</h4>
             <div class="clearfix"></div>
-            <div class="form-group">
-              <label class="col-md-4">Attorney</label>
-              <div class="col-md-8">
-                 <div class="row">
-                 	<div class="col-xs-8 col-sm-8 col-md-8 paddingRight">
-                 <select class="form-control chosen-select">
-                    <option>--Select Attorney--</option>
-                    <option>Attorney-1</option>
-                    <option>Attorney-2</option>
-                    <option>Attorney-3</option>
-                 </select>
-                 	</div>
-                 	<div class="col-xs-4 col-sm-4 col-md-4 paddingLeft">
-                 		<button type="button" class="btn btn-primary btn-block"><i class="fa fa-plus paddingRight"></i>User</button>
-                 	</div>
-                 </div>
-                 
-              </div>
-            </div>
+							<div class="form-group">
+								<label class="col-md-3"><span class="pull-left">Attorney Name</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+								<div class="col-md-9 chooRadius" id="errorAttorney">
+								<div class="input-group col-md-10 pull-left chooRadius">
+									<select class="chosen-select form-control" name="attorneys"
+										id="attorneys" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
+										onchange="getAttorneyContactList();removeValidationAttorney();">
+									</select>
+								 <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+									
+								</div>
+								<span class="col-md-2 noPad clearfix">
+							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							</span>
+							</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-md-3"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+								<div class="col-md-9 chooRadius" id="errorAttorneyContact">
+								<div class="input-group col-md-10 pull-left chooRadius">
+									<select class="chosen-select form-control" name="attorneyContact" data-validation="required"
+										id="attorneyContact" field-name="Attorney Contact"
+										placeholder="Select Attorney Contact"
+										onchange="removeValidationAttorneyContact();">
+									</select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+			</div>		
+								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
+								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+							 </span>			
+										
+								</div>
+								
+							</div>
             
            <div class="clearfix"></div>
             	<h4 class="col-md-12 mb margin-top0">3. Beneficiary  details</h4>
@@ -348,6 +365,48 @@
             </div>
             
             <div class="form-group">
+						<label class="col-md-4">Wages</label>
+						<div class="col-md-8">
+							<div class="input-group er ratetype">
+								<div class="input-group-btn tblminwidth-75">
+
+									<select class="selectpicker" id="currentRateCurrency"
+										name="currentRateCurrency">
+
+										<option>INR</option>
+										<option>AUD</option>
+										<option>USD</option>
+										<option>GBP</option>
+										<option>SGD</option>
+										<option>EUR</option> 
+
+									</select>
+
+								</div>
+								<input type="text" id="currentRate" name="currentRate"
+									value="" field-name="Current Rate"
+									data-validation="validate_Space validate_float validate_length length1-8"
+									data-validation-optional="true" value="" class="form-control">
+								<div class="input-group-btn tblminwidth-75 ratetype">
+									<select class="selectpicker" id="currentRateType"
+										name="currentRateType" field-name="Rate Per">
+										 <option value="">Rate Per</option>
+										<option>Hourly</option>
+										<option>Weekly</option>
+										<option >Bi-weekly</option>
+										<option >Semi-Monthly</option>
+										<option>Monthly</option>
+										<option>Bi-Monthly</option>
+										<option>Yearly</option> 
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+            
+            <div class="form-group">
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
@@ -502,6 +561,46 @@
 			
 		 };
 	</script>
+	<script>
+ function getAttorneysByOrgLocation(){
+	 console.log(" before function calling ---->");
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	console.log(" inside success ---->");
+		        	$('#attorneys').empty();
+		        	$('#attorneys').append('<option value="">--Select Attorney --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            		$('#attorneys').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            }
+		            $('#attorneys').trigger("chosen:updated");
+		            //getVendorContactList();
+		            
+		        }
+		 });
+ }
+ 
+ function getAttorneyContactList(){
+		var orgRelationID = $('#attorneys').val();
+			 $.ajax({
+				    type: "POST",
+			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        success: function(json) {
+			        	//var json = JSON.parse(data);
+			        	$('#attorneyContact').empty();
+			        	$('#attorneyContact').append('<option value="">--Select Attorney contact--</option>');
+			             for(var i=0;i<json.data.length;i++){
+			            	 var opt = json.data[i];
+			            	 $('#attorneyContact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
+			            } 
+			            $('#attorneyContact').trigger("chosen:updated");
+			        }
+			 }); 
+	 }
+ </script>
    <script type="text/javascript">
 	  $( document ).ready(function() {	
 		  
@@ -627,6 +726,9 @@
 		            $("#resiStartDate").datepicker("option", "maxDate", dt);
 		        }
 		  });
+		  // 
+		  
+		  getAttorneysByOrgLocation();
  });
    </script>
    <script>
@@ -636,3 +738,28 @@
    }
    </script>
    
+
+ 
+ <script>
+function addCandiadateEmptyAttorneyContact(){
+	$("#attorneyContact").empty();
+	 $('#attorneyContact').append('<option value="">--select Attorney contact--</option>');
+   $('#attorneyContact').trigger("chosen:updated");
+}
+</script>
+<script>
+ function  removeValidationAttorney() {
+	$("#errorAttorney").find("p.jquery_form_error_message").remove();
+}
+</script>
+<script>
+function  removeValidationAttorneyContact() {
+	 $("#errorAttorneyContact").find("p.jquery_form_error_message").remove();
+}
+</script>
+<script>
+	 function selectedAttorney(){
+		 var vid =  $('#attorneys').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
