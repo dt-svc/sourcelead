@@ -145,6 +145,20 @@ public class CandidateIndexHelper {
 			if(StringUtils.isNotEmpty(candidate.getCurrentRate())){
 				candidateIndex.setCurrentRate(candidate.getCurrentRate());
 			}
+			if(StringUtils.isNotEmpty(candidate.getMiddelName())){
+				candidateIndex.setMiddleName(candidate.getMiddelName());
+			}
+			if(StringUtils.isNotEmpty(candidate.getGender())){
+				candidateIndex.setGender(candidate.getGender());
+			}
+			if(StringUtils.isNotEmpty(candidate.getMaritalStatus())){
+				candidateIndex.setMaritalStatus(candidate.getMaritalStatus());
+			}
+			
+			if(candidate.getDateOfBirth() != null){
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setDateofBirth(df.format(new Date(candidate.getDateOfBirth().getTime())));
+			}
 			
 			candidateIndex.setCurrentRateType(candidate.getCurrentRateType());
 			candidateIndex.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
