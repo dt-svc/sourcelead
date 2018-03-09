@@ -2,24 +2,15 @@ package com.bis.sourcelead.rest;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,11 +21,14 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
+import com.bis.sourcelead.dto.UserMailUnsubscribeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserMailUnsubscribeService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -70,6 +64,9 @@ public class UserProfileRestController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	UserMailUnsubscribeService userMailUnsubscribeService;
 	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
@@ -305,6 +302,39 @@ public class UserProfileRestController {
 			user.setLoginSecurity(Constants.NO);
 			userService.addUser(user);
 		}
+		return "Success";
+	}
+	
+	@RequestMapping(value = { "/updateUserEmailUnsubscription" }, method = RequestMethod.POST)
+	public String updateUserEmailUnsubscription(UserMailUnsubscribeDTO userMailUnsubscribeDTO, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		//UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscription(userMailUnsubscribeDTO);
+		
+		UserMailUnsubscribe userMailUnsubscribe = userMailUnsubscribeService.getUserMailUnsubscriptionByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());
+		if(userMailUnsubscribe != null) {
+			userMailUnsubscribe.setTabIds(userMailUnsubscribeDTO.getTabIds());
+			userMailUnsubscribe.setOrgLocationId(orgLocations);
+			userMailUnsubscribe.setUserId(user);
+			userMailUnsubscribe.setStatus(Constants.RECORD_ACTIVE);
+			userMailUnsubscribe.setUpdatedBy(user);
+			userMailUnsubscribe.setUpdatedDate(commonUtil.currentDate());
+			userMailUnsubscribeService.saveOrUpdateUserMailUnsubscription(userMailUnsubscribe);
+		}else{
+			userMailUnsubscribe = new UserMailUnsubscribe();
+			userMailUnsubscribe.setTabIds(userMailUnsubscribeDTO.getTabIds());
+			userMailUnsubscribe.setOrgLocationId(orgLocations);
+			userMailUnsubscribe.setUserId(user);
+			userMailUnsubscribe.setStatus(Constants.RECORD_ACTIVE);
+			userMailUnsubscribe.setUpdatedBy(user);
+			userMailUnsubscribe.setUpdatedDate(commonUtil.currentDate());
+			userMailUnsubscribe.setCreatedDate(commonUtil.currentDate());
+			userMailUnsubscribeService.saveOrUpdateUserMailUnsubscription(userMailUnsubscribe);
+		}
+		
+		
 		return "Success";
 	}
 
