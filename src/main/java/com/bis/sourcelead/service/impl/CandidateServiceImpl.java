@@ -372,8 +372,10 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setMaritalStatus(candidateDto.getMaritalStatus());
 		}
 		
-		if(candidateDto.getDateofBirth() != null){
+		if(StringUtils.isNotBlank(candidateDto.getDateofBirth())){
 			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDto.getDateFormat(), candidateDto.getDateofBirth()));
+		}else{
+			candidate.setDateOfBirth(null);
 		}
 		
 		if(candidateDto.getCountry() != null){
@@ -1260,6 +1262,30 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignation(null);
 			}
 			
+			if(StringUtils.isNotBlank(candidateDTO.getMiddleName())){
+				candidate.setMiddelName(candidateDTO.getMiddleName());
+			}else{
+				candidate.setMiddelName(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getGender())){
+				candidate.setGender(candidateDTO.getGender());
+			}else{
+				candidate.setGender(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getMaritalStatus())){
+				candidate.setMaritalStatus(candidateDTO.getMaritalStatus());
+			}else{
+				candidate.setMaritalStatus(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getDateofBirth())){
+				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDTO.getDateFormat(), candidateDTO.getDateofBirth()));
+			}else{
+				candidate.setDateOfBirth(null);
+			}
+			
 			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
 				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else{
@@ -1370,6 +1396,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 			candidate.setCandidateResumes(candidateResumesList);
 			}*/
+			
 			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
 				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
 				HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
@@ -1385,6 +1412,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidate.setIsFavourite(0);
 			Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+			
+			/*
+			 * Saving Candidate DB data as ElasticSearch Documents
+			 */
+			saveOrUpdateCandidateElkDocument(savedCandidate);
 			return savedCandidate;
 	}
 
