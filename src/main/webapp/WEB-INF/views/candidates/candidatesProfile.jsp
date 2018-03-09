@@ -236,12 +236,12 @@ function editCandidate(candidateId){
 							result = result + ' <div class="col-md-6 mb10">';
 							result = result + '<div class="input-group">';
 							if(json.dateofBirth != null && json.dateofBirth != "" && json.dateofBirth != "undefined"){
-								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" class="form-control calendar">';
+								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" placeholder = "DateOfBirth" readonly="readonly" class="form-control calendar">';
 								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 							}else{
-								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" class="form-control calendar">';
-								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth1();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+								result = result + ' <input type="text" value="" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" placeholder = "DateOfBirth" class="form-control calendar">';
+								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 							}
 							result = result + ' </div></div>';
@@ -1905,21 +1905,8 @@ function  removeValiationVendorContact() {
  }  
  
  function cleardateofBirth(){
-		$("#dateofBirth").val("");
+		$("#dateofbirth-candidate").val("");
 		};
 		
-		/* $( function() {
-			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-			  // written common method in slead-common.js for date formats start
-			  var finalDateFormat = getJSDateFormat(locationDate);
-			  //end
-			  $("#dateofBirth").datepicker({
-			      dateFormat: finalDateFormat,
-			      changeMonth: true,
-			  	  changeYear: true, 
-			      //minDate: 0  this line for to restrict selection of previous dates
-			  });
-			  
-		  } ); */
 </script>
 
