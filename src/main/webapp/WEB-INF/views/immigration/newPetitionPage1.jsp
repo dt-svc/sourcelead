@@ -553,11 +553,11 @@
    </section>
    <script type="text/javascript">
 		window.onload = function () {
+			editOrgLocationAuto('petitionerNationality');
 			initLocationAuto('petitionerPlace');
-			initLocationAuto('petitionerJobLocation');
-			initLocationAuto('petitionerBirthPlace');
-			initLocationAuto('petitionerNationality');
-			initLocationAuto('petitionerLocation','petitionerCountry','petitionerState','petitionerCity','petitionerZipCode','','','','address');
+ 			initLocationAuto('petitionerJobLocation');
+ 			initLocationAuto('petitionerBirthPlace');
+ 			initLocationAuto('petitionerLocation','petitionerCountry','petitionerState','petitionerCity','petitionerZipCode','','','','address');
 			
 		 };
 	</script>
@@ -761,5 +761,33 @@ function  removeValidationAttorneyContact() {
 	 function selectedAttorney(){
 		 var vid =  $('#attorneys').val();
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+	 
+	 <script>
+	 function editOrgLocationAuto(nationalityId) {
+	 	editOrgInitialize(nationalityId);
+	 }
+	 function editOrgInitialize(nationalityId) {
+	 		var input = (document.getElementById(nationalityId));
+	 	    var options = {
+	 	        types: ['geocode'],
+	 	    };
+	 	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	     	 
+	   google.maps.event.addListener(autocomplete, 'place_changed', function() {
+	   place = autocomplete.getPlace();
+	   var address = {};
+	   for (var i = 0; i < place.address_components.length; i++) {
+	     var addressType = place.address_components[i].types[0];
+	     switch (addressType) {
+	       case "country":
+	         address.country = place.address_components[i].long_name;
+	         
+	     }
+	   }
+	   
+	   $("#"+nationalityId).val(address.country).change();
+	 });
 	 }
 	 </script>
