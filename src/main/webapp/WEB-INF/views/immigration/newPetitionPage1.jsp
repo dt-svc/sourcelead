@@ -1,4 +1,4 @@
-<!-- <script type="text/javascript" src="/resources/js/immigration.js"></script> -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<div class="immiStepsHead clearfix">
@@ -81,8 +81,12 @@
             <div class="form-group">
               <label class="col-md-4">Choose Template</label>
               <div class="col-md-8">
-               <select class="chosen-select form-control" data-placeholder="Choose Template" multiple>
-               	<option>Choose Template</option> <option>Template1</option> <option>Template2</option>
+               <select class="chosen-select form-control" data-placeholder="Choose Template">
+               	
+               	<option value="" selected>--Choose Template--</option>
+							<c:forEach var="item" items="${templateList}">
+											<option value="${item.id}">${item.name}</option>
+							</c:forEach>
                </select>
               </div>
             </div>

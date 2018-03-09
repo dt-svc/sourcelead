@@ -23,9 +23,11 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -61,6 +63,9 @@ public class ImmigrationRestController {
 
 	@Autowired
 	private ImmigrationTemplateService immigrationTemplateService;
+	
+	@Autowired
+	private ImmigrationCommonService immigrationCommonService;
 
 	// ====================immigration view startviewImmigration if you don't
 	// required comment below code start here==============================
@@ -89,6 +94,11 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (status.equalsIgnoreCase("one")) {
 			model.setViewName("/immigration/newPetitionPage1");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			List<ImmigrationTemplate>templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
+			System.out.println("templateList size in controller is-->"+templateList.size());
+			model.addObject("templateList",templateList);
 		} else if (status.equalsIgnoreCase("two")) {
 			model.setViewName("/immigration/newPetitionPage2");
 		} else if (status.equalsIgnoreCase("three")) {
