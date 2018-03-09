@@ -55,12 +55,12 @@ public class Immigration implements Serializable {
 
 
 	@ManyToOne
-	@JoinColumn(name = "ORG_ID")
+	@JoinColumn(name = "ORG_REL_ID") // used for attorney name
     private Org org;
 	
 	
 	@ManyToOne
-	@JoinColumn(name= "ORG_SPOC_ID")
+	@JoinColumn(name= "ORG_SPOC_ID") // used for attorney contact
 	private OrgSpoc orgSpoc;
 	
 	

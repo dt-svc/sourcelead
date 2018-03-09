@@ -38,8 +38,8 @@
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="Open Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" id ="openDate" class="form-control calendar" name="" placeholder="Open Date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('openDate');"></i></span>
               </div>
             </div>
             </div>
@@ -61,21 +61,21 @@
               <label class="col-md-4">Date of arrival</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="Date of arrival">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" id="arrivalDate" class="form-control calendar" name="" placeholder="Date of arrival">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('arrivalDate');"></i></span>
               </div>
               </div>
             </div>                        
             
             <div class="form-group">
-              <label class="col-md-4">Place of entry</label>
-              <div class="col-md-8">
-                <input type="text" class="form-control hidden" name="Company Name" value="">
-                <select class="chosen-select form-control" data-placeholder="Choose Location" multiple>
-               	<option>Location-1</option> <option>Location-2</option> <option>Location-3</option>
-               </select>
-              </div>
-            </div>
+          		<label class="col-md-4">Place of entry<span class="text-danger">&nbsp;*</span></label>
+         			 <div class="col-md-8" id="locationField">
+          			<div class="positionRelative">
+          			<input class="form-control positionRelative" id="petitionerPlace" name="petitionerPlace" placeholder="Enter your Location"  type="text" field-name="Place Of Entry" data-validation="required"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerPlace');"></i>
+         				 </div>
+        			  </div>
+       			 </div>
             
             
             <div class="form-group">
@@ -169,30 +169,32 @@
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="Open Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" placeholder="Date Of Birth">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
           </div> 
            <div class="form-group">
               <label class="col-md-4">Place of Birth</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" placeholder="Place of Birth">
+                   <div class="positionRelative">
+          			<input class="form-control positionRelative" id="petitionerBirthPlace" name="petitionerBirthPlace" placeholder="Place of Birth"  type="text" field-name="Place of Birth" data-validation="required"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerBirthPlace');"></i>
+         			</div>
               </div>
             </div>   
             
             <div class="form-group">
               <label class="col-md-4">Nationality</label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control">
-                    <option>India</option>
-                    <option>USA</option>
-                    <option>UK</option>
-                  </select>
+                  <div class="positionRelative">
+          			<input class="form-control positionRelative" id="petitionerNationality" name="petitionerNationality" value="${loginCountryName}" placeholder="Select Country"  type="text" field-name="Nationality" data-validation="required"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerNationality');"></i>
+         			</div>
               </div>
             </div> 
             <div class="form-group">
-              <label class="col-md-4">Material status</label>
+              <label class="col-md-4">Marital status</label>
               <div class="col-md-8">
                   <label class="radioIput paddingRight"><input type="radio" name="ms">Single</label>
                   <label class="radioIput paddingLeft"><input type="radio" name="ms">Married</label>
@@ -234,11 +236,11 @@
             </div>
             
             <div class="form-group">
-              <label class="col-md-4">Previous LCA Start Dates</label>
+              <label class="col-md-4">Previous LCA Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" name="" placeholder="Previous LCA Start Dates" type="text">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input class="form-control calendar" id="prevLcaStartDate" name="prevLcaStartDate" placeholder="Previous LCA Start Dates" type="text">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaStartDate');"></i></span>
             </div>
               </div>
             </div>
@@ -247,8 +249,8 @@
               <label class="col-md-4">Previous LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" name="" placeholder="Previous LCA End date" type="text">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input class="form-control calendar" id="prevLcaEndDate" name="prevLcaEndDate" placeholder="Previous LCA End date" type="text">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaEndDate');"></i></span>
             </div>
               </div>
             </div>
@@ -334,7 +336,10 @@
             <div class="form-group">
               <label class="col-md-4">Location</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" value="">
+                 <div class="positionRelative">
+          			<input class="form-control positionRelative" id="petitionerJobLocation" name="petitionerJobLocation" placeholder="Enter your Location"  type="text" field-name="Location" data-validation="required"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('petitionerJobLocation');"></i>
+         			</div>
               </div>
             </div>
             
@@ -342,8 +347,8 @@
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="Start Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" class="form-control calendar" id="jobStartDate" name="jobStartDate" placeholder="Start Date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobStartDate');"></i></span>
             </div>
               </div>
             </div>
@@ -352,8 +357,8 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="Start Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" class="form-control calendar" name="jobEndDate" id="jobEndDate" placeholder="Start Date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobEndDate');"></i></span>
             </div>
               </div>
             </div>
@@ -369,8 +374,8 @@
               <label class="col-md-4">LCA Start dates</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="LCA Start dates">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" class="form-control calendar" id="lcaStartDate" name="lcaStartDate" placeholder="LCA Start dates">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
             </div>
@@ -378,8 +383,8 @@
               <label class="col-md-4">LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="LCA End date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" class="form-control calendar" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
             </div>
               </div>
             </div>
@@ -394,37 +399,49 @@
             <div class="form-group">
               <label class="col-md-4">Location</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" value="">
+                  <div class="positionRelative">
+								<input class="form-control positionRelative"
+									id="petitionerLocation" name="petitionerLocation"
+									placeholder="Enter Location" type="text"
+									field-name="Address" data-validation="required"></input> <i
+									class="fa fa-refresh btn btn-primary refresh-icon"
+									title="Refresh"
+									onClick="refreshGoogleApiLocation('petitionerLocation','petitionerCountry','petitionerState','petitionerCity','petitionerZipCode','address');"></i>
+					</div>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Street Address</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" value="">
+                  <input type="text" class="form-control" id="address"
+								name="address" value="${address}" field-name="Street Address" placeholder="Enter Street Addres"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">City</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" value="">
+                  <input class="form-control" id="petitionerCity" name="city" placeholder="City" type="text"></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">State</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" value="">
+                  <input class="form-control" id="petitionerState" name="state" placeholder="State" type="text" ></input>
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Country</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" value="">
+                  <input class="form-control" id="petitionerCountry" name="country" placeholder="Country" field-name="Country"  data-validation="required"  value="${loginCountryName}" type="text" ></input>
               </div>
             </div>                                                                                               
 		    <div class="form-group">
               <label class="col-md-4">Zip Code</label>
               <div class="col-md-8">
-                  <input type="text" class="form-control" name="" value="">
+                  <input class="form-control" id="petitionerZipCode" name="zipcode"
+								placeholder="Zip code" type="text" ></input>
               </div>
             </div>
 		    
@@ -439,8 +456,8 @@
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="Start Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" class="form-control calendar" id="resiStartDate" name="resiStartDate" placeholder="Start Date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('resiStartDate')"></i></span>
               </div>
               </div>
           </div>
@@ -449,8 +466,8 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
 					<div class="input-group">
-                <input type="text" class="form-control calendar" name="" placeholder="End Date">
-                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"></i></span>
+                <input type="text" class="form-control calendar" id="resiEndDate" name="resiEndDate" placeholder="End Date">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('resiEndDate')"></i></span>
               </div>
               </div>
           </div>
@@ -472,9 +489,146 @@
    </div>
    </section>
    <script type="text/javascript">
-   
-  /*  function savePageOneContinue(){
-		  alert("welcome");
-		  $("#newPetitionPageSection").load("${appPath}/loagNewPetitionPageTwo");
-	  } */
+		window.onload = function () {
+			initLocationAuto('petitionerPlace');
+			initLocationAuto('petitionerJobLocation');
+			initLocationAuto('petitionerBirthPlace');
+			initLocationAuto('petitionerNationality');
+			initLocationAuto('petitionerLocation','petitionerCountry','petitionerState','petitionerCity','petitionerZipCode','','','','address');
+			
+		 };
+	</script>
+   <script type="text/javascript">
+	  $( document ).ready(function() {	
+		  
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+		  $('#openDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      
+		  });
+		  
+		  $('#arrivalDate').datepicker({
+	      dateFormat: finalDateFormatPetitionSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  minDate: 1 
+	  });
+
+		  $('#birthDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0  
+		  })
+// previou lca start and end date 
+		  $('#prevLcaStartDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#prevLcaEndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#prevLcaEndDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#prevLcaStartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+	// job start date and end date 
+		// previou lca start and end date 
+		  $('#jobStartDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#jobEndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#jobEndDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#jobStartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+		// lca staert date and end date  
+		  $('#lcaStartDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#lcaEndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#lcaEndDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#lcaStartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+		  ///
+		  
+		// residence start date and end date  
+		  $('#resiStartDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#resiEndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#resiEndDate').datepicker({
+		      dateFormat: finalDateFormatPetitionSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            //var dt = new Date(selected);
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#resiStartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+ });
    </script>
+   <script>
+	
+   function clearDateValue(id){
+	   $("#"+id).val(""); 
+   }
+   </script>
+   

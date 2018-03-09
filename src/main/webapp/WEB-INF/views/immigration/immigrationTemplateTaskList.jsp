@@ -126,7 +126,7 @@
 					      <div class="clearfix">
 						  <label>Assign To<span class="text-danger">*</span></label>
 						  <div class="clearfix">
-							<label class="paddingRight"> <input type="radio"  name="assignToType" id="assignedToB" onclick="validateAssignToType('assingToCandidate');"> Beneficiary </label>
+							<label class="paddingRight"> <input type="radio"  name="assignToType" id="assignedToB" checked="checked" onclick="validateAssignToType('assingToCandidate');"> Beneficiary </label>
 							<label class="paddingLeft"> <input type="radio"  name="assignToType" id="assignedToU"  onclick="validateAssignToType('assingToUser');"> User </label>
 						  </div>
 						  </div>
@@ -236,7 +236,7 @@ function immigrationDataTableList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#immigraListTabSerach").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+immiModulePath+"/getTemplateTaskList?searchValue="+searchValue;
+	 var url = sourceleadUrl+immiModulePath+"/getTemplateTaskList?templateId="+immTemplId+"&searchValue="+searchValue;
 	 immigrationPagination(url);
 }
 	
