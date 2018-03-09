@@ -93,12 +93,12 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
 					session.saveOrUpdate(timesheetSubmissions);
-					if(timesheetSubmissions.getApproverHierarchyList() != null && !timesheetSubmissions.getApproverHierarchyList().isEmpty()) {
+					/*if(timesheetSubmissions.getApproverHierarchyList() != null && !timesheetSubmissions.getApproverHierarchyList().isEmpty()) {
 						for(SubmissionApproverHierarchy sah:timesheetSubmissions.getApproverHierarchyList()) {
-							      sah.setSubmissionId(timesheetSubmissions);;
-									session.saveOrUpdate(sah);
-							}
-					}
+							      sah.setSubmissionId(timesheetSubmissions);
+							      			session.saveOrUpdate(sah);
+						}
+					}*/
 				}
 				
 			}
