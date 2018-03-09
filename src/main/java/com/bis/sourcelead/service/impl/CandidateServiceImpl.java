@@ -360,6 +360,22 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setLastName(candidateDto.getLastName());
 		}
 		
+		if(candidateDto.getMiddleName() != null){
+			candidate.setMiddelName(candidateDto.getMiddleName());
+		}
+		
+		if(candidateDto.getGender() != null){
+			candidate.setGender(candidateDto.getGender());
+		}
+		
+		if(candidateDto.getMaritalStatus() != null){
+			candidate.setMaritalStatus(candidateDto.getMaritalStatus());
+		}
+		
+		if(candidateDto.getDateofBirth() != null){
+			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDto.getDateFormat(), candidateDto.getDateofBirth()));
+		}
+		
 		if(candidateDto.getCountry() != null){
 			if(candidate.getCountry() != null && candidate.getCountry() != "" && !candidateDto.getCountry().equalsIgnoreCase(candidate.getCountry())){
 				activitySummary.append("Country").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCountry()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCountry()).append(Constants.NEW_VALUE_TAG_END).append(" ");

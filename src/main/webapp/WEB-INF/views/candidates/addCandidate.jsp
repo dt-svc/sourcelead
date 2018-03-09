@@ -85,6 +85,15 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-md-3">Middle Name</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="middleName"
+								name="middleName" value="" field-name="Middle Name"
+								data-validation="validate_AlphaNumber validate_length length1-100"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+					<div class="form-group">
 						<label class="col-md-3">Last Name</label>
 						<div class="col-md-9">
 							<input type="text" class="form-control" id="lastName"
@@ -176,6 +185,35 @@
 						<div class="col-md-9">
 							<input class="form-control" id="candidateZipCode" name="zipcode"
 								placeholder="Zip code" type="text" ></input>
+						</div>
+					</div>
+					
+					<div class="form-group">
+                      <label class="col-md-3">Date of Birth</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Gender</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Male" checked name="gender"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>
 						</div>
 					</div>
 
@@ -1002,3 +1040,24 @@ function addCandiadateEmptyVendorContact(){
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
+	 
+<script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#dateofBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+  
+  function clearDateOfBirth(){
+		$("#dateofBirth").val("");
+		};
+		
+</script>

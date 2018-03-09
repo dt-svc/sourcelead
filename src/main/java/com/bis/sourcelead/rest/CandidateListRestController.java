@@ -812,6 +812,10 @@ public class CandidateListRestController {
 		candidateDTO.setStatus(can.getStatus().toString());
 		candidateDTO.setTerminateReason(can.getTerminateReason());
 		candidateDTO.setIsAssociate(can.getIsAssociate());
+		candidateDTO.setGender(can.getGender());
+		candidateDTO.setMaritalStatus(can.getMaritalStatus());
+		candidateDTO.setMiddleName(can.getMiddelName());
+		candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), can.getDateOfBirth()));
 		candidateDTO.setId(can.getId());
 		candidateDTO.setCandidateId(String.valueOf(can.getId()));
 		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
@@ -1163,6 +1167,7 @@ public class CandidateListRestController {
 		if(Validator.validate(candidateDto)) {
 		User user = userService.getUserById(Long.valueOf(candidateDto.getLoginUserId()));
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
+		candidateDto.setDateFormat(loginOrgLocation.getDateFormat());
 		Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
         if(candidate != null) {
         	isUpdated =  "success";	
