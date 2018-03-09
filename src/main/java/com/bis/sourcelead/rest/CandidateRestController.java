@@ -171,6 +171,7 @@ public class CandidateRestController {
 			//FileUploadUtil.fillUploadedFileInfo(candidateDto, candidateDto.getFileInfo());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			candidateDto.setDateFormat(orgLocation.getDateFormat());
 			Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
 		} else{
 			return "DataMissing";
