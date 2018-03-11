@@ -440,9 +440,20 @@ public class OrgDaoImpl implements OrgDao {
 			List<Org> orgsList = null;
 			String userStateSubQuery = "";
 			if (!orgDTO.getUserState().isEmpty()  && !orgDTO.getUserState().equalsIgnoreCase("ALL")) {
+				
+				String subQuery = "";
+				if(orgDTO.getUserState().equalsIgnoreCase("ACTIVE")) {
+					subQuery = " and org.orgType = 'Company' and org.user IS NOT NULL ";
+				}else if(orgDTO.getUserState().equalsIgnoreCase("NOT_LOGGEDIN")) {
+					subQuery = " and org.orgType IN('Company','Guest') ";
+				}else {
+					subQuery = " and org.orgType IN('Company','Guest') ";
+				}
+				
+				
 				userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
 						+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + orgDTO.getUserState() + "' ) and "
-								+ " orgLoactions.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.userState = '" + orgDTO.getUserState() + "' ))";
+								+ " orgLoactions.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.userState = '" + orgDTO.getUserState() + "' ) "+subQuery+" )";
 			}
 			
 			//org list query

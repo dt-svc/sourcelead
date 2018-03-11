@@ -26,9 +26,65 @@ margin-right: 15px;
   position: relative !important; top: -60px !important;
 }
 </style>
+
+
+<style>
+.approvedPop {
+    position:absolute; z-index:100; width:200px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop ul li {
+ clear: both; width: 100%; margin: 0;
+ }
+ 
+ 
+ .approvedPop1 {
+    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
+    }
+.approvedPop1 ul {
+ width:100% !important; float: none; padding: 0;
+ }
+ .approvedPop1 ul li {
+ clear: both; width: 100%; margin: 0;
+ }
+</style>
+
+
+<script>
+$(document).ready(function() {
+    $("#filterDropDown").click(function(){
+		$(".approvedPop").slideToggle(200);
+		$(".approvedPop1").slideUp(200);
+	});
+    
+    $("#filterDropDown, .approvedPop, .approvedPop1").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    
+    $("#filterDropDown1").click(function(){
+		$(".approvedPop1").slideToggle(200);
+		$(".approvedPop").slideUp(200);
+	});
+    $("#filterDropDown1, .approvedPop1, .approvedPop").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    $("html").click(function() {
+        $(".approvedPop, .approvedPop1").slideUp(200);
+    });
+    
+}); 
+
+</script>
+
+
+
+
 <script type="text/javascript">
 window.onload = function () {
-//getUsersList('manual');
 	usersListCheck("${searchValue}","${searchResult}");
 	var view = $("#listView").val('GRIDVIEW');
  };
@@ -37,12 +93,6 @@ window.onload = function () {
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
 	getDynamciUserList();
-	/* if(searchResult == 'searchresult'){
-		alert("hello")
-		getUsersSearchResult(searchValue);
-	}else{
-		getDynamciUserList();
-	} */
 }
 </script>
 
@@ -121,30 +171,144 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
       
+      	<div class="pull-left cand-advsrch advsrch_chosen">
+		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onClick="resetFilter();" title="Refresh">
+			    <span class="fa fa-refresh"></span>
+			</button>
+			
+			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
+				title="Filter Search"
+				onClick="openPop();"> Filter
+				Search&nbsp;&nbsp; <i class="fa fa-filter"></i>
+			</a>
+	    </div>
+	    
+				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						<div class="col-md-2">
+						<div class="row">
+						<div class="col-md-12 mb">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked onclick="getDynamciUserList();"><label>&nbsp;Active</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked onclick="getDynamciUserList();"><label>&nbsp;Not Logged In</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE"   onclick="getDynamciUserList();"><label>&nbsp;In Active</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
+							 
+							 <c:if test="${reportingManagersListSize > 0}">
+							 <div class="col-md-12 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+											<c:forEach var="manager" items="${reportingManagersList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.id}"  onclick="getDynamciUserList();"><label>${manager.fullName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+							 
+						  </div>
+						</div>
+						
+						<div class="col-md-3 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}"  onclick="getDynamciUserList();"><label>${roles.displayName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+						<c:if test="${clientListSize > 0}">
+						<div class="col-md-3 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+									<c:forEach var="client" items="${clientsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.id}"  onclick="getDynamciUserList();"><label>${client.clientName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						
+						
+						<c:if test="${teamsListSize > 0}">
+						<div class="col-md-2 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+									<c:forEach var="team" items="${teamsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}"  onclick="getDynamciUserList();"><label>${team.name}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						<c:if test="${departmentListSize > 0}">
+						<div class="col-md-2 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+									<c:forEach var="dep" items="${departmentList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"  onclick="getDynamciUserList();"><label>${dep.departmentName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+						<input type="button" value="Reset" id="clear_search"
+								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+								
+							<input type="button" value="Ok" id="search_requiremet"
+								onclick="closePop()" class="btn btn-sm btn-success" />
+							
+						</div>
+					</div>
+				</div>
+			
+			
+			
+      
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-          	
-          <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getDynamciUserList()">
-				<option value="ACTIVE" >Active</option>
-				<option value="">All</option>
-				<option value="INACTIVE" >In Active</option>
-				<option value="NOT_LOGGEDIN">Not Logged in</option>
-			   </select>
-          
-          </li>
-          
-		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getDynamciUserList();">
-				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
-				<!-- <option value="All" >All Roles</option> -->
-				<c:forEach var="roles" items="${rolesList}">
-	                 <option value="${roles.id}">${roles.displayName}</option>
-                </c:forEach>
-				</select>
-		   </li>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
 	                    
                   <c:if test="${orgLocationsCount > 1}">
@@ -207,23 +371,171 @@ function getUsersSearchResult(searchValue){
   </section>
   
       <!-- Content Area Ends--> 
-
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
+
+<script>
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myClientsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myManagersFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myManagersInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myManagersUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myTeamsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myDepartmentFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myDepartmentInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myDepartmentUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+</script>
+
+<script>
+function resetFilter(){
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+	
+	document.getElementById("activeStatus").checked = true;
+	document.getElementById("notloggedInStatus").checked = true;
+	
+	getDynamciUserList();
+}
+</script>
+
+
 <script>
 function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
+	
+	 var userRole = [];
+		$('input:checkbox[name=userRole]:checked').each(function() 
+	    {
+			userRole.push($(this).val());
+	    });
+		
+		
+		var userState = [];
+		$('input:checkbox[name=userState]:checked').each(function() 
+	    {
+			userState.push($(this).val());
+	    });
+		
+		var orgClients = [];
+		$('input:checkbox[name=orgClients]:checked').each(function() 
+			    {
+			orgClients.push($(this).val());
+	     });
+		
+		var orgManagers = [];
+		$('input:checkbox[name=orgManagers]:checked').each(function() 
+			    {
+			orgManagers.push($(this).val());
+	     });
+		
+		
+		var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+		
+		
+		var orgDepartments = [];
+		$('input:checkbox[name=orgDepartments]:checked').each(function() 
+			    {
+			orgDepartments.push($(this).val());
+	     });
+		
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
-	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -240,6 +552,27 @@ function exportUserData(){
 
 }
 </script> 
+
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		}
+	</script>
+
+
+
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -270,12 +603,52 @@ function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
+    
+    var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
+	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
+	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
+    
+    
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
-	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -292,16 +665,7 @@ function exportToPdf(){
 }
 </script>
    
-   <script>
-	// Close Advanced Search
-		function closePop(){
-			$("div.cand-advsrch-popup").hide();
-		}
-		function openPop(){
-		  $("div.cand-advsrch-popup").toggle();
-		  
-		}
-	</script>
+  
 	<script type="text/javascript">	
 	function loadChosenScripts(){
 	    $('#search_user').removeAttr('disabled');
@@ -724,11 +1088,49 @@ function getUserSummary(userId){
 <script>
 function getDynamciUserList(){
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
-	var userState = document.getElementById("userState").value;
+	
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
+	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
+	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/detDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);

@@ -626,10 +626,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getUserRoleByVerficationUUID(uuid);
 	}
 
-	@Override
-	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long roleId, Long locationId, String userState, Long userId, String loginUserRole, String userCode) throws Exception {
-		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO,userRoleDTO,roleId, locationId, userState, userId, loginUserRole, userCode);
-	}
 
 	@Override
 	public List<ConnectionsDTO> getUserListForConnections(String searchByName,Integer offSet,Long userId) throws Exception {
@@ -645,6 +641,17 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllUsersBasedOrgLocationId(orgLocationId);
+	}
+	@Override
+	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,
+			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList)
+			throws Exception {
+		return userRoleDao.getDynamicUsersListByRoleAndNameAndLocationId(userDTO, userRoleDTO, locationId, userId, loginUserRole, userCode,orgRelationsList,managerUserIds,teamsList,departmentsList);
+	}
+
+	@Override
+	public List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllReportingManagersAssignedToAssociates(orgLocationId);
 	}
 
 }
