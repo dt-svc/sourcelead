@@ -1315,7 +1315,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 /********************* Back To Top *******************/
        
 .backtotop {
-    width:30px; position:fixed; bottom:20px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
+    width:30px; position:fixed; bottom:90px; right:10px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
 }
 .backtotop img { width:100%;}
        

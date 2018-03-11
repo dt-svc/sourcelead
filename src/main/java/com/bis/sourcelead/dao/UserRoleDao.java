@@ -40,6 +40,7 @@ public interface UserRoleDao {
 	
 	public Boolean isUserAdmin(Long userId);
 
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception;
 
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 	

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TabsDao;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
@@ -185,4 +186,13 @@ public class TabsDaoImpl implements TabsDao{
 	    return tabNamesList;
 	}
 
+	@Override
+	@Transactional
+	public Tabs getTabListByTabId(Long tabId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		return (Tabs) session.get(Tabs.class, tabId);
+	}
+	
+	 
+	
 }

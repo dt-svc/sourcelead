@@ -642,4 +642,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId);
 	}
 
+	@Override
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllUsersBasedOrgLocationId(orgLocationId);
+	}
+
 }
