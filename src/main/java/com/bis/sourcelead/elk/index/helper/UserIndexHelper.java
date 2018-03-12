@@ -31,6 +31,8 @@ public class UserIndexHelper {
 			userIndex.setUserId(userRole.getUser().getId());
 			userIndex.setFirstName(user.getFirstName());
 			userIndex.setLastName(user.getLastName());
+			userIndex.setMiddleName(user.getMiddelName());
+			userIndex.setGender(user.getGender());
 			userIndex.setOrgLocationId(userRole.getOrgLocations().getId());
 			userIndex.setEmail(user.getEmail());
 			userIndex.setMobilePhone(user.getMobilePhone());
@@ -53,10 +55,16 @@ public class UserIndexHelper {
 					userIndex.setRatePer(employee.getRatePer());
 					 
 					if(null != employee.getHireDate()){
-					String hireDate  = dateFormat.format(employee.getHireDate());
-					userIndex.setHireDate(hireDate);
-				}
+						String hireDate  = dateFormat.format(employee.getHireDate());
+						userIndex.setHireDate(hireDate);
+					}
 			}
+				
+				if(null != user.getDateOfBirth()){
+					String dateofBirth  = dateFormat.format(user.getDateOfBirth());
+					userIndex.setDateofBirth(dateofBirth);
+				}
+				
 			userIndex.setUserCode(user.getUserCode());
 			userIndex.setUserRoleId(userRole.getRoles().getId().toString());
 			if(null != userRole.getCreatedDate()){

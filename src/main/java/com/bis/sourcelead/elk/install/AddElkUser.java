@@ -103,6 +103,13 @@ public class AddElkUser {
 								userIndex.setMobilePhone(rs1.getString("MOBILE_PHONE"));
 								userIndex.setIsMailSent(rs1.getString("IS_MAIL_SENT"));
 								userIndex.setUserCode(rs1.getString("USER_CODE"));
+								userIndex.setGender(rs1.getString("GENDER"));
+								userIndex.setMiddleName(rs1.getString("MIDDLE_NAME"));
+								Timestamp dateofbirthstr = rs1.getTimestamp("DATE_OF_BIRTH");
+								if (null != dateofbirthstr) {
+									String updatedDateofBirth = StringDate.format(new java.util.Date(dateofbirthstr.getTime()));
+									userIndex.setDateofBirth(updatedDateofBirth);
+								}
 							}
 
 						}

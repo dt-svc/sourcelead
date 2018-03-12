@@ -95,9 +95,15 @@ public class AddElkCandidate{
 					candidateIndex.setZipCode(rs.getString("ZIPCODE"));
 					candidateIndex.setLatitude(rs.getString("LATITUDE"));
 					candidateIndex.setLongitude(rs.getString("LONGITUDE"));
-					
+					candidateIndex.setMiddleName(rs.getString("MIDDLE_NAME"));
+					candidateIndex.setGender(rs.getString("GENDER"));
 					candidateIndex.setGeneratedId(rs.getString("GENERATED_ID"));
-					
+					candidateIndex.setMaritalStatus(rs.getString("MARITAL_STATUS"));
+					Timestamp dateofBirthTimestamp = rs.getTimestamp("DATE_OF_BIRTH");
+				    if (dateofBirthTimestamp != null){
+				    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+						candidateIndex.setDateofBirth(df.format(new java.util.Date(dateofBirthTimestamp.getTime())));
+				    }
 					if(!isNullOrEmpty(rs.getLong("MASTER_CANDIDATE_ID"))){
 						candidateIndex.setMasterCandidateId(rs.getLong("MASTER_CANDIDATE_ID"));
 					}
