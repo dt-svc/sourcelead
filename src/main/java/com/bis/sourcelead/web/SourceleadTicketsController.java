@@ -61,14 +61,14 @@ public class SourceleadTicketsController {
 	 @RequestMapping(value = "/addSourceleadTicket")
    	 public ModelAndView addSourceleadTicket(@RequestParam(value = "ticketUUID", required = false) String ticketUUID, HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
-   	    commonUtil.highLightMenu(Constants.Dashboard, request);
+   	    commonUtil.highLightMenu(Constants.Support, request);
    	     if(ticketUUID != null) {
    	   	    SourceleadTickets sourceleadTicket = sourceleadTicketService.getSourceleadTicketsByTicketUUID(ticketUUID);
    	        model.addObject("sourceleadTicket", sourceleadTicket);
    	        
    	        List<SourceleadTicketsAttachments> sourceleadTicketsAttachmentsList = sourceleadTicketService.getSourceleadTicketsAttachmentsListByTicketId(sourceleadTicket.getId());
    	        model.addObject("sourceleadTicketsAttachmentsList", sourceleadTicketsAttachmentsList);
-   	        
+   	        model.addObject("ticketUUID",ticketUUID);
    	     }
    	     
    	    List<OrgLocations>  orgLocationList = orgLocationService.getAllOrgLocationsByOrgTypeCompany();
@@ -82,7 +82,7 @@ public class SourceleadTicketsController {
 	 @RequestMapping(value = "/sourceleadTicketView")
    	 public ModelAndView sourceleadTicketView(@RequestParam(value = "ticketUUID", required = false) String ticketUUID,HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
-   	    commonUtil.highLightMenu(Constants.Dashboard, request);
+   	    commonUtil.highLightMenu(Constants.Support, request);
    	    
    	    SourceleadTickets sourceleadTicket = sourceleadTicketService.getSourceleadTicketsByTicketUUID(ticketUUID);
         String createddateStr = commonUtil.dateStrFromOrgDateFormatter(sourceleadTicket.getOrgLocationId().getDateFormat(), sourceleadTicket.getCreatedDate());

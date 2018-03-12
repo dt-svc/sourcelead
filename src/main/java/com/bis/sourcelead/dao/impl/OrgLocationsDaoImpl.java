@@ -383,7 +383,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgLocations orgloc left join fetch orgloc.org  org where org.orgType = 'Company'";
+		String query = "from OrgLocations orgloc left join fetch orgloc.org  org where org.orgType = 'Company' and orgloc.id <> '1' ";
 		List<OrgLocations> locationList = session.createQuery(query).list();
 		return locationList;
 	}

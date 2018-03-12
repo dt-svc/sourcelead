@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -21,10 +23,14 @@ import com.bis.sourcelead.dto.SourceleadTicketDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTickets;
 import com.bis.sourcelead.entity.SourceleadTicketsComments;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.SourceleadTicketService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -58,6 +64,17 @@ public class SourceleadTicketsRestController {
 	@Autowired
 	UserRoleService userRoleService;
 
+	@Autowired
+	ModulesService modulesService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	TabsService tabsService;
+	
+
+	
 	 @RequestMapping(value = "storeDepartment" , method = RequestMethod.POST)
 	 public  String storeDepartment(SourceleadTicketDTO sourceleadTicketDTO,HttpServletRequest request) throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -182,9 +199,31 @@ public class SourceleadTicketsRestController {
 		 for(UserRole ur:userRoleList) {
 			 ur.setUserName(ur.getUser().getFullName());
 			 ur.setUserId(ur.getUser().getId());
+			 ur.setUserRoleName(ur.getRoles().getDisplayName());
 		 }
 		 return userRoleList;
 	   }
 	 
+	
+	 @RequestMapping(value = "getSourceleadTicketModules" , method = RequestMethod.POST)
+	 public  Collection<Tabs> getSourceleadTicketModules(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			 @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception {
+		
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 Collection<Tabs> tabsList = new ArrayList<>();
+		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
+			 tabsList = (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
+		 }else{
+			 if(orgLocationId != null && userId != null) {
+				 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				 List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+				 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
+				 tabsList = tabsService.getTabsListByOrgLocationId(modulesId, orgUserRole.getRoles().getId(), orgLocations.getId());
+			 }
+		 }
+		 
+		 return tabsList;
+		
+	   } 
 	 
 }

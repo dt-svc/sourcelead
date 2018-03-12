@@ -20,6 +20,16 @@ $(function() {
 });
 </script>
 
+  <script type="text/javascript">
+		window.onload = function () {
+			getUserModules();
+			var ticketUUID = '${ticketUUID}';
+			if(ticketUUID != '' && ticketUUID != 'undefined' && ticketUUID != null){
+				getUserList();
+			}
+		 };
+	</script>
+
 		
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -49,14 +59,36 @@ $(function() {
 		            </select>
 		          </div>
 		        </div>
+                 
+                 
+                 <c:if test="${SourceLeadWeb_orgLocationId == 1}">
+		        <div class="form-group">
+		          <label class="col-md-3">Select Company</label>
+		          <div class="col-md-9">
+		            <select class="form-control selectpicker" data-live-search="true" id="orgLocationsId" name="orgLocationsId" onchange="getUserList();">
+		            <option selected>Select Company</option>
+			            <c:forEach var="org" items="${orgLocationList}">
+		                    <option value="${org.id}" ${sourceleadTicket.orgLocationId.id  == org.id ? 'selected' : ''}>${org.orgLocationName}</option>
+	                     </c:forEach>
+		            </select>
+		          </div>
+		        </div>
+		        
+		        <div class="form-group">
+		          <label class="col-md-3">Select User</label>
+		          <div class="col-md-9">
+		            <select class="form-control selectpicker" placeholder="Select User" data-live-search="true" id="userId" name="userId" onchange="getUserModules();">
+		           <option selected>Select User</option>
+		            </select>
+		          </div>
+		        </div>
+		     </c:if>  
+                 
                  <div class="form-group">
 		          <label class="col-md-3">Module<span class="text-danger paddingLeft">&nbsp;*</span></label>
 		          <div class="col-md-9">
 		            <select class="form-control selectpicker" data-live-search="true" id="ticketTabs" name="ticketTabs" field-name="Module" data-validation="required">
-		            <option selected>Select Module</option>
-			            <c:forEach var="tab" items="${SourceLeadWeb_tabsList}">
-		                    <option value="${tab.id}" ${sourceleadTicket.tabId.id == tab.id ? 'selected' : ''}>${tab.tabName}</option>
-	                     </c:forEach>
+		            <option selected value="">Select Module</option>
 		            </select>
 		          </div>
 		        </div>
@@ -67,28 +99,7 @@ $(function() {
 		          </div>
 		        </div>
 
-			<c:if test="${SourceLeadWeb_orgLocationId == 1}">
-		        <div class="form-group">
-		          <label class="col-md-3">Select Company</label>
-		          <div class="col-md-9">
-		            <select class="form-control selectpicker" data-live-search="true" id="orgLocationsId" name="orgLocationsId" onchange="getUserList();">
-		            <option selected>Select Company</option>
-			            <c:forEach var="org" items="${orgLocationList}">
-		                    <option value="${org.id}">${org.orgLocationName}</option>
-	                     </c:forEach>
-		            </select>
-		          </div>
-		        </div>
-		        
-		        <div class="form-group">
-		          <label class="col-md-3">Select User</label>
-		          <div class="col-md-9">
-		            <select class="form-control selectpicker" placeholder="Select User" data-live-search="true" id="userId" name="userId" >
-		           <option selected>Select User</option>
-		            </select>
-		          </div>
-		        </div>
-		     </c:if>   
+			 
 		     <div class="form-group">
 		     <label class="col-md-3">Attachments</label>
 		     <div class="col-md-9">
@@ -271,11 +282,45 @@ function getUserList(){
 	        	  for (var i=0; i<json.length; i++)
   				{
 	        		 var report = json[i];
-	        		 result = result +'<option value='+report.userId+'>'+report.userName+'</option>';
+	        		 var userId = '${sourceleadTicket.userId.id}';
+	        		 result = result +'<option value='+report.userId+' '+ (userId == report.userId ? "selected" : '') +'>'+report.userName+' ('+report.userRoleName+')</option>';
   				}
 		    	 $("#userId").empty();
 	        	 $("#userId").append(result);
 	        	 $("#userId").selectpicker('refresh');
+	        	 getUserModules();
+	        	 
+		    },
+     });
+	
+}
+</script>
+
+<script>
+function getUserModules(){
+	var orgLocationId = '';
+	var userId = '';
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	if(loginUserRole == 'ROLE_SOURCELEAD_ADMIN'){
+		orgLocationId = $("#orgLocationsId").val();
+		userId = $("#userId").val();
+	}
+	
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getSourceleadTicketModules?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&userId="+userId, 	   
+		    success: function(json) {
+		    	var result = "";
+		    	result = result +'<option value="">Select Module</option>';
+	        	  for (var i=0; i<json.length; i++)
+  				{
+	        		 var report = json[i];
+	        		 var tabId = '${sourceleadTicket.tabId.id}';
+	        		 result = result +'<option value='+report.id+' '+ (tabId == report.id ? "selected" : '') +'>'+report.tabName+'</option>';
+  				}
+		    	 $("#ticketTabs").empty();
+	        	 $("#ticketTabs").append(result);
+	        	 $("#ticketTabs").selectpicker('refresh');
 	        	 
 		    },
      });
