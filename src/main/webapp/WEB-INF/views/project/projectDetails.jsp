@@ -1005,9 +1005,10 @@ function projectStatus(){
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
 		var ee = $("#txtEditor1").val($('.Editor-editor').html()); 
-		$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
 		 if ($('#editProject_form').validate(false, validationSettings)) {
 			var formData = getFormData("editProject_form");
+			$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,

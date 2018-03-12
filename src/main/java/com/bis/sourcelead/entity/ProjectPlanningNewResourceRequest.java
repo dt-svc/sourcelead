@@ -41,7 +41,7 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	private String otherRole;
     
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "ROLE_ID")
   	private Roles roleId;
 	 
