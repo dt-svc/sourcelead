@@ -929,10 +929,11 @@ function addDocumentEntry(){
 		result  = result + '	    <div class="col-md-7" id="uploadDocDiv">';
 		result  = result + '	      <div class="row">';
 		result  = result + '	        <div class="col-md-12 clearfix">';
-		result  = result + '	                <div class="input-group pull-left errorInptgroup">';
+		result  = result + '	                <div class="input-group positionRelative errorInptgroup" id="uploadFileGroup">';
 		result  = result + '	                  <label class="input-group-btn"> <span class="btn btn-primary" onchange="taskUploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" id="uploadBtn" style="display: none;"  class="upload" >';
 		result  = result + '	                    </span> </label>';
 		result  = result + '	                  <input class="form-control" readonly id="uploadFile" name="docFile"  placeholder="Attachment" type="text" field-name="Document" data-validation="required validate_docimgpdf">';
+		result  = result + '	                </div>';
 		result  = result + '	                </div>';
 		result  = result + '	        </div>';
 		result  = result + '	      </div>';
@@ -967,9 +968,10 @@ function addDocumentEntry(){
 	      }
 	    });
 	    
-	     
+     
 	
 }
+
 function taskUploadFile(){
 	fileUpload("uploadBtn", "tasks", "addDocument_form");
 }

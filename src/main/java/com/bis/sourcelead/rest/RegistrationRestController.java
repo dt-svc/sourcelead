@@ -39,12 +39,18 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
+import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
+import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
@@ -164,6 +170,59 @@ public class RegistrationRestController {
 		return resultJson;
 
 	}
+	 
+	 
+	 @RequestMapping(value = "/app/getDynamicOrgsList" , method = RequestMethod.POST)
+		public @ResponseBody ResponseList<OrgDTO> getDynamicOrgsList(OrgDTO orgDTO,HttpServletRequest request) throws Exception {
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 ResponseList<OrgDTO> responseList = new ResponseList<>();
+		   ResponseList<Org> orgsList =orgService.getDynamicEnrolledOrgs(org.getId(), orgDTO);
+		   List<OrgDTO> orgDTOList = new ArrayList<>();
+		   if(orgsList != null) {
+				for(Org regOrg : orgsList.getData()){
+					OrgDTO orgDto = new OrgDTO();
+						OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
+						if(null != regOrg.getUser()){
+							UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
+							orgDto.setId(regOrg.getId());
+							orgDto.setOrgName(regOrg.getOrgName());
+							orgDto.setEmail(regOrg.getUser().getEmail());
+							orgDto.setIsMailSent(userRole.getIsMailSent().toString());
+							if(regOrg.getUser().getUserState() != null) {
+								orgDto.setUserState(regOrg.getUser().getUserState().toString());
+							}
+							orgDto.setMobilePhone(regOrg.getUser().getMobilePhone());
+							orgDto.setRegisteredUserId(regOrg.getUser().getId());
+							if(null != userRole){
+								orgDto.setUserState(userRole.getUserState().toString());
+							}
+							orgDto.setUserId(regOrg.getUser().getId());
+							orgDto.setUser(regOrg.getUser());
+						}
+						
+						if(null != orglocations){
+							orgDto.setUser(regOrg.getUser());
+							orgDto.setId(regOrg.getId());
+							orgDto.setOrgName(regOrg.getOrgName());
+							if(orglocations.getLocation() != null && !(orglocations.getLocation().isEmpty())) {
+								orgDto.setLocation(orglocations.getLocation());
+							}else {
+								if(orglocations.getCountry() != null && !(orglocations.getCountry().isEmpty())) {
+									orgDto.setLocation(orglocations.getCountry());
+								}
+							}
+							orgDto.setPrimaryOrgLocationId(orglocations.getId());
+						}
+						orgDTOList.add(orgDto);
+					}
+				}
+		   
+		    responseList.setRecordsFiltered(orgsList.getRecordsFiltered());
+			responseList.setRecordsTotal(orgsList.getRecordsTotal());
+			responseList.setData(orgDTOList);
+			return responseList;
+    }
+	 
 	 
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/companyRegistration" , method = RequestMethod.POST)
@@ -337,6 +396,11 @@ public class RegistrationRestController {
 		 return "success";
 	   }
 	 
+	 @RequestMapping(value = "/app/ws/demoRequest" , method = RequestMethod.POST)
+	 public  String demoRequest(EmployerRegistrationDTO employerRegistrationDTO, HttpServletRequest request) throws Exception {
+		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
+		 return "success";
+	   }
 	 
 	 @RequestMapping(value = "/app/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
 	 public  String validateOrgRequestCompanyNameByName(@RequestParam(value="companyNames", required=false) String companyNames) throws Exception {
@@ -629,13 +693,13 @@ public class RegistrationRestController {
 	
 	
 	@RequestMapping(value = "/app/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
-	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
+	public RestResponsetUtil resetPasswordWithUserName(RegistrationDTO registrationDTO,HttpServletRequest request) throws Exception {
 		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
-		String json1 = IOUtils.toString(request.getInputStream());
-		if(StringUtils.isNotEmpty(json1)){
-			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-			Registration registration = gson.fromJson(json1, Registration.class);
-			User user = userService.findByUserName(registration.getEmail());
+//		String json1 = IOUtils.toString(request.getInputStream());
+		if(!registrationDTO.getEmail().isEmpty()){
+//			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+//			Registration registration = gson.fromJson(json1, Registration.class);
+			User user = userService.findByUserName(registrationDTO.getEmail());
 			if (null != user) {
 				UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 				if (null != userRole) {
