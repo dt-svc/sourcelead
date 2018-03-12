@@ -73,8 +73,9 @@ $(document).ready(function(){
 
 
 <div id="forgotPasswordDiv" style="display:none">
+<jsp:include page="forgotPasswords.jsp"></jsp:include>
 <!--  Forgot Pass  -->		
-<div class="signin_wrap ForPasSlide">
+<%-- <div class="signin_wrap ForPasSlide">
 	<div class="backBtn">
 		<a onclick="backToLogin();"><u class="fa fa-arrow-left OrBak"></u></a>
 	</div>
@@ -87,9 +88,9 @@ $(document).ready(function(){
 	            </span>
 	            </div>
 	            <input type="submit" value="Submit" id="submit_button" class="sign_btn sign_btn_for" />
-<%-- 	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>   --%>
+	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>  
             </form:form>     
-  </div> 
+  </div>  --%>
 <!--  Forgot Pass  -->	
 </div>
 
@@ -150,19 +151,19 @@ function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
 </script>
 
 <script>
-function backToLogin(){
+/* function backToLogin(){
 	$(".signWrap").removeClass("forPassOut");
 	$("#signinDiv").removeAttr("style");
 	$("#signinDiv").attr("style","display:block");
 	$("#forgotPasswordDiv").attr("style","display:none");
 	$(".ForPasSlide").attr("style","display:none");
-}
+} */
 function logout(url){
 	location.href = "/logout";
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
         $('#forgetPassword_form')
            .submit(function(e) {
         	    e.preventDefault(); 
@@ -217,6 +218,6 @@ function logout(url){
        return o;
    };
 })(jQuery);
-</script>
+</script> -->
 
 <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>

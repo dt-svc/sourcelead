@@ -3128,7 +3128,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailMessage.setMessageBody(emailTemplate);
 		
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
+	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=sign").toString();
+
 		 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
 	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getContractOrgLocationId(), notificationScenario);
