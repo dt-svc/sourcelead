@@ -8144,12 +8144,8 @@ padding:15px 5px; line-height:5px; width:35px; min-height:10px; display:block; t
 position:relative; transition:all 0.5s ease-in-out;
 }
 #mySidenav a {
-transition:all 0.3s ease-in-out;
-padding:5px 10px 5px 10px;
-width: 100px;
-text-decoration: none;
-color: #fff; right:20px !important;
-border-radius:20px 0px 0px 20px; background:#ababab; bottom:0; position: absolute; 
+transition:all 0.3s ease-in-out; padding:5px 10px 5px 10px; width: 100px; text-decoration: none;
+color: #fff; right:20px !important; border-radius:20px 0px 0px 20px; background:#ababab; bottom:0; position: absolute; 
 z-index:0; bottom: 0px;
 }
 #mySidenav:hover a {
@@ -8189,7 +8185,95 @@ transform: rotate(180deg);
 	color:#a21e23 !important;
 }
 .invoiceDocs.invoiceDocsInput span input {
-width: 80%;
+width: 80%; text-align:left; padding-left: 25px;
+}
+.invoiceDocs.invoiceDocsInput span i {
+padding:0px;
+}
+.commentText-styles {
+border: none; width:100%
+}
+.add-ticketcomment {
+position:absolute; top:40px; right:2px !important; width:350px; z-index:999; background:#f2f2f2; border:1px solid #ccc;
+padding:15px; display:none; border-radius:3px;
+}
+.add-ticketcomment .btn-sm{
+padding:5px 15px;
+}
+.customCommentarea {
+float: left; width: 94%;
+}
+.filterSearch li {
+padding:3px 0;
+}
+.filterSearch li input[type="checkbox"] {
+position: absolute; left: 0; top: 0; z-index: 99;
+}
+.filterSearch li label {
+padding-left: 25px; position: relative; top:-1px;
+}
+.filterSearch-ul {
+min-height: 100px; max-height: 300px; overflow-y:auto; margin-bottom: 15px;
+}
+.dynamic_search.filterDynamicsearch input {
+width: 100% !important;
+}
+.advancedsearch-popup.filterDynamic-Search {
+top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
+}
+.letterhead-preview {
+	border: 1px solid #ccc; background-color: #fff; min-height: 600px; padding: 15px;
+	/*box-shadow: 0 1px 8px 0 rgba(0,0,0,0.2),0 3px 4px 0 rgba(0,0,0,0.14),0 3px 3px -2px rgba(0,0,0,0.12);*/
+}
+.refreshinputfile {
+    position: absolute; right: 15px; top: 7px; cursor: pointer;
+    background: url("../images/remove-icon.png") no-repeat 0 center; width: 20px; height: 20px; z-index: 9;
+	background-size: 80%;
+}
+.letterhead-body .form-control, .letterhead-body .btn {
+	border-radius: 2px;
+}
+.letterheadTemplate .btn-default {
+	background: #ededed !important;
+}
+.letterheadTemplate .note-editable {
+	min-height: 100px;
+}
+.letterheadTemplate .letterhead-body, .letterheadTemplate .letterhead-Header, .letterheadTemplate .letterhead-contentbody {
+	border-bottom: 1px solid #ddd;
+}
+.letterheadTemplate h5 {
+	font-size: 15px;
+}
+.letterheadBody {
+	background-color: #fff; padding: 15px;
+}
+.letterheadHeader {
+	min-height: 75px; border-bottom: 1px solid #ccc; max-height: 150px; margin-bottom: 15px;
+	padding: 15px; background-color: #ededed;
+}
+.letterheadContentbody {
+	min-height: 200px; border-bottom: 1px solid #ccc; max-height: 550px; margin-bottom: 15px; background-color: #fff;
+	padding: 15px;
+}
+.letterheadFooter {
+	min-height: 35px; max-height: 100px; padding: 15px; background-color: #f5f5f5; text-align: center;
+	font-size: 13px;
+}
+.letterheadHeader .headerDetails {
+	
+}
+.letterheadHeader .cmpLogo {
+	width: 150px; height: 50px;
+}
+.letterheadHeader .cmpLogo img {
+	max-height: 100%;
+}
+.letterheadHeader .companyAddress {
+	font-size: 13px; line-height: 20px;margin-top: 5px;
+}
+.letterheadHeader .companyAddress p{
+	margin-bottom: 0;
 }
 /* media 320px */
 @media (max-width: 320px) {
