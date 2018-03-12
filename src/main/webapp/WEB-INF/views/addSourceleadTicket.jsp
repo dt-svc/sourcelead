@@ -74,7 +74,7 @@ $(function() {
 		            <select class="form-control selectpicker" data-live-search="true" id="orgLocationsId" name="orgLocationsId" onchange="getUserList();">
 		            <option selected>Select Company</option>
 			            <c:forEach var="org" items="${orgLocationList}">
-		                    <option value="${org.id}">${org.org.orgName}</option>
+		                    <option value="${org.id}">${org.orgLocationName}</option>
 	                     </c:forEach>
 		            </select>
 		          </div>
@@ -116,7 +116,7 @@ $(function() {
 		          <div id="0ticketdocFileuploadFileGroup"> 
 		          <span>
 		          <input type="file"  id="0ticketdocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);">
-		          <i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i>
+		          <i class="fa fa-refresh faRefresh" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
 		          <i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addTicketAttachment()"></i>
 		          </span> </div>
 		          </div>
@@ -178,7 +178,10 @@ $(function() {
 				divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 				cell0.innerHTML = divAttachmentTdStr;
 				
-	}			
+	}
+	function refershDocument(){
+		$("#0ticketdocFile").val('');
+	}
 </script>
 <script type="text/javascript">
 	function removeTicketAttachmentRow(rowId) {

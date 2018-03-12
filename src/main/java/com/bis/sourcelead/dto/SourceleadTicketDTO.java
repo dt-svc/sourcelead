@@ -50,6 +50,10 @@ public class SourceleadTicketDTO extends SearchDTO implements Serializable{
 	
 	private String ticketGeneratedId;
 	
+	private String selectCompanyIds;
+	
+	private String companyName;
+	
 	public String getId() {
 		return id;
 	}
@@ -216,5 +220,21 @@ public class SourceleadTicketDTO extends SearchDTO implements Serializable{
 
 	public void setTicketGeneratedId(String ticketGeneratedId) {
 		this.ticketGeneratedId = ticketGeneratedId;
+	}
+
+	public String getSelectCompanyIds() {
+		return selectCompanyIds;
+	}
+
+	public void setSelectCompanyIds(String selectCompanyIds) {
+		this.selectCompanyIds = selectCompanyIds;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 }

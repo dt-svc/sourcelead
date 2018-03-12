@@ -8278,7 +8278,9 @@ float: left; width: 94%;
   	top: 10%; left: 12.5%; width: 1024px; border-radius:3px;
   }
 
-
+.faRefresh {
+	position: relative; top: 5px; color: #1f6791 !important; font-size: 20px !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

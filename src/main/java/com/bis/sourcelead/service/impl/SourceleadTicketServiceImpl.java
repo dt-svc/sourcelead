@@ -240,6 +240,7 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 				 std.setTicketTabs(sourceleadTickets.getTabId().getTabName());
 				 std.setTicketStatus(sourceleadTickets.getTicketStatus());
 				 std.setUserId(sourceleadTickets.getCreatedBy().getId().toString());
+				 std.setCompanyName(sourceleadTickets.getOrgLocationId().getOrgLocationName());
 				 std.setRequestedBy(sourceleadTickets.getUserId().getFullName());
 				 std.setRequestedOn(commonUtil.dateStrFromOrgDateFormatter(sourceleadTickets.getOrgLocationId().getDateFormat(), sourceleadTickets.getCreatedDate()));
 				 sourceleadTicketDTOList.add(std);
@@ -294,6 +295,11 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	@Override
 	public List<SourceleadTicketsComments> getSourceleadTicketsCommentsListByTicketId(Long ticketId) throws Exception {
 		return sourceleadTicketDao.getSourceleadTicketsCommentsListByTicketId(ticketId);
+	}
+
+	@Override
+	public List<OrgLocations> getSourceleadTicketRequestedOrgLocatons() throws Exception {
+		return sourceleadTicketDao.getSourceleadTicketRequestedOrgLocatons();
 	}
 
 	

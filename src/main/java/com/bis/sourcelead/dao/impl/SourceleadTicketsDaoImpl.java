@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -95,6 +96,7 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 		       .append("OR st.ticketType like '%" + sourceleadTicketDTO.getSearchValue() + "%' ")
 		       .append("OR st.ticketGeneratedId like '%" + sourceleadTicketDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%' ")
 		       .append("OR st.tabId.tabName like '%" + sourceleadTicketDTO.getSearchValue() + "%' ")
+		       .append("OR st.orgLocationId.orgLocationName like '%" + sourceleadTicketDTO.getSearchValue() + "%' ")
 			   .append("OR st.ticketStatus like '%" + sourceleadTicketDTO.getSearchValue() + "%' )");
 		       if(sqlDate != null) {
 		    	   query1.append("OR st.createdDate like '%" + sqlDate + "%' ");
@@ -109,11 +111,27 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 		
 		if(sourceleadTicketDTO.getLoginUserRole().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			//org list query
-			String query = "from SourceleadTickets st  where  date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
-		    ticketList = session.createQuery(query.toString()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setFirstResult(sourceleadTicketDTO.getStart()).setMaxResults(sourceleadTicketDTO.getLength()).list();
+			List<Long> orgLocationList = new ArrayList<>();
+			String subQuery = "";
+			if(sourceleadTicketDTO.getSelectCompanyIds() != null && !sourceleadTicketDTO.getSelectCompanyIds().isEmpty()) {
+				String[] orgLocationIds =  sourceleadTicketDTO.getSelectCompanyIds().split(",");
+						for(int i=0; i<orgLocationIds.length; i++) {
+							orgLocationList.add(Long.parseLong(orgLocationIds[i]));
+						}
+			}
+			
+			if(orgLocationList.isEmpty()) {
+				orgLocationList.add(0L);
+			}
+			
+			subQuery = " and ((:varZero  IN (:orgLocationList)) OR (:varZero NOT IN (:orgLocationList) and st.orgLocationId.id IN (:orgLocationList)))";
+			
+			
+			String query = "from SourceleadTickets st  where  date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+subQuery+" "+sortingQry+"";
+		    ticketList = session.createQuery(query.toString()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("varZero", 0).setParameterList("orgLocationList", orgLocationList).setFirstResult(sourceleadTicketDTO.getStart()).setMaxResults(sourceleadTicketDTO.getLength()).list();
 		    
-		    String countQuery = "select count(*) from SourceleadTickets st where date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+sortingQry+"";
-		    countlist = session.createQuery(countQuery.toString()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).list();
+		    String countQuery = "select count(*) from SourceleadTickets st where date(st.createdDate) BETWEEN :fromDate and :endDate "+query1+" "+subQuery+" "+sortingQry+"";
+		    countlist = session.createQuery(countQuery.toString()).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("varZero", 0).setParameterList("orgLocationList", orgLocationList).list();
 		    
 		}else {
 			//org list query
@@ -234,6 +252,16 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 			count = (Long) maxCountList.iterator().next().longValue();
 		}
 		return count;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getSourceleadTicketRequestedOrgLocatons() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OrgLocations locations where locations.id IN (select distinct(ticket.orgLocationId.id) from SourceleadTickets ticket where ticket.status = '1') ";
+	    List<OrgLocations> orgLocationsList = session.createQuery(query.toString()).list();
+        return orgLocationsList;
 	}
 	 
 }
