@@ -100,7 +100,7 @@ public class CandidateEmployersRestController {
 	 */
 	
 	//@PreAuthorize("hasAnyRole('ROLE_ADD_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EMPLOYER')")
-	@RequestMapping(value = "/storeCandidateEmployers", method = RequestMethod.POST)
+	@RequestMapping(value = {"/storeCandidateEmployers","rest/storeCandidateEmployers"}, method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEmployers(CandidateEmployerDTO candidateEmployerDTO,@RequestParam(value="candidateId", required=false) Long candidateId ,HttpServletRequest request) throws Exception {
 
 		
@@ -263,19 +263,17 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId")
-	public String upDateCandidateEmployerByCandidateIdAndCandidateExperianceId(CandidateEmployerDTO candidateEmployerDTO,@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateExperianceId", required = false) Long candidateExperianceId,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = {"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId","rest/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId"},method = RequestMethod.POST)
+	public String upDateCandidateEmployerByCandidateIdAndCandidateExperianceId(CandidateEmployerDTO candidateEmployerDTO,HttpServletRequest request) throws Exception {
 
+		    String isUpdated = "fasle";
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			CandidateEmployers candidateEmp ;
-			/*String jsonc = "{" + json + "}";
-			JSONObject jsonObj = new JSONObject(jsonc);*/
-			
-			candidateEmp = candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrgLocation,candidateId);
-			//SourceLeadSessionManager.setSessionAttribute(request, "editExep", "Employers details updated");
-
-			return "success";
+			CandidateEmployers candidateEmp = candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrgLocation,candidateEmployerDTO.getCandidateId());
+			if(candidateEmp != null) {
+				isUpdated = "true";
+			}
+			return isUpdated;
 	}
 	
 	
