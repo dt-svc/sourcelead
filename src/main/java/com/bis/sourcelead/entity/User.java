@@ -147,6 +147,16 @@ public class User implements Serializable{
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
 	
+	// Immigration columns Start
+	@Column(name = "MIDDLE_NAME")
+	private String middelName ;
+		
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
+		
+	@Column(name = "GENDER")
+	private String gender;
+	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -836,6 +846,30 @@ public class User implements Serializable{
 
 	public void setVendorContactName(String vendorContactName) {
 		this.vendorContactName = vendorContactName;
+	}
+
+	public String getMiddelName() {
+		return middelName;
+	}
+
+	public void setMiddelName(String middelName) {
+		this.middelName = middelName;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	

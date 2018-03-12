@@ -62,6 +62,14 @@ $(document).ready(function(){
 			});
 	 });
 	 
+	 $('body').on('focus', '#dateofBirth', function() {
+		 $('#dateofBirth').datepicker({
+			 dateFormat: finalDateFormat,
+			 changeMonth: true,
+			 changeYear: true, 
+			});
+	 });
+	 
 	 
 });
 </script>
@@ -274,7 +282,11 @@ $(document).ready(function(){
 				result = result + '				 <strong>First Name:</strong><span class="fix" title="'+json.user.firstName+'">'+json.user.firstName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
 				
-					
+				if(json.user.middelName != null && json.user.middelName != "" && json.user.middelName != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Middle Name:</strong><span class="fix" title="'+json.user.middelName+'">'+json.user.middelName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}	
 				
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
@@ -295,6 +307,11 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				if(json.user.gender != null && json.user.gender != "" && json.user.gender != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Gender:</strong><span class="fix" title="'+json.user.gender+'">'+json.user.gender+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
 				
 				if(json.user.extensionNumber != null && json.user.extensionNumber !='' && json.user.extensionNumber !='undefined'){
 					
@@ -365,6 +382,12 @@ $(document).ready(function(){
 				if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
+				
+				if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Date of Birth:</strong><span class="fix">'+json.dateofBirthStr+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
@@ -1342,6 +1365,7 @@ $("#editRoleDetailsList").empty();
 				
 				var employeeId = "";
 			    var lastName = "";
+			    var middleName = "";
 			    var rate = "";
 			    var mobilePhone = "";
 			    var extensionNumber="";
@@ -1363,6 +1387,10 @@ $("#editRoleDetailsList").empty();
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
 					lastName = json.user.lastName;
+				}
+				
+				if(json.user.middelName != null && json.user.middelName != "" && json.user.middelName != 'undefined'){
+					middleName = json.user.middelName;
 				}
 				
 				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
@@ -1390,6 +1418,11 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>First name<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.firstName+'" name="FirstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Middle name</label>';
+					result = result + ' <input type="text" value="'+middleName+'" name="middleName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
@@ -1438,6 +1471,33 @@ $("#editRoleDetailsList").empty();
 						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
 						result = result + ' </div>';
 					} */
+					result = result+'		<div class="col-md-6">';
+					result = result+'		<div class="row">';
+					result = result+'		<label class="col-md-3">Gender</label>  ';
+					result = result+'		<div class="col-md-9">    ';
+					if(json.user.gender == "Male"){
+					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+					result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+					result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+					}
+					else if(json.user.gender == "Female"){
+						result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+						result = result+'		<label class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+						result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+						}
+					else if(json.user.gender == "Transgender"){
+						result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+						result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+						result = result+'		<label class="paddingRight"><input type="radio"  checked value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+						}
+					else{
+						result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+						result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+						result = result+'		<label class="paddingRight"><input type="radio" value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+					}
+					result = result+'		</div>    ';
+					result = result+'		</div>    ';
+					result = result+'		</div>    ';
 					
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp;*</span></label>';
@@ -1562,6 +1622,20 @@ $("#editRoleDetailsList").empty();
 
 					}
 					result = result + ' </div></div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Date of Birth</label>';
+					result = result + '<div class="input-group">';
+					if(json.hireDateStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != "undefined"){
+						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar">';
+						result = result + '   <span class="input-group-addon" onClick="clearDateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+					}else{
+						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar">';
+						result = result + '   <span class="input-group-addon" onClick="clearDateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+					}
+					result = result + ' </div></div>';
 					
 					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
@@ -2771,6 +2845,9 @@ function clearhiredate(){
 	};
 function clearhiredate1(){
 	$("#DateofJoin").val("");
+	};
+function clearDateofBirth(){
+	$("#dateofBirth").val("");
 	};
 	
 </script>

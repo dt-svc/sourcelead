@@ -108,6 +108,12 @@ import com.bis.sourcelead.entity.UserRole;
 		private String vendorcontact;
 		
 		private String dateofJoin;
+		
+		private String middleName;
+		
+		private String gender;
+		
+		private String dateofBirth;
 
 		private String isPrimary;
 
@@ -711,6 +717,30 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 			this.customFormData = customFormData;
+		}
+
+		public String getMiddleName() {
+			return middleName;
+		}
+
+		public void setMiddleName(String middleName) {
+			this.middleName = middleName;
+		}
+
+		public String getGender() {
+			return gender;
+		}
+
+		public void setGender(String gender) {
+			this.gender = gender;
+		}
+
+		public String getDateofBirth() {
+			return dateofBirth;
+		}
+
+		public void setDateofBirth(String dateofBirth) {
+			this.dateofBirth = dateofBirth;
 		}
 			
 		
