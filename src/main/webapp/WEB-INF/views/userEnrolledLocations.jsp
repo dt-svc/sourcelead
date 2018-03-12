@@ -58,7 +58,7 @@
 <script>
 function validateWhiteListIp(){
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = '';
 	$(".with-font").each(function () {
@@ -85,7 +85,7 @@ function validateWhiteListIp(){
 
 function validateTwoStepAuth() {
 	var userName = '${username}';
-	var password = '${password}';
+	var password = '';
 	var sourceleadUrl ='${sourceleadUrl}';
 	var userRoleId = '';
 	$(".with-font").each(function () {

@@ -1615,7 +1615,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 								}
 								else {
 //									clientOrVendor.setReason("Similar Vendor matched with Vendor name");
-									clientOrVendor.setFileReason("Similar vendor matched with client name");
+									clientOrVendor.setFileReason("Similar vendor matched with vendor name");
 									
 								}
 								BulkClientDetails blk = clientImportDao.saveClientVendorExcelData(clientOrVendor);
