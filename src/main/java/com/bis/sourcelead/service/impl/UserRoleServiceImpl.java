@@ -639,6 +639,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllUsersBasedOrgLocationId(orgLocationId);
+	}
+	@Override
 	public ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,
 			UserRoleDTO userRoleDTO, Long locationId, Long userId, String loginUserRole, String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList)
 			throws Exception {

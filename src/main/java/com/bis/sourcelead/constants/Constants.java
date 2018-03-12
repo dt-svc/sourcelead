@@ -175,6 +175,9 @@ public class Constants {
 	public static final String ORGREQUEST_EMAIL = "orgRequestEmail";
 	public static final String ORGREQUEST_NOTIFICATION = "orgRequestNotification";
 	
+	public static final String SOURCLEAD_TICKET_EMAIL = "sourceleadTicketEmail";
+	public static final String SOURCLEAD_TICKET_NOTIFICATION = "sourceleadTicketNotification";
+	
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
@@ -888,7 +891,8 @@ public class Constants {
 	public static final String JOB_ENTITY = "JB";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";
-	  
+	public static final String TICKET_ENTITY = "ST-";
+	
 	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
 	public static final String OLD_VALUE_TAG_END = "</span>";
 	public static final String NEW_VALUE_TAG_INITIATION = "<span class='textline-updated'>";

@@ -49,6 +49,10 @@ public interface UserRoleService {
 	
 	public UserRole getUserRoleById(Long userRoleId) throws Exception;
 
+	
+	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception;
+
+	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
 	 * @param userId
