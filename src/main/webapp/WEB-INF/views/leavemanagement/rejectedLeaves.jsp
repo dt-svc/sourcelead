@@ -6,6 +6,12 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	getRejectedLeavesList();
+	if ('${notifyLink}' == "notifyLink") 
+	{
+	var leaveUUID = '${leaveUUID}';
+	var orgLocationId = '${orgLocationId}';
+	getRequestedAproveSummary(leaveUUID,orgLocationId);
+	}
 });
 </script>
 

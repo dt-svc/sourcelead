@@ -72,6 +72,7 @@ import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -171,6 +172,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	ConnectionsService connectionsService;
+	
+	@Autowired
+	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -1175,20 +1179,26 @@ public class LoginSessionController {
     }
   
   
-  @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
-  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password) throws Exception {
-	  ModelAndView model = new ModelAndView();
-	  User user = userService.findByUserName(userName);
+	@RequestMapping(value = "/app/ws/userEnrolledOrgLocations", method = RequestMethod.POST)
+	public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password,HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		User user = userService.findByUserName(userName);
 		List<UserRole> userSpocRolesList = null;
-		if(user != null)
+		if (user != null)
 			userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
-	  model.addObject("username", userName);
-	  model.addObject("password", password);
-	  model.addObject("sourceleadUrl", sourceleadUrl);
-	  model.addObject("roleList", userSpocRolesList);
-	  model.setViewName("userEnrolledLocations");
-	  return model;
-  }
+		
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		
+		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress,user.getId());
+		model.addObject("alreadyVerifiedBefore", alreadyVerifiedBefore);
+		model.addObject("username", userName);
+//		model.addObject("password", password);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("roleList", userSpocRolesList);
+		model.setViewName("userEnrolledLocations");
+		return model;
+	}
   
   
   

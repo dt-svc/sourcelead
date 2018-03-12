@@ -93,12 +93,12 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
 					session.saveOrUpdate(timesheetSubmissions);
-					if(timesheetSubmissions.getApproverHierarchyList() != null && !timesheetSubmissions.getApproverHierarchyList().isEmpty()) {
+					/*if(timesheetSubmissions.getApproverHierarchyList() != null && !timesheetSubmissions.getApproverHierarchyList().isEmpty()) {
 						for(SubmissionApproverHierarchy sah:timesheetSubmissions.getApproverHierarchyList()) {
-							      sah.setSubmissionId(timesheetSubmissions);;
-									session.saveOrUpdate(sah);
-							}
-					}
+							      sah.setSubmissionId(timesheetSubmissions);
+							      			session.saveOrUpdate(sah);
+						}
+					}*/
 				}
 				
 			}
@@ -709,7 +709,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			sqlTerminatedDate = new java.sql.Date(terminatedDate.getTime());
 		}
 		
-		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :memberId and ts.startDate > :terminatedDate ";  
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projects pr  left join fetch pm.employee emp left join fetch emp.user where pm.id = :memberId and (ts.startDate > :terminatedDate OR :terminatedDate BETWEEN ts.startDate and ts.endDate) ";  
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("memberId", memberId).setParameter("terminatedDate", sqlTerminatedDate).list();
 		return timesheetSubmissionsList;
 	}
@@ -939,6 +939,21 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId", projectId).list();
 		
 		return timesheetSubmissionsList;
+	}
+
+	@Override
+	@Transactional
+	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate) {
+		Session session = this.sessionFactory.getCurrentSession(); 
+		java.sql.Date sDate = new java.sql.Date(frequencyStartDate.getTime());
+		java.sql.Date eDate = new java.sql.Date(frequencyEndDate.getTime());
+		String query = "from TimesheetSubmissions ts left join fetch ts.projectMembers proMembers left join fetch ts.projects project left join fetch ts.masterCandidateId masterCandidate where project.id = :projectId and masterCandidate.id = :masterCanidateId and ts.startDate= :startDate and ts.endDate= :endDate";
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("masterCanidateId", masterCanidateId).setLong("projectId", projectId).setDate("startDate",sDate).setDate("endDate",eDate).list();
+		if(timesheetSubmissionsList!= null && !timesheetSubmissionsList.isEmpty()) {
+			return timesheetSubmissionsList.get(0);
+		}else {
+			return null;
+		}
 	}
 
 

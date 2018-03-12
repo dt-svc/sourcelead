@@ -538,6 +538,10 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+	private String candidateCommentsCount;
+    
+    @Transient
+    @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
     
@@ -1650,6 +1654,16 @@ public class RequirementSubmission implements Serializable{
 
 	public void setSubmissionDisplayStatus(String submissionDisplayStatus) {
 		this.submissionDisplayStatus = submissionDisplayStatus;
+	}
+
+	public String getCandidateCommentsCount()
+	{
+		return candidateCommentsCount;
+	}
+
+	public void setCandidateCommentsCount(String candidateCommentsCount)
+	{
+		this.candidateCommentsCount = candidateCommentsCount;
 	}
 
 	public Long getOrgRelationId()

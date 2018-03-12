@@ -257,7 +257,7 @@ public class UsersListRestController {
 		List<Long> teamsList = new ArrayList<>();
 		List<Long> departmentsList = new ArrayList<>();
 		
-		String[] tableColumns = {"userName", "email", "mobilePhone", "displayName","","userEmploymentType"};
+		String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName","","userEmploymentType"};
 	    int sortColumnIndex = 5; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(userRoleDto.getOrder() != null && !userRoleDto.getOrder().isEmpty()) {

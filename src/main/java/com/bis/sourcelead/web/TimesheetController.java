@@ -105,12 +105,13 @@ public class TimesheetController {
 	
 	@RequestMapping(value = "/timesheet")
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
-	public ModelAndView newTimesheet(HttpServletRequest request) throws Exception {
+	public ModelAndView newTimesheet(HttpServletRequest request
+			,@RequestParam(value="currentTimeFrequency",required =false)String currentTimeFrequency
+			,@RequestParam(value="projectMembersId",required =false)String projectMembersId
+			,@RequestParam(value="notifyLink",required=false)String notifyLink) throws Exception {
 			ModelAndView model = new ModelAndView();
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
-			
-			
 			
 			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
@@ -133,8 +134,11 @@ public class TimesheetController {
 			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(), loginUser.getId());
 			model.addObject("ProjectMembersList", projectMembersList);
 			
-			/*model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("timesheet/timesheet");*/
+			if(notifyLink!=null && StringUtils.isNotEmpty(notifyLink) && notifyLink.equalsIgnoreCase("notifyLink")) {
+				model.addObject("currentTimeFrequency", currentTimeFrequency);
+				model.addObject("projectMembersId", projectMembersId);
+				model.addObject("notifyLink", notifyLink);
+			}
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheetRedefined");

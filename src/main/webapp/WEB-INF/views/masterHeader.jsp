@@ -97,7 +97,7 @@
 	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport"}'>
+<c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph" || viewPage == "reports/receivedInvoiceReportGraph"}'>
 	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
 	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
 	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
@@ -258,7 +258,7 @@ function getNotificationsByuserId(){
 				}
 				result = result + ' </span> </div>';
 				result = result + '<div class="msg-content">';
-				result = result + ' <a href="#"><p>'+opt.body+'</p>';
+				result = result + ' <a href="<c:url value="/app/notificationsList"/>"><p>'+opt.body+'</p>';
 				/* result = result + ' <c:out value='+userId+' />'; */
 				result = result + ' <span>'+opt.calDays+'</span></a> ';
 				result = result + '</div>';
@@ -705,8 +705,13 @@ function preventTabkey(e){
 		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
 	                     	</div>
 	                     </li>
+
                        </sec:authorize>
 	                     
+
+<%-- 	                     <li><a href="<c:url value="/app/license" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>License</a></li> --%>
+						 
+
 	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>

@@ -28,15 +28,21 @@ import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		
-		Double actualHours = (Double.parseDouble("7.35"))/5;
+		String minString = "11-03-2018";
+		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		Date min = dateFormat.parse(minString);
 		
-		Integer hours = actualHours.intValue();
-		System.out.println(hours);
-		Long actualMinutes = Math.round((actualHours-hours)*60);
-		System.out.println((actualHours-hours)*60);
-		System.out.println(hours.toString()+":"+actualMinutes.toString());
+		String maxString = "15-03-2018";
+		Date max = dateFormat.parse(maxString);
+		
+		String inputString = "15-03-2018";
+		Date d = dateFormat.parse(inputString);
+		
+		System.out.println(getMonth16thDateByGivenDate(min,Constants.CURRENT_MONTH).get("STARTDATE"));
+		
+		
 		
 	}
 	/*public static void main(String[] args){
@@ -814,6 +820,10 @@ public  class CalendarUtil {
 			
 		}
 		return flag;
+	}
+	
+	public static boolean isGivenDateBetweenDateRange(Date startDate,Date endDate,Date currentDate) {
+		return	 ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
 	}
 	public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();

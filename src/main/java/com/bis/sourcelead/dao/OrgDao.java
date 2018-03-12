@@ -53,6 +53,12 @@ public interface OrgDao {
 	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception;
 
 	public List<UserDTO> getuserListForOrgChart(Long orgLocationId) throws Exception;
-	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet);
 	
+	public List<Org> getAllOpenJobsOrgsStartsWithAlphabet(String alphabet);
+
+	public Org getOrgByCareerPageKey(String careerPageKey) throws Exception;
+
+    public String generateCareerPageKey(Long id, String orgName) throws Exception;
+
+    public int changeCareerPageKeyStatus(Long id) throws Exception;	
 }
