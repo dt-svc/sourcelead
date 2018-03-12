@@ -3043,6 +3043,10 @@ function applyJob(requirementUUID){
 function closeApplyJob(){
 	$(".modal.modalApplyjob").fadeOut();
 	$(".comMask").fadeOut();
+	$(".signWrap").addClass("orgOutWrap");
+	$(".signWrap").removeClass("forPassOut");
+	$(".ForPasSlide").attr("style","display:none");
+	$("#signinDiv").attr("style","display:block");
 }
 </script>
  
