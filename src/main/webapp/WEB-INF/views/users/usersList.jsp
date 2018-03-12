@@ -205,8 +205,28 @@ function getUsersSearchResult(searchValue){
 							 </div>
 							 </div> 
 							 
-							 <c:if test="${reportingManagersListSize > 0}">
-							 <div class="col-md-12 mb positionRelative">
+							 <div class="col-md-12 mb">
+								<label><strong>Employment Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C"  onclick="getDynamciUserList();"><label>&nbsp;C2C</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C-1099"  onclick="getDynamciUserList();"><label>&nbsp;C2C-1099</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="W-2"   onclick="getDynamciUserList();"><label>&nbsp;W-2</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H"   onclick="getDynamciUserList();"><label>&nbsp;C2H</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H-1099"   onclick="getDynamciUserList();"><label>&nbsp;C2H-1099</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"   onclick="getDynamciUserList();"><label>&nbsp;Offshore C2C</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"   onclick="getDynamciUserList();"><label>&nbsp;Part Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"   onclick="getDynamciUserList();"><label>&nbsp;Full Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Others"   onclick="getDynamciUserList();"><label>&nbsp;Others</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
+							 
+						  </div>
+						</div>
+						
+						<c:if test="${reportingManagersListSize > 0}">
+							 <div class="col-md-2 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -220,11 +240,8 @@ function getUsersSearchResult(searchValue){
 									 </div> 
 							 </div> 
 							 </c:if>
-							 
-						  </div>
-						</div>
 						
-						<div class="col-md-3 positionRelative">
+						<div class="col-md-2 positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -255,9 +272,10 @@ function getUsersSearchResult(searchValue){
 						</c:if>
 						
 						
-						
+						<div class="col-md-2">
+						<div class="row">
 						<c:if test="${teamsListSize > 0}">
-						<div class="col-md-2 positionRelative">
+						<div class="col-md-12 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -273,7 +291,7 @@ function getUsersSearchResult(searchValue){
 						</c:if>
 						
 						<c:if test="${departmentListSize > 0}">
-						<div class="col-md-2 positionRelative">
+						<div class="col-md-12 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -286,7 +304,8 @@ function getUsersSearchResult(searchValue){
 								</ul>
 							 </div> 
 						</div>
-						</c:if>
+						</c:if></div></div>
+						
 						
 					</div>
 					</div>
@@ -478,6 +497,7 @@ function resetFilter(){
 	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
 	$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
@@ -532,10 +552,16 @@ function exportUserData(){
 			orgDepartments.push($(this).val());
 	     });
 		
+		var employmentType = [];
+		$('input:checkbox[name=employmentType]:checked').each(function() 
+			    {
+			employmentType.push($(this).val());
+	     });
+		
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&exportType=xls";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -643,12 +669,19 @@ function exportToPdf(){
 		orgDepartments.push($(this).val());
      });
 	
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+	
+	
     
     
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&exportType=pdf";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1121,6 +1154,12 @@ function getDynamciUserList(){
 		orgTeams.push($(this).val());
      });
 	
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+	
 	
 	var orgDepartments = [];
 	$('input:checkbox[name=orgDepartments]:checked').each(function() 
@@ -1130,7 +1169,7 @@ function getDynamciUserList(){
 	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments;
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);

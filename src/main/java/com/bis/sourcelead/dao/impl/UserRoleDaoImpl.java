@@ -959,6 +959,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String subQuery4 = "";
 		String subQuery5 = "";
 		String subQuery6 = "";
+		String subQuery7 = "";
+		String employmentTypeQuery = "";
 		
 		Map<String, Object> params = new HashMap<String,Object>();
 		StringBuilder query1 = new StringBuilder("");
@@ -1054,15 +1056,63 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			subQuery6 = " and userRole.user.id IN (select emp.user.id from Employees emp where emp.departmentId.id IN (:departmentsList))";
 		}
 		
+		
+		
+		if(userRoleDTO.getEmployeMentType() != null && !userRoleDTO.getEmployeMentType().isEmpty()) {
+			String[] employementType = userRoleDTO.getEmployeMentType().split(",");
+			if (Arrays.asList(employementType).contains("C2C")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2C' or ";
+			}
+			
+			if (Arrays.asList(employementType).contains("C2C-1099")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2C-1099' or ";
+			}
+			
+			if (Arrays.asList(employementType).contains("W-2")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'W-2' or ";
+			}
+			
+			
+			if (Arrays.asList(employementType).contains("C2H")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2H' or ";
+			}
+			
+			
+			if (Arrays.asList(employementType).contains("C2H-1099")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2H-1099' or ";
+			}
+			
+			if (Arrays.asList(employementType).contains("Offshore C2C")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Offshore C2C' or ";
+			}
+			
+			if (Arrays.asList(employementType).contains("Part Time")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Part Time' or ";
+			}
+			
+			if (Arrays.asList(employementType).contains("Full Time")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Full Time' or ";
+			}
+			
+			if (Arrays.asList(employementType).contains("Others")) {
+				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Others' or ";
+			}
+			
+			subQuery7 = "and (" + subQuery7.substring(0, subQuery7.length() - 4) + ")";
+			employmentTypeQuery = "and userRole.user.id IN (select emp.user.id from Employees emp where emp.orgLocations.id = :locationId "+subQuery7+" )";
+		}
+		
+		
+		
 			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" " ;
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" "+employmentTypeQuery+" " ;
 			Query query = session.createQuery(listQuery+query1+sortingQry);
 			
 			userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
 			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
-					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" " ;
+					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" "+employmentTypeQuery+" " ;
 			Query query2 = session.createQuery(queryCount+query1);
 			
 			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
