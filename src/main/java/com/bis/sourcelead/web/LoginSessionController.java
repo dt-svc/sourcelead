@@ -228,6 +228,7 @@ public class LoginSessionController {
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
+		Integer resourcesTabCount = 0;
 		
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 		if(userLoginSession != null){
@@ -261,16 +262,16 @@ public class LoginSessionController {
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
 					
-					/*if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
-						associatesTabsCount = associatesTabsCount+1;
-					}*/
-					
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
 					}
 					
 					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
 						expensesTabCount = expensesTabCount+1;
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Blog") || tabs.getTabName().equalsIgnoreCase("User Manuals")){
+						resourcesTabCount = resourcesTabCount+1;
 					}
 				}
 				
@@ -296,6 +297,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "resourcesTabCount", resourcesTabCount);
 			
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
