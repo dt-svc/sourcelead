@@ -322,6 +322,12 @@ public class TimesheetSubmissionsRestController {
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
 			String actionLink = "";
+			
+			StringBuilder actionLinkBuilder = new StringBuilder();
+			StringBuilder currentTimeFrequency = new StringBuilder();
+			currentTimeFrequency.append(startDate).append("To").append(endDate);
+			actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("timesheet?&currentTimeFrequency="+currentTimeFrequency.toString()+"&projectMembersId="+projectMember.getId()+"&notifyLink=notifyLink").toString();	
+			
 			emailScenerioUtil.sendNotification(actionLink, loginUser,  projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario); 
 	}
 

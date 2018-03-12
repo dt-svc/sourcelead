@@ -80,5 +80,7 @@ public interface TimesheetSubmissionsDao {
 	
 	public List<TimesheetSubmissions> getTimesheetSubmissionsByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
 
+	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate);
+
 
 }
