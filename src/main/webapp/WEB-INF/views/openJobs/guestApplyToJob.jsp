@@ -72,6 +72,7 @@ jQuery(document).ready(function($) {
 	var rate = '${rate}';
 	var noticePeriod = '${noticePeriod}';
 	var visaTypes = '${visaTypes}';
+	var postedOrg='{postedOrg}'
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
@@ -94,6 +95,15 @@ jQuery(document).ready(function($) {
 				
 				<div class="clearfix"></div>
 				<div class="skills mb">
+				<strong>Posted Org :</strong>
+				<c:if test="${!empty postedOrg}">
+				<span>${postedOrg}</span>
+				</c:if>
+				<c:if test="${empty postedOrg}">
+				<span>--</span>
+				</c:if>
+				</div>	
+				<div class="skills mb">
 				<strong>Skills :</strong>
 				<c:if test="${!empty skills}">
 				<span>${skills}</span>
@@ -102,7 +112,6 @@ jQuery(document).ready(function($) {
 				<span>--</span>
 				</c:if>
 				</div>	
-
 				<div class="skills mb">
 				<strong class="pull-left">Location(s) :</strong>
 				<ul class="list-unstyled list-inline joblocations-li">

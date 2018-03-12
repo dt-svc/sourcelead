@@ -87,6 +87,7 @@ function validateTwoStepAuth() {
 	var userName = '${username}';
 	var password = '${password}';
 	var sourceleadUrl ='${sourceleadUrl}';
+	var requirementUUID ='${requirementUUID}';
 	var userRoleId = '';
 	$(".with-font").each(function () {
 	    if ( $(this).prop("checked") ) {
@@ -100,8 +101,11 @@ function validateTwoStepAuth() {
 		      type : "POST",
 		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&userRoleId="+userRoleId+"&verfDone=Y",        
 		       success :function(result) {
-		    	 if(result == "true"){
+		    	 if(result == "true" && requirementUUID == ''){
 		    		 location.replace(sourceleadUrl+"/dashboard");   
+		    	 }
+		    	 else{
+		    		 location.replace(sourceleadUrl+"/dashboard"+"?requirementUUID="+requirementUUID);
 		    	 }
 		      },
 		  });
