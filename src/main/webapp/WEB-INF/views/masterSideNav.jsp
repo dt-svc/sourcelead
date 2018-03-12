@@ -296,7 +296,7 @@
 	                </c:if> 
 	                
 	                <c:if test="${userTabs.tabName == 'Support'}">
-	                   <li class="${sessionData.nav == 'Support' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/supportManagement'/>" title="Support"><span><i class="fa fa-ticket"></i></span><i class="subMenu">Support</i></a></li>
+	                   <li class="${sessionData.nav == 'Support' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/sourceleadTicketList'/>" title="Support"><span><i class="fa fa-ticket"></i></span><i class="subMenu">Support</i></a></li>
 	                </c:if> 
 	                
 	                
