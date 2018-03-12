@@ -121,6 +121,7 @@ function getRequestedAssociatesList(){
 					 var skills = '';
 					 var billRate = '';
 					 var payRate = '';
+					 var rateType='';
 					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
 						 startDate = opt.startDateStr;
 					 }else{
@@ -181,6 +182,11 @@ function getRequestedAssociatesList(){
 					 }else{
 						 payRate = '--';
 					 }
+					 if(opt.rateType != null && opt.rateType != '' && opt.rateType != 'undefined'){
+						 rateType = opt.rateType;
+						 }else{
+							 rateType = '--';
+						 }
 					 result = result +'<tr>';
 					    
 					    result = result +'<td>';
@@ -210,7 +216,7 @@ function getRequestedAssociatesList(){
 							result = result +'        <div class="clearfix"></div>';
 							result = result +'        <small>'+payRate+'</small>';
 						    result = result +'    </div>';
-						    result = result +'    <small class="text-muted pull-right paddingLeft payrateType mt10" id="rateTypeRow1" title="Hourly">Hourly</small>';
+						    result = result +'    <small class="text-muted pull-right paddingLeft payrateType mt10" id="rateTypeRow1" title="Hourly">'+rateType+'</small>';
 						    result = result +' </div>';
 						result = result +'</td>';
 						
